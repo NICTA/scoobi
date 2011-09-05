@@ -23,7 +23,8 @@ object ScoobiWritable {
     * A ScoobiWritable subclass is constructed based on a HadoopWritable typeclass
     * model imiplicit parameter. Using this model object, the Hadoop Writable methods
     * 'write' and 'readFields' can be generated. */
-  def apply[A](name: String, witness: A)(implicit wt: HadoopWritable[A]): RuntimeClass = {
+  def apply[A](name: String, witness: A)
+              (implicit m: Manifest[A], wt: HadoopWritable[A]): RuntimeClass = {
 
     val cb = new ClassBuilder(name, classOf[ScoobiWritable[_]]) {
       override def toRuntimeClass(): RuntimeClass = {
@@ -37,7 +38,7 @@ object ScoobiWritable {
                                            "write",
                                            Array(pool.get("java.io.DataOutput")),
                                            Array(),
-                                           "writer.toWire(((Integer)get()).intValue(), $1);",
+                                           "writer.toWire(" + getterCode(m) + ", $1);",
                                            ctClass)
         ctClass.addMethod(writeMethod)
 
@@ -46,7 +47,7 @@ object ScoobiWritable {
                                                 "readFields",
                                                 Array(pool.get("java.io.DataInput")),
                                                 Array(),
-                                                "set(new Integer(writer.fromWire($1)));",
+                                                setterCode("writer.fromWire($1)", m) + ";",
                                                 ctClass)
         ctClass.addMethod(readFieldsMethod)
 
@@ -55,7 +56,7 @@ object ScoobiWritable {
                                               "toString",
                                               Array(),
                                               Array(),
-                                              "return writer.show(((Integer)get()).intValue());",
+                                              "return writer.show(" + getterCode(m) + ");",
                                               ctClass)
         ctClass.addMethod(toStringMethod)
 

@@ -116,5 +116,39 @@ class ClassBuilder(protected val newClassName: String, extendClass: Class[_]) {
     }
     body
   }
-}
 
+  private val CBoolean  = classOf[Boolean]
+  private val CChar     = classOf[Char]
+  private val CShort    = classOf[Short]
+  private val CInt      = classOf[Int]
+  private val CLong     = classOf[Long]
+  private val CFloat    = classOf[Float]
+  private val CDouble   = classOf[Double]
+  private val CByte     = classOf[Byte]
+
+  /** Generate code string for getter code handling primitive types. */
+  protected def getterCode(m: Manifest[_]) = m.erasure match {
+    case CBoolean => "((Boolean)get()).booleanValue()"
+    case CChar    => "((Character)get()).charValue()"
+    case CShort   => "((Short)get()).shortValue()"
+    case CInt     => "((Integer)get()).intValue()"
+    case CLong    => "((Long)get()).longValue()"
+    case CFloat   => "((Floag)get()).floatValue()"
+    case CDouble  => "((Double)get()).doubleValue()"
+    case CByte    => "((Byte)get()).byteValue()"
+    case _        => "get()"
+  }
+
+  /** Generate code string for setter code handling primitive types. */
+  protected def setterCode(setValue: String, m: Manifest[_]) = m.erasure match {
+    case CBoolean => "set(new Boolean("   + setValue + "))"
+    case CChar    => "set(new Character(" + setValue + "))"
+    case CShort   => "set(new Short("     + setValue + "))"
+    case CInt     => "set(new Integer("   + setValue + "))"
+    case CLong    => "set(new Long("      + setValue + "))"
+    case CFloat   => "set(new Float("     + setValue + "))"
+    case CDouble  => "set(new Double("    + setValue + "))"
+    case CByte    => "set(new Byte("      + setValue + "))"
+    case _        => "set("               + setValue + ")"
+  }
+}

@@ -79,12 +79,12 @@ class ScoobiTextInputFormat
 
 
 /** A single Hadoop MapReduce job. */
-class HadoopJob[K1 : HadoopWritable : Ordering,
-                V1 : HadoopWritable,
-                K2 : HadoopWritable : Ordering : Manifest,
-                V2 : HadoopWritable,
-                K3 : HadoopWritable : Ordering : Manifest,
-                V3 : HadoopWritable](
+class HadoopJob[K1 : Manifest : HadoopWritable : Ordering,
+                V1 : Manifest : HadoopWritable,
+                K2 : Manifest : HadoopWritable : Ordering,
+                V2 : Manifest : HadoopWritable,
+                K3 : Manifest : HadoopWritable : Ordering,
+                V3 : Manifest : HadoopWritable](
     map: (K1, V1) => List[(K2, V2)],
     reduce: (K2, List[V2]) => List[(K3, V3)]) {
 
