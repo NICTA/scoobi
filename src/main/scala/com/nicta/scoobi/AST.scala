@@ -9,7 +9,7 @@ import scala.io.Source
 /** Abstract syntax of tree of primitive language. */
 object AST {
 
-  abstract class DList[A]
+  sealed abstract class DList[A]
 
   case class Load[A](path: String, parser: String => A) extends DList[A]
 
