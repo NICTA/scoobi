@@ -23,27 +23,29 @@ object HadoopWritable {
   /*
    * Catch-all
    */
-//implicit def Any = new HadoopWritable[Any] {
-//  def toWire(x: Any, out: DataOutput) = {
-//    val bytesOut = new ByteArrayOutputStream
-//    val bOut =  new ObjectOutputStream(bytesOut)
-//    bOut.writeObject(x)
-//    bOut.close()
+  implicit def Anything[T <: Serializable] = new HadoopWritable[T] {
+    def toWire(x: T, out: DataOutput) = {
+      val bytesOut = new ByteArrayOutputStream
+      val bOut =  new ObjectOutputStream(bytesOut)
+      bOut.writeObject(x)
+      bOut.close()
 
-//    val arr = bytesOut.toByteArray
-//    out.writeInt(arr.size)
-//    out.write(arr)
-//  }
+      val arr = bytesOut.toByteArray
+      out.writeInt(arr.size)
+      out.write(arr)
+    }
 
-//  def fromWire(in: DataInput): Any = {
-//    val size = in.readInt()
-//    val barr = new Array[Byte](size)
-//    in.readFully(barr)
+    def fromWire(in: DataInput): T = {
+      val size = in.readInt()
+      val barr = new Array[Byte](size)
+      in.readFully(barr)
 
-//    val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
-//    bIn.readObject.asInstanceOf[Any]
-//  }
-//}
+      val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
+      bIn.readObject.asInstanceOf[T]
+    }
+
+    def show(x: T) = x.toString
+  }
 
   /*
    * Built-in Hadoop Writable types.
@@ -87,36 +89,130 @@ object HadoopWritable {
   /*
    * Useful Scala types.
    */
-  implicit def Tuple2[A, B](implicit wrt1: HadoopWritable[A], wrt2: HadoopWritable[B]) =
-    new HadoopWritable[(A, B)] {
-      def toWire(x: (A, B), out: DataOutput) = {
-        wrt1.toWire(x._1, out)
-        wrt2.toWire(x._2, out)
+  implicit def Tuple2[T1, T2](implicit wt1: HadoopWritable[T1], wt2: HadoopWritable[T2]) =
+    new HadoopWritable[(T1, T2)] {
+      def toWire(x: (T1, T2), out: DataOutput) = {
+        wt1.toWire(x._1, out)
+        wt2.toWire(x._2, out)
       }
-      def fromWire(in: DataInput): (A, B) = {
-        val a = wrt1.fromWire(in)
-        val b = wrt2.fromWire(in)
+      def fromWire(in: DataInput): (T1, T2) = {
+        val a = wt1.fromWire(in)
+        val b = wt2.fromWire(in)
         (a, b)
       }
-      def show(x: (A, B)) = "(" + List(wrt1.show(x._1), wrt2.show(x._2)).mkString(",") + ")"
+      def show(x: (T1, T2)) = {
+        val elems = List(wt1.show(x._1), wt2.show(x._2))
+        elems.mkString("(", ",", ")")
+      }
   }
 
-  implicit def Tuple3[A, B, C](implicit wrt1: HadoopWritable[A], wrt2: HadoopWritable[B], wrt3: HadoopWritable[C]) =
-    new HadoopWritable[(A, B, C)] {
-      def toWire(x: (A, B, C), out: DataOutput) = {
-        wrt1.toWire(x._1, out)
-        wrt2.toWire(x._2, out)
-        wrt3.toWire(x._3, out)
+  implicit def Tuple3[T1, T2, T3]
+      (implicit wt1: HadoopWritable[T1], wt2: HadoopWritable[T2], wt3: HadoopWritable[T3]) =
+    new HadoopWritable[(T1, T2, T3)] {
+      def toWire(x: (T1, T2, T3), out: DataOutput) = {
+        wt1.toWire(x._1, out)
+        wt2.toWire(x._2, out)
+        wt3.toWire(x._3, out)
       }
-      def fromWire(in: DataInput): (A, B, C) = {
-        val a = wrt1.fromWire(in)
-        val b = wrt2.fromWire(in)
-        val c = wrt3.fromWire(in)
+      def fromWire(in: DataInput): (T1, T2, T3) = {
+        val a = wt1.fromWire(in)
+        val b = wt2.fromWire(in)
+        val c = wt3.fromWire(in)
         (a, b, c)
       }
-      def show(x: (A, B, C)) = "(" + List(wrt1.show(x._1), wrt2.show(x._2), wrt3.show(x._3)).mkString(",") + ")"
+      def show(x: (T1, T2, T3)) = {
+        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3))
+        elems.mkString("(", ",", ")")
+      }
   }
 
-  /* List-like structures - TODO */
+  implicit def Tuple4[T1, T2, T3, T4]
+      (implicit wt1: HadoopWritable[T1], wt2: HadoopWritable[T2], wt3: HadoopWritable[T3], wt4: HadoopWritable[T4]) =
+    new HadoopWritable[Tuple4[T1, T2, T3, T4]] {
+      def toWire(x: (T1, T2, T3, T4), out: DataOutput) = {
+        wt1.toWire(x._1, out)
+        wt2.toWire(x._2, out)
+        wt3.toWire(x._3, out)
+        wt4.toWire(x._4, out)
+      }
+      def fromWire(in: DataInput): (T1, T2, T3, T4) = {
+        val a = wt1.fromWire(in)
+        val b = wt2.fromWire(in)
+        val c = wt3.fromWire(in)
+        val d = wt4.fromWire(in)
+        (a, b, c, d)
+      }
+      def show(x: (T1, T2, T3, T4)) = {
+        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4))
+        elems.mkString("(", ",", ")")
+      }
+  }
 
+  implicit def Tuple5[T1, T2, T3, T4, T5]
+      (implicit wt1: HadoopWritable[T1], wt2: HadoopWritable[T2], wt3: HadoopWritable[T3], wt4: HadoopWritable[T4],
+                wt5: HadoopWritable[T5]) =
+    new HadoopWritable[(T1, T2, T3, T4, T5)] {
+      def toWire(x: (T1, T2, T3, T4, T5), out: DataOutput) = {
+        wt1.toWire(x._1, out)
+        wt2.toWire(x._2, out)
+        wt3.toWire(x._3, out)
+        wt4.toWire(x._4, out)
+        wt5.toWire(x._5, out)
+      }
+      def fromWire(in: DataInput): (T1, T2, T3, T4, T5) = {
+        val a = wt1.fromWire(in)
+        val b = wt2.fromWire(in)
+        val c = wt3.fromWire(in)
+        val d = wt4.fromWire(in)
+        val e = wt5.fromWire(in)
+        (a, b, c, d, e)
+      }
+      def show(x: (T1, T2, T3, T4, T5)) = {
+        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4), wt5.show(x._5))
+        elems.mkString("(", ",", ")")
+      }
+  }
+
+  /*
+   * List-like structures
+   */
+  implicit def Iterable[T](implicit wt: HadoopWritable[T]) = new HadoopWritable[Iterable[T]] {
+    def toWire(x: Iterable[T], out: DataOutput) = {
+      out.writeInt(x.size)
+      x.foreach { wt.toWire(_, out) }
+    }
+    def fromWire(in: DataInput): Iterable[T] = {
+      import scala.collection.mutable._
+      val size = in.readInt()
+      val ml: MutableList[T] = new MutableList
+      for (_ <- 0 to (size - 1)) { ml += wt.fromWire(in) }
+      val il: List[T] = ml.toList
+      il.toIterable
+    }
+    def show(x: Iterable[T]) = x.mkString("[", ",", "]")
+  }
+
+  /*
+   * Option type.
+   */
+  implicit def Option[T](implicit wt: HadoopWritable[T]) = new HadoopWritable[Option[T]] {
+    def toWire(x: Option[T], out: DataOutput) = x match {
+      case Some(y) => { out.writeBoolean(true); wt.toWire(y, out) }
+      case None    => { out.writeBoolean(false) }
+    }
+    def fromWire(in: DataInput): Option[T] = {
+      val isSome = in.readBoolean()
+      if (isSome) {
+        val x: T = wt.fromWire(in)
+        Some(x)
+      }
+      else {
+        None
+      }
+    }
+    def show(x: Option[T]) = x match {
+      case Some(y) => "S{" + wt.show(y) + "}"
+      case None    => "N{}"
+    }
+  }
 }

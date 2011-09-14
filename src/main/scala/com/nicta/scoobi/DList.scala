@@ -5,28 +5,38 @@ package com.nicta.scoobi
 
 
 /** A list that is distributed accross multiple machines. */
-class DList[A](private val ast: AST.DList[A]) {
+class DList[A : Manifest : HadoopWritable](private val ast: AST.DList[A]) {
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /** */
-  def flatMap[B](f: A => Iterable[B]): DList[B] = new DList(AST.FlatMap(ast, f))
+  def flatMap[B]
+      (f: A => Iterable[B])
+      (implicit mB:  Manifest[B],
+                wtB: HadoopWritable[B]): DList[B] = new DList(AST.FlatMap(ast, f))
 
   /** */
   def concat(in: DList[A]): DList[A] = new DList(AST.Flatten(List(ast) ::: List(in.ast)))
 
   /** */
-  def groupByKey[K,V]
-    (implicit ev: AST.DList[A] <:< AST.DList[(K, V)]): DList[(K, Iterable[V])] =
-        new DList(AST.GroupByKey(ast))
+  def groupByKey[K, V]
+      (implicit ev:   AST.DList[A] <:< AST.DList[(K, V)],
+                mK:   Manifest[K],
+                wtK:  HadoopWritable[K],
+                ordK: Ordering[K],
+                mV:   Manifest[V],
+                wtV:  HadoopWritable[V]): DList[(K, Iterable[V])] = new DList(AST.GroupByKey(ast))
 
   /** */
-  def combine[K,V]
-    (f: (V, V) => V)
-    (implicit ev: AST.DList[A] <:< AST.DList[(K,Iterable[V])]): DList[(K, V)] =
-      new DList(AST.Combine(ast, f))
+  def combine[K, V]
+      (f: (V, V) => V)
+      (implicit ev:   AST.DList[A] <:< AST.DList[(K,Iterable[V])],
+                mK:   Manifest[K],
+                wtK:  HadoopWritable[K],
+                mV:   Manifest[V],
+                wtV:  HadoopWritable[V]): DList[(K, V)] = new DList(AST.Combine(ast, f))
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,15 +44,23 @@ class DList[A](private val ast: AST.DList[A]) {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /** */
-  def map[B](f: A => B): DList[B] = flatMap(x => List(f(x)))
+  def map[B]
+      (f: A => B)
+      (implicit mB:  Manifest[B],
+                wtB: HadoopWritable[B]): DList[B] = flatMap(x => List(f(x)))
 
   /** */
   def filter(f: A => Boolean): DList[A] = flatMap(x => if (f(x)) List(x) else Nil)
 
   /** */
   def reduceByKey[K, V]
-    (f: (V, V) => V)
-    (implicit ev: AST.DList[A] <:< AST.DList[(K, V)]): DList[(K, V)] = groupByKey.combine(f)
+      (f: (V, V) => V)
+      (implicit ev:   AST.DList[A] <:< AST.DList[(K, V)],
+                mK:   Manifest[K],
+                wtK:  HadoopWritable[K],
+                ordK: Ordering[K],
+                mV:   Manifest[V],
+                wtV:  HadoopWritable[V]): DList[(K, V)] = groupByKey.combine(f)
 }
 
 
@@ -58,8 +76,12 @@ object DList {
   /** Create a distributed list from a text file that is a number of fields deliminated
     * by some separator. Use an extractor function to pull out the required fields to
     * create the distributed list. */
-  def extractFromDelimitedTextFile[A](sep: String, path: String)
-                                     (extractFn: PartialFunction[List[String], A]): DList[A] = {
+  def extractFromDelimitedTextFile[A]
+      (sep: String, path: String)
+      (extractFn: PartialFunction[List[String], A])
+      (implicit mA:  Manifest[A],
+                wtA: HadoopWritable[A]): DList[A] = {
+
     val lines = fromTextFile(path)
     lines.flatMap { line =>
       val fields = line.split(sep).toList
@@ -73,7 +95,12 @@ object DList {
   /** Create a distributed list from a text file that is a number of fields deliminated
     * by some separator. The type of the resultant list is determined by type inference.
     * An implicit schema must be in scope for the requried resultant type. */
-  def fromDelimitedTextFile[A](sep: String, path: String)(implicit schema: Schema[A]): DList[A] = {
+  def fromDelimitedTextFile[A]
+      (sep: String, path: String)
+      (implicit schema: Schema[A],
+                mA:     Manifest[A],
+                wtA:    HadoopWritable[A]): DList[A] = {
+
     val lines = fromTextFile(path)
     lines.map { line =>
       val fields = line.split(sep).toList

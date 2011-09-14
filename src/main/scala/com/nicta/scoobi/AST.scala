@@ -9,18 +9,42 @@ import scala.io.Source
 /** Abstract syntax of tree of primitive language. */
 object AST {
 
+  /** GADT for distributed list computation graph. */
   sealed abstract class DList[A]
 
-  case class Load[A](path: String, parser: String => A) extends DList[A]
+  /** */
+  case class Load[A : Manifest : HadoopWritable]
+      (path: String, parser: String => A)
+    extends DList[A]
 
-  case class FlatMap[A, B](in: DList[A], f: A => Iterable[B]) extends DList[B]
+  /** */
+  case class FlatMap[A : Manifest : HadoopWritable,
+                     B : Manifest : HadoopWritable]
+      (in: DList[A],
+       f: A => Iterable[B])
+    extends DList[B]
 
-  case class GroupByKey[K, V](in: DList[(K, V)]) extends DList[(K, Iterable[V])]
+  /** */
+  case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
+                        V : Manifest : HadoopWritable]
+      (in: DList[(K, V)])
+    extends DList[(K, Iterable[V])]
 
-  case class Combine[K, V](in: DList[(K, Iterable[V])], f: (V, V) => V) extends DList[(K, V)]
+  /** */
+  case class Combine[K : Manifest : HadoopWritable,
+                     V : Manifest : HadoopWritable]
+      (in: DList[(K, Iterable[V])],
+       f: (V, V) => V)
+    extends DList[(K, V)]
 
-  case class Flatten[A](ins: List[DList[A]]) extends DList[A]
+  /** */
+  case class Flatten[A : Manifest : HadoopWritable]
+      (ins: List[DList[A]])
+    extends DList[A]
 
+
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /** Interpreter for the AST. */
   def eval[A](pc: DList[A]): List[A] = pc match {

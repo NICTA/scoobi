@@ -3,6 +3,8 @@
   */
 package com.nicta.scoobi
 
+import java.io._
+
 
 /** Test the Hadoop-level interface. */
 object HadoopTest {
@@ -93,7 +95,7 @@ object LanguageTest {
     case class Person(val id: Int,
                       val secondName: String,
                       val firstName: String,
-                      val age: Int)
+                      val age: Int) extends Serializable
 
     val persons = extractFromDelimitedTextFile(",", FILE_DIR + "/people.txt") {
                     case id :: fN :: sN :: age :: _ => Person(id.toInt, sN, fN, age.toInt)
