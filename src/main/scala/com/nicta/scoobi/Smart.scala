@@ -52,4 +52,15 @@ object Smart {
                                }
     case Flatten(ins)       => ins.map(eval(_)).flatten
   }
+
+  def parentsOf(d: DList[_]): List[DList[_]] = {
+    d match {
+      case Load(_,_)      => List()
+      case FlatMap(in,_)  => List(in)
+      case GroupByKey(in) => List(in)
+      case Combine(in,_)  => List(in)
+      case Flatten(ins)   => ins
+    }
+  }
+
 }
