@@ -5,7 +5,7 @@ package com.nicta.scoobi
 
 
 /** A list that is distributed accross multiple machines. */
-class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
+class DList[A : Manifest : HadoopWritable](/*FIXME: add private*/val ast: Smart.DList[A]) {
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.

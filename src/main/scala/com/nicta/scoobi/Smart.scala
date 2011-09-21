@@ -10,31 +10,44 @@ import scala.io.Source
 object Smart {
 
   /** GADT for distributed list computation graph. */
-  sealed abstract class DList[A]
+  sealed abstract class DList[A] {
+    def name: String
+  }
 
   case class Load[A : Manifest : HadoopWritable]
       (path: String, parser: String => A)
-    extends DList[A]
+    extends DList[A] {
+    def name = "Load"
+  }
 
   case class FlatMap[A : Manifest : HadoopWritable,
                      B : Manifest : HadoopWritable]
-      (in: DList[A], f: A => Iterable[B])
-    extends DList[B]
+      (in: DList[A],
+       f: A => Iterable[B])
+    extends DList[B] {
+    def name = "FlatMap"
+  }
 
   case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
                         V : Manifest : HadoopWritable]
       (in: DList[(K, V)])
-    extends DList[(K, Iterable[V])]
+    extends DList[(K, Iterable[V])] {
+    def name = "GroupByKey"
+  }
 
   case class Combine[K : Manifest : HadoopWritable,
                      V : Manifest : HadoopWritable]
       (in: DList[(K, Iterable[V])],
        f: (V, V) => V)
-    extends DList[(K, V)]
+    extends DList[(K, V)] {
+    def name = "Combine"
+  }
 
   case class Flatten[A : Manifest : HadoopWritable]
       (ins: List[DList[A]])
-    extends DList[A]
+    extends DList[A] {
+    def name = "Flatten"
+  }
 
 
 

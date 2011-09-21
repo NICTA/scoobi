@@ -89,11 +89,20 @@ object LanguageTest {
     persist { toTextFile(fix, FILE_DIR + "/id-names-cnt.txt") }
   }
 
+  def graphTest() = {
+    val d1: DList[String] = fromDelimitedTextFile(",", FILE_DIR + "/test.txt")
+    val d2: DList[Option[String]] = d1.map { case v => Some(v) }
+    val g = DGraph(List(d2.ast))
+    println(g.toString())
+  }
+
+
   /** Run them. */
   def main(args: Array[String]) {
-    simple()
-    wordcount()
-    avgAge()
-    join()
+    graphTest()
+//    simple()
+//    wordcount()
+//    avgAge()
+//    join()
   }
 }
