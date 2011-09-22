@@ -76,4 +76,37 @@ object Smart {
     }
   }
 
+  def getFlatMap(d: DList[_]): Option[DList[_]] = {
+    d match {
+      case FlatMap(_,_) => Some(d)
+      case _            => None
+    }
+  }
+
+  def getFlatten(d: DList[_]): Option[DList[_]] = {
+    d match {
+      case Flatten(_) => Some(d)
+      case _            => None
+    }
+  }
+
+  def getGroupByKey(d: DList[_]): Option[DList[_]] = {
+    d match {
+      case GroupByKey(_) => Some(d)
+      case _             => None
+    }
+  }
+
+  def getCombine(d: DList[_]): Option[DList[_]] = {
+    d match {
+      case Combine(_,_) => Some(d)
+      case _            => None
+    }
+  }
+
+  def isFlatMap(d: DList[_]):    Boolean = getFlatMap(d).isDefined
+  def isFlatten(d: DList[_]):    Boolean = getFlatten(d).isDefined
+  def isGroupByKey(d: DList[_]): Boolean = getGroupByKey(d).isDefined
+  def isCombine(d: DList[_]):    Boolean = getCombine(d).isDefined
+
 }
