@@ -76,31 +76,31 @@ object Smart {
     }
   }
 
-  def getFlatMap(d: DList[_]): Option[DList[_]] = {
+  def getFlatMap(d: DList[_]): Option[FlatMap[_,_]] = {
     d match {
-      case FlatMap(_,_) => Some(d)
-      case _            => None
+      case flatMap@FlatMap(_,_) => Some(flatMap)
+      case _                    => None
     }
   }
 
-  def getFlatten(d: DList[_]): Option[DList[_]] = {
+  def getFlatten(d: DList[_]): Option[Flatten[_]] = {
     d match {
-      case Flatten(_) => Some(d)
-      case _            => None
+      case flatten@Flatten(_) => Some(flatten)
+      case _                  => None
     }
   }
 
-  def getGroupByKey(d: DList[_]): Option[DList[_]] = {
+  def getGroupByKey(d: DList[_]): Option[GroupByKey[_,_]] = {
     d match {
-      case GroupByKey(_) => Some(d)
-      case _             => None
+      case gbk@GroupByKey(_) => Some(gbk)
+      case _                 => None
     }
   }
 
-  def getCombine(d: DList[_]): Option[DList[_]] = {
+  def getCombine(d: DList[_]): Option[Combine[_,_]] = {
     d match {
-      case Combine(_,_) => Some(d)
-      case _            => None
+      case c@Combine(_,_) => Some(c)
+      case _              => None
     }
   }
 

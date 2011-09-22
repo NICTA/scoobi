@@ -26,10 +26,31 @@ object Intermediate {
    */
   sealed abstract class OutputChannel
 
+  object GbkOutputChannel {
+    def apply(d: DList[_]): GbkOutputChannel = {
+      d match {
+        case gbk@GroupByKey(_) => GbkOutputChannel(None, gbk, None, None)
+        case _                 => throw new RuntimeException("This is not a GBK")
+      }
+    }
+  }
+
   case class GbkOutputChannel(flatten:    Option[Flatten[_]],
                               groupByKey: GroupByKey[_,_],
                               combiner:   Option[Combine[_,_]],
-                              reducer:    Option[FlatMap[_,_]]) extends OutputChannel
+                              reducer:    Option[FlatMap[_,_]]) extends OutputChannel {
+
+     def addFlatten(flatten: Flatten[_]): GbkOutputChannel =
+       new GbkOutputChannel(Some(flatten), this.groupByKey, this.combiner, this.reducer)
+
+     def addReducer(reducer: FlatMap[_,_]): GbkOutputChannel =
+       new GbkOutputChannel(this.flatten, this.groupByKey, this.combiner, Some(reducer))
+
+     def addCombiner(combiner: Combine[_,_]): GbkOutputChannel =
+       new GbkOutputChannel(this.flatten, this.groupByKey, Some(combiner), this.reducer)
+
+
+  }
   case class BypassChannel(input: FlatMap[_,_]) extends OutputChannel
 
   class MSCR(val inputChannels: Set[InputChannel],
@@ -156,6 +177,56 @@ object Intermediate {
       }
 
       def canFuse(d: DList[_], g: DGraph): Boolean = flatMapsToFuse(d,g).length > 1
+
+      def outputChannelsForRelatedGBKs(gbks: Set[DList[_]], g: DGraph): Set[GbkOutputChannel] = {
+        val initOCs = gbks.foldLeft(Set(): Set[(GbkOutputChannel,DList[_])])
+                                   { (s,gbk) => s + ((GbkOutputChannel(gbk), gbk)) }
+
+        def getSingleSucc(d: DList[_]): Option[DList[_]] =
+          g.succs.get(d) match {
+            case Some(s) => Some(s.toList.head)
+            case None    => None
+          }
+
+        def addFlatten(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+          val maybeOC =
+            for { s       <- g.preds.get(gbk)
+                  p       <- Some(s.toList.head) // Assumes GBK has predecessor. It must.
+                  flatten <- getFlatten(p)
+            } yield oc.addFlatten(flatten)
+          maybeOC.getOrElse(oc)
+        }
+
+        def addCombinerAndOrReducer(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+          def addReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+            val maybeOC =
+              for { d_ <- getSingleSucc(d)
+                    reducer <- getFlatMap(d_)
+                    hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
+                    canAdd <- Some(!canFuse(reducer,g) && hasNoSuccessors)
+              } yield (if (canAdd) { oc.addReducer(reducer)} else { oc })
+            maybeOC.getOrElse(oc)
+          }
+
+          val maybeOC =
+            for {
+              d <- getSingleSucc(gbk)
+              combiner <- getCombine(d)
+            } yield addReducer(combiner, oc.addCombiner(combiner))
+          maybeOC.getOrElse(addReducer(gbk,oc))
+        }
+
+
+        /*
+         * Adds Flattens, Combiners, Reducers for output channels
+         */
+        def addNodes(oc: GbkOutputChannel, gbk: DList[_]): GbkOutputChannel = {
+          addFlatten(gbk, addCombinerAndOrReducer(gbk, oc))
+        }
+
+        initOCs.foldLeft(Set(): Set[GbkOutputChannel]){case (s,(oc,gbk)) => s + addNodes(oc,gbk)}
+
+      }
 
       /* FIXME: Create the MSCR here */
       throw new RuntimeException("not implemented")
