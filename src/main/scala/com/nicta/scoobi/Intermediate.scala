@@ -97,6 +97,112 @@ object Intermediate {
 
     def apply(g: DGraph, relatedGBKs: Set[DList[_]]) {
 
+
+      def flatMapsToFuse(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
+        d match {
+          case flatMap@FlatMap(_,_) => {
+            g.succs.get(flatMap) match {
+              case Some(succs) => succs.toList.map(getFlatMap(_).toList).flatten
+              case None        => List()
+            }
+          }
+          case _ => throw new RuntimeException("Can't call flatMapsToFuse on non-flatMap node")
+        }
+      }
+
+      def canFuse(d: DList[_], g: DGraph): Boolean = flatMapsToFuse(d,g).length > 1
+
+      def outputChannelsForRelatedGBKs(gbks: Set[DList[_]], g: DGraph): Set[GbkOutputChannel] = {
+        val initOCs = gbks.foldLeft(Set(): Set[(GbkOutputChannel,DList[_])])
+                                   { (s,gbk) => s + ((GbkOutputChannel(gbk), gbk)) }
+
+        def getSingleSucc(d: DList[_]): Option[DList[_]] =
+          g.succs.get(d) match {
+            case Some(s) => Some(s.toList.head)
+            case None    => None
+          }
+
+        def addFlatten(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+          val maybeOC =
+            for { s       <- g.preds.get(gbk)
+                  p       <- Some(s.toList.head) // Assumes GBK has predecessor. It must.
+                  flatten <- getFlatten(p)
+            } yield oc.addFlatten(flatten)
+          maybeOC.getOrElse(oc)
+        }
+
+        def addCombinerAndOrReducer(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+          def addReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+            val maybeOC =
+              for { d_              <- getSingleSucc(d)
+                    reducer         <- getFlatMap(d_)
+                    hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
+                    canAdd          <- Some(!canFuse(reducer,g) && hasNoSuccessors)
+              } yield (if (canAdd) { oc.addReducer(reducer)} else { oc })
+            maybeOC.getOrElse(oc)
+          }
+
+          val maybeOC =
+            for {
+              d <- getSingleSucc(gbk)
+              combiner <- getCombine(d)
+            } yield addReducer(combiner, oc.addCombiner(combiner))
+          maybeOC.getOrElse(addReducer(gbk,oc))
+        }
+
+
+        /*
+         * Adds Flattens, Combiners, Reducers for output channels
+         */
+        def addNodes(oc: GbkOutputChannel, gbk: DList[_]): GbkOutputChannel = {
+          addFlatten(gbk, addCombinerAndOrReducer(gbk, oc))
+        }
+
+        initOCs.foldLeft(Set(): Set[GbkOutputChannel]){case (s,(oc,gbk)) => s + addNodes(oc,gbk)}
+
+      }
+
+      def addInputChannel(g: DGraph, ocs: Set[GbkOutputChannel], d: DList[_]) = {
+
+        def isBypass(fm: FlatMap[_,_]): Boolean = {
+          val maybeSuccessors = g.succs.get(d)
+          def connectsToOutputChannel(d: DList[_]) = ocs.exists(_.contains(d))
+          def connectsToNoOutputChannel(ss: Set[DList[_]]) =
+            ss.toList.forall(!connectsToOutputChannel(_))
+          def isInExecutionPlanOutputs(d: DList[_]) = g.outputs.contains(d)
+
+          maybeSuccessors.map(connectsToNoOutputChannel).getOrElse(true) ||
+          isInExecutionPlanOutputs(d)
+        }
+
+
+        def bypassChan(fm: FlatMap[_,_]) =
+          if ( isBypass(fm) ) { None } else { Some (BypassChannel(fm))}
+
+        d match {
+          case fm@FlatMap(_,_) => {
+            val fused = flatMapsToFuse(d, g)
+            val bypassChannels = fused.map(bypassChan(_).toList).flatten
+            (MultipleFlatMap(fused), bypassChannels)
+          }
+          case _ => (IdInputChannel(), List())
+        }
+      }
+
+
+      /* FIXME: Create the MSCR here */
+      val ocs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
+      val allInputs = ocs.flatMap(_.inputs(g))
+      val (inputChannels, extraChannels) = allInputs.map(addInputChannel(g, ocs, _)).unzip
+
+      new MSCR(inputChannels.toSet, ocs ++ extraChannels.flatten.toSet)
+
+    }
+  }
+
+  object MSCRGraph {
+    def apply(outputs: List[DList[_]]) = {
+
       /*
        * Two nodes are related if they share at least one input. Let A be the type of nodes
        * and B the type of inputs.
@@ -200,106 +306,12 @@ object Intermediate {
         mergeRelated(gbks.map(gbkInputs)).map(_._1)
       }
 
-      def flatMapsToFuse(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
-        d match {
-          case flatMap@FlatMap(_,_) => {
-            g.succs.get(flatMap) match {
-              case Some(succs) => succs.toList.map(getFlatMap(_).toList).flatten
-              case None        => List()
-            }
-          }
-          case _ => throw new RuntimeException("Can't call flatMapsToFuse on non-flatMap node")
-        }
-      }
+      val g = DGraph(outputs)
+      val relatedGBKSets = findRelated(g)
 
-      def canFuse(d: DList[_], g: DGraph): Boolean = flatMapsToFuse(d,g).length > 1
-
-      def outputChannelsForRelatedGBKs(gbks: Set[DList[_]], g: DGraph): Set[GbkOutputChannel] = {
-        val initOCs = gbks.foldLeft(Set(): Set[(GbkOutputChannel,DList[_])])
-                                   { (s,gbk) => s + ((GbkOutputChannel(gbk), gbk)) }
-
-        def getSingleSucc(d: DList[_]): Option[DList[_]] =
-          g.succs.get(d) match {
-            case Some(s) => Some(s.toList.head)
-            case None    => None
-          }
-
-        def addFlatten(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
-          val maybeOC =
-            for { s       <- g.preds.get(gbk)
-                  p       <- Some(s.toList.head) // Assumes GBK has predecessor. It must.
-                  flatten <- getFlatten(p)
-            } yield oc.addFlatten(flatten)
-          maybeOC.getOrElse(oc)
-        }
-
-        def addCombinerAndOrReducer(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
-          def addReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
-            val maybeOC =
-              for { d_              <- getSingleSucc(d)
-                    reducer         <- getFlatMap(d_)
-                    hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
-                    canAdd          <- Some(!canFuse(reducer,g) && hasNoSuccessors)
-              } yield (if (canAdd) { oc.addReducer(reducer)} else { oc })
-            maybeOC.getOrElse(oc)
-          }
-
-          val maybeOC =
-            for {
-              d <- getSingleSucc(gbk)
-              combiner <- getCombine(d)
-            } yield addReducer(combiner, oc.addCombiner(combiner))
-          maybeOC.getOrElse(addReducer(gbk,oc))
-        }
-
-
-        /*
-         * Adds Flattens, Combiners, Reducers for output channels
-         */
-        def addNodes(oc: GbkOutputChannel, gbk: DList[_]): GbkOutputChannel = {
-          addFlatten(gbk, addCombinerAndOrReducer(gbk, oc))
-        }
-
-        initOCs.foldLeft(Set(): Set[GbkOutputChannel]){case (s,(oc,gbk)) => s + addNodes(oc,gbk)}
-
-      }
-
-      def addInputChannel(g: DGraph, ocs: Set[GbkOutputChannel], d: DList[_]) = {
-
-        def isBypass(fm: FlatMap[_,_]): Boolean = {
-          val maybeSuccessors = g.succs.get(d)
-          def connectsToOutputChannel(d: DList[_]) = ocs.exists(_.contains(d))
-          def connectsToNoOutputChannel(ss: Set[DList[_]]) =
-            ss.toList.forall(!connectsToOutputChannel(_))
-          def isInExecutionPlanOutputs(d: DList[_]) = g.outputs.contains(d)
-
-          maybeSuccessors.map(connectsToNoOutputChannel).getOrElse(true) ||
-          isInExecutionPlanOutputs(d)
-        }
-
-
-        def bypassChan(fm: FlatMap[_,_]) =
-          if ( isBypass(fm) ) { None } else { Some (BypassChannel(fm))}
-
-        d match {
-          case fm@FlatMap(_,_) => {
-            val fused = flatMapsToFuse(d, g)
-            val bypassChannels = fused.map(bypassChan(_).toList).flatten
-            (MultipleFlatMap(fused), bypassChannels)
-          }
-          case _ => (IdInputChannel(), List())
-        }
-      }
-
-
-      /* FIXME: Create the MSCR here */
-      val ocs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
-      val allInputs = ocs.flatMap(_.inputs(g))
-      val (inputChannels, extraChannels) = allInputs.map(addInputChannel(g, ocs, _)).unzip
-
-      new MSCR(inputChannels.toSet, ocs ++ extraChannels.flatten.toSet)
-
+      relatedGBKSets.map(MSCR(g,_))
     }
   }
+
 
 }
