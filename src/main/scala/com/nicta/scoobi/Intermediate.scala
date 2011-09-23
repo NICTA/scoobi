@@ -15,16 +15,25 @@ object Intermediate {
   /*
    *  InputChannel
    */
-  sealed abstract class InputChannel
+  sealed abstract class InputChannel {
+    def contains(d: DList[_]): Boolean
+  }
 
-  case class MultipleFlatMap(flatMaps: List[DList[_]]) extends InputChannel
 
-  case class IdInputChannel extends InputChannel
+  case class MultipleFlatMap(flatMaps: List[DList[_]]) extends InputChannel {
+    def contains(d: DList[_]) = flatMaps.exists(_==d)
+  }
+
+  case class IdInputChannel extends InputChannel {
+    def contains(d: DList[_]) = false
+  }
 
   /*
    * OutputChannel
    */
-  sealed abstract class OutputChannel
+  sealed abstract class OutputChannel {
+    def contains(d: DList[_]): Boolean
+  }
 
   object GbkOutputChannel {
     def apply(d: DList[_]): GbkOutputChannel = {
@@ -49,17 +58,44 @@ object Intermediate {
      def addCombiner(combiner: Combine[_,_]): GbkOutputChannel =
        new GbkOutputChannel(this.flatten, this.groupByKey, Some(combiner), this.reducer)
 
+     def contains(d: DList[_]): Boolean = {
+       def sameAs(f: GbkOutputChannel => Option[DList[_]]) = f(this).map{_ == d}.getOrElse(false)
+       /* Fix function is necessary to help Scala's type inferencer */
+       def fix(a: GbkOutputChannel => Option[DList[_]]) = a
+       val l: List[GbkOutputChannel => Option[DList[_]]] =
+         List(fix(_.flatten), fix(x => Some(x.groupByKey)), fix(_.combiner), fix(_.reducer))
+       l.exists(sameAs)
+     }
+
+     /*
+      * Find the inputs to this channel. If there is a Flatten node then it is the parents of this
+      * node. Otherwise it is the parent of the GroupByKey node
+      */
+     def inputs(g: DGraph): List[DList[_]] = {
+       (this.flatten match {
+         case Some(fltn) => g.preds.getOrElse(fltn,
+           throw new RuntimeException("Flatten can't have no parents in GbkOutputChannel"))
+         case None => g.preds.getOrElse(this.groupByKey,
+           throw new RuntimeException("GroupByKey can't have no parents in GbkOutputChannel"))
+       }) toList
+     }
 
   }
-  case class BypassChannel(input: FlatMap[_,_]) extends OutputChannel
+  case class BypassChannel(input: FlatMap[_,_]) extends OutputChannel {
+    def contains(d: DList[_]) = false
+  }
 
   class MSCR(val inputChannels: Set[InputChannel],
-             val outputChannels: Set[OutputChannel])
+             val outputChannels: Set[OutputChannel]) {
 
+    def contains(d: DList[_]) =
+      this.inputChannels.exists(_.contains(d)) || this.outputChannels.exists(_.contains(d))
+
+  }
 
   object MSCR {
 
-    def apply(outputs: Set[DList[_]]) {
+    def apply(g: DGraph, relatedGBKs: Set[DList[_]]) {
 
       /*
        * Two nodes are related if they share at least one input. Let A be the type of nodes
@@ -164,11 +200,11 @@ object Intermediate {
         mergeRelated(gbks.map(gbkInputs)).map(_._1)
       }
 
-      def flatMapsToFuse(d: DList[_], g: DGraph): List[DList[_]] = {
+      def flatMapsToFuse(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
         d match {
           case flatMap@FlatMap(_,_) => {
             g.succs.get(flatMap) match {
-              case Some(succs) => succs.filter(isFlatMap).toList
+              case Some(succs) => succs.toList.map(getFlatMap(_).toList).flatten
               case None        => List()
             }
           }
@@ -200,10 +236,10 @@ object Intermediate {
         def addCombinerAndOrReducer(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
           def addReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
             val maybeOC =
-              for { d_ <- getSingleSucc(d)
-                    reducer <- getFlatMap(d_)
+              for { d_              <- getSingleSucc(d)
+                    reducer         <- getFlatMap(d_)
                     hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
-                    canAdd <- Some(!canFuse(reducer,g) && hasNoSuccessors)
+                    canAdd          <- Some(!canFuse(reducer,g) && hasNoSuccessors)
               } yield (if (canAdd) { oc.addReducer(reducer)} else { oc })
             maybeOC.getOrElse(oc)
           }
@@ -228,12 +264,42 @@ object Intermediate {
 
       }
 
+      def addInputChannel(g: DGraph, ocs: Set[GbkOutputChannel], d: DList[_]) = {
+
+        def isBypass(fm: FlatMap[_,_]): Boolean = {
+          val maybeSuccessors = g.succs.get(d)
+          def connectsToOutputChannel(d: DList[_]) = ocs.exists(_.contains(d))
+          def connectsToNoOutputChannel(ss: Set[DList[_]]) =
+            ss.toList.forall(!connectsToOutputChannel(_))
+          def isInExecutionPlanOutputs(d: DList[_]) = g.outputs.contains(d)
+
+          maybeSuccessors.map(connectsToNoOutputChannel).getOrElse(true) ||
+          isInExecutionPlanOutputs(d)
+        }
+
+
+        def bypassChan(fm: FlatMap[_,_]) =
+          if ( isBypass(fm) ) { None } else { Some (BypassChannel(fm))}
+
+        d match {
+          case fm@FlatMap(_,_) => {
+            val fused = flatMapsToFuse(d, g)
+            val bypassChannels = fused.map(bypassChan(_).toList).flatten
+            (MultipleFlatMap(fused), bypassChannels)
+          }
+          case _ => (IdInputChannel(), List())
+        }
+      }
+
+
       /* FIXME: Create the MSCR here */
-      throw new RuntimeException("not implemented")
+      val ocs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
+      val allInputs = ocs.flatMap(_.inputs(g))
+      val (inputChannels, extraChannels) = allInputs.map(addInputChannel(g, ocs, _)).unzip
+
+      new MSCR(inputChannels.toSet, ocs ++ extraChannels.flatten.toSet)
+
     }
-
-
-
   }
 
 }
