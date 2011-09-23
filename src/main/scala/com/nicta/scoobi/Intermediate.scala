@@ -21,11 +21,16 @@ object Intermediate {
 
 
   case class MultipleFlatMap(flatMaps: List[DList[_]]) extends InputChannel {
+
     def contains(d: DList[_]) = flatMaps.exists(_==d)
+
+    override def toString = "MultipleFlatMap([" + flatMaps.mkString(", ")+ "])"
   }
 
   case class IdInputChannel extends InputChannel {
     def contains(d: DList[_]) = false
+
+    override def toString = "IdInputChannel"
   }
 
   /*
@@ -42,6 +47,7 @@ object Intermediate {
         case _                 => throw new RuntimeException("This is not a GBK")
       }
     }
+
   }
 
   case class GbkOutputChannel(flatten:    Option[Flatten[_]],
@@ -80,9 +86,22 @@ object Intermediate {
        }) toList
      }
 
+    override def toString = {
+      val header = "GbkOutputChannel("
+
+
+      List(Pretty.indent("flatten: ",flatten.toString),
+           "groupByKey: " + groupByKey.toString,
+           "combiner: " + combiner.toString,
+           "reducer: " + reducer.toString).
+        mkString(header,",\n" + " " * header.length , ")")
+      }
   }
+
   case class BypassChannel(input: FlatMap[_,_]) extends OutputChannel {
     def contains(d: DList[_]) = false
+
+    override def toString = "BypassChannel(" + input.toString + ")"
   }
 
   class MSCR(val inputChannels: Set[InputChannel],
@@ -91,17 +110,23 @@ object Intermediate {
     def contains(d: DList[_]) =
       this.inputChannels.exists(_.contains(d)) || this.outputChannels.exists(_.contains(d))
 
+    override def toString = {
+      Pretty.indent(
+        "MSCR(",
+          List(Pretty.indent("inputChannels:  { ", inputChannels.mkString(",\n")) + "}",
+               Pretty.indent("outputChannels: { ", outputChannels.mkString(",\n")) + "}").
+          mkString(",\n"))
+    }
   }
 
   object MSCR {
 
-    def apply(g: DGraph, relatedGBKs: Set[DList[_]]) {
-
+    def apply(g: DGraph, relatedGBKs: Set[DList[_]]): MSCR = {
 
       def flatMapsToFuse(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
         d match {
-          case flatMap@FlatMap(_,_) => {
-            g.succs.get(flatMap) match {
+          case FlatMap(input,_) => {
+            g.succs.get(input) match {
               case Some(succs) => succs.toList.map(getFlatMap(_).toList).flatten
               case None        => List()
             }
@@ -189,8 +214,6 @@ object Intermediate {
         }
       }
 
-
-      /* FIXME: Create the MSCR here */
       val ocs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
       val allInputs = ocs.flatMap(_.inputs(g))
       val (inputChannels, extraChannels) = allInputs.map(addInputChannel(g, ocs, _)).unzip
@@ -201,7 +224,7 @@ object Intermediate {
   }
 
   object MSCRGraph {
-    def apply(outputs: List[DList[_]]) = {
+    def apply(outputs: List[DList[_]]): MSCRGraph = {
 
       /*
        * Two nodes are related if they share at least one input. Let A be the type of nodes
@@ -287,7 +310,6 @@ object Intermediate {
         (newPair, disjoint)
       }
 
-
       def findRelated(g: DGraph): List[Set[DList[_]]] = {
         val gbks: List[DList[_]] = g.nodes.filter(isGroupByKey).toList
 
@@ -309,9 +331,14 @@ object Intermediate {
       val g = DGraph(outputs)
       val relatedGBKSets = findRelated(g)
 
-      relatedGBKSets.map(MSCR(g,_))
+      new MSCRGraph(relatedGBKSets.map(MSCR(g,_)))
     }
   }
 
+  class MSCRGraph(mscrs: List[MSCR]) {
+
+    override def toString =
+      Pretty.indent("MSCRGraph([", mscrs.mkString(",\n")) + "])"
+  }
 
 }

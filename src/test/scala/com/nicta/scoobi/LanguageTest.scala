@@ -90,10 +90,12 @@ object LanguageTest {
   }
 
   def graphTest() = {
-    val d1: DList[String] = fromDelimitedTextFile(",", FILE_DIR + "/test.txt")
-    val d2: DList[Option[String]] = d1.map { case v => Some(v) }
-    val g = DGraph(List(d2.ast))
-    println(g.toString())
+    import com.nicta.scoobi.Intermediate._
+
+    val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/test.txt")
+    val d2: DList[(Int, Iterable[String])] = d1.groupByKey
+    val outputs = List(d2.ast)
+    println(MSCRGraph(outputs).toString())
   }
 
 

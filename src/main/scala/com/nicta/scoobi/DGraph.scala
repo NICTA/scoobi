@@ -7,8 +7,71 @@ package com.nicta.scoobi
 object DGraph {
 
   def apply(outputs: List[Smart.DList[_]]): DGraph = {
-    val graphWithNoInputs = new DGraph(outputs.toSet).addEdges(outputs)
-    graphWithNoInputs.addInputs
+    /*
+     * Add a node as an @input@ for the graph if it has no predecessors
+     */
+    def addInput(g: DGraph, d: Smart.DList[_]): DGraph = {
+      g.preds.get(d) match {
+        case Some(_)   => g
+        case None      => new DGraph(g.inputs + d, g.outputs, g.nodes, g.succs, g.preds)
+      }
+    }
+
+    /*
+     * Adds all the nodes that are inputs for the execution plan to the @inputs@ field of the graph.
+     *
+     * This method is idempotent. i.e. g.addInputs.addInputs == g.addInputs
+     */
+    def addInputs(g: DGraph): DGraph = {
+      g.nodes.foldLeft(g)(addInput)
+    }
+
+    /*
+     * Add the edge (src,tgt) to the graph.
+     */
+    def addEdge(src: Smart.DList[_], tgt: Smart.DList[_], g: DGraph): DGraph = {
+      new DGraph(g.inputs, g.outputs, g.nodes.+(src, tgt), addToAssocMap(src, tgt, g.succs),
+                 addToAssocMap(tgt, src, g.preds))
+    }
+
+    /*
+     * Adds all the edges in the graph that have a path ending in node @tgt@
+     */
+    def addEdgesEndingAt(g: DGraph, tgt: Smart.DList[_]): DGraph = {
+      val parents: List[Smart.DList[_]] = Smart.parentsOf(tgt)
+      val thisLevel = parents.foldLeft(g){ case (g,src) => addEdge(src,tgt,g) }
+      addEdges(thisLevel, parents)
+    }
+
+    /*
+     * Adds all the edges in the graph that have paths ending at nodes in @nodes@.
+     */
+    def addEdges(g: DGraph, nodes: List[Smart.DList[_]]): DGraph = {
+      nodes.foldLeft(g)(addEdgesEndingAt)
+    }
+
+    /*
+     * Adds an association between @a@ and @b@ in assocation map. An association map
+     * is a map from sources to sets of targets.
+     *
+     * Examples:
+     * 1.
+     *   m               == Map(A -> Set(B,C,D))
+     *   addToAssocMap(A,E,m) == Map(A -> Set(B,C,D,E))
+     * 2.
+     *   m               == Map(A -> Set(B,C))
+     *   addToAssocMap(D,E,m) == Map(A -> Set(B,C), D -> Set(E))
+     */
+    def addToAssocMap[A,B](a: A, b: B, m: Map[A, Set[B]]): Map[A, Set[B]] = {
+      val s:Set[B] = m.get(a) match {
+        case Some(s) => s
+        case None => Set()
+      }
+      m + ( (a, s + b) )
+    }
+
+    val graphWithNoInputs = addEdges(new DGraph(outputs.toSet),outputs)
+    addInputs(graphWithNoInputs)
   }
 }
 
@@ -51,70 +114,4 @@ class DGraph(val inputs:  Set[Smart.DList[_]],
     l.mkString("DGraph { ", ",\n", "}")
 
   }
-
-  private
-
-  /*
-   * Add a node as an @input@ for the graph if it has no predecessors
-   */
-  def addInput(g: DGraph, d: Smart.DList[_]): DGraph = {
-    g.preds.get(d) match {
-      case Some(_)   => g
-      case None      => new DGraph(g.inputs + d, g.outputs, g.nodes, g.succs, g.preds)
-    }
-  }
-
-  /*
-   * Adds all the nodes that are inputs for the execution plan to the @inputs@ field of the graph.
-   *
-   * This method is idempotent. i.e. g.addInputs.addInputs == g.addInputs
-   */
-  def addInputs: DGraph = {
-    this.nodes.foldLeft(this)(addInput)
-  }
-
-  /*
-   * Add the edge (src,tgt) to the graph.
-   */
-  def addEdge(src: Smart.DList[_], tgt: Smart.DList[_], g: DGraph): DGraph = {
-    new DGraph(g.inputs, g.outputs, g.nodes.+(src, tgt), addToAssocMap(src, tgt, g.succs),
-               addToAssocMap(tgt, src, g.preds))
-  }
-
-  /*
-   * Adds all the edges in the graph that have a path ending in node @tgt@
-   */
-  def addEdgesEndingAt(g: DGraph, tgt: Smart.DList[_]): DGraph = {
-    val parents: List[Smart.DList[_]] = Smart.parentsOf(tgt)
-    val thisLevel = parents.foldLeft(g){ case (g,src) => addEdge(src,tgt,g) }
-    thisLevel.addEdges(parents)
-  }
-
-  /*
-   * Adds all the edges in the graph that have paths ending at nodes in @nodes@.
-   */
-  def addEdges(nodes: List[Smart.DList[_]]): DGraph = {
-    nodes.foldLeft(this)(addEdgesEndingAt)
-  }
-
-  /*
-   * Adds an association between @a@ and @b@ in assocation map. An association map
-   * is a map from sources to sets of targets.
-   *
-   * Examples:
-   * 1.
-   *   m               == Map(A -> Set(B,C,D))
-   *   addToAssocMap(A,E,m) == Map(A -> Set(B,C,D,E))
-   * 2.
-   *   m               == Map(A -> Set(B,C))
-   *   addToAssocMap(D,E,m) == Map(A -> Set(B,C), D -> Set(E))
-   */
-  def addToAssocMap[A,B](a: A, b: B, m: Map[A, Set[B]]): Map[A, Set[B]] = {
-    val s:Set[B] = m.get(a) match {
-      case Some(s) => s
-      case None => Set()
-    }
-    m + ( (a, s + b) )
-  }
-
 }
