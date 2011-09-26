@@ -20,11 +20,11 @@ object Intermediate {
   }
 
 
-  case class MultipleFlatMap(flatMaps: List[DList[_]]) extends InputChannel {
+  case class MapperInputChannel(flatMaps: List[DList[_]]) extends InputChannel {
 
     def contains(d: DList[_]) = flatMaps.exists(_==d)
 
-    override def toString = "MultipleFlatMap([" + flatMaps.mkString(", ")+ "])"
+    override def toString = "MapperInputChannel([" + flatMaps.mkString(", ")+ "])"
   }
 
   case class IdInputChannel extends InputChannel {
@@ -98,10 +98,10 @@ object Intermediate {
       }
   }
 
-  case class BypassChannel(input: FlatMap[_,_]) extends OutputChannel {
+  case class BypassInputChannel(input: FlatMap[_,_]) extends OutputChannel {
     def contains(d: DList[_]) = false
 
-    override def toString = "BypassChannel(" + input.toString + ")"
+    override def toString = "BypassInputChannel(" + input.toString + ")"
   }
 
   class MSCR(val inputChannels: Set[InputChannel],
@@ -202,13 +202,13 @@ object Intermediate {
 
 
         def bypassChan(fm: FlatMap[_,_]) =
-          if ( isBypass(fm) ) { None } else { Some (BypassChannel(fm))}
+          if ( isBypass(fm) ) { None } else { Some (BypassInputChannel(fm))}
 
         d match {
           case fm@FlatMap(_,_) => {
             val fused = flatMapsToFuse(d, g)
             val bypassChannels = fused.map(bypassChan(_).toList).flatten
-            (MultipleFlatMap(fused), bypassChannels)
+            (MapperInputChannel(fused), bypassChannels)
           }
           case _ => (IdInputChannel(), List())
         }
