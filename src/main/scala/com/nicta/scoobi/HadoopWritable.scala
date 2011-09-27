@@ -50,6 +50,12 @@ object HadoopWritable {
   /*
    * Built-in Hadoop Writable types.
    */
+  implicit def Unit = new HadoopWritable[Unit] {
+    def toWire(x: Unit, out: DataOutput) = {}
+    def fromWire(in: DataInput): Unit = ()
+    def show(x: Unit) = x.toString
+  }
+
   implicit def Int = new HadoopWritable[Int] {
     def toWire(x: Int, out: DataOutput) = (new IntWritable(x)).write(out)
     def fromWire(in: DataInput): Int = { val x = new IntWritable; x.readFields(in); x.get }
@@ -213,6 +219,31 @@ object HadoopWritable {
     def show(x: Option[T]) = x match {
       case Some(y) => "S{" + wt.show(y) + "}"
       case None    => "N{}"
+    }
+  }
+
+  /*
+   * Either types.
+   */
+  implicit def Either[T1, T2](implicit wt1: HadoopWritable[T1], wt2: HadoopWritable[T2]) = new HadoopWritable[Either[T1, T2]] {
+    def toWire(x: Either[T1, T2], out: DataOutput) = x match {
+      case Left(x)  => { out.writeBoolean(true); wt1.toWire(x, out) }
+      case Right(x) => { out.writeBoolean(false); wt2.toWire(x, out) }
+    }
+    def fromWire(in: DataInput): Either[T1, T2] = {
+      val isLeft = in.readBoolean()
+      if (isLeft) {
+        val x: T1 = wt1.fromWire(in)
+        Left(x)
+      }
+      else {
+        val x: T2 = wt2.fromWire(in)
+        Right(x)
+      }
+    }
+    def show(x: Either[T1, T2]) = x match {
+      case Left(x)  => "L{" + wt1.show(x) + "}"
+      case Right(x) => "R{" + wt2.show(x) + "}"
     }
   }
 }

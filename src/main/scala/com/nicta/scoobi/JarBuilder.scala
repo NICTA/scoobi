@@ -46,6 +46,11 @@ class JarBuilder(val name: String) {
     addEntryFromStream(className + ".class", new ByteArrayInputStream(bytecode))
   }
 
+  /** Add a class to the JAR that was generated at runtime. */
+  def addRuntimeClass(runtimeClass: RuntimeClass): Unit = {
+    addClassFromBytecode(runtimeClass.name, runtimeClass.bytecode)
+  }
+
   /** Write-out the JAR file. Once this method is called, the JAR cannot be
     * modified further. */
   def close() = {
