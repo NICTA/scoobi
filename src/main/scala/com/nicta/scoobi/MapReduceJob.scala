@@ -182,9 +182,9 @@ class MapReduceJob {
     var jar = new JarBuilder(tmpFile.getName)
     jobConf.setJar(jar.name)
 
-    jar.addContainingJar(classOf[List[_]])  //  Scala
-    jar.addContainingJar(this.getClass)     //  Scoobi
-//  jar.addContainingJar(  )                //  TODO - user app code
+    jar.addContainingJar(classOf[List[_]])        //  Scala
+    jar.addContainingJar(this.getClass)           //  Scoobi
+    Scoobi.getUserJars.foreach { jar.addJar(_) }  //  User JARs
 
 
     /** (K2,V2):

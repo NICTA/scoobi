@@ -26,10 +26,10 @@ import java.net.URLDecoder
 /** Class to manage the creation of a new JAR file. */
 class JarBuilder(val name: String) {
 
+  import JarBuilder._
+
   private var jos = new JarOutputStream(new FileOutputStream(name))
-
   private var entries = new HashSet[String]
-
 
   /** Merge in the contents of an entire JAR. */
   def addJar(jarFile: String): Unit = addJarEntries(jarFile, e => true)
@@ -84,8 +84,12 @@ class JarBuilder(val name: String) {
     jis.close()
   }
 
+}
+
+object JarBuilder {
+
   /** Find the location of JAR that contains a particular class. */
-  private def findContainingJar(clazz: Class[_]): String = {
+  def findContainingJar(clazz: Class[_]): String = {
 
     val loader = clazz.getClassLoader
     val classFile = mkClassFile(clazz)
