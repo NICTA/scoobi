@@ -90,7 +90,7 @@ case class DOutput(n: AST.Node[_], val path: String)
 /** An intermediate connector is any external MSCR node (i.e. a connector) that is
   * not an Input or Output. It must first be computed, but may be removed once
   * all successor nodes have consumed it. */
-case class DIntermediate(n: AST.Node[_], val path: String, val refCnt: Int)
+case class DIntermediate(n: AST.Node[_], val path: Path, val refCnt: Int)
   extends DConnector(n)
   with InputLike
   with OutputLike {
@@ -100,7 +100,7 @@ case class DIntermediate(n: AST.Node[_], val path: String, val refCnt: Int)
   val inputFormat = classOf[SequenceFileInputFormat[_,_]]
 
   def outputTypeName = typeName
-  val outputPath = new Path(path)
+  val outputPath = path
   val outputFormat = classOf[SequenceFileOutputFormat[_,_]]
 
   /** Free up the disk space being taken up by this intermediate data. */
@@ -114,14 +114,13 @@ case class DIntermediate(n: AST.Node[_], val path: String, val refCnt: Int)
   * location for storing intermediate data. */
 object DIntermediate {
 
-  private var tmpId: Int = 0
+  private val conf = new JobConf
+  private object TmpId extends UniqueInt
 
-  private def tmpPath : String = {
-    tmpId += 1
-    ".scoobi/" + tmpId
+  def apply(node: AST.Node[_], refCnt: Int): DIntermediate = {
+    val tmpPath = new Path(Scoobi.getWorkingDirectory(conf), "intermediates/" + TmpId.get.toString)
+    DIntermediate(node, tmpPath, refCnt)
   }
-
-  def apply(node: AST.Node[_], refCnt: Int): DIntermediate = DIntermediate(node, tmpPath, refCnt)
 }
 
 
@@ -142,10 +141,6 @@ class MapReduceJob {
   /* The types that will be combined together to form (K2, V2). */
   private val keyTypes: MMap[Int, (Manifest[_], HadoopWritable[_], Ordering[_])] = MMap.empty
   private val valueTypes: MMap[Int, (Manifest[_], HadoopWritable[_])] = MMap.empty
-
-  /* Job output always goes to temporary dir from which files are subsequently moved from
-   * once the job is finished. */
-  val TMP_OUTPUT_PATH = new Path("tmp-out")
 
 
   /** Add an input mapping function to thie MapReduce job. */
@@ -175,6 +170,10 @@ class MapReduceJob {
     val conf = new Configuration
     val jobConf = new JobConf(conf)
     jobConf.setJobName("scoobi-job")
+
+    /* Job output always goes to temporary dir from which files are subsequently moved from
+     * once the job is finished. */
+    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(jobConf), "tmp-out")
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
@@ -235,7 +234,7 @@ class MapReduceJob {
     /** Reducers:
       *     - add a named output for each output channel
       *     - generate runtime class (ScoobiWritable) for each output value type and add to JAR */
-    FileOutputFormat.setOutputPath(jobConf, TMP_OUTPUT_PATH)
+    FileOutputFormat.setOutputPath(jobConf, tmpOutputPath)
     reducers.foreach { case (output, reducer) =>
       val valRtClass = ScoobiWritable(output.outputTypeName, reducer.mB, reducer.wtB)
       jar.addRuntimeClass(valRtClass)
@@ -260,7 +259,7 @@ class MapReduceJob {
 
     /* Move named outputs to the correct directories */
     val fs = FileSystem.get(jobConf)
-    val outputFiles = fs.listStatus(TMP_OUTPUT_PATH) map { _.getPath }
+    val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
     val FileName = """channel(\d+)-.-\d+""".r
 
     reducers.foreach { case (output, reducer) =>
@@ -274,7 +273,7 @@ class MapReduceJob {
       }
     }
 
-    fs.delete(TMP_OUTPUT_PATH, true)
+    fs.delete(tmpOutputPath, true)
   }
 }
 

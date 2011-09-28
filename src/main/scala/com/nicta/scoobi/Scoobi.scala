@@ -24,4 +24,7 @@ object Scoobi {
   def setJarByClass(clazz: Class[_]) = {
     userJars = userJars  + JarBuilder.findContainingJar(clazz)
   }
+
+  /** Get the Scoobi working directory. */
+  def getWorkingDirectory(conf: JobConf): Path = new Path(conf.getWorkingDirectory, ".scoobi")
 }

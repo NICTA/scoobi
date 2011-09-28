@@ -17,8 +17,7 @@ object DistributedObject {
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */
   private def mkPath(jobConf: JobConf, tag: String): Path = {
-    //val scratchDir = new Path(System.getProperty("java.io.tmpdir") + "/scoobi-scratch")
-    val scratchDir = new Path(jobConf.getWorkingDirectory, "scoobi-scratch")
+    val scratchDir = new Path(Scoobi.getWorkingDirectory(jobConf), "dist-objs")
     new Path(scratchDir, tag)
   }
 
