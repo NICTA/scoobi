@@ -264,6 +264,7 @@ class MapReduceJob {
 
     reducers.foreach { case (output, reducer) =>
       outputFiles filter (forChannel) foreach { srcPath =>
+        fs.mkdirs(output.outputPath)
         fs.rename(srcPath, new Path(output.outputPath, srcPath.getName))
       }
 
