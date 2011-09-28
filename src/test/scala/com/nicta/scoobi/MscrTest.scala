@@ -44,10 +44,11 @@ object MscrTest {
   val m9 = GbkMapper(c3, (t: (Int, String)) => List((9L, t._2)))
 
   val g4 = GroupByKey(m7)
-  val r1 = Reducer(g4, (t: (String, Iterable[Double])) => List(('a', t._2.sum)))
+  val r1 = GbkReducer(g4, (t: (String, Iterable[Double])) => List(('a', t._2.sum)))
   val f3 = Flatten(List(m3, m8, m9))
   val g5 = GroupByKey(f3)
   val c4 = Combiner(g5, (a: String, b: String) => a + b)
+  val r2 = Reducer(c4, (t: (Long, String)) => List((t._2, t._1, t._2)))
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,7 +62,7 @@ object MscrTest {
 
   // TODO - derrive these from 'plan'
   val dout1 = DOutput(m3, "out/M3")
-  val dout2 = DOutput(c4, "out/C4")
+  val dout2 = DOutput(r2, "out/R2")
   val dout3 = DOutput(r1, "out/R1")
   val dout4 = DOutput(c2, "out/C2")
   val douts = Set(dout1, dout2, dout3, dout4)
@@ -77,7 +78,7 @@ object MscrTest {
   val ic1A = MapperInputChannel(din2, Set(m1))
   val ic2A = MapperInputChannel(din3, Set(m2, m3))
 
-  val oc1A = GbkOutputChannel(dint1, Some(f1), g1, Some(Right(Left(c1))))
+  val oc1A = GbkOutputChannel(dint1, Some(f1), g1, JustCombiner(c1))
   val oc2A = BypassOutputChannel(dout1, m3)
 
   val mscrA = MSCR(Set(ic1A, ic2A), Set(oc1A, oc2A))
@@ -87,8 +88,8 @@ object MscrTest {
   val ic1B = MapperInputChannel(din1, Set(m4, m6))
   val ic2B = MapperInputChannel(dint1, Set(m5))
 
-  val oc1B = GbkOutputChannel(dout4, None,     g2, Some(Right(Left(c2))))
-  val oc2B = GbkOutputChannel(dint2, Some(f2), g3, Some(Right(Left(c3))))
+  val oc1B = GbkOutputChannel(dout4, None,     g2, JustCombiner(c2))
+  val oc2B = GbkOutputChannel(dint2, Some(f2), g3, JustCombiner(c3))
 
   val mscrB = MSCR(Set(ic1B, ic2B), Set(oc1B, oc2B))
 
@@ -98,8 +99,8 @@ object MscrTest {
   val ic2C = MapperInputChannel(din4, Set(m8))
   val ic3C = BypassInputChannel(dout1, m3)
 
-  val oc1C = GbkOutputChannel(dout3, None,     g4, Some(Right(Right(r1))))
-  val oc2C = GbkOutputChannel(dout2, Some(f3), g5, Some(Right(Left(c4))))
+  val oc1C = GbkOutputChannel(dout3, None,     g4, JustReducer(r1))
+  val oc2C = GbkOutputChannel(dout2, Some(f3), g5, CombinerReducer(c4, r2))
 
   val mscrC = MSCR(Set(ic1C, ic2C, ic3C), Set(oc1C, oc2C))
 

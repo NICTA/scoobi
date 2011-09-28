@@ -298,16 +298,16 @@ object MapReduceJob {
 
       /* Add combiner functionality from output channel descriptions. */
       oc match {
-        case GbkOutputChannel(_, _, _, Some(Right(Left(c)))) => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
-        case GbkOutputChannel(_, _, _, Some(Left(cr)))       => job.addTaggedCombiner(cr.mkTaggedCombiner(tag))
-        case _                                               => Unit
+        case GbkOutputChannel(_, _, _, JustCombiner(c))       => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
+        case GbkOutputChannel(_, _, _, CombinerReducer(c, _)) => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
+        case _                                                => Unit
       }
 
       /* Add reducer functionality from output channel descriptions. */
       oc match {
-        case GbkOutputChannel(output, _, _, Some(Right(Left(c))))  => job.addTaggedReducer(output, c.mkTaggedReducer(tag))
-        case GbkOutputChannel(output, _, _, Some(Right(Right(r)))) => job.addTaggedReducer(output, r.mkTaggedReducer(tag))
-        case GbkOutputChannel(output, _, _, Some(Left(cr)))        => job.addTaggedReducer(output, cr.mkTaggedReducer(tag))
+        case GbkOutputChannel(output, _, _, JustCombiner(c))       => job.addTaggedReducer(output, c.mkTaggedReducer(tag))
+        case GbkOutputChannel(output, _, _, JustReducer(r))        => job.addTaggedReducer(output, r.mkTaggedReducer(tag))
+        case GbkOutputChannel(output, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(output, r.mkTaggedReducer(tag))
         case BypassOutputChannel(output, _)                        => job.addTaggedReducer(output, new TaggedIdentityReducer(tag))
         case _                                                     => Unit
       }

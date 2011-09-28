@@ -69,14 +69,22 @@ object AST {
       }
     }
 
+    /** Produce a TaggedReducer using this combiner function and an additional reducer function. */
+    def mkTaggedReducerWithCombiner[B](tag: Int, rf: ((K, V)) => Iterable[B])(implicit mB: Manifest[B], wtB: HadoopWritable[B]) =
+      new TaggedReducer[K, V, B](tag)(mK, wtK, ordK, mV, wtV, mB, wtB) {
+        def reduce(key: K, values: Iterable[V]): Iterable[B] = {
+          rf((key, values.tail.foldLeft(values.head)(f)))
+        }
+      }
+
     override def toString = "Combiner" + id
   }
 
 
-  /** Reducer. */
-  case class Reducer[K : Manifest : HadoopWritable : Ordering,
-                     V : Manifest : HadoopWritable,
-                     B : Manifest : HadoopWritable]
+  /** GbkReducer - a reduce (i.e. FlatMap) that follows a GroupByKey (i.e. no Combiner). */
+  case class GbkReducer[K : Manifest : HadoopWritable : Ordering,
+                        V : Manifest : HadoopWritable,
+                        B : Manifest : HadoopWritable]
       (in: Node[(K, Iterable[V])],
        f: ((K, Iterable[V])) => Iterable[B])
     extends Node[B] with ReducerLike[K, V, B] {
@@ -85,30 +93,25 @@ object AST {
       def reduce(key: K, values: Iterable[V]): Iterable[B] = f((key, values))
     }
 
-    override def toString = "Reducer" + id
+    override def toString = "GbkReducer" + id
   }
 
 
-  /** A combiner followed by a reducer */
-  case class CombinerReducer[K : Manifest : HadoopWritable : Ordering,
-                             V : Manifest : HadoopWritable,
-                             B : Manifest : HadoopWritable]
-      (in: Node[(K, Iterable[V])],
-       cf: (V, V) => V,
-       rf: ((K, V)) => Iterable[B])
-    extends Node[B] with CombinerLike[V] with ReducerLike[K, V, B] {
+  /** Reducer - a reduce (i.e. FlatMap) that follows a Combiner. */
+  case class Reducer[K : Manifest : HadoopWritable : Ordering,
+                     V : Manifest : HadoopWritable,
+                     B : Manifest : HadoopWritable]
+      (in: Node[(K, V)],
+       f: ((K, V)) => Iterable[B])
+    extends Node[B] with ReducerLike[K, V, B] {
 
-    def mkTaggedCombiner(tag: Int) = new TaggedCombiner[V](tag) {
-      def combine(x: V, y: V): V = cf(x, y)
+    /* It is expected that this Reducer is preceeded by a Combiner. */
+    def mkTaggedReducer(tag: Int) = in match {
+      case c@Combiner(_, _) => c.mkTaggedReducerWithCombiner(tag, f)
+      case _                => error("Reducer must be preceeded by Combiner")
     }
 
-    def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, B](tag) {
-      def reduce(key: K, values: Iterable[V]): Iterable[B] = {
-        rf((key, values.tail.foldLeft(values.head)(cf)))
-      }
-    }
-
-    override def toString = "CombinerReducer" + id
+    override def toString = "Reducer" + id
   }
 
 
