@@ -61,20 +61,18 @@ object Executor {
 
     /* Update reference counts - decrement counts for all intermediates then
      * garbage collect any intermediates that have a zero reference count. */
-    mscr.inputNodes.foreach { node =>
-      if (st.refCnts.contains(node)) {
-        val rc = st.refCnts(node)
-        st.refCnts += (node -> (rc - 1))
+    mscr.inputChannels.foreach { ic =>
+      def updateRefCnt(node: AST.Node[_]) = {
+        val rc = st.refCnts(node) - 1
+        st.refCnts += (node -> rc)
+        rc
+      }
+
+      ic match {
+        case BypassInputChannel(d@DIntermediate(n, _, _), _) => if (updateRefCnt(n) == 0) d.freePath
+        case MapperInputChannel(d@DIntermediate(n, _, _), _) => if (updateRefCnt(n) == 0) d.freePath
+        case _                                               => Unit
       }
     }
-
-    // TODO - this won't work! RefCnt in DIntermediate is never decremented!
-//  mscr.inputChannels.foreach {
-//    case BypassInputChannel(d@DIntermediate(_, _, 0), _) => d.freePath
-//    case MapperInputChannel(d@DIntermediate(_, _, 0), _) => d.freePath
-//    case _                                               => ()
-//  }
-
-    //error("early termination")
   }
 }

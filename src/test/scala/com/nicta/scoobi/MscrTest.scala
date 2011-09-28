@@ -68,7 +68,7 @@ object MscrTest {
   val douts = Set(dout1, dout2, dout3, dout4)
 
   val dint1 = DIntermediate(c1, 1)
-  val dint2 = DIntermediate(c3, 2)
+  val dint2 = DIntermediate(c3, 1)
   val dints = Set(dint1, dint2)
 
 
