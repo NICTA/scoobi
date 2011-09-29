@@ -9,11 +9,7 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapred.JobClient
-import org.apache.hadoop.mapred.FileInputFormat
-import org.apache.hadoop.mapred.TextInputFormat
-import org.apache.hadoop.mapred.SequenceFileInputFormat
 import org.apache.hadoop.mapred.FileOutputFormat
-import org.apache.hadoop.mapred.TextOutputFormat
 import org.apache.hadoop.mapred.SequenceFileOutputFormat
 import org.apache.hadoop.mapred.Partitioner
 import org.apache.hadoop.mapred.lib.MultipleOutputs
@@ -22,119 +18,15 @@ import org.apache.hadoop.io.compress.GzipCodec
 import scala.collection.mutable.{Map => MMap}
 
 
-/* An input to a MapReduce job. */
-sealed trait InputLike {
-  def inputTypeName: String
-  def inputPath: Path
-  def inputFormat: Class[_ <: FileInputFormat[_,_]]
-}
-
-
-/* An output from a MapReduce job. */
-sealed trait OutputLike {
-  def outputTypeName: String
-  def outputPath: Path
-  def outputFormat: Class[_ <: FileOutputFormat[_,_]]
-}
-
-
-/** A connector is a node that is external to an MSCRs. As a consequence it is
-  * external to a Hadoop job which means it must be perisisted somewhere, at least
-  * temporarily, between jobs. There are three kinds: Inputs, Outputs and
-  * Intermediates. */
-sealed abstract class DConnector(val node: AST.Node[_]) {
-
-  /* The name to be given to the type of this connector. Two different types can
-   * not share the same name. */
-  val typeName: String = "V" + UniqueId.get
-}
-
-object UniqueId extends UniqueInt
-
-
-/** An input connector is synonomous with a 'Load' node. It already exists and
-  * must persist. */
-case class DInput(n: AST.Load, val path: String)
-  extends DConnector(n)
-  with InputLike {
-
-  def inputTypeName = typeName
-  val inputPath = new Path(path)
-  val inputFormat = classOf[SimplerTextInputFormat]
-}
-
-object DInput {
-  def apply(n: AST.Load) = new DInput(n, n.path)
-}
-
-
-/** An output connector is a node that must first be computed. Once computed it
-  * must persist. Note that it is possible for an output to be an input to an
-  * MSCR. */
-case class DOutput(n: AST.Node[_], val path: String)
-  extends DConnector(n)
-  with InputLike
-  with OutputLike {
-
-  def inputTypeName = typeName
-  val inputPath = new Path(path, "channel*")
-  val inputFormat = classOf[SequenceFileInputFormat[_,_]]
-
-  def outputTypeName = typeName
-  val outputPath = new Path(path)
-  val outputFormat = classOf[SequenceFileOutputFormat[_,_]]
-}
-
-
-/** An intermediate connector is any external MSCR node (i.e. a connector) that is
-  * not an Input or Output. It must first be computed, but may be removed once
-  * all successor nodes have consumed it. */
-case class DIntermediate(n: AST.Node[_], val path: Path, val refCnt: Int)
-  extends DConnector(n)
-  with InputLike
-  with OutputLike {
-
-  def inputTypeName = typeName
-  val inputPath = new Path(path, "channel*")
-  val inputFormat = classOf[SequenceFileInputFormat[_,_]]
-
-  def outputTypeName = typeName
-  val outputPath = path
-  val outputFormat = classOf[SequenceFileOutputFormat[_,_]]
-
-  /** Free up the disk space being taken up by this intermediate data. */
-  def freePath: Unit = {
-    val fs = outputPath.getFileSystem(new JobConf)
-    fs.delete(outputPath)
-  }
-}
-
-/** Companion object for automating the creation of random temporary paths as the
-  * location for storing intermediate data. */
-object DIntermediate {
-
-  private object TmpId extends UniqueInt
-
-  def apply(node: AST.Node[_], refCnt: Int): DIntermediate = {
-    val tmpPath = new Path(Scoobi.getWorkingDirectory, "intermediates/" + TmpId.get.toString)
-    DIntermediate(node, tmpPath, refCnt)
-  }
-}
-
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
 /** A class that defines a single Hadoop MapRedcue job. */
 class MapReduceJob {
 
   import scala.collection.mutable.{Set => MSet, Map => MMap}
 
   /* Keep track of all the mappers for each input channel. */
-  private val mappers: MMap[InputLike, MSet[TaggedMapper[_,_,_]]] = MMap.empty
+  private val mappers: MMap[DataSource, MSet[TaggedMapper[_,_,_]]] = MMap.empty
   private val combiners: MSet[TaggedCombiner[_]] = MSet.empty
-  private val reducers: MMap[OutputLike, TaggedReducer[_,_,_]] = MMap.empty
+  private val reducers: MMap[List[_ <: DataSink], TaggedReducer[_,_,_]] = MMap.empty
 
   /* The types that will be combined together to form (K2, V2). */
   private val keyTypes: MMap[Int, (Manifest[_], HadoopWritable[_], Ordering[_])] = MMap.empty
@@ -142,7 +34,7 @@ class MapReduceJob {
 
 
   /** Add an input mapping function to thie MapReduce job. */
-  def addTaggedMapper[A, K, V](input: InputLike, m: TaggedMapper[A, K, V]): Unit = {
+  def addTaggedMapper[A, K, V](input: DataSource, m: TaggedMapper[A, K, V]): Unit = {
     if (!mappers.contains(input))
       mappers += (input -> MSet(m))
     else
@@ -158,8 +50,8 @@ class MapReduceJob {
   }
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer[K, V, B](output: OutputLike, r: TaggedReducer[K, V, B]): Unit = {
-    reducers += (output -> r)
+  def addTaggedReducer[K, V, B](outputs: Set[_ <: DataSink], r: TaggedReducer[K, V, B]): Unit = {
+    reducers += (outputs.toList -> r)
   }
 
   /** Take this MapReduce job and run it on Hadoop. */
@@ -232,14 +124,16 @@ class MapReduceJob {
       *     - add a named output for each output channel
       *     - generate runtime class (ScoobiWritable) for each output value type and add to JAR */
     FileOutputFormat.setOutputPath(jobConf, tmpOutputPath)
-    reducers.foreach { case (output, reducer) =>
-      val valRtClass = ScoobiWritable(output.outputTypeName, reducer.mB, reducer.wtB)
+    reducers.foreach { case (outputs, reducer) =>
+      val valRtClass = ScoobiWritable(outputs.head.outputTypeName, reducer.mB, reducer.wtB)
       jar.addRuntimeClass(valRtClass)
-      MultipleOutputs.addNamedOutput(jobConf, "channel" + reducer.tag, output.outputFormat,
-                                     classOf[NullWritable], valRtClass.clazz)
+      outputs.zipWithIndex.foreach { case (output, ix) =>
+        MultipleOutputs.addNamedOutput(jobConf, "ch" + reducer.tag + "out" + ix, output.outputFormat,
+                                       classOf[NullWritable], valRtClass.clazz)
+      }
     }
 
-    DistributedObject.pushObject(jobConf, reducers map { case (_, tr) => (tr.tag, tr) } toMap, "scoobi.output.reducers")
+    DistributedObject.pushObject(jobConf, reducers map { case (os, tr) => (tr.tag, (os.size, tr)) } toMap, "scoobi.output.reducers")
     jobConf.setReducerClass(classOf[MscrReducer[_,_,_]])
 
 
@@ -257,17 +151,21 @@ class MapReduceJob {
     /* Move named outputs to the correct directories */
     val fs = FileSystem.get(jobConf)
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
-    val FileName = """channel(\d+)-.-\d+""".r
+    val FileName = """ch(\d+)out(\d+)-.-\d+""".r
 
-    reducers.foreach { case (output, reducer) =>
-      outputFiles filter (forChannel) foreach { srcPath =>
-        fs.mkdirs(output.outputPath)
-        fs.rename(srcPath, new Path(output.outputPath, srcPath.getName))
-      }
+    reducers.foreach { case (outputs, reducer) =>
 
-      def forChannel = (f: Path) => f.getName match {
-        case FileName(n) => n.toInt == reducer.tag
-        case _           => false
+      outputs.zipWithIndex.foreach { case (output, ix) =>
+        outputFiles filter (forOutput) foreach { srcPath =>
+          fs.mkdirs(output.outputPath)
+          fs.rename(srcPath, new Path(output.outputPath, srcPath.getName))
+        }
+
+        def forOutput = (f: Path) => f.getName match {
+          case FileName(t, i) => t.toInt == reducer.tag && i.toInt == ix
+          case _              => false
+        }
+
       }
     }
 
@@ -302,11 +200,11 @@ object MapReduceJob {
 
       /* Add reducer functionality from output channel descriptions. */
       oc match {
-        case GbkOutputChannel(output, _, _, JustCombiner(c))       => job.addTaggedReducer(output, c.mkTaggedReducer(tag))
-        case GbkOutputChannel(output, _, _, JustReducer(r))        => job.addTaggedReducer(output, r.mkTaggedReducer(tag))
-        case GbkOutputChannel(output, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(output, r.mkTaggedReducer(tag))
-        case BypassOutputChannel(output, _)                        => job.addTaggedReducer(output, new TaggedIdentityReducer(tag))
-        case _                                                     => Unit
+        case GbkOutputChannel(outputs, _, _, JustCombiner(c))       => job.addTaggedReducer(outputs, c.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, _, JustReducer(r))        => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
+        case BypassOutputChannel(outputs, _)                        => job.addTaggedReducer(outputs, new TaggedIdentityReducer(tag))
+        case _                                                      => Unit
       }
     }
 
@@ -326,3 +224,5 @@ object MapReduceJob {
     job
   }
 }
+
+object UniqueId extends UniqueInt

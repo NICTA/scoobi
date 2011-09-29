@@ -28,9 +28,9 @@ object Executor {
   /** Entry-point: traverse the execution plan graph to produce each of the outputs. */
   def executePlan
       (mscrs: Set[MSCR],
-       inputs: Set[DInput],
-       intermediates: Set[DIntermediate],
-       outputs: Set[DOutput]): Unit = {
+       inputs: Set[InputStore],
+       intermediates: Set[BridgeStore],
+       outputs: Set[OutputStore]): Unit = {
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {
@@ -87,8 +87,8 @@ object Executor {
       }
 
       ic match {
-        case BypassInputChannel(d@DIntermediate(n, _, _), _) => if (updateRefCnt(n) == 0) d.freePath
-        case MapperInputChannel(d@DIntermediate(n, _, _), _) => if (updateRefCnt(n) == 0) d.freePath
+        case BypassInputChannel(bs@BridgeStore(n, _, _), _) => if (updateRefCnt(n) == 0) bs.freePath
+        case MapperInputChannel(bs@BridgeStore(n, _, _), _) => if (updateRefCnt(n) == 0) bs.freePath
         case _                                               => Unit
       }
     }

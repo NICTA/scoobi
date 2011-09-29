@@ -54,22 +54,23 @@ object MscrTest {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Connectors - TODO: need to be determined programatically.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  val din1 = DInput(l1)
-  val din2 = DInput(l2)
-  val din3 = DInput(l3)
-  val din4 = DInput(l4)
+  val din1 = InputStore(l1)
+  val din2 = InputStore(l2)
+  val din3 = InputStore(l3)
+  val din4 = InputStore(l4)
   val dins = Set(din1, din2, din3, din4)
 
   // TODO - derrive these from 'plan'
-  val dout1 = DOutput(m3, "out/M3")
-  val dout2 = DOutput(r2, "out/R2")
-  val dout3 = DOutput(r1, "out/R1")
-  val dout4 = DOutput(c2, "out/C2")
+  val dout1 = OutputStore(m3, "out/M3")
+  val dout2 = OutputStore(r2, "out/R2")
+  val dout3 = OutputStore(r1, "out/R1")
+  val dout4 = OutputStore(c2, "out/C2")
   val douts = Set(dout1, dout2, dout3, dout4)
 
-  val dint1 = DIntermediate(c1, 1)
-  val dint2 = DIntermediate(c3, 1)
-  val dints = Set(dint1, dint2)
+  val dint1 = BridgeStore(c1, 1)
+  val dint2 = BridgeStore(c3, 1)
+  val dint3 = BridgeStore(m3, 1)
+  val dints = Set(dint1, dint2, dint3)
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,8 +79,8 @@ object MscrTest {
   val ic1A = MapperInputChannel(din2, Set(m1))
   val ic2A = MapperInputChannel(din3, Set(m2, m3))
 
-  val oc1A = GbkOutputChannel(dint1, Some(f1), g1, JustCombiner(c1))
-  val oc2A = BypassOutputChannel(dout1, m3)
+  val oc1A = GbkOutputChannel(Set(dint1), Some(f1), g1, JustCombiner(c1))
+  val oc2A = BypassOutputChannel(Set(dout1, dint3), m3)
 
   val mscrA = MSCR(Set(ic1A, ic2A), Set(oc1A, oc2A))
 
@@ -88,8 +89,8 @@ object MscrTest {
   val ic1B = MapperInputChannel(din1, Set(m4, m6))
   val ic2B = MapperInputChannel(dint1, Set(m5))
 
-  val oc1B = GbkOutputChannel(dout4, None,     g2, JustCombiner(c2))
-  val oc2B = GbkOutputChannel(dint2, Some(f2), g3, JustCombiner(c3))
+  val oc1B = GbkOutputChannel(Set(dout4), None,     g2, JustCombiner(c2))
+  val oc2B = GbkOutputChannel(Set(dint2), Some(f2), g3, JustCombiner(c3))
 
   val mscrB = MSCR(Set(ic1B, ic2B), Set(oc1B, oc2B))
 
@@ -97,10 +98,10 @@ object MscrTest {
 
   val ic1C = MapperInputChannel(dint2, Set(m7, m9))
   val ic2C = MapperInputChannel(din4, Set(m8))
-  val ic3C = BypassInputChannel(dout1, m3)
+  val ic3C = BypassInputChannel(dint3, m3)
 
-  val oc1C = GbkOutputChannel(dout3, None,     g4, JustReducer(r1))
-  val oc2C = GbkOutputChannel(dout2, Some(f3), g5, CombinerReducer(c4, r2))
+  val oc1C = GbkOutputChannel(Set(dout3), None,     g4, JustReducer(r1))
+  val oc2C = GbkOutputChannel(Set(dout2), Some(f3), g5, CombinerReducer(c4, r2))
 
   val mscrC = MSCR(Set(ic1C, ic2C, ic3C), Set(oc1C, oc2C))
 

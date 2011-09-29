@@ -11,12 +11,12 @@ import org.apache.hadoop.mapred.lib.MultipleOutputs
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]] {
 
-  private var outputs: Map[Int, TaggedReducer[_,_,_]] = _
+  private var outputs: Map[Int, (Int, TaggedReducer[_,_,_])] = _
   private var multipleOutputs: MultipleOutputs = _
   private var conf: JobConf = _
 
   def configure(conf: JobConf) = {
-    outputs = DistributedObject.pullObject(conf, "scoobi.output.reducers").asInstanceOf[Map[Int, TaggedReducer[_,_,_]]]
+    outputs = DistributedObject.pullObject(conf, "scoobi.output.reducers").asInstanceOf[Map[Int, (Int, TaggedReducer[_,_,_])]]
     multipleOutputs = new MultipleOutputs(conf)
     this.conf = conf
   }
@@ -27,17 +27,20 @@ class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable
              reporter: Reporter) = {
 
     val tag = key.tag
-    val namedOutput = "channel" + tag
+    val namedOutput = "ch" + tag
 
     /* Get the right output value type and output directory for the current channel,
      * specified by the key's tag. */
-    val reducer = outputs(tag).asInstanceOf[TaggedReducer[K, V, B]]
+    val numOutputs = outputs(tag)._1
+    val reducer = outputs(tag)._2.asInstanceOf[TaggedReducer[K, V, B]]
 
-    val v = MultipleOutputs.getNamedOutputValueClass(conf, namedOutput).newInstance
+    val v = MultipleOutputs.getNamedOutputValueClass(conf, namedOutput + "out0").newInstance
                        .asInstanceOf[ScoobiWritable[B]]
 
-    val collector = multipleOutputs.getCollector(namedOutput, reporter)
-                                   .asInstanceOf[OutputCollector[NullWritable, ScoobiWritable[B]]]
+    val collectors = (0 to numOutputs - 1) map { namedOutput + "out" + _ } map {
+      multipleOutputs.getCollector(_, reporter)
+                     .asInstanceOf[OutputCollector[NullWritable, ScoobiWritable[B]]]
+    }
 
     /* Convert Iterator[TaggedValue] to Iterable[V]. */
     val valuesStream = Stream.continually(if (values.hasNext) values.next else null).takeWhile(_ != null)
@@ -46,7 +49,7 @@ class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable
     /* Do the reduction. */
     reducer.reduce(key.get(tag).asInstanceOf[K], untaggedValues).foreach { out =>
       v.set(out)
-      collector.collect(NullWritable.get, v)
+      collectors foreach { _.collect(NullWritable.get, v) }
     }
   }
 
