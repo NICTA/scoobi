@@ -3,8 +3,12 @@
   */
 package com.nicta.scoobi
 
-import MSCR._
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.mapred.FileAlreadyExistsException
 import scala.collection.mutable.{Set => MSet, Map => MMap}
+
+import MSCR._
 
 
 /** Object for executing a Scoobi "plan". */
@@ -27,6 +31,20 @@ object Executor {
        inputs: Set[DInput],
        intermediates: Set[DIntermediate],
        outputs: Set[DOutput]): Unit = {
+
+    /* Check that all output dirs don't already exist. */
+    def pathExists(p: Path) = {
+      val s = FileSystem.get(Scoobi.conf).listStatus(p)
+      if (s == null)          false
+      else if (s.length == 0) false
+      else                    true
+    }
+
+    outputs map (_.outputPath) find (pathExists(_)) match {
+      case Some(p) => throw new FileAlreadyExistsException("Output " + p + " already exists.")
+      case None    => Unit
+    }
+
 
     /* Initialize execution state: Inputs are already computed (obviously), and
      * ref-counts begin at inital values. */
