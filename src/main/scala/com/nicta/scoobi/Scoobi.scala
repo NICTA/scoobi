@@ -4,11 +4,15 @@
 package com.nicta.scoobi
 
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
 
 
 /** Global Scoobi functions and values. */
 object Scoobi {
+
+  /** Scoobi's configuration. */
+  val conf = new JobConf(new Configuration)
 
   private var userJars: Set[String] = Set.empty
 
@@ -26,5 +30,5 @@ object Scoobi {
   }
 
   /** Get the Scoobi working directory. */
-  def getWorkingDirectory(conf: JobConf): Path = new Path(conf.getWorkingDirectory, ".scoobi")
+  def getWorkingDirectory: Path = new Path(conf.getWorkingDirectory, ".scoobi")
 }

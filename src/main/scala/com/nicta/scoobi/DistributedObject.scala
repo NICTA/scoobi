@@ -16,16 +16,16 @@ object DistributedObject {
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */
-  private def mkPath(jobConf: JobConf, tag: String): Path = {
-    val scratchDir = new Path(Scoobi.getWorkingDirectory(jobConf), "dist-objs")
+  private def mkPath(tag: String): Path = {
+    val scratchDir = new Path(Scoobi.getWorkingDirectory, "dist-objs")
     new Path(scratchDir, tag)
   }
 
   /** Distribute an object to be available for tasks in the current job. */
   def pushObject(jobConf: JobConf, obj: AnyRef, tag: String): Unit = {
     /* Serialize */
-    val path = mkPath(jobConf, tag)
-    val oos = new ObjectOutputStream(path.getFileSystem(jobConf).create(path))
+    val path = mkPath(tag)
+    val oos = new ObjectOutputStream(path.getFileSystem(Scoobi.conf).create(path))
     oos.writeObject(obj)
     oos.close()
 
@@ -37,12 +37,12 @@ object DistributedObject {
     * the current job. */
   def pullObject(jobConf: JobConf, tag: String): AnyRef = {
     /* Get distributed cache file. */
-    val path = mkPath(jobConf, tag)
+    val path = mkPath(tag)
     val cacheFiles = DistributedCache.getCacheFiles(jobConf)
     val cacheFile = new Path(cacheFiles.filter(_.toString.compareTo(path.toString) == 0)(0).toString)
 
     /* Deserialize */
-    val ois = new ObjectInputStream(cacheFile.getFileSystem(jobConf).open(cacheFile))
+    val ois = new ObjectInputStream(cacheFile.getFileSystem(Scoobi.conf).open(cacheFile))
     val obj = ois.readObject().asInstanceOf[AnyRef]
     ois.close()
     obj

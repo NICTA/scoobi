@@ -5,7 +5,6 @@ package com.nicta.scoobi
 
 import java.io.File
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.JobConf
@@ -114,11 +113,10 @@ case class DIntermediate(n: AST.Node[_], val path: Path, val refCnt: Int)
   * location for storing intermediate data. */
 object DIntermediate {
 
-  private val conf = new JobConf
   private object TmpId extends UniqueInt
 
   def apply(node: AST.Node[_], refCnt: Int): DIntermediate = {
-    val tmpPath = new Path(Scoobi.getWorkingDirectory(conf), "intermediates/" + TmpId.get.toString)
+    val tmpPath = new Path(Scoobi.getWorkingDirectory, "intermediates/" + TmpId.get.toString)
     DIntermediate(node, tmpPath, refCnt)
   }
 }
@@ -167,13 +165,12 @@ class MapReduceJob {
   /** Take this MapReduce job and run it on Hadoop. */
   def run() = {
 
-    val conf = new Configuration
-    val jobConf = new JobConf(conf)
+    val jobConf = new JobConf(Scoobi.conf)
     jobConf.setJobName("scoobi-job")
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
-    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(jobConf), "tmp-out")
+    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory, "tmp-out")
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
