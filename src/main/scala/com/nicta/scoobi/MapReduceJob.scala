@@ -94,6 +94,9 @@ class MapReduceJob {
     jobConf.setMapOutputValueClass(tvRtClass.clazz)
     jobConf.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
 
+    jobConf.setCompressMapOutput(true)
+    jobConf.setMapOutputCompressorClass(classOf[GzipCodec])
+
 
     /** Mappers:
       *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
