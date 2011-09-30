@@ -135,4 +135,25 @@ object AST {
 
     override def toString = "GroupByKey" + id
   }
+
+
+  /** Apply a function to each node of the AST (visit each node only once). */
+  def eachNode[U](starts: Set[Node[_]])(f: Node[_] => U): Unit = {
+    starts foreach { visitOnce(_, f, Set()) }
+
+    def visitOnce(node: Node[_], f: Node[_] => U, visited: Set[Node[_]]): Unit = {
+      if (!visited.contains(node)) {
+        node match {
+          case Mapper(n, _)     => visitOnce(n, f, visited + node); f(node)
+          case GbkMapper(n, _)  => visitOnce(n, f, visited + node); f(node)
+          case Combiner(n, _)   => visitOnce(n, f, visited + node); f(node)
+          case GbkReducer(n, _) => visitOnce(n, f, visited + node); f(node)
+          case Reducer(n, _)    => visitOnce(n, f, visited + node); f(node)
+          case GroupByKey(n)    => visitOnce(n, f, visited + node); f(node)
+          case Flatten(ns)      => ns.foreach{visitOnce(_, f, visited + node)}; f(node)
+          case Load()           => f(node)
+        }
+      }
+    }
+  }
 }

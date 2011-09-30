@@ -41,17 +41,17 @@ sealed trait DataSink {
 
 /** An input store is synonomous with a 'Load' node. It already exists and
   * must persist. */
-abstract case class InputStore(n: AST.Load[_]) extends DataStore(n) with DataSource
+abstract class InputStore(n: AST.Load[_]) extends DataStore(n) with DataSource
 
 
 /** An output store is data that must first be computed. Once computed it
   * must persist. A single output channel can have multiple output stores. */
-abstract case class OutputStore(n: AST.Node[_]) extends DataStore(n) with DataSink
+abstract class OutputStore(n: AST.Node[_]) extends DataStore(n) with DataSink
 
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore(n: AST.Node[_], val path: Path, val refCnt: Int) extends DataStore(n) with DataSource with DataSink {
+final case class BridgeStore(n: AST.Node[_], val path: Path) extends DataStore(n) with DataSource with DataSink {
 
   def inputTypeName = typeName
   val inputPath = new Path(path, "ch*")
@@ -74,8 +74,8 @@ object BridgeStore {
 
   private object TmpId extends UniqueInt
 
-  def apply(node: AST.Node[_], refCnt: Int): BridgeStore = {
+  def apply(node: AST.Node[_]): BridgeStore = {
     val tmpPath = new Path(Scoobi.getWorkingDirectory, "bridges/" + TmpId.get.toString)
-    BridgeStore(node, tmpPath, refCnt)
+    BridgeStore(node, tmpPath)
   }
 }

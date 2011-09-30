@@ -67,9 +67,9 @@ object MscrTest {
   val dout4 = (new TextOutput.TextPersister("out/C2")).mkOutputStore(c2)
   val douts = Set(dout1, dout2, dout3, dout4)
 
-  val dint1 = BridgeStore(c1, 1)
-  val dint2 = BridgeStore(c3, 1)
-  val dint3 = BridgeStore(m3, 1)
+  val dint1 = BridgeStore(c1)
+  val dint2 = BridgeStore(c3)
+  val dint3 = BridgeStore(m3)
   val dints = Set(dint1, dint2, dint3)
 
 
@@ -115,6 +115,6 @@ object MscrTest {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def main(args: Array[String]) {
     Scoobi.setJarByClass(this.getClass)
-    Executor.executePlan(mscrs, dins, dints, douts)
+    Executor.executePlan(douts, mscrs)
   }
 }

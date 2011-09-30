@@ -9,28 +9,25 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 import scala.collection.mutable.{Set => MSet, Map => MMap}
 
 import MSCR._
+import AST._
 
 
 /** Object for executing a Scoobi "plan". */
 object Executor {
 
-
   /** The only state required to be passed around during execution of the
     * Scoobi compute graph.
     *
     * @param computeTable Which nodes have already been computed.
-    * @param refCnts Number of nodes that are still to consume the output of an MSCR. */
+    * @param refcnts Number of nodes that are still to consume the output of an MSCR. */
   private class ExecState
-      (val computeTable: MSet[AST.Node[_]],  // which nodes have been computed?
-       val refCnts: MMap[AST.Node[_], Int])
+      (val computeTable: MSet[Node[_]],
+       val refcnts: MMap[BridgeStore, Int])
 
 
-  /** Entry-point: traverse the execution plan graph to produce each of the outputs. */
-  def executePlan
-      (mscrs: Set[MSCR],
-       inputs: Set[_ <: InputStore],
-       intermediates: Set[BridgeStore],
-       outputs: Set[_ <: OutputStore]): Unit = {
+  /** For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
+    * be multiple outputs, only visist each MSCR once. */
+  def executePlan(outputs: Set[_ <: OutputStore], mscrs: Set[MSCR]): Unit = {
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {
@@ -46,14 +43,27 @@ object Executor {
     }
 
 
-    /* Initialize execution state: Inputs are already computed (obviously), and
-     * ref-counts begin at inital values. */
-    val st = new ExecState(MSet.empty, MMap.empty)
-    inputs.foreach { di => st.computeTable += di.node }
-    intermediates.foreach { di => st.refCnts += (di.node -> di.refCnt) }
+    /* Initialize compute table with all input (Load) nodes. */
+    val computeTable: MSet[Node[_]] = MSet.empty
+    eachNode(outputs.map(_.node)) {
+      case n@Load() => computeTable += n
+      case _        => Unit
+    }
+
+    /* Initialize reference counts of all intermeidate data (i.e. BridgeStores). */
+    val bridges: Set[BridgeStore] = mscrs flatMap (_.inputChannels) flatMap {
+      case BypassInputChannel(bs@BridgeStore(_, _), _) => List(bs)
+      case MapperInputChannel(bs@BridgeStore(_, _), _) => List(bs)
+      case _                                           => Nil
+    } toSet
+
+    val refcnts: Map[BridgeStore, Int] =
+      bridges groupBy(identity) map { case (b, bs) => (b, bs.size) } toMap
+
 
     /* Rumble over each output and execute their containing MSCR. Thread-through the
      * the execution state as it is updated. */
+    val st = new ExecState(computeTable, MMap(refcnts.toSeq: _*))
     outputs.foreach { out =>
       if (!st.computeTable.contains(out.node))
         executeMSCR(mscrs, st, containingMSCR(mscrs, out.node))
@@ -80,16 +90,17 @@ object Executor {
     /* Update reference counts - decrement counts for all intermediates then
      * garbage collect any intermediates that have a zero reference count. */
     mscr.inputChannels.foreach { ic =>
-      def updateRefCnt(node: AST.Node[_]) = {
-        val rc = st.refCnts(node) - 1
-        st.refCnts += (node -> rc)
-        rc
+      def updateRefcnt(store: BridgeStore) = {
+        val rc = st.refcnts(store) - 1
+        st.refcnts += (store-> rc)
+        if (rc == 0)
+          store.freePath
       }
 
       ic match {
-        case BypassInputChannel(bs@BridgeStore(n, _, _), _) => if (updateRefCnt(n) == 0) bs.freePath
-        case MapperInputChannel(bs@BridgeStore(n, _, _), _) => if (updateRefCnt(n) == 0) bs.freePath
-        case _                                               => Unit
+        case BypassInputChannel(bs@BridgeStore(_, _), _) => updateRefcnt(bs)
+        case MapperInputChannel(bs@BridgeStore(_, _), _) => updateRefcnt(bs)
+        case _                                           => Unit
       }
     }
   }
