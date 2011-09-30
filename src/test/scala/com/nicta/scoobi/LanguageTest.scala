@@ -10,6 +10,8 @@ import java.io._
 object LanguageTest {
 
   import DList._
+  import TextInput._
+  import TextOutput._
 
   private val FILE_DIR = "src/test/resources"
 

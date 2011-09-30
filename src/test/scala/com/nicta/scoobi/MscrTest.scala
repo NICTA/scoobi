@@ -12,10 +12,10 @@ object MscrTest {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Execution plan - already converted to IR.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  val l1 = Load("in/L1")
-  val l2 = Load("in/L2")
-  val l3 = Load("in/L3")
-  val l4 = Load("in/L4")
+  val l1 = Load[String]
+  val l2 = Load[String]
+  val l3 = Load[String]
+  val l4 = Load[String]
 
   val m1 = GbkMapper(l2, (s: String) => List((s, 1)))
   val m2 = GbkMapper(l3, (s: String) => List((s, 2)))
@@ -54,17 +54,17 @@ object MscrTest {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Connectors - TODO: need to be determined programatically.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  val din1 = InputStore(l1)
-  val din2 = InputStore(l2)
-  val din3 = InputStore(l3)
-  val din4 = InputStore(l4)
+  val din1 = (new TextInput.TextLoader("in/L1")).mkInputStore(l1)
+  val din2 = (new TextInput.TextLoader("in/L2")).mkInputStore(l2)
+  val din3 = (new TextInput.TextLoader("in/L3")).mkInputStore(l3)
+  val din4 = (new TextInput.TextLoader("in/L4")).mkInputStore(l4)
   val dins = Set(din1, din2, din3, din4)
 
   // TODO - derrive these from 'plan'
-  val dout1 = OutputStore(m3, "out/M3")
-  val dout2 = OutputStore(r2, "out/R2")
-  val dout3 = OutputStore(r1, "out/R1")
-  val dout4 = OutputStore(c2, "out/C2")
+  val dout1 = (new TextOutput.TextPersister("out/M3")).mkOutputStore(m3)
+  val dout2 = (new TextOutput.TextPersister("out/R2")).mkOutputStore(r2)
+  val dout3 = (new TextOutput.TextPersister("out/R1")).mkOutputStore(r1)
+  val dout4 = (new TextOutput.TextPersister("out/C2")).mkOutputStore(c2)
   val douts = Set(dout1, dout2, dout3, dout4)
 
   val dint1 = BridgeStore(c1, 1)

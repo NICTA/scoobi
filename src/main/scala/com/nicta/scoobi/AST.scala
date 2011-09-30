@@ -116,7 +116,7 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load(val path: String) extends Node[String] {
+  case class Load[A] extends Node[A] {
     override def toString = "Load" + id
   }
 

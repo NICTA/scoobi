@@ -41,24 +41,12 @@ sealed trait DataSink {
 
 /** An input store is synonomous with a 'Load' node. It already exists and
   * must persist. */
-case class InputStore(n: AST.Load, val path: String) extends DataStore(n) with DataSource {
-  def inputTypeName = typeName
-  val inputPath = new Path(path)
-  val inputFormat = classOf[SimplerTextInputFormat]
-}
-
-object InputStore {
-  def apply(n: AST.Load) = new InputStore(n, n.path)
-}
+abstract case class InputStore(n: AST.Load[_]) extends DataStore(n) with DataSource
 
 
 /** An output store is data that must first be computed. Once computed it
   * must persist. A single output channel can have multiple output stores. */
-case class OutputStore(n: AST.Node[_], val path: String) extends DataStore(n) with DataSink {
-  def outputTypeName = typeName
-  val outputPath = new Path(path)
-  val outputFormat = classOf[TextOutputFormat[_,_]]
-}
+abstract case class OutputStore(n: AST.Node[_]) extends DataStore(n) with DataSink
 
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
@@ -79,7 +67,6 @@ case class BridgeStore(n: AST.Node[_], val path: Path, val refCnt: Int) extends 
     fs.delete(outputPath)
   }
 }
-
 
 /** Companion object for automating the creation of random temporary paths as the
   * location for bridge stores. */

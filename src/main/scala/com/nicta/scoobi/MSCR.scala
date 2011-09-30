@@ -12,24 +12,14 @@ case class MSCR
 
   /** The nodes that are inputs to this MSCR. */
   val inputNodes: Set[AST.Node[_]] = inputChannels map {
-    case BypassInputChannel(InputStore(node, _), _)     => node
-    case BypassInputChannel(BridgeStore(node, _, _), _) => node
-    case MapperInputChannel(InputStore(node, _), _)     => node
-    case MapperInputChannel(BridgeStore(node, _, _), _) => node
+    case BypassInputChannel(store, _) => store.node
+    case MapperInputChannel(store, _) => store.node
   }
 
   /** The nodes that are outputs to this MSCR. */
-  val outputNodes: Set[AST.Node[_]] = outputChannels map { oc =>
-
-    def outputNode[O <: DataStore with DataSink](outputs: Set[O]) = outputs.head match {
-      case BridgeStore(node, _, _)  => node
-      case OutputStore(node, _)     => node
-    }
-
-    oc match {
-      case BypassOutputChannel(outputs, _)    => outputNode(outputs)
-      case GbkOutputChannel(outputs, _, _, _) => outputNode(outputs)
-    }
+  val outputNodes: Set[AST.Node[_]] = outputChannels flatMap {
+    case BypassOutputChannel(outputs, _)    => outputs.map(_.node)
+    case GbkOutputChannel(outputs, _, _, _) => outputs.map(_.node)
   }
 }
 

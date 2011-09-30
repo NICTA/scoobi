@@ -28,9 +28,9 @@ object Executor {
   /** Entry-point: traverse the execution plan graph to produce each of the outputs. */
   def executePlan
       (mscrs: Set[MSCR],
-       inputs: Set[InputStore],
+       inputs: Set[_ <: InputStore],
        intermediates: Set[BridgeStore],
-       outputs: Set[OutputStore]): Unit = {
+       outputs: Set[_ <: OutputStore]): Unit = {
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {

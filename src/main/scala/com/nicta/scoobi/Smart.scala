@@ -15,7 +15,7 @@ object Smart {
   }
 
   case class Load[A : Manifest : HadoopWritable]
-      (path: String, parser: String => A)
+      (loader: Loader[A])
     extends DList[A] {
     def name = "Load"
   }
@@ -49,26 +49,23 @@ object Smart {
     def name = "Flatten"
   }
 
+  /** A Loader class specifies how a distributed list is materialised. */
+  abstract class Loader[A : Manifest : HadoopWritable] {
+    def mkInputStore(node: AST.Load[A]): InputStore
+  }
+
+  /** A Persister class specifies how a distributed list is persisted. */
+  abstract class Persister[A] {
+    def mkOutputStore(node: AST.Node[A]): OutputStore
+  }
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /** Interpreter for the AST. */
-  def eval[A](pc: DList[A]): List[A] = pc match {
-    case Load(path, parser) => Source.fromFile(path).getLines.toList map parser
-    case FlatMap(in, f)     => (eval(in)).flatMap(f)
-    case GroupByKey(in)     => (eval(in)).groupBy(_._1).toList.map { case (k, vs) => (k, vs.map(_._2)) }
-    case Combine(in, f)     => (eval(in)).map {
-                                 case (k, Nil)      => (k, Nil)
-                                 case (k, v :: Nil) => (k, v)
-                                 case (k, v :: vs)  => (k, vs.foldLeft(v)(f))
-                               }
-    case Flatten(ins)       => ins.map(eval(_)).flatten
-  }
 
   def parentsOf(d: DList[_]): List[DList[_]] = {
     d match {
-      case Load(_,_)      => List()
+      case Load(_)        => List()
       case FlatMap(in,_)  => List(in)
       case GroupByKey(in) => List(in)
       case Combine(in,_)  => List(in)
