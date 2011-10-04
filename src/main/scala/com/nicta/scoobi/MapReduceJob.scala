@@ -69,7 +69,7 @@ class MapReduceJob {
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
     val tmpFile = File.createTempFile("scoobi-job-", ".jar")
-    var jar = new JarBuilder(tmpFile.getName)
+    var jar = new JarBuilder(tmpFile.getAbsolutePath)
     jobConf.setJar(jar.name)
 
     jar.addContainingJar(classOf[List[_]])        //  Scala
@@ -151,7 +151,8 @@ class MapReduceJob {
     /* Run job then tidy-up. */
     jar.close()
     JobClient.runJob(jobConf)
-    tmpFile.delete  // TODO - is not being deleted, why?
+    tmpFile.delete
+
 
     /* Move named outputs to the correct directories */
     val fs = FileSystem.get(jobConf)
