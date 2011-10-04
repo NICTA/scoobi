@@ -5,7 +5,7 @@ package com.nicta.scoobi
 
 import scala.collection.JavaConversions._
 import scala.collection.Traversable._
-import scala.collection.mutable.HashSet
+import scala.collection.mutable.{Set => MSet}
 import Option.{apply => ?}
 
 import java.util.jar.JarInputStream
@@ -29,8 +29,8 @@ class JarBuilder(val name: String) {
 
   import JarBuilder._
 
-  private var jos = new JarOutputStream(new FileOutputStream(name))
-  private var entries = new HashSet[String]
+  private val jos = new JarOutputStream(new FileOutputStream(name))
+  private val entries: MSet[String] = MSet.empty
 
   /** Merge in the contents of an entire JAR. */
   def addJar(jarFile: String): Unit = addJarEntries(jarFile, e => true)
@@ -63,7 +63,7 @@ class JarBuilder(val name: String) {
     * do not add it. */
   private def addEntryFromStream(entryName: String, is: InputStream): Unit = {
     if (!entries.contains(entryName)) {
-      entries.add(entryName)
+      entries += entryName
       jos.putNextEntry(new JarEntry(entryName))
       val buffer: Array[Byte] = new Array(1024)
       var readCnt = 0
@@ -84,7 +84,6 @@ class JarBuilder(val name: String) {
     }
     jis.close()
   }
-
 }
 
 object JarBuilder {
