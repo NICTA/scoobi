@@ -60,11 +60,10 @@ class MapReduceJob {
   def run() = {
 
     val jobConf = new JobConf(Scoobi.conf)
-    jobConf.setJobName("scoobi-job")
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
-    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory, "tmp-out")
+    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(jobConf), "tmp-out")
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */

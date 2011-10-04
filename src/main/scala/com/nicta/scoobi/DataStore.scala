@@ -77,7 +77,7 @@ object BridgeStore {
   private object TmpId extends UniqueInt
 
   def apply(node: AST.Node[_]): BridgeStore = {
-    val tmpPath = new Path(Scoobi.getWorkingDirectory, "bridges/" + TmpId.get.toString)
+    val tmpPath = new Path(Scoobi.getWorkingDirectory(Scoobi.conf), "bridges/" + TmpId.get.toString)
     BridgeStore(node, tmpPath)
   }
 
