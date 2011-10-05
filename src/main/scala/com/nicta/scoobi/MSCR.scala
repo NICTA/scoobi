@@ -96,7 +96,7 @@ case class GbkOutputChannel[O <: DataStore with DataSink]
 
 /** ADT for the possible combiner-reducer pipeline combinations. */
 sealed abstract class CRPipe
-case class Empty extends CRPipe
+object Empty extends CRPipe
 case class JustCombiner(combiner: AST.Combiner[_,_]) extends CRPipe
 case class JustReducer(reducer: AST.GbkReducer[_,_,_]) extends CRPipe
 case class CombinerReducer(combiner: AST.Combiner[_,_], reducer: AST.Reducer[_,_,_]) extends CRPipe

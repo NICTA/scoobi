@@ -61,7 +61,7 @@ object Scoobi {
   def getWorkingDirectory(jobConf: JobConf): Path = {
     ?(jobConf.get("scoobi.workdir")) match {
       case Some(s)  => new Path(s)
-      case None     => error("Scoobi working directory not set.")
+      case None     => sys.error("Scoobi working directory not set.")
     }
   }
 }

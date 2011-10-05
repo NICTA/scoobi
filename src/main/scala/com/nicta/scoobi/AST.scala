@@ -114,7 +114,7 @@ object AST {
     /* It is expected that this Reducer is preceeded by a Combiner. */
     def mkTaggedReducer(tag: Int) = in match {
       case c@Combiner(_, _) => c.mkTaggedReducerWithCombiner(tag, f)
-      case _                => error("Reducer must be preceeded by Combiner")
+      case _                => sys.error("Reducer must be preceeded by Combiner")
     }
 
     override def toString = "Reducer" + id
@@ -123,7 +123,7 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load[A : Manifest : HadoopWritable] extends Node[A] {
+  case class Load[A : Manifest : HadoopWritable]() extends Node[A] {
     override def toString = "Load" + id
 
   }

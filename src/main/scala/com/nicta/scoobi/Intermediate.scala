@@ -184,7 +184,7 @@ object Intermediate {
         case None    => {
           reducer match {
             case Some(r) => JustReducer(ci.getASTGbkReducer(r))
-            case None    => Empty()
+            case None    => Empty
           }
         }
       }

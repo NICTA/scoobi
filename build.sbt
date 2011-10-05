@@ -10,3 +10,5 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
+
+scalacOptions += "-deprecation"

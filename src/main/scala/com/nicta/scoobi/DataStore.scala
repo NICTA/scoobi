@@ -64,7 +64,7 @@ final case class BridgeStore(n: AST.Node[_], val path: Path) extends DataStore(n
   /** Free up the disk space being taken up by this intermediate data. */
   def freePath: Unit = {
     val fs = outputPath.getFileSystem(Scoobi.conf)
-    fs.delete(outputPath)
+    fs.delete(outputPath, true)
   }
 }
 
