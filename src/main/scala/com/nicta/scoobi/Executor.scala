@@ -27,7 +27,10 @@ object Executor {
 
   /** For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
     * be multiple outputs, only visist each MSCR once. */
-  def executePlan(outputs: Set[_ <: OutputStore], mscrs: Set[MSCR]): Unit = {
+  def executePlan(mscrGraph: MSCRGraph): Unit = {
+
+    val mscrs   = mscrGraph.mscrs
+    val outputs = mscrGraph.outputStores
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {

@@ -4,6 +4,29 @@
 package com.nicta.scoobi
 
 
+object MSCRGraph {
+
+  /* 
+   * Precondition: The entire Smart.DList[_] AST must have been converted using
+   * the @convert@ method. See method @DList.persist@
+   */
+  def apply(ci: ConvertInfo): MSCRGraph = {
+    def makeFromPersister(d: Smart.DList[_], p: Smart.Persister[_]): OutputStore =
+      p.mkOutputStore(ci.getASTNode(d))
+    def f(d: Smart.DList[_], ps: Set[Smart.Persister[_]]): Traversable[OutputStore] =
+      ps.map{makeFromPersister(d,_)}
+
+    val outputStores: Set[OutputStore] =
+      ci.outMap.foldLeft(Set(): Set[OutputStore]){ case (s, (d,p)) => s ++ f(d,p)}
+
+    new MSCRGraph(outputStores, ci.mscrs.map{_.convert(ci)}.toSet)
+  }
+
+}
+
+class MSCRGraph(val outputStores: Set[_ <: OutputStore], val mscrs: Set[MSCR])
+
+
 /** A Map-Shuffle-Combiner-Reducer. Defined by a set of input and output
   * channels. */
 case class MSCR
@@ -21,6 +44,7 @@ case class MSCR
     case BypassOutputChannel(outputs, _)    => outputs.map(_.node)
     case GbkOutputChannel(outputs, _, _, _) => outputs.map(_.node)
   }
+
 }
 
 
@@ -37,12 +61,9 @@ object MSCR {
 /** ADT for MSCR input channels. */
 sealed abstract class InputChannel
 
-case class BypassInputChannel[I <: DataStore with DataSource, K, V]
+case class BypassInputChannel[I <: DataStore with DataSource]
     (val input: I,
-     origin: AST.Node[(K, V)])
-    (implicit val mK: Manifest[K], val wtK: HadoopWritable[K], val ordK: Ordering[K],
-              val mV: Manifest[V], val wtV: HadoopWritable[V],
-              val mKV: Manifest[(K, V)], val wtKV: HadoopWritable[(K, V)])
+     origin: AST.Node[_] with MapperLike[_,_,_])
   extends InputChannel
 
 case class MapperInputChannel[I <: DataStore with DataSource]
@@ -55,10 +76,9 @@ case class MapperInputChannel[I <: DataStore with DataSource]
 /** ADT for MSCR output channels. */
 sealed abstract class OutputChannel
 
-case class BypassOutputChannel[O <: DataStore with DataSink,
-                               B : Manifest, HadoopWritable]
+case class BypassOutputChannel[O <: DataStore with DataSink]
     (val outputs: Set[O],
-     val origin: AST.Node[B])
+     val origin: AST.Node[_])
   extends OutputChannel
 
 case class GbkOutputChannel[O <: DataStore with DataSink]

@@ -6,7 +6,7 @@ package com.nicta.scoobi
 
 object DGraph {
 
-  def apply(outputs: List[Smart.DList[_]]): DGraph = {
+  def apply(outputs: Iterable[Smart.DList[_]]): DGraph = {
     /*
      * Add a node as an @input@ for the graph if it has no predecessors
      */
@@ -38,7 +38,7 @@ object DGraph {
      * Adds all the edges in the graph that have a path ending in node @tgt@
      */
     def addEdgesEndingAt(g: DGraph, tgt: Smart.DList[_]): DGraph = {
-      val parents: List[Smart.DList[_]] = Smart.parentsOf(tgt)
+      val parents: Iterable[Smart.DList[_]] = Smart.parentsOf(tgt)
       val thisLevel = parents.foldLeft(g){ case (g,src) => addEdge(src,tgt,g) }
       addEdges(thisLevel, parents)
     }
@@ -46,7 +46,7 @@ object DGraph {
     /*
      * Adds all the edges in the graph that have paths ending at nodes in @nodes@.
      */
-    def addEdges(g: DGraph, nodes: List[Smart.DList[_]]): DGraph = {
+    def addEdges(g: DGraph, nodes: Iterable[Smart.DList[_]]): DGraph = {
       nodes.foldLeft(g)(addEdgesEndingAt)
     }
 

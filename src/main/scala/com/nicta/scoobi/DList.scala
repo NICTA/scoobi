@@ -38,6 +38,7 @@ class DList[A : Manifest : HadoopWritable](/*FIXME: add private*/val ast: Smart.
       (implicit ev:   Smart.DList[A] <:< Smart.DList[(K,Iterable[V])],
                 mK:   Manifest[K],
                 wtK:  HadoopWritable[K],
+                ordK: Ordering[K],
                 mV:   Manifest[V],
                 wtV:  HadoopWritable[V]): DList[(K, V)] = new DList(Smart.Combine(ast, f))
 
@@ -73,6 +74,9 @@ class DList[A : Manifest : HadoopWritable](/*FIXME: add private*/val ast: Smart.
 
 object DList {
 
+  import scala.collection.mutable.{Map => MMap}
+  import com.nicta.scoobi.{Intermediate => I}
+
   /** A class that specifies how to make a distributed list persisitent. */
   class DListPersister[A](val dl: DList[A], val persister: Smart.Persister[A])
 
@@ -80,12 +84,27 @@ object DList {
   /** Persist one or more distributed lists. */
   def persist(outputs: DListPersister[_]*) = {
 
-    val outMap: Map[Smart.DList[_], Smart.Persister[_]] = outputs.map(o => (o.dl.ast, o.persister)).toMap
+    val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]] = {
+      val emptyM: Map[Smart.DList[_], Set[Smart.Persister[_]]] = Map()
+      outputs.foldLeft(emptyM)((m,p) => m + ((p.dl.ast, m.getOrElse(p.dl.ast, Set()) + p.persister)))
+    }
 
 
-    // TODO:
-    //  - call Sean's MSCR code
-    //  - call executePlan code
+    val ds = outMap.keys
+    val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
 
+    println("--- Intermediate MSCRs ---")
+    println(iMSCRGraph.mscrs)
+
+    val ci = ConvertInfo(outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
+    // Convert the AST
+    ds.map(_.convert(ci))
+
+    println(ci.m.values)
+
+    val mscrGraph = MSCRGraph(ci)
+
+    println(mscrGraph.toString)
+    Executor.executePlan(mscrGraph)
   }
 }

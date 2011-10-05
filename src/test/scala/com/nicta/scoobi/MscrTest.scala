@@ -115,6 +115,6 @@ object MscrTest {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def main(args: Array[String]) {
     Scoobi.setJarByClass(this.getClass)
-    Executor.executePlan(douts, mscrs)
+    Executor.executePlan(new MSCRGraph(douts, mscrs))
   }
 }

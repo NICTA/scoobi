@@ -29,6 +29,7 @@ object AST {
       def map(value: A): Iterable[(Int, B)] = f(value).map((x: B) => (RollingInt.get, x))
     }
 
+    def mkIdentityMapper(tag: Int) = new TaggedIdentityMapper[Int, B](tag)
     override def toString = "Mapper" + id
   }
 
@@ -45,6 +46,11 @@ object AST {
     def mkTaggedMapper(tag: Int) = new TaggedMapper[A, K, V](tag) {
       def map(value: A): Iterable[(K, V)] = f(value)
     }
+
+    def mkIdentityMapper(tag: Int) = new TaggedIdentityMapper[K,V](tag)
+
+
+
 
     override def toString = "GbkMapper" + id
   }

@@ -72,10 +72,25 @@ final case class BridgeStore(n: AST.Node[_], val path: Path) extends DataStore(n
   * location for bridge stores. */
 object BridgeStore {
 
+  import scala.collection.mutable.{Map => MMap}
+
   private object TmpId extends UniqueInt
 
   def apply(node: AST.Node[_]): BridgeStore = {
     val tmpPath = new Path(Scoobi.getWorkingDirectory, "bridges/" + TmpId.get.toString)
     BridgeStore(node, tmpPath)
   }
+
+  def getFromMMap(n: AST.Node[_], m: MMap[AST.Node[_], BridgeStore]): BridgeStore = {
+    m.get(n) match {
+      case Some(bs) => bs
+      case None     => {
+        val newBS: BridgeStore = BridgeStore(n)
+        m += ((n, newBS))
+        newBS
+      }
+    }
+  }
+
+
 }

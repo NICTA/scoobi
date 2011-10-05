@@ -10,6 +10,20 @@ package com.nicta.scoobi
 
 object Intermediate {
 
+
+  /* 
+   * Import renamings. (TODO: Perhaps wrap the final MSCR data structures in a namespace?)
+   *
+   * The C suffix on CGbkOutputChannel, etc, is for converted.
+   */
+  import com.nicta.scoobi.{GbkOutputChannel    => CGbkOutputChannel,
+                           BypassOutputChannel => CBypassOutputChannel,
+                           MapperInputChannel  => CMapperInputChannel,
+                           InputChannel        => CInputChannel,
+                           OutputChannel       => COutputChannel,
+                           MSCR                => CMSCR }
+
+
   import com.nicta.scoobi.Smart._
 
   /*
@@ -17,20 +31,52 @@ object Intermediate {
    */
   sealed abstract class InputChannel {
     def contains(d: DList[_]): Boolean
+
+    /* Using during translation from Smart.DList to AST */
+    def containsGbkMapper(d: Smart.FlatMap[_,_]): Boolean
+
+    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource
+
+    def convert(ci: ConvertInfo): CInputChannel
+
   }
 
 
-  case class MapperInputChannel(flatMaps: List[DList[_]]) extends InputChannel {
+  case class MapperInputChannel(flatMaps: List[FlatMap[_,_]]) extends InputChannel {
 
     def contains(d: DList[_]) = flatMaps.exists(_==d)
 
     override def toString = "MapperInputChannel([" + flatMaps.mkString(", ")+ "])"
+    def containsGbkMapper(d: FlatMap[_,_]) = flatMaps.exists{_ == d}
+
+    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = {
+      // This should be safe since there should be at least one flatMap in @flatMaps@
+      flatMaps(0).in.dataSource(ci)
+    }
+
+    def convert(ci: ConvertInfo): CMapperInputChannel[DataStore with DataSource] = {
+      // TODO: Yet another asInstanceOf. Don't like them.
+      def f(d: DList[_]): AST.Node[_] with MapperLike[_,_,_] =
+        ci.getASTNode(d).asInstanceOf[AST.Node[_] with MapperLike[_,_,_]]
+      val ns: Set[AST.Node[_] with MapperLike[_,_,_]] = flatMaps.map(f).toSet
+      CMapperInputChannel(dataStoreInput(ci), ns)
+    }
   }
 
-  case class IdInputChannel extends InputChannel {
+  case class IdInputChannel(input: DList[_]) extends InputChannel {
     def contains(d: DList[_]) = false
 
     override def toString = "IdInputChannel"
+    def containsGbkMapper(d: FlatMap[_,_]) = false
+
+    def convert(ci: ConvertInfo): BypassInputChannel[DataStore with DataSource] = {
+      // TODO. Yet another asInstanceOf
+      BypassInputChannel(dataStoreInput(ci), ci.getASTNode(input)
+                                               .asInstanceOf[AST.Node[_] with MapperLike[_,_,_]])
+    }
+
+    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = input.dataSource(ci)
+
   }
 
   /*
@@ -38,6 +84,24 @@ object Intermediate {
    */
   sealed abstract class OutputChannel {
     def contains(d: DList[_]): Boolean
+
+    /* Use during conversion from intermediate MSCR to final MSCR */
+    def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink] = {
+      val d: DList[_] = this.output
+      val bridgeStores:Set[DataStore with DataSink] =
+        if ( parentMSCR.inputInOtherMSCR(d, ci.mscrs) ) {
+          Set(BridgeStore.getFromMMap(ci.getASTNode(d), ci.bridgeStoreMap))
+        } else { Set() }
+      val outputStores: Set[DataStore with DataSink] = ci.outMap.get(d) match {
+        case Some(persisters) => persisters.map(_.mkOutputStore(ci.getASTNode(d)))
+        case None             => Set()
+      }
+      bridgeStores ++ outputStores
+    }
+
+    def output: DList[_]
+
+    def convert(parentMSCR: MSCR, ci: ConvertInfo): COutputChannel
   }
 
   object GbkOutputChannel {
@@ -47,7 +111,6 @@ object Intermediate {
         case _                 => throw new RuntimeException("This is not a GBK")
       }
     }
-
   }
 
   case class GbkOutputChannel(flatten:    Option[Flatten[_]],
@@ -66,7 +129,7 @@ object Intermediate {
 
      def contains(d: DList[_]): Boolean = {
        def sameAs(f: GbkOutputChannel => Option[DList[_]]) = f(this).map{_ == d}.getOrElse(false)
-       /* Fix function is necessary to help Scala's type inferencer */
+       /* @fix@ function is necessary to help Scala's type inferencer */
        def fix(a: GbkOutputChannel => Option[DList[_]]) = a
        val l: List[GbkOutputChannel => Option[DList[_]]] =
          List(fix(_.flatten), fix(x => Some(x.groupByKey)), fix(_.combiner), fix(_.reducer))
@@ -77,7 +140,7 @@ object Intermediate {
       * Find the inputs to this channel. If there is a Flatten node then it is the parents of this
       * node. Otherwise it is the parent of the GroupByKey node
       */
-     def inputs(g: DGraph): List[DList[_]] = {
+     def inputs(g: DGraph): Iterable[DList[_]] = {
        (this.flatten match {
          case Some(fltn) => g.preds.getOrElse(fltn,
            throw new RuntimeException("Flatten can't have no parents in GbkOutputChannel"))
@@ -89,19 +152,57 @@ object Intermediate {
     override def toString = {
       val header = "GbkOutputChannel("
 
-
       List(Pretty.indent("flatten: ",flatten.toString),
            "groupByKey: " + groupByKey.toString,
            "combiner: " + combiner.toString,
            "reducer: " + reducer.toString).
         mkString(header,",\n" + " " * header.length , ")")
       }
+
+      def output = reducer match {
+        case Some(r) => r
+        case None => combiner match {
+          case Some(c) => c
+          case None => groupByKey
+        }
+      }
+
+    def convert(parentMSCR: MSCR, ci: ConvertInfo): CGbkOutputChannel[DataStore with DataSink] = {
+      val crPipe:CRPipe = combiner match {
+        case Some(c) => {
+          val nc: AST.Combiner[_,_] = ci.getASTCombiner(c)
+          reducer match {
+            case Some(r) => CombinerReducer(nc, ci.getASTReducer(r))
+            case None    => JustCombiner(nc)
+          }
+        }
+        case None    => {
+          reducer match {
+            case Some(r) => JustReducer(ci.getASTGbkReducer(r))
+            case None    => Empty()
+          }
+        }
+      }
+      val fltn: Option[AST.Flatten[_]] = flatten.map{ci.getASTFlatten(_)}
+      val gbk: AST.GroupByKey[_,_] = ci.getASTGroupByKey(groupByKey)
+      val outputs: Set[DataStore with DataSink] = dataStoreOutputs(parentMSCR, ci)
+
+      CGbkOutputChannel(outputs, fltn, gbk, crPipe)
+    }
+
   }
 
-  case class BypassInputChannel(input: FlatMap[_,_]) extends OutputChannel {
+  case class BypassOutputChannel(input: FlatMap[_,_]) extends OutputChannel {
     def contains(d: DList[_]) = false
 
-    override def toString = "BypassInputChannel(" + input.toString + ")"
+    override def toString = "BypassOutputChannel(" + input.toString + ")"
+
+    def output: DList[_] = input
+
+    def convert(parentMSCR: MSCR, ci: ConvertInfo): CBypassOutputChannel[DataStore with DataSink] = {
+       val n = ci.getASTNode(input)
+       CBypassOutputChannel(dataStoreOutputs(parentMSCR, ci), n)
+    }
   }
 
   class MSCR(val inputChannels: Set[InputChannel],
@@ -117,6 +218,43 @@ object Intermediate {
                Pretty.indent("outputChannels: { ", outputChannels.mkString(",\n")) + "}").
           mkString(",\n"))
     }
+
+    /* Used during the translation from Smart.DList to AST */
+    def containsGbkMapper(d: Smart.FlatMap[_,_]): Boolean =
+      inputChannels.map{_.containsGbkMapper(d)}.exists(identity)
+
+    /* Used during the translation from Smart.DList to AST */
+    def containsGbkReducer(d: Smart.FlatMap[_,_]): Boolean = {
+      def pred(oc: OutputChannel): Boolean = oc match {
+        case BypassOutputChannel(_) => false
+        case gbkOC@GbkOutputChannel(_,_,_,_) =>
+          gbkOC.combiner.isEmpty && gbkOC.reducer.map{_ == d}.getOrElse(false)
+      }
+      outputChannels.exists(pred)
+    }
+
+    /* Used during the translation from Smart.DList to AST */
+    def containsReducer(d: Smart.FlatMap[_,_]): Boolean = {
+      def pred(oc: OutputChannel): Boolean = oc match {
+        case BypassOutputChannel(_) => false
+        case gbkOC@GbkOutputChannel(_,_,_,_) =>
+          gbkOC.combiner.isDefined && gbkOC.reducer.map{_ == d}.getOrElse(false)
+      }
+      outputChannels.exists(pred)
+    }
+
+    /*
+     * Checks whether a given node is not in this MSCR but is in another.
+     * The parameter @mscrs@ may or may not include this MSCR
+     */
+    def inOtherMSCR(d: DList[_], mscrs: Iterable[MSCR]) = mscrs.exists(_.contains(d)) && !contains(d)
+
+    def convert(ci: ConvertInfo): CMSCR = {
+      val cInputChannels: Set[CInputChannel] = inputChannels.map{_.convert(ci)}
+      val cOutputChannels: Set[COutputChannel] = outputChannels.map{_.convert(this,ci)}
+      CMSCR(cInputChannels, cOutputChannels)
+    }
+
   }
 
   object MSCR {
@@ -200,9 +338,8 @@ object Intermediate {
           isInExecutionPlanOutputs(d)
         }
 
-
         def bypassChan(fm: FlatMap[_,_]) =
-          if ( isBypass(fm) ) { None } else { Some (BypassInputChannel(fm))}
+          if ( isBypass(fm) ) { None } else { Some (BypassOutputChannel(fm))}
 
         d match {
           case fm@FlatMap(_,_) => {
@@ -210,7 +347,7 @@ object Intermediate {
             val bypassChannels = fused.map(bypassChan(_).toList).flatten
             (MapperInputChannel(fused), bypassChannels)
           }
-          case _ => (IdInputChannel(), List())
+          case _ => (IdInputChannel(d), List())
         }
       }
 
@@ -224,7 +361,7 @@ object Intermediate {
   }
 
   object MSCRGraph {
-    def apply(outputs: List[DList[_]]): MSCRGraph = {
+    def apply(outputs: Iterable[DList[_]]): MSCRGraph = {
 
       /*
        * Two nodes are related if they share at least one input. Let A be the type of nodes
@@ -302,7 +439,7 @@ object Intermediate {
         }
 
         def intersect(p1: (Set[A], Set[B]), p2: (Set[A], Set[B])): Boolean = {
-          p1._2.intersect(p2._2).isEmpty
+          !p1._2.intersect(p2._2).isEmpty
         }
 
         val (overlapped, disjoint) = ps.partition(intersect(p,_))
@@ -331,14 +468,9 @@ object Intermediate {
       val g = DGraph(outputs)
       val relatedGBKSets = findRelated(g)
 
-      new MSCRGraph(relatedGBKSets.map(MSCR(g,_)))
+      new MSCRGraph(relatedGBKSets.map(MSCR(g,_)), g)
     }
   }
 
-  class MSCRGraph(mscrs: List[MSCR]) {
-
-    override def toString =
-      Pretty.indent("MSCRGraph([", mscrs.mkString(",\n")) + "])"
-  }
-
+  class MSCRGraph(val mscrs: Iterable[MSCR], val g: DGraph)
 }

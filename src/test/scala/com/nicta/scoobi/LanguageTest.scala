@@ -96,17 +96,31 @@ object LanguageTest {
 
     val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/test.txt")
     val d2: DList[(Int, Iterable[String])] = d1.groupByKey
-    val outputs = List(d2.ast)
-    println(MSCRGraph(outputs).toString())
+    val d3 = d2.flatMap(_._2)
+    val d4: DList[(Int, String)] = d2.combine(_++_)
+    val d5: DList[String] = d4.flatMap(x => List(x._2))
+    persist { toTextFile(d3, FILE_DIR + "/some-name.txt") }
+    persist { toTextFile(d4, FILE_DIR + "/some-name.txt") }
+    persist { toTextFile(d5, FILE_DIR + "/some-name.txt") }
   }
 
 
   /** Run them. */
   def main(args: Array[String]) {
-    graphTest()
-//    simple()
-//    wordcount()
-//    avgAge()
-//    join()
+    try {
+      graphTest()
+      //    simple()
+      //    wordcount()
+      //    avgAge()
+      //join()
+
+    } catch {
+      case ex: RuntimeException => {
+        println(ex.toString())
+        throw new RuntimeException("failed")
+      }
+    }
+
+
   }
 }

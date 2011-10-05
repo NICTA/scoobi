@@ -211,9 +211,8 @@ object MapReduceJob {
     /* Add mapping functionality from input channel descriptions. */
     mscr.inputChannels.foreach { ic =>
       ic match {
-        case b@BypassInputChannel(input, _) => {
-          job.addTaggedMapper(input, new TaggedIdentityMapper(mapperTags(input.node))
-                                                             (b.mK, b.wtK, b.ordK, b.mV, b.wtV, b.mKV, b.wtKV))
+        case b@BypassInputChannel(input, origin) => {
+          job.addTaggedMapper(input, origin.mkIdentityMapper(mapperTags(origin)))
         }
         case MapperInputChannel(input, mappers) => mappers.foreach { m =>
           job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))

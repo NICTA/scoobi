@@ -9,6 +9,7 @@ import java.io.Serializable
 /** A prodcuer of a TaggedMapper. */
 trait MapperLike[A, K, V] {
   def mkTaggedMapper(tag: Int): TaggedMapper[A, K, V]
+  def mkIdentityMapper(tag: Int): TaggedIdentityMapper[K,V]
 }
 
 
