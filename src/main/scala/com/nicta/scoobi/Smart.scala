@@ -61,6 +61,8 @@ class ConvertInfo(val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
 object Smart {
 
   import com.nicta.scoobi.{Intermediate => I}
+  object Id extends UniqueInt
+
 
   /** GADT for distributed list computation graph. */
   sealed abstract class DList[A : Manifest : HadoopWritable] {
@@ -69,6 +71,8 @@ object Smart {
     override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
 
     def name: String
+
+    val id = Id.get
 
     def insert(ci: ConvertInfo, n: AST.Node[A]): AST.Node[A] = {
       ci.m += ((this, n))
@@ -115,13 +119,16 @@ object Smart {
       val n: AST.Node[A] = convert(ci)
       fm.insert(ci, AST.Mapper(n, fm.f))
     }
-
   }
+
 
   case class Load[A : Manifest : HadoopWritable]
       (loader: Loader[A])
     extends DList[A] {
-    def name = "Load"
+
+    def name = "Load" + id
+
+    override def toString = name
 
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.Load())
@@ -137,15 +144,18 @@ object Smart {
 
     override def dataSource(ci: ConvertInfo): DataStore with DataSource =
       loader.mkInputStore(ci.getASTNode(this).asInstanceOf[AST.Load[A]])
-
   }
+
 
   case class FlatMap[A : Manifest : HadoopWritable,
                      B : Manifest : HadoopWritable]
       (in: DList[A],
        f: A => Iterable[B])
     extends DList[B] {
-    def name = "FlatMap"
+
+    def name = "FlatMap" + id
+
+    override def toString = name + "(" + in + ")"
 
     def convertNew(ci: ConvertInfo): AST.Node[B] = {
       in.convert(ci)
@@ -166,14 +176,16 @@ object Smart {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
       }
     }
-
   }
 
   case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
                         V : Manifest : HadoopWritable]
       (in: DList[(K, V)])
     extends DList[(K, Iterable[V])] {
-    def name = "GroupByKey"
+
+    def name = "GroupByKey" + id
+
+    override def toString = name + "(" + in + ")"
 
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.GroupByKey(in.convertNew2(ci)))
@@ -206,12 +218,16 @@ object Smart {
     }
   }
 
+
   case class Combine[K : Manifest : HadoopWritable : Ordering,
                      V : Manifest : HadoopWritable]
       (in: DList[(K, Iterable[V])],
        f: (V, V) => V)
     extends DList[(K, V)] {
-    def name = "Combine"
+
+    def name = "Combine" + id
+
+    override def toString = name + "(" + in + ")"
 
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
@@ -238,10 +254,15 @@ object Smart {
     }
   }
 
+
   case class Flatten[A : Manifest : HadoopWritable]
       (ins: List[DList[A]])
     extends DList[A] {
-    def name = "Flatten"
+
+    def name = "Flatten" + id
+
+    override def toString = name + "([" + ins.mkString(",") + "])"
+
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
     def convertNew2[K : Manifest : HadoopWritable : Ordering,
@@ -252,7 +273,6 @@ object Smart {
       d.insert2(ci, new AST.Flatten(ns) with KVLike[K,V] {
                       def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
-
   }
 
   /** A Loader class specifies how a distributed list is materialised. */
