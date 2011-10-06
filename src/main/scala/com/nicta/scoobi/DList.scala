@@ -84,9 +84,16 @@ object DList {
   /** Persist one or more distributed lists. */
   def persist(outputs: DListPersister[_]*) = {
 
-    val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]] = {
+    /* Produce map of all unique outputs and their corresponding persisters. */
+    val rawOutMap: Map[Smart.DList[_], Set[Smart.Persister[_]]] = {
       val emptyM: Map[Smart.DList[_], Set[Smart.Persister[_]]] = Map()
       outputs.foldLeft(emptyM)((m,p) => m + ((p.dl.ast, m.getOrElse(p.dl.ast, Set()) + p.persister)))
+    }
+
+    /* Optimise the plan associated with the outpus. */
+    val outMap : Map[Smart.DList[_], Set[Smart.Persister[_]]] = {
+      val optOuts: List[Smart.DList[_]] = Smart.optimisePlan(rawOutMap.keys.toList)
+      (rawOutMap.toList zip optOuts) map { case ((_, p), o) => (o, p) } toMap
     }
 
     val ds = outMap.keys

@@ -12,6 +12,9 @@ object Smart {
   import com.nicta.scoobi.{Intermediate => I}
   object Id extends UniqueInt
 
+  type CopyFn[T] = (DList[T], CopyTable) => (DList[T], CopyTable, Boolean)
+  type CopyTable = Map[DList[_], DList[_]]
+
 
   /** GADT for distributed list computation graph. */
   sealed abstract class DList[A : Manifest : HadoopWritable] {
@@ -23,7 +26,60 @@ object Smart {
 
     val id = Id.get
 
-    /* Conversion */
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Optimisation strategies:
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /** An optimisation strategy that replicates any Flatten nodes that have multiple outputs
+      * such that in the resulting AST Flatten nodes only have single outputs. */
+    def optSplitFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optSplitFlattens(_))
+
+    /** An optimisation strategy that sinks a Flatten node that is an input to a FlatMap node
+      * such that in the resulting AST replicated FlatMap nodes are inputs to the Flatten
+      * node. */
+    def optSinkFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optSinkFlattens(_))
+
+    /** An optimisation strategy that fuse any Flatten nodes that are inputs to Flatten nodes. */
+    def optFuseFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optFuseFlattens(_))
+
+    /** An optimisation strategy that morphs a Combine node into a FlatMap node if it does not
+      * follow a GroupByKey node. */
+    def optCombinersToMaps(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optCombinersToMaps(_))
+
+    /** An optimisation strategy that fuses the functionality of a FlatMap node that is an input
+      * to another FlatMap node. */
+    def optFuseMaps(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optFuseMaps(_))
+
+    /** An optimisation strategy that replicates any GroupByKey nodes that have multiple outputs
+      * such that in the resulting AST, GroupByKey nodes have only single outputs. */
+    def optSplitGbks(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optSplitGbks(_))
+
+
+    /** Perform a depth-first traversal copy of the DList node. When copying the input DList
+      * node(s), a the CopyFn function is used (somewhat like a callback). */
+    protected def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[A], CopyTable, Boolean)
+
+    /** A helper method that checks whether the node has already been copied, and if so returns the copy, else
+      * invokes a user provided code implmenting the copy. */
+    protected def copyOnce(copied: CopyTable)(newCopy: => (DList[A], CopyTable, Boolean)): (DList[A], CopyTable, Boolean) =
+      copied.get(this) match {
+        case Some(copy) => (copy.asInstanceOf[DList[A]], copied, false)
+        case None       => newCopy
+      }
+
+    /* Helper for performing optimisation with depth-first traversal once-off copying. */
+    private def copyOnceWith(copied: CopyTable, cf: CopyFn[A]): (DList[A], CopyTable, Boolean) =
+      copyOnce(copied) { justCopy(copied, cf) }
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Conversion:
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def insert(ci: ConvertInfo, n: AST.Node[A]): AST.Node[A] = {
       ci.m += ((this, n))
       n
@@ -79,7 +135,14 @@ object Smart {
 
     override def toString = name
 
-    /* Conversion */
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[A], CopyTable, Boolean) =
+      (this, copied, false)
+
+
+    // Conversion
+    // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.Load())
     }
@@ -109,7 +172,55 @@ object Smart {
 
     override def toString = name + "(" + in + ")"
 
-    /* Conversion */
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[B], CopyTable, Boolean) = {
+      val cfA = cf.asInstanceOf[CopyFn[A]]
+      val (inUpd, copiedUpd, b) = cfA(in, copied)
+      val fm = FlatMap(inUpd, f)
+      (fm, copiedUpd + (this -> fm), b)
+    }
+
+    /** If the input to this FlatMap is a Flatten node, re-write the tree as a Flatten node with the
+      * FlatMap replicated on each of its inputs. Otherwise just perform a normal copy. */
+    override def optSinkFlattens(copied: CopyTable): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case Flatten(ins) => {
+          val (copiedUpd, insUpd) = ins.foldLeft((copied, Nil: List[DList[A]])) { case ((ct, copies), in) =>
+            val (inUpd, ctUpd, _) = in.optSinkFlattens(ct)
+            (ctUpd + (in -> inUpd), copies :+ inUpd)
+          }
+
+          val flat: DList[B] = Flatten(insUpd.map(FlatMap(_, f)))
+          (flat, copiedUpd + (this -> flat), true)
+        }
+        case _            => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optSinkFlattens(ct))
+      }
+    }
+
+    /** If the input to this FlatMap is another FlatMap node, re-write this FlatMap with the preceeding's
+      * FlatMap's "mapping function" fused in. Otherwise just perform a normal copy. */
+    override def optFuseMaps(copied: CopyTable): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case FlatMap(_, f1) => {
+          val (inUpd, copiedUpd, _) = in.optFuseMaps(copied)
+          val prev@FlatMap(_, _) = inUpd
+          val fm = prev.fuse(f)
+          (fm, copiedUpd + (this -> fm), true)
+        }
+        case _              => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseMaps(ct))
+      }
+    }
+
+    /** Create a new FlatMap node that is the fusion of this node and another function
+      * (from a successor FlatMap node). */
+    def fuse[C : Manifest : HadoopWritable](fNext: B => Iterable[C]): FlatMap[A, C] = {
+      FlatMap(in, (x: A) => f(x) flatMap fNext)
+    }
+
+
+    // Conversion
+    // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo): AST.Node[B] = {
       in.convert(ci)
       in.convertFlatMap(ci, this)
@@ -143,7 +254,41 @@ object Smart {
 
     override def toString = name + "(" + in + ")"
 
-    /* Conversion */
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[(K, Iterable[V])], CopyTable, Boolean) = {
+      val cfKV = cf.asInstanceOf[CopyFn[(K, V)]]
+      val (inUpd, copiedUpd, b) = cfKV(in, copied)
+      val gbk = GroupByKey(inUpd)
+      (gbk, copiedUpd + (this -> gbk), b)
+    }
+
+    /** Perform a normal copy of this Flatten node but do not mark it as copied in the CopyTable. This will
+      * mean subsequent encounters of this node (that is, other outputs of this GroupByKey node) will result
+      * in another copy, thereby replicating GroupByKeys with multiple outputs. If this GroupByKey node has a
+      * Flatten as its input, replicate the Flatten node as well using the same technique. */
+    override def optSplitGbks(copied: CopyTable): (DList[(K, Iterable[V])], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case Flatten(ins) => {
+          val (insUpd, copiedUpd, b) = ins.foldLeft((Nil: List[DList[(K, V)]], copied, false)) { case ((cps, ct, b), n) =>
+            val (nUpd, ctUpd, bb) = n.optSplitGbks(ct)
+            (cps :+ nUpd, ctUpd + (n -> nUpd), bb || b)
+          }
+          val flat = Flatten(insUpd)
+          val gbk = GroupByKey(flat)
+          (gbk, copiedUpd, b)
+        }
+        case _            => {
+          val (inUpd, copiedUpd, b) = in.optSplitGbks(copied)
+          val gbk = GroupByKey(inUpd)
+          (gbk, copiedUpd, b)
+        }
+      }
+    }
+
+
+    // Conversion
+    // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.GroupByKey(in.convertNew2(ci)))
       }
@@ -188,7 +333,36 @@ object Smart {
 
     override def toString = name + "(" + in + ")"
 
-    /* Conversion */
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[(K, V)], CopyTable, Boolean) = {
+      val cfKIV = cf.asInstanceOf[CopyFn[(K, Iterable[V])]]
+      val (inUpd, copiedUpd, b) = cfKIV(in, copied)
+      val comb = Combine(inUpd, f)
+      (comb, copiedUpd + (this -> comb), b)
+    }
+
+    /** If this Combine node's input is a GroupByKey node, perform a normal copy. Otherwise, create a
+      * FlatMap node whose mapping function performs the combining functionality. */
+    override def optCombinersToMaps(copied: CopyTable): (DList[(K, V)], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case GroupByKey(inKV) => justCopy(copied, (n: DList[(K, V)], ct: CopyTable) => n.optCombinersToMaps(ct))
+        case _                => {
+          val (inUpd, copiedUpd, _) = in.optCombinersToMaps(copied)
+          val mapF = (kvs: (K, Iterable[V])) => {
+            val key = kvs._1
+            val values = kvs._2
+            List((key, values.tail.foldLeft(values.head)(f)))
+          }
+          val fm = FlatMap(inUpd, mapF)
+          (fm, copiedUpd + (this -> fm), true)
+        }
+      }
+    }
+
+
+    // Conversion
+    // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
     /* An almost exact copy of convertNew */
@@ -201,7 +375,6 @@ object Smart {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K1,V1](tags)})
 
     }
-
 
     override def convertFlatMap[B : Manifest : HadoopWritable]
                                (ci: ConvertInfo, fm: FlatMap[(K,V), B]): AST.Node[B] = {
@@ -223,7 +396,45 @@ object Smart {
 
     override def toString = name + "([" + ins.mkString(",") + "])"
 
-    /* Conversion */
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[A], CopyTable, Boolean) = {
+      val (insUpd, copiedUpd, b) = justCopyInputs(ins, copied, cf.asInstanceOf[CopyFn[A]])
+      val flat = Flatten(insUpd)
+      (flat, copiedUpd + (this -> flat), b)
+    }
+
+    /** Perform a normal copy of this Flatten node but do not mark it as copied in the CopyTable. This will
+      * mean that subsequent encounters of this node (that is, other outputs of this Flatten node) will result
+      * in another copy, thereby replicating Flattens with multiple outputs. */
+    override def optSplitFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) = copyOnce(copied) {
+      val (insUpd, copiedUpd, b) = justCopyInputs(ins, copied, _.optSplitFlattens(_))
+      val flat = Flatten(insUpd)
+      (flat, copiedUpd, b)
+    }
+
+    /** If this Flatten node has any inputs that are also Flatten nodes, make all the inputs of the input Flatten
+      * node inputs of this Flatten node. */
+    override def optFuseFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) = copyOnce(copied) {
+      val (insUpd, copiedUpd, b) = justCopyInputs(ins, copied, _.optSplitFlattens(_))
+      val insUpdMerged = insUpd flatMap {
+        case Flatten(otherIns) => otherIns
+        case x                 => List(x)
+      }
+      val flat = Flatten(insUpdMerged)
+      (flat, copiedUpd + (this -> flat), b)
+    }
+
+    private def justCopyInputs(ins: List[DList[A]], copied: CopyTable, cf: CopyFn[A]): (List[DList[A]], CopyTable, Boolean) = {
+      ins.foldLeft((Nil: List[DList[A]], copied, false)) { case ((cps, ct, b), n) =>
+        val (nUpd, ctUpd, bb) = cf(n, ct)
+        (cps :+ nUpd, ctUpd + (n -> nUpd), bb || b)
+      }
+    }
+
+
+    // Conversion
+    // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
     def convertNew2[K : Manifest : HadoopWritable : Ordering,
@@ -236,14 +447,97 @@ object Smart {
     }
   }
 
+
   /** A Loader class specifies how a distributed list is materialised. */
   abstract class Loader[A : Manifest : HadoopWritable] {
     def mkInputStore(node: AST.Load[A]): InputStore
   }
 
+
   /** A Persister class specifies how a distributed list is persisted. */
   abstract class Persister[A] {
     def mkOutputStore(node: AST.Node[A]): OutputStore
+  }
+
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Graph optimisations:
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /** Apply a series of stategies to optimise the strucuture of the logical plan (that
+    * is the graph). The purpose of this is to transform the graph into a form that
+    * is suitable for forming MSCRs. The strategies are:
+    *   - splitting of Flattens with multiple outputs
+    *   - sinking of Flattens
+    *   - fusing Flattens
+    *   - morphing CombineValues into FlatMaps when they don't follow a GroupByKey
+    *   - fusing of FlatMaps
+    *   - splitting of GroupByKeys with multiple outputs. */
+  def optimisePlan(outputs: List[DList[_]]): List[DList[_]] = {
+
+    /** Perform a computation 'f' recursively stating with input 'x'. Return the
+      * result of 'f' once the outputs are no longer changing, and an indication as
+      * to whether there was ever a change. */
+    def untilChanged[A](x: A, f: A => (A, Boolean)): (A, Boolean) = {
+
+      def fWrapper(x: A, ec: Boolean): (A, Boolean, Boolean) = {
+        val (y, changed) = f(x)
+        (y, changed, ec)
+      }
+
+      def untilChangedWrapper(x: A, ec: Boolean): (A, Boolean) = {
+        val (xUpd, changed, ecUpd) = fWrapper(x, ec)
+        if (changed)
+          untilChangedWrapper(xUpd, true)
+        else
+          (xUpd, ecUpd)
+      }
+
+      untilChangedWrapper(x, false)
+    }
+
+    /* Apply Flatten optimisation strategies in the following order:
+     *    1. Split flattens.
+     *    2. Sink flattens.
+     *    3. Merge flattens.
+     * For each strategy, do not move to the next until there are no changes.
+     * Finish when running through all strategies results in no changes. */
+    def flattenStrategies(in: List[DList[_]]): (List[DList[_]], Boolean) = {
+      val (out1, c1) = untilChanged(in, travOnce(_.optSplitFlattens(_)))
+      val (out2, c2) = untilChanged(out1, travOnce(_.optSinkFlattens(_)))
+      val (out3, c3) = untilChanged(out2, travOnce(_.optFuseFlattens(_)))
+      (out3, c1 || c2 || c3)
+    }
+
+    /* Run the strategies to produce the optimised graph. */
+    def allStrategies(in: List[DList[_]]): (List[DList[_]], Boolean) = {
+      val (flattenOpt, c1)       = untilChanged(in, flattenStrategies)
+      val (combinerToMapOpt, c2) = untilChanged(flattenOpt, travOnce(_.optCombinersToMaps(_)))
+      val (flatMapOpt, c3)       = untilChanged(combinerToMapOpt, travOnce(_.optFuseMaps(_)))
+      val (splitGbkOpt, c4)      = untilChanged(flatMapOpt, travOnce(_.optSplitGbks(_)))
+      (splitGbkOpt, c1 || c2 || c3 || c4)
+    }
+
+    val (optOutputs, _) = untilChanged(outputs, allStrategies)
+    optOutputs
+  }
+
+
+  /** Helper method for traversing the graph from */
+  private def travOnce
+      (fuseFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
+      (outputs: List[DList[_]])
+    : (List[DList[_]], Boolean) = {
+
+    val emptyCopyTable: CopyTable = Map()
+    val noCopies: List[DList[_]] = Nil
+
+    val (_, copies, changes) = outputs.foldLeft((emptyCopyTable, noCopies, false)) { case ((ct, cps, b), n) =>
+      val (nCopy, ctUpd, bb) = fuseFn(n, ct)
+      (ctUpd + (n -> nCopy), cps :+ nCopy, bb || b)
+    }
+
+    (copies, changes)
   }
 
 
