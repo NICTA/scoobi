@@ -3,59 +3,8 @@
   */
 package com.nicta.scoobi
 
-import scala.io.Source
-
-
 import scala.collection.mutable.{Map => MMap}
 
-object ConvertInfo {
-  def apply(outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
-            mscrs: Iterable[Intermediate.MSCR],
-            g: DGraph): ConvertInfo = {
-    new ConvertInfo(outMap, mscrs, g, MMap(), MMap())
-  }
-}
-
-class ConvertInfo(val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
-                  val mscrs: Iterable[Intermediate.MSCR],
-                  val g: DGraph,
-                  val m: MMap[Smart.DList[_], AST.Node[_]],
-                  /* A map of AST nodes to BridgeStores*/
-                  val bridgeStoreMap: MMap[AST.Node[_], BridgeStore]
-                  ) {
-
-  def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = m.get(d) match {
-     case Some(n) => n.asInstanceOf[AST.Node[A]]
-     case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
-  }
-
-  def getASTCombiner[A,B](d: Smart.DList[_]): AST.Combiner[A,B] = m.get(d) match {
-    case Some(n) => n.asInstanceOf[AST.Combiner[A,B]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
-  }
-
-  def getASTReducer[A,B,C](d: Smart.DList[_]): AST.Reducer[A,B,C] = m.get(d) match {
-    case Some(n) => n.asInstanceOf[AST.Reducer[A,B,C]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
-  }
-
-  def getASTGbkReducer[A,B,C](d: Smart.DList[_]): AST.GbkReducer[A,B,C] = m.get(d) match {
-    case Some(n) => n.asInstanceOf[AST.GbkReducer[A,B,C]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
-  }
-
-  def getASTFlatten[A](d: Smart.DList[_]): AST.Flatten[A] = m.get(d) match {
-    case Some(n) => n.asInstanceOf[AST.Flatten[A]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
-  }
-
-  def getASTGroupByKey[K,V](d: Smart.DList[_]): AST.GroupByKey[K,V] = m.get(d) match {
-    case Some(n) => n.asInstanceOf[AST.GroupByKey[K,V]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
-  }
-
-
-}
 
 /** Abstract syntax of tree of primitive "language". */
 object Smart {
@@ -74,6 +23,7 @@ object Smart {
 
     val id = Id.get
 
+    /* Conversion */
     def insert(ci: ConvertInfo, n: AST.Node[A]): AST.Node[A] = {
       ci.m += ((this, n))
       n
@@ -110,7 +60,6 @@ object Smart {
 
     def convertNew(ci: ConvertInfo): AST.Node[A]
 
-    /* TODO: Investigate whether you can do this without asInstanceOf. It just feels hacky */
     def convertNew2[K : Manifest : HadoopWritable : Ordering,
                     V : Manifest : HadoopWritable]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]
@@ -122,14 +71,15 @@ object Smart {
   }
 
 
-  case class Load[A : Manifest : HadoopWritable]
-      (loader: Loader[A])
-    extends DList[A] {
+  /** The Load node type specifies the materialization of a DList. A Loader object specifies how
+    * the materialization is performed. */
+  case class Load[A : Manifest : HadoopWritable](loader: Loader[A]) extends DList[A] {
 
     def name = "Load" + id
 
     override def toString = name
 
+    /* Conversion */
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.Load())
     }
@@ -147,6 +97,8 @@ object Smart {
   }
 
 
+  /** The FlatMap node type specifies the building of a DList as a result of applying a function to
+    * all elements of an existing DList and concatenating the results. */
   case class FlatMap[A : Manifest : HadoopWritable,
                      B : Manifest : HadoopWritable]
       (in: DList[A],
@@ -157,6 +109,7 @@ object Smart {
 
     override def toString = name + "(" + in + ")"
 
+    /* Conversion */
     def convertNew(ci: ConvertInfo): AST.Node[B] = {
       in.convert(ci)
       in.convertFlatMap(ci, this)
@@ -178,6 +131,9 @@ object Smart {
     }
   }
 
+
+  /** The GroupByKey node type specifies the building of a DList as a result of partitioning an exiting
+    * key-value DList by key. */
   case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
                         V : Manifest : HadoopWritable]
       (in: DList[(K, V)])
@@ -187,6 +143,7 @@ object Smart {
 
     override def toString = name + "(" + in + ")"
 
+    /* Conversion */
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.GroupByKey(in.convertNew2(ci)))
       }
@@ -219,6 +176,8 @@ object Smart {
   }
 
 
+  /** The Combine node type specifies the building of a DList as a result of applying an associative
+    * function to the values of an existing key-values DList. */
   case class Combine[K : Manifest : HadoopWritable : Ordering,
                      V : Manifest : HadoopWritable]
       (in: DList[(K, Iterable[V])],
@@ -229,6 +188,7 @@ object Smart {
 
     override def toString = name + "(" + in + ")"
 
+    /* Conversion */
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
     /* An almost exact copy of convertNew */
@@ -255,14 +215,15 @@ object Smart {
   }
 
 
-  case class Flatten[A : Manifest : HadoopWritable]
-      (ins: List[DList[A]])
-    extends DList[A] {
+  /** The Flatten node type spcecifies the building of a DList that contains all the elements from
+    * one or more exsiting DLists of the same type. */
+  case class Flatten[A : Manifest : HadoopWritable](ins: List[DList[A]]) extends DList[A] {
 
     def name = "Flatten" + id
 
     override def toString = name + "([" + ins.mkString(",") + "])"
 
+    /* Conversion */
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
     def convertNew2[K : Manifest : HadoopWritable : Ordering,
@@ -287,7 +248,8 @@ object Smart {
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+  // Graph query helper functions:
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   def parentsOf(d: DList[_]): List[DList[_]] = {
     d match {
@@ -331,5 +293,54 @@ object Smart {
   def isFlatten(d: DList[_]):    Boolean = getFlatten(d).isDefined
   def isGroupByKey(d: DList[_]): Boolean = getGroupByKey(d).isDefined
   def isCombine(d: DList[_]):    Boolean = getCombine(d).isDefined
+}
 
+
+/** Class that maintains state while the Smart graph is transformed to an AST graph. */
+class ConvertInfo(val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
+                  val mscrs: Iterable[Intermediate.MSCR],
+                  val g: DGraph,
+                  val m: MMap[Smart.DList[_], AST.Node[_]],
+                  /* A map of AST nodes to BridgeStores*/
+                  val bridgeStoreMap: MMap[AST.Node[_], BridgeStore]
+                  ) {
+
+  def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = m.get(d) match {
+     case Some(n) => n.asInstanceOf[AST.Node[A]]
+     case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+  }
+
+  def getASTCombiner[A,B](d: Smart.DList[_]): AST.Combiner[A,B] = m.get(d) match {
+    case Some(n) => n.asInstanceOf[AST.Combiner[A,B]]
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+  }
+
+  def getASTReducer[A,B,C](d: Smart.DList[_]): AST.Reducer[A,B,C] = m.get(d) match {
+    case Some(n) => n.asInstanceOf[AST.Reducer[A,B,C]]
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+  }
+
+  def getASTGbkReducer[A,B,C](d: Smart.DList[_]): AST.GbkReducer[A,B,C] = m.get(d) match {
+    case Some(n) => n.asInstanceOf[AST.GbkReducer[A,B,C]]
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+  }
+
+  def getASTFlatten[A](d: Smart.DList[_]): AST.Flatten[A] = m.get(d) match {
+    case Some(n) => n.asInstanceOf[AST.Flatten[A]]
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+  }
+
+  def getASTGroupByKey[K,V](d: Smart.DList[_]): AST.GroupByKey[K,V] = m.get(d) match {
+    case Some(n) => n.asInstanceOf[AST.GroupByKey[K,V]]
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+  }
+}
+
+
+object ConvertInfo {
+  def apply(outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
+            mscrs: Iterable[Intermediate.MSCR],
+            g: DGraph): ConvertInfo = {
+    new ConvertInfo(outMap, mscrs, g, MMap(), MMap())
+  }
 }
