@@ -11,8 +11,10 @@ object AST {
   object RollingInt extends UniqueInt
 
   /** Intermediate representation - closer aligned to actual MSCR contetns. */
-  sealed abstract class Node[A] {
+  sealed abstract class Node[A : Manifest : HadoopWritable] extends Serializable {
     val id = Id.get
+
+    def mkTaggedIdentityReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
   }
 
 
@@ -121,7 +123,7 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load[A] extends Node[A] {
+  case class Load[A : Manifest : HadoopWritable] extends Node[A] {
     override def toString = "Load" + id
 
   }
