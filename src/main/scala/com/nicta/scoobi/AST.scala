@@ -140,10 +140,13 @@ object AST {
   case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
                         V : Manifest : HadoopWritable]
       (in: Node[(K, V)])
-    extends Node[(K, Iterable[V])] {
+    extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {
 
     override def toString = "GroupByKey" + id
 
+    def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
+      def reduce(key: K, values: Iterable[V]): Iterable[(K, Iterable[V])] = List((key, values))
+    }
   }
 
 
