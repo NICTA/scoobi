@@ -6,6 +6,7 @@ package com.nicta.scoobi
 import scala.collection.JavaConversions._
 import scala.collection.Traversable._
 import scala.collection.mutable.HashSet
+import Option.{apply => ?}
 
 import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
@@ -91,8 +92,11 @@ object JarBuilder {
   /** Find the location of JAR that contains a particular class. */
   def findContainingJar(clazz: Class[_]): String = {
 
-    val loader = clazz.getClassLoader
     val classFile = mkClassFile(clazz)
+    val loader = ?(clazz.getClassLoader) match {
+      case Some(l) => l
+      case None    => ClassLoader.getSystemClassLoader
+    }
 
     val foundPaths =
       for {
