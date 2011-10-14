@@ -26,32 +26,32 @@ class ConvertInfo(val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
 
   def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = m.get(d) match {
      case Some(n) => n.asInstanceOf[AST.Node[A]]
-     case None    => throw new RuntimeException("Node not found in map")
+     case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
   }
 
   def getASTCombiner[A,B](d: Smart.DList[_]): AST.Combiner[A,B] = m.get(d) match {
     case Some(n) => n.asInstanceOf[AST.Combiner[A,B]]
-    case None    => throw new RuntimeException("Node not found in map")
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
   }
 
   def getASTReducer[A,B,C](d: Smart.DList[_]): AST.Reducer[A,B,C] = m.get(d) match {
     case Some(n) => n.asInstanceOf[AST.Reducer[A,B,C]]
-    case None    => throw new RuntimeException("Node not found in map")
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
   }
 
   def getASTGbkReducer[A,B,C](d: Smart.DList[_]): AST.GbkReducer[A,B,C] = m.get(d) match {
     case Some(n) => n.asInstanceOf[AST.GbkReducer[A,B,C]]
-    case None    => throw new RuntimeException("Node not found in map")
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
   }
 
   def getASTFlatten[A](d: Smart.DList[_]): AST.Flatten[A] = m.get(d) match {
     case Some(n) => n.asInstanceOf[AST.Flatten[A]]
-    case None    => throw new RuntimeException("Node not found in map")
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
   }
 
   def getASTGroupByKey[K,V](d: Smart.DList[_]): AST.GroupByKey[K,V] = m.get(d) match {
     case Some(n) => n.asInstanceOf[AST.GroupByKey[K,V]]
-    case None    => throw new RuntimeException("Node not found in map")
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
   }
 
 
@@ -64,12 +64,33 @@ object Smart {
 
   /** GADT for distributed list computation graph. */
   sealed abstract class DList[A : Manifest : HadoopWritable] {
+
+    /* We don't want structural equality */
+    override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
+
     def name: String
 
     def insert(ci: ConvertInfo, n: AST.Node[A]): AST.Node[A] = {
       ci.m += ((this, n))
       n
     }
+
+    def insert2[K : Manifest : HadoopWritable : Ordering,
+                V : Manifest : HadoopWritable]
+                (ci: ConvertInfo, n: AST.Node[(K,V)] with KVLike[K,V]):
+                AST.Node[(K,V)] with KVLike[K,V] = {
+      ci.m += ((this,n))
+      n
+    }
+
+    def insert3[K : Manifest : HadoopWritable : Ordering,
+                V : Manifest : HadoopWritable]
+                (ci: ConvertInfo, n: AST.Node[(K,Iterable[V])] with KVLike[K,Iterable[V]]):
+                AST.Node[(K,Iterable[V])] with KVLike[K,Iterable[V]] = {
+      ci.m += ((this,n))
+      n
+    }
+
 
     def dataSource(ci: ConvertInfo): DataStore with DataSource = {
       BridgeStore.getFromMMap(ci.getASTNode(this), ci.bridgeStoreMap)
@@ -88,11 +109,11 @@ object Smart {
     /* TODO: Investigate whether you can do this without asInstanceOf. It just feels hacky */
     def convertNew2[K : Manifest : HadoopWritable : Ordering,
                     V : Manifest : HadoopWritable]
-                    (ci: ConvertInfo): AST.Node[(K,V)] = this.asInstanceOf[DList[(K,V)]].convertNew(ci)
+                    (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]
 
     def convertFlatMap[B : Manifest : HadoopWritable](ci: ConvertInfo, fm: FlatMap[A,B]): AST.Node[B] = {
       val n: AST.Node[A] = convert(ci)
-      AST.Mapper(n, fm.f)
+      fm.insert(ci, AST.Mapper(n, fm.f))
     }
 
   }
@@ -106,6 +127,14 @@ object Smart {
       insert(ci, AST.Load())
     }
 
+    def convertNew2[K : Manifest : HadoopWritable : Ordering,
+                    V : Manifest : HadoopWritable]
+                    (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
+
+      insert2(ci, new AST.Load[(K,V)]() with KVLike[K,V] {
+                    def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
+    }
+
     override def dataSource(ci: ConvertInfo): DataStore with DataSource =
       loader.mkInputStore(ci.getASTNode(this).asInstanceOf[AST.Load[A]])
 
@@ -117,13 +146,15 @@ object Smart {
        f: A => Iterable[B])
     extends DList[B] {
     def name = "FlatMap"
+
     def convertNew(ci: ConvertInfo): AST.Node[B] = {
       in.convert(ci)
       in.convertFlatMap(ci, this)
     }
 
-    override def convertNew2[K : Manifest : HadoopWritable : Ordering,
-                             V : Manifest : HadoopWritable](ci: ConvertInfo): AST.Node[(K,V)] = {
+    def convertNew2[K : Manifest : HadoopWritable : Ordering,
+                    V : Manifest : HadoopWritable](ci: ConvertInfo):
+                    AST.Node[(K,V)] with KVLike[K,V] = {
       val fm: FlatMap[A,(K,V)] = this.asInstanceOf[FlatMap[A,(K,V)]]
       val n: AST.Node[A] = fm.in.convert(ci)
 
@@ -131,7 +162,8 @@ object Smart {
         fm.insert2(ci, new AST.GbkMapper(n,fm.f) with KVLike[K,V] {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
       } else {
-        fm.insert(ci, AST.Mapper(n, fm.f))
+        fm.insert2(ci, new AST.Mapper(n, fm.f) with KVLike[K,V] {
+          def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
       }
     }
 
@@ -145,6 +177,22 @@ object Smart {
 
     def convertNew(ci: ConvertInfo) = {
       insert(ci, AST.GroupByKey(in.convertNew2(ci)))
+      }
+
+    def convertAux[A: Manifest : HadoopWritable : Ordering,
+              B: Manifest : HadoopWritable]
+              (ci: ConvertInfo, d: DList[(A,B)]):
+              AST.Node[(A, Iterable[B])] with KVLike[A, Iterable[B]] = {
+         insert2(ci, new AST.GroupByKey[A,B](d.convertNew2(ci)) with KVLike[A, Iterable[B]] {
+           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[A,Iterable[B]](tags)})
+      }
+
+    def convertNew2[K1 : Manifest : HadoopWritable : Ordering,
+                    V1 : Manifest : HadoopWritable]
+                    (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
+      convertAux(ci, in).asInstanceOf[AST.Node[(K1,V1)] with KVLike[K1,V1]]
+
+
     }
 
     override def convertFlatMap[B : Manifest : HadoopWritable]
@@ -167,6 +215,18 @@ object Smart {
 
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
+    /* An almost exact copy of convertNew */
+    def convertNew2[K1 : Manifest : HadoopWritable : Ordering,
+                    V1 : Manifest : HadoopWritable]
+                    (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
+       val c: Combine[K1,V1] = this.asInstanceOf[Combine[K1,V1]]
+
+       insert2(ci, new AST.Combiner[K1,V1](c.in.convertNew2(ci), c.f) with KVLike[K1,V1] {
+          def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K1,V1](tags)})
+
+    }
+
+
     override def convertFlatMap[B : Manifest : HadoopWritable]
                                (ci: ConvertInfo, fm: FlatMap[(K,V), B]): AST.Node[B] = {
       val n: AST.Node[(K, V)] = convert(ci)
@@ -184,12 +244,13 @@ object Smart {
     def name = "Flatten"
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
-    override def convertNew2[K : Manifest : HadoopWritable : Ordering,
-                             V : Manifest : HadoopWritable]
-                    (ci: ConvertInfo): AST.Node[(K,V)] = {
+    def convertNew2[K : Manifest : HadoopWritable : Ordering,
+                    V : Manifest : HadoopWritable]
+                    (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
       val d: Flatten[(K,V)] = this.asInstanceOf[Flatten[(K,V)]]
       val ns: List[AST.Node[(K,V)]] = d.ins.map(_.convertNew2[K,V](ci))
-      d.insert(ci, AST.Flatten(ns))
+      d.insert2(ci, new AST.Flatten(ns) with KVLike[K,V] {
+                      def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
 
   }

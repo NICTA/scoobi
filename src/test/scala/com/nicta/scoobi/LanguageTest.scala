@@ -94,33 +94,41 @@ object LanguageTest {
   def graphTest() = {
     import com.nicta.scoobi.Intermediate._
 
-    val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/test.txt")
+    val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
     val d2: DList[(Int, Iterable[String])] = d1.groupByKey
+    val d2_ = d1.groupByKey
+
     val d3 = d2.flatMap(_._2)
-    val d4: DList[(Int, String)] = d2.combine(_++_)
-    val d5: DList[String] = d4.flatMap(x => List(x._2))
-    persist { toTextFile(d3, FILE_DIR + "/some-name.txt") }
-    persist { toTextFile(d4, FILE_DIR + "/some-name.txt") }
-    persist { toTextFile(d5, FILE_DIR + "/some-name.txt") }
+    val d4: DList[(Int, String)] = d2_.combine(_++_)
+
+    persist(toTextFile(d3, FILE_DIR + "/d3.txt"),
+            toTextFile(d4, FILE_DIR + "/d4.txt"))
+  }
+
+  def noReducerTest() = {
+    val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+    val d1: DList[(Int, Iterable[String])] = d0.groupByKey
+
+    persist(toTextFile(d1, FILE_DIR + "/d1.txt"))
+  }
+
+  def bypassInputChannelTest() = {
+    val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+    val d1: DList[(Int, Iterable[String])] = d0.groupByKey
+    val d2: DList[(Int, Iterable[Iterable[String]])] = d1.groupByKey
+
+    persist(toTextFile(d2, FILE_DIR + "/d2.txt"))
   }
 
 
   /** Run them. */
   def main(args: Array[String]) {
-    try {
-      graphTest()
-      //    simple()
-      //    wordcount()
-      //    avgAge()
-      //join()
-
-    } catch {
-      case ex: RuntimeException => {
-        println(ex.toString())
-        throw new RuntimeException("failed")
-      }
-    }
-
-
+//    graphTest()
+    bypassInputChannelTest()
+//    noReducerTest()
+    //    simple()
+    //    wordcount()
+    //    avgAge()
+    //join()
   }
 }

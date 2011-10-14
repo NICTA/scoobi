@@ -40,8 +40,10 @@ class MapReduceJob {
     else
       mappers(input) += m
 
-    keyTypes   += (m.tag -> (m.mK, m.wtK, m.ordK))
-    valueTypes += (m.tag -> (m.mV, m.wtV))
+    m.tags.foreach { tag =>
+      keyTypes   += (tag -> (m.mK, m.wtK, m.ordK))
+      valueTypes += (tag -> (m.mV, m.wtV))
+    }
   }
 
   /** Add a combiner function to this MapReduce job. */
@@ -179,16 +181,21 @@ object MapReduceJob {
   /** Construct a MapReduce job from an MSCR. */
   def apply(mscr: MSCR): MapReduceJob = {
     val job = new MapReduceJob
-    val mapperTags: MMap[AST.Node[_], Int] = MMap.empty
+    val mapperTags: MMap[AST.Node[_], Set[Int]] = MMap.empty
 
     /* Tag each output channel with a unique index. */
     mscr.outputChannels.zipWithIndex.foreach { case (oc, tag) =>
 
+      def addTag(n: AST.Node[_], tag: Int): Unit = {
+        val s = mapperTags.getOrElse(n, Set())
+        mapperTags += (n -> (s + tag))
+      }
+
       /* Build up a map of mappers to output channel tags. */
       oc match {
-        case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => mapperTags += (in -> tag) }
-        case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => mapperTags += (in -> tag)
-        case BypassOutputChannel(_, origin)                     => mapperTags += (origin -> tag)
+        case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => addTag(in, tag) }
+        case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => addTag(in, tag)
+        case BypassOutputChannel(_, origin)                     => addTag(origin, tag)
       }
 
       /* Add combiner functionality from output channel descriptions. */
@@ -203,6 +210,7 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, _, JustCombiner(c))       => job.addTaggedReducer(outputs, c.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, _, JustReducer(r))        => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, _, Empty())               => job.addTaggedReducer(outputs, new TaggedIdentityReducer(tag))
         case BypassOutputChannel(outputs, _)                        => job.addTaggedReducer(outputs, new TaggedIdentityReducer(tag))
         case _                                                      => Unit
       }
@@ -212,7 +220,7 @@ object MapReduceJob {
     mscr.inputChannels.foreach { ic =>
       ic match {
         case b@BypassInputChannel(input, origin) => {
-          job.addTaggedMapper(input, origin.mkIdentityMapper(mapperTags(origin)))
+          job.addTaggedMapper(input, origin.mkTaggedIdentityMapper(mapperTags(origin)))
         }
         case MapperInputChannel(input, mappers) => mappers.foreach { m =>
           job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))

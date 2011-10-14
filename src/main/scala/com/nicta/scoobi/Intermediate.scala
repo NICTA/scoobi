@@ -30,7 +30,8 @@ object Intermediate {
    *  InputChannel
    */
   sealed abstract class InputChannel {
-    def contains(d: DList[_]): Boolean
+    def hasInput(d: DList[_]): Boolean
+    def hasOutput(d: DList[_]): Boolean
 
     /* Using during translation from Smart.DList to AST */
     def containsGbkMapper(d: Smart.FlatMap[_,_]): Boolean
@@ -44,7 +45,8 @@ object Intermediate {
 
   case class MapperInputChannel(flatMaps: List[FlatMap[_,_]]) extends InputChannel {
 
-    def contains(d: DList[_]) = flatMaps.exists(_==d)
+    def hasInput(d: DList[_]): Boolean = flatMaps(0).in ==d
+    def hasOutput(d: DList[_]): Boolean = flatMaps.exists(_==d)
 
     override def toString = "MapperInputChannel([" + flatMaps.mkString(", ")+ "])"
     def containsGbkMapper(d: FlatMap[_,_]) = flatMaps.exists{_ == d}
@@ -64,15 +66,16 @@ object Intermediate {
   }
 
   case class IdInputChannel(input: DList[_]) extends InputChannel {
-    def contains(d: DList[_]) = false
+    def hasInput(d: DList[_]): Boolean = d == input
+    def hasOutput(d: DList[_]): Boolean = hasInput(d)
 
-    override def toString = "IdInputChannel"
-    def containsGbkMapper(d: FlatMap[_,_]) = false
+    override def toString = "IdInputChannel("+ input + ")"
+    def containsGbkMapper(d: FlatMap[_,_]) = d == input
 
     def convert(ci: ConvertInfo): BypassInputChannel[DataStore with DataSource] = {
       // TODO. Yet another asInstanceOf
       BypassInputChannel(dataStoreInput(ci), ci.getASTNode(input)
-                                               .asInstanceOf[AST.Node[_] with MapperLike[_,_,_]])
+                                               .asInstanceOf[AST.Node[_] with KVLike[_,_]])
     }
 
     def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = input.dataSource(ci)
@@ -83,19 +86,22 @@ object Intermediate {
    * OutputChannel
    */
   sealed abstract class OutputChannel {
-    def contains(d: DList[_]): Boolean
+    def hasInput(d: DList[_]): Boolean
+    def hasOutput(d: DList[_]): Boolean
 
-    /* Use during conversion from intermediate MSCR to final MSCR */
+    /* Used during conversion from intermediate MSCR to final MSCR */
     def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink] = {
       val d: DList[_] = this.output
       val bridgeStores:Set[DataStore with DataSink] =
         if ( parentMSCR.inputInOtherMSCR(d, ci.mscrs) ) {
           Set(BridgeStore.getFromMMap(ci.getASTNode(d), ci.bridgeStoreMap))
         } else { Set() }
+
       val outputStores: Set[DataStore with DataSink] = ci.outMap.get(d) match {
         case Some(persisters) => persisters.map(_.mkOutputStore(ci.getASTNode(d)))
         case None             => Set()
       }
+
       bridgeStores ++ outputStores
     }
 
@@ -127,14 +133,13 @@ object Intermediate {
      def addCombiner(combiner: Combine[_,_]): GbkOutputChannel =
        new GbkOutputChannel(this.flatten, this.groupByKey, Some(combiner), this.reducer)
 
-     def contains(d: DList[_]): Boolean = {
-       def sameAs(f: GbkOutputChannel => Option[DList[_]]) = f(this).map{_ == d}.getOrElse(false)
-       /* @fix@ function is necessary to help Scala's type inferencer */
-       def fix(a: GbkOutputChannel => Option[DList[_]]) = a
-       val l: List[GbkOutputChannel => Option[DList[_]]] =
-         List(fix(_.flatten), fix(x => Some(x.groupByKey)), fix(_.combiner), fix(_.reducer))
-       l.exists(sameAs)
+
+     def hasInput(d: DList[_]): Boolean = flatten match {
+       case Some(f) => f.ins.exists(_ == d)
+       case None    => groupByKey.in == d
      }
+
+     def hasOutput(d: DList[_]): Boolean = output == d
 
      /*
       * Find the inputs to this channel. If there is a Flatten node then it is the parents of this
@@ -193,7 +198,8 @@ object Intermediate {
   }
 
   case class BypassOutputChannel(input: FlatMap[_,_]) extends OutputChannel {
-    def contains(d: DList[_]) = false
+    def hasInput(d: DList[_]) = d == input
+    def hasOutput(d: DList[_]) = d == input
 
     override def toString = "BypassOutputChannel(" + input.toString + ")"
 
@@ -208,8 +214,8 @@ object Intermediate {
   class MSCR(val inputChannels: Set[InputChannel],
              val outputChannels: Set[OutputChannel]) {
 
-    def contains(d: DList[_]) =
-      this.inputChannels.exists(_.contains(d)) || this.outputChannels.exists(_.contains(d))
+    def hasInput(d: DList[_]): Boolean = this.inputChannels.exists(_.hasInput(d))
+    def hasOutput(d: DList[_]): Boolean = this.outputChannels.exists(_.hasOutput(d))
 
     override def toString = {
       Pretty.indent(
@@ -244,13 +250,14 @@ object Intermediate {
     }
 
     /*
-     * Checks whether a given node is not in this MSCR but is in another.
+     * Checks whether a given node is an output from this MSCR and is input to another another.
      * The parameter @mscrs@ may or may not include this MSCR
      */
-    def inOtherMSCR(d: DList[_], mscrs: Iterable[MSCR]) = mscrs.exists(_.contains(d)) && !contains(d)
+    def inputInOtherMSCR(d: DList[_], mscrs: Iterable[MSCR]) =
+      mscrs.exists(_.hasInput(d)) && !hasInput(d) && hasOutput(d)
 
     def convert(ci: ConvertInfo): CMSCR = {
-      val cInputChannels: Set[CInputChannel] = inputChannels.map{_.convert(ci)}
+      val cInputChannels:  Set[CInputChannel]  = inputChannels.map{_.convert(ci)}
       val cOutputChannels: Set[COutputChannel] = outputChannels.map{_.convert(this,ci)}
       CMSCR(cInputChannels, cOutputChannels)
     }
@@ -328,18 +335,12 @@ object Intermediate {
       def addInputChannel(g: DGraph, ocs: Set[GbkOutputChannel], d: DList[_]) = {
 
         def isBypass(fm: FlatMap[_,_]): Boolean = {
-          val maybeSuccessors = g.succs.get(d)
-          def connectsToOutputChannel(d: DList[_]) = ocs.exists(_.contains(d))
-          def connectsToNoOutputChannel(ss: Set[DList[_]]) =
-            ss.toList.forall(!connectsToOutputChannel(_))
           def isInExecutionPlanOutputs(d: DList[_]) = g.outputs.contains(d)
-
-          maybeSuccessors.map(connectsToNoOutputChannel).getOrElse(true) ||
-          isInExecutionPlanOutputs(d)
+          !ocs.exists(_.hasInput(fm)) || isInExecutionPlanOutputs(fm)
         }
 
         def bypassChan(fm: FlatMap[_,_]) =
-          if ( isBypass(fm) ) { None } else { Some (BypassOutputChannel(fm))}
+          if ( isBypass(fm) ) { Some (BypassOutputChannel(fm))} else { None }
 
         d match {
           case fm@FlatMap(_,_) => {

@@ -23,14 +23,14 @@ object AST {
        f: A => Iterable[B])
     extends Node[B] with MapperLike[A, Int, B] {
 
-    def mkTaggedMapper(tag: Int) = new TaggedMapper[A, Int, B](tag) {
+    def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, Int, B](tags) {
       /* The output key will be an integer that is continually incrementing. This will ensure
        * the mapper produces an even distribution of key values. */
       def map(value: A): Iterable[(Int, B)] = f(value).map((x: B) => (RollingInt.get, x))
     }
 
-    def mkIdentityMapper(tag: Int) = new TaggedIdentityMapper[Int, B](tag)
     override def toString = "Mapper" + id
+
   }
 
 
@@ -43,16 +43,12 @@ object AST {
     extends Node[(K, V)] with MapperLike[A, K, V] {
 
     /** */
-    def mkTaggedMapper(tag: Int) = new TaggedMapper[A, K, V](tag) {
+    def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, K, V](tags) {
       def map(value: A): Iterable[(K, V)] = f(value)
     }
 
-    def mkIdentityMapper(tag: Int) = new TaggedIdentityMapper[K,V](tag)
-
-
-
-
     override def toString = "GbkMapper" + id
+
   }
 
 
@@ -84,6 +80,7 @@ object AST {
       }
 
     override def toString = "Combiner" + id
+
   }
 
 
@@ -100,6 +97,7 @@ object AST {
     }
 
     override def toString = "GbkReducer" + id
+
   }
 
 
@@ -118,18 +116,21 @@ object AST {
     }
 
     override def toString = "Reducer" + id
+
   }
 
 
   /** Usual Load node. */
   case class Load[A] extends Node[A] {
     override def toString = "Load" + id
+
   }
 
 
   /** Usual Flatten node. */
   case class Flatten[A : Manifest : HadoopWritable](ins: List[Node[A]]) extends Node[A] {
     override def toString = "Flatten" + id
+
   }
 
 
@@ -140,6 +141,7 @@ object AST {
     extends Node[(K, Iterable[V])] {
 
     override def toString = "GroupByKey" + id
+
   }
 
 

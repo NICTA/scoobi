@@ -69,7 +69,7 @@ object Executor {
     val st = new ExecState(computeTable, MMap(refcnts.toSeq: _*))
     outputs.foreach { out =>
       if (!st.computeTable.contains(out.node))
-        executeMSCR(mscrs, st, containingMSCR(mscrs, out.node))
+        executeMSCR(mscrs, st, mscrContainingOutput(mscrs, out.node))
     }
   }
 
@@ -80,7 +80,7 @@ object Executor {
     /* Make sure all inputs have been computed - recurse into executeMSCR. */
     mscr.inputNodes.foreach { input =>
       if (!st.computeTable.contains(input))
-        executeMSCR(mscrs, st, containingMSCR(mscrs, input))
+        executeMSCR(mscrs, st, mscrContainingOutput(mscrs, input))
     }
 
     /* Make a Hadoop job and run it. */

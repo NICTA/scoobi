@@ -37,9 +37,11 @@ class MscrMapper[A, K, V] extends HMapper[NullWritable, ScoobiWritable[A], Tagge
     /* Do the mappings. */
     mappers.foreach { mapper =>
       mapper.map(value.get.asInstanceOf[A]).foreach { case (k, v) =>
-        tk.set(mapper.tag, k)
-        tv.set(mapper.tag, v)
-        output.collect(tk, tv)
+        mapper.tags.foreach { tag =>
+          tk.set(tag, k)
+          tv.set(tag, v)
+          output.collect(tk, tv)
+        }
       }
     }
   }

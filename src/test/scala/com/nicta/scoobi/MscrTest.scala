@@ -19,7 +19,9 @@ object MscrTest {
 
   val m1 = GbkMapper(l2, (s: String) => List((s, 1)))
   val m2 = GbkMapper(l3, (s: String) => List((s, 2)))
-  val m3 = Mapper(l3, (s: String) => List((3L, s)))
+  val m3 = new Mapper(l3, (s: String) => List((3L, s))) with KVLike[Long, String]{
+     def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper(tags)
+  }
 
   val f1 = Flatten(List(m1, m2))
   val g1 = GroupByKey(f1)

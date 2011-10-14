@@ -89,7 +89,6 @@ object DList {
       outputs.foldLeft(emptyM)((m,p) => m + ((p.dl.ast, m.getOrElse(p.dl.ast, Set()) + p.persister)))
     }
 
-
     val ds = outMap.keys
     val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
 
@@ -99,12 +98,11 @@ object DList {
     val ci = ConvertInfo(outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
     // Convert the AST
     ds.map(_.convert(ci))
-
-    println(ci.m.values)
-
     val mscrGraph = MSCRGraph(ci)
 
-    println(mscrGraph.toString)
+    println("--- MSCRs ---")
+    println(mscrGraph.mscrs)
+
     Executor.executePlan(mscrGraph)
   }
 }

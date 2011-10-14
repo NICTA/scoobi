@@ -51,9 +51,14 @@ case class MSCR
 /** Utilities for dealing with MSCRs. */
 object MSCR {
 
-  /** Locate the MSCR that contains a particular distributed-list. */
-  def containingMSCR(mscrs: Set[MSCR], node: AST.Node[_]): MSCR = {
-    mscrs.find(mscr => (mscr.inputNodes ++ mscr.outputNodes).contains(node)).orNull
+  /** Locate the MSCR that contains a particular input distributed-list */
+  def mscrContainingInput(mscrs: Set[MSCR], node: AST.Node[_]): MSCR = {
+    mscrs.find(mscr => mscr.inputNodes.contains(node)).orNull
+  }
+
+  /** Locate the MSCR that contains a particular output distributed-list */
+  def mscrContainingOutput(mscrs: Set[MSCR], node: AST.Node[_]): MSCR = {
+    mscrs.find(mscr => mscr.outputNodes.contains(node)).orNull
   }
 }
 
@@ -63,7 +68,7 @@ sealed abstract class InputChannel
 
 case class BypassInputChannel[I <: DataStore with DataSource]
     (val input: I,
-     origin: AST.Node[_] with MapperLike[_,_,_])
+     origin: AST.Node[_] with KVLike[_,_])
   extends InputChannel
 
 case class MapperInputChannel[I <: DataStore with DataSource]

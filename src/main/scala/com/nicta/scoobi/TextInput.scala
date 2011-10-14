@@ -5,6 +5,7 @@ package com.nicta.scoobi
 
 import java.io.DataOutput
 import java.io.DataInput
+import java.io.Serializable
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
@@ -16,6 +17,7 @@ import org.apache.hadoop.mapred.RecordReader
 import org.apache.hadoop.mapred.LineRecordReader
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapred.Reporter
+
 
 
 /** Smart functions for materializing distributed lists by loading text files. */
@@ -118,7 +120,7 @@ object TextInput {
 
 /** A type class for parsing string fields into specific types. */
 @annotation.implicitNotFound(msg = "No implicit Schema defined for ${A}.")
-trait Schema[A] {
+trait Schema[A] extends Serializable {
   /* Grab fields, in sequence, required to make 'A', and return the remaining fields. */
   def read(fields: List[String]): (A, List[String])
 }
