@@ -77,7 +77,7 @@ object LanguageTest {
     val d1s: DList[(Int, (Option[String], Option[Double]))] = d1.map { case (k, v) => (k, (Some(v), None)) }
     val d2s: DList[(Int, (Option[String], Option[Double]))] = d2.map { case (k, v) => (k, (None,    Some(v))) }
 
-    val joined = (d1s concat d2s).groupByKey flatMap { case (k, vs) =>
+    val joined = (d1s ++ d2s).groupByKey flatMap { case (k, vs) =>
       val v1 = vs flatMap { case (Some(d), _) => List(d); case _ => List() }
       val v2 = vs flatMap { case (_, Some(d)) => List(d); case _ => List() }
       (v1, v2) match { case (Nil, ys) => Nil; case (x,   ys) => List((x.head, ys)) }
@@ -123,7 +123,7 @@ object LanguageTest {
     val d2 = fromTextFile("whatever, again")
     val d3 = fromTextFile("whatever, again, and again")
 
-    val f1 = d1.concat(d2, d3)
+    val f1 = d1 ++ d2 ++ d3
 
     val m1 = f1 map ((_, 42))
     val m2 = m1 map (identity)

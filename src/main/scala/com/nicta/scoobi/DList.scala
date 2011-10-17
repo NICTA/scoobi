@@ -20,7 +20,7 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
                 wtB: HadoopWritable[B]): DList[B] = new DList(Smart.FlatMap(ast, f))
 
   /** Concatenate one or more distributed lists to this distributed list. */
-  def concat(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))
+  def ++(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))
 
   /** Group the values of a distributed list with key-value elements by key. */
   def groupByKey[K, V]
