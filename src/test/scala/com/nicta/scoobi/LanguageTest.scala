@@ -20,8 +20,7 @@ object LanguageTest {
   def simple() = {
     val data = fromTextFile(FILE_DIR + "/ints.txt").map(_.toInt)
 
-    val trans = data.map(_ + 1)
-                    .filter(_ % 2 == 0)
+    val trans = data map { _ + 1 } filter { _ % 2 == 0 }
 
     persist { toTextFile(trans, FILE_DIR + "/ints-out") }
   }
@@ -78,17 +77,13 @@ object LanguageTest {
     val d1s: DList[(Int, (Option[String], Option[Double]))] = d1.map { case (k, v) => (k, (Some(v), None)) }
     val d2s: DList[(Int, (Option[String], Option[Double]))] = d2.map { case (k, v) => (k, (None,    Some(v))) }
 
-    val joined = (d1s concat d2s).groupByKey
-
-    val fix = joined.map {
-      case (k, vs) => {
-        val v1 = vs flatMap { case (Some(d), _) => List(d); case _ => List() }
-        val v2 = vs flatMap { case (_, Some(d)) => List(d); case _ => List() }
-        (v1, v2)
-      }
+    val joined = (d1s concat d2s).groupByKey flatMap { case (k, vs) =>
+      val v1 = vs flatMap { case (Some(d), _) => List(d); case _ => List() }
+      val v2 = vs flatMap { case (_, Some(d)) => List(d); case _ => List() }
+      (v1, v2) match { case (Nil, ys) => Nil; case (x,   ys) => List((x.head, ys)) }
     }
 
-    persist { toTextFile(fix, FILE_DIR + "/id-names-cnt") }
+    persist { toTextFile(joined, FILE_DIR + "/id-names-cnt") }
   }
 
   def graphTest() = {
@@ -147,23 +142,16 @@ object LanguageTest {
 
     val c4 = g2.combine((a: Int, b: Int) => a + b)
     val m6 = g2.map(t => (t._1, t._2.tail.foldLeft(t._2.head)(_+_)))
-
-    val outputs = List(g1, c4, m6, r3, m5) map (_.ast)
-
-    outputs.foreach(println)
-    println("### FUSED ###")
-    val outputsFused = Smart.optimisePlan(outputs)
-    outputsFused.foreach(println)
   }
 
 
   /** Run them. */
   def main(args: Array[String]) {
     Scoobi.setJarByClass(this.getClass)
-//  println("------------- simple ------------"); simple()
-//  println("------------ wordcount ----------"); wordcount()
-//  println("------------- avgAge ------------"); avgAge()
-//  println("-------------- join -------------"); join()
+    println("------------- simple ------------"); simple()
+    println("------------ wordcount ----------"); wordcount()
+    println("------------- avgAge ------------"); avgAge()
+    println("-------------- join -------------"); join()
     println("------------ graphTest ----------"); graphTest()
     println("----- bypassInputChannelTest ----"); bypassInputChannelTest()
     println("---------- optimiseTest ---------"); optimiseTest()
