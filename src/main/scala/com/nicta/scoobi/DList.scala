@@ -99,16 +99,10 @@ object DList {
     val ds = outMap.keys
     val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
 
-    println("--- Intermediate MSCRs ---")
-    println(iMSCRGraph.mscrs)
-
     val ci = ConvertInfo(outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
     // Convert the AST
     ds.map(_.convert(ci))
     val mscrGraph = MSCRGraph(ci)
-
-    println("--- MSCRs ---")
-    println(mscrGraph.mscrs)
 
     Executor.executePlan(mscrGraph)
   }
