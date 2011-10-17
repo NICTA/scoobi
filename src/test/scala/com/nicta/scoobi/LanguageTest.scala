@@ -18,11 +18,18 @@ object LanguageTest {
 
   /** Simple example demonstrating use of primitive and derived combinators. */
   def simple() = {
+    def isEven(x: Int) = x % 2 == 0
+
     val data = fromTextFile(FILE_DIR + "/ints.txt").map(_.toInt)
 
-    val trans = data map { _ + 1 } filter { _ % 2 == 0 }
+    val trans = data map { _ + 1 } filter { isEven }
+    val (evens, odds) = data.partition(isEven)
 
-    persist { toTextFile(trans, FILE_DIR + "/ints-out") }
+    persist (
+      toTextFile(trans, FILE_DIR + "/out/ints"),
+      toTextFile(evens, FILE_DIR + "/out/evens"),
+      toTextFile(odds,  FILE_DIR + "/out/odds")
+    )
   }
 
 
@@ -32,9 +39,10 @@ object LanguageTest {
 
     val fq: DList[(String, Int)] = lines.flatMap(_.split(" "))
                                         .map { w => (w, 1) }
-                                        .reduceByKey((_+_))
+                                        .groupByKey
+                                        .combine((_+_))
 
-    persist { toTextFile(fq, FILE_DIR + "/fq-out") }
+    persist(toTextFile(fq, FILE_DIR + "/out/fq"))
   }
 
   /** Database input */

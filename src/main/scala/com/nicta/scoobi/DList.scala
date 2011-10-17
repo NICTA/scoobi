@@ -50,25 +50,29 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
   /** For each element of the distributed list produce a new element by applying a
     * specified function. The resulting collection of elements form a new
     * distributed list. */
-  def map[B]
-      (f: A => B)
-      (implicit mB:  Manifest[B],
-                wtB: HadoopWritable[B]): DList[B] = flatMap(x => List(f(x)))
+  def map[B](f: A => B)(implicit mB:  Manifest[B], wtB: HadoopWritable[B]): DList[B]
+    = flatMap(x => List(f(x)))
 
-  /** Remove elements from the distributedl list that do not pass a spcecified
+  /** Keep elements from the distributedl list that pass a spcecified predicate function. */
+  def filter(p: A => Boolean): DList[A] = flatMap(x => if (p(x)) List(x) else Nil)
+
+  /** Keep elements from the distributedl list that do not pass a spcecified
     * predicate function. */
-  def filter(f: A => Boolean): DList[A] = flatMap(x => if (f(x)) List(x) else Nil)
+  def filterNot(p: A => Boolean): DList[A] = filter(p andThen (! _))
 
-  /** Group the values of distrubed list with key-value elements by key then reduce
-    * the collection of values for each key using a specified associative function. */
-  def reduceByKey[K, V]
-      (f: (V, V) => V)
-      (implicit ev:   Smart.DList[A] <:< Smart.DList[(K, V)],
-                mK:   Manifest[K],
-                wtK:  HadoopWritable[K],
-                ordK: Ordering[K],
-                mV:   Manifest[V],
-                wtV:  HadoopWritable[V]): DList[(K, V)] = groupByKey.combine(f)
+  /** Group the values of a distributed list according to some discriminator function. */
+  def groupBy[K : Manifest : HadoopWritable : Ordering](f: A => K): DList[(K, Iterable[A])] =
+    map(x => (f(x), x)).groupByKey
+
+  /** Partitions this distributed list into a pair of distributed lists according to some
+    * predicate. The first distributed list consists of elements that statisfy the predicate
+    * and the second of all elements that don't. */
+  def partition(p: A => Boolean): (DList[A], DList[A]) = (filter(p), filterNot(p))
+
+  /** Converts a distributed list of iterable values iinto to a distributed list in which
+    * all the values are concatenated. */
+  def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: HadoopWritable[B]): DList[B] =
+    flatMap((x: A) => x.asInstanceOf[Iterable[B]])
 }
 
 
