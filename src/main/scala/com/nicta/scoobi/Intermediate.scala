@@ -467,9 +467,46 @@ object Intermediate {
       }
 
       val g = DGraph(outputs)
-      val relatedGBKSets = findRelated(g)
 
-      new MSCRGraph(relatedGBKSets.map(MSCR(g,_)), g)
+      /* Construct MSCRs based on related GroupByKey nodes. */
+      val relatedGBKSets = findRelated(g)
+      val gbkMSCRs = relatedGBKSets.map(MSCR(g,_))
+
+
+      /** Find all outputs that are not within a GBK MSCR. There are 2 cases:
+        *
+        *   1. The ouput is a FlatMap node connected directly to a Load node;
+        *   2. The output is a Flatten node, connected to the output(s) of an MSCR and/or
+        *      Load node(s).
+        *
+        * For case 1, all FlatMaps can be added to the same MSCR. Each FlatMap will be
+        * added to its own input channel and will feed directly into its own bypass
+        * output channel.
+        *
+        * TODO - handle case 2 by allowing bypass output channels to contain
+        * optional Flatten nodes.
+        *
+        * TODO - investigate adding remaining FlatMaps to an exisitng MSCR. */
+      val floatingOutputs = outputs filterNot { o => gbkMSCRs.exists(mscr => mscr.hasOutput(o)) }
+
+      val allMSCRs =
+        if (floatingOutputs.size > 0) {
+          val (ics, ocs) = floatingOutputs map {
+            case fm@FlatMap(_, _) => (MapperInputChannel(List(fm)), BypassOutputChannel(fm))
+            case flat@Flatten(_)  => sys.error("Trivial MSCR from Flattens not yet supported.")
+            case node             => sys.error("Not expecting " + node.name + " as remaining node.")
+          } unzip
+
+          val mapOnlyMSCRMSCR = new MSCR(ics.toSet, ocs.toSet)
+          println(mapOnlyMSCRMSCR)
+
+          gbkMSCRs :+ mapOnlyMSCRMSCR
+        } else {
+          gbkMSCRs
+        }
+
+      /* Final MSCR graph contains both GBK MSCRs and Map-only MSCRs. */
+      new MSCRGraph(allMSCRs, g)
     }
   }
 
