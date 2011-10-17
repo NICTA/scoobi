@@ -162,10 +162,10 @@ object Smart {
 
   /** The FlatMap node type specifies the building of a DList as a result of applying a function to
     * all elements of an existing DList and concatenating the results. */
-  case class FlatMap[A : Manifest : HadoopWritable,
-                     B : Manifest : HadoopWritable]
+  case class FlatMap[A, B]
       (in: DList[A],
        f: A => Iterable[B])
+      (implicit val mA: Manifest[A], val wtA: HadoopWritable[A], mB: Manifest[B], wtB: HadoopWritable[B])
     extends DList[B] {
 
     def name = "FlatMap" + id
@@ -201,21 +201,20 @@ object Smart {
     /** If the input to this FlatMap is another FlatMap node, re-write this FlatMap with the preceeding's
       * FlatMap's "mapping function" fused in. Otherwise just perform a normal copy. */
     override def optFuseMaps(copied: CopyTable): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
+
+      /* Create a new FlatMap function that is the fusion of two connected FlatMap functions. */
+      def fuse[X, Y, Z](f: X => Iterable[Y], g: Y => Iterable[Z]): X => Iterable[Z] =
+        (x: X) => f(x) flatMap g
+
       in match {
-        case FlatMap(_, f1) => {
+        case FlatMap(_, _) => {
           val (inUpd, copiedUpd, _) = in.optFuseMaps(copied)
-          val prev@FlatMap(_, _) = inUpd
-          val fm = prev.fuse(f)
+          val prev@FlatMap(inPrev, fPrev) = inUpd
+          val fm = new FlatMap(inPrev, fuse(fPrev, f))(prev.mA, prev.wtA, mB, wtB)
           (fm, copiedUpd + (this -> fm), true)
         }
-        case _              => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseMaps(ct))
+        case _             => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseMaps(ct))
       }
-    }
-
-    /** Create a new FlatMap node that is the fusion of this node and another function
-      * (from a successor FlatMap node). */
-    def fuse[C : Manifest : HadoopWritable](fNext: B => Iterable[C]): FlatMap[A, C] = {
-      FlatMap(in, (x: A) => f(x) flatMap fNext)
     }
 
 
