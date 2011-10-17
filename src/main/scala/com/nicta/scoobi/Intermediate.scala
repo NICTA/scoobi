@@ -1,17 +1,82 @@
 /**
   * Copyright: [2011] Sean Seefried
   *
-  * An Intermediate MSCR form used while we're still determining
-  * where the boundaries of MSCRs are.
+  * An Intermediate MSCR form.
   *
   */
+
+/*
+ * === A high-level overview of MSCR conversion ===
+ *
+ * This extended comment describes the conversion from the DList data structure
+ * to MSCRs containing nodes of type AST.Node. This is a multi-step process that goes
+ * as follows:
+ *
+ * 1. Creation of a DGraph data structure by introspecting the structure of the
+ *    Smart.DList abstract syntax tree. (Class DList provides syntactic sugar for the real
+ *    abstract syntax tree of type Smart.DList).
+ * 2. Creation of an intermediate MSCRGraph data structure (Intermediate.MSCRGraph).
+ *     It requires the Smart.DList abstract syntax tree and DGraph data structures as inputs.
+ * 3. Conversion from the Smart.DList abstract syntax to the AST.Node abstract syntax tree.
+ * 4. Conversion from intermediate MSCRGraph to the final MSCRGraph (in MSCR.scala)
+ *
+ * Step 1 is required by Step 2. In order to easily discover the nodes that go into the various
+ * MSCRs that make up the Intermediate.MSCRGraph a graph data structure (DGraph) is very useful.
+ * One needs to be able traverse both forwards and backwards within the Smart.DList abstract syntax
+ * tree in order to find out such things as:
+ *   - which GroupByKey nodes are related.
+ *   - for a GroupByKey what its successors are in order to create output channels of an MSCR.
+ *   - for a GroupByKey what its predecessors are in order to create input channels of an MSCR.
+ *
+ * Step 2 can be thought of as "drawing boxes around" Smart.DList nodes. Intermediate MSCRs
+ * (and indeed MSCRs proper) contain input and output channels and these channels contain
+ * references to Smart.DList nodes. All Smart.DList nodes in the abstract syntax tree should be
+ * part of an MSCR in the Intermediate.MSCRGraph that is the output of this step.
+ * This is not guaranteed by construction. The implementation must be carefully written to guarantee
+ * this.
+ *
+ * Step 3 converts from Smart.DList nodes to AST.Node nodes. In the process *extra* type information
+ * is recovered. For example, if one is currently on a GroupByKey node then one knows that its
+ * predecessor must have output type (K,V) for some key K and value V.
+ *
+ * Depending on the position for a Smart.FlatMap node in the abstract syntax tree it could end up
+ * being converted to one of the follow AST.Node node types: AST.Mapper, AST.GbkMapper,
+ * AST.Combiner, AST.GbkReducer.
+ *
+ * Step 4 creates the final MSCR data structures (and puts them in an MSCRGraph). During this
+ * phase DataStore data structures are created for each input and output channel of the MSCRs.
+ * These provide all the information for the Hadoop back-end about where input comes from,
+ * which outputs of MSCRs are intermediate data structures (to be consumed only by other MSCRs)
+ * and which outputs are written to disk eventually.
+ *
+ * In the following sections I'll go into more detail about various topics.
+ *
+ * === Creating Intermediate.MSCR data structures ===
+ *
+ *
+ * The Flume paper defines the notion of _related GroupByKey_ nodes. Two GroupByKey nodes
+ * are related if they consume the same input (possibly via a Flatten node). A collection
+ * of GroupByKey nodes are related if for each GroupByKey node, n, in the collection, n is related
+ * to at least one other GroupByKey node.
+ *
+ * See the comments on functions @mergeRelated@ and @oneStepMerge@ in object @MSCRGraph@ for
+ * more detail.
+ *
+ * Once a set of related GroupByKey nodes has been found one can create an MSCR for it.
+ *
+ * See method @apply@ of the companion object @MSCR@ for details.
+ *
+ *
+ */
+
+
 
 package com.nicta.scoobi
 
 object Intermediate {
 
 
-  /* 
+  /*
    * Import renamings. (TODO: Perhaps wrap the final MSCR data structures in a namespace?)
    *
    * The C suffix on CGbkOutputChannel, etc, is for converted.
@@ -27,28 +92,51 @@ object Intermediate {
   import com.nicta.scoobi.Smart._
 
   /*
-   *  InputChannel
+   *  Abstract InputChannel class.
+   *
+   *  The methods @hasInput@, @hasOutput@, @containsGbkMapper@, @dataStoreInput@ and
+   *  @convert@ methods are all used during Step 4 of conversion.
+   *  (See "A high-level overview of MSCR conversion" above)
    */
   sealed abstract class InputChannel {
+
     def hasInput(d: DList[_]): Boolean
+
     def hasOutput(d: DList[_]): Boolean
 
-    /* Using during translation from Smart.DList to AST */
+    /*
+     * Returns @true@ if this input channel contains a @Smart.FlatMap@ node
+     * that should be converted to a @AST.GbkMapper@ node.
+     */
     def containsGbkMapper(d: Smart.FlatMap[_,_]): Boolean
 
+    /*
+     * Creates the @DataStore@ input for this input channel.
+     */
     def dataStoreInput(ci: ConvertInfo): DataStore with DataSource
 
+    /*
+     * Converts this intermediate input channel into a final input channel (defined in MSCR.scala)
+     */
     def convert(ci: ConvertInfo): CInputChannel
 
   }
 
-
   case class MapperInputChannel(flatMaps: List[FlatMap[_,_]]) extends InputChannel {
 
+    override def toString = "MapperInputChannel([" + flatMaps.mkString(", ")+ "])"
+
+    /*
+     * The methods @hasInput@, @hasOutput@, @containsGbkMapper@, @dataStoreInput@ and
+     *  @convert@ methods are all used during Step 4 of conversion.
+     *  (See "A high-level overview of MSCR conversion" above)
+     *
+     *  See descriptions of these methods in super class @InputChannel@
+     */
     def hasInput(d: DList[_]): Boolean = flatMaps(0).in ==d
+
     def hasOutput(d: DList[_]): Boolean = flatMaps.exists(_==d)
 
-    override def toString = "MapperInputChannel([" + flatMaps.mkString(", ")+ "])"
     def containsGbkMapper(d: FlatMap[_,_]) = flatMaps.exists{_ == d}
 
     def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = {
@@ -63,13 +151,23 @@ object Intermediate {
       val ns: Set[AST.Node[_] with MapperLike[_,_,_]] = flatMaps.map(f).toSet
       CMapperInputChannel(dataStoreInput(ci), ns)
     }
+
   }
 
   case class IdInputChannel(input: DList[_]) extends InputChannel {
-    def hasInput(d: DList[_]): Boolean = d == input
-    def hasOutput(d: DList[_]): Boolean = hasInput(d)
 
     override def toString = "IdInputChannel("+ input + ")"
+    /*
+     * The methods @hasInput@, @hasOutput@, @containsGbkMapper@, @dataStoreInput@ and
+     *  @convert@ methods are all used during Step 4 of conversion.
+     *  (See "A high-level overview of MSCR conversion" above)
+     *
+     *  See descriptions of these methods in super class @InputChannel@
+     */
+    def hasInput(d: DList[_]): Boolean = d == input
+
+    def hasOutput(d: DList[_]): Boolean = hasInput(d)
+
     def containsGbkMapper(d: FlatMap[_,_]) = d == input
 
     def convert(ci: ConvertInfo): BypassInputChannel[DataStore with DataSource] = {
@@ -83,13 +181,30 @@ object Intermediate {
   }
 
   /*
-   * OutputChannel
+   * Abstract OutputChannel class.
+   *
+   *  The methods @hasInput@, @hasOutput@, @containsGbkMapper@, @dataStoreOutputs@ and
+   *  @convert@ methods are all used during Step 4 of conversion.
+   *  (See "A high-level overview of MSCR conversion" above)
    */
   sealed abstract class OutputChannel {
+
+    /*
+     * Returns the @Smart.DList@ output for this output channel.
+     */
+    def output: DList[_]
+
+
     def hasInput(d: DList[_]): Boolean
     def hasOutput(d: DList[_]): Boolean
 
-    /* Used during conversion from intermediate MSCR to final MSCR */
+    /*
+     * Creates the @DataStore@ outputs for this channel.
+     *
+     * This method relies on the @bridgeStoreMap@ attribute of the given @ConvertInfo@
+     * parameter. It ensures that for each output @AST.Node@ of the converted
+     * output channel there is at most one @BridgeStore@ object.
+     */
     def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink] = {
       val d: DList[_] = this.output
       val bridgeStores:Set[DataStore with DataSink] =
@@ -105,12 +220,20 @@ object Intermediate {
       bridgeStores ++ outputStores
     }
 
-    def output: DList[_]
 
+    /*
+     * Converts this intermediate output channel into a final output channel (defined in MSCR.scala)
+     */
     def convert(parentMSCR: MSCR, ci: ConvertInfo): COutputChannel
   }
 
+
+
   object GbkOutputChannel {
+
+    /*
+     * Given a @Smart.GroupByKey@ node creates a new (incomplete) intermediate @GbkOutputChannel@.
+     */
     def apply(d: DList[_]): GbkOutputChannel = {
       d match {
         case gbk@GroupByKey(_) => GbkOutputChannel(None, gbk, None, None)
@@ -119,17 +242,32 @@ object Intermediate {
     }
   }
 
+  /*
+   * A @GbkOutputChannel@ is the standard output channel of an MSCR.
+   *
+   * They always contains a @GroupByKey@ node. Optionally they are preceded by a
+   * @Flatten@ node, and optionally succeeded by @Combine@ and/or @FlatMap@ node.
+   */
   case class GbkOutputChannel(flatten:    Option[Flatten[_]],
                               groupByKey: GroupByKey[_,_],
                               combiner:   Option[Combine[_,_]],
                               reducer:    Option[FlatMap[_,_]]) extends OutputChannel {
 
+     /*
+      * Adds a @Flatten@ node to this output channel returning a new channel.
+      */
      def addFlatten(flatten: Flatten[_]): GbkOutputChannel =
        new GbkOutputChannel(Some(flatten), this.groupByKey, this.combiner, this.reducer)
 
+     /*
+      * Adds a @FlatMap@ node to this output channel returning a new channel.
+      */
      def addReducer(reducer: FlatMap[_,_]): GbkOutputChannel =
        new GbkOutputChannel(this.flatten, this.groupByKey, this.combiner, Some(reducer))
 
+     /*
+      * Adds a @Combine@ node to this output channel returning a new channel.
+      */
      def addCombiner(combiner: Combine[_,_]): GbkOutputChannel =
        new GbkOutputChannel(this.flatten, this.groupByKey, Some(combiner), this.reducer)
 
@@ -194,7 +332,6 @@ object Intermediate {
 
       CGbkOutputChannel(outputs, fltn, gbk, crPipe)
     }
-
   }
 
   case class BypassOutputChannel(input: FlatMap[_,_]) extends OutputChannel {
@@ -264,8 +401,23 @@ object Intermediate {
 
   }
 
+
   object MSCR {
 
+   /*
+    * Creating an MSCR is a 2 step process:
+    *
+    * 1. Create an output channel for each GroupByKey node of type @GbkOutputChannel@. MSCRs can also
+    *    have bypass output channels but they are discovered in step 2.
+    *    See method @outputChannelsForRelatedGBKs@ for more detail.
+    *
+    * 2. Create input channel for each GroupByKey node as well as @BypassOutputChannel@s. The input
+    *    channels will be of type
+    *    MapperInputChannel or IdInputChannel depending on whether the inputs to the
+    *    GroupByKey node are FlatMap nodes (possibly through a Flatten) or not. The
+    *    @BypassOutputChannel@s are created for outputs of the @InputChannel@s that are
+    *    required by other MSCRs or as outputs of the execution plan in general.
+    */
     def apply(g: DGraph, relatedGBKs: Set[DList[_]]): MSCR = {
 
       def flatMapsToFuse(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
@@ -282,6 +434,30 @@ object Intermediate {
 
       def canFuse(d: DList[_], g: DGraph): Boolean = flatMapsToFuse(d,g).length > 1
 
+      /*
+       * This method creates a @GbkOutputChannel@ for each set of related @GroupByKey@s.
+       *
+       * First we create a collection of "initial" @GbkOutputChannels@. They
+       * only contain @GroupByKey@ nodes. For each of these @GbkOutputChannel@s, oc, we
+       * optionally added @Flatten@, @Combine@ and @FlatMap@ (Reducer) nodes to the
+       * channels.
+       *
+       * We add a @Flatten@ node if the @GroupByKey@ has this as a predecessor.
+       *
+       * We add a @Combine@ node if the direct successor of the @GroupByKey@ node is a
+       * @Combine@ node. Otherwise we check if there is a @FlatMap@ following it, in which
+       * case we add it as a "reducer", but only if it satisfies some checks (see below).
+       *
+       * If we have added a @Combine@ node we then check if its successor is a @FlatMap@. If this
+       * satisifies the following checks we add it as a "reducer".
+       *  - it has no successors. If it does then it should be in the input channel of another
+       *    MSCR
+       *  - it cannot be "fused" with sibling @FlatMap@ nodes. Again, this means it should be in
+       *    another MSCR.
+       *
+       * (I will note that perhaps this conditions are too restrictive!)
+       *
+       */
       def outputChannelsForRelatedGBKs(gbks: Set[DList[_]], g: DGraph): Set[GbkOutputChannel] = {
         val initOCs = gbks.foldLeft(Set(): Set[(GbkOutputChannel,DList[_])])
                                    { (s,gbk) => s + ((GbkOutputChannel(gbk), gbk)) }
@@ -332,6 +508,15 @@ object Intermediate {
 
       }
 
+      /*
+       * This is Step 2 of creating an MSCR.
+       *
+       * Adding input channels and creating extra bypass output channels is done concurrently.
+       *
+       * A @BypassOutputChannel@ is created if the output of an input channel is in
+       * the Execution Plan outputs OR it it is NOT the input to any of the @GbkOutputChannel@s
+       *
+       */
       def addInputChannel(g: DGraph, ocs: Set[GbkOutputChannel], d: DList[_]) = {
 
         def isBypass(fm: FlatMap[_,_]): Boolean = {
@@ -352,8 +537,10 @@ object Intermediate {
         }
       }
 
+      /* Step 1*/
       val ocs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
       val allInputs = ocs.flatMap(_.inputs(g))
+      /* Step 2 */
       val (inputChannels, extraChannels) = allInputs.map(addInputChannel(g, ocs, _)).unzip
 
       new MSCR(inputChannels.toSet, ocs ++ extraChannels.flatten.toSet)
