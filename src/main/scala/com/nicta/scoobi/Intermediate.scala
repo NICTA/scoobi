@@ -498,7 +498,6 @@ object Intermediate {
           } unzip
 
           val mapOnlyMSCRMSCR = new MSCR(ics.toSet, ocs.toSet)
-          println(mapOnlyMSCRMSCR)
 
           gbkMSCRs :+ mapOnlyMSCRMSCR
         } else {
