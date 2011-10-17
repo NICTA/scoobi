@@ -71,10 +71,10 @@ object LanguageTest {
 
     val rawMod = raw map { case (id, fN, sN, age) => (id, age) }
 
-    persist {
-      toTextFile(avgAgeForName, FILE_DIR + "/avg-age");
-      toTextFile(rawMod, FILE_DIR + "/raw-mod")
-    }
+    persist (
+      toTextFile(avgAgeForName, FILE_DIR + "/out/avg-age"),
+      toTextFile(rawMod, FILE_DIR + "/out/raw-mod")
+    )
   }
 
   /** "Join" example. */
@@ -91,7 +91,7 @@ object LanguageTest {
       (v1, v2) match { case (Nil, ys) => Nil; case (x,   ys) => List((x.head, ys)) }
     }
 
-    persist { toTextFile(joined, FILE_DIR + "/id-names-cnt") }
+    persist(toTextFile(joined, FILE_DIR + "/out/id-names-cnt"))
   }
 
   def graphTest() = {
@@ -104,15 +104,17 @@ object LanguageTest {
     val d3 = d2.flatMap(_._2)
     val d4: DList[(Int, String)] = d2_.combine(_++_)
 
-    persist(toTextFile(d3, FILE_DIR + "/d3"),
-            toTextFile(d4, FILE_DIR + "/d4"))
+    persist (
+      toTextFile(d3, FILE_DIR + "/out/d3"),
+      toTextFile(d4, FILE_DIR + "/out/d4")
+    )
   }
 
   def noReducerTest() = {
     val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
     val d1: DList[(Int, Iterable[String])] = d0.groupByKey
 
-    persist(toTextFile(d1, FILE_DIR + "/d1"))
+    persist(toTextFile(d1, FILE_DIR + "/out/d1"))
   }
 
   def bypassInputChannelTest() = {
@@ -120,7 +122,7 @@ object LanguageTest {
     val d1: DList[(Int, Iterable[String])] = d0.groupByKey
     val d2: DList[(Int, Iterable[Iterable[String]])] = d1.groupByKey
 
-    persist(toTextFile(d2, FILE_DIR + "/d2"))
+    persist(toTextFile(d2, FILE_DIR + "/out/d2"))
   }
 
   /** Test out fusion of flattens and flatMap. */
@@ -162,6 +164,5 @@ object LanguageTest {
     println("-------------- join -------------"); join()
     println("------------ graphTest ----------"); graphTest()
     println("----- bypassInputChannelTest ----"); bypassInputChannelTest()
-    println("---------- optimiseTest ---------"); optimiseTest()
   }
 }
