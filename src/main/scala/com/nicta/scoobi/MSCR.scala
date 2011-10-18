@@ -11,15 +11,26 @@ object MSCRGraph {
    * the @convert@ method. See method @DList.persist@
    */
   def apply(ci: ConvertInfo): MSCRGraph = {
-    def makeFromPersister(d: Smart.DList[_], p: Smart.Persister[_]): OutputStore =
-      p.mkOutputStore(ci.getASTNode(d))
-    def f(d: Smart.DList[_], ps: Set[Smart.Persister[_]]): Traversable[OutputStore] =
-      ps.map{makeFromPersister(d,_)}
+    val mscrs = ci.mscrs.map{_.convert(ci)}.toSet
 
-    val outputStores: Set[OutputStore] =
-      ci.outMap.foldLeft(Set(): Set[OutputStore]){ case (s, (d,p)) => s ++ f(d,p)}
+    val outputStores = {
+      def toOutputStore(ds: DataStore with DataSink): Option[OutputStore] = {
+        if ( ds.isInstanceOf[OutputStore] ) {
+          Some(ds.asInstanceOf[OutputStore])
+        } else {
+          None
+        }
+      }
 
-    new MSCRGraph(outputStores, ci.mscrs.map{_.convert(ci)}.toSet)
+      def outputsOf(oc: OutputChannel): Set[DataStore with DataSink] = oc match {
+        case GbkOutputChannel(outputs,_,_,_) => outputs
+        case BypassOutputChannel(outputs,_)  => outputs
+      }
+
+      mscrs.flatMap{mscr => mscr.outputChannels.flatMap{outputsOf(_).flatMap{toOutputStore(_).toList}}}
+    }
+
+    new MSCRGraph(outputStores, mscrs)
   }
 
 }

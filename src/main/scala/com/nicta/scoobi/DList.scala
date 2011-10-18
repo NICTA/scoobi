@@ -101,12 +101,15 @@ object DList {
     }
 
     val ds = outMap.keys
-    val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
 
+    val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
     val ci = ConvertInfo(outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
-    // Convert the AST
-    ds.map(_.convert(ci))
-    val mscrGraph = MSCRGraph(ci)
+    /*
+     *  Convert the Smart.DList abstract syntax tree to AST.Node abstract syntax tree.
+     *  This is a side-effecting expression. The @m@ field of the @ci@ parameter is updated.
+     */
+    ds.foreach(_.convert(ci))     // Step 3 (see top of Intermediate.scala)
+    val mscrGraph = MSCRGraph(ci) // Step 4 (See top of Intermediate.scala)
 
     Executor.executePlan(mscrGraph)
   }

@@ -12,13 +12,17 @@
  * to MSCRs containing nodes of type AST.Node. This is a multi-step process that goes
  * as follows:
  *
+ * (FIXME:clarify w.r.t. DList.persist method )
+
  * 1. Creation of a DGraph data structure by introspecting the structure of the
  *    Smart.DList abstract syntax tree. (Class DList provides syntactic sugar for the real
  *    abstract syntax tree of type Smart.DList).
  * 2. Creation of an intermediate MSCRGraph data structure (Intermediate.MSCRGraph).
  *     It requires the Smart.DList abstract syntax tree and DGraph data structures as inputs.
+ *
+ *
  * 3. Conversion from the Smart.DList abstract syntax to the AST.Node abstract syntax tree.
- * 4. Conversion from intermediate MSCRGraph to the final MSCRGraph (in MSCR.scala)
+ * 4. Conversion from intermediate MSCRGraph to the final MSCRGraph (defined in MSCR.scala)
  *
  * Step 1 is required by Step 2. In order to easily discover the nodes that go into the various
  * MSCRs that make up the Intermediate.MSCRGraph a graph data structure (DGraph) is very useful.
@@ -31,9 +35,9 @@
  * Step 2 can be thought of as "drawing boxes around" Smart.DList nodes. Intermediate MSCRs
  * (and indeed MSCRs proper) contain input and output channels and these channels contain
  * references to Smart.DList nodes. All Smart.DList nodes in the abstract syntax tree should be
- * part of an MSCR in the Intermediate.MSCRGraph that is the output of this step.
- * This is not guaranteed by construction. The implementation must be carefully written to guarantee
- * this.
+ * part of exactly one MSCR in the Intermediate.MSCRGraph that is the output of this step
+ * (i.e. in a "box") This is not guaranteed by construction. The implementation must be
+ * carefully written to guarantee this.
  *
  * Step 3 converts from Smart.DList nodes to AST.Node nodes. In the process *extra* type information
  * is recovered. For example, if one is currently on a GroupByKey node then one knows that its
@@ -49,15 +53,13 @@
  * which outputs of MSCRs are intermediate data structures (to be consumed only by other MSCRs)
  * and which outputs are written to disk eventually.
  *
- * In the following sections I'll go into more detail about various topics.
- *
  * === Creating Intermediate.MSCR data structures ===
  *
  *
  * The Flume paper defines the notion of _related GroupByKey_ nodes. Two GroupByKey nodes
  * are related if they consume the same input (possibly via a Flatten node). A collection
  * of GroupByKey nodes are related if for each GroupByKey node, n, in the collection, n is related
- * to at least one other GroupByKey node.
+ * to at least one other GroupByKey node in the collection.
  *
  * See the comments on functions @mergeRelated@ and @oneStepMerge@ in object @MSCRGraph@ for
  * more detail.
@@ -205,12 +207,14 @@ object Intermediate {
      * parameter. It ensures that for each output @AST.Node@ of the converted
      * output channel there is at most one @BridgeStore@ object.
      */
-    def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink] = {
+    final def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink] = {
       val d: DList[_] = this.output
       val bridgeStores:Set[DataStore with DataSink] =
-        if ( parentMSCR.inputInOtherMSCR(d, ci.mscrs) ) {
-          Set(BridgeStore.getFromMMap(ci.getASTNode(d), ci.bridgeStoreMap))
-        } else { Set() }
+        if ( parentMSCR.connectsToOtherMSCR(d, ci.mscrs) ) {
+          Set(ci.getBridgeStore(d))
+        } else {
+          Set()
+        }
 
       val outputStores: Set[DataStore with DataSink] = ci.outMap.get(d) match {
         case Some(persisters) => persisters.map(_.mkOutputStore(ci.getASTNode(d)))
@@ -282,6 +286,10 @@ object Intermediate {
      /*
       * Find the inputs to this channel. If there is a Flatten node then it is the parents of this
       * node. Otherwise it is the parent of the GroupByKey node
+      *
+      * TODO: This could just as easily have been done by pattern matching on the nodes.
+      * In fact, predecessors in the DGraph data structure are only there for
+      * convenience rather than necessity.
       */
      def inputs(g: DGraph): Iterable[DList[_]] = {
        (this.flatten match {
@@ -302,13 +310,13 @@ object Intermediate {
         mkString(header,",\n" + " " * header.length , ")")
       }
 
-      def output = reducer match {
-        case Some(r) => r
-        case None => combiner match {
-          case Some(c) => c
-          case None => groupByKey
-        }
+    def output = reducer match {
+      case Some(r) => r
+      case None => combiner match {
+        case Some(c) => c
+        case None => groupByKey
       }
+    }
 
     def convert(parentMSCR: MSCR, ci: ConvertInfo): CGbkOutputChannel[DataStore with DataSink] = {
       val crPipe:CRPipe = combiner match {
@@ -327,7 +335,7 @@ object Intermediate {
         }
       }
       val fltn: Option[AST.Flatten[_]] = flatten.map{ci.getASTFlatten(_)}
-      val gbk: AST.GroupByKey[_,_] = ci.getASTGroupByKey(groupByKey)
+      val gbk: AST.GroupByKey[_,_]     = ci.getASTGroupByKey(groupByKey)
       val outputs: Set[DataStore with DataSink] = dataStoreOutputs(parentMSCR, ci)
 
       CGbkOutputChannel(outputs, fltn, gbk, crPipe)
@@ -390,7 +398,7 @@ object Intermediate {
      * Checks whether a given node is an output from this MSCR and is input to another another.
      * The parameter @mscrs@ may or may not include this MSCR
      */
-    def inputInOtherMSCR(d: DList[_], mscrs: Iterable[MSCR]) =
+    def connectsToOtherMSCR(d: DList[_], mscrs: Iterable[MSCR]) =
       mscrs.exists(_.hasInput(d)) && !hasInput(d) && hasOutput(d)
 
     def convert(ci: ConvertInfo): CMSCR = {
@@ -411,28 +419,28 @@ object Intermediate {
     *    have bypass output channels but they are discovered in step 2.
     *    See method @outputChannelsForRelatedGBKs@ for more detail.
     *
-    * 2. Create input channel for each GroupByKey node as well as @BypassOutputChannel@s. The input
+    * 2. Create input channels for each GroupByKey node as well as @BypassOutputChannel@s. The input
     *    channels will be of type
-    *    MapperInputChannel or IdInputChannel depending on whether the inputs to the
+    *    @MapperInputChannel@ or @IdInputChannel@ depending on whether the inputs to the
     *    GroupByKey node are FlatMap nodes (possibly through a Flatten) or not. The
     *    @BypassOutputChannel@s are created for outputs of the @InputChannel@s that are
-    *    required by other MSCRs or as outputs of the execution plan in general.
+    *    required by other MSCRs or as outputs of the Execution Plan.
     */
     def apply(g: DGraph, relatedGBKs: Set[DList[_]]): MSCR = {
 
-      def flatMapsToFuse(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
+      def flatMapSiblings(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
         d match {
           case FlatMap(input,_) => {
             g.succs.get(input) match {
-              case Some(succs) => succs.toList.map(getFlatMap(_).toList).flatten
+              case Some(succs) => succs.toList.flatMap(getFlatMap(_).toList)
               case None        => List()
             }
           }
-          case _ => throw new RuntimeException("Can't call flatMapsToFuse on non-flatMap node")
+          case _ => throw new RuntimeException("Can't call flatMapSiblings on non-flatMap node")
         }
       }
 
-      def canFuse(d: DList[_], g: DGraph): Boolean = flatMapsToFuse(d,g).length > 1
+      def hasSiblings(d: DList[_], g: DGraph): Boolean = flatMapSiblings(d,g).length > 1
 
       /*
        * This method creates a @GbkOutputChannel@ for each set of related @GroupByKey@s.
@@ -452,15 +460,15 @@ object Intermediate {
        * satisifies the following checks we add it as a "reducer".
        *  - it has no successors. If it does then it should be in the input channel of another
        *    MSCR
-       *  - it cannot be "fused" with sibling @FlatMap@ nodes. Again, this means it should be in
-       *    another MSCR.
+       *  - it has no sibling @FlatMap@ nodes. Again, this means it should be in
+       *    another MSCR (in a MapperInputChannel)
        *
-       * (I will note that perhaps this conditions are too restrictive!)
+       * (Note: Perhaps this condition is too restrictive!)
        *
        */
       def outputChannelsForRelatedGBKs(gbks: Set[DList[_]], g: DGraph): Set[GbkOutputChannel] = {
-        val initOCs = gbks.foldLeft(Set(): Set[(GbkOutputChannel,DList[_])])
-                                   { (s,gbk) => s + ((GbkOutputChannel(gbk), gbk)) }
+        val initOCs = gbks.foldLeft(Set(): Set[GbkOutputChannel])
+                                   { (s,gbk) => s + (GbkOutputChannel(gbk)) }
 
         def getSingleSucc(d: DList[_]): Option[DList[_]] =
           g.succs.get(d) match {
@@ -468,43 +476,43 @@ object Intermediate {
             case None    => None
           }
 
-        def addFlatten(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+        def addFlatten(oc: GbkOutputChannel): GbkOutputChannel = {
           val maybeOC =
-            for { s       <- g.preds.get(gbk)
+            for { s       <- g.preds.get(oc.groupByKey)
                   p       <- Some(s.toList.head) // Assumes GBK has predecessor. It must.
                   flatten <- getFlatten(p)
             } yield oc.addFlatten(flatten)
           maybeOC.getOrElse(oc)
         }
 
-        def addCombinerAndOrReducer(gbk: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
-          def addReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
+        def addCombinerAndOrReducer(oc: GbkOutputChannel): GbkOutputChannel = {
+          def addTheReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
             val maybeOC =
               for { d_              <- getSingleSucc(d)
                     reducer         <- getFlatMap(d_)
                     hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
-                    canAdd          <- Some(!canFuse(reducer,g) && hasNoSuccessors)
+                    canAdd          <- Some(!hasSiblings(reducer,g) && hasNoSuccessors)
               } yield (if (canAdd) { oc.addReducer(reducer)} else { oc })
             maybeOC.getOrElse(oc)
           }
 
           val maybeOC =
             for {
-              d <- getSingleSucc(gbk)
+              d <- getSingleSucc(oc.groupByKey)
               combiner <- getCombine(d)
-            } yield addReducer(combiner, oc.addCombiner(combiner))
-          maybeOC.getOrElse(addReducer(gbk,oc))
+            } yield addTheReducer(combiner, oc.addCombiner(combiner))
+          maybeOC.getOrElse(addTheReducer(oc.groupByKey, oc))
         }
-
 
         /*
          * Adds Flattens, Combiners, Reducers for output channels
          */
-        def addNodes(oc: GbkOutputChannel, gbk: DList[_]): GbkOutputChannel = {
-          addFlatten(gbk, addCombinerAndOrReducer(gbk, oc))
+        def addNodes(oc: GbkOutputChannel): GbkOutputChannel = {
+          val newOC = addCombinerAndOrReducer(oc)
+          addFlatten(newOC)
         }
 
-        initOCs.foldLeft(Set(): Set[GbkOutputChannel]){case (s,(oc,gbk)) => s + addNodes(oc,gbk)}
+        initOCs.foldLeft(Set(): Set[GbkOutputChannel]){case (s,oc) => s + addNodes(oc)}
 
       }
 
@@ -517,7 +525,13 @@ object Intermediate {
        * the Execution Plan outputs OR it it is NOT the input to any of the @GbkOutputChannel@s
        *
        */
-      def addInputChannel(g: DGraph, ocs: Set[GbkOutputChannel], d: DList[_]) = {
+
+       // FIXME: Avoid double-up of MapperInputChannels and BypassOutputChannels
+
+
+      def addInputChannels(g: DGraph, ocs: Set[GbkOutputChannel], inputs: Set[DList[_]]):
+                          (Set[InputChannel], Set[BypassOutputChannel]) = {
+
 
         def isBypass(fm: FlatMap[_,_]): Boolean = {
           def isInExecutionPlanOutputs(d: DList[_]) = g.outputs.contains(d)
@@ -527,23 +541,43 @@ object Intermediate {
         def bypassChan(fm: FlatMap[_,_]) =
           if ( isBypass(fm) ) { Some (BypassOutputChannel(fm))} else { None }
 
-        d match {
-          case fm@FlatMap(_,_) => {
-            val fused = flatMapsToFuse(d, g)
-            val bypassChannels = fused.map(bypassChan(_).toList).flatten
-            (MapperInputChannel(fused), bypassChannels)
+
+        /* One of the first times I've used vars in Scala code */
+        var siblingSets: Set[Set[FlatMap[_,_]]] = Set()
+        var nonFlatMaps: Set[DList[_]]          = Set()
+
+        def addSiblingsSetOrNonFlatMap(d: DList[_]): Unit = {
+          d match {
+            case fm@FlatMap(_,_) => {
+               val siblings = flatMapSiblings(d, g).toSet
+               siblingSets += siblings
+            }
+            case _ => nonFlatMaps += d
           }
-          case _ => (IdInputChannel(d), List())
         }
+
+        inputs.foreach(addSiblingsSetOrNonFlatMap)
+
+        def mkInputChannelAndBypassOutputChannels(siblings: Set[FlatMap[_,_]]):
+                                                 (InputChannel, Set[BypassOutputChannel]) = {
+          val bypassChannels = siblings.flatMap(bypassChan(_))
+           (MapperInputChannel(siblings.toList), bypassChannels)
+        }
+
+        val idInputChannels = nonFlatMaps.map{IdInputChannel}
+
+        val (ics, bpocs) = siblingSets.map{mkInputChannelAndBypassOutputChannels}.unzip
+        (ics ++ idInputChannels, bpocs.flatten)
       }
 
-      /* Step 1*/
-      val ocs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
-      val allInputs = ocs.flatMap(_.inputs(g))
+      /* Step 1 */
+      val gbkOCs    = outputChannelsForRelatedGBKs(relatedGBKs, g)
+      // Get all the inputs of the output channels.
+      val allInputs = gbkOCs.flatMap(_.inputs(g))
       /* Step 2 */
-      val (inputChannels, extraChannels) = allInputs.map(addInputChannel(g, ocs, _)).unzip
+      val (inputChannels, bypassOutputChannels) = addInputChannels(g, gbkOCs, allInputs)
 
-      new MSCR(inputChannels.toSet, ocs ++ extraChannels.flatten.toSet)
+      new MSCR(inputChannels, gbkOCs ++ bypassOutputChannels)
 
     }
   }
@@ -586,7 +620,7 @@ object Intermediate {
         ps match {
           case p :: ps => {
             val (p_, ps_) = oneStepMerge(p, ps)
-            if (p == p_)
+            if (p == p_) // Fixed point reached. No more relatedness for p.
               p_ :: mergeRelated(ps_)
             else
               mergeRelated(p_ :: ps_)
@@ -596,17 +630,17 @@ object Intermediate {
       }
 
       /*
-       *  @oneStepMerge@ is a helper function which helps create maximally sized relate-node-records.
+       * @oneStepMerge@ is a helper function which helps create maximally sized relate-node-records.
        * The first argument @p@ is the _current_ relate-node-record. @oneStepMerge@ will
        * traverse through the second argument @ps@ (a list of relate-node-records)
        * seeing if the input sets of each relate-node-record overlaps with the current
-       * relate-node-records' input set.
+       * relate-node-records input set.
        *
        * If any do these are removed and *merged* with the _current_ related-node-record.
        * The output of this function is a pair of the new current related-node-record and
        * the remanining disjoint related-node-records.
        *
-       * @oneStepMerge@ is  repeatedly called by @mergeRelated@ until a fixed-point is reached
+       * @oneStepMerge@ is repeatedly called by @mergeRelated@ until a fixed-point is reached
        * i.e. until the current related-node-record does not change in size.
        *
        * Example:
@@ -645,7 +679,7 @@ object Intermediate {
 
         def flatMapInputs(dlist: DList[_]): Set[DList[_]] = {
           dlist match {
-            case Flatten(ds)  => ds.filter(isFlatMap).toSet
+            case Flatten(ds)  => ds.filter(isFlatMap).flatMap(flatMapInputs(_)).toSet
             case FlatMap(d,_) => Set(d)
             case _            => Set()
           }

@@ -6,6 +6,12 @@ package com.nicta.scoobi
 
 object DGraph {
 
+  /*
+   * Takes the outputs of the Execution Plan and returns a DGraph.
+   * The DGraph data structure makes it easy to navigate the
+   * abstract syntax tree. This is invaluable in determining
+   * the boundaries of intermediate MSCRs (see Intermediate.scala)
+   */
   def apply(outputs: Iterable[Smart.DList[_]]): DGraph = {
     /*
      * Add a node as an @input@ for the graph if it has no predecessors

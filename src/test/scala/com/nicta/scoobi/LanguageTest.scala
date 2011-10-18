@@ -125,6 +125,21 @@ object LanguageTest {
     persist(toTextFile(d2, FILE_DIR + "/out/d2"))
   }
 
+  def flatMapSiblingsTest() = {
+    val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+    val d02: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+    val d0_0: DList[(Int, String)] = d0.flatMap{case (i,str) => List((i, str + " for d0_0"))}
+    val d0_1: DList[(Int, String)] = d0.flatMap{case (i,str) => List((i, str + " for d0_1"))}
+    val d1: DList[(Int, String)] = d0_0 ++ d0_1
+    val d2: DList[(Int, Iterable[String])] = d1.groupByKey
+    val d02_0: DList[(Int, String)] = d02.flatMap{case (i,str) => List((i, str + "for d02_0"))}
+    val d3: DList[(Int, Iterable[String])] = d02_0.groupByKey
+
+    persist(toTextFile(d2, FILE_DIR + "/fms-d2"),
+            toTextFile(d3, FILE_DIR + "/fms-d3"))
+  }
+
+
   /** Test out fusion of flattens and flatMap. */
   def optimiseTest() = {
     import com.nicta.scoobi.Intermediate._
@@ -164,5 +179,6 @@ object LanguageTest {
     println("-------------- join -------------"); join()
     println("------------ graphTest ----------"); graphTest()
     println("----- bypassInputChannelTest ----"); bypassInputChannelTest()
+    println("---------- flatMapSiblingsTest ---------"); flatMapSiblingsTest()
   }
 }

@@ -48,7 +48,6 @@ abstract class InputStore(n: AST.Load[_]) extends DataStore(n) with DataSource
   * must persist. A single output channel can have multiple output stores. */
 abstract class OutputStore(n: AST.Node[_]) extends DataStore(n) with DataSink
 
-
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
 final case class BridgeStore(n: AST.Node[_], val path: Path) extends DataStore(n) with DataSource with DataSink {
@@ -81,16 +80,6 @@ object BridgeStore {
     BridgeStore(node, tmpPath)
   }
 
-  def getFromMMap(n: AST.Node[_], m: MMap[AST.Node[_], BridgeStore]): BridgeStore = {
-    m.get(n) match {
-      case Some(bs) => bs
-      case None     => {
-        val newBS: BridgeStore = BridgeStore(n)
-        m += ((n, newBS))
-        newBS
-      }
-    }
-  }
 
 
 }

@@ -80,39 +80,39 @@ object Smart {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Conversion:
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def insert(ci: ConvertInfo, n: AST.Node[A]): AST.Node[A] = {
-      ci.m += ((this, n))
+    final def insert(ci: ConvertInfo, n: AST.Node[A]): AST.Node[A] = {
+      ci.astMap += ((this, n))
       n
     }
 
-    def insert2[K : Manifest : HadoopWritable : Ordering,
+    final def insert2[K : Manifest : HadoopWritable : Ordering,
                 V : Manifest : HadoopWritable]
                 (ci: ConvertInfo, n: AST.Node[(K,V)] with KVLike[K,V]):
                 AST.Node[(K,V)] with KVLike[K,V] = {
-      ci.m += ((this,n))
+      ci.astMap += ((this,n))
       n
     }
 
-    def insert3[K : Manifest : HadoopWritable : Ordering,
-                V : Manifest : HadoopWritable]
-                (ci: ConvertInfo, n: AST.Node[(K,Iterable[V])] with KVLike[K,Iterable[V]]):
-                AST.Node[(K,Iterable[V])] with KVLike[K,Iterable[V]] = {
-      ci.m += ((this,n))
-      n
-    }
+    def dataSource(ci: ConvertInfo): DataStore with DataSource = ci.getBridgeStore(this)
 
-
-    def dataSource(ci: ConvertInfo): DataStore with DataSource = {
-      BridgeStore.getFromMMap(ci.getASTNode(this), ci.bridgeStoreMap)
-    }
-
-    def convert(ci: ConvertInfo): AST.Node[A]  = {
-      val maybeN: Option[AST.Node[_]] = ci.m.get(this)
+    final def convert(ci: ConvertInfo): AST.Node[A]  = {
+      val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
       maybeN match {
         case Some(n) => n.asInstanceOf[AST.Node[A]] // Run-time cast. Shouldn't fail though.
         case None    => convertNew(ci)
       }
     }
+
+    final def convert2[K : Manifest : HadoopWritable : Ordering,
+                 V : Manifest : HadoopWritable]
+                 (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]  = {
+      val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
+      maybeN match {
+        case Some(n) => n.asInstanceOf[AST.Node[(K,V)] with KVLike[K,V]] // Run-time cast. Shouldn't fail though.
+        case None    => convertNew2(ci)
+      }
+    }
+
 
     def convertNew(ci: ConvertInfo): AST.Node[A]
 
@@ -289,14 +289,14 @@ object Smart {
     // Conversion
     // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = {
-      insert(ci, AST.GroupByKey(in.convertNew2(ci)))
-      }
+      insert(ci, AST.GroupByKey(in.convert2(ci)))
+    }
 
     def convertAux[A: Manifest : HadoopWritable : Ordering,
               B: Manifest : HadoopWritable]
               (ci: ConvertInfo, d: DList[(A,B)]):
               AST.Node[(A, Iterable[B])] with KVLike[A, Iterable[B]] = {
-         insert2(ci, new AST.GroupByKey[A,B](d.convertNew2(ci)) with KVLike[A, Iterable[B]] {
+         insert2(ci, new AST.GroupByKey[A,B](d.convert2(ci)) with KVLike[A, Iterable[B]] {
            def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[A,Iterable[B]](tags)})
       }
 
@@ -370,7 +370,7 @@ object Smart {
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
        val c: Combine[K1,V1] = this.asInstanceOf[Combine[K1,V1]]
 
-       insert2(ci, new AST.Combiner[K1,V1](c.in.convertNew2(ci), c.f) with KVLike[K1,V1] {
+       insert2(ci, new AST.Combiner[K1,V1](c.in.convert2(ci), c.f) with KVLike[K1,V1] {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K1,V1](tags)})
 
     }
@@ -440,7 +440,7 @@ object Smart {
                     V : Manifest : HadoopWritable]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
       val d: Flatten[(K,V)] = this.asInstanceOf[Flatten[(K,V)]]
-      val ns: List[AST.Node[(K,V)]] = d.ins.map(_.convertNew2[K,V](ci))
+      val ns: List[AST.Node[(K,V)]] = d.ins.map(_.convert2[K,V](ci))
       d.insert2(ci, new AST.Flatten(ns) with KVLike[K,V] {
                       def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
@@ -589,44 +589,65 @@ object Smart {
 }
 
 
-/** Class that maintains state while the Smart graph is transformed to an AST graph. */
+/*
+ * Class that maintains state while the Smart.DList abstract syntax tree
+ * is transformed to an AST.Node abstract syntax tree.
+ *
+ * Contains mutable maps. Beware, many uses of this data structure may look pureley
+ * functional but aren't.
+ *
+ */
 class ConvertInfo(val outMap: Map[Smart.DList[_], Set[Smart.Persister[_]]],
                   val mscrs: Iterable[Intermediate.MSCR],
                   val g: DGraph,
-                  val m: MMap[Smart.DList[_], AST.Node[_]],
+                  val astMap: MMap[Smart.DList[_], AST.Node[_]],
                   /* A map of AST nodes to BridgeStores*/
                   val bridgeStoreMap: MMap[AST.Node[_], BridgeStore]
                   ) {
 
-  def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = m.get(d) match {
+  def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = astMap.get(d) match {
      case Some(n) => n.asInstanceOf[AST.Node[A]]
-     case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+     case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
   }
 
-  def getASTCombiner[A,B](d: Smart.DList[_]): AST.Combiner[A,B] = m.get(d) match {
+  def getASTCombiner[A,B](d: Smart.DList[_]): AST.Combiner[A,B] = astMap.get(d) match {
     case Some(n) => n.asInstanceOf[AST.Combiner[A,B]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
   }
 
-  def getASTReducer[A,B,C](d: Smart.DList[_]): AST.Reducer[A,B,C] = m.get(d) match {
+  def getASTReducer[A,B,C](d: Smart.DList[_]): AST.Reducer[A,B,C] = astMap.get(d) match {
     case Some(n) => n.asInstanceOf[AST.Reducer[A,B,C]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
   }
 
-  def getASTGbkReducer[A,B,C](d: Smart.DList[_]): AST.GbkReducer[A,B,C] = m.get(d) match {
+  def getASTGbkReducer[A,B,C](d: Smart.DList[_]): AST.GbkReducer[A,B,C] = astMap.get(d) match {
     case Some(n) => n.asInstanceOf[AST.GbkReducer[A,B,C]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
   }
 
-  def getASTFlatten[A](d: Smart.DList[_]): AST.Flatten[A] = m.get(d) match {
+  def getASTFlatten[A](d: Smart.DList[_]): AST.Flatten[A] = astMap.get(d) match {
     case Some(n) => n.asInstanceOf[AST.Flatten[A]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
   }
 
-  def getASTGroupByKey[K,V](d: Smart.DList[_]): AST.GroupByKey[K,V] = m.get(d) match {
+  def getASTGroupByKey[K,V](d: Smart.DList[_]): AST.GroupByKey[K,V] = astMap.get(d) match {
     case Some(n) => n.asInstanceOf[AST.GroupByKey[K,V]]
-    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + m)
+    case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
   }
+
+  def getBridgeStore(d: Smart.DList[_]): BridgeStore = {
+    val n: AST.Node[_] = getASTNode(d)
+    bridgeStoreMap.get(n) match {
+      case Some(bs) => bs
+      case None     => {
+        val newBS: BridgeStore = BridgeStore(n)
+        bridgeStoreMap += ((n, newBS))
+        newBS
+      }
+    }
+  }
+
+
 }
 
 
