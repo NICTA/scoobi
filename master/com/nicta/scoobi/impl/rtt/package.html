@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.impl.rtt</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a></p>
+        <h1>rtt</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="kind">package</span>
+      <span class="symbol"> 
+        <span class="name">rtt</span>
+        
+        
+      </span>
+      </h4>
+      
+          <div class="fullcommenttop" id="comment"></div>
+        
+
+      <div id="template">
+
+        <div id="mbrsel">
+          <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+          
+          
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+
+        
+
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ClassBuilder" data-isabs="true">
+      <a id="ClassBuilder:ClassBuilder"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="ClassBuilder.html"><span class="name">ClassBuilder</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A class for building a class at run-time.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.RuntimeClass" data-isabs="false">
+      <a id="RuntimeClass:RuntimeClass"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="RuntimeClass.html"><span class="name">RuntimeClass</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A class represnting a class that has been generated at run-time.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ScoobiWritable" data-isabs="true">
+      <a id="ScoobiWritable:ScoobiWritable[A]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="ScoobiWritable.html"><span class="name">ScoobiWritable</span></a>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="result"> extends Writable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The super-class of all &quot;value&quot; types used in Hadoop jobs.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ScoobiWritableClassBuilder" data-isabs="false">
+      <a id="ScoobiWritableClassBuilder:ScoobiWritableClassBuilder"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="ScoobiWritableClassBuilder.html"><span class="name">ScoobiWritableClassBuilder</span></a>
+        
+        <span class="result"> extends ClassBuilder</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A ScoobiWritable subclass is constructed based on a WireFormat typeclass
+model imiplicit parameter.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.Tagged" data-isabs="true">
+      <a id="Tagged:Tagged"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="Tagged.html"><span class="name">Tagged</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A heterogenous type.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedKey" data-isabs="true">
+      <a id="TaggedKey:TaggedKey"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedKey.html"><span class="name">TaggedKey</span></a>
+        
+        <span class="result"> extends Tagged with WritableComparable[TaggedKey]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A tagged value for Hadoop keys.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedKeyClassBuilder" data-isabs="false">
+      <a id="TaggedKeyClassBuilder:TaggedKeyClassBuilder"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedKeyClassBuilder.html"><span class="name">TaggedKeyClassBuilder</span></a>
+        
+        <span class="result"> extends TaggedValueClassBuilder</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Class for building TaggedKey classes at runtime.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedPartitioner" data-isabs="true">
+      <a id="TaggedPartitioner:TaggedPartitioner"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedPartitioner.html"><span class="name">TaggedPartitioner</span></a>
+        
+        <span class="result"> extends Partitioner[TaggedKey, TaggedValue]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Custom paritioner for tagged key-values.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedPartitionerClassBuilder" data-isabs="false">
+      <a id="TaggedPartitionerClassBuilder:TaggedPartitionerClassBuilder"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedPartitionerClassBuilder.html"><span class="name">TaggedPartitionerClassBuilder</span></a>
+        
+        <span class="result"> extends ClassBuilder</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Class for building TaggedPartitioner classes at runtime.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedValue" data-isabs="true">
+      <a id="TaggedValue:TaggedValue"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedValue.html"><span class="name">TaggedValue</span></a>
+        
+        <span class="result"> extends Tagged with Writable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A tagged value for Hadoop values.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedValueClassBuilder" data-isabs="false">
+      <a id="TaggedValueClassBuilder:TaggedValueClassBuilder"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedValueClassBuilder.html"><span class="name">TaggedValueClassBuilder</span></a>
+        
+        <span class="result"> extends ClassBuilder</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Class for building TaggedValue classes at runtime.</p>
+    </li></ol>
+            </div>
+        
+        
+
+        <div class="values members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ScoobiWritable" data-isabs="false">
+      <a id="ScoobiWritable:ScoobiWritable"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="ScoobiWritable$.html"><span class="name">ScoobiWritable</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Constructs a subclass of ScoobiWritable dynamically.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedKey" data-isabs="false">
+      <a id="TaggedKey:TaggedKey"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="TaggedKey$.html"><span class="name">TaggedKey</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedKey.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedPartitioner" data-isabs="false">
+      <a id="TaggedPartitioner:TaggedPartitioner"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="TaggedPartitioner$.html"><span class="name">TaggedPartitioner</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedPartitioner.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedValue" data-isabs="false">
+      <a id="TaggedValue:TaggedValue"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="TaggedValue$.html"><span class="name">TaggedValue</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion object for dynamically constructing a subclass of TaggedValue.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+
+      </div>
+      
+      <div id="tooltip"></div>
+      
+    </body>
+      </html>

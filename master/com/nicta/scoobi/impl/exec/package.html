@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.impl.exec</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a></p>
+        <h1>exec</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="kind">package</span>
+      <span class="symbol"> 
+        <span class="name">exec</span>
+        
+        
+      </span>
+      </h4>
+      
+          <div class="fullcommenttop" id="comment"></div>
+        
+
+      <div id="template">
+
+        <div id="mbrsel">
+          <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+          
+          
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+
+        
+
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore" data-isabs="false">
+      <a id="BridgeStore:BridgeStore"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="BridgeStore.html"><span class="name">BridgeStore</span></a>
+        
+        <span class="params">(<span name="n">n: com.nicta.scoobi.impl.plan.AST.Node[_]</span>, <span name="path">path: Path</span>)</span><span class="result"> extends DataStore with DataSource with DataSink with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A bridge store is any data that moves between MSCRs.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat" data-isabs="false">
+      <a id="ChannelInputFormat:ChannelInputFormat[K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="ChannelInputFormat.html"><span class="name">ChannelInputFormat</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends InputFormat[K, V]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An input format that delgates to multiple input formats, one for each
+input channel.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.CombinerLike" data-isabs="true">
+      <a id="CombinerLike:CombinerLike[V]"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="CombinerLike.html"><span class="name">CombinerLike</span></a>
+        <span class="tparams">[<span name="V">V</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A producer of a TaggedCombiner.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob" data-isabs="false">
+      <a id="MapReduceJob:MapReduceJob"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="MapReduceJob.html"><span class="name">MapReduceJob</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A class that defines a single Hadoop MapRedcue job.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapperLike" data-isabs="true">
+      <a id="MapperLike:MapperLike[A, K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="MapperLike.html"><span class="name">MapperLike</span></a>
+        <span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A prodcuer of a TaggedMapper.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrCombiner" data-isabs="false">
+      <a id="MscrCombiner:MscrCombiner[V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="MscrCombiner.html"><span class="name">MscrCombiner</span></a>
+        <span class="tparams">[<span name="V">V</span>]</span>
+        <span class="result"> extends Reducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Hadoop Combiner class for an MSCR.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrMapper" data-isabs="false">
+      <a id="MscrMapper:MscrMapper[A, K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="MscrMapper.html"><span class="name">MscrMapper</span></a>
+        <span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends Mapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Hadoop Mapper class for an MSCR.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer" data-isabs="false">
+      <a id="MscrReducer:MscrReducer[K, V, B]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="MscrReducer.html"><span class="name">MscrReducer</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
+        <span class="result"> extends Reducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Hadoop Reducer class for an MSCR.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ReducerLike" data-isabs="true">
+      <a id="ReducerLike:ReducerLike[K, V, B]"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="ReducerLike.html"><span class="name">ReducerLike</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A producer of a TaggedReducer.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedCombiner" data-isabs="true">
+      <a id="TaggedCombiner:TaggedCombiner[V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedCombiner.html"><span class="name">TaggedCombiner</span></a>
+        <span class="tparams">[<span name="V">V</span>]</span>
+        <span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A wrapper for a 'combine' function tagged for a specific output channel.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedIdentityMapper" data-isabs="false">
+      <a id="TaggedIdentityMapper:TaggedIdentityMapper[K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedIdentityMapper.html"><span class="name">TaggedIdentityMapper</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends TaggedMapper[(K, V), K, V]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A TaggedMapper that is an identity mapper.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedIdentityReducer" data-isabs="false">
+      <a id="TaggedIdentityReducer:TaggedIdentityReducer[B]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedIdentityReducer.html"><span class="name">TaggedIdentityReducer</span></a>
+        <span class="tparams">[<span name="B">B</span>]</span>
+        <span class="result"> extends TaggedReducer[Int, B, B]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A TaggedReducer that is an identity reducer.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedInputSplit" data-isabs="false">
+      <a id="TaggedInputSplit:TaggedInputSplit"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedInputSplit.html"><span class="name">TaggedInputSplit</span></a>
+        
+        <span class="result"> extends InputSplit</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A wrapper around an InputSplit that is tagged with an input channel id.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedMapper" data-isabs="true">
+      <a id="TaggedMapper:TaggedMapper[A, K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedMapper.html"><span class="name">TaggedMapper</span></a>
+        <span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A wrapper for a 'map' function tagged for a specific output channel.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedReducer" data-isabs="true">
+      <a id="TaggedReducer:TaggedReducer[K, V, B]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TaggedReducer.html"><span class="name">TaggedReducer</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
+        <span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A wrapper for a 'reduce' function tagged for a specific output channel.</p>
+    </li></ol>
+            </div>
+        
+        
+
+        <div class="values members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore" data-isabs="false">
+      <a id="BridgeStore:BridgeStore"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="BridgeStore$.html"><span class="name">BridgeStore</span></a>
+        
+        <span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion object for automating the creation of random temporary paths as the
+location for bridge stores.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat" data-isabs="false">
+      <a id="ChannelInputFormat:ChannelInputFormat"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="ChannelInputFormat$.html"><span class="name">ChannelInputFormat</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Object that allows for channels with different input format requirements
+to be specified.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache" data-isabs="false">
+      <a id="DistCache:DistCache"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="DistCache$.html"><span class="name">DistCache</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Faciliate making an object available to all tasks (mappers, reducers, etc).</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Executor" data-isabs="false">
+      <a id="Executor:Executor"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="Executor$.html"><span class="name">Executor</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Object for executing a Scoobi &quot;plan&quot;.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob" data-isabs="false">
+      <a id="MapReduceJob:MapReduceJob"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="MapReduceJob$.html"><span class="name">MapReduceJob</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.UniqueId" data-isabs="false">
+      <a id="UniqueId:UniqueId"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="UniqueId$.html"><span class="name">UniqueId</span></a>
+        
+        <span class="result"> extends UniqueInt</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+
+      </div>
+      
+      <div id="tooltip"></div>
+      
+    </body>
+      </html>

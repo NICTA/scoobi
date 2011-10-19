@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.io</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a></p>
+        <h1>io</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="kind">package</span>
+      <span class="symbol"> 
+        <span class="name">io</span>
+        
+        
+      </span>
+      </h4>
+      
+          <div class="fullcommenttop" id="comment"></div>
+        
+
+      <div id="template">
+
+        <div id="mbrsel">
+          <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+          
+          
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+
+        
+
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.DataSink" data-isabs="true">
+      <a id="DataSink:DataSink"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="DataSink.html"><span class="name">DataSink</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.DataSource" data-isabs="true">
+      <a id="DataSource:DataSource"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="DataSource.html"><span class="name">DataSource</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.DataStore" data-isabs="true">
+      <a id="DataStore:DataStore"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="DataStore.html"><span class="name">DataStore</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A data store represents data that is exterrnal to an MSCRs.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.InputStore" data-isabs="true">
+      <a id="InputStore:InputStore"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="InputStore.html"><span class="name">InputStore</span></a>
+        
+        <span class="result"> extends DataStore with DataSource</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An input store is synonomous with a 'Load' node.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.Loader" data-isabs="true">
+      <a id="Loader:Loader[A]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="Loader.html"><span class="name">Loader</span></a>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A Loader class specifies how a distributed list is materialised.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.OutputStore" data-isabs="true">
+      <a id="OutputStore:OutputStore"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="OutputStore.html"><span class="name">OutputStore</span></a>
+        
+        <span class="result"> extends DataStore with DataSink</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An output store is data that must first be computed.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.Persister" data-isabs="true">
+      <a id="Persister:Persister[A]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="Persister.html"><span class="name">Persister</span></a>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A Persister class specifies how a distributed list is persisted.</p>
+    </li></ol>
+            </div>
+        
+        
+
+        <div class="values members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.text" data-isabs="false">
+      <a id="text:text"></a>
+      <h4 class="signature">
+      <span class="kind">package</span>
+      <span class="symbol"> 
+        <a href="text/package.html"><span class="name">text</span></a>
+        
+        
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+
+      </div>
+      
+      <div id="tooltip"></div>
+      
+    </body>
+      </html>

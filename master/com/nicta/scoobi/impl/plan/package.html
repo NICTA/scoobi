@@ -1,0 +1,300 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.impl.plan</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a></p>
+        <h1>plan</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="kind">package</span>
+      <span class="symbol"> 
+        <span class="name">plan</span>
+        
+        
+      </span>
+      </h4>
+      
+          <div class="fullcommenttop" id="comment"></div>
+        
+
+      <div id="template">
+
+        <div id="mbrsel">
+          <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+          
+          
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+
+        
+
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel" data-isabs="false">
+      <a id="BypassInputChannel:BypassInputChannel[I]"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="BypassInputChannel.html"><span class="name">BypassInputChannel</span></a>
+        <span class="tparams">[<span name="I">I &lt;: DataStore with DataSource</span>]</span>
+        <span class="params">(<span name="input">input: I</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassOutputChannel" data-isabs="false">
+      <a id="BypassOutputChannel:BypassOutputChannel[O]"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a>
+        <span class="tparams">[<span name="O">O &lt;: DataStore with DataSink</span>]</span>
+        <span class="params">(<span name="outputs">outputs: Set[O]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.CRPipe" data-isabs="true">
+      <a id="CRPipe:CRPipe"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="CRPipe.html"><span class="name">CRPipe</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">ADT for the possible combiner-reducer pipeline combinations.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.CombinerReducer" data-isabs="false">
+      <a id="CombinerReducer:CombinerReducer"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="CombinerReducer.html"><span class="name">CombinerReducer</span></a>
+        
+        <span class="params">(<span name="combiner">combiner: com.nicta.scoobi.impl.plan.AST.Combiner[_, _]</span>, <span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.Reducer[_, _, _]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph" data-isabs="false">
+      <a id="DGraph:DGraph"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="DGraph.html"><span class="name">DGraph</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.GbkOutputChannel" data-isabs="false">
+      <a id="GbkOutputChannel:GbkOutputChannel[O]"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="GbkOutputChannel.html"><span class="name">GbkOutputChannel</span></a>
+        <span class="tparams">[<span name="O">O &lt;: DataStore with DataSink</span>]</span>
+        <span class="params">(<span name="outputs">outputs: Set[O]</span>, <span name="flatten">flatten: Option[com.nicta.scoobi.impl.plan.AST.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.AST.GroupByKey[_, _]</span>, <span name="crPipe">crPipe: CRPipe</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.InputChannel" data-isabs="true">
+      <a id="InputChannel:InputChannel"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="InputChannel.html"><span class="name">InputChannel</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">ADT for MSCR input channels.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.JustCombiner" data-isabs="false">
+      <a id="JustCombiner:JustCombiner"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="JustCombiner.html"><span class="name">JustCombiner</span></a>
+        
+        <span class="params">(<span name="combiner">combiner: com.nicta.scoobi.impl.plan.AST.Combiner[_, _]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.JustReducer" data-isabs="false">
+      <a id="JustReducer:JustReducer"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="JustReducer.html"><span class="name">JustReducer</span></a>
+        
+        <span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.KVLike" data-isabs="true">
+      <a id="KVLike:KVLike[K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="KVLike.html"><span class="name">KVLike</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MSCR" data-isabs="false">
+      <a id="MSCR:MSCR"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="MSCR.html"><span class="name">MSCR</span></a>
+        
+        <span class="params">(<span name="inputChannels">inputChannels: Set[InputChannel]</span>, <span name="outputChannels">outputChannels: Set[OutputChannel]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A Map-Shuffle-Combiner-Reducer.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MSCRGraph" data-isabs="false">
+      <a id="MSCRGraph:MSCRGraph"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="MSCRGraph.html"><span class="name">MSCRGraph</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel" data-isabs="false">
+      <a id="MapperInputChannel:MapperInputChannel[I]"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="MapperInputChannel.html"><span class="name">MapperInputChannel</span></a>
+        <span class="tparams">[<span name="I">I &lt;: DataStore with DataSource</span>]</span>
+        <span class="params">(<span name="input">input: I</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.OutputChannel" data-isabs="true">
+      <a id="OutputChannel:OutputChannel"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="OutputChannel.html"><span class="name">OutputChannel</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">ADT for MSCR output channels.</p>
+    </li></ol>
+            </div>
+        
+        
+
+        <div class="values members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST" data-isabs="false">
+      <a id="AST:AST"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="AST$.html"><span class="name">AST</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph" data-isabs="false">
+      <a id="DGraph:DGraph"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="DGraph$.html"><span class="name">DGraph</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Empty" data-isabs="false">
+      <a id="Empty:Empty"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="Empty$.html"><span class="name">Empty</span></a>
+        
+        <span class="result"> extends CRPipe</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate" data-isabs="false">
+      <a id="Intermediate:Intermediate"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="Intermediate$.html"><span class="name">Intermediate</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MSCR" data-isabs="false">
+      <a id="MSCR:MSCR"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="MSCR$.html"><span class="name">MSCR</span></a>
+        
+        <span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Utilities for dealing with MSCRs.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MSCRGraph" data-isabs="false">
+      <a id="MSCRGraph:MSCRGraph"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="MSCRGraph$.html"><span class="name">MSCRGraph</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart" data-isabs="false">
+      <a id="Smart:Smart"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="Smart$.html"><span class="name">Smart</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Abstract syntax of tree of primitive &quot;language&quot;.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+
+      </div>
+      
+      <div id="tooltip"></div>
+      
+    </body>
+      </html>
