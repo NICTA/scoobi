@@ -34,7 +34,7 @@ class MscrMapper[A, K, V] extends HMapper[NullWritable, ScoobiWritable[A], Tagge
 
 
   def configure(conf: JobConf) = {
-    inputs = DistributedObject.pullObject(conf, "scoobi.input.mappers").asInstanceOf[Map[Int, Set[TaggedMapper[_,_,_]]]]
+    inputs = DistCache.pullObject(conf, "scoobi.input.mappers").asInstanceOf[Map[Int, Set[TaggedMapper[_,_,_]]]]
     mappers = null
     tk = conf.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = conf.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]

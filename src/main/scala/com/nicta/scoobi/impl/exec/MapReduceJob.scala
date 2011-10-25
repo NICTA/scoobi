@@ -142,7 +142,7 @@ class MapReduceJob {
       ChannelInputFormat.addInputChannel(jobConf, ix, input.inputPath, input.inputFormat)
     }
 
-    DistributedObject.pushObject(jobConf, inputChannels map { case((_, ms), ix) => (ix, ms.toSet) } toMap, "scoobi.input.mappers")
+    DistCache.pushObject(jobConf, inputChannels map { case((_, ms), ix) => (ix, ms.toSet) } toMap, "scoobi.input.mappers")
     jobConf.setMapperClass(classOf[MscrMapper[_,_,_]])
 
 
@@ -152,7 +152,7 @@ class MapReduceJob {
       *   - use distributed cache to push all combine code out */
     if (!combiners.isEmpty) {
       val combinerMap: Map[Int, TaggedCombiner[_]] = combiners.map(tc => (tc.tag, tc)).toMap
-      DistributedObject.pushObject(jobConf, combinerMap, "scoobi.combiners")
+      DistCache.pushObject(jobConf, combinerMap, "scoobi.combiners")
       jobConf.setCombinerClass(classOf[MscrCombiner[_]])
     }
 
@@ -170,7 +170,7 @@ class MapReduceJob {
       }
     }
 
-    DistributedObject.pushObject(jobConf, reducers map { case (os, tr) => (tr.tag, (os.size, tr)) } toMap, "scoobi.output.reducers")
+    DistCache.pushObject(jobConf, reducers map { case (os, tr) => (tr.tag, (os.size, tr)) } toMap, "scoobi.output.reducers")
     jobConf.setReducerClass(classOf[MscrReducer[_,_,_]])
 
 

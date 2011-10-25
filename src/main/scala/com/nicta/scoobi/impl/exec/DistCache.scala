@@ -26,7 +26,7 @@ import com.nicta.scoobi.Scoobi
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). The
   * basic idea is to use standard Java serialization and Hadoop's distributed cache.
   * Two APIs are provided for pushing and pulling objects. */
-object DistributedObject {
+object DistCache {
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */

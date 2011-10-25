@@ -30,7 +30,7 @@ class MscrCombiner[V] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagged
   private var tv: TaggedValue = _
 
   def configure(conf: JobConf) = {
-    combiners = DistributedObject.pullObject(conf, "scoobi.combiners").asInstanceOf[Map[Int, TaggedCombiner[_]]]
+    combiners = DistCache.pullObject(conf, "scoobi.combiners").asInstanceOf[Map[Int, TaggedCombiner[_]]]
     tv = conf.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 

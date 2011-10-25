@@ -33,7 +33,7 @@ class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable
   private var conf: JobConf = _
 
   def configure(conf: JobConf) = {
-    outputs = DistributedObject.pullObject(conf, "scoobi.output.reducers").asInstanceOf[Map[Int, (Int, TaggedReducer[_,_,_])]]
+    outputs = DistCache.pullObject(conf, "scoobi.output.reducers").asInstanceOf[Map[Int, (Int, TaggedReducer[_,_,_])]]
     multipleOutputs = new MultipleOutputs(conf)
     this.conf = conf
   }
