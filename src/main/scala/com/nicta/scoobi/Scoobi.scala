@@ -23,6 +23,8 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
 import Option.{apply => ?}
 
+import com.nicta.scoobi.impl.util.JarBuilder
+
 
 /** Global Scoobi functions and values. */
 object Scoobi {

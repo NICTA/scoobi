@@ -15,11 +15,25 @@
   */
 package com.nicta.scoobi
 
+import com.nicta.scoobi.io.text._
+import com.nicta.scoobi.impl.plan.AST._
+import com.nicta.scoobi.impl.plan.MSCR
+import com.nicta.scoobi.impl.plan.MSCRGraph
+import com.nicta.scoobi.impl.plan.MapperInputChannel
+import com.nicta.scoobi.impl.plan.BypassInputChannel
+import com.nicta.scoobi.impl.plan.GbkOutputChannel
+import com.nicta.scoobi.impl.plan.BypassOutputChannel
+import com.nicta.scoobi.impl.plan.JustCombiner
+import com.nicta.scoobi.impl.plan.JustReducer
+import com.nicta.scoobi.impl.plan.CombinerReducer
+import com.nicta.scoobi.impl.plan.KVLike
+import com.nicta.scoobi.impl.exec.BridgeStore
+import com.nicta.scoobi.impl.exec.TaggedIdentityMapper
+import com.nicta.scoobi.impl.exec.Executor
+
 
 /** Test out the MSCR machinery. */
 object MscrTest {
-
-  import AST._
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Execution plan - already converted to IR.

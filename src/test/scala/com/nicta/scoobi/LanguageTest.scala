@@ -22,8 +22,8 @@ import java.io._
 object LanguageTest {
 
   import DList._
-  import TextInput._
-  import TextOutput._
+  import io.text.TextInput._
+  import io.text.TextOutput._
 
   private val FILE_DIR = "src/test/resources"
 
@@ -107,7 +107,7 @@ object LanguageTest {
   }
 
   def graphTest() = {
-    import com.nicta.scoobi.Intermediate._
+    import com.nicta.scoobi.impl.plan.Intermediate._
 
     val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
     val d2: DList[(Int, Iterable[String])] = d1.groupByKey
@@ -154,7 +154,7 @@ object LanguageTest {
 
   /** Test out fusion of flattens and flatMap. */
   def optimiseTest() = {
-    import com.nicta.scoobi.Intermediate._
+    import com.nicta.scoobi.impl.plan.Intermediate._
 
     val d1 = fromTextFile("whatever")
     val d2 = fromTextFile("whatever, again")

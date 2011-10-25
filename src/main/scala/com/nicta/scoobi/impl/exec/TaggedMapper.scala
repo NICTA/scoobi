@@ -1,0 +1,51 @@
+/**
+  * Copyright 2011 National ICT Australia Limited
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  * http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+package com.nicta.scoobi.impl.exec
+
+import java.io.Serializable
+import com.nicta.scoobi.HadoopWritable
+
+
+/** A prodcuer of a TaggedMapper. */
+trait MapperLike[A, K, V] {
+  def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, K, V]
+}
+
+
+/** A wrapper for a 'map' function tagged for a specific output channel. */
+abstract class TaggedMapper[A, K, V]
+    (val tags: Set[Int])
+    (implicit val mA: Manifest[A], val wtA: HadoopWritable[A],
+              val mK: Manifest[K], val wtK: HadoopWritable[K], val ordK: Ordering[K],
+              val mV: Manifest[V], val wtV: HadoopWritable[V])
+  extends Serializable {
+
+  /** The actual 'map' function that will be by Hadoop in the mapper task. */
+  def map(value: A): Iterable[(K, V)]
+}
+
+
+/** A TaggedMapper that is an identity mapper. */
+class TaggedIdentityMapper[K, V]
+    (tags: Set[Int])
+    (implicit mK: Manifest[K], wtK: HadoopWritable[K], ordK: Ordering[K],
+              mV: Manifest[V], wtV: HadoopWritable[V],
+              mKV: Manifest[(K, V)], wtKV: HadoopWritable[(K, V)])
+  extends TaggedMapper[(K, V), K, V](tags)(mKV, wtKV, mK, wtK, ordK, mV, wtV) {
+
+  /** Identity mapping */
+  def map(value: (K, V)): Iterable[(K, V)] = List(value)
+}

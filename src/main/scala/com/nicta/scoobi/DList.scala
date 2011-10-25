@@ -15,6 +15,14 @@
   */
 package com.nicta.scoobi
 
+import scala.collection.mutable.{Map => MMap}
+
+import com.nicta.scoobi.io.Persister
+import com.nicta.scoobi.impl.plan.Smart
+import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
+import com.nicta.scoobi.impl.plan.MSCRGraph
+import com.nicta.scoobi.impl.exec.Executor
+
 
 /** A list that is distributed accross multiple machines. */
 class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
@@ -88,34 +96,33 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
 }
 
 
+/** A class that specifies how to make a distributed list persisitent. */
+class DListPersister[A](val dl: DList[A], val persister: Persister[A])
+
+
 object DList {
-
-  import scala.collection.mutable.{Map => MMap}
-  import com.nicta.scoobi.{Intermediate => I}
-
-  /** A class that specifies how to make a distributed list persisitent. */
-  class DListPersister[A](val dl: DList[A], val persister: Smart.Persister[A])
-
 
   /** Persist one or more distributed lists. */
   def persist(outputs: DListPersister[_]*) = {
 
     /* Produce map of all unique outputs and their corresponding persisters. */
-    val rawOutMap: Map[Smart.DList[_], Set[Smart.Persister[_]]] = {
-      val emptyM: Map[Smart.DList[_], Set[Smart.Persister[_]]] = Map()
+    val rawOutMap: Map[Smart.DList[_], Set[Persister[_]]] = {
+      val emptyM: Map[Smart.DList[_], Set[Persister[_]]] = Map()
       outputs.foldLeft(emptyM)((m,p) => m + ((p.dl.ast, m.getOrElse(p.dl.ast, Set()) + p.persister)))
     }
 
     /* Optimise the plan associated with the outpus. */
-    val outMap : Map[Smart.DList[_], Set[Smart.Persister[_]]] = {
+    val outMap : Map[Smart.DList[_], Set[Persister[_]]] = {
       val optOuts: List[Smart.DList[_]] = Smart.optimisePlan(rawOutMap.keys.toList)
       (rawOutMap.toList zip optOuts) map { case ((_, p), o) => (o, p) } toMap
     }
 
     val ds = outMap.keys
 
+    import com.nicta.scoobi.impl.plan.{Intermediate => I}
     val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
     val ci = ConvertInfo(outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
+
     /*
      *  Convert the Smart.DList abstract syntax tree to AST.Node abstract syntax tree.
      *  This is a side-effecting expression. The @m@ field of the @ci@ parameter is updated.
