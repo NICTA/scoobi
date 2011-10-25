@@ -27,68 +27,6 @@ object LanguageTest {
 
   private val FILE_DIR = "src/test/resources"
 
-
-  /** Simple example demonstrating use of primitive and derived combinators. */
-  def simple() = {
-    def isEven(x: Int) = x % 2 == 0
-
-    val data = fromTextFile(FILE_DIR + "/ints.txt").map(_.toInt)
-
-    val trans = data map { _ + 1 } filter { isEven }
-    val (evens, odds) = data.partition(isEven)
-
-    persist (
-      toTextFile(trans, FILE_DIR + "/out/ints"),
-      toTextFile(evens, FILE_DIR + "/out/evens"),
-      toTextFile(odds,  FILE_DIR + "/out/odds")
-    )
-  }
-
-
-  /** Canonical 'word count' example. */
-  def wordcount() = {
-    val lines = fromTextFile(FILE_DIR + "/document.txt")
-
-    val fq: DList[(String, Int)] = lines.flatMap(_.split(" "))
-                                        .map { w => (w, 1) }
-                                        .groupByKey
-                                        .combine((_+_))
-
-    persist(toTextFile(fq, FILE_DIR + "/out/fq"))
-  }
-
-  /** Database input */
-  def avgAge() = {
-
-    def average[A](values: Iterable[A])(implicit ev: Numeric[A]) = {
-      import ev._
-      toInt(values.sum) / values.size
-    }
-
-    /* Read in lines of the form: 234242, Ben, Lever, 31. */
-    case class Person(val id: Int,
-                      val secondName: String,
-                      val firstName: String,
-                      val age: Int) extends Serializable
-
-    val persons = extractFromDelimitedTextFile(",", FILE_DIR + "/people.txt") {
-                    case id :: fN :: sN :: age :: _ => Person(id.toInt, sN, fN, age.toInt)
-                  }
-
-    val raw: DList[(Int, String, String, Int)] = fromDelimitedTextFile(",", FILE_DIR + "/people.txt")
-
-    val avgAgeForName: DList[(String, Int)] = persons.map(p => (p.firstName, p.age))
-                                                     .groupByKey
-                                                     .map{case (n, ages) => (n, average(ages))}
-
-    val rawMod = raw map { case (id, fN, sN, age) => (id, age) }
-
-    persist (
-      toTextFile(avgAgeForName, FILE_DIR + "/out/avg-age"),
-      toTextFile(rawMod, FILE_DIR + "/out/raw-mod")
-    )
-  }
-
   /** "Join" example. */
   def join() = {
     val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-names.txt")
