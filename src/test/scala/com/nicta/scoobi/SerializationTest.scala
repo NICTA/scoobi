@@ -17,39 +17,39 @@ package com.nicta.scoobi
 
 import org.scalacheck._
 import java.io._
-import HadoopWritable._
+import WireFormat._
 
 import Arbitrary.arbitrary
 
 object SerializationTest extends Properties("Serializable") {
 
-  def serialize[T : HadoopWritable](obj: T): Array[Byte] = {
+  def serialize[T : WireFormat](obj: T): Array[Byte] = {
     val bs = new ByteArrayOutputStream
     val dos = new DataOutputStream(bs)
 
-    implicitly[HadoopWritable[T]].toWire(obj, dos)
+    implicitly[WireFormat[T]].toWire(obj, dos)
 
     bs.toByteArray
   }
 
-  def deserialize[T : HadoopWritable](raw: Array[Byte]) : T = {
+  def deserialize[T : WireFormat](raw: Array[Byte]) : T = {
     val bais = new ByteArrayInputStream(raw)
     val di = new DataInputStream(bais)
-    implicitly[HadoopWritable[T]].fromWire(di)
+    implicitly[WireFormat[T]].fromWire(di)
   }
 
   case class WritableDoubleStringInt(a: Double, b: String, c: Int)
-  implicit val DoubleStringIntConversion = allowWritable(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
+  implicit val DoubleStringIntConversion = mkWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
 
   case class DefaultDoubleStringInt(a: Double, b: String, c: Int)
 
   case class WritableStringNested(a: String, b: WritableDoubleStringInt)
-  implicit val WritableStringNestedConversion = allowWritable(WritableStringNested, WritableStringNested.unapply _)
+  implicit val WritableStringNestedConversion = mkWireFormat(WritableStringNested, WritableStringNested.unapply _)
 
   case class DefaultStringNested(a: String, b: DefaultDoubleStringInt)
 
   case class IntHolder(a: Int)
-  implicit val IntHolderWritable = allowWritable(IntHolder, IntHolder.unapply _)
+  implicit val IntHolderWritable = mkWireFormat(IntHolder, IntHolder.unapply _)
 
   val genString = arbitrary[String] suchThat (_ != null)
 
@@ -88,7 +88,7 @@ object SerializationTest extends Properties("Serializable") {
 
   import Prop.forAll
 
-  def serializesCorrectly[T : HadoopWritable](x: T) : Boolean = deserialize[T](serialize(x)) == x
+  def serializesCorrectly[T : WireFormat](x: T) : Boolean = deserialize[T](serialize(x)) == x
 
   property("WritableDoubleStringInt serializes correctly") = forAll(genWritableDoubleStringInt) {
     (x: WritableDoubleStringInt) => serializesCorrectly(x)

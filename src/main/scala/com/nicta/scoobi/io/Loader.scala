@@ -15,11 +15,11 @@
   */
 package com.nicta.scoobi.io
 
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.impl.plan.AST
 
 
 /** A Loader class specifies how a distributed list is materialised. */
-abstract class Loader[A : Manifest : HadoopWritable] {
+abstract class Loader[A : Manifest : WireFormat] {
   def mkInputStore(node: AST.Load[A]): InputStore
 }

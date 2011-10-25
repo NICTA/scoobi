@@ -18,7 +18,7 @@ package com.nicta.scoobi.impl.rtt
 import org.apache.hadoop.io.Writable
 import javassist._
 
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 
 
 /** A tagged value for Hadoop values. Specifically this will be a V2 type so must
@@ -30,7 +30,7 @@ abstract class TaggedValue(tag: Int) extends Tagged(tag) with Writable {
 
 /** Companion object for dynamically constructing a subclass of TaggedValue. */
 object TaggedValue {
-  def apply(name: String, tags: Map[Int, (Manifest[_], HadoopWritable[_])]): RuntimeClass = {
+  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_])]): RuntimeClass = {
     val builder = new TaggedValueClassBuilder(name, tags)
     builder.toRuntimeClass
   }
@@ -40,7 +40,7 @@ object TaggedValue {
 /** Class for building TaggedValue classes at runtime. */
 class TaggedValueClassBuilder
     (name: String,
-     tags: Map[Int, (Manifest[_], HadoopWritable[_])])
+     tags: Map[Int, (Manifest[_], WireFormat[_])])
   extends ClassBuilder {
 
   def className = name
@@ -55,7 +55,7 @@ class TaggedValueClassBuilder
       valueField.setModifiers(Modifier.PRIVATE)
       ctClass.addField(valueField)
 
-      /* 'writerN' - HadoopWritable type class field for each tagged-type. */
+      /* 'writerN' - WireFormat type class field for each tagged-type. */
       addTypeClassModel(wt, "writer" + tag)
     }
 

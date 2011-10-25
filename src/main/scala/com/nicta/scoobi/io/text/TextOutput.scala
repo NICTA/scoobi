@@ -20,7 +20,7 @@ import org.apache.hadoop.mapred.TextOutputFormat
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.io.Persister
@@ -32,7 +32,7 @@ object TextOutput {
 
   /** Specify a distibuted list to be persisitent by storing it to disk as a
     * text file. */
-  def toTextFile[A : HadoopWritable](dl: DList[A], path: String): DListPersister[A] = {
+  def toTextFile[A : WireFormat](dl: DList[A], path: String): DListPersister[A] = {
     new DListPersister(dl, new TextPersister(path))
   }
 

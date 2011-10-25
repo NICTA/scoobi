@@ -19,7 +19,7 @@ import org.apache.hadoop.io._
 import scala.collection.mutable.{Map => MMap}
 import javassist._
 
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 
 
 /** The super-class of all "value" types used in Hadoop jobs. */
@@ -35,7 +35,7 @@ object ScoobiWritable {
 
   val builtClasses: MMap[String, RuntimeClass] = MMap.empty
 
-  def apply(name: String, m: Manifest[_], wt: HadoopWritable[_]): RuntimeClass = {
+  def apply(name: String, m: Manifest[_], wt: WireFormat[_]): RuntimeClass = {
     if (!builtClasses.contains(name)) {
       val builder = new ScoobiWritableClassBuilder(name, m, wt)
       builtClasses += (name -> builder.toRuntimeClass())
@@ -44,23 +44,23 @@ object ScoobiWritable {
     builtClasses(name)
   }
 
-  def apply[A](name: String, witness: A)(implicit m: Manifest[A], wt: HadoopWritable[A]): RuntimeClass = {
+  def apply[A](name: String, witness: A)(implicit m: Manifest[A], wt: WireFormat[A]): RuntimeClass = {
     apply(name, m, wt)
   }
 }
 
 
-/** A ScoobiWritable subclass is constructed based on a HadoopWritable typeclass
+/** A ScoobiWritable subclass is constructed based on a WireFormat typeclass
   * model imiplicit parameter. Using this model object, the Hadoop Writable methods
   * 'write' and 'readFields' can be generated. */
-class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: HadoopWritable[_]) extends ClassBuilder {
+class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: WireFormat[_]) extends ClassBuilder {
 
   def className = name
 
   def extendClass: Class[_] = classOf[ScoobiWritable[_]]
 
   def build = {
-    /* Deal with HadoopWritable type class. */
+    /* Deal with WireFormat type class. */
     addTypeClassModel(wt, "writer")
 
     /* 'write' - method to override from Writable */

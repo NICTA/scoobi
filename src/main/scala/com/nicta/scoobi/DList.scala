@@ -25,7 +25,7 @@ import com.nicta.scoobi.impl.exec.Executor
 
 
 /** A list that is distributed accross multiple machines. */
-class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
+class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.
@@ -37,7 +37,7 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
   def flatMap[B]
       (f: A => Iterable[B])
       (implicit mB:  Manifest[B],
-                wtB: HadoopWritable[B]): DList[B] = new DList(Smart.FlatMap(ast, f))
+                wtB: WireFormat[B]): DList[B] = new DList(Smart.FlatMap(ast, f))
 
   /** Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))
@@ -46,10 +46,10 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
   def groupByKey[K, V]
       (implicit ev:   Smart.DList[A] <:< Smart.DList[(K, V)],
                 mK:   Manifest[K],
-                wtK:  HadoopWritable[K],
+                wtK:  WireFormat[K],
                 ordK: Ordering[K],
                 mV:   Manifest[V],
-                wtV:  HadoopWritable[V]): DList[(K, Iterable[V])] = new DList(Smart.GroupByKey(ast))
+                wtV:  WireFormat[V]): DList[(K, Iterable[V])] = new DList(Smart.GroupByKey(ast))
 
   /** Apply an associative function to reduce the collection of values to a single value in a
     * key-value-collection distribued list. */
@@ -57,10 +57,10 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
       (f: (V, V) => V)
       (implicit ev:   Smart.DList[A] <:< Smart.DList[(K,Iterable[V])],
                 mK:   Manifest[K],
-                wtK:  HadoopWritable[K],
+                wtK:  WireFormat[K],
                 ordK: Ordering[K],
                 mV:   Manifest[V],
-                wtV:  HadoopWritable[V]): DList[(K, V)] = new DList(Smart.Combine(ast, f))
+                wtV:  WireFormat[V]): DList[(K, V)] = new DList(Smart.Combine(ast, f))
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +70,7 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
   /** For each element of the distributed list produce a new element by applying a
     * specified function. The resulting collection of elements form a new
     * distributed list. */
-  def map[B](f: A => B)(implicit mB:  Manifest[B], wtB: HadoopWritable[B]): DList[B]
+  def map[B](f: A => B)(implicit mB:  Manifest[B], wtB: WireFormat[B]): DList[B]
     = flatMap(x => List(f(x)))
 
   /** Keep elements from the distributedl list that pass a spcecified predicate function. */
@@ -81,7 +81,7 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
   def filterNot(p: A => Boolean): DList[A] = filter(p andThen (! _))
 
   /** Group the values of a distributed list according to some discriminator function. */
-  def groupBy[K : Manifest : HadoopWritable : Ordering](f: A => K): DList[(K, Iterable[A])] =
+  def groupBy[K : Manifest : WireFormat : Ordering](f: A => K): DList[(K, Iterable[A])] =
     map(x => (f(x), x)).groupByKey
 
   /** Partitions this distributed list into a pair of distributed lists according to some
@@ -91,7 +91,7 @@ class DList[A : Manifest : HadoopWritable](private val ast: Smart.DList[A]) {
 
   /** Converts a distributed list of iterable values iinto to a distributed list in which
     * all the values are concatenated. */
-  def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: HadoopWritable[B]): DList[B] =
+  def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] =
     flatMap((x: A) => x.asInstanceOf[Iterable[B]])
 }
 

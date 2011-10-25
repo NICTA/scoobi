@@ -31,7 +31,7 @@ import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapred.Reporter
 
 import com.nicta.scoobi.DList
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.InputStore
 import com.nicta.scoobi.io.Loader
@@ -49,7 +49,7 @@ object TextInput {
   /** Create a distributed list from a text file that is a number of fields deliminated
     * by some separator. Use an extractor function to pull out the required fields to
     * create the distributed list. */
-  def extractFromDelimitedTextFile[A : Manifest : HadoopWritable]
+  def extractFromDelimitedTextFile[A : Manifest : WireFormat]
       (sep: String, path: String)
       (extractFn: PartialFunction[List[String], A])
     : DList[A] = {
@@ -64,7 +64,7 @@ object TextInput {
   /** Create a distributed list from a text file that is a number of fields deliminated
     * by some separator. The type of the resultant list is determined by type inference.
     * An implicit schema must be in scope for the requried resultant type. */
-  def fromDelimitedTextFile[A : Manifest : Schema : HadoopWritable]
+  def fromDelimitedTextFile[A : Manifest : Schema : WireFormat]
       (sep: String, path: String)
     : DList[A] = {
 

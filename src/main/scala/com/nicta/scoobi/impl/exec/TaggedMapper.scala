@@ -16,7 +16,7 @@
 package com.nicta.scoobi.impl.exec
 
 import java.io.Serializable
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 
 
 /** A prodcuer of a TaggedMapper. */
@@ -28,9 +28,9 @@ trait MapperLike[A, K, V] {
 /** A wrapper for a 'map' function tagged for a specific output channel. */
 abstract class TaggedMapper[A, K, V]
     (val tags: Set[Int])
-    (implicit val mA: Manifest[A], val wtA: HadoopWritable[A],
-              val mK: Manifest[K], val wtK: HadoopWritable[K], val ordK: Ordering[K],
-              val mV: Manifest[V], val wtV: HadoopWritable[V])
+    (implicit val mA: Manifest[A], val wtA: WireFormat[A],
+              val mK: Manifest[K], val wtK: WireFormat[K], val ordK: Ordering[K],
+              val mV: Manifest[V], val wtV: WireFormat[V])
   extends Serializable {
 
   /** The actual 'map' function that will be by Hadoop in the mapper task. */
@@ -41,9 +41,9 @@ abstract class TaggedMapper[A, K, V]
 /** A TaggedMapper that is an identity mapper. */
 class TaggedIdentityMapper[K, V]
     (tags: Set[Int])
-    (implicit mK: Manifest[K], wtK: HadoopWritable[K], ordK: Ordering[K],
-              mV: Manifest[V], wtV: HadoopWritable[V],
-              mKV: Manifest[(K, V)], wtKV: HadoopWritable[(K, V)])
+    (implicit mK: Manifest[K], wtK: WireFormat[K], ordK: Ordering[K],
+              mV: Manifest[V], wtV: WireFormat[V],
+              mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
   extends TaggedMapper[(K, V), K, V](tags)(mKV, wtKV, mK, wtK, ordK, mV, wtV) {
 
   /** Identity mapping */

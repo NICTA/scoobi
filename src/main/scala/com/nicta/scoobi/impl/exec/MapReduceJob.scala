@@ -30,7 +30,7 @@ import org.apache.hadoop.io.compress.GzipCodec
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.Scoobi
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.impl.plan.AST
@@ -62,8 +62,8 @@ class MapReduceJob {
   private val reducers: MMap[List[_ <: DataSink], TaggedReducer[_,_,_]] = MMap.empty
 
   /* The types that will be combined together to form (K2, V2). */
-  private val keyTypes: MMap[Int, (Manifest[_], HadoopWritable[_], Ordering[_])] = MMap.empty
-  private val valueTypes: MMap[Int, (Manifest[_], HadoopWritable[_])] = MMap.empty
+  private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Ordering[_])] = MMap.empty
+  private val valueTypes: MMap[Int, (Manifest[_], WireFormat[_])] = MMap.empty
 
 
   /** Add an input mapping function to thie MapReduce job. */

@@ -18,7 +18,7 @@ package com.nicta.scoobi.impl.rtt
 import org.apache.hadoop.io.WritableComparable
 import javassist._
 
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 
 
 /** A tagged value for Hadoop keys. Specifically this will be a K2 type so must
@@ -31,7 +31,7 @@ abstract class TaggedKey(tag: Int) extends Tagged(tag) with WritableComparable[T
 /** Companion object for dynamically constructing a subclass of TaggedKey. */
 object TaggedKey {
 
-  def apply(name: String, tags: Map[Int, (Manifest[_], HadoopWritable[_], Ordering[_])]): RuntimeClass = {
+  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_], Ordering[_])]): RuntimeClass = {
     val builder = new TaggedKeyClassBuilder(name, tags)
     builder.toRuntimeClass
   }
@@ -41,7 +41,7 @@ object TaggedKey {
 /** Class for building TaggedKey classes at runtime. */
 class TaggedKeyClassBuilder
     (name: String,
-     tags: Map[Int, (Manifest[_], HadoopWritable[_], Ordering[_])])
+     tags: Map[Int, (Manifest[_], WireFormat[_], Ordering[_])])
   extends TaggedValueClassBuilder(name, tags.map{case (t, (m, wt, _)) => (t, (m, wt))}.toMap) {
 
   override def extendClass: Class[_] = classOf[TaggedKey]

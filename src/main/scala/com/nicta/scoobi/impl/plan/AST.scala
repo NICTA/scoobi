@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi.impl.plan
 
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.impl.exec.TaggedMapper
 import com.nicta.scoobi.impl.exec.TaggedCombiner
 import com.nicta.scoobi.impl.exec.TaggedReducer
@@ -33,7 +33,7 @@ object AST {
   object RollingInt extends UniqueInt
 
   /** Intermediate representation - closer aligned to actual MSCR contetns. */
-  sealed abstract class Node[A : Manifest : HadoopWritable] extends Serializable {
+  sealed abstract class Node[A : Manifest : WireFormat] extends Serializable {
     val id = Id.get
 
     def mkTaggedIdentityReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
@@ -41,8 +41,8 @@ object AST {
 
 
   /** Input channel mapper that is not hooked up to a GBK. */
-  case class Mapper[A : Manifest : HadoopWritable,
-                    B : Manifest : HadoopWritable]
+  case class Mapper[A : Manifest : WireFormat,
+                    B : Manifest : WireFormat]
       (in: Node[A],
        f: A => Iterable[B])
     extends Node[B] with MapperLike[A, Int, B] {
@@ -59,9 +59,9 @@ object AST {
 
 
   /** Input channel mapper that is hooked up to a GBK. */
-  case class GbkMapper[A : Manifest : HadoopWritable,
-                       K : Manifest : HadoopWritable : Ordering,
-                       V : Manifest : HadoopWritable]
+  case class GbkMapper[A : Manifest : WireFormat,
+                       K : Manifest : WireFormat : Ordering,
+                       V : Manifest : WireFormat]
       (in: Node[A],
        f: A => Iterable[(K, V)])
     extends Node[(K, V)] with MapperLike[A, K, V] {
@@ -80,9 +80,9 @@ object AST {
   case class Combiner[K, V]
       (in: Node[(K, Iterable[V])],
        f: (V, V) => V)
-      (implicit mK:  Manifest[K], wtK: HadoopWritable[K], ordK: Ordering[K],
-                mV:  Manifest[V], wtV: HadoopWritable[V],
-                mKV: Manifest[(K, V)], wtKV: HadoopWritable[(K, V)])
+      (implicit mK:  Manifest[K], wtK: WireFormat[K], ordK: Ordering[K],
+                mV:  Manifest[V], wtV: WireFormat[V],
+                mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
     extends Node[(K, V)] with CombinerLike[V] with ReducerLike[K, V, (K, V)] {
 
     def mkTaggedCombiner(tag: Int) = new TaggedCombiner[V](tag) {
@@ -96,7 +96,7 @@ object AST {
     }
 
     /** Produce a TaggedReducer using this combiner function and an additional reducer function. */
-    def mkTaggedReducerWithCombiner[B](tag: Int, rf: ((K, V)) => Iterable[B])(implicit mB: Manifest[B], wtB: HadoopWritable[B]) =
+    def mkTaggedReducerWithCombiner[B](tag: Int, rf: ((K, V)) => Iterable[B])(implicit mB: Manifest[B], wtB: WireFormat[B]) =
       new TaggedReducer[K, V, B](tag)(mK, wtK, ordK, mV, wtV, mB, wtB) {
         def reduce(key: K, values: Iterable[V]): Iterable[B] = {
           rf((key, values.tail.foldLeft(values.head)(f)))
@@ -109,9 +109,9 @@ object AST {
 
 
   /** GbkReducer - a reduce (i.e. FlatMap) that follows a GroupByKey (i.e. no Combiner). */
-  case class GbkReducer[K : Manifest : HadoopWritable : Ordering,
-                        V : Manifest : HadoopWritable,
-                        B : Manifest : HadoopWritable]
+  case class GbkReducer[K : Manifest : WireFormat : Ordering,
+                        V : Manifest : WireFormat,
+                        B : Manifest : WireFormat]
       (in: Node[(K, Iterable[V])],
        f: ((K, Iterable[V])) => Iterable[B])
     extends Node[B] with ReducerLike[K, V, B] {
@@ -126,9 +126,9 @@ object AST {
 
 
   /** Reducer - a reduce (i.e. FlatMap) that follows a Combiner. */
-  case class Reducer[K : Manifest : HadoopWritable : Ordering,
-                     V : Manifest : HadoopWritable,
-                     B : Manifest : HadoopWritable]
+  case class Reducer[K : Manifest : WireFormat : Ordering,
+                     V : Manifest : WireFormat,
+                     B : Manifest : WireFormat]
       (in: Node[(K, V)],
        f: ((K, V)) => Iterable[B])
     extends Node[B] with ReducerLike[K, V, B] {
@@ -145,22 +145,22 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load[A : Manifest : HadoopWritable]() extends Node[A] {
+  case class Load[A : Manifest : WireFormat]() extends Node[A] {
     override def toString = "Load" + id
 
   }
 
 
   /** Usual Flatten node. */
-  case class Flatten[A : Manifest : HadoopWritable](ins: List[Node[A]]) extends Node[A] {
+  case class Flatten[A : Manifest : WireFormat](ins: List[Node[A]]) extends Node[A] {
     override def toString = "Flatten" + id
 
   }
 
 
   /** Usual GBK node. */
-  case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
-                        V : Manifest : HadoopWritable]
+  case class GroupByKey[K : Manifest : WireFormat : Ordering,
+                        V : Manifest : WireFormat]
       (in: Node[(K, V)])
     extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {
 

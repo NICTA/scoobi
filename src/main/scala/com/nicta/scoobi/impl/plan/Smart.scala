@@ -18,7 +18,7 @@ package com.nicta.scoobi.impl.plan
 import scala.collection.mutable.{Map => MMap}
 
 
-import com.nicta.scoobi.HadoopWritable
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.DataStore
@@ -39,7 +39,7 @@ object Smart {
 
 
   /** GADT for distributed list computation graph. */
-  sealed abstract class DList[A : Manifest : HadoopWritable] {
+  sealed abstract class DList[A : Manifest : WireFormat] {
 
     /* We don't want structural equality */
     override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
@@ -107,8 +107,8 @@ object Smart {
       n
     }
 
-    final def insert2[K : Manifest : HadoopWritable : Ordering,
-                V : Manifest : HadoopWritable]
+    final def insert2[K : Manifest : WireFormat : Ordering,
+                V : Manifest : WireFormat]
                 (ci: ConvertInfo, n: AST.Node[(K,V)] with KVLike[K,V]):
                 AST.Node[(K,V)] with KVLike[K,V] = {
       ci.astMap += ((this,n))
@@ -125,8 +125,8 @@ object Smart {
       }
     }
 
-    final def convert2[K : Manifest : HadoopWritable : Ordering,
-                 V : Manifest : HadoopWritable]
+    final def convert2[K : Manifest : WireFormat : Ordering,
+                 V : Manifest : WireFormat]
                  (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]  = {
       val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
       maybeN match {
@@ -138,11 +138,11 @@ object Smart {
 
     def convertNew(ci: ConvertInfo): AST.Node[A]
 
-    def convertNew2[K : Manifest : HadoopWritable : Ordering,
-                    V : Manifest : HadoopWritable]
+    def convertNew2[K : Manifest : WireFormat : Ordering,
+                    V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]
 
-    def convertFlatMap[B : Manifest : HadoopWritable](ci: ConvertInfo, fm: FlatMap[A,B]): AST.Node[B] = {
+    def convertFlatMap[B : Manifest : WireFormat](ci: ConvertInfo, fm: FlatMap[A,B]): AST.Node[B] = {
       val n: AST.Node[A] = convert(ci)
       fm.insert(ci, AST.Mapper(n, fm.f))
     }
@@ -151,7 +151,7 @@ object Smart {
 
   /** The Load node type specifies the materialization of a DList. A Loader object specifies how
     * the materialization is performed. */
-  case class Load[A : Manifest : HadoopWritable](loader: Loader[A]) extends DList[A] {
+  case class Load[A : Manifest : WireFormat](loader: Loader[A]) extends DList[A] {
 
     def name = "Load" + id
 
@@ -169,8 +169,8 @@ object Smart {
       insert(ci, AST.Load())
     }
 
-    def convertNew2[K : Manifest : HadoopWritable : Ordering,
-                    V : Manifest : HadoopWritable]
+    def convertNew2[K : Manifest : WireFormat : Ordering,
+                    V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
 
       insert2(ci, new AST.Load[(K,V)]() with KVLike[K,V] {
@@ -187,7 +187,7 @@ object Smart {
   case class FlatMap[A, B]
       (in: DList[A],
        f: A => Iterable[B])
-      (implicit val mA: Manifest[A], val wtA: HadoopWritable[A], mB: Manifest[B], wtB: HadoopWritable[B])
+      (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
     extends DList[B] {
 
     def name = "FlatMap" + id
@@ -247,8 +247,8 @@ object Smart {
       in.convertFlatMap(ci, this)
     }
 
-    def convertNew2[K : Manifest : HadoopWritable : Ordering,
-                    V : Manifest : HadoopWritable](ci: ConvertInfo):
+    def convertNew2[K : Manifest : WireFormat : Ordering,
+                    V : Manifest : WireFormat](ci: ConvertInfo):
                     AST.Node[(K,V)] with KVLike[K,V] = {
       val fm: FlatMap[A,(K,V)] = this.asInstanceOf[FlatMap[A,(K,V)]]
       val n: AST.Node[A] = fm.in.convert(ci)
@@ -266,8 +266,8 @@ object Smart {
 
   /** The GroupByKey node type specifies the building of a DList as a result of partitioning an exiting
     * key-value DList by key. */
-  case class GroupByKey[K : Manifest : HadoopWritable : Ordering,
-                        V : Manifest : HadoopWritable]
+  case class GroupByKey[K : Manifest : WireFormat : Ordering,
+                        V : Manifest : WireFormat]
       (in: DList[(K, V)])
     extends DList[(K, Iterable[V])] {
 
@@ -314,23 +314,23 @@ object Smart {
       insert(ci, AST.GroupByKey(in.convert2(ci)))
     }
 
-    def convertAux[A: Manifest : HadoopWritable : Ordering,
-              B: Manifest : HadoopWritable]
+    def convertAux[A: Manifest : WireFormat : Ordering,
+              B: Manifest : WireFormat]
               (ci: ConvertInfo, d: DList[(A,B)]):
               AST.Node[(A, Iterable[B])] with KVLike[A, Iterable[B]] = {
          insert2(ci, new AST.GroupByKey[A,B](d.convert2(ci)) with KVLike[A, Iterable[B]] {
            def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[A,Iterable[B]](tags)})
       }
 
-    def convertNew2[K1 : Manifest : HadoopWritable : Ordering,
-                    V1 : Manifest : HadoopWritable]
+    def convertNew2[K1 : Manifest : WireFormat : Ordering,
+                    V1 : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
       convertAux(ci, in).asInstanceOf[AST.Node[(K1,V1)] with KVLike[K1,V1]]
 
 
     }
 
-    override def convertFlatMap[B : Manifest : HadoopWritable]
+    override def convertFlatMap[B : Manifest : WireFormat]
                                (ci: ConvertInfo, fm: FlatMap[(K,Iterable[V]), B]): AST.Node[B] = {
       val n: AST.Node[(K, Iterable[V])] = convert(ci)
       if ( ci.mscrs.exists(_.containsGbkReducer(fm)) ) {
@@ -344,8 +344,8 @@ object Smart {
 
   /** The Combine node type specifies the building of a DList as a result of applying an associative
     * function to the values of an existing key-values DList. */
-  case class Combine[K : Manifest : HadoopWritable : Ordering,
-                     V : Manifest : HadoopWritable]
+  case class Combine[K : Manifest : WireFormat : Ordering,
+                     V : Manifest : WireFormat]
       (in: DList[(K, Iterable[V])],
        f: (V, V) => V)
     extends DList[(K, V)] {
@@ -387,8 +387,8 @@ object Smart {
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
     /* An almost exact copy of convertNew */
-    def convertNew2[K1 : Manifest : HadoopWritable : Ordering,
-                    V1 : Manifest : HadoopWritable]
+    def convertNew2[K1 : Manifest : WireFormat : Ordering,
+                    V1 : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
        val c: Combine[K1,V1] = this.asInstanceOf[Combine[K1,V1]]
 
@@ -397,7 +397,7 @@ object Smart {
 
     }
 
-    override def convertFlatMap[B : Manifest : HadoopWritable]
+    override def convertFlatMap[B : Manifest : WireFormat]
                                (ci: ConvertInfo, fm: FlatMap[(K,V), B]): AST.Node[B] = {
       val n: AST.Node[(K, V)] = convert(ci)
       if ( ci.mscrs.exists(_.containsReducer(fm)) ) {
@@ -411,7 +411,7 @@ object Smart {
 
   /** The Flatten node type spcecifies the building of a DList that contains all the elements from
     * one or more exsiting DLists of the same type. */
-  case class Flatten[A : Manifest : HadoopWritable](ins: List[DList[A]]) extends DList[A] {
+  case class Flatten[A : Manifest : WireFormat](ins: List[DList[A]]) extends DList[A] {
 
     def name = "Flatten" + id
 
@@ -458,8 +458,8 @@ object Smart {
     // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
-    def convertNew2[K : Manifest : HadoopWritable : Ordering,
-                    V : Manifest : HadoopWritable]
+    def convertNew2[K : Manifest : WireFormat : Ordering,
+                    V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
       val d: Flatten[(K,V)] = this.asInstanceOf[Flatten[(K,V)]]
       val ns: List[AST.Node[(K,V)]] = d.ins.map(_.convert2[K,V](ci))
