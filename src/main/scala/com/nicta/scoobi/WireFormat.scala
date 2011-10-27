@@ -207,7 +207,7 @@ object WireFormat {
   /*
    * Catch-all
    */
-  implicit def Anything[T <: Serializable] = new WireFormat[T] {
+  implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) = {
       val bytesOut = new ByteArrayOutputStream
       val bOut =  new ObjectOutputStream(bytesOut)
@@ -235,37 +235,37 @@ object WireFormat {
    * Built-in Hadoop Writable types.
    */
 
-  implicit def Int = new WireFormat[Int] {
+  implicit def IntFmt = new WireFormat[Int] {
     def toWire(x: Int, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): Int = in.readInt()
     def show(x: Int) = x.toString
   }
 
-  implicit def Long = new WireFormat[Long] {
+  implicit def LongFmt = new WireFormat[Long] {
     def toWire(x: Long, out: DataOutput) { out.writeLong(x) }
     def fromWire(in: DataInput): Long = in.readLong()
     def show(x: Long) = x.toString
   }
 
-  implicit def Double = new WireFormat[Double] {
+  implicit def DoubleFmt = new WireFormat[Double] {
     def toWire(x: Double, out: DataOutput) { out.writeDouble(x) }
     def fromWire(in: DataInput): Double = { in.readDouble() }
     def show(x: Double) = x.toString
   }
 
-  implicit def Char = new WireFormat[Char] {
+  implicit def CharFmt = new WireFormat[Char] {
     def toWire(x: Char, out: DataOutput) { out.writeChar(x) }
     def fromWire(in: DataInput): Char = in.readChar()
     def show(x: Char) = x.toString
   }
 
-  implicit def Byte = new WireFormat[Byte] {
+  implicit def ByteFmt = new WireFormat[Byte] {
     def toWire(x: Byte, out: DataOutput) { out.writeByte(x) }
     def fromWire(in: DataInput): Byte = in.readByte()
     def show(x: Byte) = x.toString
   }
 
-  implicit def String = new WireFormat[String] {
+  implicit def StringFmt = new WireFormat[String] {
     def toWire(x: String, out: DataOutput) {
       require(x != null, "Error, trying to serialize a null String. Consider using an empty string or Option[String]")
       out.writeUTF(x)
@@ -277,7 +277,7 @@ object WireFormat {
   /*
    * Useful Scala types.
    */
-  implicit def Tuple2[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) =
+  implicit def Tuple2Fmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) =
     new WireFormat[(T1, T2)] {
       def toWire(x: (T1, T2), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -294,7 +294,7 @@ object WireFormat {
       }
   }
 
-  implicit def Tuple3[T1, T2, T3]
+  implicit def Tuple3Fmt[T1, T2, T3]
       (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3]) =
     new WireFormat[(T1, T2, T3)] {
       def toWire(x: (T1, T2, T3), out: DataOutput) = {
@@ -314,7 +314,7 @@ object WireFormat {
       }
   }
 
-  implicit def Tuple4[T1, T2, T3, T4]
+  implicit def Tuple4Fmt[T1, T2, T3, T4]
       (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4]) =
     new WireFormat[Tuple4[T1, T2, T3, T4]] {
       def toWire(x: (T1, T2, T3, T4), out: DataOutput) = {
@@ -336,7 +336,7 @@ object WireFormat {
       }
   }
 
-  implicit def Tuple5[T1, T2, T3, T4, T5]
+  implicit def Tuple5Fmt[T1, T2, T3, T4, T5]
       (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
                 wt5: WireFormat[T5]) =
     new WireFormat[(T1, T2, T3, T4, T5)] {
@@ -361,7 +361,7 @@ object WireFormat {
       }
   }
 
-    implicit def Tuple6[T1, T2, T3, T4, T5, T6]
+    implicit def Tuple6Fmt[T1, T2, T3, T4, T5, T6]
       (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
                 wt5: WireFormat[T5], wt6: WireFormat[T6]) =
     new WireFormat[(T1, T2, T3, T4, T5, T6)] {
@@ -388,7 +388,7 @@ object WireFormat {
       }
   }
 
-  implicit def Tuple7[T1, T2, T3, T4, T5, T6, T7]
+  implicit def Tuple7Fmt[T1, T2, T3, T4, T5, T6, T7]
       (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
                 wt5: WireFormat[T5], wt6: WireFormat[T6], wt7: WireFormat[T7]) =
     new WireFormat[(T1, T2, T3, T4, T5, T6, T7)] {
@@ -417,7 +417,7 @@ object WireFormat {
       }
   }
 
-  implicit def Tuple8[T1, T2, T3, T4, T5, T6, T7, T8]
+  implicit def Tuple8Fmt[T1, T2, T3, T4, T5, T6, T7, T8]
       (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
                 wt5: WireFormat[T5], wt6: WireFormat[T6], wt7: WireFormat[T7], wt8: WireFormat[T8]) =
     new WireFormat[(T1, T2, T3, T4, T5, T6, T7, T8)] {
@@ -451,7 +451,7 @@ object WireFormat {
   /*
    * List-like structures
    */
-  implicit def Iterable[T](implicit wt: WireFormat[T]) = new WireFormat[Iterable[T]] {
+  implicit def IterableFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Iterable[T]] {
     def toWire(x: Iterable[T], out: DataOutput) = {
       require(x != null, "Cannot serialize a null Iterable. Consider using an empty collection, or a Option[Iterable]")
       out.writeInt(x.size)
@@ -471,7 +471,7 @@ object WireFormat {
   /*
    * Option type.
    */
-  implicit def Option[T](implicit wt: WireFormat[T]) = new WireFormat[Option[T]] {
+  implicit def OptionFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Option[T]] {
     def toWire(x: Option[T], out: DataOutput) = x match {
       case Some(y) => { out.writeBoolean(true); wt.toWire(y, out) }
       case None    => { out.writeBoolean(false) }
@@ -495,7 +495,7 @@ object WireFormat {
   /*
    * Either types.
    */
-  implicit def Either[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new WireFormat[Either[T1, T2]] {
+  implicit def EitherFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new WireFormat[Either[T1, T2]] {
     def toWire(x: Either[T1, T2], out: DataOutput) = x match {
       case Left(x)  => { out.writeBoolean(true); wt1.toWire(x, out) }
       case Right(x) => { out.writeBoolean(false); wt2.toWire(x, out) }

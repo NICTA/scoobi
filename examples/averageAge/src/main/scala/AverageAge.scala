@@ -16,7 +16,8 @@
 import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.WireFormat._
-import com.nicta.scoobi.io.text._
+import com.nicta.scoobi.io.text.TextInput._
+import com.nicta.scoobi.io.text.TextOutput._
 import java.io._
 
 /*
@@ -37,7 +38,7 @@ object AverageAge {
     // write some names to a file (so this example has no external requirements)
     generateNames(fileName)
 
-    case class Person(val id: Int,
+    case class Person(val id: Long,
                       val secondName: String,
                       val firstName: String,
                       val age: Int)
@@ -48,8 +49,8 @@ object AverageAge {
 
 
     // Read in lines of the form: 234242, Bob, Smith, 31.
-    val persons : DList[Person] = TextInput.extractFromDelimitedTextFile(",", fileName) {
-      case id :: fN :: sN :: age :: _ => Person(id.toInt, sN, fN, age.toInt)
+    val persons : DList[Person] = extractFromDelimitedTextFile(",", fileName) {
+      case Long(id) :: fN :: sN :: Int(age) :: _ => Person(id, sN, fN, age)
     }
 
     // The only thing we're interested in, is the firstName and age
@@ -62,7 +63,7 @@ object AverageAge {
     val avgAgeForName: DList[(String, Int)] = grouped map { case (n, ages) => (n, average(ages)) }
 
     // Execute everything, and throw it into a directory
-    DList.persist (TextOutput.toTextFile(avgAgeForName, "output-dir/avg-age"))
+    DList.persist (toTextFile(avgAgeForName, "output-dir/avg-age"))
   }
 
   private def average[A](values: Iterable[A])(implicit ev: Numeric[A]) = {

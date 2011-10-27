@@ -76,6 +76,26 @@ object TextInput {
     }
   }
 
+  private type NFE = java.lang.NumberFormatException
+
+  /** Extract an Int from a String. */
+  object Int {
+    def unapply(s: String): Option[Int] =
+      try { Some(s.toInt) } catch { case _: NFE => None }
+  }
+
+  /** Extract a Long from a String. */
+  object Long {
+    def unapply(s: String): Option[Long] =
+      try { Some(s.toLong) } catch { case _: NFE => None }
+  }
+
+  /** Extract a Double from a String. */
+  object Double {
+    def unapply(s: String): Option[Double] =
+      try { Some(s.toDouble) } catch { case _: NFE => None }
+  }
+
 
   /** A Loader that will load the input from a specified path using SimplerTextInputFormat, a
     * wrapper around Hadoop's TextInputFormat. */
