@@ -19,8 +19,10 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
+import scala.collection.JavaConversions._
 import Option.{apply => ?}
 
 import com.nicta.scoobi.impl.util.JarBuilder
@@ -28,6 +30,19 @@ import com.nicta.scoobi.impl.util.JarBuilder
 
 /** Global Scoobi functions and values. */
 object Scoobi {
+
+  /** Helper method that parses the generic Haddop command line arguments before
+    * calling the user's code with the remaining arguments. */
+  def withHadoopArgs(args: Array[String])(f: Array[String] => Unit) = {
+    /* Parse options then update current configuration. Becuase the filesystem
+     * property may have changed, also update working directory property. */
+    val parser = new GenericOptionsParser(args)
+    parser.getConfiguration.foreach { entry => conf.set(entry.getKey, entry.getValue) }
+    setWorkingDirectory(conf)
+
+    /* Run the user's code */
+    f(parser.getRemainingArgs)
+  }
 
   private var userJars: Set[String] = Set.empty
 
@@ -58,17 +73,17 @@ object Scoobi {
   /** Scoobi's configuration. */
   val conf: JobConf = {
     val jc = new JobConf(new Configuration)
-
-    /* The Scoobi working directory is in the user's home directory under '.scoobi' and
-     * a timestamped directory. e.g. /home/fred/.scoobi/201110041326. */
-    val workdirPath = new Path(FileSystem.get(jc).getHomeDirectory, ".scoobi/" + jobId)
-    val workdir = workdirPath.toUri.toString
-    jc.set("scoobi.workdir", workdir)
-
-    /* Scoobi job name */
+    setWorkingDirectory(jc)
     jc.setJobName("scoobi_" + jobId)
-
     jc
+  }
+
+  /* The Scoobi working directory is in the user's home directory under '.scoobi' and
+   * a timestamped directory. e.g. /home/fred/.scoobi/201110041326. */
+  private def setWorkingDirectory(jobConf: JobConf) = {
+    val workdirPath = new Path(FileSystem.get(jobConf).getHomeDirectory, ".scoobi/" + jobId)
+    val workdir = workdirPath.toUri.toString
+    jobConf.set("scoobi.workdir", workdir)
   }
 
   /** Get the Scoobi working directory. */
