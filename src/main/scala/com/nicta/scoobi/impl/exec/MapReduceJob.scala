@@ -18,6 +18,7 @@ package com.nicta.scoobi.impl.exec
 import java.io.File
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.FileStatus
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapred.JobClient
@@ -93,6 +94,7 @@ class MapReduceJob {
   def run() = {
 
     val jobConf = new JobConf(Scoobi.conf)
+    val fs = FileSystem.get(jobConf)
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
@@ -174,6 +176,16 @@ class MapReduceJob {
     jobConf.setReducerClass(classOf[MscrReducer[_,_,_]])
 
 
+    /* Calculate the number of reducers to use with a simple heuristic:
+     *
+     * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
+     * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
+     * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
+    val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
+    val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
+    jobConf.setNumReduceTasks(inputGigabytes)
+
+
     /* Run job then tidy-up. */
     jar.close()
     JobClient.runJob(jobConf)
@@ -181,7 +193,6 @@ class MapReduceJob {
 
 
     /* Move named outputs to the correct directories */
-    val fs = FileSystem.get(jobConf)
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
     val FileName = """ch(\d+)out(\d+)-.-\d+""".r
 
