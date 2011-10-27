@@ -21,10 +21,9 @@ more efficient than writing manual MapReduce jobs.
 Quick Start
 ----------
 
-* [Install Scala](http://www.scala-lang.org/downloads) (This is only a good idea, it can be technically be skipped as sbt will download a version for itself)
+* [Install Scala](http://www.scala-lang.org/downloads) (This is only a good idea, but it can be skipped if you only use sbt to build and run)
 * [Install Hadoop](http://www.cloudera.com/hadoop/)
-* [Install Sbt](https://github.com/harrah/xsbt/wiki/Setup) Version >= 0.11.0 is required (Note: When creating the sbt launcher script, it is probably worth increasing the max heapspace (the number given to -Xmx) to prevent sbt running out of memory when building)
-
+* [Install Sbt](https://github.com/harrah/xsbt/wiki/Getting-Started-Setup) Version 0.11.0 or greater. Note: When creating the sbt launcher script, it is worth increasing the max heapspace (the number given to -Xmx) to prevent sbt running out of memory when building.
 
 Download Scoobi:
 
@@ -42,8 +41,8 @@ Locally deploy scoobi
 Illustrative example
 -------------------
 
-Note: there's a top level folder [examples](examples/) which contain a number of self-contained
-tutorial-like examples, as well as a [guide](examples/README.md) to building and deploying them.
+Note: there's a top level folder [examples](scoobi/tree/master/examples/) which contain a number of self-contained
+tutorial-like examples, as well as a [guide](scoobi/blob/master/examples/README.md) to building and deploying them.
 This makes a better starting point for learning and using scoobi, however, for illustrative purposes
 below is a how a word count program could be written in Scoobi:
 
@@ -64,4 +63,4 @@ below is a how a word count program could be written in Scoobi:
         }
 
 This program will take two arguments, an input file (to word count) and a non-existent directory to create for the output.
-For more information, see the [examples](examples/) directory and its corresponding README.md
+For more information, see the [examples](scoobi/tree/master/examples/) directory and its corresponding README.md
