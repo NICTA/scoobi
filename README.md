@@ -1,38 +1,29 @@
 Scoobi - Scala for Hadoop
 =========================
 
-Scoobi is a library that leverages the Scala's language to provide a
-programmer friendly abstraction of the Hadoop Map-Reduce programming
-model to facilitate the rapid development of analytics and machine-learning.
-algorithms that target Hadoop by providing a distributed
-collections abstraction:
+Scoobi is a library that leverages the Scala programming language to provide a
+programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid
+development of analytics and machine-learning algorithms.
 
-* Distributed collection objects abstract data in HDFS
-* Methods on these objects abstract map/reduce operations
-* Programs manipulate distributed collection objects
-* Scoobi turns these manipulations into MapReduce jobs
-* Based on Google's FlumeJava
 
 Technical Details
---------
+----------------
 
-Scoobi is centered around a type-safe distributed collection [DList](http://scoobi dlist api)
+Scoobi is centered around a type-safe distributed collection [DList](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList)
 objects that abstract data in HDFS. The user can manipulate these distributed collections
-with parallel operations and user defined Scala and Java functions. When the final result
-is required (e.g. [persist]() to a file), Scoobi will optimize these logical operations
-into an efficient MapReduce pipeline and execute it.
+with parallel operations on user defined functions. When the final result is required
+(e.g. [persist](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList) to a file), Scoobi will
+optimize these logical operations into an efficient MapReduce pipeline to send to the hadoop cluster.
 
-Because of this, writing Scoobi is more expressive, quicker to code, easier to read and
-often more efficient than writing manual MapReduce jobs.
-
+Because of this, writing Scoobi is more expressive, quicker and easier to code, and often
+more efficient than writing manual MapReduce jobs.
 
 Quick Start
 ----------
 
-
-* [Install Scala](http://www.scala-lang.org/downloads) (This is only a good idea, but this step can technically be skipped as sbt will download a version for itself)
+* [Install Scala](http://www.scala-lang.org/downloads) (This is only a good idea, it can be technically be skipped as sbt will download a version for itself)
 * [Install Hadoop](http://www.cloudera.com/hadoop/)
-* [Install Sbt](https://github.com/harrah/xsbt/wiki/Setup) version 0.11.0 (Note: When creating the sbt launcher script, it is probably worth increasing the max heapspace (the number given to -Xmx) to prevent sbt running out of memory when building)
+* [Install Sbt](https://github.com/harrah/xsbt/wiki/Setup) Version >= 0.11.0 is required (Note: When creating the sbt launcher script, it is probably worth increasing the max heapspace (the number given to -Xmx) to prevent sbt running out of memory when building)
 
 
 Download Scoobi:
@@ -51,10 +42,10 @@ Locally deploy scoobi
 Illustrative example
 -------------------
 
-Note: there's a top level folder [examples](examples/) in scoobi which contain a number of
-self-contained tutorial-like examples, and a guide to building and deploying them. These make
-a better starting point for learning and using scoobi. However, for illustrative purposes,
-below is how a word count program could be written in Scoobi:
+Note: there's a top level folder [examples](examples/) which contain a number of self-contained
+tutorial-like examples, as well as a [guide](examples/README.md) to building and deploying them.
+This makes a better starting point for learning and using scoobi, however, for illustrative purposes
+below is a how a word count program could be written in Scoobi:
 
         import com.nicta.scoobi._
 
@@ -72,4 +63,5 @@ below is how a word count program could be written in Scoobi:
           }
         }
 
-This program will take two arguments, an input file (to word count) and a non-existent directory to create for the output. For more information, see [examples](examples/) directory and its corresponding README
+This program will take two arguments, an input file (to word count) and a non-existent directory to create for the output.
+For more information, see the [examples](examples/) directory and its corresponding README.md
