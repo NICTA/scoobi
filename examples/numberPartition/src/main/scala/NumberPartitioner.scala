@@ -13,6 +13,8 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+package com.nicta.scoobi.examples
+
 import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.io.text._
