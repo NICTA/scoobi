@@ -23,19 +23,29 @@ import java.io._
 
 object WordCount {
 
-  def main(args: Array[String]) = withHadoopArgs(args) { _ =>
+  def main(args: Array[String]) = withHadoopArgs(args) { a =>
 
-    if (!new File("output-dir").mkdir) {
-      sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
-    }
+    val (inputPath, outputPath) =
+      if (a.length == 0) {
+        if (!new File("output-dir").mkdir) {
+          sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
+        }
 
-    val fileName = "output-dir/all-words.txt"
+        val fileName = "output-dir/all-words.txt"
 
-    // generate 500 random words (with high collisions) and save at fileName
-    generateWords(fileName, 5000)
+        // generate 500 random words (with high collisions) and save at fileName
+        generateWords(fileName, 5000)
+
+        (fileName, "output-dir")
+
+      } else if (a.length == 2) {
+        (a(0), a(1))
+      } else {
+        sys.error("Expecting input and output path, or no arguements at all.")
+      }
 
     // Firstly we load up all the (new-line-seperated) words into a DList
-    val lines: DList[String] = TextInput.fromTextFile(fileName)
+    val lines: DList[String] = TextInput.fromTextFile(inputPath)
 
     // What we want to do, is record the frequency of words. So we'll convert it to a key-value
     // pairs where the key is the word, and the value the frequency (which to start with is 1)
@@ -49,7 +59,7 @@ object WordCount {
     val combined: DList[(String, Int)] = grouped.combine((_+_))
 
     // We can evalute this, and write it to a text file
-    DList.persist(TextOutput.toTextFile(combined, "output-dir/word-results"));
+    DList.persist(TextOutput.toTextFile(combined, outputPath + "/word-results"));
 
     // and just to be interesting, let's make the frequency the key, and value all the words with that frequency
     val flipped: DList[(Int, String)] = combined.map { v => (v._2, v._1) }
@@ -58,7 +68,7 @@ object WordCount {
     val flippedFreq: DList[(Int, Iterable[String])] = flipped.groupByKey
 
     // Let's output this
-    DList.persist(TextOutput.toTextFile(flippedFreq, "output-dir/freq-results"))
+    DList.persist(TextOutput.toTextFile(flippedFreq, outputPath + "/freq-results"))
   }
 
   /* Write 'count' random words to the file 'filename', with a high amount of collisions */

@@ -39,7 +39,6 @@ To build Scoobi:
 
 ```
   $ cd scoobi
-
   $ sbt publish-local
 ```
 
@@ -47,14 +46,13 @@ Then build and package one of the examples:
 
 ```
   $ cd examples/wordCount
-
   $ sbt package-hadoop
 ```
 
 Finally, run on Hadoop:
 
 ```
-  $ hadoop jar ./target/Scoobi_Word_Count-hadoop.jar
+  $ hadoop jar ./target/Scoobi_Word_Count-hadoop.jar <input> <output>
 ```
 
 
