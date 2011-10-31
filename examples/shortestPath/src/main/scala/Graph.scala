@@ -24,17 +24,22 @@ import java.io._
 
 object ShortestPath
 {
-  // To do a parallel distributed shortest-path, we want to represent the graph as a list of:
+  // To do a parallel distributed shortest-path search we want to represent the
+  // graph with a list of:
   // Node as the Key, NodeInfo as the value
 
   // A Node is pretty simple, we're just using a String
 
-  case class Node(data: String)
+  case class Node(data: String) // and later we will define an implicit node
+                                // NodeComparator, to provide ordering and comparison
 
-  // NodeInfo a list of all the nodes that connect to this node. Also the current state of this node.
+  // NodeInfo contains a list of all the nodes that connect to this node, as well
+  // as the current state.
   // The possible states are:
-  //   Unprocessed. This means we haven't yet got to the node, so we don't know the shortest way.
-  //   Frontier. This means that the next iteration of the breadth first search should work from here
+  //   Unprocessed. This means we haven't yet got to the node, so we don't know
+  //                the shortest way.
+  //   Frontier. This means that the next iteration of the breadth first search
+  //             should work from here. At this point, we know the shortest path
   //   Done. We have fully discovered this node, and know the shortest path to it
 
   // This can easily be represented in Scala
@@ -47,9 +52,7 @@ object ShortestPath
 
   case class NodeInfo (edges: Iterable[Node], state: Progress)
 
-
-
-  def main(args: Array[String]) = {
+  def main(args: Array[String]) = withHadoopArgs(args) { a =>
 
     if (!new File("output-dir").mkdir) {
       sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
@@ -57,14 +60,14 @@ object ShortestPath
 
     generateGraph("output-dir/graph.txt")
     
-    // We have the graph in the form of a list of edges e.g (A, B), (C, D)
+    // The generated graph is in the form of a list of edges e.g (A, B), (C, D)
 
     val edges: DList[(Node, Node)] = extractFromDelimitedTextFile(" ","output-dir/graph.txt") {
       case a :: b :: _ => (Node(a), Node(b))
     }
 
-    // This is really quite easy to convert to the format we wanted. Given A connect to B
-    // we know B connects to A, so let's go through and add the reverse:
+    // This is quite easy to convert to the format we wanted. Given A connecst
+    // to B, we know B connects to A, so let's go through and add the reverse:
 
     val adjacencies: DList[(Node, Node)] = edges.flatMap {
       case (first, second) => List((first, second), (second, first))
@@ -73,22 +76,29 @@ object ShortestPath
     // And now we can group by the first node, and have a list of all its edges
     val grouped: DList[(Node, Iterable[Node])] = adjacencies.groupByKey
 
-    // Since we are calcuating the shortest path, we need a starting point:
-    val startingPoint = "A"
+    // Since we are calcuating the shortest path, we also need a starting point:
+    val startingPoint = Node("A")
 
-    // And now finally, we want it the form "NodeInfo" not just a list of edges -- so let's do that
+    // And now finally, we want it the form "NodeInfo" not just a list of edges:
     val formatted: DList[(Node, NodeInfo)] = grouped.map{
-      case (node, edges) if (node.data == startingPoint) =>
-        (node, NodeInfo(edges, Frontier(0))) // it takes 0 steps to get to our starting point
-      case (node, edges) => (node, NodeInfo(edges, Unprocessed()))
+      case (node, edges) if (node == startingPoint) =>
+        // it takes 0 steps to get to our starting point
+        (node, NodeInfo(edges, Frontier(0)))
+      case (node, edges) =>
+        // We don't yet know how to get to this node
+        (node, NodeInfo(edges, Unprocessed())) 
     }
+    
+    // Our data is now in a form ready for doing a shortest path search. We will
+    // use a breadth first search, with 5 iterations
 
     val iterations = 5
 
     // We pass our DList into a function which adds 'iterations' of a breadth first search
     val breadthResult: DList[(Node, NodeInfo)] = breadthFirst(formatted, iterations)
 
-    // And finally, instead of just having the raw information -- how about we convert it to a nice pretty string
+    // And finally, instead of just having the raw information
+    // we can convert it to a nice pretty string
 
     def getV(p: Progress): Option[Int] = p match {
       case Frontier(v) => Some(v)
@@ -111,27 +121,36 @@ object ShortestPath
 
   }
   
+  // Here is where all the fun happens.
   private def breadthFirst(dlist: DList[(Node, NodeInfo)], depth: Int): DList[(Node, NodeInfo)] = {
     require (depth >= 1)
 
-    // Here is where all the fun happens.
+    // What we want to do, is look at the NodeInfo, and if the state is "Frontier"
+    // we know that we are up to this stage of the breadth first search. And we
+    // also know the shortest path to it.
+
+    // If it took n steps to get to this node, we know we can get to all its
+    // connecting nodes in n+1 steps
+
+    // However, all we really know is that these connecting nodes might be the
+    // next  "Frontier" (but maybe not, perhaps we already know the best path to it)
+    // and we know a possible cost in getting there (n+1). 
     
-    // What we want to do, is look at the NodeInfo, if the state is "Frontier" we know that we're up to
-    // this stage of the breadth first search. And we also know the shortest path to it.
-
-    // If it took n steps to get to this node, we know we can get to all its connecting nodes in n+1 steps
-
-
-    // However, all we really know is that we might need to "Frontier" this node's edges, and we know a possible way
-    // cost in getting there. We have no idea if this is the best way to get to it, and we have no idea if we have
-    // previously calculated a better way to get to it -- but no worries, we'll just spit out all the information
-    // we do know and clean it up later. 
+    // What we do, is spit out all the information we do know -- and use the
+    // combine function to pick the best. We also do not know this edge's edges
+    // so we'll leave it as an empty list -- and again, let the combine function
+    // clean up after us.
   
     val firstMap: DList[(Node, NodeInfo)] = dlist.flatMap {
       case (n: Node, ni: NodeInfo) => ni.state match {
-        case Frontier(distance) => List((n, NodeInfo(ni.edges, Done(distance)))) ++ // The original entry, but now Done state, instead of Frontier
-            ni.edges.map { edge => (edge, NodeInfo(List[Node](), Frontier(distance+1))) } // And all the information we know
-        case o => List((n, NodeInfo(ni.edges, o))) // We are not working on this Node, so leave it intact
+        case Frontier(distance) =>
+          // If it was a frontier, it will not be in the Done stage for the next iteration
+          List((n, NodeInfo(ni.edges, Done(distance)))) ++
+            // along with all the information we know about its connecting nodes
+            ni.edges.map { edge => (edge, NodeInfo(List[Node](), Frontier(distance+1))) }
+            
+         // This isn't a frontier, so return it intact
+        case o => List((n, NodeInfo(ni.edges, o)))
       }
     }
     
@@ -140,8 +159,9 @@ object ShortestPath
     
     val firstGrouped: DList[(Node, Iterable[NodeInfo])] = firstMap.groupByKey
     
-    // And here's the clean up stage. Some of the NodeInfo's aren't going to have the edge-list, so
-    // we insert that back in. Some of them are going to a shorter path to it, so we use the minimium one
+    // And here's the clean up stage. Some of the NodeInfo's aren't going to have
+    // the edge-list, so we insert that back in. Along with always picking the best
+    // progress (the minimum steps, and the furthest along state)
     
     // A helper function, to tell us which of the progress is furthest  
     def furthest(p1: Progress, p2: Progress) = p1 match {
