@@ -111,7 +111,7 @@ class TaggedValueClassBuilder
       "setTag($1.readInt());" +
       "switch(tag()) {" +
         tags.map{ case (t, (m, _)) =>
-          "case " + t + ": value" + t + " = writer" + t + ".fromWire($1); break;"
+          "case " + t + ": value" + t + " = (" + m.erasure.getName  + ")writer" + t + ".fromWire($1); break;"
         }.mkString +
       "default: break; }"
     val readFieldsMethod = CtNewMethod.make(CtClass.voidType,
