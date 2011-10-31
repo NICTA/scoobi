@@ -70,11 +70,11 @@ object Executor {
     }
 
     /* Initialize reference counts of all intermeidate data (i.e. BridgeStores). */
-    val bridges: Set[BridgeStore] = mscrs flatMap (_.inputChannels) flatMap {
+    val bridges: List[BridgeStore] = mscrs.toList flatMap (_.inputChannels) flatMap {
       case BypassInputChannel(bs@BridgeStore(_, _), _) => List(bs)
       case MapperInputChannel(bs@BridgeStore(_, _), _) => List(bs)
       case _                                           => Nil
-    } toSet
+    }
 
     val refcnts: Map[BridgeStore, Int] =
       bridges groupBy(identity) map { case (b, bs) => (b, bs.size) } toMap
