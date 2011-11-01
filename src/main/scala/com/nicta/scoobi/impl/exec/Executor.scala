@@ -15,6 +15,7 @@
   */
 package com.nicta.scoobi.impl.exec
 
+import java.io.IOException
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.FileAlreadyExistsException
@@ -58,6 +59,18 @@ object Executor {
 
     outputs map (_.outputPath) find (pathExists(_)) match {
       case Some(p) => throw new FileAlreadyExistsException("Output " + p + " already exists.")
+      case None    => Unit
+    }
+
+    /* Check that all input dirs already exist. */
+    mscrs flatMap { _.inputChannels } flatMap {
+      case BypassInputChannel(input, _) => List(input)
+      case MapperInputChannel(input, _) => List(input)
+    } filter {
+      case BridgeStore(_, _) => false
+      case _                 => true
+    } map { _.inputPath } find (!pathExists(_)) match {
+      case Some(p) => throw new IOException("Input " + p + " does not exist.")
       case None    => Unit
     }
 
