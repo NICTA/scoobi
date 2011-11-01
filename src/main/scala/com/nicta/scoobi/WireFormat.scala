@@ -32,7 +32,19 @@ trait WireFormat[A] extends Serializable {
 /** Implicit definitions of WireFormat instances for common types. */
 object WireFormat {
 
-    def mkWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new WireFormat[T] {
+  def mkWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {}
+
+    override def fromWire(in: DataInput): T = {
+      apply()
+    }
+
+    override def show(x: T): String = x toString
+  }
+
+
+  def mkWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new WireFormat[T] {
 
     override def toWire(obj: T, out: DataOutput) {
       val v: A1 = unapply(obj).get
@@ -202,6 +214,268 @@ object WireFormat {
     }
 
     override def show(x: T): String = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+      
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T = {
+      val c = in.readInt()
+      if (c == 'A')
+        implicitly[WireFormat[A]].fromWire(in)
+      else if (c == 'B')
+        implicitly[WireFormat[B]].fromWire(in)
+      else
+        sys.error("Error in fromWire, don't know what " + c + " is")
+    }
+
+    override def show(x: T) = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else if (clazz == implicitly[Manifest[C]].erasure) {
+        out.writeInt('C')
+        implicitly[WireFormat[C]].toWire(obj.asInstanceOf[C], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T =
+      in.readInt() match {
+        case 'A' => implicitly[WireFormat[A]].fromWire(in)
+        case 'B' => implicitly[WireFormat[B]].fromWire(in)
+        case 'C' => implicitly[WireFormat[C]].fromWire(in)
+        case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
+      }
+
+    override def show(x: T) = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else if (clazz == implicitly[Manifest[C]].erasure) {
+        out.writeInt('C')
+        implicitly[WireFormat[C]].toWire(obj.asInstanceOf[C], out)
+      } else if (clazz == implicitly[Manifest[D]].erasure) {
+        out.writeInt('D')
+        implicitly[WireFormat[D]].toWire(obj.asInstanceOf[D], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T =
+      in.readInt() match {
+        case 'A' => implicitly[WireFormat[A]].fromWire(in)
+        case 'B' => implicitly[WireFormat[B]].fromWire(in)
+        case 'C' => implicitly[WireFormat[C]].fromWire(in)
+        case 'D' => implicitly[WireFormat[D]].fromWire(in)
+        case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
+      }
+
+    override def show(x: T) = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else if (clazz == implicitly[Manifest[C]].erasure) {
+        out.writeInt('C')
+        implicitly[WireFormat[C]].toWire(obj.asInstanceOf[C], out)
+      } else if (clazz == implicitly[Manifest[D]].erasure) {
+        out.writeInt('D')
+        implicitly[WireFormat[D]].toWire(obj.asInstanceOf[D], out)
+      } else if (clazz == implicitly[Manifest[E]].erasure) {
+        out.writeInt('E')
+        implicitly[WireFormat[E]].toWire(obj.asInstanceOf[E], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T =
+      in.readInt() match {
+        case 'A' => implicitly[WireFormat[A]].fromWire(in)
+        case 'B' => implicitly[WireFormat[B]].fromWire(in)
+        case 'C' => implicitly[WireFormat[C]].fromWire(in)
+        case 'D' => implicitly[WireFormat[D]].fromWire(in)
+        case 'E' => implicitly[WireFormat[E]].fromWire(in)
+        case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
+      }
+
+    override def show(x: T) = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat, F <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else if (clazz == implicitly[Manifest[C]].erasure) {
+        out.writeInt('C')
+        implicitly[WireFormat[C]].toWire(obj.asInstanceOf[C], out)
+      } else if (clazz == implicitly[Manifest[D]].erasure) {
+        out.writeInt('D')
+        implicitly[WireFormat[D]].toWire(obj.asInstanceOf[D], out)
+      } else if (clazz == implicitly[Manifest[E]].erasure) {
+        out.writeInt('E')
+        implicitly[WireFormat[E]].toWire(obj.asInstanceOf[E], out)
+      } else if (clazz == implicitly[Manifest[F]].erasure) {
+        out.writeInt('F')
+        implicitly[WireFormat[F]].toWire(obj.asInstanceOf[F], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T =
+      in.readInt() match {
+        case 'A' => implicitly[WireFormat[A]].fromWire(in)
+        case 'B' => implicitly[WireFormat[B]].fromWire(in)
+        case 'C' => implicitly[WireFormat[C]].fromWire(in)
+        case 'D' => implicitly[WireFormat[D]].fromWire(in)
+        case 'E' => implicitly[WireFormat[E]].fromWire(in)
+        case 'F' => implicitly[WireFormat[F]].fromWire(in)
+        case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
+      }
+
+    override def show(x: T) = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat, F <: T : Manifest : WireFormat, G <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else if (clazz == implicitly[Manifest[C]].erasure) {
+        out.writeInt('C')
+        implicitly[WireFormat[C]].toWire(obj.asInstanceOf[C], out)
+      } else if (clazz == implicitly[Manifest[D]].erasure) {
+        out.writeInt('D')
+        implicitly[WireFormat[D]].toWire(obj.asInstanceOf[D], out)
+      } else if (clazz == implicitly[Manifest[E]].erasure) {
+        out.writeInt('E')
+        implicitly[WireFormat[E]].toWire(obj.asInstanceOf[E], out)
+      } else if (clazz == implicitly[Manifest[F]].erasure) {
+        out.writeInt('F')
+        implicitly[WireFormat[F]].toWire(obj.asInstanceOf[F], out)
+      } else if (clazz == implicitly[Manifest[G]].erasure) {
+        out.writeInt('G')
+        implicitly[WireFormat[G]].toWire(obj.asInstanceOf[G], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T =
+      in.readInt() match {
+        case 'A' => implicitly[WireFormat[A]].fromWire(in)
+        case 'B' => implicitly[WireFormat[B]].fromWire(in)
+        case 'C' => implicitly[WireFormat[C]].fromWire(in)
+        case 'D' => implicitly[WireFormat[D]].fromWire(in)
+        case 'E' => implicitly[WireFormat[E]].fromWire(in)
+        case 'F' => implicitly[WireFormat[F]].fromWire(in)
+        case 'G' => implicitly[WireFormat[G]].fromWire(in)
+        case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
+      }
+
+    override def show(x: T) = x.toString
+  }
+
+  def mkAdtWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat, F <: T : Manifest : WireFormat, G <: T : Manifest : WireFormat, H <: T : Manifest : WireFormat]() = new WireFormat[T] {
+
+    override def toWire(obj: T, out: DataOutput) {
+      val clazz: Class[_] = obj.getClass
+
+      if (clazz == implicitly[Manifest[A]].erasure) {
+        out.writeInt('A')
+        implicitly[WireFormat[A]].toWire(obj.asInstanceOf[A], out)
+      } else if (clazz == implicitly[Manifest[B]].erasure) {
+        out.writeInt('B')
+        implicitly[WireFormat[B]].toWire(obj.asInstanceOf[B], out)
+      } else if (clazz == implicitly[Manifest[C]].erasure) {
+        out.writeInt('C')
+        implicitly[WireFormat[C]].toWire(obj.asInstanceOf[C], out)
+      } else if (clazz == implicitly[Manifest[D]].erasure) {
+        out.writeInt('D')
+        implicitly[WireFormat[D]].toWire(obj.asInstanceOf[D], out)
+      } else if (clazz == implicitly[Manifest[E]].erasure) {
+        out.writeInt('E')
+        implicitly[WireFormat[E]].toWire(obj.asInstanceOf[E], out)
+      } else if (clazz == implicitly[Manifest[F]].erasure) {
+        out.writeInt('F')
+        implicitly[WireFormat[F]].toWire(obj.asInstanceOf[F], out)
+      } else if (clazz == implicitly[Manifest[G]].erasure) {
+        out.writeInt('G')
+        implicitly[WireFormat[G]].toWire(obj.asInstanceOf[G], out)
+      } else if (clazz == implicitly[Manifest[H]].erasure) {
+        out.writeInt('H')
+        implicitly[WireFormat[H]].toWire(obj.asInstanceOf[H], out)
+      } else
+        sys.error("Error in toWire. Don't know about type: " + clazz.toString)
+    }
+
+    override def fromWire(in: DataInput): T =
+      in.readInt() match {
+        case 'A' => implicitly[WireFormat[A]].fromWire(in)
+        case 'B' => implicitly[WireFormat[B]].fromWire(in)
+        case 'C' => implicitly[WireFormat[C]].fromWire(in)
+        case 'D' => implicitly[WireFormat[D]].fromWire(in)
+        case 'E' => implicitly[WireFormat[E]].fromWire(in)
+        case 'F' => implicitly[WireFormat[F]].fromWire(in)
+        case 'G' => implicitly[WireFormat[G]].fromWire(in)
+        case 'H' => implicitly[WireFormat[H]].fromWire(in)
+        case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
+      }
+
+    override def show(x: T) = x.toString
   }
 
   /*
