@@ -123,9 +123,6 @@ object LanguageTest {
   /** Run them. */
   def main(args: Array[String]) {
     Scoobi.setJarByClass(this.getClass)
-    println("------------- simple ------------"); simple()
-    println("------------ wordcount ----------"); wordcount()
-    println("------------- avgAge ------------"); avgAge()
     println("-------------- join -------------"); join()
     println("------------ graphTest ----------"); graphTest()
     println("----- bypassInputChannelTest ----"); bypassInputChannelTest()
