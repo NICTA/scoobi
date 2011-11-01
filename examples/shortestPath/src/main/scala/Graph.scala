@@ -197,7 +197,16 @@ object ShortestPath
     def compare(a: Node, b: Node) = a.data compareTo b.data
   }
 
-  implicit val NodeOrderImp = NodeComparator 
+  implicit val NodeOrderImp = NodeComparator
+
+  // implicits for efficient serialization
+  implicit val unprocessedFormat = mkWireFormat(Unprocessed, Unprocessed.unapply _)
+  implicit val frontierFormat = mkWireFormat(Frontier, Frontier.unapply _)
+  implicit val doneFormat = mkWireFormat(Done, Done.unapply _)
+  implicit val progressFormat = mkAdtWireFormat[Progress, Unprocessed, Frontier, Done]
+  
+  implicit val nodeFormat = mkWireFormat(Node, Node.unapply _)
+  implicit val nodeInfoFormat = mkWireFormat(NodeInfo, NodeInfo.unapply _)
 
   private def generateGraph(filename: String) {
     // TODO: generate something more interesting..

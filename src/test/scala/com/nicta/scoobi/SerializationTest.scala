@@ -51,6 +51,16 @@ object SerializationTest extends Properties("Serializable") {
   case class IntHolder(a: Int)
   implicit val IntHolderWritable = mkWireFormat(IntHolder, IntHolder.unapply _)
 
+  abstract sealed class Base()
+  case class SubA(v: Int) extends Base
+  implicit val SubAWritable = mkWireFormat(SubA, SubA.unapply _)
+  case class SubB(v: String) extends Base
+  implicit val SubBWritable = mkWireFormat(SubB, SubB.unapply _)
+  case class SubC() extends Base
+  implicit val SubCWritable = mkWireFormat(SubC, SubC.unapply _)
+
+  implicit val BaseWritable = mkAdtWireFormat[Base, SubA, SubB, SubC]()
+
   val genString = arbitrary[String] suchThat (_ != null)
 
   val genWritableDoubleStringInt = for {
@@ -114,5 +124,14 @@ object SerializationTest extends Properties("Serializable") {
   property("Single field case class can serialize") = forAll(genIntHolder) {
     (x: IntHolder) => serializesCorrectly(x)
   }
+  
+  property("ADTs serialize properly") = forAll(genString) {
+    (x: String) => serializesCorrectly[Base](SubB(x))
+  }
+  
+  property("ADTs serialize properly") = forAll(arbitrary[Int]) {
+    (x: Int) => serializesCorrectly[Base](SubA(x))
+  }
+
 }
 
