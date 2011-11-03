@@ -70,7 +70,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
   /** For each element of the distributed list produce a new element by applying a
     * specified function. The resulting collection of elements form a new
     * distributed list. */
-  def map[B](f: A => B)(implicit mB:  Manifest[B], wtB: WireFormat[B]): DList[B]
+  def map[B : Manifest : WireFormat](f: A => B): DList[B]
     = flatMap(x => List(f(x)))
 
   /** Keep elements from the distributedl list that pass a spcecified predicate function. */
