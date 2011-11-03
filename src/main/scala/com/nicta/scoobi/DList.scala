@@ -80,6 +80,15 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
     * predicate function. */
   def filterNot(p: A => Boolean): DList[A] = filter(p andThen (! _))
 
+  /** Build a new DList by applying a partial fuction to all elements of this DList on
+    * which the function is defined. */
+  def collect[B : Manifest : WireFormat](pf: PartialFunction[A, B]): DList[B] = flatMap { e =>
+    if (pf.isDefinedAt(e))
+      List(pf(e))
+    else
+      Nil
+  }
+
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : Manifest : WireFormat : Ordering](f: A => K): DList[(K, Iterable[A])] =
     map(x => (f(x), x)).groupByKey
