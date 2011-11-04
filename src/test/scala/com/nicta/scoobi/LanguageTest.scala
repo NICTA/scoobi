@@ -16,6 +16,9 @@
 package com.nicta.scoobi
 
 import java.io._
+import com.nicta.scoobi.Scoobi._
+import com.nicta.scoobi.lib.Join._
+import com.nicta.scoobi.lib.CoGroup._
 
 
 /** Test the language front-end */
@@ -28,20 +31,20 @@ object LanguageTest {
   private val FILE_DIR = "src/test/resources"
 
   /** "Join" example. */
-  def join() = {
-    val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-names.txt")
-    val d2: DList[(Int, Double)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+  def joinTest() = {
 
-    val d1s: DList[(Int, (Option[String], Option[Double]))] = d1.map { case (k, v) => (k, (Some(v), None)) }
-    val d2s: DList[(Int, (Option[String], Option[Double]))] = d2.map { case (k, v) => (k, (None,    Some(v))) }
-
-    val joined = (d1s ++ d2s).groupByKey flatMap { case (k, vs) =>
-      val v1 = vs flatMap { case (Some(d), _) => List(d); case _ => List() }
-      val v2 = vs flatMap { case (_, Some(d)) => List(d); case _ => List() }
-      (v1, v2) match { case (Nil, ys) => Nil; case (x,   ys) => List((x.head, ys)) }
+    val names = extractFromDelimitedTextFile(",", FILE_DIR + "/id-names.txt") {
+      case Int(id) :: names :: _ => (id, names)
+    }
+    val cnts = extractFromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt") {
+      case Int(id) :: Double(counts) :: _ => (id, counts)
     }
 
-    persist(toTextFile(joined, FILE_DIR + "/out/id-names-cnt"))
+    val joined = joinOn(names by (_._1), cnts by (_._1))(_ % 2)
+    val coGrouped = coGroup(names by (_._1), cnts by (_._1))
+
+    persist(toTextFile(joined, FILE_DIR + "/out/id-names-cnt"),
+            toTextFile(coGrouped, FILE_DIR + "/out/id-names-cnt-cg"))
   }
 
   def graphTest() = {
@@ -121,9 +124,9 @@ object LanguageTest {
 
 
   /** Run them. */
-  def main(args: Array[String]) {
+  def main(args: Array[String]) = withHadoopArgs(args) { _ =>
     Scoobi.setJarByClass(this.getClass)
-    println("-------------- join -------------"); join()
+    println("-------------- join -------------"); joinTest()
     println("------------ graphTest ----------"); graphTest()
     println("----- bypassInputChannelTest ----"); bypassInputChannelTest()
     println("---------- flatMapSiblingsTest ---------"); flatMapSiblingsTest()

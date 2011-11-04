@@ -102,6 +102,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
     * all the values are concatenated. */
   def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] =
     flatMap((x: A) => x.asInstanceOf[Iterable[B]])
+
+  /** Create a new distributed list that is keyed based on a specified function. */
+  def by[K : Manifest : WireFormat](kf: A => K): DList[(K, A)] = map { x => (kf(x), x) }
 }
 
 
