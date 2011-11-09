@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi.impl.rtt
 
-import java.lang.reflect.{Modifier => RModifier, Array => _, _}
+import java.lang.reflect.{Modifier => RModifier, Array => RArray, Field => RField, Constructor => RConstructor}
 import java.io.DataOutputStream
 import java.io.ByteArrayOutputStream
 import javassist._
@@ -66,24 +66,7 @@ trait ClassBuilder {
      * Setter for typeclass model field member. Reconstruct the model object
      * from above using reflection.
      */
-    var body: String = ""
-    val numArgs = tcClass.getConstructors.head.getParameterTypes.length
-
-    body += "{"
-    if (tcClass.getDeclaredFields.exists(_.getName.contains("MODULE$"))) {
-      body += "return (" + tcClassName + ")" + tcClassName + ".MODULE$;"
-    } else {
-      body += "Class objClass0 = Class.forName(\"" + tcClassName + "\");"
-      body += "java.lang.reflect.Constructor[] constructors = objClass0.getConstructors();"
-      if (numArgs == 0)
-        body += "Object[] constructorArgs = null;"
-      else
-        body += "Object[] constructorArgs = {" + (0 until numArgs).map(_ => "null").mkString(",") + "};"
-      body += "Object obj0 = constructors[0].newInstance(constructorArgs);"
-      body += doFields(model, 0)
-      body += "return (" + tcClassName + ")obj0;"
-    }
-    body += "}"
+    var body: String = makeTypeClassModel(model)
 
     val setterMethod = CtNewMethod.make(Modifier.PRIVATE | Modifier.STATIC,
                                           tcCtClass,
@@ -94,39 +77,99 @@ trait ClassBuilder {
                                           ctClass)
     ctClass.addMethod(setterMethod)
   }
+  /* Creates a java function (as a string) that returns a reconstructed version of model */
+  private def makeTypeClassModel(model: AnyRef): String = {
+    "{" +
+      "java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField(\"modifiers\"); " +
+      "modifiersField.setAccessible(true); " +
+      makeObjectCopier(model, model.getClass, "topObject") +
+      "return (" + model.getClass.getName + ") topObject;" +
+    "}"
+  }
 
-  /** */
-  private def doFields(obj: AnyRef, n: Int): String = {
-    var body = ""
-    obj.getClass.getDeclaredFields.foreach { field =>
+  /* Makes Java code that copies all the fields of 'obj', putting the results into pre-defined variable 'setVariable'  */
+  private def makeFieldCopier(obj: AnyRef, parentObjectClassVariable: String, setVariable: String): String = {
+    obj.getClass.getDeclaredFields.filter((r: RField) => ! RModifier.isStatic(r.getModifiers) ).map { field =>
       field.setAccessible(true)
-      val fieldObj = field.get(obj)
-      val fieldClass = fieldObj.getClass
-      val fieldClassName = fieldClass.getName
 
-      body += "{"
-      body += "java.lang.reflect.Field field = objClass" + n + ".getDeclaredField(\"" + field.getName + "\");"
+      var subObjVariable = VarGenerator.next()
+      var fieldVariable = VarGenerator.next()
+      var fieldObj = field.get(obj)
 
-      if (fieldClass.getDeclaredFields.exists(_.getName.contains("MODULE$"))) {
-        body += "Object obj" + (n + 1) + " = " + fieldClassName + ".MODULE$;"
-      } else {
-        val numArgs = fieldClass.getConstructors.head.getParameterTypes.length
+      "java.lang.reflect.Field " + fieldVariable + " = " + parentObjectClassVariable + ".getDeclaredField(\"" + field.getName + "\");" +
+      fieldVariable + ".setAccessible(true);" +
+      "modifiersField.setInt(" + fieldVariable + ", " + fieldVariable + ".getModifiers() & ~java.lang.reflect.Modifier.FINAL);" +
+      makeObjectCopier(fieldObj, if (fieldObj == null || field.getType.isPrimitive) field.getType else fieldObj.getClass, subObjVariable) +
+      fieldVariable + ".set(" + setVariable + ", " + subObjVariable + ");" +
+      "modifiersField.setInt(" + fieldVariable + " , " + fieldVariable + ".getModifiers() | java.lang.reflect.Modifier.FINAL);"
+    }.foldLeft("")(_ + _)
+  }
 
-        body += "Class objClass" + (n + 1) + " = Class.forName(\"" + fieldClassName + "\");"
-        body += "java.lang.reflect.Constructor[] constructors = objClass" + (n + 1) + ".getConstructors();"
-        if (numArgs == 0)
-          body += "Object[] constructorArgs = null;"
-        else
-          body += "Object[] constructorArgs = {" + (0 until numArgs).map(_ => "null").mkString(",") + "};"
-        body += "Object obj" + (n + 1) + " = constructors[0].newInstance(constructorArgs);"
-        body += doFields(fieldObj, n + 1)
-      }
+  /* Makes Java code that copies fieldObj into a new variable, called 'objectVariableName' */
+  private def makeObjectCopier(fieldObj: AnyRef, fieldType: Class[_], objectNameVariable: String): String = {
 
-      body += "field.setAccessible(true);"
-      body += "field.set(obj" + n + ", obj" + (n + 1) +");"
-      body += "}"
+    if (fieldObj == null) {
+      "Object " + objectNameVariable + " = null;"
+    } else if (fieldType == classOf[Class[_]]) {
+       var classNameVariable = VarGenerator.next()
+
+      "Class " + classNameVariable + " = " + makeClassName(fieldType) + ";" +
+      "Object " + objectNameVariable + " = Class.forName(\"" + fieldObj.asInstanceOf[Class[_]].getName + "\");"
+    } else if (fieldType.isPrimitive) {
+      val fieldType = fieldObj.getClass
+
+      "Object " + objectNameVariable + " = " +
+      (if (fieldType == classOf[java.lang.Boolean])
+       "new Boolean(" + fieldObj.toString + ");"
+      else if (fieldType == classOf[java.lang.Byte])
+        "new Byte(" +fieldObj.toString + ");"
+      else if (fieldType == classOf[java.lang.Character])
+        "new Character('" + fieldObj.toString + "');"
+      else if (fieldType == classOf[java.lang.Double])
+        "new Double(" + fieldObj.toString + "d);"
+      else if (fieldType == classOf[java.lang.Float])
+        "new Float(" + fieldObj + "f);"
+      else if (fieldType == classOf[java.lang.Integer])
+        "new Integer(" + fieldObj.toString + ");"
+      else if (fieldType == classOf[java.lang.Long])
+        "new Long(" + fieldObj.toString + "L);"
+      else if (fieldType == classOf[java.lang.Short])
+        "new Short(" + fieldObj.toString + ");"
+      else
+        sys.error("Unknown Error. Fieldtype is:" + fieldType))
+    } else if (fieldType.isArray) {
+      var len = RArray.getLength(fieldObj)
+
+      "Object " + objectNameVariable + " = java.lang.reflect.Array.newInstance(" + makeClassName(fieldType.getComponentType) + ", " + len + ");" +
+      ((0 to (len-1)) map { (n: Int) =>
+        var elementNameVariable = VarGenerator.next()
+        val obj: Object = RArray.get(fieldObj, n)
+
+        makeObjectCopier(obj, fieldType.getComponentType, elementNameVariable) +
+        "java.lang.reflect.Array.set(" + objectNameVariable + ", " + n + ", " + elementNameVariable + ");"
+      }).foldLeft("")(_ + _)
+
+    } else {
+      var classNameVariable = VarGenerator.next()
+
+      "Class " + classNameVariable + " = " + makeClassName(fieldType) + ";" +
+      "Object " + objectNameVariable + " = sun.reflect.ReflectionFactory.getReflectionFactory().newConstructorForSerialization(" + classNameVariable + ", Object.class.getDeclaredConstructor(new Class[0])).newInstance(null);" +
+      makeFieldCopier(fieldObj, classNameVariable, objectNameVariable)
+  }
+}
+
+  private def makeClassName(c: Class[_]): String = {
+    c.getName match {
+      case "byte" => "byte.class"
+      case "short" => "short.class"
+      case "int" => "int.class"
+      case "long" => "long.class"
+      case "float" => "float.class"
+      case "double" => "double.class"
+      case "boolean" => "boolean.class"
+      case "char" => "char.class"
+      case t => "Class.forName(\"" + t + "\")"
     }
-    body
   }
 
   private val CBoolean  = classOf[Boolean]
@@ -162,5 +205,13 @@ trait ClassBuilder {
     case CDouble  => "new Double("    + valCode + ")"
     case CByte    => "new Byte("      + valCode + ")"
     case _        =>                    valCode
+  }
+}
+
+object VarGenerator {
+  private var count = 0
+  def next(): String = {
+    count += 1
+    "autoGenVar" + count.toString
   }
 }
