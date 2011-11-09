@@ -39,17 +39,30 @@ object SerializationTest extends Properties("Serializable") {
   }
 
   case class WritableDoubleStringInt(a: Double, b: String, c: Int)
-  implicit val DoubleStringIntConversion = mkWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
+  implicit val DoubleStringIntConversion = mkCaseWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
 
   case class DefaultDoubleStringInt(a: Double, b: String, c: Int)
 
   case class WritableStringNested(a: String, b: WritableDoubleStringInt)
-  implicit val WritableStringNestedConversion = mkWireFormat(WritableStringNested, WritableStringNested.unapply _)
+  implicit val WritableStringNestedConversion = mkCaseWireFormat(WritableStringNested, WritableStringNested.unapply _)
 
   case class DefaultStringNested(a: String, b: DefaultDoubleStringInt)
 
   case class IntHolder(a: Int)
-  implicit val IntHolderWritable = mkWireFormat(IntHolder, IntHolder.unapply _)
+  implicit val IntHolderWritable = mkCaseWireFormat(IntHolder, IntHolder.unapply _)
+
+  abstract sealed class Base()
+  case class SubA(v: Int) extends Base
+
+  implicit val SubAWritable = mkCaseWireFormat(SubA, SubA.unapply _)
+
+  case class SubB(v: String) extends Base
+  implicit val SubBWritable = mkCaseWireFormat(SubB, SubB.unapply _)
+
+  object SubC extends Base
+  implicit val SubCWritable = mkObjectWireFormat(SubC)
+
+  implicit val BaseWritable = mkAbstractWireFormat[Base, SubA, SubB, SubC.type]
 
   val genString = arbitrary[String] suchThat (_ != null)
 
@@ -114,5 +127,16 @@ object SerializationTest extends Properties("Serializable") {
   property("Single field case class can serialize") = forAll(genIntHolder) {
     (x: IntHolder) => serializesCorrectly(x)
   }
+
+  property("ADTs serialize properly") = forAll(genString) {
+    (x: String) => serializesCorrectly[Base](SubB(x))
+  }
+
+  property("ADTs serialize properly") = forAll(arbitrary[Int]) {
+    (x: Int) => serializesCorrectly[Base](SubA(x))
+  }
+
+  assert( serializesCorrectly[Base](SubC) )
+
 }
 
