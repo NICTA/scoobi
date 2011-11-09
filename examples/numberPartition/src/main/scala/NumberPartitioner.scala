@@ -38,7 +38,7 @@ object NumberPartitioner {
     val data : DList[String] = TextInput.fromTextFile(fileName);
 
     // since they're numbers, we can easily parse them
-    val intData : DList[Int] = TextInput.fromTextFile(fileName).map(_.toInt)
+    val intData : DList[Int] = data.map(_.toInt)
 
     // Now we can parition this data into two lists, one where they're even one where they're odd
     val (evens, odds) = intData.partition(_ % 2 == 0)

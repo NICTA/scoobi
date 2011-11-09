@@ -86,9 +86,9 @@ object ShortestPath
         (node, NodeInfo(edges, Frontier(0)))
       case (node, edges) =>
         // We don't yet know how to get to this node
-        (node, NodeInfo(edges, Unprocessed())) 
+        (node, NodeInfo(edges, Unprocessed()))
     }
-    
+
     // Our data is now in a form ready for doing a shortest path search. We will
     // use a breadth first search, with 5 iterations
 
@@ -112,15 +112,15 @@ object ShortestPath
         case Some(v) => "Shortest path from " + startingPoint + " to " + n + " is " + v + " steps"
       }
     }
-    
+
     // and finally write to an output file
-    
+
     DList.persist (
        toTextFile(prettyResult, "output-dir/result")
    )
 
   }
-  
+
   // Here is where all the fun happens.
   private def breadthFirst(dlist: DList[(Node, NodeInfo)], depth: Int): DList[(Node, NodeInfo)] = {
     require (depth >= 1)
@@ -134,13 +134,13 @@ object ShortestPath
 
     // However, all we really know is that these connecting nodes might be the
     // next  "Frontier" (but maybe not, perhaps we already know the best path to it)
-    // and we know a possible cost in getting there (n+1). 
-    
+    // and we know a possible cost in getting there (n+1).
+
     // What we do, is spit out all the information we do know -- and use the
     // combine function to pick the best. We also do not know this edge's edges
     // so we'll leave it as an empty list -- and again, let the combine function
     // clean up after us.
-  
+
     val firstMap: DList[(Node, NodeInfo)] = dlist.flatMap {
       case (n: Node, ni: NodeInfo) => ni.state match {
         case Frontier(distance) =>
@@ -148,22 +148,22 @@ object ShortestPath
           List((n, NodeInfo(ni.edges, Done(distance)))) ++
             // along with all the information we know about its connecting nodes
             ni.edges.map { edge => (edge, NodeInfo(List[Node](), Frontier(distance+1))) }
-            
+
          // This isn't a frontier, so return it intact
         case o => List((n, NodeInfo(ni.edges, o)))
       }
     }
-    
+
     // The previous flatMap made a big mess! Now we're going to have to clean it up
     // We group by the Node again, to get a list of all the spitted out NodeInfos
-    
+
     val firstGrouped: DList[(Node, Iterable[NodeInfo])] = firstMap.groupByKey
-    
+
     // And here's the clean up stage. Some of the NodeInfo's aren't going to have
     // the edge-list, so we insert that back in. Along with always picking the best
     // progress (the minimum steps, and the furthest along state)
-    
-    // A helper function, to tell us which of the progress is furthest  
+
+    // A helper function, to tell us which of the progress is furthest
     def furthest(p1: Progress, p2: Progress) = p1 match {
       case Unprocessed() => p2
       case Frontier(v1) => p2 match {
@@ -173,11 +173,11 @@ object ShortestPath
       }
       case Done(v1) => Done(v1)
     }
-    
+
     val firstCombiner: DList[(Node, NodeInfo)] = firstGrouped.combine {
       (n1: NodeInfo, n2: NodeInfo) =>
         NodeInfo (
-         (if (n1.edges.isEmpty) 
+         (if (n1.edges.isEmpty)
            n2.edges
          else
            n1.edges),
@@ -186,7 +186,7 @@ object ShortestPath
    }
 
    // And this iteration is done.
-    
+
    if (depth > 1)
       breadthFirst(firstCombiner, depth-1)
     else
@@ -197,7 +197,19 @@ object ShortestPath
     def compare(a: Node, b: Node) = a.data compareTo b.data
   }
 
-  implicit val NodeOrderImp = NodeComparator 
+  implicit val NodeOrderImp = NodeComparator
+
+  //implicits for efficient serialization
+
+  implicit val unprocessedFormat = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _) //mkObjectWireFormat(Unprocessed)
+  implicit val frontierFormat = mkCaseWireFormat(Frontier, Frontier.unapply _)
+  implicit val doneFormat = mkCaseWireFormat(Done, Done.unapply _)
+
+  implicit val progressFormat = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]
+
+  implicit val nodeFormat = mkCaseWireFormat(Node, Node.unapply _)
+  implicit val nodeInfoFormat = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
+
 
   private def generateGraph(filename: String) {
     // TODO: generate something more interesting..
