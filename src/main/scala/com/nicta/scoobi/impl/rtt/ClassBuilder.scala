@@ -66,7 +66,7 @@ trait ClassBuilder {
      * Setter for typeclass model field member. Reconstruct the model object
      * from above using reflection.
      */
-    var body: String = makeTypeClassModel(model)
+    val body: String = makeTypeClassModel(model).toString
 
     val setterMethod = CtNewMethod.make(Modifier.PRIVATE | Modifier.STATIC,
                                           tcCtClass,
@@ -77,86 +77,205 @@ trait ClassBuilder {
                                           ctClass)
     ctClass.addMethod(setterMethod)
   }
+
+  /* A class that allows up to store an Object */
+  private case class ObjectLookup() {
+
+    private val data = new java.util.HashMap[ObjectWrapper, String]()
+
+    case class ObjectWrapper(data: AnyRef) {
+       override def equals(other: Any): Boolean = {
+
+         if (data.isInstanceOf[AnyRef] && other.isInstanceOf[ObjectWrapper])
+           data.asInstanceOf[AnyRef] eq other.asInstanceOf[ObjectWrapper].data
+         else
+           false
+       }
+       override def hashCode(): Int ={
+         1 // sigh... this is really dumb,
+         // but scala case classes seem to like overriding
+         // hasCode with something that's broken
+         // So now our search is O(n) instead of O(~log n) =/
+         // TODO: investigate if reflection can be used
+         // to call Object::hashCode without dynamic dispatch
+       }
+    }
+
+    def add(o: AnyRef, varName: String) {
+      data.put(ObjectWrapper(o), varName)
+    }
+
+    def hasObject(o: AnyRef): Boolean = {
+      data.containsKey(ObjectWrapper(o))
+    }
+
+    def getObjectVarName(o: AnyRef): String = data.get(ObjectWrapper(o))
+
+  }
+
   /* Creates a java function (as a string) that returns a reconstructed version of model */
-  private def makeTypeClassModel(model: AnyRef): String = {
-    "{" +
-      "java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField(\"modifiers\"); " +
-      "modifiersField.setAccessible(true); " +
-      makeObjectCopier(model, model.getClass, "topObject") +
-      "return (" + model.getClass.getName + ") topObject;" +
-    "}"
+  private def makeTypeClassModel(model: AnyRef): StringBuilder = {
+
+   val lookup = ObjectLookup()
+    val sb = new StringBuilder()
+    sb.append("{ java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField(\"modifiers\"); ")
+    sb.append("modifiersField.setAccessible(true); ")
+
+    makeObjectCopier(sb, model, model.getClass, "topObject", lookup)
+
+    sb.append("return (" + model.getClass.getName + ") topObject; }")
   }
 
   /* Makes Java code that copies all the fields of 'obj', putting the results into pre-defined variable 'setVariable'  */
-  private def makeFieldCopier(obj: AnyRef, parentObjectClassVariable: String, setVariable: String): String = {
-    obj.getClass.getDeclaredFields.filter((r: RField) => ! RModifier.isStatic(r.getModifiers) ).map { field =>
+  private def makeFieldCopier(sb: StringBuilder, obj: AnyRef, parentObjectClassVariable: String, setVariable: String, lookup: ObjectLookup) {
+    obj.getClass.getDeclaredFields.filter((r: RField) => ! RModifier.isStatic(r.getModifiers) ).foreach { field =>
       field.setAccessible(true)
 
       var subObjVariable = VarGenerator.next()
       var fieldVariable = VarGenerator.next()
       var fieldObj = field.get(obj)
 
-      "java.lang.reflect.Field " + fieldVariable + " = " + parentObjectClassVariable + ".getDeclaredField(\"" + field.getName + "\");" +
-      fieldVariable + ".setAccessible(true);" +
-      "modifiersField.setInt(" + fieldVariable + ", " + fieldVariable + ".getModifiers() & ~java.lang.reflect.Modifier.FINAL);" +
-      makeObjectCopier(fieldObj, if (fieldObj == null || field.getType.isPrimitive) field.getType else fieldObj.getClass, subObjVariable) +
-      fieldVariable + ".set(" + setVariable + ", " + subObjVariable + ");" +
-      "modifiersField.setInt(" + fieldVariable + " , " + fieldVariable + ".getModifiers() | java.lang.reflect.Modifier.FINAL);"
-    }.foldLeft("")(_ + _)
+      sb.append("java.lang.reflect.Field ")
+      sb.append(fieldVariable)
+      sb.append(" = ")
+      sb.append(parentObjectClassVariable)
+      sb.append(".getDeclaredField(\"")
+      sb.append(field.getName)
+      sb.append("\");")
+
+      sb.append(fieldVariable)
+      sb.append(".setAccessible(true);")
+
+      sb.append("modifiersField.setInt(")
+      sb.append(fieldVariable)
+      sb.append(", ")
+      sb.append(fieldVariable)
+      sb.append(".getModifiers() & ~java.lang.reflect.Modifier.FINAL);");
+
+      makeObjectCopier(sb, fieldObj, if (fieldObj == null || field.getType.isPrimitive) field.getType else fieldObj.getClass, subObjVariable, lookup)
+
+      sb.append(fieldVariable)
+      sb.append(".set(")
+      sb.append(setVariable)
+      sb.append(", ")
+      sb.append(subObjVariable)
+      sb.append(");")
+
+
+      sb.append("modifiersField.setInt(")
+      sb.append(fieldVariable)
+      sb.append(" , ")
+      sb.append(fieldVariable)
+      sb.append(".getModifiers() | java.lang.reflect.Modifier.FINAL);")
+    }
   }
 
   /* Makes Java code that copies fieldObj into a new variable, called 'objectVariableName' */
-  private def makeObjectCopier(fieldObj: AnyRef, fieldType: Class[_], objectNameVariable: String): String = {
+  private def makeObjectCopier(sb: StringBuilder, fieldObj: AnyRef, fieldType: Class[_], objectNameVariable: String, lookup: ObjectLookup) {
 
-    if (fieldObj == null) {
-      "Object " + objectNameVariable + " = null;"
-    } else if (fieldType == classOf[Class[_]]) {
-       var classNameVariable = VarGenerator.next()
+    if(lookup.hasObject(fieldObj)) {
+      sb.append("Object ")
+      sb.append(objectNameVariable)
+      sb.append(" = ")
 
-      "Class " + classNameVariable + " = " + makeClassName(fieldType) + ";" +
-      "Object " + objectNameVariable + " = Class.forName(\"" + fieldObj.asInstanceOf[Class[_]].getName + "\");"
-    } else if (fieldType.isPrimitive) {
-      val fieldType = fieldObj.getClass
-
-      "Object " + objectNameVariable + " = " +
-      (if (fieldType == classOf[java.lang.Boolean])
-       "new Boolean(" + fieldObj.toString + ");"
-      else if (fieldType == classOf[java.lang.Byte])
-        "new Byte(" +fieldObj.toString + ");"
-      else if (fieldType == classOf[java.lang.Character])
-        "new Character('" + fieldObj.toString + "');"
-      else if (fieldType == classOf[java.lang.Double])
-        "new Double(" + fieldObj.toString + "d);"
-      else if (fieldType == classOf[java.lang.Float])
-        "new Float(" + fieldObj + "f);"
-      else if (fieldType == classOf[java.lang.Integer])
-        "new Integer(" + fieldObj.toString + ");"
-      else if (fieldType == classOf[java.lang.Long])
-        "new Long(" + fieldObj.toString + "L);"
-      else if (fieldType == classOf[java.lang.Short])
-        "new Short(" + fieldObj.toString + ");"
-      else
-        sys.error("Unknown Error. Fieldtype is:" + fieldType))
-    } else if (fieldType.isArray) {
-      var len = RArray.getLength(fieldObj)
-
-      "Object " + objectNameVariable + " = java.lang.reflect.Array.newInstance(" + makeClassName(fieldType.getComponentType) + ", " + len + ");" +
-      ((0 to (len-1)) map { (n: Int) =>
-        var elementNameVariable = VarGenerator.next()
-        val obj: Object = RArray.get(fieldObj, n)
-
-        makeObjectCopier(obj, fieldType.getComponentType, elementNameVariable) +
-        "java.lang.reflect.Array.set(" + objectNameVariable + ", " + n + ", " + elementNameVariable + ");"
-      }).foldLeft("")(_ + _)
-
+      sb.append(lookup.getObjectVarName(fieldObj))
+      sb.append(";")
     } else {
-      var classNameVariable = VarGenerator.next()
+      lookup.add(fieldObj, objectNameVariable)
 
-      "Class " + classNameVariable + " = " + makeClassName(fieldType) + ";" +
-      "Object " + objectNameVariable + " = sun.reflect.ReflectionFactory.getReflectionFactory().newConstructorForSerialization(" + classNameVariable + ", Object.class.getDeclaredConstructor(new Class[0])).newInstance(null);" +
-      makeFieldCopier(fieldObj, classNameVariable, objectNameVariable)
+      if (fieldObj == null) {
+        sb.append("Object ")
+        sb.append(objectNameVariable)
+        sb.append(" = ")
+        sb.append("null;")
+      } else if (fieldType == classOf[Class[_]]) {
+         var classNameVariable = VarGenerator.next()
+
+         sb.append("Object ")
+         sb.append(objectNameVariable)
+         sb.append(" = ")
+         sb.append("Class.forName(\"")
+         sb.append(fieldObj.asInstanceOf[Class[_]].getName)
+         sb.append("\");")
+
+         sb.append("Class ")
+         sb.append(classNameVariable)
+         sb.append(" = ")
+         sb.append(makeClassName(fieldType))
+         sb.append(";")
+      } else if (fieldType.isPrimitive) {
+        val fieldType = fieldObj.getClass
+
+        sb.append("Object ")
+        sb.append(objectNameVariable)
+        sb.append(" = ")
+
+        (if (fieldType == classOf[java.lang.Boolean])
+         sb.append("new Boolean(" + fieldObj.toString + ");")
+        else if (fieldType == classOf[java.lang.Byte])
+          sb.append("new Byte(" +fieldObj.toString + ");")
+        else if (fieldType == classOf[java.lang.Character])
+          sb.append("new Character('" + fieldObj.toString + "');")
+        else if (fieldType == classOf[java.lang.Double])
+          sb.append("new Double(" + fieldObj.toString + "d);")
+        else if (fieldType == classOf[java.lang.Float])
+          sb.append("new Float(" + fieldObj + "f);")
+        else if (fieldType == classOf[java.lang.Integer])
+          sb.append("new Integer(" + fieldObj.toString + ");")
+        else if (fieldType == classOf[java.lang.Long])
+          sb.append("new Long(" + fieldObj.toString + "L);")
+        else if (fieldType == classOf[java.lang.Short])
+          sb.append("new Short(" + fieldObj.toString + ");")
+        else
+          sys.error("Unknown Error. Fieldtype is:" + fieldType))
+      } else if (fieldType.isArray) {
+        var len = RArray.getLength(fieldObj)
+
+
+        sb.append("Object ")
+        sb.append(objectNameVariable)
+        sb.append(" = ")
+        sb.append("java.lang.reflect.Array.newInstance(")
+        sb.append(makeClassName(fieldType.getComponentType))
+        sb.append(", ")
+        sb.append(len)
+        sb.append(");")
+
+        ((0 to (len-1)) foreach { (n: Int) =>
+          var elementNameVariable = VarGenerator.next()
+          val obj: Object = RArray.get(fieldObj, n)
+
+          makeObjectCopier(sb, obj, fieldType.getComponentType, elementNameVariable, lookup)
+
+          sb.append("java.lang.reflect.Array.set(")
+          sb.append(objectNameVariable)
+          sb.append(", ")
+          sb.append(n)
+          sb.append(", ")
+          sb.append(elementNameVariable)
+          sb.append(");")
+        })
+
+      } else {
+        var classNameVariable = VarGenerator.next()
+
+        sb.append("Class ")
+        sb.append(classNameVariable)
+        sb.append(" = ")
+        sb.append(makeClassName(fieldType))
+        sb.append(";")
+
+        sb.append("Object ")
+        sb.append(objectNameVariable)
+        sb.append(" = ")
+        sb.append("sun.reflect.ReflectionFactory.getReflectionFactory().newConstructorForSerialization(")
+        sb.append(classNameVariable)
+        sb.append(", Object.class.getDeclaredConstructor(new Class[0])).newInstance(null);")
+
+        makeFieldCopier(sb, fieldObj, classNameVariable, objectNameVariable, lookup)
+      }
+    }
   }
-}
 
   private def makeClassName(c: Class[_]): String = {
     c.getName match {
