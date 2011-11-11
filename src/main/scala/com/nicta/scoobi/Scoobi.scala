@@ -62,7 +62,7 @@ object Scoobi {
   /* Timestamp used to mark each Scoobi working directory. */
   private val timestamp = {
     val now = new Date
-    val sdf = new SimpleDateFormat("yyyyMMddHHmm")
+    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
     sdf.format(now)
   }
 
