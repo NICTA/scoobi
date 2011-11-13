@@ -106,7 +106,7 @@ nesting, e.g. `(String, (Int, Char), Double)`) as well as **case classes**. This
 without sacrificing performance in serialization and deserialization;
 * **Scoobi applications are optimized across library boundaries**: Over time it makes sense
 to partition Scoobi code into separate logical entities - into separate classes and libraries. The
-advantage of Scoobi is that it's staging compiler works across library boundaries. Therefore
+advantage of Scoobi is that its staging compiler works across library boundaries. Therefore
 you'll get the same Hadoop performance as if you had everything in the one file but with the
 productivity gains of having modular software;
 * **It's Scala**: Of course, with Scala you don't loose access to those precious Java libraries,
@@ -152,7 +152,7 @@ Within the implementation guts, the first task is to construct a `DList` represe
 located at the input directory. In this situation, because the input data are simple text files,
 we can use the `fromTextFile` method that takes our input directory as an argument and returns
 a `DList[String]` object. Here our `DList` object is a distributed collection where each
-collection element is a line from the input data and it's assigned to `lines`.
+collection element is a line from the input data and is assigned to `lines`.
 
 The second task is to compute a `DList` of word counts given all the lines of text from our
 input data. This is implemented in four steps:
@@ -220,8 +220,8 @@ text files on HDFS, which are implemented in the object
 [`com.nicta.scoobi.io.text.TextInput`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.io.text.TextInput$).
 
 The simplest, which we have seen already, is `fromTextFile`. It takes a path (globs are supported) to
-text files on HDFS (or which ever file system Hadoop has been configured for) and returns a
-`DList[String]` object where each element of the distributed collection refers to one of the lines of
+text files on HDFS (or whichever file system Hadoop has been configured for) and returns a
+`DList[String]` object, where each element of the distributed collection refers to one of the lines of
 text from the files.
 
 Often we are interested in loading delimited text files, for example, comma separated value (CSV) files.
@@ -285,19 +285,19 @@ another. For example:
 ```scala
   val thisYear: Int = ...
 
-  // load CSV with schema "event,year,year-designation" and pull out event and how many years ago it occurred
+  // load CSV with schema "event,year,year_designation" and pull out event and how many years ago it occurred
   val yearsAgo: DList[(String, Int)] = extractFromDelimitedTextFile(",", "hdfs://path/to/CSV/files/*") {
-    case event :: year :: "BC" :: _ => (event, thisYear + year.toInt)
+    case event :: year :: "BC" :: _ => (event, thisYear + year.toInt - 1) // No 0 AD
     case event :: year :: "AD" :: _ => (event, thisYear - year.toInt)
   }
 ```
 
-These are nice features, however, one of the problems with these examples is their conversion of
+These are nice features. However, one of the problems with these examples is their conversion of
 a `String` fields into an `Int`. If the field is not supplied (e.g. empty string) or the files
 are simply erroneous, a run-time exception will occur when `toInt` is called. This exception will be
 caught by Hadoop and likely cause the MapReduce job to fail. As a solution to this problem, `TextInput`
 provides Scala [extractors](http://www.scala-lang.org/node/112) for `Int`s, `Long`s and `Double`s.
-Using the `Int` extractor we can re-write one of the above examples:.
+Using the `Int` extractor we can rewrite one of the above examples:
 
 ```scala
   // load CSV and pull out id and second_name
@@ -431,7 +431,7 @@ box). However, the real advantage of using
 type classes is they allow you to extend the set of types that can be used with `DList` objects and
 that set can include types that already exist, maybe even in some other compilation unit.  So long as
 a type has a `WireFormat` implementation, it can parameterize a `DList`. This is extremely
-useful because whilst, say, you can represent a lot with nested tuples, much can be gained in terms
+useful because while, say, you can represent a lot with nested tuples, much can be gained in terms
 of type safety, readability and maintenance by using custom types. For example,
 say we were building an application to analyze stock ticker-data. In that situation it would be nice
 to work with `DList[Tick]` objects. We can do that if we write a `WireFormat` implementation for `Tick`:
@@ -475,11 +475,11 @@ Then we can actually make use of the `Tick` type:
 ```
 
 Notice that by using the custom type `Tick` it's obvious what fields we are using. If instead
-the type of `ticks` was `DList[(Int, String, Double)]`, the code could be far less readable
+the type of `ticks` was `DList[(Int, String, Double)]`, the code would be far less readable,
 and maintenance would be more difficult if, for example, we added new fields to `Tick` or modified
 the order of existing fields.
 
-Being able to have `DList` objects of custom types is a huge productivity boost, however, there
+Being able to have `DList` objects of custom types is a huge productivity boost. However, there
 is still the boiler-plate, mechanical work associated with the `WireFormat` implementation. To overcome this,
 the `WireFormat` object also provides a utility function called `mkWireFormat` that automatically
 constructs a `WireFormat` for **case classes**:
@@ -526,7 +526,7 @@ Creating a Scoobi project with sbt
 ----------------------------------
 
 Scoobi projects are generally developed with [sbt](https://github.com/harrah/xsbt/wiki), and to simplify
-the task of building and packaging a project for running on Hadoop, it's a really handy to use the sbt plugin
+the task of building and packaging a project for running on Hadoop, it's really handy to use the sbt plugin
 [sbt-scoobi](https://github.com/NICTA/sbt-scoobi). Here are a few steps for creating a new project:
 
 Create a new Scoobi application and add some code:
@@ -602,6 +602,7 @@ Contributions
 -------------
 Scoobi is released under the Apache license v2. We welcome contributions of bug fixes and/or new
 features via GitHib pull requests.
+
 
 
 
