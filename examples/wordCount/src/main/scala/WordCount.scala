@@ -60,15 +60,6 @@ object WordCount {
 
     // We can evalute this, and write it to a text file
     DList.persist(TextOutput.toTextFile(combined, outputPath + "/word-results"));
-
-    // and just to be interesting, let's make the frequency the key, and value all the words with that frequency
-    val flipped: DList[(Int, String)] = combined.map { v => (v._2, v._1) }
-
-    // And group all the words with the same frequency
-    val flippedFreq: DList[(Int, Iterable[String])] = flipped.groupByKey
-
-    // Let's output this
-    DList.persist(TextOutput.toTextFile(flippedFreq, outputPath + "/freq-results"))
   }
 
   /* Write 'count' random words to the file 'filename', with a high amount of collisions */
