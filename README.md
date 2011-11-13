@@ -109,7 +109,7 @@ to partition Scoobi code into separate logical entities - into separate classes 
 advantage of Scoobi is that its staging compiler works across library boundaries. Therefore
 you'll get the same Hadoop performance as if you had everything in the one file but with the
 productivity gains of having modular software;
-* **It's Scala**: Of course, with Scala you don't loose access to those precious Java libraries,
+* **It's Scala**: Of course, with Scala you don't lose access to those precious Java libraries,
 but you also get functional programming and concise syntax which makes writing Hadoop applications
 with Scoobi very productive ... and fun!
 
@@ -602,7 +602,3 @@ Contributions
 -------------
 Scoobi is released under the Apache license v2. We welcome contributions of bug fixes and/or new
 features via GitHib pull requests.
-
-
-
-
