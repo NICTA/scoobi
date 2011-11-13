@@ -47,7 +47,7 @@ object AverageAge {
 
     // With this implicit conversion, we let Scoobi know the apply and unapply function, which it uses
     // to construct and deconstruct Person objects. Now it can very efficiently serialize them (i.e. no overhead)
-    implicit val PersonFmt = mkWireFormat(Person, Person.unapply _)
+    implicit val PersonFmt = mkCaseWireFormat(Person, Person.unapply _)
 
 
     // Read in lines of the form: 234242, Bob, Smith, 31.
