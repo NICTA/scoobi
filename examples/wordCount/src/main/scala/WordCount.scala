@@ -33,7 +33,7 @@ object WordCount {
 
         val fileName = "output-dir/all-words.txt"
 
-        // generate 500 random words (with high collisions) and save at fileName
+        // generate 5000 random words (with high collisions) and save at fileName
         generateWords(fileName, 5000)
 
         (fileName, "output-dir")
