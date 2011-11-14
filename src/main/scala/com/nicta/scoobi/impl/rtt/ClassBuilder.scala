@@ -334,5 +334,5 @@ trait ClassBuilder {
 }
 
 object VarGenerator extends UniqueInt {
-  def next(): String = get.toString
+  def next(): String = "agVar" + get.toString
 }
