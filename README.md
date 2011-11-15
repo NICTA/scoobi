@@ -31,9 +31,21 @@ development of analytics and machine-learning algorithms.
 Quick start
 -----------
 
-To start using Scoobi you will obviously need Scala and Hadoop. In addition, the
-Scoobi library and Scoobi applications use sbt for dependency management and building
-(also check out the prerequisites below).
+Scoobi has the following requirements:
+
+* [Hadoop 0.20.2](http://www.cloudera.com/hadoop/)
+* [Scala 2.9.1](http://www.scala-lang.org/downloads): Note that this is typically set in build.sbt
+* [Sbt 0.11.0](https://github.com/harrah/xsbt/wiki)
+
+Scala and Hadoop are obvious prerequisites. In addition, the
+Scoobi library and Scoobi applications use [sbt](https://github.com/harrah/xsbt/wiki)
+(version 0.11 or later) for dependency management and building.
+
+**NOTE**: You will probably have to edit the `sbt` launcher script (located in `~/bin/sbt`
+or wherever `sbt` has been installed) to increase the maximum heap size, or you will
+get out-of-memory errors.  Try changing the existing `-Xmx` option to `-Xmx2048M`
+(or adding this option if it's not already present).  If this still leads to errors,
+`-Xmx4096M` should be enough.
 
 To build Scoobi:
 
@@ -419,7 +431,7 @@ Thus, the `DList` class is actually specified as:
   class DList[A : WireFormat] { ... }
 ```
 
-If the compiler can not find a `WireFormat` implementation for the type parameterizing a specific
+If the compiler cannot find a `WireFormat` implementation for the type parameterizing a specific
 `DList` object, that code will not compile.  Implementations of `WireFormat` specify serialization
 and deserialization in their `toWire` and `fromWire` methods, which end up finding their way into
 `Writable`'s `write` and `readFields` methods.
@@ -481,26 +493,26 @@ the order of existing fields.
 
 Being able to have `DList` objects of custom types is a huge productivity boost. However, there
 is still the boiler-plate, mechanical work associated with the `WireFormat` implementation. To overcome this,
-the `WireFormat` object also provides a utility function called `mkWireFormat` that automatically
+the `WireFormat` object also provides a utility function called `mkCaseWireFormat` that automatically
 constructs a `WireFormat` for **case classes**:
 
 
 ```scala
   case class Tick(val date: Int, val symbol: String, val price: Double)
-  implicit val tickFmt = mkWireFormat(Tick)(Tick.unapply _)
+  implicit val tickFmt = mkCaseWireFormat(Tick)(Tick.unapply _)
 
   val ticks: DList[Tick] = ...  /* Still OK */
 ```
 
-`mkWireFormat` takes as arguments the case class's automatically generated `apply` and `unapply`
-methods. The only requirement on case classes when using `mkWireFormat` is that all its fields have
+`mkCaseWireFormat` takes as arguments the case class's automatically generated `apply` and `unapply`
+methods. The only requirement on case classes when using `mkCaseWireFormat` is that all its fields have
 `WireFormat` implementations. If not, your `DList` objects won't type check. The upside to
 this is that all of the types above that do have `WireFormat` implementations can be
-fields in a case class when used in conjunction with `mkWireFormat`:
+fields in a case class when used in conjunction with `mkCaseWireFormat`:
 
 ```scala
   case class Tick(val date: Int, val symbol: String, val price: Double, val high_low: (Double, Double))
-  implicit val tickFmt = mkWireFormat(Tick)(Tick.unapply _)
+  implicit val tickFmt = mkCaseWireFormat(Tick)(Tick.unapply _)
 
   val ticks: DList[Tick] = ...  /* Amazingly, still OK */
 ```
@@ -510,10 +522,10 @@ Thus, it's possible to have nested case classes that can parameterize `DList` ob
 
 ```scala
   case class PriceAttr(val: price: Double, val high_low: (Double, Double))
-  implicit val priceAttrFmt = mkWireFormat(PriceAttr)(PriceAttr.unapply _)
+  implicit val priceAttrFmt = mkCaseWireFormat(PriceAttr)(PriceAttr.unapply _)
 
   case class Tick(val date: Int, val symbol: String, val attr: PriceAttr)
-  implicit val tickFmt = mkWireFormat(Tick)(Tick.unapply _)
+  implicit val tickFmt = mkCaseWireFormat(Tick)(Tick.unapply _)
 
   val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
 ```
@@ -579,17 +591,6 @@ and then `hadoop` being given the correct object to run. e.g.:
     $ export HADOOP_CLASSPATH=$PWD/target/Scoobi_Word_Count-hadoop-0.1.jar
     $ hadoop WordCount inputFile/to/wordcount nonexistent/outputdir
 ```
-
-
-Prerequisites
--------------
-Scoobi has the following requirements:
-
-* [Hadoop 0.20.2](http://www.cloudera.com/hadoop/)
-* [Scala 2.9.1](http://www.scala-lang.org/downloads): Note that this is typically set in build.sbt
-* [Sbt 0.11.0](https://github.com/harrah/xsbt/wiki/Getting-Started-Setup): Note that when creating the sbt launcher
-script, it is worth increasing the max heap space (the number given to -Xmx) to prevent sbt running out of memory
-when building.
 
 
 Issues
