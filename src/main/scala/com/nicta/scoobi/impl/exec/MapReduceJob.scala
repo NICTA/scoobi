@@ -158,12 +158,13 @@ class MapReduceJob(stepId: Int) {
 
     /** Reducers:
       *     - generate runtime class (ScoobiWritable) for each output values being written to
-      *       a BridgeStore and add to JAR
+      *       a BridgeStore or MaterializeStore and add to JAR
       *     - add a named output for each output channel */
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
     reducers.foreach { case (sinks, reducer) =>
       sinks foreach {
         case bs@BridgeStore(_) => {
+          // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
           bs.rtClass match {
             case Some(rtc) => jar.addRuntimeClass(rtc)
             case None      => {
@@ -174,7 +175,8 @@ class MapReduceJob(stepId: Int) {
             }
           }
         }
-        case _                 => {}
+        case ms@MaterializeStore(_, _, _) => jar.addRuntimeClass(ms.rtClass)
+        case _ => {}
       }
       sinks.zipWithIndex.foreach { case (sink, ix) => ChannelOutputFormat.addOutputChannel(job, reducer.tag, ix, sink) }
     }

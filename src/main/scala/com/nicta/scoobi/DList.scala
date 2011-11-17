@@ -16,17 +16,29 @@
 package com.nicta.scoobi
 
 import scala.collection.mutable.{Map => MMap}
+import scala.collection.mutable.{MutableList => MList}
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.FileStatus
+import org.apache.hadoop.io.SequenceFile
+import org.apache.hadoop.io.NullWritable
 
 import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.func.FunctionInput
+import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
+import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
+import com.nicta.scoobi.impl.exec.MaterializeStore
+import com.nicta.scoobi.impl.exec.MaterializeId
+import com.nicta.scoobi.impl.util.UniqueInt
+import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 
 /** A list that is distributed across multiple machines. */
-class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
+class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =>
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.
@@ -61,9 +73,48 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
                 mV:   Manifest[V],
                 wtV:  WireFormat[V]): DList[(K, V)] = new DList(Smart.Combine(ast, f))
 
+  /** Turn a distributed list into a normal, non-distributed collection that can be accessed
+    * by the client. */
+  def materialize: DObject[Iterable[A]] = {
+
+    val id = MaterializeId.get
+    val path = new Path(Scoobi.getWorkingDirectory(Scoobi.conf), "materialize/" + id)
+
+    new DObject[Iterable[A]] {
+      def get: Iterable[A] = new Iterable[A] {
+        def iterator = {
+          val fs = FileSystem.get(Scoobi.conf)
+          val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
+            new SequenceFile.Reader(fs, stat.getPath, Scoobi.conf)
+          }
+
+          val iterators = readers.toIterable map { reader =>
+            new Iterator[A] {
+              val key = NullWritable.get
+              val value: ScoobiWritable[A] =
+                Class.forName(reader.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
+              def next(): A = value.get
+              def hasNext: Boolean = reader.next(key, value)
+
+            } toIterable
+          }
+
+          iterators.flatten.toIterator
+        }
+      }
+
+      def mkPersister: DListPersister[_] = {
+        val persister = new Persister[A] {
+          def mkOutputStore(node: AST.Node[A]) = MaterializeStore(node, id, path)
+        }
+        new DListPersister(self, persister)
+      }
+    }
+  }
+
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Derived functionality.
+  // Derived functionality (return DLists).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /** For each element of the distributed list produce zero or more elements by
@@ -140,10 +191,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 }
 
 
-/** A class that specifies how to make a distributed list persistent. */
-class DListPersister[A](val dl: DList[A], val persister: Persister[A])
-
-
+/** This object provides a set of operations to create distributed lists. */
 object DList {
 
   /** Creates a distributed list with given elements. */
@@ -157,14 +205,13 @@ object DList {
   def tabulate[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] =
     FunctionInput.fromFunction(n)(f)
 
-
   /* Pimping from generic collection types (i.e. Seq) to a Distributed List */
   trait PimpWrapper[A] { def toDList: DList[A] }
   implicit def seqPimp[A : Manifest : WireFormat](seq: Seq[A]) = new PimpWrapper[A] {
     def toDList: DList[A] = FunctionInput.fromFunction(seq.size)(seq)
   }
 
-  /** Persist one or more distributed lists. */
+  /** Persist one or more distributed lists - will trigger MapReduce computations. */
   def persist(outputs: DListPersister[_]*) = {
 
     /* Produce map of all unique outputs and their corresponding persisters. */
@@ -194,4 +241,7 @@ object DList {
 
     Executor.executePlan(mscrGraph)
   }
+
+  /* Convert a DObject to a DListPersister for use in a ScoobiJob. */
+  def use(dobject: DObject[_]): DListPersister[_] = dobject.mkPersister
 }

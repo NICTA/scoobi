@@ -47,7 +47,7 @@ final case class BridgeStore[A](n: AST.Node[A])
   with DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] {
 
-  lazy val logger = LogFactory.getLog(this.getClass.getName)
+  lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
   private val id = BridgeId.get
   private val path = new Path(Scoobi.getWorkingDirectory(Scoobi.conf), "bridges/" + id)
@@ -63,7 +63,7 @@ final case class BridgeStore[A](n: AST.Node[A])
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
   def outputCheck() = {}
   def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, path)
-  val outputConverter = new BridgeOutputConverter[A](typeName)
+  val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 
 
   /* Input (i.e. output of bridge) */
@@ -83,14 +83,14 @@ final case class BridgeStore[A](n: AST.Node[A])
   }
 }
 
+object BridgeId extends UniqueInt
+
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
   * the Class for 'value' will exist and be known by the ClassLoader. */
-class BridgeOutputConverter[A](typeName: String) extends OutputConverter[NullWritable, ScoobiWritable[A], A] {
+class ScoobiWritableOutputConverter[A](typeName: String) extends OutputConverter[NullWritable, ScoobiWritable[A], A] {
   lazy val value: ScoobiWritable[A] = Class.forName(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
   def toKeyValue(x: A): (NullWritable, ScoobiWritable[A]) = {
     value.set(x)
     (NullWritable.get, value)
   }
 }
-
-object BridgeId extends UniqueInt
