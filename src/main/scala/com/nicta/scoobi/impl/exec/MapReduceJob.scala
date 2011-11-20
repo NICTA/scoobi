@@ -30,6 +30,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.compress.GzipCodec
 import org.apache.hadoop.io.compress.CompressionCodec
 import scala.collection.mutable.{Map => MMap}
+import scala.math._
 
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
@@ -118,16 +119,14 @@ class MapReduceJob {
     val id = UniqueId.get
     val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
     val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
-    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.size)
 
 
     jar.addRuntimeClass(tkRtClass)
     jar.addRuntimeClass(tvRtClass)
-    jar.addRuntimeClass(tpRtClass)
 
     job.setMapOutputKeyClass(tkRtClass.clazz)
     job.setMapOutputValueClass(tvRtClass.clazz)
-    job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
+    job.setPartitionerClass(classOf[TaggedPartitioner])
 
     /* Compress mapper outputs */
     job.getConfiguration.setBoolean("mapred.compress.map.output", true)
@@ -186,12 +185,14 @@ class MapReduceJob {
 
     /* Calculate the number of reducers to use with a simple heuristic:
      *
-     * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
+     * At a minimum, have at least as many reduce tasks as there are output channels. Then, base the
+     * amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
     val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
     job.setNumReduceTasks(inputGigabytes)
+    job.setNumReduceTasks(max(inputGigabytes, reducers.size))
 
 
     /* Run job then tidy-up. */
