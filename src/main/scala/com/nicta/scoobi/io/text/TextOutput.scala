@@ -16,7 +16,7 @@
 package com.nicta.scoobi.io.text
 
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.TextOutputFormat
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister

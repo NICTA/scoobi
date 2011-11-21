@@ -20,14 +20,15 @@ import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.JobConf
-import org.apache.hadoop.mapred.JobClient
-import org.apache.hadoop.mapred.FileOutputFormat
-import org.apache.hadoop.mapred.SequenceFileOutputFormat
-import org.apache.hadoop.mapred.Partitioner
-import org.apache.hadoop.mapred.lib.MultipleOutputs
-import org.apache.hadoop.io.SequenceFile
+import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.Mapper
+import org.apache.hadoop.mapreduce.Reducer
+import org.apache.hadoop.mapreduce.Partitioner
+import org.apache.hadoop.mapreduce.OutputFormat
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.compress.GzipCodec
+import org.apache.hadoop.io.compress.CompressionCodec
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.Scoobi
@@ -93,18 +94,18 @@ class MapReduceJob {
   /** Take this MapReduce job and run it on Hadoop. */
   def run() = {
 
-    val jobConf = new JobConf(Scoobi.conf)
-    val fs = FileSystem.get(jobConf)
+    val job = new Job(Scoobi.conf, Scoobi.jobId)
+    val fs = FileSystem.get(job.getConfiguration)
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
-    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(jobConf), "tmp-out")
+    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out")
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
     val tmpFile = File.createTempFile("scoobi-job-", ".jar")
     var jar = new JarBuilder(tmpFile.getAbsolutePath)
-    jobConf.setJar(jar.name)
+    job.getConfiguration.set("mapred.jar", tmpFile.getAbsolutePath)
 
     jar.addContainingJar(classOf[List[_]])        //  Scala
     jar.addContainingJar(this.getClass)           //  Scoobi
@@ -124,28 +125,32 @@ class MapReduceJob {
     jar.addRuntimeClass(tvRtClass)
     jar.addRuntimeClass(tpRtClass)
 
-    jobConf.setMapOutputKeyClass(tkRtClass.clazz)
-    jobConf.setMapOutputValueClass(tvRtClass.clazz)
-    jobConf.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
+    job.setMapOutputKeyClass(tkRtClass.clazz)
+    job.setMapOutputValueClass(tvRtClass.clazz)
+    job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
 
-    jobConf.setCompressMapOutput(true)
-    jobConf.setMapOutputCompressorClass(classOf[GzipCodec])
+    /* Compress mapper outputs */
+    job.getConfiguration.setBoolean("mapred.compress.map.output", true)
+    job.getConfiguration.setClass("mapred.map.output.compression.codec", classOf[GzipCodec], classOf[CompressionCodec])
 
 
     /** Mappers:
       *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
       *       mapper for a given input channel can be used as they all have the same input type
-      *     - use ChannelInputs to specify multiple mappers through jobconf */
+      *     - use ChannelInputs to specify multiple mappers through job */
     val inputChannels = mappers.toList.zipWithIndex
     inputChannels.foreach { case ((input, ms), ix) =>
       val mapper = ms.head
       val valRtClass = ScoobiWritable(input.inputTypeName, mapper.mA, mapper.wtA)
       jar.addRuntimeClass(valRtClass)
-      ChannelInputFormat.addInputChannel(jobConf, ix, input.inputPath, input.inputFormat)
+      ChannelInputFormat.addInputChannel(job,
+                                         ix,
+                                         input.inputPath,
+                                         input.inputFormat.asInstanceOf[Class[_ <: FileInputFormat[_,_]]])
     }
 
-    DistCache.pushObject(jobConf, inputChannels map { case((_, ms), ix) => (ix, ms.toSet) } toMap, "scoobi.input.mappers")
-    jobConf.setMapperClass(classOf[MscrMapper[_,_,_]])
+    DistCache.pushObject(job.getConfiguration, inputChannels map { case((_, ms), ix) => (ix, ms.toSet) } toMap, "scoobi.input.mappers")
+    job.setMapperClass(classOf[MscrMapper[_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
 
 
     /** Combiners:
@@ -154,26 +159,29 @@ class MapReduceJob {
       *   - use distributed cache to push all combine code out */
     if (!combiners.isEmpty) {
       val combinerMap: Map[Int, TaggedCombiner[_]] = combiners.map(tc => (tc.tag, tc)).toMap
-      DistCache.pushObject(jobConf, combinerMap, "scoobi.combiners")
-      jobConf.setCombinerClass(classOf[MscrCombiner[_]])
+      DistCache.pushObject(job.getConfiguration, combinerMap, "scoobi.combiners")
+      job.setCombinerClass(classOf[MscrCombiner[_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
 
 
     /** Reducers:
       *     - add a named output for each output channel
       *     - generate runtime class (ScoobiWritable) for each output value type and add to JAR */
-    FileOutputFormat.setOutputPath(jobConf, tmpOutputPath)
+    FileOutputFormat.setOutputPath(job, tmpOutputPath)
     reducers.foreach { case (outputs, reducer) =>
       val valRtClass = ScoobiWritable(outputs.head.outputTypeName, reducer.mB, reducer.wtB)
       jar.addRuntimeClass(valRtClass)
-      outputs.zipWithIndex.foreach { case (output, ix) =>
-        MultipleOutputs.addNamedOutput(jobConf, "ch" + reducer.tag + "out" + ix, output.outputFormat,
-                                       classOf[NullWritable], valRtClass.clazz)
+      outputs.zipWithIndex.foreach { case (out, ix) =>
+        ChannelOutputFormat.addOutputChannel(job,
+                                             reducer.tag,
+                                             ix,
+                                             out.outputFormat.asInstanceOf[Class[_ <: OutputFormat[_,_]]],
+                                             valRtClass.clazz)
       }
     }
 
-    DistCache.pushObject(jobConf, reducers map { case (os, tr) => (tr.tag, (os.size, tr)) } toMap, "scoobi.output.reducers")
-    jobConf.setReducerClass(classOf[MscrReducer[_,_,_]])
+    DistCache.pushObject(job.getConfiguration, reducers map { case (os, tr) => (tr.tag, (os.size, tr)) } toMap, "scoobi.output.reducers")
+    job.setReducerClass(classOf[MscrReducer[_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 
     /* Calculate the number of reducers to use with a simple heuristic:
@@ -183,12 +191,12 @@ class MapReduceJob {
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
     val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
-    jobConf.setNumReduceTasks(inputGigabytes)
+    job.setNumReduceTasks(inputGigabytes)
 
 
     /* Run job then tidy-up. */
     jar.close()
-    JobClient.runJob(jobConf)
+    job.waitForCompletion(true)
     tmpFile.delete
 
 

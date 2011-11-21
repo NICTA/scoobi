@@ -16,7 +16,7 @@
 package com.nicta.scoobi.impl.exec
 
 import java.io._
-import org.apache.hadoop.mapred._
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._
 
@@ -30,29 +30,29 @@ object DistCache {
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */
-  private def mkPath(jobConf: JobConf, tag: String): Path = {
-    val scratchDir = new Path(Scoobi.getWorkingDirectory(jobConf), "dist-objs")
+  private def mkPath(conf: Configuration, tag: String): Path = {
+    val scratchDir = new Path(Scoobi.getWorkingDirectory(conf), "dist-objs")
     new Path(scratchDir, tag)
   }
 
   /** Distribute an object to be available for tasks in the current job. */
-  def pushObject(jobConf: JobConf, obj: AnyRef, tag: String): Unit = {
+  def pushObject(conf: Configuration, obj: AnyRef, tag: String): Unit = {
     /* Serialize */
-    val path = mkPath(jobConf, tag)
+    val path = mkPath(conf, tag)
     val oos = new ObjectOutputStream(path.getFileSystem(Scoobi.conf).create(path))
     oos.writeObject(obj)
     oos.close()
 
     /* Add as distributed cache file. */
-    DistributedCache.addCacheFile(path.toUri, jobConf)
+    DistributedCache.addCacheFile(path.toUri, conf)
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
-  def pullObject(jobConf: JobConf, tag: String): AnyRef = {
+  def pullObject(conf: Configuration, tag: String): AnyRef = {
     /* Get distributed cache file. */
-    val path = mkPath(jobConf, tag)
-    val cacheFiles = DistributedCache.getCacheFiles(jobConf)
+    val path = mkPath(conf, tag)
+    val cacheFiles = DistributedCache.getCacheFiles(conf)
     val cacheFile = new Path(cacheFiles.filter(_.toString.compareTo(path.toString) == 0)(0).toString)
 
     /* Deserialize */

@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.mapred.{Reducer => HReducer, _}
+import org.apache.hadoop.mapreduce.{Reducer => HReducer, _}
 
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.rtt.Tagged
@@ -29,18 +29,17 @@ class MscrCombiner[V] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagged
   private var combiners: Map[Int, TaggedCombiner[_]] = _
   private var tv: TaggedValue = _
 
-  def configure(conf: JobConf) = {
-    combiners = DistCache.pullObject(conf, "scoobi.combiners").asInstanceOf[Map[Int, TaggedCombiner[_]]]
-    tv = conf.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
+  override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) = {
+    combiners = DistCache.pullObject(context.getConfiguration, "scoobi.combiners").asInstanceOf[Map[Int, TaggedCombiner[_]]]
+    tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 
-  def reduce(key: TaggedKey,
-             values: java.util.Iterator[TaggedValue],
-             output: OutputCollector[TaggedKey, TaggedValue],
-             reporter: Reporter) = {
+  override def reduce(key: TaggedKey,
+                      values: java.lang.Iterable[TaggedValue],
+                      context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) = {
 
     val tag = key.tag
-    val valuesStream = Stream.continually(if (values.hasNext) values.next else null).takeWhile(_ != null)
+    val valuesStream = Stream.continually(if (values.iterator.hasNext) values.iterator.next else null).takeWhile(_ != null)
 
     if (combiners.contains(tag)) {
       /* Only perform combining if one is available for this tag. */
@@ -53,13 +52,13 @@ class MscrCombiner[V] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagged
       val reduction = untaggedValues.tail.foldLeft(untaggedValues.head)(combiner.combine)
       tv.set(tag, reduction)
 
-      output.collect(key, tv)
+      context.write(key, tv)
     } else {
       /* If no combiner for this tag, TK-TV passes through. */
-      valuesStream.foreach { value => output.collect(key, value) }
+      valuesStream.foreach { value => context.write(key, value) }
     }
   }
 
-  def close() = {
+  override def cleanup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) = {
   }
 }

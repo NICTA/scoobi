@@ -17,18 +17,28 @@ package com.nicta.scoobi.impl.exec
 
 import java.io.IOException
 import java.io.DataInput
+import java.io.DataInputStream;
 import java.io.DataOutput
+import java.io.DataOutputStream;
+
+import org.apache.hadoop.conf.Configurable
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.io.Writable
+import org.apache.hadoop.io.serializer.Deserializer
+import org.apache.hadoop.io.serializer.SerializationFactory
+import org.apache.hadoop.io.serializer.Serializer
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapred.FileInputFormat
-import org.apache.hadoop.mapred.InputFormat
-import org.apache.hadoop.mapred.InputSplit
-import org.apache.hadoop.mapred.JobConf
-import org.apache.hadoop.mapred.RecordReader
-import org.apache.hadoop.mapred.Reporter
+import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.JobContext
+import org.apache.hadoop.mapreduce.InputFormat
+import org.apache.hadoop.mapreduce.InputSplit
+import org.apache.hadoop.mapreduce.RecordReader
+import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.util.ReflectionUtils
 import scala.util.matching.Regex
+import scala.collection.JavaConversions._
 
 
 /** Object that allows for channels with different input format requirements
@@ -39,10 +49,12 @@ object ChannelInputFormat {
 
   /** Add a new input channel. */
   def addInputChannel
-      (conf: JobConf,
+      (job: Job,
        channel: Int,
        inputPath: Path,
        inputFormat: Class[_ <: FileInputFormat[_,_]]) = {
+
+    val conf = job.getConfiguration
 
     val inputFormatMapping = List(channel.toString,
                                   inputPath.toString,
@@ -54,18 +66,19 @@ object ChannelInputFormat {
     else
       conf.set(INPUT_FORMAT_PROPERTY, inputFormats + "," + inputFormatMapping)
 
-    conf.setInputFormat(classOf[ChannelInputFormat[_,_]])
+    job.setInputFormatClass(classOf[ChannelInputFormat[_,_]].asInstanceOf[Class[_ <: InputFormat[_,_]]])
   }
 
 
   /** Get a map of all the input channels. */
-  def getInputChannels(conf: JobConf): Map[Int, (Path, InputFormat[_,_])] = {
+  def getInputChannels(context: JobContext): Map[Int, (Path, InputFormat[_,_])] = {
     val Entry = """(.*);(.*);(.*)""".r
 
-    conf.get(INPUT_FORMAT_PROPERTY).split(",").toList map {
-      case Entry(ch, path, infmt) => (ch.toInt,
-                                        (new Path(path),
-                                        ReflectionUtils.newInstance(Class.forName(infmt), conf).asInstanceOf[InputFormat[_,_]]))
+    context.getConfiguration.get(INPUT_FORMAT_PROPERTY).split(",").toList map {
+      case Entry(ch, path, infmt) =>
+        (ch.toInt,
+          (new Path(path),
+          ReflectionUtils.newInstance(Class.forName(infmt), context.getConfiguration).asInstanceOf[InputFormat[_,_]]))
     } toMap
   }
 }
@@ -75,38 +88,60 @@ object ChannelInputFormat {
   * input channel. */
 class ChannelInputFormat[K, V] extends InputFormat[K, V] {
 
-  def getSplits(conf: JobConf, numSplits: Int): Array[InputSplit] = {
+  def getSplits(context: JobContext): java.util.List[InputSplit] = {
 
-    ChannelInputFormat.getInputChannels(conf) flatMap { case (channel, (path, format)) =>
+    ChannelInputFormat.getInputChannels(context) flatMap { case (channel, (path, format)) =>
 
-      val confCopy = new JobConf(conf)
-      FileInputFormat.addInputPath(confCopy, path)
+      val conf = context.getConfiguration
+      val jobCopy = new Job(conf)
+      FileInputFormat.addInputPath(jobCopy, path)
 
-      format.getSplits(confCopy, numSplits) map { (pathSplit: InputSplit) =>
+      format.getSplits(jobCopy) map { (pathSplit: InputSplit) =>
         new TaggedInputSplit(conf, channel, pathSplit, format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
       }
-    } toArray
+
+    } toList
   }
 
-  def getRecordReader(split: InputSplit, conf: JobConf, reporter: Reporter): RecordReader[K, V] = {
+  def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[K, V] = {
+    new ChannelRecordReader(split, context)
+  }
+}
 
-    /* Find the InputFormat and then the RecordReader from the TaggedInputSplit. */
+
+/** A RecordReader that delegates the functionality to the underlying record reader
+  * in TaggedInputSplit. */
+class ChannelRecordReader[K, V](split: InputSplit, context: TaskAttemptContext) extends RecordReader[K, V] {
+
+  private val originalRR: RecordReader[K, V] = {
     val taggedInputSplit: TaggedInputSplit = split.asInstanceOf[TaggedInputSplit]
     val inputFormat = taggedInputSplit.inputFormatClass.newInstance.asInstanceOf[InputFormat[K, V]]
-
-    inputFormat.getRecordReader(taggedInputSplit.inputSplit, conf, reporter)
+    inputFormat.createRecordReader(taggedInputSplit.inputSplit, context)
   }
+
+  override def close() = originalRR.close()
+
+  override def getCurrentKey: K = originalRR.getCurrentKey
+
+  override def getCurrentValue: V = originalRR.getCurrentValue
+
+  override def getProgress: Float = originalRR.getProgress
+
+  override def initialize(split: InputSplit, context: TaskAttemptContext) =
+    originalRR.initialize(split.asInstanceOf[TaggedInputSplit].inputSplit, context)
+
+  override def nextKeyValue: Boolean = originalRR.nextKeyValue
 }
 
 
 /** A wrapper around an InputSplit that is tagged with an input channel id. Is
   * used with ChannelInputForamt. */
 class TaggedInputSplit
-    (var conf: Configuration,
+    (private var conf: Configuration,
      var channel: Int,
      var inputSplit: InputSplit,
      var inputFormatClass: Class[_ <: InputFormat[_,_]])
-  extends InputSplit {
+  extends InputSplit with Configurable with Writable {
 
   def this() = this(null.asInstanceOf[Configuration], 0, null.asInstanceOf[InputSplit],
                     null.asInstanceOf[Class[_ <: InputFormat[_,_]]])
@@ -119,15 +154,27 @@ class TaggedInputSplit
     channel = in.readInt
     val inputSplitClassName = Text.readString(in)
     inputSplit = ReflectionUtils.newInstance(Class.forName(inputSplitClassName), conf).asInstanceOf[InputSplit]
-    inputSplit.readFields(in)
     val inputFormatClassName = Text.readString(in)
     inputFormatClass = Class.forName(inputFormatClassName).asInstanceOf[Class[_ <: InputFormat[_,_]]]
+
+    val factory: SerializationFactory = new SerializationFactory(conf)
+    val deserializer: Deserializer[InputSplit] = factory.getDeserializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
+    deserializer.open(in.asInstanceOf[DataInputStream])
+    inputSplit = deserializer.deserialize(inputSplit)
   }
 
   def write(out: DataOutput): Unit = {
     out.writeInt(channel)
     Text.writeString(out, inputSplit.getClass.getName)
-    inputSplit.write(out)
     Text.writeString(out, inputFormatClass.getName)
+
+    val factory: SerializationFactory = new SerializationFactory(conf)
+    val serializer: Serializer[InputSplit] = factory.getSerializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
+    serializer.open(out.asInstanceOf[DataOutputStream])
+    serializer.serialize(inputSplit)
   }
+
+  def getConf: Configuration = conf
+
+  def setConf(conf: Configuration) = this.conf = conf
 }

@@ -22,13 +22,14 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapred.InputSplit
-import org.apache.hadoop.mapred.FileSplit
-import org.apache.hadoop.mapred.FileInputFormat
-import org.apache.hadoop.mapred.RecordReader
-import org.apache.hadoop.mapred.LineRecordReader
-import org.apache.hadoop.mapred.JobConf
-import org.apache.hadoop.mapred.Reporter
+import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.JobContext
+import org.apache.hadoop.mapreduce.InputSplit
+import org.apache.hadoop.mapreduce.RecordReader
+import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.lib.input.FileSplit
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
+import org.apache.hadoop.mapreduce.lib.input.LineRecordReader
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
@@ -113,11 +114,13 @@ object TextInput {
     * format is then used as the basis for loading files into a Scoobi job. */
   class SimplerTextInputFormat extends FileInputFormat[NullWritable, StringWritable] {
 
-    def getRecordReader(split: InputSplit, job: JobConf, reporter: Reporter)
+    override def createRecordReader(split: InputSplit, context: TaskAttemptContext)
       : RecordReader[NullWritable, StringWritable] = {
 
-      reporter.setStatus(split.toString)
-      new SimplerLineRecordReader(job, split.asInstanceOf[FileSplit])
+      context.setStatus(split.toString)
+      val rr = new SimplerLineRecordReader
+      rr.initialize(split.asInstanceOf[FileSplit], context)
+      rr
     }
   }
 
@@ -130,30 +133,24 @@ object TextInput {
 
 
   /** A wrapper around LineRecordReader. */
-  private class SimplerLineRecordReader(job: JobConf, fileSplit: FileSplit)
-    extends RecordReader[NullWritable, StringWritable] {
+  private class SimplerLineRecordReader extends RecordReader[NullWritable, StringWritable] {
 
-    val lrr = new LineRecordReader(job, fileSplit)
+    private val lrr = new LineRecordReader
+    private val value = new StringWritable("")
 
     def close() = lrr.close()
 
-    def createKey: NullWritable = NullWritable.get
+    def getCurrentKey: NullWritable = NullWritable.get
 
-    def createValue: StringWritable = {
-      new StringWritable("")
-    }
-
-    def getPos: Long = lrr.getPos
+    def getCurrentValue = { value.set(lrr.getCurrentValue.toString); value }
 
     def getProgress: Float = lrr.getProgress
 
-    def next(key: NullWritable, value: StringWritable) = {
-      var k: LongWritable = new LongWritable
-      var v: Text = new Text
-      val more = lrr.next(k, v)
-      value.set(v.toString)
-      more
-    }
+    def initialize(split: InputSplit, context: TaskAttemptContext): Unit = lrr.initialize(split, context)
+
+    def nextKeyValue: Boolean = lrr.nextKeyValue
+
+    def createKey: NullWritable = NullWritable.get
   }
 }
 

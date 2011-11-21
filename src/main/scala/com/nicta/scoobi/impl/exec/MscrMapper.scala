@@ -16,7 +16,7 @@
 package com.nicta.scoobi.impl.exec
 
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapred.{Mapper => HMapper, _}
+import org.apache.hadoop.mapreduce.{Mapper => HMapper, _}
 
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.rtt.Tagged
@@ -33,21 +33,20 @@ class MscrMapper[A, K, V] extends HMapper[NullWritable, ScoobiWritable[A], Tagge
   var tv: TaggedValue = _
 
 
-  def configure(conf: JobConf) = {
-    inputs = DistCache.pullObject(conf, "scoobi.input.mappers").asInstanceOf[Map[Int, Set[TaggedMapper[_,_,_]]]]
+  override def setup(context: HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]#Context) = {
+    inputs = DistCache.pullObject(context.getConfiguration, "scoobi.input.mappers").asInstanceOf[Map[Int, Set[TaggedMapper[_,_,_]]]]
     mappers = null
-    tk = conf.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
-    tv = conf.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
+    tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
+    tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 
-  def map(key: NullWritable,
+  override def map(key: NullWritable,
           value: ScoobiWritable[A],
-          output: OutputCollector[TaggedKey, TaggedValue],
-          reporter: Reporter) = {
+          context: HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]#Context) = {
 
     /* Find the mappers for this input channel from the tagged input split. */
     if (mappers == null) {
-      val inputSplit = reporter.getInputSplit.asInstanceOf[TaggedInputSplit]
+      val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
       mappers = inputs(inputSplit.channel).asInstanceOf[Set[TaggedMapper[A, K, V]]]
     }
 
@@ -57,12 +56,12 @@ class MscrMapper[A, K, V] extends HMapper[NullWritable, ScoobiWritable[A], Tagge
         mapper.tags.foreach { tag =>
           tk.set(tag, k)
           tv.set(tag, v)
-          output.collect(tk, tv)
+          context.write(tk, tv)
         }
       }
     }
   }
 
-  def close() = {
+  override def cleanup(context: HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]#Context) = {
   }
 }
