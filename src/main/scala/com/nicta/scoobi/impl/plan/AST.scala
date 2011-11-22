@@ -16,6 +16,8 @@
 package com.nicta.scoobi.impl.plan
 
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.DoFn
+import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.impl.exec.TaggedMapper
 import com.nicta.scoobi.impl.exec.TaggedCombiner
 import com.nicta.scoobi.impl.exec.TaggedReducer
@@ -44,17 +46,26 @@ object AST {
   case class Mapper[A : Manifest : WireFormat,
                     B : Manifest : WireFormat]
       (in: Node[A],
-       f: A => Iterable[B])
+       dofn: DoFn[A, B])
     extends Node[B] with MapperLike[A, Int, B] {
 
     def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, Int, B](tags) {
       /* The output key will be an integer that is continually incrementing. This will ensure
        * the mapper produces an even distribution of key values. */
-      def map(value: A): Iterable[(Int, B)] = f(value).map((x: B) => (RollingInt.get, x))
+      def setup() = dofn.setup()
+
+      def map(input: A, emitter: Emitter[(Int, B)]) = {
+        val e = new Emitter[B] { def emit(x: B) = emitter.emit((RollingInt.get, x)) }
+        dofn.process(input, e)
+      }
+
+      def cleanup(emitter: Emitter[(Int, B)]) = {
+        val e = new Emitter[B] { def emit(x: B) = emitter.emit((RollingInt.get, x)) }
+        dofn.cleanup(e)
+      }
     }
 
     override def toString = "Mapper" + id
-
   }
 
 
@@ -63,16 +74,17 @@ object AST {
                        K : Manifest : WireFormat : Ordering,
                        V : Manifest : WireFormat]
       (in: Node[A],
-       f: A => Iterable[(K, V)])
+       dofn: DoFn[A, (K, V)])
     extends Node[(K, V)] with MapperLike[A, K, V] {
 
     /** */
     def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, K, V](tags) {
-      def map(value: A): Iterable[(K, V)] = f(value)
+      def setup() = dofn.setup()
+      def map(input: A, emitter: Emitter[(K, V)]) = dofn.process(input, emitter)
+      def cleanup(emitter: Emitter[(K, V)]) = dofn.cleanup(emitter)
     }
 
     override def toString = "GbkMapper" + id
-
   }
 
 
@@ -90,38 +102,42 @@ object AST {
     }
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, V)](tag)(mK, wtK, ordK, mV, wtV, mKV, wtKV) {
-      def reduce(key: K, values: Iterable[V]): Iterable[(K, V)] = {
-          List((key, values.tail.foldLeft(values.head)(f)))
+      def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = {
+        emitter.emit((key, values.tail.foldLeft(values.head)(f)))
       }
     }
 
     /** Produce a TaggedReducer using this combiner function and an additional reducer function. */
-    def mkTaggedReducerWithCombiner[B](tag: Int, rf: ((K, V)) => Iterable[B])(implicit mB: Manifest[B], wtB: WireFormat[B]) =
+    def mkTaggedReducerWithCombiner[B](tag: Int, dofn: DoFn[(K, V), B])(implicit mB: Manifest[B], wtB: WireFormat[B]) =
       new TaggedReducer[K, V, B](tag)(mK, wtK, ordK, mV, wtV, mB, wtB) {
-        def reduce(key: K, values: Iterable[V]): Iterable[B] = {
-          rf((key, values.tail.foldLeft(values.head)(f)))
+        def reduce(key: K, values: Iterable[V], emitter: Emitter[B]) = {
+          dofn.setup()
+          dofn.process((key, values.tail.foldLeft(values.head)(f)), emitter)
+          dofn.cleanup(emitter)
         }
       }
 
     override def toString = "Combiner" + id
-
   }
 
 
-  /** GbkReducer - a reduce (i.e. FlatMap) that follows a GroupByKey (i.e. no Combiner). */
+  /** GbkReducer - a reduce (i.e. ParallelDo) that follows a GroupByKey (i.e. no Combiner). */
   case class GbkReducer[K : Manifest : WireFormat : Ordering,
                         V : Manifest : WireFormat,
                         B : Manifest : WireFormat]
       (in: Node[(K, Iterable[V])],
-       f: ((K, Iterable[V])) => Iterable[B])
+       dofn: DoFn[((K, Iterable[V])), B])
     extends Node[B] with ReducerLike[K, V, B] {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, B](tag) {
-      def reduce(key: K, values: Iterable[V]): Iterable[B] = f((key, values))
+      def reduce(key: K, values: Iterable[V], emitter: Emitter[B]) = {
+        dofn.setup()
+        dofn.process((key, values), emitter)
+        dofn.cleanup(emitter)
+      }
     }
 
     override def toString = "GbkReducer" + id
-
   }
 
 
@@ -130,31 +146,28 @@ object AST {
                      V : Manifest : WireFormat,
                      B : Manifest : WireFormat]
       (in: Node[(K, V)],
-       f: ((K, V)) => Iterable[B])
+       dofn: DoFn[(K, V), B])
     extends Node[B] with ReducerLike[K, V, B] {
 
     /* It is expected that this Reducer is preceeded by a Combiner. */
     def mkTaggedReducer(tag: Int) = in match {
-      case c@Combiner(_, _) => c.mkTaggedReducerWithCombiner(tag, f)
+      case c@Combiner(_, _) => c.mkTaggedReducerWithCombiner(tag, dofn)
       case _                => sys.error("Reducer must be preceeded by Combiner")
     }
 
     override def toString = "Reducer" + id
-
   }
 
 
   /** Usual Load node. */
   case class Load[A : Manifest : WireFormat]() extends Node[A] {
     override def toString = "Load" + id
-
   }
 
 
   /** Usual Flatten node. */
   case class Flatten[A : Manifest : WireFormat](ins: List[Node[A]]) extends Node[A] {
     override def toString = "Flatten" + id
-
   }
 
 
@@ -167,7 +180,7 @@ object AST {
     override def toString = "GroupByKey" + id
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
-      def reduce(key: K, values: Iterable[V]): Iterable[(K, Iterable[V])] = List((key, values))
+      def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = emitter.emit((key, values))
     }
   }
 

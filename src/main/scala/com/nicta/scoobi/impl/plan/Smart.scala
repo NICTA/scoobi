@@ -17,7 +17,8 @@ package com.nicta.scoobi.impl.plan
 
 import scala.collection.mutable.{Map => MMap}
 
-
+import com.nicta.scoobi.DoFn
+import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Persister
@@ -56,8 +57,8 @@ object Smart {
     def optSplitFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
       copyOnceWith(copied, _.optSplitFlattens(_))
 
-    /** An optimisation strategy that sinks a Flatten node that is an input to a FlatMap node
-      * such that in the resulting AST replicated FlatMap nodes are inputs to the Flatten
+    /** An optimisation strategy that sinks a Flatten node that is an input to a ParallelDo node
+      * such that in the resulting AST replicated ParallelDo nodes are inputs to the Flatten
       * node. */
     def optSinkFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
       copyOnceWith(copied, _.optSinkFlattens(_))
@@ -66,15 +67,15 @@ object Smart {
     def optFuseFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
       copyOnceWith(copied, _.optFuseFlattens(_))
 
-    /** An optimisation strategy that morphs a Combine node into a FlatMap node if it does not
+    /** An optimisation strategy that morphs a Combine node into a ParallelDo node if it does not
       * follow a GroupByKey node. */
-    def optCombinersToMaps(copied: CopyTable): (DList[A], CopyTable, Boolean) =
-      copyOnceWith(copied, _.optCombinersToMaps(_))
+    def optCombinerToParDos(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optCombinerToParDos(_))
 
-    /** An optimisation strategy that fuses the functionality of a FlatMap node that is an input
-      * to another FlatMap node. */
-    def optFuseMaps(copied: CopyTable): (DList[A], CopyTable, Boolean) =
-      copyOnceWith(copied, _.optFuseMaps(_))
+    /** An optimisation strategy that fuses the functionality of a ParallelDo node that is an input
+      * to another ParallelDo node. */
+    def optFuseParDos(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optFuseParDos(_))
 
     /** An optimisation strategy that replicates any GroupByKey nodes that have multiple outputs
       * such that in the resulting AST, GroupByKey nodes have only single outputs. */
@@ -142,9 +143,9 @@ object Smart {
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]
 
-    def convertFlatMap[B : Manifest : WireFormat](ci: ConvertInfo, fm: FlatMap[A,B]): AST.Node[B] = {
+    def convertParallelDo[B : Manifest : WireFormat](ci: ConvertInfo, pd: ParallelDo[A,B]): AST.Node[B] = {
       val n: AST.Node[A] = convert(ci)
-      fm.insert(ci, AST.Mapper(n, fm.f))
+      pd.insert(ci, AST.Mapper(n, pd.dofn))
     }
   }
 
@@ -182,15 +183,15 @@ object Smart {
   }
 
 
-  /** The FlatMap node type specifies the building of a DList as a result of applying a function to
+  /** The ParallelDo node type specifies the building of a DList as a result of applying a function to
     * all elements of an existing DList and concatenating the results. */
-  case class FlatMap[A, B]
+  case class ParallelDo[A, B]
       (in: DList[A],
-       f: A => Iterable[B])
+       dofn: DoFn[A, B])
       (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
     extends DList[B] {
 
-    def name = "FlatMap" + id
+    def name = "ParallelDo" + id
 
     override def toString = name + "(" + in + ")"
 
@@ -199,12 +200,12 @@ object Smart {
     def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[B], CopyTable, Boolean) = {
       val cfA = cf.asInstanceOf[CopyFn[A]]
       val (inUpd, copiedUpd, b) = cfA(in, copied)
-      val fm = FlatMap(inUpd, f)
-      (fm, copiedUpd + (this -> fm), b)
+      val pd = ParallelDo(inUpd, dofn)
+      (pd, copiedUpd + (this -> pd), b)
     }
 
-    /** If the input to this FlatMap is a Flatten node, re-write the tree as a Flatten node with the
-      * FlatMap replicated on each of its inputs. Otherwise just perform a normal copy. */
+    /** If the input to this ParallelDo is a Flatten node, re-write the tree as a Flatten node with the
+      * ParallelDo replicated on each of its inputs. Otherwise just perform a normal copy. */
     override def optSinkFlattens(copied: CopyTable): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
       in match {
         case Flatten(ins) => {
@@ -213,29 +214,42 @@ object Smart {
             (ctUpd + (in -> inUpd), copies :+ inUpd)
           }
 
-          val flat: DList[B] = Flatten(insUpd.map(FlatMap(_, f)))
+          val flat: DList[B] = Flatten(insUpd.map(ParallelDo(_, dofn)))
           (flat, copiedUpd + (this -> flat), true)
         }
         case _            => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optSinkFlattens(ct))
       }
     }
 
-    /** If the input to this FlatMap is another FlatMap node, re-write this FlatMap with the preceeding's
-      * FlatMap's "mapping function" fused in. Otherwise just perform a normal copy. */
-    override def optFuseMaps(copied: CopyTable): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
+    /** If the input to this ParallelDo is another ParallelDo node, re-write this ParallelDo with the preceeding's
+      * ParallelDo's "mapping function" fused in. Otherwise just perform a normal copy. */
+    override def optFuseParDos(copied: CopyTable): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
 
-      /* Create a new FlatMap function that is the fusion of two connected FlatMap functions. */
-      def fuse[X, Y, Z](f: X => Iterable[Y], g: Y => Iterable[Z]): X => Iterable[Z] =
-        (x: X) => f(x) flatMap g
+      /* Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
+      def fuse[X, Y, Z](f: DoFn[X, Y], g: DoFn[Y, Z]): DoFn[X, Z] = new DoFn[X, Z] {
+        def setup() = {
+          f.setup()
+          g.setup()
+        }
+
+        def process(input: X, emitter: Emitter[Z]) = {
+          f.process(input, new Emitter[Y] { def emit(value: Y) = g.process(value, emitter) } )
+        }
+
+        def cleanup(emitter: Emitter[Z]) = {
+          f.cleanup(new Emitter[Y] { def emit(value: Y) = g.process(value, emitter) } )
+          g.cleanup(emitter)
+        }
+      }
 
       in match {
-        case FlatMap(_, _) => {
-          val (inUpd, copiedUpd, _) = in.optFuseMaps(copied)
-          val prev@FlatMap(inPrev, fPrev) = inUpd
-          val fm = new FlatMap(inPrev, fuse(fPrev, f))(prev.mA, prev.wtA, mB, wtB)
-          (fm, copiedUpd + (this -> fm), true)
+        case ParallelDo(_, _) => {
+          val (inUpd, copiedUpd, _) = in.optFuseParDos(copied)
+          val prev@ParallelDo(inPrev, dofnPrev) = inUpd
+          val pd = new ParallelDo(inPrev, fuse(dofnPrev, dofn))(prev.mA, prev.wtA, mB, wtB)
+          (pd, copiedUpd + (this -> pd), true)
         }
-        case _             => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseMaps(ct))
+        case _                => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseParDos(ct))
       }
     }
 
@@ -244,20 +258,20 @@ object Smart {
     // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo): AST.Node[B] = {
       in.convert(ci)
-      in.convertFlatMap(ci, this)
+      in.convertParallelDo(ci, this)
     }
 
     def convertNew2[K : Manifest : WireFormat : Ordering,
                     V : Manifest : WireFormat](ci: ConvertInfo):
                     AST.Node[(K,V)] with KVLike[K,V] = {
-      val fm: FlatMap[A,(K,V)] = this.asInstanceOf[FlatMap[A,(K,V)]]
-      val n: AST.Node[A] = fm.in.convert(ci)
+      val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
+      val n: AST.Node[A] = pd.in.convert(ci)
 
-      if ( ci.mscrs.exists(_.containsGbkMapper(fm)) ) {
-        fm.insert2(ci, new AST.GbkMapper(n,fm.f) with KVLike[K,V] {
+      if ( ci.mscrs.exists(_.containsGbkMapper(pd)) ) {
+        pd.insert2(ci, new AST.GbkMapper(n, pd.dofn) with KVLike[K,V] {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
       } else {
-        fm.insert2(ci, new AST.Mapper(n, fm.f) with KVLike[K,V] {
+        pd.insert2(ci, new AST.Mapper(n, pd.dofn) with KVLike[K,V] {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
       }
     }
@@ -330,13 +344,13 @@ object Smart {
 
     }
 
-    override def convertFlatMap[B : Manifest : WireFormat]
-                               (ci: ConvertInfo, fm: FlatMap[(K,Iterable[V]), B]): AST.Node[B] = {
+    override def convertParallelDo[B : Manifest : WireFormat]
+                               (ci: ConvertInfo, pd: ParallelDo[(K,Iterable[V]), B]): AST.Node[B] = {
       val n: AST.Node[(K, Iterable[V])] = convert(ci)
-      if ( ci.mscrs.exists(_.containsGbkReducer(fm)) ) {
-        fm.insert(ci, AST.GbkReducer(n, fm.f))
+      if ( ci.mscrs.exists(_.containsGbkReducer(pd)) ) {
+        pd.insert(ci, AST.GbkReducer(n, pd.dofn))
       } else {
-        fm.insert(ci, AST.Mapper(n, fm.f))
+        pd.insert(ci, AST.Mapper(n, pd.dofn))
       }
     }
   }
@@ -364,19 +378,24 @@ object Smart {
     }
 
     /** If this Combine node's input is a GroupByKey node, perform a normal copy. Otherwise, create a
-      * FlatMap node whose mapping function performs the combining functionality. */
-    override def optCombinersToMaps(copied: CopyTable): (DList[(K, V)], CopyTable, Boolean) = copyOnce(copied) {
+      * ParallelDo node whose mapping function performs the combining functionality. */
+    override def optCombinerToParDos(copied: CopyTable): (DList[(K, V)], CopyTable, Boolean) = copyOnce(copied) {
       in match {
-        case GroupByKey(inKV) => justCopy(copied, (n: DList[(K, V)], ct: CopyTable) => n.optCombinersToMaps(ct))
+        case GroupByKey(inKV) => justCopy(copied, (n: DList[(K, V)], ct: CopyTable) => n.optCombinerToParDos(ct))
         case _                => {
-          val (inUpd, copiedUpd, _) = in.optCombinersToMaps(copied)
-          val mapF = (kvs: (K, Iterable[V])) => {
-            val key = kvs._1
-            val values = kvs._2
-            List((key, values.tail.foldLeft(values.head)(f)))
+          val (inUpd, copiedUpd, _) = in.optCombinerToParDos(copied)
+
+          val dofn = new DoFn[(K, Iterable[V]), (K, V)] {
+            def setup() = {}
+            def process(input: (K, Iterable[V]), emitter: Emitter[(K, V)]) = {
+              val key = input._1
+              val values = input._2
+              emitter.emit(key, values.tail.foldLeft(values.head)(f))
+            }
+            def cleanup(emitter: Emitter[(K, V)]) = {}
           }
-          val fm = FlatMap(inUpd, mapF)
-          (fm, copiedUpd + (this -> fm), true)
+          val pd = ParallelDo(inUpd, dofn)
+          (pd, copiedUpd + (this -> pd), true)
         }
       }
     }
@@ -397,13 +416,13 @@ object Smart {
 
     }
 
-    override def convertFlatMap[B : Manifest : WireFormat]
-                               (ci: ConvertInfo, fm: FlatMap[(K,V), B]): AST.Node[B] = {
+    override def convertParallelDo[B : Manifest : WireFormat]
+                               (ci: ConvertInfo, pd: ParallelDo[(K,V), B]): AST.Node[B] = {
       val n: AST.Node[(K, V)] = convert(ci)
-      if ( ci.mscrs.exists(_.containsReducer(fm)) ) {
-        fm.insert(ci, AST.Reducer(n, fm.f))
+      if ( ci.mscrs.exists(_.containsReducer(pd)) ) {
+        pd.insert(ci, AST.Reducer(n, pd.dofn))
       } else {
-        fm.insert(ci, AST.Mapper(n, fm.f))
+        pd.insert(ci, AST.Mapper(n, pd.dofn))
       }
     }
   }
@@ -479,8 +498,8 @@ object Smart {
     *   - splitting of Flattens with multiple outputs
     *   - sinking of Flattens
     *   - fusing Flattens
-    *   - morphing CombineValues into FlatMaps when they don't follow a GroupByKey
-    *   - fusing of FlatMaps
+    *   - morphing CombineValues into ParallelDos when they don't follow a GroupByKey
+    *   - fusing of ParallelDos
     *   - splitting of GroupByKeys with multiple outputs. */
   def optimisePlan(outputs: List[DList[_]]): List[DList[_]] = {
 
@@ -520,10 +539,10 @@ object Smart {
 
     /* Run the strategies to produce the optimised graph. */
     def allStrategies(in: List[DList[_]]): (List[DList[_]], Boolean) = {
-      val (flattenOpt, c1)       = untilChanged(in, flattenStrategies)
-      val (combinerToMapOpt, c2) = untilChanged(flattenOpt, travOnce(_.optCombinersToMaps(_)))
-      val (flatMapOpt, c3)       = untilChanged(combinerToMapOpt, travOnce(_.optFuseMaps(_)))
-      val (splitGbkOpt, c4)      = untilChanged(flatMapOpt, travOnce(_.optSplitGbks(_)))
+      val (flattenOpt, c1)         = untilChanged(in, flattenStrategies)
+      val (combinerToParDoOpt, c2) = untilChanged(flattenOpt, travOnce(_.optCombinerToParDos(_)))
+      val (parDoOpt, c3)           = untilChanged(combinerToParDoOpt, travOnce(_.optFuseParDos(_)))
+      val (splitGbkOpt, c4)        = untilChanged(parDoOpt, travOnce(_.optSplitGbks(_)))
       (splitGbkOpt, c1 || c2 || c3 || c4)
     }
 
@@ -556,18 +575,18 @@ object Smart {
 
   def parentsOf(d: DList[_]): List[DList[_]] = {
     d match {
-      case Load(_)        => List()
-      case FlatMap(in,_)  => List(in)
-      case GroupByKey(in) => List(in)
-      case Combine(in,_)  => List(in)
-      case Flatten(ins)   => ins
+      case Load(_)          => List()
+      case ParallelDo(in,_) => List(in)
+      case GroupByKey(in)   => List(in)
+      case Combine(in,_)    => List(in)
+      case Flatten(ins)     => ins
     }
   }
 
-  def getFlatMap(d: DList[_]): Option[FlatMap[_,_]] = {
+  def getParallelDo(d: DList[_]): Option[ParallelDo[_,_]] = {
     d match {
-      case flatMap@FlatMap(_,_) => Some(flatMap)
-      case _                    => None
+      case parDo@ParallelDo(_,_) => Some(parDo)
+      case _                     => None
     }
   }
 
@@ -592,7 +611,7 @@ object Smart {
     }
   }
 
-  def isFlatMap(d: DList[_]):    Boolean = getFlatMap(d).isDefined
+  def isParallelDo(d: DList[_]): Boolean = getParallelDo(d).isDefined
   def isFlatten(d: DList[_]):    Boolean = getFlatten(d).isDefined
   def isGroupByKey(d: DList[_]): Boolean = getGroupByKey(d).isDefined
   def isCombine(d: DList[_]):    Boolean = getCombine(d).isDefined

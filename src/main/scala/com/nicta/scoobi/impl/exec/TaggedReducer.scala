@@ -17,6 +17,7 @@ package com.nicta.scoobi.impl.exec
 
 import java.io.Serializable
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Emitter
 
 
 /** A producer of a TaggedReducer. */
@@ -34,7 +35,7 @@ abstract class TaggedReducer[K, V, B]
   extends Serializable {
 
   /** The acutal 'reduce' function that will be by Hadoop in the reducer task. */
-  def reduce(key: K, values: Iterable[V]): Iterable[B]
+  def reduce(key: K, values: Iterable[V], emitter: Emitter[B]): Unit
 }
 
 /** A TaggedReducer that is an identity reducer. */
@@ -45,5 +46,5 @@ class TaggedIdentityReducer[B]
   extends TaggedReducer[Int, B, B](tag)(mK, wtK, ordK, mB, wtB, mB, wtB) {
 
   /** Identity reducing - ignore the key. */
-  def reduce(key: Int, values: Iterable[B]): Iterable[B] = values
+  def reduce(key: Int, values: Iterable[B], emitter: Emitter[B]) = values.foreach { emitter.emit(_) }
 }

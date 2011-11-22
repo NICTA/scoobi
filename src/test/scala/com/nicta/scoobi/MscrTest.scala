@@ -15,6 +15,7 @@
   */
 package com.nicta.scoobi
 
+import com.nicta.scoobi.DoFn._
 import com.nicta.scoobi.io.text._
 import com.nicta.scoobi.impl.plan.AST._
 import com.nicta.scoobi.impl.plan.MSCR

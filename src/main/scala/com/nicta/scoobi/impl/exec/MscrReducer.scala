@@ -18,6 +18,7 @@ package com.nicta.scoobi.impl.exec
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.{Reducer => HReducer, _}
 
+import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.rtt.Tagged
 import com.nicta.scoobi.impl.rtt.TaggedKey
@@ -36,8 +37,8 @@ class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable
   }
 
   override def reduce(key: TaggedKey,
-             values: java.lang.Iterable[TaggedValue],
-             context: HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]#Context) = {
+                      values: java.lang.Iterable[TaggedValue],
+                      context: HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]#Context) = {
 
     val tag = key.tag
     val numOutputs = outputs(tag)._1
@@ -53,10 +54,13 @@ class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable
     val untaggedValues = valuesStream.map(_.get(tag).asInstanceOf[V]).toIterable
 
     /* Do the reduction. */
-    reducer.reduce(key.get(tag).asInstanceOf[K], untaggedValues).foreach { out =>
-      v.set(out)
-      channelOutput.write(tag, numOutputs, v)
+    val emitter = new Emitter[B] {
+      def emit(x: B) = {
+        v.set(x)
+        channelOutput.write(tag, numOutputs, v)
+      }
     }
+    reducer.reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]#Context) = {
