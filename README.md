@@ -550,12 +550,16 @@ Create a new Scoobi application and add some code:
     $ vi src/main/scala/MyApp.scala
 ```
 
-To use the sbt-scoobi plugin we need to include a `project/plugins.sbt` file with the following contents:
+To use the sbt-scoobi plugin we need to include a `project/plugins/project/build.scala` file with the following contents:
 
 ```scala
-    resolvers += "Scoobi deploy" at "http://nicta.github.com/sbt-scoobi/repository/"
+    import sbt._
 
-    addSbtPlugin("com.nicta" %% "sbt-scoobi" % "0.0.1")
+    object Plugins extends Build {
+      lazy val root = Project("root", file(".")) dependsOn(
+        uri("git://github.com/NICTA/sbt-scoobi.git#master")
+      )
+    }
 ```
 
 And, we can add a pretty standard `build.sbt` that has a dependency on Scoobi:
