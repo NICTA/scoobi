@@ -520,6 +520,12 @@ object WireFormat {
     def show(x: Int) = x.toString
   }
 
+  implicit def IntegerFmt = new WireFormat[java.lang.Integer] {
+      def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
+      def fromWire(in: DataInput): java.lang.Integer = in.readInt()
+      def show(x: java.lang.Integer) = x.toString
+  }
+
   implicit def LongFmt = new WireFormat[Long] {
     def toWire(x: Long, out: DataOutput) { out.writeLong(x) }
     def fromWire(in: DataInput): Long = in.readLong()

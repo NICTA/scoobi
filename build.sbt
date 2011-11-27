@@ -27,6 +27,10 @@ libraryDependencies ++= Seq(
   "org.scala-tools.testing" %% "scalacheck" % "1.9"
 )
 
+publishArtifact in packageDoc := false
+
+compileOrder := CompileOrder.ScalaThenJava
+
 resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
 
 scalacOptions += "-deprecation"
