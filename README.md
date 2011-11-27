@@ -28,6 +28,43 @@ programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid
 development of analytics and machine-learning algorithms.
 
 
+0.2.0 release notes
+-------------------
+
+### New features
+
+* [Java bindings](http://nicta.github.com/scoobi/java/master/index.html)
+* Relational functionality: [`join`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.Join$), [`joinOn`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.Join$), [`coGroup`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.CoGroup$) and [`coGroupOn`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.CoGroup$)
+* New [`DList`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList) methods:
+  * `parallelDo` - a sledge-hammer for when `flatMap` isn't enough
+  * `collect` - applies a partial function to each element
+  * `by` - create a keyed `DList` for join and co-group operations
+* [`WireFormat`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.WireFormat) helpers support for algebraic data types (ADTs):
+  * `mkAbstractWireFormat`
+  * `mkCaseWireFormat` (formerly just `mkWireFormat`)
+  * `mkObjectWireFormat`
+  Read more on the [wiki page for serialization](https://github.com/NICTA/scoobi/wiki/Serialization)
+* Migration to new Hadoop API (i.e. use of *context* objects)
+* [*Shortest path* example](https://github.com/NICTA/scoobi/blob/master/examples/shortestPath/src/main/scala/Graph.scala)
+
+### Bug fixes
+
+* Checking all inputs exist before running a job
+* Bug fixes in *word count* example
+* Typos in documentation
+* Speed ups and support for all dataypes in ClassBuilder
+* Fix for reference counting intermediate data
+
+
+### 0.3.0 and beyond
+
+* `materialize` method on `DList` objects for getting a `DList` off HDFS and on to the client
+* I/O support for Sequence and Avro files
+* Client-side computations that can be dependent on and/or create depenecices on `DList` computations
+* `DList` methods that produce *scalar* values, e.g. `reduce`, `product`, `sum`, `min`, `max`, `length`, `count`
+* Sugar for implementing interative algorithms
+
+
 Quick start
 -----------
 
