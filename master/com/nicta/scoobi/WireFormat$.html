@@ -183,6 +183,17 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>implicit </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#IntegerFmt" data-isabs="false">
+      <a id="IntegerFmt:WireFormat[Integer]"></a>
+      <h4 class="signature">
+      <span class="kind">implicit def</span>
+      <span class="symbol"> 
+        <span class="name">IntegerFmt</span>
+        
+        <span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[<span name="java.lang.Integer" class="extype">Integer</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>implicit </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#IterableFmt" data-isabs="false">
       <a id="IterableFmt[T](WireFormat[T]):WireFormat[Iterable[T]]"></a>
       <h4 class="signature">
@@ -398,91 +409,190 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2, A3, A4, A5, A6, A7, A8]((A1, A2, A3, A4, A5, A6, A7, A8) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6, A7, A8)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5],WireFormat[A6],WireFormat[A7],WireFormat[A8]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T, D&lt;:T, E&lt;:T, F&lt;:T, G&lt;:T, H&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C],Manifest[D],WireFormat[D],Manifest[E],WireFormat[E],Manifest[F],WireFormat[F],Manifest[G],WireFormat[G],Manifest[H],WireFormat[H]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>, <span name="C">C &lt;: T</span>, <span name="D">D &lt;: T</span>, <span name="E">E &lt;: T</span>, <span name="F">F &lt;: T</span>, <span name="G">G &lt;: T</span>, <span name="H">H &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[C]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[C]</span>, <span name="arg6">arg6: Manifest[D]</span>, <span name="arg7">arg7: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[D]</span>, <span name="arg8">arg8: Manifest[E]</span>, <span name="arg9">arg9: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[E]</span>, <span name="arg10">arg10: Manifest[F]</span>, <span name="arg11">arg11: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[F]</span>, <span name="arg12">arg12: Manifest[G]</span>, <span name="arg13">arg13: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[G]</span>, <span name="arg14">arg14: Manifest[H]</span>, <span name="arg15">arg15: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[H]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T, D&lt;:T, E&lt;:T, F&lt;:T, G&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C],Manifest[D],WireFormat[D],Manifest[E],WireFormat[E],Manifest[F],WireFormat[F],Manifest[G],WireFormat[G]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>, <span name="C">C &lt;: T</span>, <span name="D">D &lt;: T</span>, <span name="E">E &lt;: T</span>, <span name="F">F &lt;: T</span>, <span name="G">G &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[C]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[C]</span>, <span name="arg6">arg6: Manifest[D]</span>, <span name="arg7">arg7: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[D]</span>, <span name="arg8">arg8: Manifest[E]</span>, <span name="arg9">arg9: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[E]</span>, <span name="arg10">arg10: Manifest[F]</span>, <span name="arg11">arg11: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[F]</span>, <span name="arg12">arg12: Manifest[G]</span>, <span name="arg13">arg13: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[G]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T, D&lt;:T, E&lt;:T, F&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C],Manifest[D],WireFormat[D],Manifest[E],WireFormat[E],Manifest[F],WireFormat[F]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>, <span name="C">C &lt;: T</span>, <span name="D">D &lt;: T</span>, <span name="E">E &lt;: T</span>, <span name="F">F &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[C]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[C]</span>, <span name="arg6">arg6: Manifest[D]</span>, <span name="arg7">arg7: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[D]</span>, <span name="arg8">arg8: Manifest[E]</span>, <span name="arg9">arg9: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[E]</span>, <span name="arg10">arg10: Manifest[F]</span>, <span name="arg11">arg11: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[F]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T, D&lt;:T, E&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C],Manifest[D],WireFormat[D],Manifest[E],WireFormat[E]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>, <span name="C">C &lt;: T</span>, <span name="D">D &lt;: T</span>, <span name="E">E &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[C]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[C]</span>, <span name="arg6">arg6: Manifest[D]</span>, <span name="arg7">arg7: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[D]</span>, <span name="arg8">arg8: Manifest[E]</span>, <span name="arg9">arg9: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[E]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T, D&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C],Manifest[D],WireFormat[D]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>, <span name="C">C &lt;: T</span>, <span name="D">D &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[C]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[C]</span>, <span name="arg6">arg6: Manifest[D]</span>, <span name="arg7">arg7: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[D]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>, <span name="C">C &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[C]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[C]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkAbstractWireFormat" data-isabs="false">
+      <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkAbstractWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>, <span name="A">A &lt;: T</span>, <span name="B">B &lt;: T</span>]</span>
+        <span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2, A3, A4, A5, A6, A7, A8]((A1, A2, A3, A4, A5, A6, A7, A8) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6, A7, A8)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5],WireFormat[A6],WireFormat[A7],WireFormat[A8]):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>, <span name="A6">A6</span>, <span name="A7">A7</span>, <span name="A8">A8</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5, A6, A7, A8) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5, A6, A7, A8)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A3]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A4]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A5]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A6]</span>, <span name="arg6">arg6: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A7]</span>, <span name="arg7">arg7: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A8]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2, A3, A4, A5, A6, A7]((A1, A2, A3, A4, A5, A6, A7) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6, A7)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5],WireFormat[A6],WireFormat[A7]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2, A3, A4, A5, A6, A7]((A1, A2, A3, A4, A5, A6, A7) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6, A7)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5],WireFormat[A6],WireFormat[A7]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>, <span name="A6">A6</span>, <span name="A7">A7</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5, A6, A7) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5, A6, A7)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A3]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A4]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A5]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A6]</span>, <span name="arg6">arg6: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A7]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2, A3, A4, A5, A6]((A1, A2, A3, A4, A5, A6) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5],WireFormat[A6]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2, A3, A4, A5, A6]((A1, A2, A3, A4, A5, A6) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5],WireFormat[A6]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>, <span name="A6">A6</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5, A6) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5, A6)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A3]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A4]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A5]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A6]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2, A3, A4, A5]((A1, A2, A3, A4, A5) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2, A3, A4, A5]((A1, A2, A3, A4, A5) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4],WireFormat[A5]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A3]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A4]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A5]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2, A3, A4]((A1, A2, A3, A4) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2, A3, A4]((A1, A2, A3, A4) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4)])(WireFormat[A1],WireFormat[A2],WireFormat[A3],WireFormat[A4]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2, A3, A4) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A3]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A4]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2, A3]((A1, A2, A3) ⇒ T,(T) ⇒ Option[(A1, A2, A3)])(WireFormat[A1],WireFormat[A2],WireFormat[A3]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2, A3]((A1, A2, A3) ⇒ T,(T) ⇒ Option[(A1, A2, A3)])(WireFormat[A1],WireFormat[A2],WireFormat[A3]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2, A3) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A3]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1, A2]((A1, A2) ⇒ T,(T) ⇒ Option[(A1, A2)])(WireFormat[A1],WireFormat[A2]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1, A2]((A1, A2) ⇒ T,(T) ⇒ Option[(A1, A2)])(WireFormat[A1],WireFormat[A2]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>]</span>
         <span class="params">(<span name="apply">apply: (A1, A2) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A2]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkWireFormat" data-isabs="false">
-      <a id="mkWireFormat[T, A1]((A1) ⇒ T,(T) ⇒ Option[A1])(WireFormat[A1]):WireFormat[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T, A1]((A1) ⇒ T,(T) ⇒ Option[A1])(WireFormat[A1]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">mkWireFormat</span>
+        <span class="name">mkCaseWireFormat</span>
         <span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>]</span>
         <span class="params">(<span name="apply">apply: (A1) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[A1]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A1]</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkCaseWireFormat" data-isabs="false">
+      <a id="mkCaseWireFormat[T](() ⇒ T,(T) ⇒ Boolean):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkCaseWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>]</span>
+        <span class="params">(<span name="apply">apply: () ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.WireFormat#mkObjectWireFormat" data-isabs="false">
+      <a id="mkObjectWireFormat[T](T):WireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">mkObjectWireFormat</span>
+        <span class="tparams">[<span name="T">T</span>]</span>
+        <span class="params">(<span name="x">x: T</span>)</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
       

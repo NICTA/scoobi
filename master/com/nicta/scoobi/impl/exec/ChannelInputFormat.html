@@ -24,14 +24,14 @@
       <span class="symbol"> 
         <span class="name">ChannelInputFormat</span>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
-        <span class="result"> extends <span name="org.apache.hadoop.mapred.InputFormat" class="extype">InputFormat</span>[K, V]</span>
+        <span class="result"> extends <span name="org.apache.hadoop.mapreduce.InputFormat" class="extype">InputFormat</span>[K, V]</span>
       </span>
       </h4>
       
           <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>An input format that delgates to multiple input formats, one for each
 input channel.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapred.InputFormat" class="extype">InputFormat</span>[K, V], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapreduce.InputFormat" class="extype">InputFormat</span>[K, V], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -47,7 +47,7 @@ input channel.</p></div><div class="toggleContainer block">
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.ChannelInputFormat" class="in"><span>ChannelInputFormat</span></li><li name="org.apache.hadoop.mapred.InputFormat" class="in"><span>InputFormat</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.ChannelInputFormat" class="in"><span>ChannelInputFormat</span></li><li name="org.apache.hadoop.mapreduce.InputFormat" class="in"><span>InputFormat</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -157,6 +157,17 @@ input channel.</p></div><div class="toggleContainer block">
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat#createRecordReader" data-isabs="false">
+      <a id="createRecordReader(InputSplit,TaskAttemptContext):RecordReader[K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">createRecordReader</span>
+        
+        <span class="params">(<span name="split">split: <span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span></span>, <span name="context">context: <span name="org.apache.hadoop.mapreduce.TaskAttemptContext" class="extype">TaskAttemptContext</span></span>)</span><span class="result">: <span name="org.apache.hadoop.mapreduce.RecordReader" class="extype">RecordReader</span>[K, V]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ChannelInputFormat" class="extype" href="">ChannelInputFormat</a> → InputFormat</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -204,25 +215,14 @@ input channel.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat#getRecordReader" data-isabs="false">
-      <a id="getRecordReader(InputSplit,JobConf,Reporter):RecordReader[K, V]"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">getRecordReader</span>
-        
-        <span class="params">(<span name="split">split: <span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span></span>, <span name="conf">conf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>, <span name="reporter">reporter: <span name="org.apache.hadoop.mapred.Reporter" class="extype">Reporter</span></span>)</span><span class="result">: <span name="org.apache.hadoop.mapred.RecordReader" class="extype">RecordReader</span>[K, V]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ChannelInputFormat" class="extype" href="">ChannelInputFormat</a> → InputFormat</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat#getSplits" data-isabs="false">
-      <a id="getSplits(JobConf,Int):Array[InputSplit]"></a>
+      <a id="getSplits(JobContext):List[InputSplit]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">getSplits</span>
         
-        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>, <span name="numSplits">numSplits: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Array" class="extype">Array</span>[<span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span>]</span>
+        <span class="params">(<span name="context">context: <span name="org.apache.hadoop.mapreduce.JobContext" class="extype">JobContext</span></span>)</span><span class="result">: <span name="java.util.List" class="extype">List</span>[<span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ChannelInputFormat" class="extype" href="">ChannelInputFormat</a> → InputFormat</dd></dl></div>
@@ -350,8 +350,8 @@ input channel.</p></div><div class="toggleContainer block">
 
         
 
-        <div name="org.apache.hadoop.mapred.InputFormat" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.mapred.InputFormat" class="extype">InputFormat</span>[K, V]</h3>
+        <div name="org.apache.hadoop.mapreduce.InputFormat" class="parent">
+              <h3>Inherited from <span name="org.apache.hadoop.mapreduce.InputFormat" class="extype">InputFormat</span>[K, V]</h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

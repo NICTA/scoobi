@@ -70,6 +70,30 @@
       </h4>
       <p class="comment cmt">An input format that delgates to multiple input formats, one for each
 input channel.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelOutputFormat" data-isabs="false">
+      <a id="ChannelOutputFormat:ChannelOutputFormat[V3]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="ChannelOutputFormat.html"><span class="name">ChannelOutputFormat</span></a>
+        <span class="tparams">[<span name="V3">V3</span>]</span>
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A class that simplifies writing output to different paths and with different types
+depending on the output channel and required outputs per channel.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelRecordReader" data-isabs="false">
+      <a id="ChannelRecordReader:ChannelRecordReader[K, V]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="ChannelRecordReader.html"><span class="name">ChannelRecordReader</span></a>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="result"> extends RecordReader[K, V]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A RecordReader that delegates the functionality to the underlying record reader
+in TaggedInputSplit.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.CombinerLike" data-isabs="true">
       <a id="CombinerLike:CombinerLike[V]"></a>
       <h4 class="signature">
@@ -187,7 +211,7 @@ input channel.</p>
       <span class="symbol"> 
         <a href="TaggedInputSplit.html"><span class="name">TaggedInputSplit</span></a>
         
-        <span class="result"> extends InputSplit</span>
+        <span class="result"> extends InputSplit with Configurable with Writable</span>
       </span>
       </h4>
       <p class="comment cmt">A wrapper around an InputSplit that is tagged with an input channel id.</p>
@@ -243,6 +267,18 @@ location for bridge stores.</p>
       </span>
       </h4>
       <p class="comment cmt">Object that allows for channels with different input format requirements
+to be specified.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelOutputFormat" data-isabs="false">
+      <a id="ChannelOutputFormat:ChannelOutputFormat"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="ChannelOutputFormat$.html"><span class="name">ChannelOutputFormat</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Object that allows for channels with different output format requirements
 to be specified.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache" data-isabs="false">
       <a id="DistCache:DistCache"></a>

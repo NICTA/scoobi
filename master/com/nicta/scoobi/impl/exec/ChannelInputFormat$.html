@@ -119,13 +119,13 @@ to be specified. Makes use of ChannelInputFormat.</p></div><div class="toggleCon
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat#addInputChannel" data-isabs="false">
-      <a id="addInputChannel(JobConf,Int,Path,Class[_ &lt;: org.apache.hadoop.mapred.FileInputFormat[_, _]]):Unit"></a>
+      <a id="addInputChannel(Job,Int,Path,Class[_ &lt;: org.apache.hadoop.mapreduce.lib.input.FileInputFormat[_, _]]):Unit"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">addInputChannel</span>
         
-        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>, <span name="channel">channel: <span name="scala.Int" class="extype">Int</span></span>, <span name="inputPath">inputPath: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>, <span name="inputFormat">inputFormat: Class[_ &lt;: org.apache.hadoop.mapred.FileInputFormat[_, _]]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>, <span name="channel">channel: <span name="scala.Int" class="extype">Int</span></span>, <span name="inputPath">inputPath: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>, <span name="inputFormat">inputFormat: Class[_ &lt;: org.apache.hadoop.mapreduce.lib.input.FileInputFormat[_, _]]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Add a new input channel.</p>
@@ -202,13 +202,13 @@ to be specified. Makes use of ChannelInputFormat.</p></div><div class="toggleCon
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat#getInputChannels" data-isabs="false">
-      <a id="getInputChannels(JobConf):Map[Int, (Path, org.apache.hadoop.mapred.InputFormat[_, _])]"></a>
+      <a id="getInputChannels(JobContext):Map[Int, (Path, org.apache.hadoop.mapreduce.InputFormat[_, _])]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">getInputChannels</span>
         
-        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>)</span><span class="result">: Map[<span name="scala.Int" class="extype">Int</span>, (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>, org.apache.hadoop.mapred.InputFormat[_, _])]</span>
+        <span class="params">(<span name="context">context: <span name="org.apache.hadoop.mapreduce.JobContext" class="extype">JobContext</span></span>)</span><span class="result">: Map[<span name="scala.Int" class="extype">Int</span>, (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>, org.apache.hadoop.mapreduce.InputFormat[_, _])]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Get a map of all the input channels.</p>

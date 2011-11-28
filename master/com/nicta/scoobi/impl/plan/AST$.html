@@ -87,7 +87,7 @@
       <span class="symbol"> 
         <a href="AST$$GbkMapper.html"><span class="name">GbkMapper</span></a>
         <span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span>
-        <span class="params">(<span name="in">in: Node[A]</span>, <span name="f">f: (A) ⇒ Iterable[(K, V)]</span>, <span name="evidence$7">evidence$7: Manifest[A]</span>, <span name="evidence$8">evidence$8: WireFormat[A]</span>, <span name="evidence$9">evidence$9: Manifest[K]</span>, <span name="evidence$10">evidence$10: WireFormat[K]</span>, <span name="evidence$11">evidence$11: Ordering[K]</span>, <span name="evidence$12">evidence$12: Manifest[V]</span>, <span name="evidence$13">evidence$13: WireFormat[V]</span>)</span><span class="result"> extends Node[(K, V)] with MapperLike[A, K, V] with Product with Serializable</span>
+        <span class="params">(<span name="in">in: Node[A]</span>, <span name="dofn">dofn: DoFn[A, (K, V)]</span>, <span name="evidence$7">evidence$7: Manifest[A]</span>, <span name="evidence$8">evidence$8: WireFormat[A]</span>, <span name="evidence$9">evidence$9: Manifest[K]</span>, <span name="evidence$10">evidence$10: WireFormat[K]</span>, <span name="evidence$11">evidence$11: Ordering[K]</span>, <span name="evidence$12">evidence$12: Manifest[V]</span>, <span name="evidence$13">evidence$13: WireFormat[V]</span>)</span><span class="result"> extends Node[(K, V)] with MapperLike[A, K, V] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Input channel mapper that is hooked up to a GBK.</p>
@@ -98,7 +98,7 @@
       <span class="symbol"> 
         <a href="AST$$GbkReducer.html"><span class="name">GbkReducer</span></a>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: Node[(K, Iterable[V])]</span>, <span name="f">f: ((K, Iterable[V])) ⇒ Iterable[B]</span>, <span name="evidence$14">evidence$14: Manifest[K]</span>, <span name="evidence$15">evidence$15: WireFormat[K]</span>, <span name="evidence$16">evidence$16: Ordering[K]</span>, <span name="evidence$17">evidence$17: Manifest[V]</span>, <span name="evidence$18">evidence$18: WireFormat[V]</span>, <span name="evidence$19">evidence$19: Manifest[B]</span>, <span name="evidence$20">evidence$20: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with ReducerLike[K, V, B] with Product with Serializable</span>
+        <span class="params">(<span name="in">in: Node[(K, Iterable[V])]</span>, <span name="dofn">dofn: DoFn[(K, Iterable[V]), B]</span>, <span name="evidence$14">evidence$14: Manifest[K]</span>, <span name="evidence$15">evidence$15: WireFormat[K]</span>, <span name="evidence$16">evidence$16: Ordering[K]</span>, <span name="evidence$17">evidence$17: Manifest[V]</span>, <span name="evidence$18">evidence$18: WireFormat[V]</span>, <span name="evidence$19">evidence$19: Manifest[B]</span>, <span name="evidence$20">evidence$20: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with ReducerLike[K, V, B] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">GbkReducer - a reduce (i.</p>
@@ -131,7 +131,7 @@
       <span class="symbol"> 
         <a href="AST$$Mapper.html"><span class="name">Mapper</span></a>
         <span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: Node[A]</span>, <span name="f">f: (A) ⇒ Iterable[B]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: WireFormat[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with MapperLike[A, Int, B] with Product with Serializable</span>
+        <span class="params">(<span name="in">in: Node[A]</span>, <span name="dofn">dofn: DoFn[A, B]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: WireFormat[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with MapperLike[A, Int, B] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Input channel mapper that is not hooked up to a GBK.</p>
@@ -153,7 +153,7 @@
       <span class="symbol"> 
         <a href="AST$$Reducer.html"><span class="name">Reducer</span></a>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: Node[(K, V)]</span>, <span name="f">f: ((K, V)) ⇒ Iterable[B]</span>, <span name="evidence$21">evidence$21: Manifest[K]</span>, <span name="evidence$22">evidence$22: WireFormat[K]</span>, <span name="evidence$23">evidence$23: Ordering[K]</span>, <span name="evidence$24">evidence$24: Manifest[V]</span>, <span name="evidence$25">evidence$25: WireFormat[V]</span>, <span name="evidence$26">evidence$26: Manifest[B]</span>, <span name="evidence$27">evidence$27: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with ReducerLike[K, V, B] with Product with Serializable</span>
+        <span class="params">(<span name="in">in: Node[(K, V)]</span>, <span name="dofn">dofn: DoFn[(K, V), B]</span>, <span name="evidence$21">evidence$21: Manifest[K]</span>, <span name="evidence$22">evidence$22: WireFormat[K]</span>, <span name="evidence$23">evidence$23: Ordering[K]</span>, <span name="evidence$24">evidence$24: Manifest[V]</span>, <span name="evidence$25">evidence$25: WireFormat[V]</span>, <span name="evidence$26">evidence$26: Manifest[B]</span>, <span name="evidence$27">evidence$27: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with ReducerLike[K, V, B] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Reducer - a reduce (i.</p>

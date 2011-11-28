@@ -24,7 +24,7 @@
       <span class="symbol"> 
         <span class="name">Mapper</span>
         <span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>, <span name="f">f: (A) ⇒ Iterable[B]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B] with <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, <span name="scala.Int" class="extype">Int</span>, B] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B] with <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, <span name="scala.Int" class="extype">Int</span>, B] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -63,7 +63,7 @@
       <span class="symbol"> 
         <span class="name">Mapper</span>
         
-        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>, <span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span>
+        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span>
       </span>
       </h4>
       
@@ -167,6 +167,17 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#dofn" data-isabs="false">
+      <a id="dofn:DoFn[A, B]"></a>
+      <h4 class="signature">
+      <span class="kind">val</span>
+      <span class="symbol"> 
+        <span class="name">dofn</span>
+        
+        <span class="result">: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -189,17 +200,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Mapper" class="extype" href="">Mapper</a> → Equals → AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#f" data-isabs="false">
-      <a id="f:(A) ⇒ Iterable[B]"></a>
-      <h4 class="signature">
-      <span class="kind">val</span>
-      <span class="symbol"> 
-        <span class="name">f</span>
-        
-        <span class="result">: (A) ⇒ Iterable[B]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">

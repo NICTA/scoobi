@@ -303,13 +303,13 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Combiner" class="extype" href="">Combiner</a> → <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Combiner#mkTaggedReducerWithCombiner" data-isabs="false">
-      <a id="mkTaggedReducerWithCombiner[B](Int,((K, V)) ⇒ Iterable[B])(Manifest[B],WireFormat[B]):TaggedReducer[K, V, B]"></a>
+      <a id="mkTaggedReducerWithCombiner[B](Int,DoFn[(K, V), B])(Manifest[B],WireFormat[B]):TaggedReducer[K, V, B]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">mkTaggedReducerWithCombiner</span>
         <span class="tparams">[<span name="B">B</span>]</span>
-        <span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="rf">rf: ((K, V)) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedReducer" class="extype" href="../exec/TaggedReducer.html">TaggedReducer</a>[K, V, B]</span>
+        <span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[(K, V), B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedReducer" class="extype" href="../exec/TaggedReducer.html">TaggedReducer</a>[K, V, B]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Produce a TaggedReducer using this combiner function and an additional reducer function.</p>

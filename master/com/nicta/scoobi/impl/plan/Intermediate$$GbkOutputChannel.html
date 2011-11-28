@@ -24,7 +24,7 @@
       <span class="symbol"> 
         <span class="name">GbkOutputChannel</span>
         
-        <span class="params">(<span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]</span>, <span name="combiner">combiner: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>, <span name="reducer">reducer: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Intermediate.OutputChannel" class="extype" href="Intermediate$$OutputChannel.html">OutputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="params">(<span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]</span>, <span name="combiner">combiner: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>, <span name="reducer">reducer: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Intermediate.OutputChannel" class="extype" href="Intermediate$$OutputChannel.html">OutputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -63,7 +63,7 @@
       <span class="symbol"> 
         <span class="name">GbkOutputChannel</span>
         
-        <span class="params">(<span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]</span>, <span name="combiner">combiner: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>, <span name="reducer">reducer: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]</span>)</span>
+        <span class="params">(<span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]</span>, <span name="combiner">combiner: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>, <span name="reducer">reducer: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>)</span>
       </span>
       </h4>
       
@@ -154,13 +154,13 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel#addReducer" data-isabs="false">
-      <a id="addReducer(com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]):GbkOutputChannel"></a>
+      <a id="addReducer(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]):GbkOutputChannel"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">addReducer</span>
         
-        <span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel" class="extype" href="">GbkOutputChannel</a></span>
+        <span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel" class="extype" href="">GbkOutputChannel</a></span>
       </span>
       </h4>
       
@@ -391,13 +391,13 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel#output" data-isabs="false">
-      <a id="output:Product with Serializable with com.nicta.scoobi.impl.plan.Smart.DList[_ &gt;: _1 with _874] forSome { type _1 }"></a>
+      <a id="output:Product with Serializable with com.nicta.scoobi.impl.plan.Smart.DList[_ &gt;: _1 with _893] forSome { type _1 }"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">output</span>
         
-        <span class="result">: Product with Serializable with com.nicta.scoobi.impl.plan.Smart.DList[_ &gt;: _1 with _874] forSome { type _1 }</span>
+        <span class="result">: Product with Serializable with com.nicta.scoobi.impl.plan.Smart.DList[_ &gt;: _1 with _893] forSome { type _1 }</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel" class="extype" href="">GbkOutputChannel</a> → <a name="com.nicta.scoobi.impl.plan.Intermediate.OutputChannel" class="extype" href="Intermediate$$OutputChannel.html">OutputChannel</a></dd></dl></div>
@@ -446,13 +446,13 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel" class="extype" href="">GbkOutputChannel</a> → Product</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.GbkOutputChannel#reducer" data-isabs="false">
-      <a id="reducer:Option[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]"></a>
+      <a id="reducer:Option[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]"></a>
       <h4 class="signature">
       <span class="kind">val</span>
       <span class="symbol"> 
         <span class="name">reducer</span>
         
-        <span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]</span>
+        <span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>
       </span>
       </h4>
       

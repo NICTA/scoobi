@@ -190,17 +190,6 @@ the materialization is performed.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#convertFlatMap" data-isabs="false">
-      <a id="convertFlatMap[B](ConvertInfo,FlatMap[A, B])(Manifest[B],WireFormat[B]):Node[B]"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">convertFlatMap</span>
-        <span class="tparams">[<span name="B">B</span>]</span>
-        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>, <span name="fm">fm: <a name="com.nicta.scoobi.impl.plan.Smart.FlatMap" class="extype" href="Smart$$FlatMap.html">FlatMap</a>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Load#convertNew" data-isabs="false">
       <a id="convertNew(ConvertInfo):Node[A]"></a>
       <h4 class="signature">
@@ -223,6 +212,17 @@ the materialization is performed.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.Load" class="extype" href="">Load</a> → <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#convertParallelDo" data-isabs="false">
+      <a id="convertParallelDo[B](ConvertInfo,ParallelDo[A, B])(Manifest[B],WireFormat[B]):Node[B]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertParallelDo</span>
+        <span class="tparams">[<span name="B">B</span>]</span>
+        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>, <span name="pd">pd: <a name="com.nicta.scoobi.impl.plan.Smart.ParallelDo" class="extype" href="Smart$$ParallelDo.html">ParallelDo</a>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.Smart.DList#copyOnce" data-isabs="false">
       <a id="copyOnce(CopyTable)(⇒ (DList[A], CopyTable, Boolean)):(DList[A], CopyTable, Boolean)"></a>
       <h4 class="signature">
@@ -416,18 +416,18 @@ node(s), a the CopyFn function is used (somewhat like a callback).</p></div><dl 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optCombinersToMaps" data-isabs="false">
-      <a id="optCombinersToMaps(CopyTable):(DList[A], CopyTable, Boolean)"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optCombinerToParDos" data-isabs="false">
+      <a id="optCombinerToParDos(CopyTable):(DList[A], CopyTable, Boolean)"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">optCombinersToMaps</span>
+        <span class="name">optCombinerToParDos</span>
         
         <span class="params">(<span name="copied">copied: CopyTable</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">An optimisation strategy that morphs a Combine node into a FlatMap node if it does not
-follow a GroupByKey node.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that morphs a Combine node into a FlatMap node if it does not
+      <p class="shortcomment cmt">An optimisation strategy that morphs a Combine node into a ParallelDo node if it does not
+follow a GroupByKey node.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that morphs a Combine node into a ParallelDo node if it does not
 follow a GroupByKey node.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optFuseFlattens" data-isabs="false">
       <a id="optFuseFlattens(CopyTable):(DList[A], CopyTable, Boolean)"></a>
@@ -440,19 +440,19 @@ follow a GroupByKey node.</p></div><dl class="attributes block"> <dt>Definition 
       </span>
       </h4>
       <p class="shortcomment cmt">An optimisation strategy that fuse any Flatten nodes that are inputs to Flatten nodes.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that fuse any Flatten nodes that are inputs to Flatten nodes.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optFuseMaps" data-isabs="false">
-      <a id="optFuseMaps(CopyTable):(DList[A], CopyTable, Boolean)"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optFuseParDos" data-isabs="false">
+      <a id="optFuseParDos(CopyTable):(DList[A], CopyTable, Boolean)"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">optFuseMaps</span>
+        <span class="name">optFuseParDos</span>
         
         <span class="params">(<span name="copied">copied: CopyTable</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">An optimisation strategy that fuses the functionality of a FlatMap node that is an input
-to another FlatMap node.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that fuses the functionality of a FlatMap node that is an input
-to another FlatMap node.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
+      <p class="shortcomment cmt">An optimisation strategy that fuses the functionality of a ParallelDo node that is an input
+to another ParallelDo node.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that fuses the functionality of a ParallelDo node that is an input
+to another ParallelDo node.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optSinkFlattens" data-isabs="false">
       <a id="optSinkFlattens(CopyTable):(DList[A], CopyTable, Boolean)"></a>
       <h4 class="signature">
@@ -463,10 +463,10 @@ to another FlatMap node.</p></div><dl class="attributes block"> <dt>Definition C
         <span class="params">(<span name="copied">copied: CopyTable</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">An optimisation strategy that sinks a Flatten node that is an input to a FlatMap node
-such that in the resulting AST replicated FlatMap nodes are inputs to the Flatten
-node.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that sinks a Flatten node that is an input to a FlatMap node
-such that in the resulting AST replicated FlatMap nodes are inputs to the Flatten
+      <p class="shortcomment cmt">An optimisation strategy that sinks a Flatten node that is an input to a ParallelDo node
+such that in the resulting AST replicated ParallelDo nodes are inputs to the Flatten
+node.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that sinks a Flatten node that is an input to a ParallelDo node
+such that in the resulting AST replicated ParallelDo nodes are inputs to the Flatten
 node.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optSplitFlattens" data-isabs="false">
       <a id="optSplitFlattens(CopyTable):(DList[A], CopyTable, Boolean)"></a>

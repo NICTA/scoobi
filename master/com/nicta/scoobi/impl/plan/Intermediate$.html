@@ -65,7 +65,7 @@
       <span class="symbol"> 
         <a href="Intermediate$$BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a>
         
-        <span class="params">(<span name="input">input: com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
+        <span class="params">(<span name="input">input: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
       </span>
       </h4>
       
@@ -76,7 +76,7 @@
       <span class="symbol"> 
         <a href="Intermediate$$GbkOutputChannel.html"><span class="name">GbkOutputChannel</span></a>
         
-        <span class="params">(<span name="flatten">flatten: Option[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]</span>, <span name="combiner">combiner: Option[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>, <span name="reducer">reducer: Option[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
+        <span class="params">(<span name="flatten">flatten: Option[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]</span>, <span name="combiner">combiner: Option[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>, <span name="reducer">reducer: Option[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
       </span>
       </h4>
       
@@ -131,7 +131,7 @@
       <span class="symbol"> 
         <a href="Intermediate$$MapperInputChannel.html"><span class="name">MapperInputChannel</span></a>
         
-        <span class="params">(<span name="flatMaps">flatMaps: List[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
+        <span class="params">(<span name="parDos">parDos: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
       </span>
       </h4>
       

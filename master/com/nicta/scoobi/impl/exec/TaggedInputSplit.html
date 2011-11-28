@@ -24,14 +24,14 @@
       <span class="symbol"> 
         <span class="name">TaggedInputSplit</span>
         
-        <span class="result"> extends <span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span></span>
+        <span class="result"> extends <span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span> with <span name="org.apache.hadoop.conf.Configurable" class="extype">Configurable</span> with <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>
       </span>
       </h4>
       
           <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A wrapper around an InputSplit that is tagged with an input channel id. Is
 used with ChannelInputForamt.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span>, <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.io.Writable" class="extype">Writable</span>, <span name="org.apache.hadoop.conf.Configurable" class="extype">Configurable</span>, <span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -47,7 +47,7 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.TaggedInputSplit" class="in"><span>TaggedInputSplit</span></li><li name="org.apache.hadoop.mapred.InputSplit" class="in"><span>InputSplit</span></li><li name="org.apache.hadoop.io.Writable" class="in"><span>Writable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.TaggedInputSplit" class="in"><span>TaggedInputSplit</span></li><li name="org.apache.hadoop.io.Writable" class="in"><span>Writable</span></li><li name="org.apache.hadoop.conf.Configurable" class="in"><span>Configurable</span></li><li name="org.apache.hadoop.mapreduce.InputSplit" class="in"><span>InputSplit</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -75,7 +75,7 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
       <span class="symbol"> 
         <span class="name">TaggedInputSplit</span>
         
-        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="channel">channel: <span name="scala.Int" class="extype">Int</span></span>, <span name="inputSplit">inputSplit: <span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span></span>, <span name="inputFormatClass">inputFormatClass: Class[_ &lt;: org.apache.hadoop.mapred.InputFormat[_, _]]</span>)</span>
+        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="channel">channel: <span name="scala.Int" class="extype">Int</span></span>, <span name="inputSplit">inputSplit: <span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span></span>, <span name="inputFormatClass">inputFormatClass: Class[_ &lt;: org.apache.hadoop.mapreduce.InputFormat[_, _]]</span>)</span>
       </span>
       </h4>
       
@@ -179,17 +179,6 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedInputSplit#conf" data-isabs="false">
-      <a id="conf:Configuration"></a>
-      <h4 class="signature">
-      <span class="kind">var</span>
-      <span class="symbol"> 
-        <span class="name">conf</span>
-        
-        <span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -237,6 +226,17 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedInputSplit#getConf" data-isabs="false">
+      <a id="getConf():Configuration"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">getConf</span>
+        
+        <span class="params">()</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.TaggedInputSplit" class="extype" href="">TaggedInputSplit</a> → Configurable</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedInputSplit#getLength" data-isabs="false">
       <a id="getLength():Long"></a>
       <h4 class="signature">
@@ -271,13 +271,13 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedInputSplit#inputFormatClass" data-isabs="false">
-      <a id="inputFormatClass:Class[_ &lt;: org.apache.hadoop.mapred.InputFormat[_, _]]"></a>
+      <a id="inputFormatClass:Class[_ &lt;: org.apache.hadoop.mapreduce.InputFormat[_, _]]"></a>
       <h4 class="signature">
       <span class="kind">var</span>
       <span class="symbol"> 
         <span class="name">inputFormatClass</span>
         
-        <span class="result">: Class[_ &lt;: org.apache.hadoop.mapred.InputFormat[_, _]]</span>
+        <span class="result">: Class[_ &lt;: org.apache.hadoop.mapreduce.InputFormat[_, _]]</span>
       </span>
       </h4>
       
@@ -288,7 +288,7 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
       <span class="symbol"> 
         <span class="name">inputSplit</span>
         
-        <span class="result">: <span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span></span>
+        <span class="result">: <span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span></span>
       </span>
       </h4>
       
@@ -347,6 +347,17 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.TaggedInputSplit" class="extype" href="">TaggedInputSplit</a> → Writable</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedInputSplit#setConf" data-isabs="false">
+      <a id="setConf(Configuration):Unit"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">setConf</span>
+        
+        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.TaggedInputSplit" class="extype" href="">TaggedInputSplit</a> → Configurable</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -427,10 +438,12 @@ used with ChannelInputForamt.</p></div><div class="toggleContainer block">
 
         
 
-        <div name="org.apache.hadoop.mapred.InputSplit" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.mapred.InputSplit" class="extype">InputSplit</span></h3>
-            </div><div name="org.apache.hadoop.io.Writable" class="parent">
+        <div name="org.apache.hadoop.io.Writable" class="parent">
               <h3>Inherited from <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></h3>
+            </div><div name="org.apache.hadoop.conf.Configurable" class="parent">
+              <h3>Inherited from <span name="org.apache.hadoop.conf.Configurable" class="extype">Configurable</span></h3>
+            </div><div name="org.apache.hadoop.mapreduce.InputSplit" class="parent">
+              <h3>Inherited from <span name="org.apache.hadoop.mapreduce.InputSplit" class="extype">InputSplit</span></h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

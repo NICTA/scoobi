@@ -114,18 +114,6 @@ function to the values of an existing key-values DList.</p>
       </span>
       </h4>
       <p class="comment cmt">GADT for distributed list computation graph.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.FlatMap" data-isabs="false">
-      <a id="FlatMap:FlatMap[A, B]"></a>
-      <h4 class="signature">
-      <span class="kind">case class</span>
-      <span class="symbol"> 
-        <a href="Smart$$FlatMap.html"><span class="name">FlatMap</span></a>
-        <span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: DList[A]</span>, <span name="f">f: (A) ⇒ Iterable[B]</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>)</span><span class="result"> extends DList[B] with Product with Serializable</span>
-      </span>
-      </h4>
-      <p class="comment cmt">The FlatMap node type specifies the building of a DList as a result of applying a function to
-all elements of an existing DList and concatenating the results.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Flatten" data-isabs="false">
       <a id="Flatten:Flatten[A]"></a>
       <h4 class="signature">
@@ -161,6 +149,18 @@ key-value DList by key.</p>
       </span>
       </h4>
       <p class="comment cmt">The Load node type specifies the materialization of a DList.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo" data-isabs="false">
+      <a id="ParallelDo:ParallelDo[A, B]"></a>
+      <h4 class="signature">
+      <span class="kind">case class</span>
+      <span class="symbol"> 
+        <a href="Smart$$ParallelDo.html"><span class="name">ParallelDo</span></a>
+        <span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span>
+        <span class="params">(<span name="in">in: DList[A]</span>, <span name="dofn">dofn: DoFn[A, B]</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>)</span><span class="result"> extends DList[B] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The ParallelDo node type specifies the building of a DList as a result of applying a function to
+all elements of an existing DList and concatenating the results.</p>
     </li></ol>
             </div>
         
@@ -328,17 +328,6 @@ key-value DList by key.</p>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getFlatMap" data-isabs="false">
-      <a id="getFlatMap(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">getFlatMap</span>
-        
-        <span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.FlatMap[_, _]]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getFlatten" data-isabs="false">
       <a id="getFlatten(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]"></a>
       <h4 class="signature">
@@ -361,6 +350,17 @@ key-value DList by key.</p>
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getParallelDo" data-isabs="false">
+      <a id="getParallelDo(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">getParallelDo</span>
+        
+        <span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -378,17 +378,6 @@ key-value DList by key.</p>
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">isCombine</span>
-        
-        <span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isFlatMap" data-isabs="false">
-      <a id="isFlatMap(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">isFlatMap</span>
         
         <span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
@@ -427,6 +416,17 @@ key-value DList by key.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isParallelDo" data-isabs="false">
+      <a id="isParallelDo(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">isParallelDo</span>
+        
+        <span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -473,7 +473,7 @@ key-value DList by key.</p>
       <p class="shortcomment cmt">Apply a series of stategies to optimise the strucuture of the logical plan (that
 is the graph).</p><div class="fullcomment"><div class="comment cmt"><p>Apply a series of stategies to optimise the strucuture of the logical plan (that
 is the graph). The purpose of this is to transform the graph into a form that
-is suitable for forming MSCRs. The strategies are:</p><ul><li>splitting of Flattens with multiple outputs</li><li>sinking of Flattens</li><li>fusing Flattens</li><li>morphing CombineValues into FlatMaps when they don't follow a GroupByKey</li><li>fusing of FlatMaps</li><li>splitting of GroupByKeys with multiple outputs.</li></ul></div></div>
+is suitable for forming MSCRs. The strategies are:</p><ul><li>splitting of Flattens with multiple outputs</li><li>sinking of Flattens</li><li>fusing Flattens</li><li>morphing CombineValues into ParallelDos when they don't follow a GroupByKey</li><li>fusing of ParallelDos</li><li>splitting of GroupByKeys with multiple outputs.</li></ul></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#parentsOf" data-isabs="false">
       <a id="parentsOf(com.nicta.scoobi.impl.plan.Smart.DList[_]):List[com.nicta.scoobi.impl.plan.Smart.DList[_]]"></a>
       <h4 class="signature">

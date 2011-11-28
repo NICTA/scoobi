@@ -24,13 +24,13 @@
       <span class="symbol"> 
         <span class="name">TaggedPartitioner</span>
         
-        <span class="result"> extends <span name="org.apache.hadoop.mapred.Partitioner" class="extype">Partitioner</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a>]</span>
+        <span class="result"> extends <span name="org.apache.hadoop.mapreduce.Partitioner" class="extype">Partitioner</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a>]</span>
       </span>
       </h4>
       
           <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Custom paritioner for tagged key-values.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapred.Partitioner" class="extype">Partitioner</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a>], <span name="org.apache.hadoop.mapred.JobConfigurable" class="extype">JobConfigurable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapreduce.Partitioner" class="extype">Partitioner</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -46,7 +46,7 @@
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.impl.rtt.TaggedPartitioner" class="in"><span>TaggedPartitioner</span></li><li name="org.apache.hadoop.mapred.Partitioner" class="in"><span>Partitioner</span></li><li name="org.apache.hadoop.mapred.JobConfigurable" class="in"><span>JobConfigurable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.impl.rtt.TaggedPartitioner" class="in"><span>TaggedPartitioner</span></li><li name="org.apache.hadoop.mapreduce.Partitioner" class="in"><span>Partitioner</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -74,18 +74,7 @@
         
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="org.apache.hadoop.mapred.JobConfigurable#configure" data-isabs="true">
-      <a id="configure(JobConf):Unit"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">configure</span>
-        
-        <span class="params">(<span name="arg0">arg0: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd><dt>Definition Classes</dt><dd>JobConfigurable</dd></dl></div>
-    </li><li visbl="pub" name="org.apache.hadoop.mapred.Partitioner#getPartition" data-isabs="true">
+              <ol><li visbl="pub" name="org.apache.hadoop.mapreduce.Partitioner#getPartition" data-isabs="true">
       <a id="getPartition(TaggedKey,TaggedValue,Int):Int"></a>
       <h4 class="signature">
       <span class="kind">def</span>
@@ -352,10 +341,8 @@
 
         
 
-        <div name="org.apache.hadoop.mapred.Partitioner" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.mapred.Partitioner" class="extype">Partitioner</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a>]</h3>
-            </div><div name="org.apache.hadoop.mapred.JobConfigurable" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.mapred.JobConfigurable" class="extype">JobConfigurable</span></h3>
+        <div name="org.apache.hadoop.mapreduce.Partitioner" class="parent">
+              <h3>Inherited from <span name="org.apache.hadoop.mapreduce.Partitioner" class="extype">Partitioner</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a>]</h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

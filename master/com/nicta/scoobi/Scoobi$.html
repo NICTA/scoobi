@@ -143,13 +143,13 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#conf" data-isabs="false">
-      <a id="conf:JobConf"></a>
+      <a id="conf:Configuration"></a>
       <h4 class="signature">
-      <span class="kind">val</span>
+      <span class="kind">lazy val</span>
       <span class="symbol"> 
         <span class="name">conf</span>
         
-        <span class="result">: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>
+        <span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Scoobi's configuration.</p>
@@ -212,13 +212,13 @@
       </h4>
       <p class="shortcomment cmt">A list of JARs required by the user for their Scoobi job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#getWorkingDirectory" data-isabs="false">
-      <a id="getWorkingDirectory(JobConf):Path"></a>
+      <a id="getWorkingDirectory(Configuration):Path"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">getWorkingDirectory</span>
         
-        <span class="params">(<span name="jobConf">jobConf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Get the Scoobi working directory.</p>

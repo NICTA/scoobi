@@ -153,6 +153,17 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#by" data-isabs="false">
+      <a id="by[K]((A) ⇒ K)(Manifest[K],WireFormat[K]):DList[(K, A)]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">by</span>
+        <span class="tparams">[<span name="K">K</span>]</span>
+        <span class="params">(<span name="kf">kf: (A) ⇒ K</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[(K, A)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new distributed list that is keyed based on a specified function.</p>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -167,6 +178,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#collect" data-isabs="false">
+      <a id="collect[B](PartialFunction[A, B])(Manifest[B],WireFormat[B]):DList[B]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">collect</span>
+        <span class="tparams">[<span name="B">B</span>]</span>
+        <span class="params">(<span name="pf">pf: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[B]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Build a new DList by applying a partial fuction to all elements of this DList on
+which the function is defined.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.DList#combine" data-isabs="false">
       <a id="combine[K, V]((V, V) ⇒ V)(&lt;:&lt;[DList[A], DList[(K, Iterable[V])]],Manifest[K],WireFormat[K],Ordering[K],Manifest[V],WireFormat[V]):DList[(K, V)]"></a>
       <h4 class="signature">
@@ -245,7 +268,7 @@ predicate function.</p>
       <span class="symbol"> 
         <span class="name">flatMap</span>
         <span class="tparams">[<span name="B">B</span>]</span>
-        <span class="params">(<span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[B]</span>
+        <span class="params">(<span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[B]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">For each element of the distributed list produce zero or more elements by
@@ -326,7 +349,7 @@ all the values are concatenated.</p>
       <span class="symbol"> 
         <span class="name">map</span>
         <span class="tparams">[<span name="B">B</span>]</span>
-        <span class="params">(<span name="f">f: (A) ⇒ B</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[B]</span>
+        <span class="params">(<span name="f">f: (A) ⇒ B</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[B]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">For each element of the distributed list produce a new element by applying a
@@ -366,6 +389,20 @@ distributed list.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#parallelDo" data-isabs="false">
+      <a id="parallelDo[B](DoFn[A, B])(Manifest[B],WireFormat[B]):DList[B]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">parallelDo</span>
+        <span class="tparams">[<span name="B">B</span>]</span>
+        <span class="params">(<span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[B]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Apply a specified function to &quot;chunks&quot; of elements from the distributed list to produce
+zero or more output elements.</p><div class="fullcomment"><div class="comment cmt"><p>Apply a specified function to &quot;chunks&quot; of elements from the distributed list to produce
+zero or more output elements. The resulting output elements from the many &quot;chunks&quot; form
+a new distributed list.</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.DList#partition" data-isabs="false">
       <a id="partition((A) ⇒ Boolean):(DList[A], DList[A])"></a>
       <h4 class="signature">

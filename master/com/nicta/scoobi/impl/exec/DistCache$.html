@@ -247,25 +247,25 @@ Two APIs are provided for pushing and pulling objects.</p></div><div class="togg
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pullObject" data-isabs="false">
-      <a id="pullObject(JobConf,String):AnyRef"></a>
+      <a id="pullObject(Configuration,String):AnyRef"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">pullObject</span>
         
-        <span class="params">(<span name="jobConf">jobConf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: AnyRef</span>
+        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: AnyRef</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
 the current job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pushObject" data-isabs="false">
-      <a id="pushObject(JobConf,AnyRef,String):Unit"></a>
+      <a id="pushObject(Configuration,AnyRef,String):Unit"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">pushObject</span>
         
-        <span class="params">(<span name="jobConf">jobConf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>, <span name="obj">obj: AnyRef</span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: AnyRef</span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job.</p>

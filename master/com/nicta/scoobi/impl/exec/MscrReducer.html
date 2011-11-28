@@ -24,13 +24,13 @@
       <span class="symbol"> 
         <span class="name">MscrReducer</span>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
-        <span class="result"> extends <span name="org.apache.hadoop.mapred.Reducer" class="extype">Reducer</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>, <span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]]</span>
+        <span class="result"> extends <span name="org.apache.hadoop.mapreduce.Reducer" class="extype">Reducer</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>, <span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]]</span>
       </span>
       </h4>
       
           <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Hadoop Reducer class for an MSCR.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapred.Reducer" class="extype">Reducer</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>, <span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]], <span name="org.apache.hadoop.io.Closeable" class="extype">Closeable</span>, <span name="java.io.Closeable" class="extype">Closeable</span>, <span name="org.apache.hadoop.mapred.JobConfigurable" class="extype">JobConfigurable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="org.apache.hadoop.mapreduce.Reducer" class="extype">Reducer</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>, <span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -46,7 +46,7 @@
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.MscrReducer" class="in"><span>MscrReducer</span></li><li name="org.apache.hadoop.mapred.Reducer" class="in"><span>Reducer</span></li><li name="org.apache.hadoop.io.Closeable" class="in"><span>Closeable</span></li><li name="java.io.Closeable" class="in"><span>Closeable</span></li><li name="org.apache.hadoop.mapred.JobConfigurable" class="in"><span>JobConfigurable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.MscrReducer" class="in"><span>MscrReducer</span></li><li name="org.apache.hadoop.mapreduce.Reducer" class="in"><span>Reducer</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -142,6 +142,17 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer#cleanup" data-isabs="false">
+      <a id="cleanup(Context):Unit"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">cleanup</span>
+        
+        <span class="params">(<span name="context">context: <span name="org.apache.hadoop.mapreduce.Reducer.Context" class="extype">Context</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.MscrReducer" class="extype" href="">MscrReducer</a> → Reducer</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -156,28 +167,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer#close" data-isabs="false">
-      <a id="close():Unit"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">close</span>
-        
-        <span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.MscrReducer" class="extype" href="">MscrReducer</a> → Closeable</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer#configure" data-isabs="false">
-      <a id="configure(JobConf):Unit"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">configure</span>
-        
-        <span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.mapred.JobConf" class="extype">JobConf</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.MscrReducer" class="extype" href="">MscrReducer</a> → JobConfigurable</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -281,13 +270,40 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer#reduce" data-isabs="false">
-      <a id="reduce(TaggedKey,Iterator[TaggedValue],OutputCollector[NullWritable, ScoobiWritable[B]],Reporter):Unit"></a>
+      <a id="reduce(TaggedKey,Iterable[TaggedValue],Context):Unit"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">reduce</span>
         
-        <span class="params">(<span name="key">key: <a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a></span>, <span name="values">values: <span name="java.util.Iterator" class="extype">Iterator</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>]</span>, <span name="output">output: <span name="org.apache.hadoop.mapred.OutputCollector" class="extype">OutputCollector</span>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]]</span>, <span name="reporter">reporter: <span name="org.apache.hadoop.mapred.Reporter" class="extype">Reporter</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="params">(<span name="key">key: <a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a></span>, <span name="values">values: <span name="java.lang.Iterable" class="extype">Iterable</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>]</span>, <span name="context">context: <span name="org.apache.hadoop.mapreduce.Reducer.Context" class="extype">Context</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.MscrReducer" class="extype" href="">MscrReducer</a> → Reducer</dd></dl></div>
+    </li><li visbl="pub" name="org.apache.hadoop.mapreduce.Reducer#run" data-isabs="false">
+      <a id="run(Context):Unit"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">run</span>
+        
+        <span class="params">(<span name="arg0">arg0: <span name="org.apache.hadoop.mapreduce.Reducer.Context" class="extype">Context</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Reducer</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer#setup" data-isabs="false">
+      <a id="setup(Context):Unit"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">setup</span>
+        
+        <span class="params">(<span name="context">context: <span name="org.apache.hadoop.mapreduce.Reducer.Context" class="extype">Context</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.MscrReducer" class="extype" href="">MscrReducer</a> → Reducer</dd></dl></div>
@@ -360,14 +376,8 @@
 
         
 
-        <div name="org.apache.hadoop.mapred.Reducer" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.mapred.Reducer" class="extype">Reducer</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>, <span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]]</h3>
-            </div><div name="org.apache.hadoop.io.Closeable" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.io.Closeable" class="extype">Closeable</span></h3>
-            </div><div name="java.io.Closeable" class="parent">
-              <h3>Inherited from <span name="java.io.Closeable" class="extype">Closeable</span></h3>
-            </div><div name="org.apache.hadoop.mapred.JobConfigurable" class="parent">
-              <h3>Inherited from <span name="org.apache.hadoop.mapred.JobConfigurable" class="extype">JobConfigurable</span></h3>
+        <div name="org.apache.hadoop.mapreduce.Reducer" class="parent">
+              <h3>Inherited from <span name="org.apache.hadoop.mapreduce.Reducer" class="extype">Reducer</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="../rtt/TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="../rtt/TaggedValue.html">TaggedValue</a>, <span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[B]]</h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
