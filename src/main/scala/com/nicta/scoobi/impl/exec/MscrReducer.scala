@@ -16,9 +16,9 @@
 package com.nicta.scoobi.impl.exec
 
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapred.{Reducer => HReducer, _}
-import org.apache.hadoop.mapred.lib.MultipleOutputs
+import org.apache.hadoop.mapreduce.{Reducer => HReducer, _}
 
+import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.rtt.Tagged
 import com.nicta.scoobi.impl.rtt.TaggedKey
@@ -29,48 +29,41 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 class MscrReducer[K, V, B] extends HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]] {
 
   private var outputs: Map[Int, (Int, TaggedReducer[_,_,_])] = _
-  private var multipleOutputs: MultipleOutputs = _
-  private var conf: JobConf = _
+  private var channelOutput: ChannelOutputFormat[ScoobiWritable[B]] = _
 
-  def configure(conf: JobConf) = {
-    outputs = DistCache.pullObject(conf, "scoobi.output.reducers").asInstanceOf[Map[Int, (Int, TaggedReducer[_,_,_])]]
-    multipleOutputs = new MultipleOutputs(conf)
-    this.conf = conf
+  override def setup(context: HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]#Context) = {
+    outputs = DistCache.pullObject(context.getConfiguration, "scoobi.output.reducers").asInstanceOf[Map[Int, (Int, TaggedReducer[_,_,_])]]
+    channelOutput = new ChannelOutputFormat(context)
   }
 
-  def reduce(key: TaggedKey,
-             values: java.util.Iterator[TaggedValue],
-             output: OutputCollector[NullWritable, ScoobiWritable[B]],
-             reporter: Reporter) = {
+  override def reduce(key: TaggedKey,
+                      values: java.lang.Iterable[TaggedValue],
+                      context: HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]#Context) = {
 
     val tag = key.tag
-    val namedOutput = "ch" + tag
+    val numOutputs = outputs(tag)._1
 
     /* Get the right output value type and output directory for the current channel,
      * specified by the key's tag. */
-    val numOutputs = outputs(tag)._1
     val reducer = outputs(tag)._2.asInstanceOf[TaggedReducer[K, V, B]]
 
-    val v = MultipleOutputs.getNamedOutputValueClass(conf, namedOutput + "out0").newInstance
-                       .asInstanceOf[ScoobiWritable[B]]
-
-    val collectors = (0 to numOutputs - 1) map { namedOutput + "out" + _ } map {
-      multipleOutputs.getCollector(_, reporter)
-                     .asInstanceOf[OutputCollector[NullWritable, ScoobiWritable[B]]]
-    }
+    val v = ChannelOutputFormat.getValueClass(context, tag).newInstance.asInstanceOf[ScoobiWritable[B]]
 
     /* Convert Iterator[TaggedValue] to Iterable[V]. */
-    val valuesStream = Stream.continually(if (values.hasNext) values.next else null).takeWhile(_ != null)
+    val valuesStream = Stream.continually(if (values.iterator.hasNext) values.iterator.next else null).takeWhile(_ != null)
     val untaggedValues = valuesStream.map(_.get(tag).asInstanceOf[V]).toIterable
 
     /* Do the reduction. */
-    reducer.reduce(key.get(tag).asInstanceOf[K], untaggedValues).foreach { out =>
-      v.set(out)
-      collectors foreach { _.collect(NullWritable.get, v) }
+    val emitter = new Emitter[B] {
+      def emit(x: B) = {
+        v.set(x)
+        channelOutput.write(tag, numOutputs, v)
+      }
     }
+    reducer.reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)
   }
 
-  def close() = {
-    multipleOutputs.close()
+  override def cleanup(context: HReducer[TaggedKey, TaggedValue, NullWritable, ScoobiWritable[B]]#Context) = {
+    channelOutput.close()
   }
 }

@@ -31,13 +31,11 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
   // Primitive functionality.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /** For each element of the distributed list produce zero or more elements by
-    * applying a specified function. The resulting collection of elements form a
-    * new distributed list. */
-  def flatMap[B]
-      (f: A => Iterable[B])
-      (implicit mB:  Manifest[B],
-                wtB: WireFormat[B]): DList[B] = new DList(Smart.FlatMap(ast, f))
+  /** Apply a specified function to "chunks" of elements from the distributed list to produce
+    * zero or more output elements. The resulting output elements from the many "chunks" form
+    * a new distributed list. */
+  def parallelDo[B] (dofn: DoFn[A, B])(implicit mB:  Manifest[B], wtB: WireFormat[B]): DList[B] =
+    new DList(Smart.ParallelDo(ast, dofn))
 
   /** Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))
@@ -67,14 +65,39 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
   // Derrived functionality.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /** For each element of the distributed list produce zero or more elements by
+    * applying a specified function. The resulting collection of elements form a
+    * new distributed list. */
+  def flatMap[B : Manifest : WireFormat](f: A => Iterable[B]): DList[B] = {
+    val dofn = new DoFn[A, B] {
+      def setup() = {}
+      def process(input: A, emitter: Emitter[B]) = f(input).foreach { emitter.emit(_) }
+      def cleanup(emitter: Emitter[B]) = {}
+    }
+    parallelDo(dofn)
+  }
+
   /** For each element of the distributed list produce a new element by applying a
     * specified function. The resulting collection of elements form a new
     * distributed list. */
-  def map[B : Manifest : WireFormat](f: A => B): DList[B]
-    = flatMap(x => List(f(x)))
+  def map[B : Manifest : WireFormat](f: A => B): DList[B] = {
+    val dofn = new DoFn[A, B] {
+      def setup() = {}
+      def process(input: A, emitter: Emitter[B]) = emitter.emit(f(input))
+      def cleanup(emitter: Emitter[B]) = {}
+    }
+    parallelDo(dofn)
+  }
 
   /** Keep elements from the distributedl list that pass a spcecified predicate function. */
-  def filter(p: A => Boolean): DList[A] = flatMap(x => if (p(x)) List(x) else Nil)
+  def filter(p: A => Boolean): DList[A] = {
+    val dofn = new DoFn[A, A] {
+      def setup() = {}
+      def process(input: A, emitter: Emitter[A]) = if (p(input)) { emitter.emit(input) }
+      def cleanup(emitter: Emitter[A]) = {}
+    }
+    parallelDo(dofn)
+  }
 
   /** Keep elements from the distributedl list that do not pass a spcecified
     * predicate function. */
@@ -82,11 +105,13 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 
   /** Build a new DList by applying a partial fuction to all elements of this DList on
     * which the function is defined. */
-  def collect[B : Manifest : WireFormat](pf: PartialFunction[A, B]): DList[B] = flatMap { e =>
-    if (pf.isDefinedAt(e))
-      List(pf(e))
-    else
-      Nil
+  def collect[B : Manifest : WireFormat](pf: PartialFunction[A, B]): DList[B] = {
+    val dofn = new DoFn[A, B] {
+      def setup() = {}
+      def process(input: A, emitter: Emitter[B]) = if (pf.isDefinedAt(input)) { emitter.emit(pf(input)) }
+      def cleanup(emitter: Emitter[B]) = {}
+    }
+    parallelDo(dofn)
   }
 
   /** Group the values of a distributed list according to some discriminator function. */
@@ -100,8 +125,14 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 
   /** Converts a distributed list of iterable values iinto to a distributed list in which
     * all the values are concatenated. */
-  def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] =
-    flatMap((x: A) => x.asInstanceOf[Iterable[B]])
+  def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] = {
+    val dofn = new DoFn[A, B] {
+      def setup() = {}
+      def process(input: A, emitter: Emitter[B]) = input.foreach { emitter.emit(_) }
+      def cleanup(emitter: Emitter[B]) = {}
+    }
+    parallelDo(dofn)
+  }
 
   /** Create a new distributed list that is keyed based on a specified function. */
   def by[K : Manifest : WireFormat](kf: A => K): DList[(K, A)] = map { x => (kf(x), x) }

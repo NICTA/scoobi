@@ -16,11 +16,10 @@
 package com.nicta.scoobi.impl.exec
 
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.FileInputFormat
-import org.apache.hadoop.mapred.SequenceFileInputFormat
-import org.apache.hadoop.mapred.FileOutputFormat
-import org.apache.hadoop.mapred.TextOutputFormat
-import org.apache.hadoop.mapred.SequenceFileOutputFormat
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.Scoobi

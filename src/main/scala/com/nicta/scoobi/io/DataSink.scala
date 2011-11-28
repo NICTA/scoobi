@@ -16,7 +16,7 @@
 package com.nicta.scoobi.io
 
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.FileOutputFormat
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
 
 /* An output store from a MapReduce job. */

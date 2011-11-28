@@ -17,6 +17,7 @@ package com.nicta.scoobi.impl.exec
 
 import java.io.Serializable
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Emitter
 
 
 /** A prodcuer of a TaggedMapper. */
@@ -33,8 +34,10 @@ abstract class TaggedMapper[A, K, V]
               val mV: Manifest[V], val wtV: WireFormat[V])
   extends Serializable {
 
-  /** The actual 'map' function that will be by Hadoop in the mapper task. */
-  def map(value: A): Iterable[(K, V)]
+  /** The actual 'map' function that will be used by Hadoop in the mapper task. */
+  def setup(): Unit
+  def map(input: A, emitter: Emitter[(K, V)]): Unit
+  def cleanup(emitter: Emitter[(K, V)]): Unit
 }
 
 
@@ -47,5 +50,7 @@ class TaggedIdentityMapper[K, V]
   extends TaggedMapper[(K, V), K, V](tags)(mKV, wtKV, mK, wtK, ordK, mV, wtV) {
 
   /** Identity mapping */
-  def map(value: (K, V)): Iterable[(K, V)] = List(value)
+  def setup() = {}
+  def map(input: (K, V), emitter: Emitter[(K, V)]) = emitter.emit(input)
+  def cleanup(emitter: Emitter[(K, V)]) = {}
 }

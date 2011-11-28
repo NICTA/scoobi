@@ -16,7 +16,7 @@
 package com.nicta.scoobi.io
 
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.FileInputFormat
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 
 /* An input data store to a MapReduce job. */
 trait DataSource {

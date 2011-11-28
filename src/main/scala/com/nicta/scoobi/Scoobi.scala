@@ -21,7 +21,6 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapred.JobConf
 import scala.collection.JavaConversions._
 import Option.{apply => ?}
 
@@ -70,11 +69,9 @@ object Scoobi {
 
 
   /** Scoobi's configuration. */
-  lazy val conf: JobConf = {
+  lazy val conf: Configuration = {
     setWorkingDirectory(internalConf)
-    val job = new JobConf(internalConf)
-    job.setJobName("scoobi_" + jobId)
-    job
+    new Configuration(internalConf)
   }
 
   /** Scoobi's configuration. */
@@ -82,15 +79,15 @@ object Scoobi {
 
   /* The Scoobi working directory is in the user's home directory under '.scoobi' and
    * a timestamped directory. e.g. /home/fred/.scoobi/201110041326. */
-  private def setWorkingDirectory(jobConf: Configuration) = {
-    val workdirPath = new Path(FileSystem.get(jobConf).getHomeDirectory, ".scoobi/" + jobId)
+  private def setWorkingDirectory(conf: Configuration) = {
+    val workdirPath = new Path(FileSystem.get(conf).getHomeDirectory, ".scoobi/" + jobId)
     val workdir = workdirPath.toUri.toString
-    jobConf.set("scoobi.workdir", workdir)
+    conf.set("scoobi.workdir", workdir)
   }
 
   /** Get the Scoobi working directory. */
-  def getWorkingDirectory(jobConf: Configuration): Path = {
-    ?(jobConf.get("scoobi.workdir")) match {
+  def getWorkingDirectory(conf: Configuration): Path = {
+    ?(conf.get("scoobi.workdir")) match {
       case Some(s)  => new Path(s)
       case None     => sys.error("Scoobi working directory not set.")
     }

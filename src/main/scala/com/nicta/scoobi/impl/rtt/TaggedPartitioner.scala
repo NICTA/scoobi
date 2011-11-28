@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi.impl.rtt
 
-import org.apache.hadoop.mapred.Partitioner
+import org.apache.hadoop.mapreduce.Partitioner
 import javassist._
 
 
@@ -60,13 +60,5 @@ class TaggedPartitionerClassBuilder(name: String, numTags: Int) extends ClassBui
                                               "{" + getPartitionCode + "}",
                                               ctClass)
     ctClass.addMethod(getPartitionMethod)
-
-    /* 'configure' - required as Partitioner inherits from JobConfigurable. Make it empty. */
-    ctClass.addMethod(CtNewMethod.make(CtClass.voidType,
-                                       "configure",
-                                       Array(pool.get("org.apache.hadoop.mapred.JobConf")),
-                                       Array(),
-                                       "{}",
-                                       ctClass))
   }
 }

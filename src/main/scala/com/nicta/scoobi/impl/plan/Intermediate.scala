@@ -73,7 +73,7 @@ import com.nicta.scoobi.impl.plan.{GbkOutputChannel    => CGbkOutputChannel,
  * is recovered. For example, if one is currently on a GroupByKey node then one knows that its
  * predecessor must have output type (K,V) for some key K and value V.
  *
- * Depending on the position for a Smart.FlatMap node in the abstract syntax tree it could end up
+ * Depending on the position for a Smart.ParallelDo node in the abstract syntax tree it could end up
  * being converted to one of the follow AST.Node node types: AST.Mapper, AST.GbkMapper,
  * AST.Combiner, AST.GbkReducer.
  *
@@ -116,10 +116,10 @@ object Intermediate {
     def hasOutput(d: DList[_]): Boolean
 
     /*
-     * Returns @true@ if this input channel contains a @Smart.FlatMap@ node
+     * Returns @true@ if this input channel contains a @Smart.ParallelDo@ node
      * that should be converted to a @AST.GbkMapper@ node.
      */
-    def containsGbkMapper(d: Smart.FlatMap[_,_]): Boolean
+    def containsGbkMapper(d: Smart.ParallelDo[_,_]): Boolean
 
     /*
      * Creates the @DataStore@ input for this input channel.
@@ -133,9 +133,9 @@ object Intermediate {
 
   }
 
-  case class MapperInputChannel(flatMaps: List[FlatMap[_,_]]) extends InputChannel {
+  case class MapperInputChannel(parDos: List[ParallelDo[_,_]]) extends InputChannel {
 
-    override def toString = "MapperInputChannel([" + flatMaps.mkString(", ")+ "])"
+    override def toString = "MapperInputChannel([" + parDos.mkString(", ")+ "])"
 
     /*
      * The methods @hasInput@, @hasOutput@, @containsGbkMapper@, @dataStoreInput@ and
@@ -144,22 +144,22 @@ object Intermediate {
      *
      *  See descriptions of these methods in super class @InputChannel@
      */
-    def hasInput(d: DList[_]): Boolean = flatMaps(0).in ==d
+    def hasInput(d: DList[_]): Boolean = parDos(0).in ==d
 
-    def hasOutput(d: DList[_]): Boolean = flatMaps.exists(_==d)
+    def hasOutput(d: DList[_]): Boolean = parDos.exists(_==d)
 
-    def containsGbkMapper(d: FlatMap[_,_]) = flatMaps.exists{_ == d}
+    def containsGbkMapper(d: ParallelDo[_,_]) = parDos.exists{_ == d}
 
     def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = {
-      // This should be safe since there should be at least one flatMap in @flatMaps@
-      flatMaps(0).in.dataSource(ci)
+      // This should be safe since there should be at least one parallelDo in @parDos@
+      parDos(0).in.dataSource(ci)
     }
 
     def convert(ci: ConvertInfo): CMapperInputChannel[DataStore with DataSource] = {
       // TODO: Yet another asInstanceOf. Don't like them.
       def f(d: DList[_]): AST.Node[_] with MapperLike[_,_,_] =
         ci.getASTNode(d).asInstanceOf[AST.Node[_] with MapperLike[_,_,_]]
-      val ns: Set[AST.Node[_] with MapperLike[_,_,_]] = flatMaps.map(f).toSet
+      val ns: Set[AST.Node[_] with MapperLike[_,_,_]] = parDos.map(f).toSet
       CMapperInputChannel(dataStoreInput(ci), ns)
     }
 
@@ -179,7 +179,7 @@ object Intermediate {
 
     def hasOutput(d: DList[_]): Boolean = hasInput(d)
 
-    def containsGbkMapper(d: FlatMap[_,_]) = d == input
+    def containsGbkMapper(d: ParallelDo[_,_]) = d == input
 
     def convert(ci: ConvertInfo): BypassInputChannel[DataStore with DataSource] = {
       // TODO. Yet another asInstanceOf
@@ -259,12 +259,12 @@ object Intermediate {
    * A @GbkOutputChannel@ is the standard output channel of an MSCR.
    *
    * They always contains a @GroupByKey@ node. Optionally they are preceded by a
-   * @Flatten@ node, and optionally succeeded by @Combine@ and/or @FlatMap@ node.
+   * @Flatten@ node, and optionally succeeded by @Combine@ and/or @ParallelDo@ node.
    */
   case class GbkOutputChannel(flatten:    Option[Flatten[_]],
                               groupByKey: GroupByKey[_,_],
                               combiner:   Option[Combine[_,_]],
-                              reducer:    Option[FlatMap[_,_]]) extends OutputChannel {
+                              reducer:    Option[ParallelDo[_,_]]) extends OutputChannel {
 
      /*
       * Adds a @Flatten@ node to this output channel returning a new channel.
@@ -273,9 +273,9 @@ object Intermediate {
        new GbkOutputChannel(Some(flatten), this.groupByKey, this.combiner, this.reducer)
 
      /*
-      * Adds a @FlatMap@ node to this output channel returning a new channel.
+      * Adds a @ParallelDo@ node to this output channel returning a new channel.
       */
-     def addReducer(reducer: FlatMap[_,_]): GbkOutputChannel =
+     def addReducer(reducer: ParallelDo[_,_]): GbkOutputChannel =
        new GbkOutputChannel(this.flatten, this.groupByKey, this.combiner, Some(reducer))
 
      /*
@@ -351,7 +351,7 @@ object Intermediate {
     }
   }
 
-  case class BypassOutputChannel(input: FlatMap[_,_]) extends OutputChannel {
+  case class BypassOutputChannel(input: ParallelDo[_,_]) extends OutputChannel {
     def hasInput(d: DList[_]) = d == input
     def hasOutput(d: DList[_]) = d == input
 
@@ -380,11 +380,11 @@ object Intermediate {
     }
 
     /* Used during the translation from Smart.DList to AST */
-    def containsGbkMapper(d: Smart.FlatMap[_,_]): Boolean =
+    def containsGbkMapper(d: Smart.ParallelDo[_,_]): Boolean =
       inputChannels.map{_.containsGbkMapper(d)}.exists(identity)
 
     /* Used during the translation from Smart.DList to AST */
-    def containsGbkReducer(d: Smart.FlatMap[_,_]): Boolean = {
+    def containsGbkReducer(d: Smart.ParallelDo[_,_]): Boolean = {
       def pred(oc: OutputChannel): Boolean = oc match {
         case BypassOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
@@ -394,7 +394,7 @@ object Intermediate {
     }
 
     /* Used during the translation from Smart.DList to AST */
-    def containsReducer(d: Smart.FlatMap[_,_]): Boolean = {
+    def containsReducer(d: Smart.ParallelDo[_,_]): Boolean = {
       def pred(oc: OutputChannel): Boolean = oc match {
         case BypassOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
@@ -431,45 +431,45 @@ object Intermediate {
     * 2. Create input channels for each GroupByKey node as well as @BypassOutputChannel@s. The input
     *    channels will be of type
     *    @MapperInputChannel@ or @IdInputChannel@ depending on whether the inputs to the
-    *    GroupByKey node are FlatMap nodes (possibly through a Flatten) or not. The
+    *    GroupByKey node are ParallelDo nodes (possibly through a Flatten) or not. The
     *    @BypassOutputChannel@s are created for outputs of the @InputChannel@s that are
     *    required by other MSCRs or as outputs of the Execution Plan.
     */
     def apply(g: DGraph, relatedGBKs: Set[DList[_]]): MSCR = {
 
-      def flatMapSiblings(d: DList[_], g: DGraph): List[FlatMap[_,_]] = {
+      def parallelDoSiblings(d: DList[_], g: DGraph): List[ParallelDo[_,_]] = {
         d match {
-          case FlatMap(input,_) => {
+          case ParallelDo(input,_) => {
             g.succs.get(input) match {
-              case Some(succs) => succs.toList.flatMap(getFlatMap(_).toList)
+              case Some(succs) => succs.toList.flatMap(getParallelDo(_).toList)
               case None        => List()
             }
           }
-          case _ => throw new RuntimeException("Can't call flatMapSiblings on non-flatMap node")
+          case _ => throw new RuntimeException("Can't call parallelDoSiblings on non-flatMap node")
         }
       }
 
-      def hasSiblings(d: DList[_], g: DGraph): Boolean = flatMapSiblings(d,g).length > 1
+      def hasSiblings(d: DList[_], g: DGraph): Boolean = parallelDoSiblings(d,g).length > 1
 
       /*
        * This method creates a @GbkOutputChannel@ for each set of related @GroupByKey@s.
        *
        * First we create a collection of "initial" @GbkOutputChannels@. They
        * only contain @GroupByKey@ nodes. For each of these @GbkOutputChannel@s, oc, we
-       * optionally added @Flatten@, @Combine@ and @FlatMap@ (Reducer) nodes to the
+       * optionally added @Flatten@, @Combine@ and @ParallelDo@ (Reducer) nodes to the
        * channels.
        *
        * We add a @Flatten@ node if the @GroupByKey@ has this as a predecessor.
        *
        * We add a @Combine@ node if the direct successor of the @GroupByKey@ node is a
-       * @Combine@ node. Otherwise we check if there is a @FlatMap@ following it, in which
+       * @Combine@ node. Otherwise we check if there is a @ParallelDo@ following it, in which
        * case we add it as a "reducer", but only if it satisfies some checks (see below).
        *
-       * If we have added a @Combine@ node we then check if its successor is a @FlatMap@. If this
+       * If we have added a @Combine@ node we then check if its successor is a @ParallelDo@. If this
        * satisifies the following checks we add it as a "reducer".
        *  - it has no successors. If it does then it should be in the input channel of another
        *    MSCR
-       *  - it has no sibling @FlatMap@ nodes. Again, this means it should be in
+       *  - it has no sibling @ParallelDo@ nodes. Again, this means it should be in
        *    another MSCR (in a MapperInputChannel)
        *
        * (Note: Perhaps this condition is too restrictive!)
@@ -498,7 +498,7 @@ object Intermediate {
           def addTheReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
             val maybeOC =
               for { d_              <- getSingleSucc(d)
-                    reducer         <- getFlatMap(d_)
+                    reducer         <- getParallelDo(d_)
                     hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
                     canAdd          <- Some(!hasSiblings(reducer,g) && hasNoSuccessors)
               } yield (if (canAdd) { oc.addReducer(reducer)} else { oc })
@@ -542,38 +542,38 @@ object Intermediate {
                           (Set[InputChannel], Set[BypassOutputChannel]) = {
 
 
-        def isBypass(fm: FlatMap[_,_]): Boolean = {
+        def isBypass(pd: ParallelDo[_,_]): Boolean = {
           def isInExecutionPlanOutputs(d: DList[_]) = g.outputs.contains(d)
-          !ocs.exists(_.hasInput(fm)) || isInExecutionPlanOutputs(fm)
+          !ocs.exists(_.hasInput(pd)) || isInExecutionPlanOutputs(pd)
         }
 
-        def bypassChan(fm: FlatMap[_,_]) =
-          if ( isBypass(fm) ) { Some (BypassOutputChannel(fm))} else { None }
+        def bypassChan(pd: ParallelDo[_,_]) =
+          if ( isBypass(pd) ) { Some (BypassOutputChannel(pd))} else { None }
 
 
         /* One of the first times I've used vars in Scala code */
-        var siblingSets: Set[Set[FlatMap[_,_]]] = Set()
-        var nonFlatMaps: Set[DList[_]]          = Set()
+        var siblingSets: Set[Set[ParallelDo[_,_]]] = Set()
+        var nonParallelDos: Set[DList[_]]          = Set()
 
-        def addSiblingsSetOrNonFlatMap(d: DList[_]): Unit = {
+        def addSiblingsSetOrNonParallelDo(d: DList[_]): Unit = {
           d match {
-            case fm@FlatMap(_,_) => {
-               val siblings = flatMapSiblings(d, g).toSet
+            case pd@ParallelDo(_,_) => {
+               val siblings = parallelDoSiblings(d, g).toSet
                siblingSets += siblings
             }
-            case _ => nonFlatMaps += d
+            case _ => nonParallelDos += d
           }
         }
 
-        inputs.foreach(addSiblingsSetOrNonFlatMap)
+        inputs.foreach(addSiblingsSetOrNonParallelDo)
 
-        def mkInputChannelAndBypassOutputChannels(siblings: Set[FlatMap[_,_]]):
+        def mkInputChannelAndBypassOutputChannels(siblings: Set[ParallelDo[_,_]]):
                                                  (InputChannel, Set[BypassOutputChannel]) = {
           val bypassChannels = siblings.flatMap(bypassChan(_))
            (MapperInputChannel(siblings.toList), bypassChannels)
         }
 
-        val idInputChannels = nonFlatMaps.map{IdInputChannel}
+        val idInputChannels = nonParallelDos.map{IdInputChannel}
 
         val (ics, bpocs) = siblingSets.map{mkInputChannelAndBypassOutputChannels}.unzip
         (ics ++ idInputChannels, bpocs.flatten)
@@ -683,14 +683,14 @@ object Intermediate {
 
         def gbkInputs(gbk: DList[_]): (Set[DList[_]], Set[DList[_]]) = {
           val (GroupByKey(d)) = gbk
-          (Set(gbk), flatMapInputs(d))
+          (Set(gbk), parallelDoInputs(d))
         }
 
-        def flatMapInputs(dlist: DList[_]): Set[DList[_]] = {
+        def parallelDoInputs(dlist: DList[_]): Set[DList[_]] = {
           dlist match {
-            case Flatten(ds)  => ds.filter(isFlatMap).flatMap(flatMapInputs(_)).toSet
-            case FlatMap(d,_) => Set(d)
-            case _            => Set()
+            case Flatten(ds)     => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
+            case ParallelDo(d,_) => Set(d)
+            case _               => Set()
           }
         }
         mergeRelated(gbks.map(gbkInputs)).map(_._1)
@@ -705,26 +705,26 @@ object Intermediate {
 
       /** Find all outputs that are not within a GBK MSCR. There are 2 cases:
         *
-        *   1. The ouput is a FlatMap node connected directly to a Load node;
+        *   1. The ouput is a ParallelDo node connected directly to a Load node;
         *   2. The output is a Flatten node, connected to the output(s) of an MSCR and/or
         *      Load node(s).
         *
-        * For case 1, all FlatMaps can be added to the same MSCR. Each FlatMap will be
+        * For case 1, all ParallelDos can be added to the same MSCR. Each ParallelDo will be
         * added to its own input channel and will feed directly into its own bypass
         * output channel.
         *
         * TODO - handle case 2 by allowing bypass output channels to contain
         * optional Flatten nodes.
         *
-        * TODO - investigate adding remaining FlatMaps to an exisitng MSCR. */
+        * TODO - investigate adding remaining ParallelDos to an exisitng MSCR. */
       val floatingOutputs = outputs filterNot { o => gbkMSCRs.exists(mscr => mscr.hasOutput(o)) }
 
       val allMSCRs =
         if (floatingOutputs.size > 0) {
           val (ics, ocs) = floatingOutputs map {
-            case fm@FlatMap(_, _) => (MapperInputChannel(List(fm)), BypassOutputChannel(fm))
-            case flat@Flatten(_)  => sys.error("Trivial MSCR from Flattens not yet supported.")
-            case node             => sys.error("Not expecting " + node.name + " as remaining node.")
+            case pd@ParallelDo(_, _) => (MapperInputChannel(List(pd)), BypassOutputChannel(pd))
+            case flat@Flatten(_)     => sys.error("Trivial MSCR from Flattens not yet supported.")
+            case node                => sys.error("Not expecting " + node.name + " as remaining node.")
           } unzip
 
           val mapOnlyMSCRMSCR = new MSCR(ics.toSet, ocs.toSet)
