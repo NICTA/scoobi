@@ -82,6 +82,11 @@ object Smart {
     def optSplitGbks(copied: CopyTable): (DList[A], CopyTable, Boolean) =
       copyOnceWith(copied, _.optSplitGbks(_))
 
+    /** An optimisation strategy that replicates any Combine nodes that have multiple outputs
+      * such that in the resulting AST, Combine nodes have only single outputs. */
+    def optSplitCombines(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optSplitCombines(_))
+
 
     /** Perform a depth-first traversal copy of the DList node. When copying the input DList
       * node(s), a the CopyFn function is used (somewhat like a callback). */
@@ -400,6 +405,38 @@ object Smart {
       }
     }
 
+    /** Perform a normal copy of this Combine node, along with subsequent GroupByKey and Flatten nodes, but
+      * do not mark it as copied in the CopyTable. This will mean subsequent encounters of this node (that
+      * is, other outputs of this Combine node) will result in another copy, thereby replicating Combine
+      * nodes with multiple outputs. */
+    override def optSplitCombines(copied: CopyTable): (DList[(K, V)], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case GroupByKey(groupIn) => groupIn match {
+
+          case Flatten(ins) => {
+            val (insUpd, copiedUpd, b) = ins.foldLeft((Nil: List[DList[(K, V)]], copied, false)) { case ((cps, ct, b), n) =>
+              val (nUpd, ctUpd, bb) = n.optSplitCombines(ct)
+              (cps :+ nUpd, ctUpd + (n -> nUpd), bb || b)
+            }
+            val flat = Flatten(insUpd)
+            val gbk = GroupByKey(flat)
+            val cv = Combine(gbk, f)
+            (cv, copiedUpd, b)
+          }
+
+          case _            => {
+            val (inUpd, copiedUpd, b) = groupIn.optSplitCombines(copied)
+            val gbk = GroupByKey(inUpd)
+            val cv = Combine(gbk, f)
+            (cv, copiedUpd, b)
+          }
+        }
+
+        case _ => sys.error("Expecting Combine input to be a GroupByKey")
+      }
+    }
+
+
 
     // Conversion
     // ~~~~~~~~~~
@@ -498,9 +535,10 @@ object Smart {
     *   - splitting of Flattens with multiple outputs
     *   - sinking of Flattens
     *   - fusing Flattens
-    *   - morphing CombineValues into ParallelDos when they don't follow a GroupByKey
+    *   - morphing Combine into ParallelDos when they don't follow a GroupByKey
     *   - fusing of ParallelDos
-    *   - splitting of GroupByKeys with multiple outputs. */
+    *   - splitting of GroupByKeys with multiple outputs
+    *   - splitting of Combine with multiple outputs. */
   def optimisePlan(outputs: List[DList[_]]): List[DList[_]] = {
 
     /** Perform a computation 'f' recursively stating with input 'x'. Return the
@@ -543,7 +581,8 @@ object Smart {
       val (combinerToParDoOpt, c2) = untilChanged(flattenOpt, travOnce(_.optCombinerToParDos(_)))
       val (parDoOpt, c3)           = untilChanged(combinerToParDoOpt, travOnce(_.optFuseParDos(_)))
       val (splitGbkOpt, c4)        = untilChanged(parDoOpt, travOnce(_.optSplitGbks(_)))
-      (splitGbkOpt, c1 || c2 || c3 || c4)
+      val (splitCombineOpt, c5)    = untilChanged(splitGbkOpt, travOnce(_.optSplitCombines(_)))
+      (splitCombineOpt, c1 || c2 || c3 || c4 || c5)
     }
 
     val (optOutputs, _) = untilChanged(outputs, allStrategies)
