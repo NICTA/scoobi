@@ -553,7 +553,7 @@ object Smart {
 
   /** Helper method for traversing the graph from */
   private def travOnce
-      (fuseFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
+      (optFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
       (outputs: List[DList[_]])
     : (List[DList[_]], Boolean) = {
 
@@ -561,8 +561,8 @@ object Smart {
     val noCopies: List[DList[_]] = Nil
 
     val (_, copies, changes) = outputs.foldLeft((emptyCopyTable, noCopies, false)) { case ((ct, cps, b), n) =>
-      val (nCopy, ctUpd, bb) = fuseFn(n, ct)
-      (ctUpd + (n -> nCopy), cps :+ nCopy, bb || b)
+      val (nCopy, ctUpd, bb) = optFn(n, ct)
+      (ctUpd, cps :+ nCopy, bb || b)
     }
 
     (copies, changes)
