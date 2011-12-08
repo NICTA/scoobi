@@ -44,6 +44,7 @@ object MSCRGraph {
       def outputsOf(oc: OutputChannel): Set[DataStore with DataSink] = oc match {
         case GbkOutputChannel(outputs,_,_,_) => outputs
         case BypassOutputChannel(outputs,_)  => outputs
+        case FlattenOutputChannel(outputs, _) => outputs
       }
 
       mscrs.flatMap{mscr => mscr.outputChannels.flatMap{outputsOf(_).flatMap{toOutputStore(_).toList}}}
@@ -66,12 +67,14 @@ case class MSCR
   val inputNodes: Set[AST.Node[_]] = inputChannels map {
     case BypassInputChannel(store, _) => store.node
     case MapperInputChannel(store, _) => store.node
+    case StraightInputChannel(store, _) => store.node
   }
 
   /** The nodes that are outputs to this MSCR. */
   val outputNodes: Set[AST.Node[_]] = outputChannels flatMap {
     case BypassOutputChannel(outputs, _)    => outputs.map(_.node)
     case GbkOutputChannel(outputs, _, _, _) => outputs.map(_.node)
+    case FlattenOutputChannel(outputs, _)   => outputs.map(_.node)
   }
 
 }
@@ -105,6 +108,10 @@ case class MapperInputChannel[I <: DataStore with DataSource]
      val mappers: Set[AST.Node[_] with MapperLike[_,_,_]])
   extends InputChannel
 
+case class StraightInputChannel[I <: DataStore with DataSource]
+    (val input: I,
+     origin: AST.Node[_])
+  extends InputChannel
 
 
 /** ADT for MSCR output channels. */
@@ -113,6 +120,11 @@ sealed abstract class OutputChannel
 case class BypassOutputChannel[O <: DataStore with DataSink]
     (val outputs: Set[O],
      val origin: AST.Node[_])
+  extends OutputChannel
+
+case class FlattenOutputChannel[O <: DataStore with DataSink]
+    (val outputs: Set[O],
+     val flatten: AST.Flatten[_])
   extends OutputChannel
 
 case class GbkOutputChannel[O <: DataStore with DataSink]
