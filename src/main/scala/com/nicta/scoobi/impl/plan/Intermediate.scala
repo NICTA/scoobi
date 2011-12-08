@@ -30,6 +30,8 @@ import com.nicta.scoobi.impl.exec.MapperLike
 import com.nicta.scoobi.impl.plan.{GbkOutputChannel    => CGbkOutputChannel,
                                    BypassOutputChannel => CBypassOutputChannel,
                                    MapperInputChannel  => CMapperInputChannel,
+                                   StraightInputChannel => CStraightInputChannel,
+                                   FlattenOutputChannel => CFlattenOutputChannel,
                                    InputChannel        => CInputChannel,
                                    OutputChannel       => COutputChannel,
                                    MSCR                => CMSCR }
@@ -189,6 +191,17 @@ object Intermediate {
 
     def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = input.dataSource(ci)
 
+  }
+
+  case class StraightInputChannel(input: DList[_], origin: Flatten[_]) extends InputChannel {
+    override def toString = "StraightInputChannel(" + input + ")"
+    override def hasInput(d: DList[_]): Boolean = input == d
+    override def hasOutput(d: DList[_]): Boolean = input == d
+    override def containsGbkMapper(d: ParallelDo[_,_]) = false
+    override def convert(ci: ConvertInfo): CStraightInputChannel[DataStore with DataSource] =
+      CStraightInputChannel(dataStoreInput(ci), ci.getASTNode(input).asInstanceOf[AST.Node[_]])
+    override def dataStoreInput(ci: ConvertInfo): DataStore with DataSource =
+      input.dataSource(ci)
   }
 
   /*
@@ -365,6 +378,16 @@ object Intermediate {
     }
   }
 
+  case class FlattenOutputChannel(input: Flatten[_]) extends OutputChannel {
+    override def hasInput(d: DList[_]) = input.ins.exists(_ == d)
+    override def hasOutput(d: DList[_]) = d == output
+    override def toString = "MultiOutputChannel(" + input.toString + ")"
+    override def output: DList[_] = input
+    override def convert(parentMSCR: MSCR, ci: ConvertInfo): CFlattenOutputChannel[DataStore with DataSink] = {
+      CFlattenOutputChannel(dataStoreOutputs(parentMSCR, ci), ci.getASTNode(input).asInstanceOf[AST.Flatten[_]])
+    }
+  }
+
   class MSCR(val inputChannels: Set[InputChannel],
              val outputChannels: Set[OutputChannel]) {
 
@@ -387,6 +410,7 @@ object Intermediate {
     def containsGbkReducer(d: Smart.ParallelDo[_,_]): Boolean = {
       def pred(oc: OutputChannel): Boolean = oc match {
         case BypassOutputChannel(_) => false
+        case FlattenOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
           gbkOC.combiner.isEmpty && gbkOC.reducer.map{_ == d}.getOrElse(false)
       }
@@ -399,6 +423,7 @@ object Intermediate {
         case BypassOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
           gbkOC.combiner.isDefined && gbkOC.reducer.map{_ == d}.getOrElse(false)
+        case FlattenOutputChannel(_) => false
       }
       outputChannels.exists(pred)
     }
@@ -721,11 +746,23 @@ object Intermediate {
 
       val allMSCRs =
         if (floatingOutputs.size > 0) {
-          val (ics, ocs) = floatingOutputs map {
-            case pd@ParallelDo(_, _) => (MapperInputChannel(List(pd)), BypassOutputChannel(pd))
-            case flat@Flatten(_)     => sys.error("Trivial MSCR from Flattens not yet supported.")
+          val ics = scala.collection.mutable.Set[InputChannel]();
+          val ocs = scala.collection.mutable.Set[OutputChannel]();
+
+          floatingOutputs foreach {
+            case pd@ParallelDo(_, _) => {
+              ics += MapperInputChannel(List(pd))
+              ocs += BypassOutputChannel(pd)
+            }
+            case flat@Flatten(_)     => {
+              flat.ins foreach {
+                  case pd@ParallelDo(_,_) => ics += MapperInputChannel(List(pd))
+                  case other => ics += StraightInputChannel(other, flat)
+              }
+              ocs += FlattenOutputChannel(flat)
+            }
             case node                => sys.error("Not expecting " + node.name + " as remaining node.")
-          } unzip
+          }
 
           val mapOnlyMSCRMSCR = new MSCR(ics.toSet, ocs.toSet)
 

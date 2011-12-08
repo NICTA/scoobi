@@ -38,8 +38,10 @@ import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MapperInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
+import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.GbkOutputChannel
 import com.nicta.scoobi.impl.plan.BypassOutputChannel
+import com.nicta.scoobi.impl.plan.FlattenOutputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.Empty
 import com.nicta.scoobi.impl.plan.JustCombiner
@@ -245,6 +247,7 @@ object MapReduceJob {
         case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => addTag(in, tag) }
         case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => addTag(in, tag)
         case BypassOutputChannel(_, origin)                     => addTag(origin, tag)
+        case FlattenOutputChannel(_, flat)                      => flat.ins.foreach { in => addTag(in, tag) }
       }
 
       /* Add combiner functionality from output channel descriptions. */
@@ -261,6 +264,7 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, g, Empty)                 => job.addTaggedReducer(outputs, g.mkTaggedReducer(tag))
         case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedIdentityReducer(tag))
+        case FlattenOutputChannel(outputs, origin)                  => job.addTaggedReducer(outputs, origin.mkTaggedIdentityReducer(tag))
       }
     }
 
@@ -273,6 +277,8 @@ object MapReduceJob {
         case MapperInputChannel(input, mappers) => mappers.foreach { m =>
           job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))
         }
+        case StraightInputChannel(input, origin) =>
+          job.addTaggedMapper(input, origin.mkDummyTaggedMapper(mapperTags(origin)))
       }
     }
 
