@@ -40,10 +40,10 @@ object AST {
 
     def mkTaggedIdentityReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
 
-    def mkDummyTaggedMapper(tags: Set[Int]): TaggedMapper[A, Int, A] =
+    def mkStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper[A, Int, A] =
       new TaggedMapper[A, Int, A](tags) {
         override def setup() = {}
-        override def map(input: A, emitter: Emitter[(Int, A)]) = emitter.emit((0, input))
+        override def map(input: A, emitter: Emitter[(Int, A)]) = emitter.emit((RollingInt.get, input))
         override def cleanup(emitter: Emitter[(Int, A)]) = {}
       }
   }

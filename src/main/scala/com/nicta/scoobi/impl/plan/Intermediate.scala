@@ -193,7 +193,7 @@ object Intermediate {
 
   }
 
-  case class StraightInputChannel(input: DList[_], origin: Flatten[_]) extends InputChannel {
+  case class StraightInputChannel(input: DList[_]) extends InputChannel {
     override def toString = "StraightInputChannel(" + input + ")"
     override def hasInput(d: DList[_]): Boolean = input == d
     override def hasOutput(d: DList[_]): Boolean = input == d
@@ -746,25 +746,18 @@ object Intermediate {
 
       val allMSCRs =
         if (floatingOutputs.size > 0) {
-          val ics = scala.collection.mutable.Set[InputChannel]();
-          val ocs = scala.collection.mutable.Set[OutputChannel]();
-
-          floatingOutputs foreach {
-            case pd@ParallelDo(_, _) => {
-              ics += MapperInputChannel(List(pd))
-              ocs += BypassOutputChannel(pd)
-            }
+          val (ics, ocs) = floatingOutputs map {
+            case pd@ParallelDo(_, _) => (List(MapperInputChannel(List(pd))), BypassOutputChannel(pd))
             case flat@Flatten(_)     => {
-              flat.ins foreach {
-                  case pd@ParallelDo(_,_) => ics += MapperInputChannel(List(pd))
-                  case other => ics += StraightInputChannel(other, flat)
-              }
-              ocs += FlattenOutputChannel(flat)
+              (flat.ins map {
+                case pd@ParallelDo(_,_) => MapperInputChannel(List(pd))
+                case other => StraightInputChannel(other)
+              }, FlattenOutputChannel(flat))
             }
-            case node                => sys.error("Not expecting " + node.name + " as remaining node.")
-          }
+            case node => sys.error("Not expecting " + node.name + " as remaining node.")
+          } unzip
 
-          val mapOnlyMSCRMSCR = new MSCR(ics.toSet, ocs.toSet)
+          val mapOnlyMSCRMSCR = new MSCR(ics.flatten.toSet, ocs.toSet)
 
           gbkMSCRs :+ mapOnlyMSCRMSCR
         } else {

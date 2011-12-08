@@ -264,7 +264,7 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, g, Empty)                 => job.addTaggedReducer(outputs, g.mkTaggedReducer(tag))
         case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedIdentityReducer(tag))
-        case FlattenOutputChannel(outputs, origin)                  => job.addTaggedReducer(outputs, origin.mkTaggedIdentityReducer(tag))
+        case FlattenOutputChannel(outputs, flat)                    => job.addTaggedReducer(outputs, flat.mkTaggedIdentityReducer(tag))
       }
     }
 
@@ -278,7 +278,7 @@ object MapReduceJob {
           job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))
         }
         case StraightInputChannel(input, origin) =>
-          job.addTaggedMapper(input, origin.mkDummyTaggedMapper(mapperTags(origin)))
+          job.addTaggedMapper(input, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
       }
     }
 

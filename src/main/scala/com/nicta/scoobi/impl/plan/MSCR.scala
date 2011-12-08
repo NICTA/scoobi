@@ -124,7 +124,7 @@ case class BypassOutputChannel[O <: DataStore with DataSink]
 
 case class FlattenOutputChannel[O <: DataStore with DataSink]
     (val outputs: Set[O],
-     val origin: AST.Flatten[_])
+     val flatten: AST.Flatten[_])
   extends OutputChannel
 
 case class GbkOutputChannel[O <: DataStore with DataSink]
