@@ -45,9 +45,10 @@ object Smart {
     /* We don't want structural equality */
     override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
 
-    def name: String
-
     val id = Id.get
+
+    def toVerboseString: String
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Optimisation strategies:
@@ -159,9 +160,9 @@ object Smart {
     * the materialization is performed. */
   case class Load[A : Manifest : WireFormat](loader: Loader[A]) extends DList[A] {
 
-    def name = "Load" + id
+    override val toString = "Load" + id
 
-    override def toString = name
+    val toVerboseString = toString
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -196,9 +197,9 @@ object Smart {
       (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
     extends DList[B] {
 
-    def name = "ParallelDo" + id
+    override val toString = "ParallelDo" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -290,9 +291,9 @@ object Smart {
       (in: DList[(K, V)])
     extends DList[(K, Iterable[V])] {
 
-    def name = "GroupByKey" + id
+    override val toString = "GroupByKey" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -369,9 +370,9 @@ object Smart {
        f: (V, V) => V)
     extends DList[(K, V)] {
 
-    def name = "Combine" + id
+    override val toString = "Combine" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -469,9 +470,9 @@ object Smart {
     * one or more exsiting DLists of the same type. */
   case class Flatten[A : Manifest : WireFormat](ins: List[DList[A]]) extends DList[A] {
 
-    def name = "Flatten" + id
+    override val toString = "Flatten" + id
 
-    override def toString = name + "([" + ins.mkString(",") + "])"
+    val toVerboseString = toString + "([" + ins.map(_.toVerboseString).mkString(",") + "])"
 
     // Optimisation
     // ~~~~~~~~~~~~

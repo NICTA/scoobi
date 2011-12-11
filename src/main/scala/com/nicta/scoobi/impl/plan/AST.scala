@@ -46,6 +46,8 @@ object AST {
         override def map(input: A, emitter: Emitter[(Int, A)]) = emitter.emit((RollingInt.get, input))
         override def cleanup(emitter: Emitter[(Int, A)]) = {}
       }
+
+    def toVerboseString: String
   }
 
 
@@ -73,6 +75,8 @@ object AST {
     }
 
     override def toString = "Mapper" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -92,6 +96,8 @@ object AST {
     }
 
     override def toString = "GbkMapper" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -125,6 +131,8 @@ object AST {
       }
 
     override def toString = "Combiner" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -145,6 +153,8 @@ object AST {
     }
 
     override def toString = "GbkReducer" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -163,18 +173,24 @@ object AST {
     }
 
     override def toString = "Reducer" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
   /** Usual Load node. */
   case class Load[A : Manifest : WireFormat]() extends Node[A] {
     override def toString = "Load" + id
+
+    def toVerboseString = toString
   }
 
 
   /** Usual Flatten node. */
   case class Flatten[A : Manifest : WireFormat](ins: List[Node[A]]) extends Node[A] {
     override def toString = "Flatten" + id
+
+    def toVerboseString = toString + "(" + ins.map(_.toVerboseString).mkString("[", ",", "]") + ")"
   }
 
 
@@ -184,11 +200,13 @@ object AST {
       (in: Node[(K, V)])
     extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {
 
-    override def toString = "GroupByKey" + id
-
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = emitter.emit((key, values))
     }
+
+    override def toString = "GroupByKey" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 

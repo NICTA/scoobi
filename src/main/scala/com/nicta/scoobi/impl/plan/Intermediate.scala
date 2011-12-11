@@ -754,7 +754,7 @@ object Intermediate {
                 case other => StraightInputChannel(other)
               }, FlattenOutputChannel(flat))
             }
-            case node => sys.error("Not expecting " + node.name + " as remaining node.")
+            case node => sys.error("Not expecting " + node + " as remaining node.")
           } unzip
 
           val mapOnlyMSCRMSCR = new MSCR(ics.flatten.toSet, ocs.toSet)
