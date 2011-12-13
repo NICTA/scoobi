@@ -122,17 +122,12 @@ class MapReduceJob {
     val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
     val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
 
-
     jar.addRuntimeClass(tkRtClass)
     jar.addRuntimeClass(tvRtClass)
 
     job.setMapOutputKeyClass(tkRtClass.clazz)
     job.setMapOutputValueClass(tvRtClass.clazz)
     job.setPartitionerClass(classOf[TaggedPartitioner])
-
-    /* Compress mapper outputs */
-    job.getConfiguration.setBoolean("mapred.compress.map.output", true)
-    job.getConfiguration.setClass("mapred.map.output.compression.codec", classOf[GzipCodec], classOf[CompressionCodec])
 
 
     /** Mappers:
