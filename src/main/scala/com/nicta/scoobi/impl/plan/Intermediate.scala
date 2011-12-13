@@ -363,8 +363,13 @@ object Intermediate {
     def output: DList[_] = input
 
     def convert(parentMSCR: MSCR, ci: ConvertInfo): CBypassOutputChannel[DataStore with DataSink] = {
-       val n = ci.getASTNode(input)
-       CBypassOutputChannel(dataStoreOutputs(parentMSCR, ci), n)
+      val n = ci.getASTNode(input)
+      if (n.isInstanceOf[AST.GbkMapper[_,_,_]])
+        CBypassOutputChannel(dataStoreOutputs(parentMSCR, ci), n.asInstanceOf[AST.GbkMapper[_,_,_]])
+      else if (n.isInstanceOf[AST.Mapper[_,_]])
+        CBypassOutputChannel(dataStoreOutputs(parentMSCR, ci), n.asInstanceOf[AST.Mapper[_,_]])
+      else
+        throw new RuntimeException("Expecting GbkMapper or Mapper node.")
     }
   }
 
