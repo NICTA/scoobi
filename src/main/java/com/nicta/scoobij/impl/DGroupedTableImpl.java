@@ -45,7 +45,7 @@ public class DGroupedTableImpl<K, V> extends
 				Conversions.toScala(combiner), evidence,
 				keyFormat.typeInfo(),
 				keyFormat.wireFormat(),
-				Conversions.toScala(keyFormat.ordering()),
+			    keyFormat.ordering(),
 				valueBundle.typeInfo(),
 				valueBundle.wireFormat()));
 	}

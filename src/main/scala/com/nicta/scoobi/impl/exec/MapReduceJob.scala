@@ -26,11 +26,13 @@ import org.apache.hadoop.mapreduce.Reducer
 import org.apache.hadoop.mapreduce.Partitioner
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable.{Map => MMap}
 import Option.{apply => ?}
 
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.Helper
@@ -49,6 +51,7 @@ import com.nicta.scoobi.impl.plan.CombinerReducer
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 import com.nicta.scoobi.impl.rtt.TaggedPartitioner
+import com.nicta.scoobi.impl.rtt.TaggedGroupingComparator
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.util.JarBuilder
@@ -66,7 +69,7 @@ class MapReduceJob(stepId: Int) {
   private val reducers: MMap[List[_ <: DataSink[_,_,_]], TaggedReducer[_,_,_]] = MMap.empty
 
   /* The types that will be combined together to form (K2, V2). */
-  private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Ordering[_])] = MMap.empty
+  private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Grouping[_])] = MMap.empty
   private val valueTypes: MMap[Int, (Manifest[_], WireFormat[_])] = MMap.empty
 
 
@@ -78,7 +81,7 @@ class MapReduceJob(stepId: Int) {
       mappers(input) += m
 
     m.tags.foreach { tag =>
-      keyTypes   += (tag -> (m.mK, m.wtK, m.ordK))
+      keyTypes   += (tag -> (m.mK, m.wtK, m.grpK))
       valueTypes += (tag -> (m.mV, m.wtV))
     }
   }
@@ -114,21 +117,28 @@ class MapReduceJob(stepId: Int) {
     Scoobi.getUserJars.foreach { jar.addJar(_) }  //  User JARs
 
 
-    /** (K2,V2):
-      *   - are (TaggedKey, TaggedValue), the wrappers for all K-V types
-      *   - generate their runtime classes and add to JAR */
+    /** Sort-and-shuffle:
+      *   - (K2, V2) are (TaggedKey, TaggedValue), the wrappers for all K-V types
+      *   - Partitioner is generated and of type TaggedPartitioner
+      *   - GroupingComparator is generated and of type TaggedGroupingComparator
+      *   - SortComparator is handled by TaggedKey which is WritableComparable */
     val id = UniqueId.get
+
     val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
-    val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
-    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.size)
-
     jar.addRuntimeClass(tkRtClass)
-    jar.addRuntimeClass(tvRtClass)
-    jar.addRuntimeClass(tpRtClass)
-
     job.setMapOutputKeyClass(tkRtClass.clazz)
+
+    val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
+    jar.addRuntimeClass(tvRtClass)
     job.setMapOutputValueClass(tvRtClass.clazz)
+
+    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.toMap)
+    jar.addRuntimeClass(tpRtClass)
     job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
+
+    val tgRtClass = TaggedGroupingComparator("TG" + id, keyTypes.toMap)
+    jar.addRuntimeClass(tgRtClass)
+    job.setGroupingComparatorClass(tgRtClass.clazz.asInstanceOf[Class[_ <: RawComparator[_]]])
 
 
     /** Mappers:

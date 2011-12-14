@@ -19,6 +19,7 @@ import java.io._
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.WireFormat._
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.lib.Multi._
 
 
@@ -26,7 +27,7 @@ object CoGroup {
 
   /** Perform a co-group of two (2) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat]
       (d1: DList[(K, A1)], d2: DList[(K, A2)])
@@ -46,7 +47,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of two (2) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat]
       (d1: DList[(K, A1)], d2: DList[(K, A2)])
@@ -55,7 +56,7 @@ object CoGroup {
 
   /** Perform a co-group of three (3) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat,
                 A3 : Manifest : WireFormat]
@@ -78,7 +79,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of three (3) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat,
               A3 : Manifest : WireFormat]
@@ -88,7 +89,7 @@ object CoGroup {
 
   /** Perform a co-group of four (4) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat,
                 A3 : Manifest : WireFormat,
@@ -114,7 +115,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of four (4) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat,
               A3 : Manifest : WireFormat,
@@ -125,7 +126,7 @@ object CoGroup {
 
   /** Perform a co-group of five (5) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat,
                 A3 : Manifest : WireFormat,
@@ -154,7 +155,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of five (5) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat,
               A3 : Manifest : WireFormat,
@@ -166,7 +167,7 @@ object CoGroup {
 
   /** Perform a co-group of six (6) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat,
                 A3 : Manifest : WireFormat,
@@ -198,7 +199,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of six (6) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat,
               A3 : Manifest : WireFormat,
@@ -211,7 +212,7 @@ object CoGroup {
 
   /** Perform a co-group of seven (7) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat,
                 A3 : Manifest : WireFormat,
@@ -246,7 +247,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of seven (7) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat,
               A3 : Manifest : WireFormat,
@@ -260,7 +261,7 @@ object CoGroup {
 
   /** Perform a co-group of eight (8) distributed lists using a specified grouping-predicate. */
   def coGroupOn[K  : Manifest : WireFormat,
-                T  : Manifest : WireFormat : Ordering,
+                T  : Manifest : WireFormat : Grouping,
                 A1 : Manifest : WireFormat,
                 A2 : Manifest : WireFormat,
                 A3 : Manifest : WireFormat,
@@ -298,7 +299,7 @@ object CoGroup {
   }
 
   /** Perform a co-group of eight (8) distributed lists using an equality predicate. */
-  def coGroup[K  : Manifest : WireFormat : Ordering,
+  def coGroup[K  : Manifest : WireFormat : Grouping,
               A1 : Manifest : WireFormat,
               A2 : Manifest : WireFormat,
               A3 : Manifest : WireFormat,

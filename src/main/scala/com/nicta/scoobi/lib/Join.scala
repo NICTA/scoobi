@@ -21,6 +21,7 @@ import scala.collection.immutable.VectorBuilder
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.WireFormat._
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.lib.Multi._
 
 
@@ -28,7 +29,7 @@ object Join {
 
   /** Perform an inner-join of two (2) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat]
       (d1: DList[(K, A1)], d2: DList[(K, A2)])
@@ -53,7 +54,7 @@ object Join {
   }
 
   /** Perform an equijoin of two (2) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat]
       (d1: DList[(K, A1)], d2: DList[(K, A2)])
@@ -62,7 +63,7 @@ object Join {
 
   /** Perform an inner-join of three (3) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat,
              A3 : Manifest : WireFormat]
@@ -91,7 +92,7 @@ object Join {
   }
 
   /** Perform an equijoin of three (3) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat,
            A3 : Manifest : WireFormat]
@@ -101,7 +102,7 @@ object Join {
 
   /** Perform an inner-join of four (4) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat,
              A3 : Manifest : WireFormat,
@@ -134,7 +135,7 @@ object Join {
   }
 
   /** Perform an equijoin of four (4) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat,
            A3 : Manifest : WireFormat,
@@ -145,7 +146,7 @@ object Join {
 
   /** Perform an inner-join of five (5) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat,
              A3 : Manifest : WireFormat,
@@ -182,7 +183,7 @@ object Join {
   }
 
   /** Perform an equijoin of five (5) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat,
            A3 : Manifest : WireFormat,
@@ -194,7 +195,7 @@ object Join {
 
   /** Perform an inner-join of six (6) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat,
              A3 : Manifest : WireFormat,
@@ -235,7 +236,7 @@ object Join {
   }
 
   /** Perform an equijoin of six (6) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat,
            A3 : Manifest : WireFormat,
@@ -248,7 +249,7 @@ object Join {
 
   /** Perform an inner-join of seven (7) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat,
              A3 : Manifest : WireFormat,
@@ -293,7 +294,7 @@ object Join {
   }
 
   /** Perform an equijoin of seven (7) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat,
            A3 : Manifest : WireFormat,
@@ -307,7 +308,7 @@ object Join {
 
   /** Perform an inner-join of eight (8) distributed lists using a specified join-predicate. */
   def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Ordering,
+             T  : Manifest : WireFormat : Grouping,
              A1 : Manifest : WireFormat,
              A2 : Manifest : WireFormat,
              A3 : Manifest : WireFormat,
@@ -356,7 +357,7 @@ object Join {
   }
 
   /** Perform an equijoin of eight (8) distributed lists. */
-  def join[K  : Manifest : WireFormat : Ordering,
+  def join[K  : Manifest : WireFormat : Grouping,
            A1 : Manifest : WireFormat,
            A2 : Manifest : WireFormat,
            A3 : Manifest : WireFormat,

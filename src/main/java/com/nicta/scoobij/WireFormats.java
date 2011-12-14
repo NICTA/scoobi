@@ -32,7 +32,7 @@ public class WireFormats {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public int compare(String a, String b) {
+			public int sortCompare(String a, String b) {
 				return a.compareTo(b);
 			}
 		};
@@ -43,7 +43,7 @@ public class WireFormats {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public int compare(Integer a, Integer b) {
+			public int sortCompare(Integer a, Integer b) {
 				return a.compareTo(b);
 			}
 		};

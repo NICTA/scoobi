@@ -20,6 +20,7 @@ import scala.collection.mutable.{Map => MMap}
 import com.nicta.scoobi.DoFn
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.DataStore
@@ -114,7 +115,7 @@ object Smart {
       n
     }
 
-    final def insert2[K : Manifest : WireFormat : Ordering,
+    final def insert2[K : Manifest : WireFormat : Grouping,
                 V : Manifest : WireFormat]
                 (ci: ConvertInfo, n: AST.Node[(K,V)] with KVLike[K,V]):
                 AST.Node[(K,V)] with KVLike[K,V] = {
@@ -132,7 +133,7 @@ object Smart {
       }
     }
 
-    final def convert2[K : Manifest : WireFormat : Ordering,
+    final def convert2[K : Manifest : WireFormat : Grouping,
                  V : Manifest : WireFormat]
                  (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]  = {
       val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
@@ -145,7 +146,7 @@ object Smart {
 
     def convertNew(ci: ConvertInfo): AST.Node[A]
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]
 
@@ -176,7 +177,7 @@ object Smart {
       insert(ci, AST.Load())
     }
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
 
@@ -267,7 +268,7 @@ object Smart {
       in.convertParallelDo(ci, this)
     }
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat](ci: ConvertInfo):
                     AST.Node[(K,V)] with KVLike[K,V] = {
       val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
@@ -286,7 +287,7 @@ object Smart {
 
   /** The GroupByKey node type specifies the building of a DList as a result of partitioning an exiting
     * key-value DList by key. */
-  case class GroupByKey[K : Manifest : WireFormat : Ordering,
+  case class GroupByKey[K : Manifest : WireFormat : Grouping,
                         V : Manifest : WireFormat]
       (in: DList[(K, V)])
     extends DList[(K, Iterable[V])] {
@@ -334,7 +335,7 @@ object Smart {
       insert(ci, AST.GroupByKey(in.convert2(ci)))
     }
 
-    def convertAux[A: Manifest : WireFormat : Ordering,
+    def convertAux[A: Manifest : WireFormat : Grouping,
               B: Manifest : WireFormat]
               (ci: ConvertInfo, d: DList[(A,B)]):
               AST.Node[(A, Iterable[B])] with KVLike[A, Iterable[B]] = {
@@ -342,7 +343,7 @@ object Smart {
            def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[A,Iterable[B]](tags)})
       }
 
-    def convertNew2[K1 : Manifest : WireFormat : Ordering,
+    def convertNew2[K1 : Manifest : WireFormat : Grouping,
                     V1 : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
       convertAux(ci, in).asInstanceOf[AST.Node[(K1,V1)] with KVLike[K1,V1]]
@@ -364,7 +365,7 @@ object Smart {
 
   /** The Combine node type specifies the building of a DList as a result of applying an associative
     * function to the values of an existing key-values DList. */
-  case class Combine[K : Manifest : WireFormat : Ordering,
+  case class Combine[K : Manifest : WireFormat : Grouping,
                      V : Manifest : WireFormat]
       (in: DList[(K, Iterable[V])],
        f: (V, V) => V)
@@ -444,7 +445,7 @@ object Smart {
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
     /* An almost exact copy of convertNew */
-    def convertNew2[K1 : Manifest : WireFormat : Ordering,
+    def convertNew2[K1 : Manifest : WireFormat : Grouping,
                     V1 : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
        val c: Combine[K1,V1] = this.asInstanceOf[Combine[K1,V1]]
@@ -515,7 +516,7 @@ object Smart {
     // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
       val d: Flatten[(K,V)] = this.asInstanceOf[Flatten[(K,V)]]

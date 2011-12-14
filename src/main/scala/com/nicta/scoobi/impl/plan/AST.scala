@@ -16,6 +16,7 @@
 package com.nicta.scoobi.impl.plan
 
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.DoFn
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.impl.exec.TaggedMapper
@@ -82,7 +83,7 @@ object AST {
 
   /** Input channel mapper that is hooked up to a GBK. */
   case class GbkMapper[A : Manifest : WireFormat,
-                       K : Manifest : WireFormat : Ordering,
+                       K : Manifest : WireFormat : Grouping,
                        V : Manifest : WireFormat]
       (in: Node[A],
        dofn: DoFn[A, (K, V)])
@@ -95,7 +96,7 @@ object AST {
     }
 
     def mkTaggedReducer(tag: Int): TaggedReducer[K, V, (K, V)] =
-      new TaggedReducer(tag)(implicitly[Manifest[K]], implicitly[WireFormat[K]], implicitly[Ordering[K]],
+      new TaggedReducer(tag)(implicitly[Manifest[K]], implicitly[WireFormat[K]], implicitly[Grouping[K]],
                              implicitly[Manifest[V]], implicitly[WireFormat[V]],
                              implicitly[Manifest[(K,V)]], implicitly[WireFormat[(K,V)]]) {
         def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = values.foreach { (v: V) => emitter.emit((key, v)) }
@@ -111,7 +112,7 @@ object AST {
   case class Combiner[K, V]
       (in: Node[(K, Iterable[V])],
        f: (V, V) => V)
-      (implicit mK:  Manifest[K], wtK: WireFormat[K], ordK: Ordering[K],
+      (implicit mK:  Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
                 mV:  Manifest[V], wtV: WireFormat[V],
                 mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
     extends Node[(K, V)] with CombinerLike[V] with ReducerLike[K, V, (K, V)] {
@@ -120,7 +121,7 @@ object AST {
       def combine(x: V, y: V): V = f(x, y)
     }
 
-    def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, V)](tag)(mK, wtK, ordK, mV, wtV, mKV, wtKV) {
+    def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, V)](tag)(mK, wtK, grpK, mV, wtV, mKV, wtKV) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = {
         emitter.emit((key, values.reduce(f)))
       }
@@ -128,7 +129,7 @@ object AST {
 
     /** Produce a TaggedReducer using this combiner function and an additional reducer function. */
     def mkTaggedReducerWithCombiner[B](tag: Int, dofn: DoFn[(K, V), B])(implicit mB: Manifest[B], wtB: WireFormat[B]) =
-      new TaggedReducer[K, V, B](tag)(mK, wtK, ordK, mV, wtV, mB, wtB) {
+      new TaggedReducer[K, V, B](tag)(mK, wtK, grpK, mV, wtV, mB, wtB) {
         def reduce(key: K, values: Iterable[V], emitter: Emitter[B]) = {
           dofn.setup()
           dofn.process((key, values.reduce(f)), emitter)
@@ -143,7 +144,7 @@ object AST {
 
 
   /** GbkReducer - a reduce (i.e. ParallelDo) that follows a GroupByKey (i.e. no Combiner). */
-  case class GbkReducer[K : Manifest : WireFormat : Ordering,
+  case class GbkReducer[K : Manifest : WireFormat : Grouping,
                         V : Manifest : WireFormat,
                         B : Manifest : WireFormat]
       (in: Node[(K, Iterable[V])],
@@ -165,7 +166,7 @@ object AST {
 
 
   /** Reducer - a reduce (i.e. FlatMap) that follows a Combiner. */
-  case class Reducer[K : Manifest : WireFormat : Ordering,
+  case class Reducer[K : Manifest : WireFormat : Grouping,
                      V : Manifest : WireFormat,
                      B : Manifest : WireFormat]
       (in: Node[(K, V)],
@@ -203,7 +204,7 @@ object AST {
 
 
   /** Usual GBK node. */
-  case class GroupByKey[K : Manifest : WireFormat : Ordering,
+  case class GroupByKey[K : Manifest : WireFormat : Grouping,
                         V : Manifest : WireFormat]
       (in: Node[(K, V)])
     extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {

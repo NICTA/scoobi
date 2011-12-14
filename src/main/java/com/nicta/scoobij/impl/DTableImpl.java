@@ -44,7 +44,7 @@ public class DTableImpl<K, V> extends DListImpl<scala.Tuple2<K, V>> implements
 		return new DGroupedTableImpl<K, V>(getImpl().groupByKey(confirms,
 				keyBundle.typeInfo(),
 				keyBundle.wireFormat(),
-				Conversions.toScala(keyBundle.ordering()),
+				keyBundle.ordering(),
 				valueBundle.typeInfo(),
 				valueBundle.wireFormat()));
 	}
