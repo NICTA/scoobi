@@ -526,6 +526,12 @@ object WireFormat {
       def show(x: java.lang.Integer) = x.toString
   }
 
+  implicit def BooleanFmt = new WireFormat[Boolean] {
+    def toWire(x: Boolean, out: DataOutput) { out.writeBoolean(x) }
+    def fromWire(in: DataInput): Boolean = in.readBoolean()
+    def show(x: Boolean) = x.toString
+  }
+
   implicit def LongFmt = new WireFormat[Long] {
     def toWire(x: Long, out: DataOutput) { out.writeLong(x) }
     def fromWire(in: DataInput): Long = in.readLong()
@@ -800,5 +806,15 @@ object WireFormat {
       case Left(x)  => "L{" + wt1.show(x) + "}"
       case Right(x) => "R{" + wt2.show(x) + "}"
     }
+  }
+
+  /*
+   * Java's Date
+   */
+
+  implicit def DateFmt = new WireFormat[java.util.Date] {
+    def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
+    def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())
+    def show(x: java.util.Date) = x.toString
   }
 }
