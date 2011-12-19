@@ -1,24 +1,24 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2011 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi.impl.util
 
 import scala.collection.JavaConversions._
 import scala.collection.Traversable._
-import scala.collection.mutable.{Set => MSet}
-import Option.{apply => ?}
+import scala.collection.mutable.{ Set => MSet }
+import Option.{ apply => ? }
 
 import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
@@ -36,7 +36,6 @@ import java.io.ByteArrayOutputStream
 import java.net.URLDecoder
 
 import com.nicta.scoobi.impl.rtt.RuntimeClass
-
 
 /** Class to manage the creation of a new JAR file. */
 class JarBuilder(val name: String) {
@@ -66,22 +65,25 @@ class JarBuilder(val name: String) {
     addClassFromBytecode(runtimeClass.name, runtimeClass.bytecode)
   }
 
-  /** Write-out the JAR file. Once this method is called, the JAR cannot be
-    * modified further. */
+  /**
+   * Write-out the JAR file. Once this method is called, the JAR cannot be
+   * modified further.
+   */
   def close() = {
     jos.close()
   }
 
-
-  /** Add an entry to the JAR file from an input stream. If the entry already exists,
-    * do not add it. */
+  /**
+   * Add an entry to the JAR file from an input stream. If the entry already exists,
+   * do not add it.
+   */
   private def addEntryFromStream(entryName: String, is: InputStream): Unit = {
     if (!entries.contains(entryName)) {
       entries += entryName
       jos.putNextEntry(new JarEntry(entryName))
       val buffer: Array[Byte] = new Array(1024)
       var readCnt = 0
-      while ({readCnt = is.read(buffer); readCnt > 0}) {
+      while ({ readCnt = is.read(buffer); readCnt > 0 }) {
         jos.write(buffer, 0, readCnt)
       }
     }
@@ -108,7 +110,7 @@ object JarBuilder {
     val classFile = mkClassFile(clazz)
     val loader = ?(clazz.getClassLoader) match {
       case Some(l) => l
-      case None    => ClassLoader.getSystemClassLoader
+      case None => ClassLoader.getSystemClassLoader
     }
 
     val foundPaths =
@@ -116,8 +118,8 @@ object JarBuilder {
         url <- loader.getResources(classFile)
         if ("jar" == url.getProtocol || "file" == url.getProtocol)
         path = url.getPath.replaceAll("file:", "")
-                          .replaceAll("\\+", "%2B")
-                          .replaceAll("!.*$", "")
+          .replaceAll("\\+", "%2B")
+          .replaceAll("!.*$", "")
       } yield URLDecoder.decode(path, "UTF-8")
 
     foundPaths.toList.head
