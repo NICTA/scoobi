@@ -108,7 +108,7 @@ class DGraph(val inputs:  Set[Smart.DList[_]],
 
     def toStr(e: Smart.DList[_]) = {
       val i = idMap.get(e) match { case Some(i) => i; case None => 0 }
-      e.name + " " + i.toString()
+      e + " " + i.toString()
     }
 
     def setToStr(s: Set[Smart.DList[_]]): String = {

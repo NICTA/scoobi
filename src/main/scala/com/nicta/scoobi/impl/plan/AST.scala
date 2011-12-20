@@ -38,14 +38,14 @@ object AST {
   sealed abstract class Node[A : Manifest : WireFormat] extends Serializable {
     val id = Id.get
 
-    def mkTaggedIdentityReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
-
     def mkStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper[A, Int, A] =
       new TaggedMapper[A, Int, A](tags) {
         override def setup() = {}
         override def map(input: A, emitter: Emitter[(Int, A)]) = emitter.emit((RollingInt.get, input))
         override def cleanup(emitter: Emitter[(Int, A)]) = {}
       }
+
+    def toVerboseString: String
   }
 
 
@@ -54,7 +54,7 @@ object AST {
                     B : Manifest : WireFormat]
       (in: Node[A],
        dofn: DoFn[A, B])
-    extends Node[B] with MapperLike[A, Int, B] {
+    extends Node[B] with MapperLike[A, Int, B] with ReducerLike[Int, B, B] {
 
     def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, Int, B](tags) {
       /* The output key will be an integer that is continually incrementing. This will ensure
@@ -72,7 +72,11 @@ object AST {
       }
     }
 
+    def mkTaggedReducer(tag: Int): TaggedReducer[Int, B, B] = new TaggedIdentityReducer(tag)
+
     override def toString = "Mapper" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -82,16 +86,24 @@ object AST {
                        V : Manifest : WireFormat]
       (in: Node[A],
        dofn: DoFn[A, (K, V)])
-    extends Node[(K, V)] with MapperLike[A, K, V] {
+    extends Node[(K, V)] with MapperLike[A, K, V] with ReducerLike[K, V, (K, V)] {
 
-    /** */
     def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, K, V](tags) {
       def setup() = dofn.setup()
       def map(input: A, emitter: Emitter[(K, V)]) = dofn.process(input, emitter)
       def cleanup(emitter: Emitter[(K, V)]) = dofn.cleanup(emitter)
     }
 
+    def mkTaggedReducer(tag: Int): TaggedReducer[K, V, (K, V)] =
+      new TaggedReducer(tag)(implicitly[Manifest[K]], implicitly[WireFormat[K]], implicitly[Ordering[K]],
+                             implicitly[Manifest[V]], implicitly[WireFormat[V]],
+                             implicitly[Manifest[(K,V)]], implicitly[WireFormat[(K,V)]]) {
+        def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = values.foreach { (v: V) => emitter.emit((key, v)) }
+    }
+
     override def toString = "GbkMapper" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -125,6 +137,8 @@ object AST {
       }
 
     override def toString = "Combiner" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -145,6 +159,8 @@ object AST {
     }
 
     override def toString = "GbkReducer" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -163,18 +179,26 @@ object AST {
     }
 
     override def toString = "Reducer" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
   /** Usual Load node. */
   case class Load[A : Manifest : WireFormat]() extends Node[A] {
     override def toString = "Load" + id
+
+    def toVerboseString = toString
   }
 
 
   /** Usual Flatten node. */
-  case class Flatten[A : Manifest : WireFormat](ins: List[Node[A]]) extends Node[A] {
+  case class Flatten[A : Manifest : WireFormat](ins: List[Node[A]]) extends Node[A] with ReducerLike[Int, A, A] {
     override def toString = "Flatten" + id
+
+    def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
+
+    def toVerboseString = toString + "(" + ins.map(_.toVerboseString).mkString("[", ",", "]") + ")"
   }
 
 
@@ -184,11 +208,13 @@ object AST {
       (in: Node[(K, V)])
     extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {
 
-    override def toString = "GroupByKey" + id
-
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = emitter.emit((key, values))
     }
+
+    override def toString = "GroupByKey" + id
+
+    def toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 

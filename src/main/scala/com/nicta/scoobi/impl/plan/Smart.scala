@@ -45,9 +45,10 @@ object Smart {
     /* We don't want structural equality */
     override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
 
-    def name: String
-
     val id = Id.get
+
+    def toVerboseString: String
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Optimisation strategies:
@@ -81,6 +82,11 @@ object Smart {
       * such that in the resulting AST, GroupByKey nodes have only single outputs. */
     def optSplitGbks(copied: CopyTable): (DList[A], CopyTable, Boolean) =
       copyOnceWith(copied, _.optSplitGbks(_))
+
+    /** An optimisation strategy that replicates any Combine nodes that have multiple outputs
+      * such that in the resulting AST, Combine nodes have only single outputs. */
+    def optSplitCombines(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optSplitCombines(_))
 
 
     /** Perform a depth-first traversal copy of the DList node. When copying the input DList
@@ -154,9 +160,9 @@ object Smart {
     * the materialization is performed. */
   case class Load[A : Manifest : WireFormat](loader: Loader[A]) extends DList[A] {
 
-    def name = "Load" + id
+    override val toString = "Load" + id
 
-    override def toString = name
+    val toVerboseString = toString
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -191,9 +197,9 @@ object Smart {
       (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
     extends DList[B] {
 
-    def name = "ParallelDo" + id
+    override val toString = "ParallelDo" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -285,9 +291,9 @@ object Smart {
       (in: DList[(K, V)])
     extends DList[(K, Iterable[V])] {
 
-    def name = "GroupByKey" + id
+    override val toString = "GroupByKey" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -364,9 +370,9 @@ object Smart {
        f: (V, V) => V)
     extends DList[(K, V)] {
 
-    def name = "Combine" + id
+    override val toString = "Combine" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -400,6 +406,38 @@ object Smart {
       }
     }
 
+    /** Perform a normal copy of this Combine node, along with subsequent GroupByKey and Flatten nodes, but
+      * do not mark it as copied in the CopyTable. This will mean subsequent encounters of this node (that
+      * is, other outputs of this Combine node) will result in another copy, thereby replicating Combine
+      * nodes with multiple outputs. */
+    override def optSplitCombines(copied: CopyTable): (DList[(K, V)], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case GroupByKey(groupIn) => groupIn match {
+
+          case Flatten(ins) => {
+            val (insUpd, copiedUpd, b) = ins.foldLeft((Nil: List[DList[(K, V)]], copied, false)) { case ((cps, ct, b), n) =>
+              val (nUpd, ctUpd, bb) = n.optSplitCombines(ct)
+              (cps :+ nUpd, ctUpd + (n -> nUpd), bb || b)
+            }
+            val flat = Flatten(insUpd)
+            val gbk = GroupByKey(flat)
+            val cv = Combine(gbk, f)
+            (cv, copiedUpd, b)
+          }
+
+          case _            => {
+            val (inUpd, copiedUpd, b) = groupIn.optSplitCombines(copied)
+            val gbk = GroupByKey(inUpd)
+            val cv = Combine(gbk, f)
+            (cv, copiedUpd, b)
+          }
+        }
+
+        case _ => sys.error("Expecting Combine input to be a GroupByKey")
+      }
+    }
+
+
 
     // Conversion
     // ~~~~~~~~~~
@@ -432,9 +470,9 @@ object Smart {
     * one or more exsiting DLists of the same type. */
   case class Flatten[A : Manifest : WireFormat](ins: List[DList[A]]) extends DList[A] {
 
-    def name = "Flatten" + id
+    override val toString = "Flatten" + id
 
-    override def toString = name + "([" + ins.mkString(",") + "])"
+    val toVerboseString = toString + "([" + ins.map(_.toVerboseString).mkString(",") + "])"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -498,9 +536,10 @@ object Smart {
     *   - splitting of Flattens with multiple outputs
     *   - sinking of Flattens
     *   - fusing Flattens
-    *   - morphing CombineValues into ParallelDos when they don't follow a GroupByKey
+    *   - morphing Combine into ParallelDos when they don't follow a GroupByKey
     *   - fusing of ParallelDos
-    *   - splitting of GroupByKeys with multiple outputs. */
+    *   - splitting of GroupByKeys with multiple outputs
+    *   - splitting of Combine with multiple outputs. */
   def optimisePlan(outputs: List[DList[_]]): List[DList[_]] = {
 
     /** Perform a computation 'f' recursively stating with input 'x'. Return the
@@ -543,7 +582,8 @@ object Smart {
       val (combinerToParDoOpt, c2) = untilChanged(flattenOpt, travOnce(_.optCombinerToParDos(_)))
       val (parDoOpt, c3)           = untilChanged(combinerToParDoOpt, travOnce(_.optFuseParDos(_)))
       val (splitGbkOpt, c4)        = untilChanged(parDoOpt, travOnce(_.optSplitGbks(_)))
-      (splitGbkOpt, c1 || c2 || c3 || c4)
+      val (splitCombineOpt, c5)    = untilChanged(splitGbkOpt, travOnce(_.optSplitCombines(_)))
+      (splitCombineOpt, c1 || c2 || c3 || c4 || c5)
     }
 
     val (optOutputs, _) = untilChanged(outputs, allStrategies)
@@ -553,7 +593,7 @@ object Smart {
 
   /** Helper method for traversing the graph from */
   private def travOnce
-      (fuseFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
+      (optFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
       (outputs: List[DList[_]])
     : (List[DList[_]], Boolean) = {
 
@@ -561,8 +601,8 @@ object Smart {
     val noCopies: List[DList[_]] = Nil
 
     val (_, copies, changes) = outputs.foldLeft((emptyCopyTable, noCopies, false)) { case ((ct, cps, b), n) =>
-      val (nCopy, ctUpd, bb) = fuseFn(n, ct)
-      (ctUpd + (n -> nCopy), cps :+ nCopy, bb || b)
+      val (nCopy, ctUpd, bb) = optFn(n, ct)
+      (ctUpd, cps :+ nCopy, bb || b)
     }
 
     (copies, changes)

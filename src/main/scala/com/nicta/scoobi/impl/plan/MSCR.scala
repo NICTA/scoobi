@@ -21,6 +21,7 @@ import com.nicta.scoobi.io.InputStore
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.impl.exec.MapperLike
+import com.nicta.scoobi.impl.exec.ReducerLike
 
 
 object MSCRGraph {
@@ -119,7 +120,7 @@ sealed abstract class OutputChannel
 
 case class BypassOutputChannel[O <: DataStore with DataSink]
     (val outputs: Set[O],
-     val origin: AST.Node[_])
+     val origin: AST.Node[_] with MapperLike[_,_,_] with ReducerLike[_,_,_])
   extends OutputChannel
 
 case class FlattenOutputChannel[O <: DataStore with DataSink]
