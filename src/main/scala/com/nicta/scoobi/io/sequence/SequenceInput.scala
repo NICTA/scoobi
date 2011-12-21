@@ -37,8 +37,8 @@ object SequenceInput {
   }
 
   /**
-   * A wrapper around TextInputFormat that changes the type paramerterisation
-   * from LongWritable-Text to NullWritable-StringWritable. This input
+   * A wrapper around SequenceFileInputFormat that changes the type parameterisation
+   * from Text-Text to NullWritable-StringWritable. This input
    * format is then used as the basis for loading files into a Scoobi job.
    */
   class SimplerSequenceFileInputFormat extends SequenceFileInputFormat[NullWritable, StringWritable] {
@@ -46,13 +46,13 @@ object SequenceInput {
     override def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[NullWritable, StringWritable] = {
 
       context.setStatus(split.toString)
-      val rr = new SimplerLineRecordReader
+      val rr = new SimplerSequenceFileRecordReader
       rr.initialize(split.asInstanceOf[FileSplit], context)
       rr
     }
   }
   /** A wrapper around LineRecordReader. */
-  private class SimplerLineRecordReader extends SequenceFileRecordReader[NullWritable, StringWritable] {
+  private class SimplerSequenceFileRecordReader extends SequenceFileRecordReader[NullWritable, StringWritable] {
     private val lrr = new SequenceFileRecordReader
     private val value = new StringWritable("")
 
