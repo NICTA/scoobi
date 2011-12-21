@@ -25,8 +25,8 @@ object SequenceInput {
   def fromSequenceFile[T: Manifest: WireFormat](path: String): DList[T] = new DList(Smart.Load(new SequenceLoader[T](path)))
 
   /**
-   * A Loader that will load the input from a specified path using SimplerTextInputFormat, a
-   * wrapper around Hadoop's TextInputFormat.
+   * A Loader that will load the input from a specified path using SimplerSequenceFileInputFormat, a
+   * wrapper around Hadoop's SequenceFileInputFormat.
    */
   class SequenceLoader[T: Manifest: WireFormat](path: String) extends Loader[T] {
     def mkInputStore(node: AST.Load[T]) = new InputStore(node) {
@@ -60,7 +60,7 @@ object SequenceInput {
 
     override def getCurrentKey: NullWritable = NullWritable.get
 
-    override def getCurrentValue = { value.set(lrr.getCurrentValue.toString); println("read: " + value.get); value }
+    override def getCurrentValue = { value.set(lrr.getCurrentValue.toString); value }
 
     override def getProgress: Float = lrr.getProgress
 
