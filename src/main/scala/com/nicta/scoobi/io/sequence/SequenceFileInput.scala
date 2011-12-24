@@ -1,4 +1,5 @@
 package com.nicta.scoobi.io.sequence
+
 import org.apache.hadoop.io.Writable
 import com.nicta.scoobi.io.InputStore
 import com.nicta.scoobi.WireFormat
