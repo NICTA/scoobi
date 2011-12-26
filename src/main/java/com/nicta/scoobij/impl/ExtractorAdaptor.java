@@ -43,9 +43,9 @@ public class ExtractorAdaptor<T>
 				.asJavaIterable(strings)) != null;
 	}
 
-	@SuppressWarnings("all")
+	@SuppressWarnings("unchecked")
 	@Override
-	public PartialFunction andThen(Function1 fn) {
+	public <A> PartialFunction<scala.collection.immutable.List<String>, A> andThen(Function1<T, A> fn) {
 		return scala.PartialFunction$class.andThen(this, fn);
 	}
 

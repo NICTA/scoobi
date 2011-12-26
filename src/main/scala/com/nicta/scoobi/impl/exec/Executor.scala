@@ -24,6 +24,7 @@ import scala.collection.mutable.{Set => MSet, Map => MMap}
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MapperInputChannel
+import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.MSCRGraph
@@ -66,6 +67,7 @@ object Executor {
     mscrs flatMap { _.inputChannels } flatMap {
       case BypassInputChannel(input, _) => List(input)
       case MapperInputChannel(input, _) => List(input)
+      case StraightInputChannel(input, _) => List(input)
     } filter {
       case BridgeStore(_, _) => false
       case _                 => true

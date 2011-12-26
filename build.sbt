@@ -34,3 +34,5 @@ compileOrder := CompileOrder.ScalaThenJava
 resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
 
 scalacOptions += "-deprecation"
+
+javacOptions += "-Xlint:none"

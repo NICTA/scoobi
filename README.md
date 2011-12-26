@@ -70,7 +70,7 @@ Quick start
 
 Scoobi has the following requirements:
 
-* [Hadoop 0.20.2](http://www.cloudera.com/hadoop/)
+* [Cloudera's Hadoop 0.20.2](http://www.cloudera.com/hadoop/)
 * [Scala 2.9.1](http://www.scala-lang.org/downloads): Note that this is typically set in build.sbt
 * [Sbt 0.11.0](https://github.com/harrah/xsbt/wiki)
 

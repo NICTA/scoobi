@@ -30,6 +30,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.compress.GzipCodec
 import org.apache.hadoop.io.compress.CompressionCodec
 import scala.collection.mutable.{Map => MMap}
+import scala.math._
 
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
@@ -38,8 +39,10 @@ import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MapperInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
+import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.GbkOutputChannel
 import com.nicta.scoobi.impl.plan.BypassOutputChannel
+import com.nicta.scoobi.impl.plan.FlattenOutputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.Empty
 import com.nicta.scoobi.impl.plan.JustCombiner
@@ -118,20 +121,13 @@ class MapReduceJob {
     val id = UniqueId.get
     val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
     val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
-    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.size)
-
 
     jar.addRuntimeClass(tkRtClass)
     jar.addRuntimeClass(tvRtClass)
-    jar.addRuntimeClass(tpRtClass)
 
     job.setMapOutputKeyClass(tkRtClass.clazz)
     job.setMapOutputValueClass(tvRtClass.clazz)
-    job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
-
-    /* Compress mapper outputs */
-    job.getConfiguration.setBoolean("mapred.compress.map.output", true)
-    job.getConfiguration.setClass("mapred.map.output.compression.codec", classOf[GzipCodec], classOf[CompressionCodec])
+    job.setPartitionerClass(classOf[TaggedPartitioner])
 
 
     /** Mappers:
@@ -186,12 +182,14 @@ class MapReduceJob {
 
     /* Calculate the number of reducers to use with a simple heuristic:
      *
-     * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
+     * At a minimum, have at least as many reduce tasks as there are output channels. Then, base the
+     * amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
     val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
     job.setNumReduceTasks(inputGigabytes)
+    job.setNumReduceTasks(max(inputGigabytes, reducers.size))
 
 
     /* Run job then tidy-up. */
@@ -245,6 +243,7 @@ object MapReduceJob {
         case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => addTag(in, tag) }
         case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => addTag(in, tag)
         case BypassOutputChannel(_, origin)                     => addTag(origin, tag)
+        case FlattenOutputChannel(_, flat)                      => flat.ins.foreach { in => addTag(in, tag) }
       }
 
       /* Add combiner functionality from output channel descriptions. */
@@ -260,7 +259,8 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, _, JustReducer(r))        => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, g, Empty)                 => job.addTaggedReducer(outputs, g.mkTaggedReducer(tag))
-        case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedIdentityReducer(tag))
+        case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedReducer(tag))
+        case FlattenOutputChannel(outputs, flat)                    => job.addTaggedReducer(outputs, flat.mkTaggedReducer(tag))
       }
     }
 
@@ -273,6 +273,8 @@ object MapReduceJob {
         case MapperInputChannel(input, mappers) => mappers.foreach { m =>
           job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))
         }
+        case StraightInputChannel(input, origin) =>
+          job.addTaggedMapper(input, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
       }
     }
 

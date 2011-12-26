@@ -114,7 +114,7 @@ object JarBuilder {
     val foundPaths =
       for {
         url <- loader.getResources(classFile)
-        if ("jar" == url.getProtocol)
+        if ("jar" == url.getProtocol || "file" == url.getProtocol)
         path = url.getPath.replaceAll("file:", "")
                           .replaceAll("\\+", "%2B")
                           .replaceAll("!.*$", "")
