@@ -337,4 +337,81 @@ object Join {
            A8 : Manifest : WireFormat]
       (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)], d7: DList[(K, A7)], d8: DList[(K, A8)])
     : DList[(A1, A2, A3, A4, A5, A6, A7, A8)] = joinOn(d1, d2, d3, d4, d5, d6, d7, d8)(identity)
+
+
+    /** Perform a left outer-join of two (2) distributed lists using a specified join-predicate. */
+    def leftJoinOn[K  : Manifest : WireFormat,
+                   T  : Manifest : WireFormat : Ordering,
+                   A1 : Manifest : WireFormat,
+                   A2 : Manifest : WireFormat]
+        (d1: DList[(K, A1)], d2: DList[(K, A2)])
+        (jp: K => T)
+        (default: (T, A1) => A2)
+      : DList[(A1, A2)] = {
+
+      val d1s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
+      val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
+
+      val joined = (d1s ++ d2s).groupByKey flatMap { case (key, as) =>
+        val a1s = as collect { case Some1(a1) => a1 }
+        val a2s = as collect { case Some2(a2) => a2 }
+
+        if (List(a1s, a2s) forall {_.size > 0 }) {
+          for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))
+        } else if (a1s.size > 0 && a2s.size == 0) {
+          for (a1 <- a1s) yield ((a1, default(key, a1)))
+        } else {
+          Nil
+        }
+      }
+
+      joined
+    }
+
+    /** Perform a left outer-join of two (2) distributed lists. */
+    def leftJoin[K  : Manifest : WireFormat : Ordering,
+                 A1 : Manifest : WireFormat,
+                 A2 : Manifest : WireFormat]
+        (d1: DList[(K, A1)], d2: DList[(K, A2)])
+        (default: (K, A1) => A2)
+      : DList[(A1, A2)] = leftJoinOn(d1, d2)(identity)(default)
+
+
+    /** Perform a right outer-join of two (2) distributed lists using a specified join-predicate. */
+    def rightJoinOn[K  : Manifest : WireFormat,
+                    T  : Manifest : WireFormat : Ordering,
+                    A1 : Manifest : WireFormat,
+                    A2 : Manifest : WireFormat]
+        (d1: DList[(K, A1)], d2: DList[(K, A2)])
+        (jp: K => T)
+        (default: (T, A2) => A1)
+      : DList[(A1, A2)] = {
+
+      val d1s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
+      val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
+
+      val joined = (d1s ++ d2s).groupByKey flatMap { case (key, as) =>
+        val a1s = as collect { case Some1(a1) => a1 }
+        val a2s = as collect { case Some2(a2) => a2 }
+
+        if (List(a1s, a2s) forall {_.size > 0 }) {
+          for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))
+        } else if (a1s.size == 0 && a2s.size > 0) {
+          for (a2 <- a2s) yield ((default(key, a2), a2))
+        } else {
+          Nil
+        }
+      }
+
+      joined
+    }
+
+    /** Perform a left outer-join of two (2) distributed lists. */
+    def rightJoin[K  : Manifest : WireFormat : Ordering,
+                  A1 : Manifest : WireFormat,
+                  A2 : Manifest : WireFormat]
+        (d1: DList[(K, A1)], d2: DList[(K, A2)])
+        (default: (K, A2) => A1)
+      : DList[(A1, A2)] = rightJoinOn(d1, d2)(identity)(default)
+
 }
