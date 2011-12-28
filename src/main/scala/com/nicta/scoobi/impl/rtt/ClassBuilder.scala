@@ -119,12 +119,12 @@ trait ClassBuilder {
 
    val lookup = ObjectLookup()
     val sb = new StringBuilder()
-    sb.append("{ java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField(\"modifiers\"); ")
-    sb.append("modifiersField.setAccessible(true); ")
+    sb ++= "{ java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField(\"modifiers\"); "
+    sb ++= "modifiersField.setAccessible(true); "
 
     makeObjectCopier(sb, model, model.getClass, "topObject", lookup)
 
-    sb.append("return (" + model.getClass.getName + ") topObject; }")
+    sb ++= "return (" + model.getClass.getName + ") topObject; }"
   }
 
   /* Makes Java code that copies all the fields of 'obj', putting the results into pre-defined variable 'setVariable'  */
@@ -136,38 +136,38 @@ trait ClassBuilder {
       var fieldVariable = VarGenerator.next()
       var fieldObj = field.get(obj)
 
-      sb.append("java.lang.reflect.Field ")
-      sb.append(fieldVariable)
-      sb.append(" = ")
-      sb.append(parentObjectClassVariable)
-      sb.append(".getDeclaredField(\"")
-      sb.append(field.getName)
-      sb.append("\");")
+      sb ++= "java.lang.reflect.Field "
+      sb ++= fieldVariable
+      sb ++= " = "
+      sb ++= parentObjectClassVariable
+      sb ++= ".getDeclaredField(\""
+      sb ++= field.getName
+      sb ++= "\");"
 
-      sb.append(fieldVariable)
-      sb.append(".setAccessible(true);")
+      sb ++= fieldVariable
+      sb ++= ".setAccessible(true);"
 
-      sb.append("modifiersField.setInt(")
-      sb.append(fieldVariable)
-      sb.append(", ")
-      sb.append(fieldVariable)
-      sb.append(".getModifiers() & ~java.lang.reflect.Modifier.FINAL);");
+      sb ++= "modifiersField.setInt("
+      sb ++= fieldVariable
+      sb ++= ", "
+      sb ++= fieldVariable
+      sb ++= ".getModifiers() & ~java.lang.reflect.Modifier.FINAL);";
 
       makeObjectCopier(sb, fieldObj, if (fieldObj == null || field.getType.isPrimitive) field.getType else fieldObj.getClass, subObjVariable, lookup)
 
-      sb.append(fieldVariable)
-      sb.append(".set(")
-      sb.append(setVariable)
-      sb.append(", ")
-      sb.append(subObjVariable)
-      sb.append(");")
+      sb ++= fieldVariable
+      sb ++= ".set("
+      sb ++= setVariable
+      sb ++= ", "
+      sb ++= subObjVariable
+      sb ++= ");"
 
 
-      sb.append("modifiersField.setInt(")
-      sb.append(fieldVariable)
-      sb.append(" , ")
-      sb.append(fieldVariable)
-      sb.append(".getModifiers() | java.lang.reflect.Modifier.FINAL);")
+      sb ++= "modifiersField.setInt("
+      sb ++= fieldVariable
+      sb ++= " , "
+      sb ++= fieldVariable
+      sb ++= (".getModifiers() | java.lang.reflect.Modifier.FINAL);")
     }
   }
 
@@ -175,65 +175,65 @@ trait ClassBuilder {
   private def makeObjectCopier(sb: StringBuilder, fieldObj: AnyRef, fieldType: Class[_], objectNameVariable: String, lookup: ObjectLookup) {
 
     if(lookup.hasObject(fieldObj)) {
-      sb.append("Object ")
-      sb.append(objectNameVariable)
-      sb.append(" = ")
+      sb ++= "Object "
+      sb ++= objectNameVariable
+      sb ++= " = "
 
-      sb.append(lookup.getObjectVarName(fieldObj))
-      sb.append(";")
+      sb ++= lookup.getObjectVarName(fieldObj)
+      sb ++= ";"
     } else {
       lookup.add(fieldObj, objectNameVariable)
 
       if (fieldObj == null) {
-        sb.append("Object ")
-        sb.append(objectNameVariable)
-        sb.append(" = ")
-        sb.append("null;")
+        sb ++= "Object "
+        sb ++= objectNameVariable
+        sb ++= " = "
+        sb ++= "null;"
       } else if (fieldType == classOf[Class[_]]) {
          var classNameVariable = VarGenerator.next()
 
-         sb.append("Object ")
-         sb.append(objectNameVariable)
-         sb.append(" = ")
-         sb.append("Class.forName(\"")
-         sb.append(fieldObj.asInstanceOf[Class[_]].getName)
-         sb.append("\");")
+         sb ++= "Object "
+         sb ++= objectNameVariable
+         sb ++= " = "
+         sb ++= "Class.forName(\""
+         sb ++= fieldObj.asInstanceOf[Class[_]].getName
+         sb ++= "\");"
 
-         sb.append("Class ")
-         sb.append(classNameVariable)
-         sb.append(" = ")
-         sb.append(makeClassName(fieldType))
-         sb.append(";")
+         sb ++= "Class "
+         sb ++= classNameVariable
+         sb ++= " = "
+         sb ++= makeClassName(fieldType)
+         sb ++= ";"
       } else if (fieldType.isPrimitive) {
         val fieldType = fieldObj.getClass
 
-        sb.append("Object ")
-        sb.append(objectNameVariable)
-        sb.append(" = ")
+        sb ++= "Object "
+        sb ++= objectNameVariable
+        sb ++= " = "
 
         fieldType match {
-          case CJBoolean    => sb.append("new Boolean(" + fieldObj.toString + ");")
-          case CJByte       => sb.append("new Byte(" +fieldObj.toString + ");")
-          case CJCharacter  => sb.append("new Character('" + fieldObj.toString + "');")
-          case CJDouble     => sb.append("new Double(" + fieldObj.toString + "d);")
-          case CJFloat      => sb.append("new Float(" + fieldObj + "f);")
-          case CJInteger    => sb.append("new Integer(" + fieldObj.toString + ");")
-          case CJLong       => sb.append("new Long(" + fieldObj.toString + "L);")
-          case CJShort      => sb.append("new Short(" + fieldObj.toString + ");")
+          case CJBoolean    => sb ++= "new Boolean(" + fieldObj.toString + ");"
+          case CJByte       => sb ++= "new Byte(" +fieldObj.toString + ");"
+          case CJCharacter  => sb ++= "new Character('" + fieldObj.toString + "');"
+          case CJDouble     => sb ++= "new Double(" + fieldObj.toString + "d);"
+          case CJFloat      => sb ++= "new Float(" + fieldObj + "f);"
+          case CJInteger    => sb ++= "new Integer(" + fieldObj.toString + ");"
+          case CJLong       => sb ++= "new Long(" + fieldObj.toString + "L);"
+          case CJShort      => sb ++= "new Short(" + fieldObj.toString + ");"
           case _            => sys.error("Unknown Error. Fieldtype is:" + fieldType)
         }
 
       } else if (fieldType.isArray) {
         var len = RArray.getLength(fieldObj)
 
-        sb.append("Object ")
-        sb.append(objectNameVariable)
-        sb.append(" = ")
-        sb.append("java.lang.reflect.Array.newInstance(")
-        sb.append(makeClassName(fieldType.getComponentType))
-        sb.append(", ")
-        sb.append(len)
-        sb.append(");")
+        sb ++= "Object "
+        sb ++= objectNameVariable
+        sb ++= " = "
+        sb ++= "java.lang.reflect.Array.newInstance("
+        sb ++= makeClassName(fieldType.getComponentType)
+        sb ++= ", "
+        sb ++= len.toString
+        sb ++= ");"
 
         ((0 to (len-1)) foreach { (n: Int) =>
           var elementNameVariable = VarGenerator.next()
@@ -241,30 +241,30 @@ trait ClassBuilder {
 
           makeObjectCopier(sb, obj, fieldType.getComponentType, elementNameVariable, lookup)
 
-          sb.append("java.lang.reflect.Array.set(")
-          sb.append(objectNameVariable)
-          sb.append(", ")
-          sb.append(n)
-          sb.append(", ")
-          sb.append(elementNameVariable)
-          sb.append(");")
+          sb ++= "java.lang.reflect.Array.set("
+          sb ++= objectNameVariable
+          sb ++= ", "
+          sb ++= n.toString
+          sb ++= ", "
+          sb ++= elementNameVariable
+          sb ++= ");"
         })
 
       } else {
         var classNameVariable = VarGenerator.next()
 
-        sb.append("Class ")
-        sb.append(classNameVariable)
-        sb.append(" = ")
-        sb.append(makeClassName(fieldType))
-        sb.append(";")
+        sb ++= "Class "
+        sb ++= classNameVariable
+        sb ++= " = "
+        sb ++= makeClassName(fieldType)
+        sb ++= ";"
 
-        sb.append("Object ")
-        sb.append(objectNameVariable)
-        sb.append(" = ")
-        sb.append("sun.reflect.ReflectionFactory.getReflectionFactory().newConstructorForSerialization(")
-        sb.append(classNameVariable)
-        sb.append(", Object.class.getDeclaredConstructor(new Class[0])).newInstance(null);")
+        sb ++= "Object "
+        sb ++= objectNameVariable
+        sb ++= " = "
+        sb ++= "sun.reflect.ReflectionFactory.getReflectionFactory().newConstructorForSerialization("
+        sb ++= classNameVariable
+        sb ++= ", Object.class.getDeclaredConstructor(new Class[0])).newInstance(null);"
 
         makeFieldCopier(sb, fieldObj, classNameVariable, objectNameVariable, lookup)
       }
