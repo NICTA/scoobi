@@ -19,6 +19,7 @@ import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.io.text._
 import java.io._
 import com.nicta.scoobi.io.sequence.SequenceFileInput
+import com.nicta.scoobi.io.sequence.SequenceFileOutput
 import org.apache.hadoop.io.Text
 
 object SequenceExample {
@@ -26,8 +27,7 @@ object SequenceExample {
   def main(args: Array[String]) = withHadoopArgs(args) { a =>
     val inputFile = a(0)
     val outputFile = a(1)
-    val lines: DList[(Text, Text)] = SequenceFileInput.fromSequenceFile[Text, Text](inputFile)
-    val l2 = lines.map { case (k, v) => { println(k, v); v.toString } }
-    DList.persist(SequenceFileOutput.toSequenceFile(l2, outputFile))
+    val lines: DList[(Text, Text)] = SequenceFileInput.fromSequenceFile[Text, Text](inputFile).filter { value => println(value); true }
+    DList.persist(SequenceFileOutput.toSequenceFile(lines, outputFile))
   }
 }

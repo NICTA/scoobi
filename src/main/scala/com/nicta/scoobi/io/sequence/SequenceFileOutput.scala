@@ -16,15 +16,37 @@
 package com.nicta.scoobi.io.sequence
 
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
-
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.OutputStore
-import com.nicta.scoobi.io.Persister 
+import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.impl.plan.AST
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.FileUtil
+import org.apache.hadoop.io.SequenceFile
+import org.apache.hadoop.io.SequenceFile.CompressionType
+import org.apache.hadoop.io.compress.DefaultCodec
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.util._
+import org.apache.hadoop.io.SequenceFile
+import org.apache.hadoop.io.SequenceFile.CompressionType
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.compress.DefaultCodec
+import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.JobContext
+import org.apache.hadoop.mapreduce.OutputFormat
+import org.apache.hadoop.mapreduce.RecordWriter
+import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.util.ReflectionUtils
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import com.nicta.scoobi.impl.rtt.TaggedValue
+import org.apache.hadoop.io.Text
+import org.apache.hadoop.io.Writable
 
 /** Smart functions for persisting distributed lists by storing them as sequence files. */
 object SequenceFileOutput {
@@ -42,7 +64,49 @@ object SequenceFileOutput {
     def mkOutputStore(node: AST.Node[A]) = new OutputStore(node) {
       def outputTypeName = typeName
       val outputPath = new Path(path)
-      val outputFormat = classOf[SequenceFileOutputFormat[_,_]]
+      val outputFormat = classOf[MySequenceFileOutputFormat[_, _]]
+    }
+  }
+}
+
+class MySequenceFileOutputFormat[K, V] extends SequenceFileOutputFormat[K, V] {
+  override def getRecordWriter(context: TaskAttemptContext): RecordWriter[K, V] = {
+    val conf: Configuration = context.getConfiguration()
+
+    var codec: CompressionCodec = null
+    var compressionType: CompressionType = CompressionType.NONE
+    if (FileOutputFormat.getCompressOutput(context)) {
+      // find the kind of compression to do
+      compressionType = SequenceFileOutputFormat.getOutputCompressionType(context)
+
+      // find the right codec
+      val codecClass = FileOutputFormat.getOutputCompressorClass(context, classOf[DefaultCodec])
+      codec = ReflectionUtils.newInstance(codecClass, conf).asInstanceOf[CompressionCodec]
+    }
+    // get the path of the temporary output file 
+    val file: Path = getDefaultWorkFile(context, "");
+    val fs: FileSystem = file.getFileSystem(conf);
+
+    val out: SequenceFile.Writer =
+      SequenceFile.createWriter(fs, conf, file,
+        context.getOutputKeyClass(),
+        context.getOutputValueClass(),
+        compressionType,
+        codec,
+        context)
+
+    return new RecordWriter[K, V]() {
+      def write(key: K, value: V) {
+        // here is my problem: value is of type V1, and I'd like to get to 
+        // the underlying Tuple2, but there is no accessor. 
+        // my plan is to get the _1 element as a key and _2 as a value for the 
+        // sequence file , but I have no way to get to the tuple.
+        //val pair = value.asInstanceOf[(Writable, Writable)]
+        println(key, key.getClass, value, value.getClass)
+        out.append(key, value);
+      }
+
+      def close(reporter: TaskAttemptContext) { out.close() }
     }
   }
 }
