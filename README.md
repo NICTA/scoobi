@@ -60,7 +60,7 @@ development of analytics and machine-learning algorithms.
 
 * `materialize` method on `DList` objects for getting a `DList` off HDFS and on to the client
 * I/O support for Sequence and Avro files
-* Client-side computations that can be dependent on and/or create depenecices on `DList` computations
+* Client-side computations that can be dependent on and/or create dependencies on `DList` computations
 * `DList` methods that produce *scalar* values, e.g. `reduce`, `product`, `sum`, `min`, `max`, `length`, `count`
 * Sugar for implementing interative algorithms
 
@@ -636,9 +636,12 @@ and then `hadoop` being given the correct object to run. e.g.:
 
 Issues
 ------
-Please use our GitHub [issue tracker](https://github.com/NICTA/scoobi/issues) for any bugs, issues, problems or
-questions you might have. Please tag *questions* accordingly.
+Please use our GitHub [issue tracker](https://github.com/NICTA/scoobi/issues) for any bugs, issues or problems you might have.
 
+Mailing List
+------------
+[Scoobi Users](http://groups.google.com/group/scoobi-users)
+[Scoobi Dev](http://groups.google.com/group/scoobi-dev)
 
 Contributions
 -------------
