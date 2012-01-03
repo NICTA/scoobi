@@ -634,16 +634,20 @@ and then `hadoop` being given the correct object to run. e.g.:
 ```
 
 
-Issues
-------
-Please use our GitHub [issue tracker](https://github.com/NICTA/scoobi/issues) for any bugs, issues or problems you might have.
+Issues, questions and contributions
+-----------------------------------
 
-Mailing List
-------------
-[Scoobi Users](http://groups.google.com/group/scoobi-users)
-[Scoobi Dev](http://groups.google.com/group/scoobi-dev)
-
-Contributions
--------------
 Scoobi is released under the Apache license v2. We welcome contributions of bug fixes and/or new
-features via GitHib pull requests.
+features via GitHib pull requests. In addition, it is important to us to build a friendly user
+and developer community around Scoobi, so:
+
+* If you happen to encounter something that looks suspiciously like a bug, be sure to log it on the
+[GitHub issue tracker](https://github.com/NICTA/scoobi/issues) so that it can be fixed for everyone - the
+more information the better;
+* If, on the other hand, you simply have questions about how to use Scoobi, take a look at the posts on the
+[scoobi-users](http://groups.google.com/group/scoobi-users) mailing list or post a question of your own;
+* And, if you're keen to get your hands dirty and contribute new features to Scoobi, or are hoping to get some
+insight into Scoobi's internal architecture, or simply want to know what's going on in developer-land, head
+over to the [scoobi-dev](http://groups.google.com/group/scoobi-dev) mailing list.
+
+We will try our best to respond to all issues and questions quickly.
