@@ -54,7 +54,7 @@ object Scoobi {
 
   /** Set a Scoobi user JAR by finding an example class location. */
   def setJarByClass(clazz: Class[_]) {
-    JarBuilder.findContainingJar(clazz).foreach {x => userJars = userJars + x }
+    userJars = userJars ++ JarBuilder.findContainingJar(clazz)
   }
 
   /* Timestamp used to mark each Scoobi working directory. */
