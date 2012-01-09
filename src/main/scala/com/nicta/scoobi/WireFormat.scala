@@ -559,9 +559,16 @@ object WireFormat {
   implicit def StringFmt = new WireFormat[String] {
     def toWire(x: String, out: DataOutput) {
       require(x != null, "Error, trying to serialize a null String. Consider using an empty string or Option[String]")
-      out.writeUTF(x)
+      val b = x.getBytes("utf-8")
+      out.writeInt(b.length)
+      out.write(b)
     }
-    def fromWire(in: DataInput): String = in.readUTF()
+    def fromWire(in: DataInput): String = {
+      val l = in.readInt()
+      val b = new Array[Byte](l)
+      in.readFully(b, 0, l)
+      new String(b, "utf-8")
+    }
     def show(x: String) = x.toString
   }
 
