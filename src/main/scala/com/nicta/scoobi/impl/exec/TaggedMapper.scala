@@ -20,7 +20,7 @@ import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Emitter
 
 
-/** A prodcuer of a TaggedMapper. */
+/** A producer of a TaggedMapper. */
 trait MapperLike[A, K, V] {
   def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, K, V]
 }

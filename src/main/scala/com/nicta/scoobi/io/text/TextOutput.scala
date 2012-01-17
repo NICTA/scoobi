@@ -30,7 +30,7 @@ import com.nicta.scoobi.impl.plan.AST
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
 
-  /** Specify a distibuted list to be persisitent by storing it to disk as a
+  /** Specify a distributed list to be persistent by storing it to disk as a
     * text file. */
   def toTextFile[A : WireFormat](dl: DList[A], path: String): DListPersister[A] = {
     new DListPersister(dl, new TextPersister(path))

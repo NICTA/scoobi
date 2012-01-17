@@ -94,7 +94,7 @@ object Smart {
     protected def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[A], CopyTable, Boolean)
 
     /** A helper method that checks whether the node has already been copied, and if so returns the copy, else
-      * invokes a user provided code implmenting the copy. */
+      * invokes a user provided code implementing the copy. */
     protected def copyOnce(copied: CopyTable)(newCopy: => (DList[A], CopyTable, Boolean)): (DList[A], CopyTable, Boolean) =
       copied.get(this) match {
         case Some(copy) => (copy.asInstanceOf[DList[A]], copied, false)
@@ -542,7 +542,7 @@ object Smart {
     *   - splitting of Combine with multiple outputs. */
   def optimisePlan(outputs: List[DList[_]]): List[DList[_]] = {
 
-    /** Perform a computation 'f' recursively stating with input 'x'. Return the
+    /** Perform a computation 'f' recursively starting with input 'x'. Return the
       * result of 'f' once the outputs are no longer changing, and an indication as
       * to whether there was ever a change. */
     def untilChanged[A](x: A, f: A => (A, Boolean)): (A, Boolean) = {
@@ -661,7 +661,7 @@ object Smart {
    * Class that maintains state while the Smart.DList abstract syntax tree
    * is transformed to an AST.Node abstract syntax tree.
    *
-   * Contains mutable maps. Beware, many uses of this data structure may look pureley
+   * Contains mutable maps. Beware, many uses of this data structure may look purely
    * functional but aren't.
    *
    */

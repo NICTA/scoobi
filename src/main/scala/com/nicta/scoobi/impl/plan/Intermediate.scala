@@ -647,7 +647,7 @@ object Intermediate {
      * case we add it as a "reducer", but only if it satisfies some checks (see below).
      *
      * If we have added a @Combine@ node we then check if its successor is a @ParallelDo@. If this
-     * satisifies the following checks we add it as a "reducer".
+     * satisfies the following checks we add it as a "reducer".
      *  - it has no successors. If it does then it should be in the input channel of another
      *    MSCR
      *  - it has no sibling @ParallelDo@ nodes. Again, this means it should be in

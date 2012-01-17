@@ -56,7 +56,7 @@ class TaggedKeyClassBuilder
       addTypeClassModel(ord, "comparer" + t)
     }
 
-    /* 'compareTo' - peform comparison on tags first then, if equal, perform
+    /* 'compareTo' - perform comparison on tags first then, if equal, perform
      * comparison on selected tagged value using 'comparerN'. */
     val compareToCode =
       className + " tk = (" + className + ")$1;" +

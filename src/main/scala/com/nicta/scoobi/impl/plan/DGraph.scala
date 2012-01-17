@@ -68,7 +68,7 @@ object DGraph {
     }
 
     /*
-     * Adds an association between @a@ and @b@ in assocation map. An association map
+     * Adds an association between @a@ and @b@ in association map. An association map
      * is a map from sources to sets of targets.
      *
      * Examples:

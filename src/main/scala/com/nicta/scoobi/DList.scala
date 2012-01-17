@@ -24,7 +24,7 @@ import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 
 
-/** A list that is distributed accross multiple machines. */
+/** A list that is distributed across multiple machines. */
 class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +50,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
                 wtV:  WireFormat[V]): DList[(K, Iterable[V])] = new DList(Smart.GroupByKey(ast))
 
   /** Apply an associative function to reduce the collection of values to a single value in a
-    * key-value-collection distribued list. */
+    * key-value-collection distributed list. */
   def combine[K, V]
       (f: (V, V) => V)
       (implicit ev:   Smart.DList[A] <:< Smart.DList[(K,Iterable[V])],
@@ -62,7 +62,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Derrived functionality.
+  // Derived functionality.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /** For each element of the distributed list produce zero or more elements by
@@ -89,7 +89,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
     parallelDo(dofn)
   }
 
-  /** Keep elements from the distributedl list that pass a spcecified predicate function. */
+  /** Keep elements from the distributed list that pass a specified predicate function. */
   def filter(p: A => Boolean): DList[A] = {
     val dofn = new DoFn[A, A] {
       def setup() = {}
@@ -99,11 +99,11 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
     parallelDo(dofn)
   }
 
-  /** Keep elements from the distributedl list that do not pass a spcecified
+  /** Keep elements from the distributed list that do not pass a specified
     * predicate function. */
   def filterNot(p: A => Boolean): DList[A] = filter(p andThen (! _))
 
-  /** Build a new DList by applying a partial fuction to all elements of this DList on
+  /** Build a new DList by applying a partial function to all elements of this DList on
     * which the function is defined. */
   def collect[B : Manifest : WireFormat](pf: PartialFunction[A, B]): DList[B] = {
     val dofn = new DoFn[A, B] {
@@ -119,11 +119,11 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
     map(x => (f(x), x)).groupByKey
 
   /** Partitions this distributed list into a pair of distributed lists according to some
-    * predicate. The first distributed list consists of elements that statisfy the predicate
+    * predicate. The first distributed list consists of elements that satisfy the predicate
     * and the second of all elements that don't. */
   def partition(p: A => Boolean): (DList[A], DList[A]) = (filter(p), filterNot(p))
 
-  /** Converts a distributed list of iterable values iinto to a distributed list in which
+  /** Converts a distributed list of iterable values into to a distributed list in which
     * all the values are concatenated. */
   def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] = {
     val dofn = new DoFn[A, B] {
@@ -139,7 +139,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) {
 }
 
 
-/** A class that specifies how to make a distributed list persisitent. */
+/** A class that specifies how to make a distributed list persistent. */
 class DListPersister[A](val dl: DList[A], val persister: Persister[A])
 
 

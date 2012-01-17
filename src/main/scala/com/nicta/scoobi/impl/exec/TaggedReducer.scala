@@ -34,7 +34,7 @@ abstract class TaggedReducer[K, V, B]
               val mB: Manifest[B], val wtB: WireFormat[B])
   extends Serializable {
 
-  /** The acutal 'reduce' function that will be by Hadoop in the reducer task. */
+  /** The actual 'reduce' function that will be by Hadoop in the reducer task. */
   def reduce(key: K, values: Iterable[V], emitter: Emitter[B]): Unit
 }
 
