@@ -31,7 +31,6 @@ import org.apache.hadoop.io.compress.GzipCodec
 import org.apache.hadoop.io.compress.CompressionCodec
 import scala.collection.mutable.{Map => MMap}
 import scala.math._
-
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
@@ -186,7 +185,9 @@ class MapReduceJob {
      * amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
+    val inputBytes: Long = mappers.toIterable.flatMap {
+      case (src, _) => fs.globStatus(src.inputPath).map(p => fs.getContentSummary(p.getPath).getLength)
+    }.sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
     job.setNumReduceTasks(inputGigabytes)
     job.setNumReduceTasks(max(inputGigabytes, reducers.size))
