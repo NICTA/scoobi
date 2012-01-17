@@ -18,8 +18,8 @@ package com.nicta.scoobi.io
 import com.nicta.scoobi.impl.plan.AST
 
 
-/** A data store represents data that is exterrnal to an MSCRs. As a consequence it is
-  * external to a Hadoop job which means it must be perisisted somewhere, at least
+/** A data store represents data that is external to an MSCRs. As a consequence it is
+  * external to a Hadoop job which means it must be persisted somewhere, at least
   * temporarily, between jobs. There are three kinds: Inputs, Outputs and
   * Bridges. */
 abstract class DataStore(val node: AST.Node[_]) {

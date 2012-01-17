@@ -16,10 +16,10 @@
 package com.nicta.scoobi
 
 
-/** Interface for specifing parallel operation over DLists. The semantics
+/** Interface for specifying parallel operation over DLists. The semantics
   * of DoFn lifecycle are as follows:
   *
-  * For a given chunck of DList elements:
+  * For a given chunk of DList elements:
   *   1. 'setup' will be called;
   *   2. 'process' will be called for each element in the chunk;
   *   3. 'cleanup' will be called.

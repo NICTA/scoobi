@@ -47,7 +47,7 @@ object TextInput {
   /** Create a distributed list from a file. */
   def fromTextFile(path: String): DList[String] = new DList(Smart.Load(new TextLoader(path)))
 
-  /** Create a distributed list from a text file that is a number of fields deliminated
+  /** Create a distributed list from a text file that is a number of fields delimited
     * by some separator. Use an extractor function to pull out the required fields to
     * create the distributed list. */
   def extractFromDelimitedTextFile[A : Manifest : WireFormat]
@@ -62,9 +62,9 @@ object TextInput {
     }
   }
 
-  /** Create a distributed list from a text file that is a number of fields deliminated
+  /** Create a distributed list from a text file that is a number of fields delimited
     * by some separator. The type of the resultant list is determined by type inference.
-    * An implicit schema must be in scope for the requried resultant type. */
+    * An implicit schema must be in scope for the required resultant type. */
   def fromDelimitedTextFile[A : Manifest : Schema : WireFormat]
       (sep: String, path: String)
     : DList[A] = {
@@ -109,7 +109,7 @@ object TextInput {
   }
 
 
-  /** A wrapper around TextInputFormat that changes the type paramerterisation
+  /** A wrapper around TextInputFormat that changes the type parameterisation
     * from LongWritable-Text to NullWritable-StringWritable. This input
     * format is then used as the basis for loading files into a Scoobi job. */
   class SimplerTextInputFormat extends FileInputFormat[NullWritable, StringWritable] {

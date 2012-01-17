@@ -16,7 +16,7 @@
 package com.nicta.scoobi.impl.rtt
 
 
-/** A class represnting a class that has been generated at run-time. */
+/** A class representing a class that has been generated at run-time. */
 class RuntimeClass(val name: String,
                    val clazz: Class[_],
                    val bytecode: Array[Byte])
