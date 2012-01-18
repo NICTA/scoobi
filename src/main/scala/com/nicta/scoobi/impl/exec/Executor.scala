@@ -44,7 +44,7 @@ object Executor {
 
 
   /** For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
-    * be multiple outputs, only visist each MSCR once. */
+    * be multiple outputs, only visit each MSCR once. */
   def executePlan(mscrGraph: MSCRGraph): Unit = {
 
     val mscrs   = mscrGraph.mscrs
@@ -84,7 +84,7 @@ object Executor {
       case _            => Unit
     }
 
-    /* Initialize reference counts of all intermeidate data (i.e. BridgeStores). */
+    /* Initialize reference counts of all intermediate data (i.e. BridgeStores). */
     val bridges: List[BridgeStore] = mscrs.toList flatMap (_.inputChannels) flatMap {
       case BypassInputChannel(bs@BridgeStore(_, _), _) => List(bs)
       case MapperInputChannel(bs@BridgeStore(_, _), _) => List(bs)

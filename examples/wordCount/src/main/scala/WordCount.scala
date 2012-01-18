@@ -41,10 +41,10 @@ object WordCount {
       } else if (a.length == 2) {
         (a(0), a(1))
       } else {
-        sys.error("Expecting input and output path, or no arguements at all.")
+        sys.error("Expecting input and output path, or no arguments at all.")
       }
 
-    // Firstly we load up all the (new-line-seperated) words into a DList
+    // Firstly we load up all the (new-line-separated) words into a DList
     val lines: DList[String] = TextInput.fromTextFile(inputPath)
 
     // What we want to do, is record the frequency of words. So we'll convert it to a key-value
@@ -58,7 +58,7 @@ object WordCount {
     // So what we want to do, is combine all the numbers into a single value (the frequency)
     val combined: DList[(String, Int)] = grouped.combine((_+_))
 
-    // We can evalute this, and write it to a text file
+    // We can evaluate this, and write it to a text file
     DList.persist(TextOutput.toTextFile(combined, outputPath + "/word-results"));
   }
 
@@ -81,7 +81,7 @@ object WordCount {
 
     fstream.close()
 
-    // function to make a 5 leter random "word"
+    // function to make a 5 letter random "word"
     def randomWord() : String = {
       val wordLength = 5;
       val sb = new StringBuilder(wordLength + 1)

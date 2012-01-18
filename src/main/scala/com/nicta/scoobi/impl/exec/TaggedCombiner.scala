@@ -31,7 +31,7 @@ abstract class TaggedCombiner[V]
     (implicit val mV: Manifest[V], val wtV: WireFormat[V])
   extends Serializable {
 
-  /** The acutal 'combine' function that will be called by Hadoop at the
+  /** The actual 'combine' function that will be called by Hadoop at the
     * completion of the mapping phase. */
   def combine(x: V, y: V): V
 }

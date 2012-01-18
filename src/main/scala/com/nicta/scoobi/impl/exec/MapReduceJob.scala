@@ -56,7 +56,7 @@ import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.util.JarBuilder
 
-/** A class that defines a single Hadoop MapRedcue job. */
+/** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob {
   lazy val logger = LogFactory.getLog(this.getClass.getName)
 

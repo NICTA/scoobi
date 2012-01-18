@@ -18,11 +18,11 @@ package com.nicta.scoobi.impl.rtt
 import org.apache.hadoop.mapreduce.Partitioner
 
 
-/** Custom paritioner for tagged key-values. */
+/** Custom partitioner for tagged key-values. */
 class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue] {
 
   /** Key-values are tagged with the output channel they are destined for. It is vital
-    * that a given reducer task only receieves key-values from a single channel. To ensure
+    * that a given reducer task only receives key-values from a single channel. To ensure
     * this, partition key-values by the key's tag. */
   def getPartition(key: TaggedKey, value: TaggedValue, numPartitions: Int): Int =
     (key.tag.hashCode() & Int.MaxValue) % numPartitions
