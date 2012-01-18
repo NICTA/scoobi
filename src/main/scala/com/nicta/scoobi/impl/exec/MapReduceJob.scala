@@ -16,6 +16,8 @@
 package com.nicta.scoobi.impl.exec
 
 import java.io.File
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
@@ -57,6 +59,7 @@ import com.nicta.scoobi.impl.util.JarBuilder
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob {
+  lazy val logger = LogFactory.getLog(this.getClass.getName)
 
   import scala.collection.mutable.{Set => MSet, Map => MMap}
 
@@ -190,7 +193,12 @@ class MapReduceJob {
     }.sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
     job.setNumReduceTasks(inputGigabytes)
-    job.setNumReduceTasks(max(inputGigabytes, reducers.size))
+    val numReducers = max(inputGigabytes, reducers.size)
+    job.setNumReduceTasks(numReducers)
+
+    val inputs = mappers.toIterable.map { case (src, _) =>  src.inputPath }.mkString(",")
+    val sizeStr = (inputBytes  / (1000 * 1000 * 1000).toDouble).toString
+    logger.info("input files: " + inputs + " size: " +  sizeStr + " Gb  reducers: " + numReducers)
 
 
     /* Run job then tidy-up. */
