@@ -52,7 +52,7 @@ object Executor {
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {
-      val s = FileSystem.get(Scoobi.conf).listStatus(p)
+      val s = FileSystem.get(Scoobi.conf).globStatus(p)
       if (s == null)          false
       else if (s.length == 0) false
       else                    true

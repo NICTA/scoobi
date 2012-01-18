@@ -16,6 +16,8 @@
 package com.nicta.scoobi.impl.exec
 
 import java.io.File
+import org.apache.commons.logging.Log 
+import org.apache.commons.logging.LogFactory 
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
@@ -31,7 +33,6 @@ import org.apache.hadoop.io.compress.GzipCodec
 import org.apache.hadoop.io.compress.CompressionCodec
 import scala.collection.mutable.{Map => MMap}
 import scala.math._
-
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
@@ -55,9 +56,9 @@ import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.util.JarBuilder
 
-
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob {
+  lazy val logger = LogFactory.getLog(this.getClass.getName)
 
   import scala.collection.mutable.{Set => MSet, Map => MMap}
 
@@ -186,10 +187,15 @@ class MapReduceJob {
      * amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
+    val inputBytes: Long = mappers.toIterable.flatMap { case (src, _) => fs.globStatus(src.inputPath).map(p => fs.getContentSummary(p.getPath).getLength) }.sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
     job.setNumReduceTasks(inputGigabytes)
-    job.setNumReduceTasks(max(inputGigabytes, reducers.size))
+    val numReducers = max(inputGigabytes, reducers.size)
+    job.setNumReduceTasks(numReducers)
+
+    val inputs = mappers.toIterable.map { case (src, _) =>  src.inputPath }.mkString(",")
+    val sizeStr = (inputBytes  / (1000 * 1000 * 1000).toDouble).toString
+    logger.info("input files: " + inputs + " size: " +  sizeStr + " Gb  reducers: " + numReducers)
 
 
     /* Run job then tidy-up. */
