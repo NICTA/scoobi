@@ -16,6 +16,7 @@
 package com.nicta.scoobi.impl.exec
 
 import org.apache.hadoop.mapreduce.{Reducer => HReducer, _}
+import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.io.OutputConverter
@@ -46,9 +47,8 @@ class MscrReducer[K2, V2, B, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3
     val converters = outputs(channel)._1.asInstanceOf[List[(Int, OutputConverter[K3, V3, B])]]
     val reducer = outputs(channel)._2.asInstanceOf[TaggedReducer[K2, V2, B]]
 
-    /* Convert Iterator[TaggedValue] to Iterable[V2]. */
-    val valuesStream = Stream.continually(if (values.iterator.hasNext) values.iterator.next else null).takeWhile(_ != null)
-    val untaggedValues = valuesStream.map(_.get(channel).asInstanceOf[V2]).toIterable
+    /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
+    val untaggedValues = new Iterable[V2] { def iterator = values.iterator map (_.get(channel).asInstanceOf[V2]) }
 
     /* Do the reduction. */
     val emitter = new Emitter[B] {

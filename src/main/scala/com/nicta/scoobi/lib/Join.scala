@@ -16,6 +16,8 @@
 package com.nicta.scoobi.lib
 
 import java.io._
+import scala.collection.immutable.VectorBuilder
+
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.WireFormat._
@@ -37,13 +39,14 @@ object Join {
     val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
 
     val joined = (d1s ++ d2s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      if (List(a1s, a2s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))
-      } else {
-        Nil
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result())
+        yield (a1, a2)
     }
 
     joined
@@ -72,14 +75,16 @@ object Join {
     val d3s: DList[(T, Multi[A1, A2, A3, A1, A1, A1, A1, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
 
     val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      val a3s = as collect { case Some3(a3) => a3 }
-      if (List(a1s, a2s, a3s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s; a3 <- a3s) yield ((a1, a2, a3))
-      } else {
-        Nil
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
+        case Some3(a3) => vb3 += a3
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result())
+        yield (a1, a2, a3)
     }
 
     joined
@@ -110,16 +115,19 @@ object Join {
     val d3s: DList[(T, Multi[A1, A2, A3, A4, A1, A1, A1, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
     val d4s: DList[(T, Multi[A1, A2, A3, A4, A1, A1, A1, A1])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
 
-    val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      val a3s = as collect { case Some3(a3) => a3 }
-      val a4s = as collect { case Some4(a4) => a4 }
-      if (List(a1s, a2s, a3s, a4s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s; a3 <- a3s; a4 <- a4s) yield ((a1, a2, a3, a4))
-      } else {
-        Nil
+    val joined = (d1s ++ d2s ++ d3s ++ d4s).groupByKey flatMap { case (_, as) =>
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
+      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
+        case Some3(a3) => vb3 += a3
+        case Some4(a4) => vb4 += a4
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result())
+        yield (a1, a2, a3, a4)
     }
 
     joined
@@ -153,17 +161,21 @@ object Join {
     val d4s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
     val d5s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d5 map { case (k, a5) => (jp(k), Some5(a5)) }
 
-    val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      val a3s = as collect { case Some3(a3) => a3 }
-      val a4s = as collect { case Some4(a4) => a4 }
-      val a5s = as collect { case Some5(a5) => a5 }
-      if (List(a1s, a2s, a3s, a4s, a5s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s; a3 <- a3s; a4 <- a4s; a5 <- a5s) yield ((a1, a2, a3, a4, a5))
-      } else {
-        Nil
+    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s).groupByKey flatMap { case (_, as) =>
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
+      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
+      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
+        case Some3(a3) => vb3 += a3
+        case Some4(a4) => vb4 += a4
+        case Some5(a5) => vb5 += a5
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result())
+        yield (a1, a2, a3, a4, a5)
     }
 
     joined
@@ -200,18 +212,23 @@ object Join {
     val d5s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d5 map { case (k, a5) => (jp(k), Some5(a5)) }
     val d6s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d6 map { case (k, a6) => (jp(k), Some6(a6)) }
 
-    val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      val a3s = as collect { case Some3(a3) => a3 }
-      val a4s = as collect { case Some4(a4) => a4 }
-      val a5s = as collect { case Some5(a5) => a5 }
-      val a6s = as collect { case Some6(a6) => a6 }
-      if (List(a1s, a2s, a3s, a4s, a5s, a6s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s; a3 <- a3s; a4 <- a4s; a5 <- a5s; a6 <- a6s) yield ((a1, a2, a3, a4, a5, a6))
-      } else {
-        Nil
+    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s ++ d6s).groupByKey flatMap { case (_, as) =>
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
+      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
+      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
+      val vb6: VectorBuilder[A6] = new VectorBuilder[A6]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
+        case Some3(a3) => vb3 += a3
+        case Some4(a4) => vb4 += a4
+        case Some5(a5) => vb5 += a5
+        case Some6(a6) => vb6 += a6
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result(); a6 <- vb6.result())
+        yield (a1, a2, a3, a4, a5, a6)
     }
 
     joined
@@ -251,19 +268,25 @@ object Join {
     val d6s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d6 map { case (k, a6) => (jp(k), Some6(a6)) }
     val d7s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d7 map { case (k, a7) => (jp(k), Some7(a7)) }
 
-    val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      val a3s = as collect { case Some3(a3) => a3 }
-      val a4s = as collect { case Some4(a4) => a4 }
-      val a5s = as collect { case Some5(a5) => a5 }
-      val a6s = as collect { case Some6(a6) => a6 }
-      val a7s = as collect { case Some7(a7) => a7 }
-      if (List(a1s, a2s, a3s, a4s, a5s, a6s, a7s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s; a3 <- a3s; a4 <- a4s; a5 <- a5s; a6 <- a6s; a7 <- a7s) yield ((a1, a2, a3, a4, a5, a6, a7))
-      } else {
-        Nil
+    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s ++ d6s ++ d7s).groupByKey flatMap { case (_, as) =>
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
+      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
+      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
+      val vb6: VectorBuilder[A6] = new VectorBuilder[A6]()
+      val vb7: VectorBuilder[A7] = new VectorBuilder[A7]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
+        case Some3(a3) => vb3 += a3
+        case Some4(a4) => vb4 += a4
+        case Some5(a5) => vb5 += a5
+        case Some6(a6) => vb6 += a6
+        case Some7(a7) => vb7 += a7
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result(); a6 <- vb6.result(); a7 <- vb7.result())
+        yield (a1, a2, a3, a4, a5, a6, a7)
     }
 
     joined
@@ -306,20 +329,27 @@ object Join {
     val d7s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d7 map { case (k, a7) => (jp(k), Some7(a7)) }
     val d8s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d8 map { case (k, a8) => (jp(k), Some8(a8)) }
 
-    val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val a1s = as collect { case Some1(a1) => a1 }
-      val a2s = as collect { case Some2(a2) => a2 }
-      val a3s = as collect { case Some3(a3) => a3 }
-      val a4s = as collect { case Some4(a4) => a4 }
-      val a5s = as collect { case Some5(a5) => a5 }
-      val a6s = as collect { case Some6(a6) => a6 }
-      val a7s = as collect { case Some7(a7) => a7 }
-      val a8s = as collect { case Some8(a8) => a8 }
-      if (List(a1s, a2s, a3s, a4s, a5s, a6s, a7s, a8s) forall {_.size > 0 }) {
-        for (a1 <- a1s; a2 <- a2s; a3 <- a3s; a4 <- a4s; a5 <- a5s; a6 <- a6s; a7 <- a7s; a8 <- a8s) yield ((a1, a2, a3, a4, a5, a6, a7, a8))
-      } else {
-        Nil
+    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s ++ d6s ++ d7s ++ d8s).groupByKey flatMap { case (_, as) =>
+      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
+      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
+      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
+      val vb6: VectorBuilder[A6] = new VectorBuilder[A6]()
+      val vb7: VectorBuilder[A7] = new VectorBuilder[A7]()
+      val vb8: VectorBuilder[A8] = new VectorBuilder[A8]()
+      as foreach {
+        case Some1(a1) => vb1 += a1
+        case Some2(a2) => vb2 += a2
+        case Some3(a3) => vb3 += a3
+        case Some4(a4) => vb4 += a4
+        case Some5(a5) => vb5 += a5
+        case Some6(a6) => vb6 += a6
+        case Some7(a7) => vb7 += a7
+        case Some8(a8) => vb8 += a8
       }
+      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result(); a6 <- vb6.result(); a7 <- vb7.result(); a8 <- vb8.result())
+        yield (a1, a2, a3, a4, a5, a6, a7, a8)
     }
 
     joined
@@ -353,8 +383,16 @@ object Join {
       val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
 
       val joined = (d1s ++ d2s).groupByKey flatMap { case (key, as) =>
-        val a1s = as collect { case Some1(a1) => a1 }
-        val a2s = as collect { case Some2(a2) => a2 }
+        val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+        val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+
+        as foreach {
+          case Some1(a1) => vb1 += a1
+          case Some2(a2) => vb2 += a2
+        }
+
+        val a1s = vb1.result()
+        val a2s = vb2.result()
 
         if (List(a1s, a2s) forall {_.size > 0 }) {
           for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))
@@ -391,8 +429,16 @@ object Join {
       val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
 
       val joined = (d1s ++ d2s).groupByKey flatMap { case (key, as) =>
-        val a1s = as collect { case Some1(a1) => a1 }
-        val a2s = as collect { case Some2(a2) => a2 }
+        val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
+        val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
+
+        as foreach {
+          case Some1(a1) => vb1 += a1
+          case Some2(a2) => vb2 += a2
+        }
+
+        val a1s = vb1.result()
+        val a2s = vb2.result()
 
         if (List(a1s, a2s) forall {_.size > 0 }) {
           for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))

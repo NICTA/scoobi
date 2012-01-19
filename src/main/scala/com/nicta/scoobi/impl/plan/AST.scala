@@ -122,7 +122,7 @@ object AST {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, V)](tag)(mK, wtK, ordK, mV, wtV, mKV, wtKV) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = {
-        emitter.emit((key, values.tail.foldLeft(values.head)(f)))
+        emitter.emit((key, values.reduce(f)))
       }
     }
 
@@ -131,7 +131,7 @@ object AST {
       new TaggedReducer[K, V, B](tag)(mK, wtK, ordK, mV, wtV, mB, wtB) {
         def reduce(key: K, values: Iterable[V], emitter: Emitter[B]) = {
           dofn.setup()
-          dofn.process((key, values.tail.foldLeft(values.head)(f)), emitter)
+          dofn.process((key, values.reduce(f)), emitter)
           dofn.cleanup(emitter)
         }
       }
@@ -209,7 +209,12 @@ object AST {
     extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
-      def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = emitter.emit((key, values))
+      def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = {
+        import scala.collection.immutable.VectorBuilder
+        val b = new scala.collection.immutable.VectorBuilder[V]
+        values foreach { b += _ }
+        emitter.emit((key, b.result().toIterable))
+      }
     }
 
     override def toString = "GroupByKey" + id

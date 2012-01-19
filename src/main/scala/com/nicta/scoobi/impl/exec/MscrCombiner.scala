@@ -16,6 +16,7 @@
 package com.nicta.scoobi.impl.exec
 
 import org.apache.hadoop.mapreduce.{Reducer => HReducer, _}
+import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.rtt.Tagged
@@ -24,7 +25,7 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 
 
 /** Hadoop Combiner class for an MSCR. */
-class MscrCombiner[V] extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
+class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
 
   private var combiners: Map[Int, TaggedCombiner[_]] = _
   private var tv: TaggedValue = _
@@ -39,23 +40,22 @@ class MscrCombiner[V] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagged
                       context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) = {
 
     val tag = key.tag
-    val valuesStream = Stream.continually(if (values.iterator.hasNext) values.iterator.next else null).takeWhile(_ != null)
 
     if (combiners.contains(tag)) {
       /* Only perform combining if one is available for this tag. */
-      val combiner = combiners(tag).asInstanceOf[TaggedCombiner[V]]
+      val combiner = combiners(tag).asInstanceOf[TaggedCombiner[V2]]
 
-      /* Convert Iterator[TaggedValue] to Iterable[V]. */
-      val untaggedValues = valuesStream.map(_.get(tag).asInstanceOf[V]).toIterable
+      /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
+      val untaggedValues = new Iterable[V2] { def iterator = values.iterator map (_.get(tag).asInstanceOf[V2]) }
 
       /* Do the combining. */
-      val reduction = untaggedValues.tail.foldLeft(untaggedValues.head)(combiner.combine)
+      val reduction = untaggedValues.reduce(combiner.combine)
       tv.set(tag, reduction)
 
       context.write(key, tv)
     } else {
       /* If no combiner for this tag, TK-TV passes through. */
-      valuesStream.foreach { value => context.write(key, value) }
+      values.foreach { value => context.write(key, value) }
     }
   }
 
