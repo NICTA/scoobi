@@ -769,12 +769,12 @@ object WireFormat {
       x.foreach { wt.toWire(_, out) }
     }
     def fromWire(in: DataInput): Iterable[T] = {
-      import scala.collection.mutable._
+      import scala.collection.immutable.VectorBuilder
       val size = in.readInt()
-      val ml: MutableList[T] = new MutableList
-      for (_ <- 0 to (size - 1)) { ml += wt.fromWire(in) }
-      val il: List[T] = ml.toList
-      il.toIterable
+      val b = new scala.collection.immutable.VectorBuilder[T]
+      b.sizeHint(size)
+      for (_ <- 0 to (size - 1)) { b += wt.fromWire(in) }
+      b.result().toIterable
     }
     def show(x: Iterable[T]) = x.mkString("[", ",", "]")
   }
