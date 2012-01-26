@@ -16,14 +16,47 @@
 package com.nicta.scoobi.impl.rtt
 
 import org.apache.hadoop.mapreduce.Partitioner
+import javassist._
+
+/** Custom paritioner for tagged key-values. */
+abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
+
+/** Companion object for dynamically constructing a subclass of TaggedPartitioner. */
+object TaggedPartitioner {
+
+  def apply(name: String, numTags: Int): RuntimeClass = {
+    val builder = new TaggedPartitionerClassBuilder(name, numTags)
+    builder.toRuntimeClass
+  }
+}
 
 
-/** Custom partitioner for tagged key-values. */
-class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue] {
+/** Class for building TaggedPartitioner classes at runtime. */
+class TaggedPartitionerClassBuilder(name: String, numTags: Int) extends ClassBuilder {
 
-  /** Key-values are tagged with the output channel they are destined for. It is vital
-    * that a given reducer task only receives key-values from a single channel. To ensure
-    * this, partition key-values by the key's tag. */
-  def getPartition(key: TaggedKey, value: TaggedValue, numPartitions: Int): Int =
-    (key.tag.hashCode() & Int.MaxValue) % numPartitions
+  def className = name
+
+  def extendClass: Class[_] = classOf[TaggedPartitioner]
+
+  def build = {
+
+    /* 'getPartition' - do hash paritioning on the key value that is tagged. */
+    val getPartitionCode =
+      "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
+      "switch(tag) {" +
+        (0 to numTags - 1).map { t =>
+          "case " + t + ": return (((com.nicta.scoobi.impl.rtt.TaggedKey)$1).get(tag).hashCode() & Integer.MAX_VALUE) % $3;"
+        }.mkString +
+        "default: return 0;" +
+      "}"
+    val getPartitionMethod = CtNewMethod.make(CtClass.intType,
+                                              "getPartition",
+                                              Array(pool.get("java.lang.Object"),
+                                                    pool.get("java.lang.Object"),
+                                                    CtClass.intType),
+                                              Array(),
+                                              "{" + getPartitionCode + "}",
+                                              ctClass)
+    ctClass.addMethod(getPartitionMethod)
+  }
 }
