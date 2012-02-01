@@ -22,10 +22,10 @@ import com.nicta.scoobij.impl.Conversions;
 import com.nicta.scoobij.impl.DListImpl;
 
 public class TextInput {
-	public static DList<String> fromTextFile(String path) {
+	public static DList<String> fromTextFile(String... path) {
 
 		return new DListImpl<String>(
-				com.nicta.scoobi.io.text.TextInput$.MODULE$.fromTextFile(path));
+				com.nicta.scoobi.io.text.TextInput$.MODULE$.fromTextFile(Conversions.toScalaSeq(path)));
 	}
 
 	public static <T> DList<T> extractFromDelimitedTextFile(String seperator,
@@ -35,7 +35,7 @@ public class TextInput {
 				com.nicta.scoobi.io.text.TextInput$.MODULE$
 						.extractFromDelimitedTextFile(seperator, path,
 								Conversions.toScala(extractor),
-								Conversions.toManifest(bundle.typeInfo()),
+								bundle.typeInfo(),
 								bundle.wireFormat()));
 	}
 }

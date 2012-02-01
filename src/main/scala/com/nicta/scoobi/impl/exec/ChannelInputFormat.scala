@@ -15,30 +15,29 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.IOException
 import java.io.DataInput
 import java.io.DataInputStream;
 import java.io.DataOutput
 import java.io.DataOutputStream;
 
 import org.apache.hadoop.conf.Configurable
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.serializer.Deserializer
 import org.apache.hadoop.io.serializer.SerializationFactory
 import org.apache.hadoop.io.serializer.Serializer
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.JobContext
 import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.InputSplit
 import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.TaskAttemptContext
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.util.ReflectionUtils
 import scala.util.matching.Regex
 import scala.collection.JavaConversions._
+
+import com.nicta.scoobi.io.DataSource
 
 
 /** Object that allows for channels with different input format requirements
@@ -48,17 +47,13 @@ object ChannelInputFormat {
   private val INPUT_FORMAT_PROPERTY = "scoobi.input.formats"
 
   /** Add a new input channel. */
-  def addInputChannel
-      (job: Job,
-       channel: Int,
-       inputPath: Path,
-       inputFormat: Class[_ <: FileInputFormat[_,_]]) = {
+  def addInputChannel(job: Job, channel: Int, source: DataSource[_,_,_]) = {
 
     val conf = job.getConfiguration
 
-    val inputFormatMapping = List(channel.toString,
-                                  inputPath.toString,
-                                  inputFormat.getName).mkString(";")
+    /* Record as configuration properties the channel number to InputFormat mappings
+     * as described by the DataSource. */
+    val inputFormatMapping = channel + ";" + source.inputFormat.getName
     val inputFormats = conf.get(INPUT_FORMAT_PROPERTY)
 
     if (inputFormats == null)
@@ -67,20 +62,28 @@ object ChannelInputFormat {
       conf.set(INPUT_FORMAT_PROPERTY, inputFormats + "," + inputFormatMapping)
 
     job.setInputFormatClass(classOf[ChannelInputFormat[_,_]].asInstanceOf[Class[_ <: InputFormat[_,_]]])
-  }
 
+    /* Call the DataSource's configure method but with a proxy Job object. Then, add the
+     * configuration properties added by the configure method to the main job's configuration
+     * but prefixed with "scoobi.inputX", where X is the channel number. */
+    val jobCopy = new Job(conf)
+    source.inputConfigure(jobCopy)
+    (confToMap(jobCopy.getConfiguration) -- confToMap(conf).keys) foreach { case (k, v) =>
+      conf.set("scoobi.input" + channel + ":" + k, v)
+    }
+  }
 
   /** Get a map of all the input channels. */
-  def getInputChannels(context: JobContext): Map[Int, (Path, InputFormat[_,_])] = {
-    val Entry = """(.*);(.*);(.*)""".r
+  def getInputChannels(context: JobContext): Map[Int, InputFormat[_,_]] = {
+    val conf = context.getConfiguration
+    val Entry = """(.*);(.*)""".r
 
-    context.getConfiguration.get(INPUT_FORMAT_PROPERTY).split(",").toList map {
-      case Entry(ch, path, infmt) =>
-        (ch.toInt,
-          (new Path(path),
-          ReflectionUtils.newInstance(Class.forName(infmt), context.getConfiguration).asInstanceOf[InputFormat[_,_]]))
+    conf.get(INPUT_FORMAT_PROPERTY).split(",").toList map {
+      case Entry(ch, infmt) => (ch.toInt, ReflectionUtils.newInstance(Class.forName(infmt), conf).asInstanceOf[InputFormat[_,_]])
     } toMap
   }
+
+  def confToMap(conf: Configuration): Map[String, String] = conf.map(me => (me.getKey, me.getValue)).toMap
 }
 
 
@@ -90,12 +93,21 @@ class ChannelInputFormat[K, V] extends InputFormat[K, V] {
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
 
-    ChannelInputFormat.getInputChannels(context) flatMap { case (channel, (path, format)) =>
+    ChannelInputFormat.getInputChannels(context) flatMap { case (channel, format) =>
 
+      /* Constuct a Job object that simulates the configuration for a single InputFormat. */
       val conf = context.getConfiguration
       val jobCopy = new Job(conf)
-      FileInputFormat.addInputPath(jobCopy, path)
+      val ChannelPrefix = ("scoobi.input" + channel + ":" + """(.*)""").r
 
+      ChannelInputFormat.confToMap(conf) collect {
+        case (ChannelPrefix(k), v) => (k, v)
+      } foreach {
+        case (k, v) => jobCopy.getConfiguration.set(k, v)
+      }
+
+      /* Wrap each of the splits for this InputFormat, tagged with the channel number. InputSplits
+       * will be queried in the Mapper to determine the channel being processed. */
       format.getSplits(jobCopy) map { (pathSplit: InputSplit) =>
         new TaggedInputSplit(conf, channel, pathSplit, format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
       }

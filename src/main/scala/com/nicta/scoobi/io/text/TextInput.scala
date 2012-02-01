@@ -15,37 +15,67 @@
   */
 package com.nicta.scoobi.io.text
 
-import java.io.DataOutput
-import java.io.DataInput
+import java.io.IOException
 import java.io.Serializable
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.JobContext
-import org.apache.hadoop.mapreduce.InputSplit
-import org.apache.hadoop.mapreduce.RecordReader
-import org.apache.hadoop.mapreduce.TaskAttemptContext
-import org.apache.hadoop.mapreduce.lib.input.FileSplit
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
-import org.apache.hadoop.mapreduce.lib.input.LineRecordReader
 
+import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.InputStore
+import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Loader
+import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 
 /** Smart functions for materializing distributed lists by loading text files. */
 object TextInput {
+  lazy val logger = LogFactory.getLog("scoobi.TextInput")
 
-  /** Create a distributed list from a file. */
-  def fromTextFile(path: String): DList[String] = new DList(Smart.Load(new TextLoader(path)))
+  /** Create a distributed list from one or more files or directories (in the case of a directory,
+    * the input forms all files in that directory). */
+  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths: _*))
+
+  /** Create a distributed list from a list of one or more files or directories (in the case of
+    * a directory, the input forms all files in that directory). */
+  def fromTextFile(paths: List[String]): DList[String] = {
+    val loader = new Loader[String] {
+      def mkInputStore(node: AST.Load[String]) = new InputStore[LongWritable, Text, String](node) {
+        private val inputPaths = paths.map(p => new Path(p))
+
+        val inputFormat = classOf[TextInputFormat]
+
+        def inputCheck() = inputPaths foreach { p =>
+          if (Helper.pathExists(p))
+            logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+          else
+             throw new IOException("Input path" + p + " does not exist.")
+        }
+
+        def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+
+        def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+
+        val inputConverter = new InputConverter[LongWritable, Text, String] {
+          def fromKeyValue(k: LongWritable, v: Text) = v.toString
+        }
+      }
+    }
+    new DList(Smart.Load(loader))
+  }
 
   /** Create a distributed list from a text file that is a number of fields delimited
     * by some separator. Use an extractor function to pull out the required fields to
@@ -95,62 +125,6 @@ object TextInput {
   object Double {
     def unapply(s: String): Option[Double] =
       try { Some(s.toDouble) } catch { case _: NFE => None }
-  }
-
-
-  /** A Loader that will load the input from a specified path using SimplerTextInputFormat, a
-    * wrapper around Hadoop's TextInputFormat. */
-  class TextLoader(path: String) extends Loader[String] {
-    def mkInputStore(node: AST.Load[String]) = new InputStore(node) {
-      def inputTypeName = typeName
-      val inputPath = new Path(path)
-      val inputFormat = classOf[SimplerTextInputFormat]
-    }
-  }
-
-
-  /** A wrapper around TextInputFormat that changes the type parameterisation
-    * from LongWritable-Text to NullWritable-StringWritable. This input
-    * format is then used as the basis for loading files into a Scoobi job. */
-  class SimplerTextInputFormat extends FileInputFormat[NullWritable, StringWritable] {
-
-    override def createRecordReader(split: InputSplit, context: TaskAttemptContext)
-      : RecordReader[NullWritable, StringWritable] = {
-
-      context.setStatus(split.toString)
-      val rr = new SimplerLineRecordReader
-      rr.initialize(split.asInstanceOf[FileSplit], context)
-      rr
-    }
-  }
-
-
-  /** A wrapper around Text to make it a ScoobiWritable type. */
-  class StringWritable(x: String) extends ScoobiWritable[String](x) {
-    def write(out: DataOutput) = (new Text(get)).write(out)
-    def readFields(in: DataInput) = { val y = new Text; y.readFields(in); set(y.toString) }
-  }
-
-
-  /** A wrapper around LineRecordReader. */
-  private class SimplerLineRecordReader extends RecordReader[NullWritable, StringWritable] {
-
-    private val lrr = new LineRecordReader
-    private val value = new StringWritable("")
-
-    def close() = lrr.close()
-
-    def getCurrentKey: NullWritable = NullWritable.get
-
-    def getCurrentValue = { value.set(lrr.getCurrentValue.toString); value }
-
-    def getProgress: Float = lrr.getProgress
-
-    def initialize(split: InputSplit, context: TaskAttemptContext): Unit = lrr.initialize(split, context)
-
-    def nextKeyValue: Boolean = lrr.nextKeyValue
-
-    def createKey: NullWritable = NullWritable.get
   }
 }
 

@@ -20,4 +20,4 @@ import com.nicta.scoobi.impl.plan.AST
 
 /** An input store is synonymous with a 'Load' node. It already exists and
   * must persist. */
-abstract class InputStore(n: AST.Load[_]) extends DataStore(n) with DataSource
+abstract class InputStore[K, V, A](n: AST.Load[A]) extends DataStore(n) with DataSource[K, V, A]

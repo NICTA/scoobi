@@ -39,14 +39,14 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 	@Override
 	public <B> DList<B> parallelDo(DoFn<A, B> fun, WireFormatType<B> wf) {
 		return new DListImpl<B>(getImpl().parallelDo(Conversions.toScala(fun),
-				Conversions.toManifest(wf.typeInfo()), wf.wireFormat()));
+				wf.typeInfo(), wf.wireFormat()));
 	}
 
 	@Override
 	public <V> DListImpl<V> flatMap(FlatMapper<A, V> fm,
 			WireFormatType<V> bundle) {
 		return new DListImpl<V>(impl.flatMap(Conversions.toScala(fm),
-				Conversions.toManifest(bundle.typeInfo()), bundle.wireFormat()));
+				bundle.typeInfo(), bundle.wireFormat()));
 	}
 
 	@Override
@@ -55,14 +55,13 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 
 		scala.reflect.Manifest<scala.Tuple2<B, C>> manifest = Conversions
 				.toManifest(scala.Tuple2.class,
-						Conversions.toManifest(bundleB.typeInfo()),
-						Conversions.toManifest(bundleC.typeInfo()));
+						bundleB.typeInfo(),
+						bundleC.typeInfo());
 
 		return new DTableImpl<B, C>(impl.flatMap(
 				Conversions.toScala(tm),
 				manifest,
-				WireFormats.wireFormatPair(bundleB.wireFormat(),
-						bundleC.wireFormat())));
+				WireFormats.wireFormatPair(bundleB, bundleC).wireFormat()));
 	}
 
 	// ++ from scoobi.DList
@@ -90,7 +89,7 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 
 		return new DListImpl<B>(getImpl().parallelDo(
 				Conversions.toScalaDoFn(mapper),
-				Conversions.toManifest(wf.typeInfo()), wf.wireFormat()));
+				wf.typeInfo(), wf.wireFormat()));
 	}
 
 	@Override

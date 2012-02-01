@@ -15,6 +15,7 @@
  */
 package com.nicta.scoobij;
 
+
 /**
  * A WireFormatType that also contains ordering, this is mainly used for
  * comparison and grouping (e.g. DList.groupByKey)

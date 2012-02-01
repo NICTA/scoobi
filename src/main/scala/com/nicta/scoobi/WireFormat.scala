@@ -511,9 +511,22 @@ object WireFormat {
   }
 
   /*
-   * Built-in Hadoop Writable types.
+   * Hadoop Writable types.
    */
+  implicit def WritableFmt[T <: Writable : Manifest] = new WireFormat[T] {
+    def toWire(x: T, out: DataOutput) = x.write(out)
+    def fromWire(in: DataInput): T = {
+      val x: T = implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T]
+      x.readFields(in)
+      x
+    }
+    def show(x: T) = x.toString
+  }
 
+
+  /*
+   * "Primitive" types.
+   */
   implicit def IntFmt = new WireFormat[Int] {
     def toWire(x: Int, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): Int = in.readInt()

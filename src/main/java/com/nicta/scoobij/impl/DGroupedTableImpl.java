@@ -43,10 +43,10 @@ public class DGroupedTableImpl<K, V> extends
 
 		return new DTableImpl<K, V>(getImpl().combine(
 				Conversions.toScala(combiner), evidence,
-				Conversions.toManifest(keyFormat.typeInfo()),
+				keyFormat.typeInfo(),
 				keyFormat.wireFormat(),
 				Conversions.toScala(keyFormat.ordering()),
-				Conversions.toManifest(valueBundle.typeInfo()),
+				valueBundle.typeInfo(),
 				valueBundle.wireFormat()));
 	}
 }

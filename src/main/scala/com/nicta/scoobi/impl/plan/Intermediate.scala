@@ -116,7 +116,7 @@ object Intermediate {
     /*
      * Creates the @DataStore@ input for this input channel.
      */
-    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource
+    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource[_,_,_]
 
     /*
      * Converts this intermediate input channel into a final input channel (defined in MSCR.scala)
@@ -142,12 +142,12 @@ object Intermediate {
 
     def containsGbkMapper(d: ParallelDo[_,_]) = parDos.exists{_ == d}
 
-    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = {
+    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource[_,_,_] = {
       // This should be safe since there should be at least one parallelDo in @parDos@
       parDos(0).in.dataSource(ci)
     }
 
-    def convert(ci: ConvertInfo): CMapperInputChannel[DataStore with DataSource] = {
+    def convert(ci: ConvertInfo): CMapperInputChannel[DataStore with DataSource[_,_,_]] = {
       // TODO: Yet another asInstanceOf. Don't like them.
       def f(d: DList[_]): AST.Node[_] with MapperLike[_,_,_] =
         ci.getASTNode(d).asInstanceOf[AST.Node[_] with MapperLike[_,_,_]]
@@ -173,13 +173,13 @@ object Intermediate {
 
     def containsGbkMapper(d: ParallelDo[_,_]) = d == input
 
-    def convert(ci: ConvertInfo): BypassInputChannel[DataStore with DataSource] = {
+    def convert(ci: ConvertInfo): BypassInputChannel[DataStore with DataSource[_,_,_]] = {
       // TODO. Yet another asInstanceOf
       BypassInputChannel(dataStoreInput(ci), ci.getASTNode(input)
                                                .asInstanceOf[AST.Node[_] with KVLike[_,_]])
     }
 
-    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource = input.dataSource(ci)
+    def dataStoreInput(ci: ConvertInfo): DataStore with DataSource[_,_,_] = input.dataSource(ci)
 
   }
 
@@ -188,9 +188,9 @@ object Intermediate {
     override def hasInput(d: DList[_]): Boolean = input == d
     override def hasOutput(d: DList[_]): Boolean = input == d
     override def containsGbkMapper(d: ParallelDo[_,_]) = false
-    override def convert(ci: ConvertInfo): CStraightInputChannel[DataStore with DataSource] =
+    override def convert(ci: ConvertInfo): CStraightInputChannel[DataStore with DataSource[_,_,_]] =
       CStraightInputChannel(dataStoreInput(ci), ci.getASTNode(input).asInstanceOf[AST.Node[_]])
-    override def dataStoreInput(ci: ConvertInfo): DataStore with DataSource =
+    override def dataStoreInput(ci: ConvertInfo): DataStore with DataSource[_,_,_] =
       input.dataSource(ci)
   }
 
@@ -208,7 +208,6 @@ object Intermediate {
      */
     def output: DList[_]
 
-
     def hasInput(d: DList[_]): Boolean
     def hasOutput(d: DList[_]): Boolean
 
@@ -219,16 +218,16 @@ object Intermediate {
      * parameter. It ensures that for each output @AST.Node@ of the converted
      * output channel there is at most one @BridgeStore@ object.
      */
-    final def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink] = {
+    final def dataStoreOutputs(parentMSCR: MSCR, ci: ConvertInfo): Set[DataStore with DataSink[_,_,_]] = {
       val d: DList[_] = this.output
-      val bridgeStores:Set[DataStore with DataSink] =
+      val bridgeStores:Set[DataStore with DataSink[_,_,_]] =
         if ( parentMSCR.connectsToOtherMSCR(d, ci.mscrs) ) {
           Set(ci.getBridgeStore(d))
         } else {
           Set()
         }
 
-      val outputStores: Set[DataStore with DataSink] = ci.outMap.get(d) match {
+      val outputStores: Set[DataStore with DataSink[_,_,_]] = ci.outMap.get(d) match {
         case Some(persisters) => persisters.map(_.mkOutputStore(ci.getASTNode(d)))
         case None             => Set()
       }
@@ -330,7 +329,7 @@ object Intermediate {
       }
     }
 
-    def convert(parentMSCR: MSCR, ci: ConvertInfo): CGbkOutputChannel[DataStore with DataSink] = {
+    def convert(parentMSCR: MSCR, ci: ConvertInfo): CGbkOutputChannel[DataStore with DataSink[_,_,_]] = {
       val crPipe:CRPipe = combiner match {
         case Some(c) => {
           val nc: AST.Combiner[_,_] = ci.getASTCombiner(c)
@@ -348,7 +347,7 @@ object Intermediate {
       }
       val fltn: Option[AST.Flatten[_]] = flatten.map{ci.getASTFlatten(_)}
       val gbk: AST.GroupByKey[_,_]     = ci.getASTGroupByKey(groupByKey)
-      val outputs: Set[DataStore with DataSink] = dataStoreOutputs(parentMSCR, ci)
+      val outputs: Set[DataStore with DataSink[_,_,_]] = dataStoreOutputs(parentMSCR, ci)
 
       CGbkOutputChannel(outputs, fltn, gbk, crPipe)
     }
@@ -362,7 +361,7 @@ object Intermediate {
 
     def output: DList[_] = input
 
-    def convert(parentMSCR: MSCR, ci: ConvertInfo): CBypassOutputChannel[DataStore with DataSink] = {
+    def convert(parentMSCR: MSCR, ci: ConvertInfo): CBypassOutputChannel[DataStore with DataSink[_,_,_]] = {
       val n = ci.getASTNode(input)
       if (n.isInstanceOf[AST.GbkMapper[_,_,_]])
         CBypassOutputChannel(dataStoreOutputs(parentMSCR, ci), n.asInstanceOf[AST.GbkMapper[_,_,_]])
@@ -378,7 +377,7 @@ object Intermediate {
     override def hasOutput(d: DList[_]) = d == output
     override def toString = "MultiOutputChannel(" + input.toString + ")"
     override def output: DList[_] = input
-    override def convert(parentMSCR: MSCR, ci: ConvertInfo): CFlattenOutputChannel[DataStore with DataSink] = {
+    override def convert(parentMSCR: MSCR, ci: ConvertInfo): CFlattenOutputChannel[DataStore with DataSink[_,_,_]] = {
       CFlattenOutputChannel(dataStoreOutputs(parentMSCR, ci), ci.getASTNode(input).asInstanceOf[AST.Flatten[_]])
     }
   }

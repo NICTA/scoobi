@@ -122,7 +122,7 @@ object Smart {
       n
     }
 
-    def dataSource(ci: ConvertInfo): DataStore with DataSource = ci.getBridgeStore(this)
+    def dataSource(ci: ConvertInfo): DataStore with DataSource[_,_,_] = ci.getBridgeStore(this)
 
     final def convert(ci: ConvertInfo): AST.Node[A]  = {
       val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
@@ -184,7 +184,7 @@ object Smart {
                     def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
 
-    override def dataSource(ci: ConvertInfo): DataStore with DataSource =
+    override def dataSource(ci: ConvertInfo): DataStore with DataSource[_,_,_] =
       loader.mkInputStore(ci.getASTNode(this).asInstanceOf[AST.Load[A]])
   }
 
@@ -670,7 +670,7 @@ object Smart {
                     val g: DGraph,
                     val astMap: MMap[Smart.DList[_], AST.Node[_]],
                     /* A map of AST nodes to BridgeStores*/
-                    val bridgeStoreMap: MMap[AST.Node[_], BridgeStore]
+                    val bridgeStoreMap: MMap[AST.Node[_], BridgeStore[_]]
                     ) {
 
     def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = astMap.get(d) match {
@@ -703,12 +703,12 @@ object Smart {
       case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
     }
 
-    def getBridgeStore(d: Smart.DList[_]): BridgeStore = {
+    def getBridgeStore(d: Smart.DList[_]): BridgeStore[_] = {
       val n: AST.Node[_] = getASTNode(d)
       bridgeStoreMap.get(n) match {
         case Some(bs) => bs
         case None     => {
-          val newBS: BridgeStore = BridgeStore(n)
+          val newBS: BridgeStore[_] = BridgeStore(n)
           bridgeStoreMap += ((n, newBS))
           newBS
         }

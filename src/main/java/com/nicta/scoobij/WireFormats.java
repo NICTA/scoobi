@@ -4,7 +4,10 @@ import java.io.DataInput;
 import java.io.DataOutput;
 
 import scala.Tuple2;
+import scala.reflect.Manifest;
+
 import com.nicta.scoobi.WireFormat;
+import com.nicta.scoobij.impl.Conversions;
 
 public class WireFormats {
 
@@ -46,33 +49,45 @@ public class WireFormats {
 		};
 	}
 
-	public static <T, V> WireFormat<scala.Tuple2<T, V>> wireFormatPair(
-			final WireFormat<T> ord1, final WireFormat<V> ord2) {
+	public static <T, V> WireFormatType<scala.Tuple2<T, V>> wireFormatPair(
+			final WireFormatType<T> ord1, final WireFormatType<V> ord2) {
 
-		return new WireFormat<scala.Tuple2<T, V>>() {
-
-			private static final long serialVersionUID = 1L;
+		return new WireFormatType<scala.Tuple2<T, V>>() {
 
 			@Override
-			public Tuple2<T, V> fromWire(DataInput arg0) {
+			public com.nicta.scoobi.WireFormat<scala.Tuple2<T,V>> wireFormat() {
+				return new WireFormat<scala.Tuple2<T, V>>() {
+					private static final long serialVersionUID = 1L;
 
-				T t = ord1.fromWire(arg0);
-				V v = ord2.fromWire(arg0);
+					@Override
+					public Tuple2<T, V> fromWire(DataInput arg0) {
 
-				return new Tuple2<T, V>(t, v);
+						T t = ord1.wireFormat().fromWire(arg0);
+						V v = ord2.wireFormat().fromWire(arg0);
+
+						return new Tuple2<T, V>(t, v);
+					}
+
+					@Override
+					public String show(Tuple2<T, V> arg0) {
+						return "Tuple2(" + ord1.wireFormat().show(arg0._1) + ", "
+								+ ord2.wireFormat().show(arg0._2) + ")";
+					}
+
+					@Override
+					public void toWire(Tuple2<T, V> arg0, DataOutput arg1) {
+						ord1.wireFormat().toWire(arg0._1, arg1);
+						ord2.wireFormat().toWire(arg0._2, arg1);
+					}
+				};
 			}
 
 			@Override
-			public String show(Tuple2<T, V> arg0) {
-				return "Tuple2(" + ord1.show(arg0._1) + ", "
-						+ ord2.show(arg0._2) + ")";
-			}
+			public Manifest<scala.Tuple2<T, V>> typeInfo() {
+				return Conversions.toManifest(scala.Tuple2.class, ord1.typeInfo(), ord2.typeInfo());
+			};
 
-			@Override
-			public void toWire(Tuple2<T, V> arg0, DataOutput arg1) {
-				ord1.toWire(arg0._1, arg1);
-				ord2.toWire(arg0._2, arg1);
-			}
+
 
 		};
 	}

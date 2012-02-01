@@ -22,9 +22,4 @@ import com.nicta.scoobi.impl.plan.AST
   * external to a Hadoop job which means it must be persisted somewhere, at least
   * temporarily, between jobs. There are three kinds: Inputs, Outputs and
   * Bridges. */
-abstract class DataStore(val node: AST.Node[_]) {
-
-  /* The name to be given to the type of this connector. Two different types can
-   * not share the same name. */
-  val typeName: String = "V" + node.id
-}
+abstract class DataStore(val node: AST.Node[_])

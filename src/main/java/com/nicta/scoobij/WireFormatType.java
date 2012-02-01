@@ -15,6 +15,8 @@
  */
 package com.nicta.scoobij;
 
+import scala.reflect.Manifest;
+
 /**
  * Gives runtime information based on the type. If you have a DList<Integer>'s
  * you'll often need a WireFormatType<Integer>, this is largely because Java's
@@ -22,7 +24,7 @@ package com.nicta.scoobij;
  * and deserialize this type
  * */
 public interface WireFormatType<T> {
-	public Class<T> typeInfo();
+	public Manifest<T> typeInfo();
 
 	public com.nicta.scoobi.WireFormat<T> wireFormat();
 }

@@ -13,14 +13,14 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.text
+package com.nicta.scoobi.io.seq
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.io.Writable
 import org.apache.hadoop.mapred.FileAlreadyExistsException
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
@@ -34,19 +34,19 @@ import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.AST
 
 
-/** Smart functions for persisting distributed lists by storing them as text files. */
-object TextOutput {
-  lazy val logger = LogFactory.getLog("scoobi.TextOutput")
+/** Smart functions for persisting distributed lists by storing them as Sequence files. */
+object SequenceOutput {
+  lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
-  /** Persist a distributed list as a text file. */
-  def toTextFile[A : Manifest](dl: DList[A], path: String): DListPersister[A] = {
-    val persister = new Persister[A] {
-      def mkOutputStore(node: AST.Node[A]) = new OutputStore[NullWritable, A, A](node) {
+  /** Specify a distributed list to be persistent by storing it to disk as a Sequence File. */
+  def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String): DListPersister[(K, V)] = {
+    val persister = new Persister[(K, V)] {
+      def mkOutputStore(node: AST.Node[(K, V)]) = new OutputStore[K, V, (K, V)](node) {
         private val outputPath = new Path(path)
 
-        val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
-        val outputKeyClass = classOf[NullWritable]
-        val outputValueClass = implicitly[Manifest[A]].erasure.asInstanceOf[Class[A]]
+        val outputFormat = classOf[SequenceFileOutputFormat[K, V]]
+        val outputKeyClass = implicitly[Manifest[K]].erasure.asInstanceOf[Class[K]]
+        val outputValueClass = implicitly[Manifest[V]].erasure.asInstanceOf[Class[V]]
 
         def outputCheck() =
           if (Helper.pathExists(outputPath))
@@ -56,8 +56,8 @@ object TextOutput {
 
         def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
 
-        val outputConverter = new OutputConverter[NullWritable, A, A] {
-          def toKeyValue(x: A) = (NullWritable.get, x)
+        val outputConverter = new OutputConverter[K, V, (K, V)] {
+          def toKeyValue(x: (K, V)) = (x._1, x._2)
         }
       }
     }

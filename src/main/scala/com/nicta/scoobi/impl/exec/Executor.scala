@@ -15,10 +15,8 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.IOException
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.FileAlreadyExistsException
 import scala.collection.mutable.{Set => MSet, Map => MMap}
 
 import com.nicta.scoobi.Scoobi
@@ -40,7 +38,7 @@ object Executor {
     * @param refcnts Number of nodes that are still to consume the output of an MSCR. */
   private class ExecState
       (val computeTable: MSet[AST.Node[_]],
-       val refcnts: MMap[BridgeStore, Int])
+       val refcnts: MMap[BridgeStore[_], Int])
 
 
   /** For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
@@ -58,24 +56,19 @@ object Executor {
       else                    true
     }
 
-    outputs map (_.outputPath) find (pathExists(_)) match {
-      case Some(p) => throw new FileAlreadyExistsException("Output " + p + " already exists.")
-      case None    => Unit
-    }
-
-    /* Check that all input dirs already exist. */
+    /* Check all input sources. */
     mscrs flatMap { _.inputChannels } flatMap {
-      case BypassInputChannel(input, _) => List(input)
-      case MapperInputChannel(input, _) => List(input)
+      case BypassInputChannel(input, _)   => List(input)
+      case MapperInputChannel(input, _)   => List(input)
       case StraightInputChannel(input, _) => List(input)
     } filter {
-      case BridgeStore(_, _) => false
-      case _                 => true
-    } map { _.inputPath } find (!pathExists(_)) match {
-      case Some(p) => throw new IOException("Input " + p + " does not exist.")
-      case None    => Unit
-    }
+      case BridgeStore(_) => false
+      case _              => true
+    } foreach { _.inputCheck() }
 
+
+    /* Check all output targets. */
+    outputs foreach { _.outputCheck() }
 
     /* Initialize compute table with all input (Load) nodes. */
     val computeTable: MSet[AST.Node[_]] = MSet.empty
@@ -85,13 +78,13 @@ object Executor {
     }
 
     /* Initialize reference counts of all intermediate data (i.e. BridgeStores). */
-    val bridges: List[BridgeStore] = mscrs.toList flatMap (_.inputChannels) flatMap {
-      case BypassInputChannel(bs@BridgeStore(_, _), _) => List(bs)
-      case MapperInputChannel(bs@BridgeStore(_, _), _) => List(bs)
-      case _                                           => Nil
+    val bridges: List[BridgeStore[_]] = mscrs.toList flatMap (_.inputChannels) flatMap {
+      case BypassInputChannel(bs@BridgeStore(_), _) => List(bs)
+      case MapperInputChannel(bs@BridgeStore(_), _) => List(bs)
+      case _                                        => Nil
     }
 
-    val refcnts: Map[BridgeStore, Int] =
+    val refcnts: Map[BridgeStore[_], Int] =
       bridges groupBy(identity) map { case (b, bs) => (b, bs.size) } toMap
 
 
@@ -124,7 +117,7 @@ object Executor {
     /* Update reference counts - decrement counts for all intermediates then
      * garbage collect any intermediates that have a zero reference count. */
     mscr.inputChannels.foreach { ic =>
-      def updateRefcnt(store: BridgeStore) = {
+      def updateRefcnt(store: BridgeStore[_]) = {
         val rc = st.refcnts(store) - 1
         st.refcnts += (store-> rc)
         if (rc == 0)
@@ -132,9 +125,9 @@ object Executor {
       }
 
       ic match {
-        case BypassInputChannel(bs@BridgeStore(_, _), _) => updateRefcnt(bs)
-        case MapperInputChannel(bs@BridgeStore(_, _), _) => updateRefcnt(bs)
-        case _                                           => Unit
+        case BypassInputChannel(bs@BridgeStore(_), _) => updateRefcnt(bs)
+        case MapperInputChannel(bs@BridgeStore(_), _) => updateRefcnt(bs)
+        case _                                        => Unit
       }
     }
   }

@@ -15,13 +15,33 @@
   */
 package com.nicta.scoobi.io
 
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import org.apache.hadoop.mapreduce.OutputFormat
+import org.apache.hadoop.mapreduce.Job
 
 
 /* An output store from a MapReduce job. */
-trait DataSink {
-  def outputTypeName: String
-  def outputPath: Path
-  def outputFormat: Class[_ <: FileOutputFormat[_,_]]
+trait DataSink[K, V, B] {
+  /** The OutputFormat specifying the type of output for this DataSink. */
+  def outputFormat: Class[_ <: OutputFormat[K, V]]
+
+  /** The Class of the OutputFormat's key. */
+  def outputKeyClass: Class[K]
+
+  /** The Class of the OutputFormat's value. */
+  def outputValueClass: Class[V]
+
+  /** Check the validity of the DataSink specification. */
+  def outputCheck()
+
+  /** Configure the DataSink. */
+  def outputConfigure(job: Job): Unit
+
+  /** Maps the type consumed by this DataSink to the key-values of its OutputFormat. */
+  val outputConverter: OutputConverter[K, V, B]
+}
+
+
+/** Convert the type consumed by a DataSink into an OutputFormat's key-value types. */
+trait OutputConverter[K, V, B] extends Serializable {
+  def toKeyValue(x: B): (K, V)
 }
