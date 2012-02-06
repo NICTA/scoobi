@@ -56,8 +56,8 @@ import com.nicta.scoobi.impl.util.JarBuilder
 
 
 /** A class that defines a single Hadoop MapReduce job. */
-class MapReduceJob {
-  lazy val logger = LogFactory.getLog(this.getClass.getName)
+class MapReduceJob(stepId: Int) {
+  lazy val logger = LogFactory.getLog("scoobi.Step")
 
   import scala.collection.mutable.{Set => MSet, Map => MMap}
 
@@ -97,7 +97,7 @@ class MapReduceJob {
   /** Take this MapReduce job and run it on Hadoop. */
   def run() = {
 
-    val job = new Job(Scoobi.conf, Scoobi.jobId)
+    val job = new Job(Scoobi.conf, Scoobi.jobId + "(Step-" + stepId + ")")
     val fs = FileSystem.get(job.getConfiguration)
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
@@ -207,9 +207,21 @@ class MapReduceJob {
     logger.info("Number of reducers: " + numReducers)
 
 
-    /* Run job then tidy-up. */
+    /* Run job */
     jar.close()
-    job.waitForCompletion(true)
+    job.submit()
+
+    val map = new Progress(job.mapProgress())
+    val reduce = new Progress(job.reduceProgress())
+
+    while (!job.isComplete()) {
+      Thread.sleep(5000)
+      if (map.hasProgressed() || reduce.hasProgressed())
+        logger.info("Map " + map.getProgress().formatted("%3d") + "%    " +
+                    "Reduce " + reduce.getProgress().formatted("%3d") + "%")
+    }
+
+    /* Tidy-up */
     tmpFile.delete
 
 
@@ -248,8 +260,8 @@ class MapReduceJob {
 object MapReduceJob {
 
   /** Construct a MapReduce job from an MSCR. */
-  def apply(mscr: MSCR): MapReduceJob = {
-    val job = new MapReduceJob
+  def apply(stepId: Int, mscr: MSCR): MapReduceJob = {
+    val job = new MapReduceJob(stepId)
     val mapperTags: MMap[AST.Node[_], Set[Int]] = MMap.empty
 
     /* Tag each output channel with a unique index. */
@@ -304,4 +316,24 @@ object MapReduceJob {
   }
 }
 
+
 object UniqueId extends UniqueInt
+
+
+/* Helper class to track progress of Map or Reduce tasks and whether or not
+ * progress has advanced. */
+class Progress(updateFn: => Float) {
+  private var progressed = true
+  private var progress = (updateFn * 100).toInt
+
+  def hasProgressed() = {
+    val p = (updateFn * 100).toInt
+    if (p > progress) { progressed = true; progress = p } else { progressed = false }
+    progressed
+  }
+
+  def getProgress(): Int = {
+    hasProgressed
+    progress
+  }
+}

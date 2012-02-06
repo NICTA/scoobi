@@ -15,6 +15,8 @@
   */
 package com.nicta.scoobi.impl.exec
 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import scala.collection.mutable.{Set => MSet, Map => MMap}
@@ -26,10 +28,12 @@ import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.MSCRGraph
+import com.nicta.scoobi.impl.util.UniqueInt
 
 
 /** Object for executing a Scoobi "plan". */
 object Executor {
+  lazy val logger = LogFactory.getLog("scoobi.Job")
 
   /** The only state required to be passed around during execution of the
     * Scoobi compute graph.
@@ -88,6 +92,11 @@ object Executor {
       bridges groupBy(identity) map { case (b, bs) => (b, bs.size) } toMap
 
 
+    /* Total number of Scoobi "tasks" is the number of MSCRs, i.e. number of MR jobs. */
+    logger.info("Running job: " + Scoobi.jobId)
+    logger.info("Number of steps: " + mscrs.size)
+
+
     /* Rumble over each output and execute their containing MSCR. Thread-through the
      * the execution state as it is updated. */
     val st = new ExecState(computeTable, MMap(refcnts.toSeq: _*))
@@ -108,7 +117,9 @@ object Executor {
     }
 
     /* Make a Hadoop job and run it. */
-    val job = MapReduceJob(mscr)
+    val stepId = StepIds.get
+    logger.info("Running step: " + stepId + " of " + mscrs.size)
+    val job = MapReduceJob(stepId, mscr)
     job.run()
 
     /* Update compute table - all MSCR output nodes have now been produced. */
@@ -132,3 +143,5 @@ object Executor {
     }
   }
 }
+
+object StepIds extends UniqueInt { i = 1 }
