@@ -18,6 +18,7 @@ package com.nicta.scoobi
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.io.Persister
+import com.nicta.scoobi.io.func.FunctionInput
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
 import com.nicta.scoobi.impl.plan.MSCRGraph
@@ -144,6 +145,24 @@ class DListPersister[A](val dl: DList[A], val persister: Persister[A])
 
 
 object DList {
+
+  /** Creates a distributed list with given elements. */
+  def apply[A : Manifest : WireFormat](elems: A*): DList[A] = {
+    val vec = Vector(elems: _*)
+    FunctionInput.fromFunction(vec.size)(ix => vec(ix))
+  }
+
+  /** Creates a distributed list containing values of a given function over a range of
+    * integer values starting from 0. */
+  def tabulate[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] =
+    FunctionInput.fromFunction(n)(f)
+
+
+  /* Pimping from generic collection types (i.e. Seq) to a Distributed List */
+  trait PimpWrapper[A] { def toDList: DList[A] }
+  implicit def seqPimp[A : Manifest : WireFormat](seq: Seq[A]) = new PimpWrapper[A] {
+    def toDList: DList[A] = FunctionInput.fromFunction(seq.size)(seq)
+  }
 
   /** Persist one or more distributed lists. */
   def persist(outputs: DListPersister[_]*) = {
