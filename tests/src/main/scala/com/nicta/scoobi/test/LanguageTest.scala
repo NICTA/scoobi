@@ -13,9 +13,10 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi
+package com.nicta.scoobi.test
 
 import java.io._
+import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.lib.Join._
 import com.nicta.scoobi.lib.CoGroup._
@@ -27,30 +28,24 @@ object LanguageTest {
   import DList._
   import io.text.TextInput._
   import io.text.TextOutput._
-
-  private val FILE_DIR = "src/test/resources"
+  
+  val names = DList((1, "Joe"), (2, "Kate"), (3, "Peter"), (4, "Rami"), (6, "Fred"))
+  val cnts = DList((1,36.8), (2,92.3), (3,88.6), (6,12.9), (7,59.2), (2,49.1), (3,22.2))
 
   /** "Join" example. */
   def joinTest() = {
 
-    val names = extractFromDelimitedTextFile(",", FILE_DIR + "/id-names.txt") {
-      case Int(id) :: names :: _ => (id, names)
-    }
-    val cnts = extractFromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt") {
-      case Int(id) :: Double(counts) :: _ => (id, counts)
-    }
-
     val joined = joinOn(names by (_._1), cnts by (_._1))(_ % 2)
     val coGrouped = coGroup(names by (_._1), cnts by (_._1))
 
-    persist(toTextFile(joined, FILE_DIR + "/out/id-names-cnt"),
-            toTextFile(coGrouped, FILE_DIR + "/out/id-names-cnt-cg"))
+    persist(toTextFile(joined, "test-out/id-names-cnt"),
+            toTextFile(coGrouped, "test-out/id-names-cnt-cg"))
   }
 
   def graphTest() = {
     import com.nicta.scoobi.impl.plan.Intermediate._
 
-    val d1: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+    val d1: DList[(Int, String)] = names
     val d2: DList[(Int, Iterable[String])] = d1.groupByKey
     val d2_ = d1.groupByKey
 
@@ -58,29 +53,27 @@ object LanguageTest {
     val d4: DList[(Int, String)] = d2_.combine(_++_)
 
     persist (
-      toTextFile(d3, FILE_DIR + "/out/d3"),
-      toTextFile(d4, FILE_DIR + "/out/d4")
+      toTextFile(d3, "test-out/d3"),
+      toTextFile(d4, "test-out/d4")
     )
   }
 
   def noReducerTest() = {
-    val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
-    val d1: DList[(Int, Iterable[String])] = d0.groupByKey
+    val d1: DList[(Int, Iterable[String])] = names.groupByKey
 
-    persist(toTextFile(d1, FILE_DIR + "/out/d1"))
+    persist(toTextFile(d1, "/out/d1"))
   }
 
   def bypassInputChannelTest() = {
-    val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
-    val d1: DList[(Int, Iterable[String])] = d0.groupByKey
+    val d1: DList[(Int, Iterable[String])] = names.groupByKey
     val d2: DList[(Int, Iterable[Iterable[String]])] = d1.groupByKey
 
-    persist(toTextFile(d2, FILE_DIR + "/out/d2"))
+    persist(toTextFile(d2, "test-out/d2"))
   }
 
   def flatMapSiblingsTest() = {
-    val d0: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
-    val d02: DList[(Int, String)] = fromDelimitedTextFile(",", FILE_DIR + "/id-cnt.txt")
+    val d0: DList[(Int, String)] = names
+    val d02: DList[(Int, String)] = names
     val d0_0: DList[(Int, String)] = d0.flatMap{case (i,str) => List((i, str + " for d0_0"))}
     val d0_1: DList[(Int, String)] = d0.flatMap{case (i,str) => List((i, str + " for d0_1"))}
     val d1: DList[(Int, String)] = d0_0 ++ d0_1
@@ -88,8 +81,8 @@ object LanguageTest {
     val d02_0: DList[(Int, String)] = d02.flatMap{case (i,str) => List((i, str + "for d02_0"))}
     val d3: DList[(Int, Iterable[String])] = d02_0.groupByKey
 
-    persist(toTextFile(d2, FILE_DIR + "/fms-d2"),
-            toTextFile(d3, FILE_DIR + "/fms-d3"))
+    persist(toTextFile(d2, "test-out/fms-d2"),
+            toTextFile(d3, "test-out/fms-d3"))
   }
 
 
@@ -124,7 +117,7 @@ object LanguageTest {
 
 
   /** Run them. */
-  def main(args: Array[String]) = withHadoopArgs(args) { _ =>
+  def main(args: Array[String]) {
     Scoobi.setJarByClass(this.getClass)
     println("-------------- join -------------"); joinTest()
     println("------------ graphTest ----------"); graphTest()
