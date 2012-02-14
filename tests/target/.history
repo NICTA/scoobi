@@ -1,0 +1,4 @@
+compile
+package-hadoop
+reload
+package-hadoop
