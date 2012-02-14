@@ -13,12 +13,13 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi
+package com.nicta.scoobi.test
 
 import java.io._
-import DList._
-import io.text.TextInput._
-import io.text.TextOutput._
+import com.nicta.scoobi.DList._
+import com.nicta.scoobi._
+import com.nicta.scoobi.io.text.TextInput._
+import com.nicta.scoobi.io.text.TextOutput._
 
 
 /* Make a simple cyclic data structure TODO: is there something better from the standard library? */
@@ -106,9 +107,9 @@ object ClassBuilderTest {
 
 
   def main(args: Array[String]) {
-    val d1: DList[String] = fromTextFile("src/test/resources/ints.txt")
+    val d1: DList[String] = DList("aaa", "bbb", "ccc")
     val d2: DList[Dummy] = d1.map(_ => Dummy())
 
-    persist(toTextFile(d2, "src/test/resources/out/dummy"))
+    persist(toTextFile(d2, "test-out/dummy"))
   }
 }

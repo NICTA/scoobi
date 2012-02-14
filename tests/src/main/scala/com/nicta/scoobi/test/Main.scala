@@ -13,25 +13,17 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-name := "scoobi"
+package com.nicta.scoobi.test
 
-organization := "com.nicta"
+import com.nicta.scoobi.Scoobi._
 
-version := "0.3.0"
+object Main {
 
-scalaVersion := "2.9.1"
+  def main(args: Array[String]) = withHadoopArgs(args) { _ =>
+    // TODO: add options to parse args, and only run an individual test
 
-libraryDependencies ++= Seq(
-  "javassist" % "javassist" % "3.12.1.GA",
-  "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1"
-)
-
-publishArtifact in packageDoc := false
-
-compileOrder := CompileOrder.ScalaThenJava
-
-resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
-
-scalacOptions += "-deprecation"
-
-javacOptions += "-Xlint:none"
+    LanguageTest.main(args)
+    ClassBuilderTest.main(args)
+    SerializationTest.main(args)
+  }
+}

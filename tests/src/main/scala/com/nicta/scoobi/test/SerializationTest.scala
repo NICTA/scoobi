@@ -13,17 +13,18 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi
+package com.nicta.scoobi.test
 
 import org.scalacheck._
 import java.io._
-import WireFormat._
+import com.nicta.scoobi.WireFormat._
+import com.nicta.scoobi._
 
 import Arbitrary.arbitrary
 
 object SerializationTest extends Properties("Serializable") {
 
-  def serialize[T : WireFormat](obj: T): Array[Byte] = {
+  private def serialize[T : WireFormat](obj: T): Array[Byte] = {
     val bs = new ByteArrayOutputStream
     val dos = new DataOutputStream(bs)
 
@@ -32,7 +33,7 @@ object SerializationTest extends Properties("Serializable") {
     bs.toByteArray
   }
 
-  def deserialize[T : WireFormat](raw: Array[Byte]) : T = {
+  private def deserialize[T : WireFormat](raw: Array[Byte]) : T = {
     val bais = new ByteArrayInputStream(raw)
     val di = new DataInputStream(bais)
     implicitly[WireFormat[T]].fromWire(di)
@@ -136,7 +137,9 @@ object SerializationTest extends Properties("Serializable") {
     (x: Int) => serializesCorrectly[Base](SubA(x))
   }
 
-  assert( serializesCorrectly[Base](SubC) )
+  if(! serializesCorrectly[Base](SubC) ) {
+    sys.error("Failed test, didnt' serialize correctly")
+  }
 
 }
 
