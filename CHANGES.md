@@ -8,7 +8,7 @@
 
 * The ability to create a DList given a sequence of elements. There is now an `apply` method for DLists and take a look at the `tabulate` method. Also added is pimping of regular collections into DLists using `toDList`. See [DList docs](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList)
 
-* A method to write out delimited text files - [TextOutput](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.io.text.TextOutput).`toDelimitedTextFile`. Thanks to [Alex Cozi](https://github.com/xelax) for this one.
+* A method to write out delimited text files - [TextOutput](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.io.text.TextOutput$).`toDelimitedTextFile`. Thanks to [Alex Cozi](https://github.com/xelax) for this one.
 
 * Better logging. Scoobi now logs input and output paths, how many map-reduce steps will be executed, which step is being executed, map/reduce task progress, number of reducers for the current step, map-
 reduce job ids, etc. Turning off standard Hadoop logging in log4j.properties is useful.
