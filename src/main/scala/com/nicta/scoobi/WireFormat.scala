@@ -557,6 +557,12 @@ object WireFormat {
     def show(x: Double) = x.toString
   }
 
+  implicit def FloatFmt = new WireFormat[Float] {
+    def toWire(x: Float, out: DataOutput) { out.writeFloat(x) }
+    def fromWire(in: DataInput): Float = { in.readFloat() }
+    def show(x: Float) = x.toString
+  }
+
   implicit def CharFmt = new WireFormat[Char] {
     def toWire(x: Char, out: DataOutput) { out.writeChar(x) }
     def fromWire(in: DataInput): Char = in.readChar()
