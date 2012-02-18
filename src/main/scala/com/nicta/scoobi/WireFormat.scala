@@ -18,6 +18,9 @@ package com.nicta.scoobi
 import java.io._
 import org.apache.hadoop.io._
 import annotation.implicitNotFound
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Builder
+
 
 
 /** Type-class for sending types across the Hadoop wire. */
@@ -766,23 +769,26 @@ object WireFormat {
   }
 
   /*
-   * List-like structures
+   * Travesable structures
    */
-  implicit def IterableFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Iterable[T]] {
-    def toWire(x: Iterable[T], out: DataOutput) = {
-      require(x != null, "Cannot serialize a null Iterable. Consider using an empty collection, or a Option[Iterable]")
-      out.writeInt(x.size)
-      x.foreach { wt.toWire(_, out) }
+  implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]) = {
+    val builder: Builder[T, CC[T]] = bf()
+    new WireFormat[CC[T]] {
+      private val b: Builder[T, CC[T]] = builder
+      def toWire(x: CC[T], out: DataOutput) = {
+        require(x != null, "Cannot serialize a null Traversable. Consider using an empty collection, or a Option[Traversable]")
+        out.writeInt(x.size)
+        x.foreach { wt.toWire(_, out) }
+      }
+      def fromWire(in: DataInput): CC[T] = {
+        val size = in.readInt()
+        builder.clear()
+        builder.sizeHint(size)
+        for (_ <- 0 to (size - 1)) { b += wt.fromWire(in) }
+        b.result()
+      }
+      def show(x: CC[T]) = x.mkString("[", ",", "]")
     }
-    def fromWire(in: DataInput): Iterable[T] = {
-      import scala.collection.immutable.VectorBuilder
-      val size = in.readInt()
-      val b = new scala.collection.immutable.VectorBuilder[T]
-      b.sizeHint(size)
-      for (_ <- 0 to (size - 1)) { b += wt.fromWire(in) }
-      b.result().toIterable
-    }
-    def show(x: Iterable[T]) = x.mkString("[", ",", "]")
   }
 
   /*
