@@ -218,6 +218,24 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
 
   /** Create a new distributed list that is keyed based on a specified function. */
   def by[K : Manifest : WireFormat](kf: A => K): DList[(K, A)] = map { x => (kf(x), x) }
+
+  /** Create a distribued list containing just the keys of a key-value distributed list. */
+  def keys[K, V]
+      (implicit ev:   A <:< (K, V),
+                mK:   Manifest[K],
+                wtK:  WireFormat[K],
+                mV:   Manifest[V],
+                wtV:  WireFormat[V])
+    : DList[K] = map(ev(_)._1)
+
+  /** Create a distribued list containing just the values of a key-value distributed list. */
+  def values[K, V]
+      (implicit ev:   A <:< (K, V),
+                mK:   Manifest[K],
+                wtK:  WireFormat[K],
+                mV:   Manifest[V],
+                wtV:  WireFormat[V])
+    : DList[V] = map(ev(_)._2)
 }
 
 
