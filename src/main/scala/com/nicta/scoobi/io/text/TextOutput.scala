@@ -65,7 +65,7 @@ object TextOutput {
   }
 
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file. */
-  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String): DListPersister[String] = {
+  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t"): DListPersister[String] = {
     def anyToString(any: Any, sep: String): String = any match {
       case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
       case _             => any.toString
