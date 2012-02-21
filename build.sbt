@@ -32,6 +32,6 @@ compileOrder := CompileOrder.ScalaThenJava
 
 resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
 
-scalacOptions += "-deprecation"
+scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")
 
 javacOptions += "-Xlint:none"

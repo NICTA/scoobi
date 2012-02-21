@@ -19,6 +19,13 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Writable
+import org.apache.hadoop.io.BooleanWritable
+import org.apache.hadoop.io.IntWritable
+import org.apache.hadoop.io.FloatWritable
+import org.apache.hadoop.io.LongWritable
+import org.apache.hadoop.io.DoubleWritable
+import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
@@ -26,6 +33,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
+import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.io.OutputConverter
@@ -38,29 +46,135 @@ import com.nicta.scoobi.impl.plan.AST
 object SequenceOutput {
   lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
+
+  /** Type class for conversions of basic Scala types to Hadoop Writable types. */
+  trait Conv[From] extends Serializable {
+    type To <: Writable
+    def toWritable(x: From): To
+    val mf: Manifest[To]
+  }
+
+  /* Implicits for Conv type class. */
+  implicit def BoolConv = new Conv[Boolean] {
+    type To = BooleanWritable
+    def toWritable(x: Boolean) = new BooleanWritable(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def IntConv = new Conv[Int] {
+    type To = IntWritable
+    def toWritable(x: Int) = new IntWritable(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def FloatConv = new Conv[Float] {
+    type To = FloatWritable
+    def toWritable(x: Float) = new FloatWritable(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def LongConv = new Conv[Long] {
+    type To = LongWritable
+    def toWritable(x: Long) = new LongWritable(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def DoubleConv = new Conv[Double] {
+    type To = DoubleWritable
+    def toWritable(x: Double) = new DoubleWritable(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def StringConv = new Conv[String] {
+    type To = Text
+    def toWritable(x: String) = new Text(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+
+  /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
+    * to disk as the "key" component in a Sequence File. */
+  def convertKeyToSequenceFile[K](dl: DList[K], path: String)(implicit convK: Conv[K]): DListPersister[K] = {
+
+    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
+    val valueClass = classOf[NullWritable]
+
+    val converter = new OutputConverter[convK.To, NullWritable, K] {
+      def toKeyValue(k: K) = (convK.toWritable(k), NullWritable.get)
+    }
+
+    new DListPersister(dl, new SeqPersister[convK.To, NullWritable, K](path, keyClass, valueClass, converter))
+  }
+
+
+  /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
+    * to disk as the "value" component in a Sequence File. */
+  def convertValueToSequenceFile[V](dl: DList[V], path: String)(implicit convV: Conv[V]): DListPersister[V] = {
+
+    val keyClass = classOf[NullWritable]
+    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]
+
+    val converter = new OutputConverter[NullWritable, convV.To, V] {
+      def toKeyValue(v: V) = (NullWritable.get, convV.toWritable(v))
+    }
+
+    new DListPersister(dl, new SeqPersister[NullWritable, convV.To, V](path, keyClass, valueClass, converter))
+  }
+
+
+  /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
+    * to disk as "key-values" in a Sequence File. */
+  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String)(implicit convK: Conv[K], convV: Conv[V]): DListPersister[(K, V)] = {
+
+    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
+    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]
+
+    val converter = new OutputConverter[convK.To, convV.To, (K, V)] {
+      def toKeyValue(kv: (K, V)) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
+    }
+
+    new DListPersister(dl, new SeqPersister[convK.To, convV.To, (K, V)](path, keyClass, valueClass, converter))
+  }
+
+
   /** Specify a distributed list to be persistent by storing it to disk as a Sequence File. */
   def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String): DListPersister[(K, V)] = {
-    val persister = new Persister[(K, V)] {
-      def mkOutputStore(node: AST.Node[(K, V)]) = new OutputStore[K, V, (K, V)](node) {
-        private val outputPath = new Path(path)
 
-        val outputFormat = classOf[SequenceFileOutputFormat[K, V]]
-        val outputKeyClass = implicitly[Manifest[K]].erasure.asInstanceOf[Class[K]]
-        val outputValueClass = implicitly[Manifest[V]].erasure.asInstanceOf[Class[V]]
+    val keyClass = implicitly[Manifest[K]].erasure.asInstanceOf[Class[K]]
+    val valueClass = implicitly[Manifest[V]].erasure.asInstanceOf[Class[V]]
 
-        def outputCheck() =
-          if (Helper.pathExists(outputPath))
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-          else
-            logger.info("Output path: " + outputPath.toUri.toASCIIString)
-
-        def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
-
-        val outputConverter = new OutputConverter[K, V, (K, V)] {
-          def toKeyValue(x: (K, V)) = (x._1, x._2)
-        }
-      }
+    val converter = new OutputConverter[K, V, (K, V)] {
+      def toKeyValue(kv: (K, V)) = (kv._1, kv._2)
     }
-    new DListPersister(dl, persister)
+
+    new DListPersister(dl, new SeqPersister[K, V, (K, V)](path, keyClass, valueClass, converter))
+  }
+
+
+  /* Class that abstracts all the common functionality of persisting to sequence files. */
+  private class SeqPersister[K, V, B](
+      path: String,
+      keyClass: Class[K],
+      valueClass: Class[V],
+      converter: OutputConverter[K, V, B])
+    extends Persister[B] {
+
+    def mkOutputStore(node: AST.Node[B]) = new OutputStore[K, V, B](node) {
+      protected val outputPath = new Path(path)
+
+      val outputFormat = classOf[SequenceFileOutputFormat[K, V]]
+      val outputKeyClass = keyClass
+      val outputValueClass = valueClass
+
+      def outputCheck() =
+        if (Helper.pathExists(outputPath))
+          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+        else
+          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+
+      def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
+
+      val outputConverter = converter
+    }
   }
 }
