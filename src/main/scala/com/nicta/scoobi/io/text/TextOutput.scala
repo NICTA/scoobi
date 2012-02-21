@@ -46,7 +46,17 @@ object TextOutput {
 
         val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
         val outputKeyClass = classOf[NullWritable]
-        val outputValueClass = implicitly[Manifest[A]].erasure.asInstanceOf[Class[A]]
+        val outputValueClass = implicitly[Manifest[A]] match {
+          case Manifest.Boolean => classOf[java.lang.Boolean].asInstanceOf[Class[A]]
+          case Manifest.Char    => classOf[java.lang.Character].asInstanceOf[Class[A]]
+          case Manifest.Short   => classOf[java.lang.Short].asInstanceOf[Class[A]]
+          case Manifest.Int     => classOf[java.lang.Integer].asInstanceOf[Class[A]]
+          case Manifest.Long    => classOf[java.lang.Long].asInstanceOf[Class[A]]
+          case Manifest.Float   => classOf[java.lang.Float].asInstanceOf[Class[A]]
+          case Manifest.Double  => classOf[java.lang.Double].asInstanceOf[Class[A]]
+          case Manifest.Byte    => classOf[java.lang.Byte].asInstanceOf[Class[A]]
+          case mf               => mf.erasure.asInstanceOf[Class[A]]
+        }
 
         def outputCheck() =
           if (Helper.pathExists(outputPath))
