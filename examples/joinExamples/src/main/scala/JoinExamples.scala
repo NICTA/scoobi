@@ -52,12 +52,12 @@ object JoinExamples {
     implicit val DepartmentFmt = mkCaseWireFormat(Department, Department.unapply _)
 
     // Read in lines of the form: Bob Smith, 31
-    val employees : DList[Employee] = extractFromDelimitedTextFile(",", employeesFile) {
+    val employees : DList[Employee] = fromDelimitedTextFile(employeesFile, ",") {
       case name :: Long(departmentId) :: _ => Employee(name, departmentId)
     }
     
     // Read in lines of the form: 31, Finance
-    val departments : DList[Department] = extractFromDelimitedTextFile(",", departmentsFile) {
+    val departments : DList[Department] = fromDelimitedTextFile(departmentsFile, ",") {
       case Long(id) :: name :: _ => Department(id, name)
     }
 

@@ -51,7 +51,7 @@ object AverageAge {
 
 
     // Read in lines of the form: 234242, Bob, Smith, 31.
-    val persons : DList[Person] = extractFromDelimitedTextFile(",", fileName) {
+    val persons : DList[Person] = fromDelimitedTextFile(fileName, ",") {
       case Long(id) :: fN :: sN :: Int(age) :: _ => Person(id, sN, fN, age)
     }
 

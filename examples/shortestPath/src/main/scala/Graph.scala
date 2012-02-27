@@ -62,7 +62,7 @@ object ShortestPath
     
     // The generated graph is in the form of a list of edges e.g (A, B), (C, D)
 
-    val edges: DList[(Node, Node)] = extractFromDelimitedTextFile(" ","output-dir/graph.txt") {
+    val edges: DList[(Node, Node)] = fromDelimitedTextFile("output-dir/graph.txt", ",") {
       case a :: b :: _ => (Node(a), Node(b))
     }
 

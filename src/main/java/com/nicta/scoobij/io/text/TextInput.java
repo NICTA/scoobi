@@ -28,12 +28,12 @@ public class TextInput {
 				com.nicta.scoobi.io.text.TextInput$.MODULE$.fromTextFile(Conversions.toScalaSeq(path)));
 	}
 
-	public static <T> DList<T> extractFromDelimitedTextFile(String seperator,
-			String path, Extractor<T> extractor, WireFormatType<T> bundle) {
+	public static <T> DList<T> fromDelimitedTextFile(String path,
+			String seperator, Extractor<T> extractor, WireFormatType<T> bundle) {
 
 		return new DListImpl<T>(
 				com.nicta.scoobi.io.text.TextInput$.MODULE$
-						.extractFromDelimitedTextFile(seperator, path,
+						.fromDelimitedTextFile(path, seperator,
 								Conversions.toScala(extractor),
 								bundle.typeInfo(),
 								bundle.wireFormat()));
