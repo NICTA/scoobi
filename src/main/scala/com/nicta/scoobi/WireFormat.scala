@@ -28,7 +28,6 @@ import scala.collection.mutable.Builder
 trait WireFormat[A] extends Serializable {
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
-  def show(x: A): String
 }
 
 
@@ -41,7 +40,6 @@ object WireFormat {
     override def fromWire(in: DataInput): T = {
       x
     }
-    override def show(x: T) = x.toString
   }
 
   def mkCaseWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new WireFormat[T] {
@@ -51,8 +49,6 @@ object WireFormat {
     override def fromWire(in: DataInput): T = {
       apply()
     }
-
-    override def show(x: T): String = x toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new WireFormat[T] {
@@ -67,8 +63,6 @@ object WireFormat {
       val a1: A1 = implicitly[WireFormat[A1]].fromWire(in)
       apply(a1)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]): WireFormat[T] = new WireFormat[T] {
@@ -85,8 +79,6 @@ object WireFormat {
       val a2: A2 = implicitly[WireFormat[A2]].fromWire(in)
       apply(a1, a2)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat](apply: (A1, A2, A3) => T, unapply: T => Option[(A1, A2, A3)]): WireFormat[T] = new WireFormat[T] {
@@ -103,8 +95,6 @@ object WireFormat {
       val a3: A3 = implicitly[WireFormat[A3]].fromWire(in)
       apply(a1, a2, a3)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat, A4: WireFormat](apply: (A1, A2, A3, A4) => T, unapply: T => Option[(A1, A2, A3, A4)]): WireFormat[T] = new WireFormat[T] {
@@ -123,8 +113,6 @@ object WireFormat {
       val a4: A4 = implicitly[WireFormat[A4]].fromWire(in)
       apply(a1, a2, a3, a4)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat, A4: WireFormat, A5: WireFormat](apply: (A1, A2, A3, A4, A5) => T, unapply: T => Option[(A1, A2, A3, A4, A5)]): WireFormat[T] = new WireFormat[T] {
@@ -145,8 +133,6 @@ object WireFormat {
       val a5: A5 = implicitly[WireFormat[A5]].fromWire(in)
       apply(a1, a2, a3, a4, a5)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat, A4: WireFormat, A5: WireFormat, A6: WireFormat](apply: (A1, A2, A3, A4, A5, A6) => T, unapply: T => Option[(A1, A2, A3, A4, A5, A6)]): WireFormat[T] = new WireFormat[T] {
@@ -169,8 +155,6 @@ object WireFormat {
       val a6: A6 = implicitly[WireFormat[A6]].fromWire(in)
       apply(a1, a2, a3, a4, a5, a6)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat, A4: WireFormat, A5: WireFormat, A6: WireFormat, A7: WireFormat](apply: (A1, A2, A3, A4, A5, A6, A7) => T, unapply: T => Option[(A1, A2, A3, A4, A5, A6, A7)]): WireFormat[T] = new WireFormat[T] {
@@ -195,8 +179,6 @@ object WireFormat {
       val a7: A7 = implicitly[WireFormat[A7]].fromWire(in)
       apply(a1, a2, a3, a4, a5, a6, a7)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat, A4: WireFormat, A5: WireFormat, A6: WireFormat, A7: WireFormat, A8: WireFormat](apply: (A1, A2, A3, A4, A5, A6, A7, A8) => T, unapply: T => Option[(A1, A2, A3, A4, A5, A6, A7, A8)]): WireFormat[T] = new WireFormat[T] {
@@ -223,8 +205,6 @@ object WireFormat {
       val a8: A8 = implicitly[WireFormat[A8]].fromWire(in)
       apply(a1, a2, a3, a4, a5, a6, a7, a8)
     }
-
-    override def show(x: T): String = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -248,8 +228,6 @@ object WireFormat {
         case 'B' => implicitly[WireFormat[B]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -277,8 +255,6 @@ object WireFormat {
         case 'C' => implicitly[WireFormat[C]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -310,8 +286,6 @@ object WireFormat {
         case 'D' => implicitly[WireFormat[D]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -347,8 +321,6 @@ object WireFormat {
         case 'E' => implicitly[WireFormat[E]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat, F <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -388,8 +360,6 @@ object WireFormat {
         case 'F' => implicitly[WireFormat[F]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat, F <: T : Manifest : WireFormat, G <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -433,8 +403,6 @@ object WireFormat {
         case 'G' => implicitly[WireFormat[G]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat, D <: T : Manifest : WireFormat, E <: T : Manifest : WireFormat, F <: T : Manifest : WireFormat, G <: T : Manifest : WireFormat, H <: T : Manifest : WireFormat]() = new WireFormat[T] {
@@ -482,8 +450,6 @@ object WireFormat {
         case 'H' => implicitly[WireFormat[H]].fromWire(in)
         case  x  => sys.error("Error in fromWire, don't know what " + x + " is")
       }
-
-    override def show(x: T) = x.toString
   }
 
   /*
@@ -509,8 +475,6 @@ object WireFormat {
       val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
       bIn.readObject.asInstanceOf[T]
     }
-
-    def show(x: T) = x.toString
   }
 
   /*
@@ -523,7 +487,6 @@ object WireFormat {
       x.readFields(in)
       x
     }
-    def show(x: T) = x.toString
   }
 
 
@@ -533,49 +496,41 @@ object WireFormat {
   implicit def IntFmt = new WireFormat[Int] {
     def toWire(x: Int, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): Int = in.readInt()
-    def show(x: Int) = x.toString
   }
 
   implicit def IntegerFmt = new WireFormat[java.lang.Integer] {
       def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
       def fromWire(in: DataInput): java.lang.Integer = in.readInt()
-      def show(x: java.lang.Integer) = x.toString
   }
 
   implicit def BooleanFmt = new WireFormat[Boolean] {
     def toWire(x: Boolean, out: DataOutput) { out.writeBoolean(x) }
     def fromWire(in: DataInput): Boolean = in.readBoolean()
-    def show(x: Boolean) = x.toString
   }
 
   implicit def LongFmt = new WireFormat[Long] {
     def toWire(x: Long, out: DataOutput) { out.writeLong(x) }
     def fromWire(in: DataInput): Long = in.readLong()
-    def show(x: Long) = x.toString
   }
 
   implicit def DoubleFmt = new WireFormat[Double] {
     def toWire(x: Double, out: DataOutput) { out.writeDouble(x) }
     def fromWire(in: DataInput): Double = { in.readDouble() }
-    def show(x: Double) = x.toString
   }
 
   implicit def FloatFmt = new WireFormat[Float] {
     def toWire(x: Float, out: DataOutput) { out.writeFloat(x) }
     def fromWire(in: DataInput): Float = { in.readFloat() }
-    def show(x: Float) = x.toString
   }
 
   implicit def CharFmt = new WireFormat[Char] {
     def toWire(x: Char, out: DataOutput) { out.writeChar(x) }
     def fromWire(in: DataInput): Char = in.readChar()
-    def show(x: Char) = x.toString
   }
 
   implicit def ByteFmt = new WireFormat[Byte] {
     def toWire(x: Byte, out: DataOutput) { out.writeByte(x) }
     def fromWire(in: DataInput): Byte = in.readByte()
-    def show(x: Byte) = x.toString
   }
 
   implicit def StringFmt = new WireFormat[String] {
@@ -591,7 +546,6 @@ object WireFormat {
       in.readFully(b, 0, l)
       new String(b, "utf-8")
     }
-    def show(x: String) = x.toString
   }
 
   /*
@@ -608,10 +562,6 @@ object WireFormat {
         val b = wt2.fromWire(in)
         (a, b)
       }
-      def show(x: (T1, T2)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2))
-        elems.mkString("(", ",", ")")
-      }
   }
 
   implicit def Tuple3Fmt[T1, T2, T3]
@@ -627,10 +577,6 @@ object WireFormat {
         val b = wt2.fromWire(in)
         val c = wt3.fromWire(in)
         (a, b, c)
-      }
-      def show(x: (T1, T2, T3)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3))
-        elems.mkString("(", ",", ")")
       }
   }
 
@@ -649,10 +595,6 @@ object WireFormat {
         val c = wt3.fromWire(in)
         val d = wt4.fromWire(in)
         (a, b, c, d)
-      }
-      def show(x: (T1, T2, T3, T4)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4))
-        elems.mkString("(", ",", ")")
       }
   }
 
@@ -674,10 +616,6 @@ object WireFormat {
         val d = wt4.fromWire(in)
         val e = wt5.fromWire(in)
         (a, b, c, d, e)
-      }
-      def show(x: (T1, T2, T3, T4, T5)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4), wt5.show(x._5))
-        elems.mkString("(", ",", ")")
       }
   }
 
@@ -701,10 +639,6 @@ object WireFormat {
         val e = wt5.fromWire(in)
         val f = wt6.fromWire(in)
         (a, b, c, d, e, f)
-      }
-      def show(x: (T1, T2, T3, T4, T5, T6)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4), wt5.show(x._5), wt6.show(x._6))
-        elems.mkString("(", ",", ")")
       }
   }
 
@@ -730,10 +664,6 @@ object WireFormat {
         val f = wt6.fromWire(in)
         val g = wt7.fromWire(in)
         (a, b, c, d, e, f, g)
-      }
-      def show(x: (T1, T2, T3, T4, T5, T6, T7)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4), wt5.show(x._5), wt6.show(x._6), wt7.show(x._7))
-        elems.mkString("(", ",", ")")
       }
   }
 
@@ -762,10 +692,6 @@ object WireFormat {
         val h = wt8.fromWire(in)
         (a, b, c, d, e, f, g, h)
       }
-      def show(x: (T1, T2, T3, T4, T5, T6, T7, T8)) = {
-        val elems = List(wt1.show(x._1), wt2.show(x._2), wt3.show(x._3), wt4.show(x._4), wt5.show(x._5), wt6.show(x._6), wt7.show(x._7), wt8.show(x._8))
-        elems.mkString("(", ",", ")")
-      }
   }
 
   /*
@@ -787,7 +713,6 @@ object WireFormat {
         for (_ <- 0 to (size - 1)) { b += wt.fromWire(in) }
         b.result()
       }
-      def show(x: CC[T]) = x.mkString("[", ",", "]")
     }
   }
 
@@ -808,10 +733,6 @@ object WireFormat {
       else {
         None
       }
-    }
-    def show(x: Option[T]) = x match {
-      case Some(y) => "S{" + wt.show(y) + "}"
-      case None    => "N{}"
     }
   }
 
@@ -834,10 +755,6 @@ object WireFormat {
         Right(x)
       }
     }
-    def show(x: Either[T1, T2]) = x match {
-      case Left(x)  => "L{" + wt1.show(x) + "}"
-      case Right(x) => "R{" + wt2.show(x) + "}"
-    }
   }
 
   /*
@@ -847,6 +764,5 @@ object WireFormat {
   implicit def DateFmt = new WireFormat[java.util.Date] {
     def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
     def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())
-    def show(x: java.util.Date) = x.toString
   }
 }

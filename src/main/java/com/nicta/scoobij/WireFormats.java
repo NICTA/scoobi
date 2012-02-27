@@ -69,12 +69,6 @@ public class WireFormats {
 					}
 
 					@Override
-					public String show(Tuple2<T, V> arg0) {
-						return "Tuple2(" + ord1.wireFormat().show(arg0._1) + ", "
-								+ ord2.wireFormat().show(arg0._2) + ")";
-					}
-
-					@Override
 					public void toWire(Tuple2<T, V> arg0, DataOutput arg1) {
 						ord1.wireFormat().toWire(arg0._1, arg1);
 						ord2.wireFormat().toWire(arg0._2, arg1);

@@ -86,7 +86,7 @@ class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: WireFormat[_]
                                           "toString",
                                           Array(),
                                           Array(),
-                                          "return writer.show(" + toObject("get()", m) + ");",
+                                          "return get().toString();",
                                           ctClass)
     ctClass.addMethod(toStringMethod)
   }
