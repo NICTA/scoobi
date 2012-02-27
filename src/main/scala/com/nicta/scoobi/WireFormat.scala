@@ -717,6 +717,32 @@ object WireFormat {
   }
 
   /*
+   * Map structures
+   */
+  implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]) = {
+    val builder: Builder[(K, V), CC[K, V]] = bf()
+    new WireFormat[CC[K, V]] {
+      private val b: Builder[(K, V), CC[K, V]] = builder
+      def toWire(x: CC[K, V], out: DataOutput) = {
+        require(x != null, "Cannot serialize a null Map. Consider using an empty collection, or a Option[Map]")
+        out.writeInt(x.size)
+        x.foreach { case (k, v) => wtK.toWire(k, out); wtV.toWire(v, out) }
+      }
+      def fromWire(in: DataInput): CC[K, V] = {
+        val size = in.readInt()
+        builder.clear()
+        builder.sizeHint(size)
+        for (_ <- 0 to (size - 1)) {
+          val k: K = wtK.fromWire(in)
+          val v: V = wtV.fromWire(in)
+          b += (k -> v)
+        }
+        b.result()
+      }
+    }
+  }
+
+  /*
    * Option type.
    */
   implicit def OptionFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Option[T]] {
