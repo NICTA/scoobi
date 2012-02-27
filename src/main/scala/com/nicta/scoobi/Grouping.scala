@@ -24,7 +24,7 @@ import annotation.implicitNotFound
 /** Specify the way in which key-values are "shuffled". Used by 'groupByKey' in
   * 'DList'. */
 @implicitNotFound(msg = "Cannot find Grouping type class for ${K}")
-trait Grouping[K] extends Serializable {
+trait Grouping[K] {
   /** Specifies how key-values are partitioned among Reduer tasks. */
   def partition(key: K, num: Int): Int = (key.hashCode & Int.MaxValue) % num
 

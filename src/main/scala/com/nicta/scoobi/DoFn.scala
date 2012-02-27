@@ -26,7 +26,7 @@ package com.nicta.scoobi
   *
   * These 3 steps encapsulate the entire life-cycle of a DoFn. A DoFn object
   * will not be referenced after these steps. */
-trait DoFn[A, B] extends Serializable {
+trait DoFn[A, B] {
   def setup(): Unit
   def process(input: A, emitter: Emitter[B]): Unit
   def cleanup(emitter: Emitter[B]): Unit

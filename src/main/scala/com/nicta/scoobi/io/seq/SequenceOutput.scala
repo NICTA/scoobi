@@ -48,7 +48,7 @@ object SequenceOutput {
 
 
   /** Type class for conversions of basic Scala types to Hadoop Writable types. */
-  trait Conv[From] extends Serializable {
+  trait Conv[From] {
     type To <: Writable
     def toWritable(x: From): To
     val mf: Manifest[To]

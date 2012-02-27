@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.Serializable
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.Emitter
@@ -32,8 +31,7 @@ abstract class TaggedMapper[A, K, V]
     (val tags: Set[Int])
     (implicit val mA: Manifest[A], val wtA: WireFormat[A],
               val mK: Manifest[K], val wtK: WireFormat[K], val grpK: Grouping[K],
-              val mV: Manifest[V], val wtV: WireFormat[V])
-  extends Serializable {
+              val mV: Manifest[V], val wtV: WireFormat[V]) {
 
   /** The actual 'map' function that will be used by Hadoop in the mapper task. */
   def setup(): Unit

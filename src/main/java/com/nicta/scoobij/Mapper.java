@@ -15,12 +15,11 @@
  */
 package com.nicta.scoobij;
 
-import java.io.Serializable;
 
 /**
  * The interface for a type that can map over data
  */
 
-public interface Mapper<T, V> extends Serializable {
+public interface Mapper<T, V> {
 	abstract public V apply(T t);
 }

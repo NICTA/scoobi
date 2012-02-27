@@ -42,6 +42,6 @@ trait DataSink[K, V, B] {
 
 
 /** Convert the type consumed by a DataSink into an OutputFormat's key-value types. */
-trait OutputConverter[K, V, B] extends Serializable {
+trait OutputConverter[K, V, B] {
   def toKeyValue(x: B): (K, V)
 }

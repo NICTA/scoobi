@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.Serializable
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.Emitter
@@ -32,8 +31,7 @@ abstract class TaggedReducer[K, V, B]
     (val tag: Int)
     (implicit val mK: Manifest[K], val wtK: WireFormat[K], val grpK: Grouping[K],
               val mV: Manifest[V], val wtV: WireFormat[V],
-              val mB: Manifest[B], val wtB: WireFormat[B])
-  extends Serializable {
+              val mB: Manifest[B], val wtB: WireFormat[B]) {
 
   /** The actual 'reduce' function that will be by Hadoop in the reducer task. */
   def reduce(key: K, values: Iterable[V], emitter: Emitter[B]): Unit

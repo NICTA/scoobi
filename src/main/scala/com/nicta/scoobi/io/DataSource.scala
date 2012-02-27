@@ -40,6 +40,6 @@ trait DataSource[K, V, A] {
 
 
 /** Convert an InputFormat's key-value types to the type produced by a DataSource. */
-trait InputConverter[K, V, A] extends Serializable {
+trait InputConverter[K, V, A] {
   def fromKeyValue(key: K, value: V): A
 }

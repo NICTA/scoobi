@@ -15,11 +15,10 @@
  */
 package com.nicta.scoobij;
 
-import java.io.Serializable;
 
 /**
  * Used by DList.flatMap to allow you to map over a DList with a function
  */
-public interface FlatMapper<T, V> extends Serializable {
+public interface FlatMapper<T, V> {
 	abstract public Iterable<V> apply(T a);
 }

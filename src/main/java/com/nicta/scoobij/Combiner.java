@@ -23,6 +23,6 @@ package com.nicta.scoobij;
  *
  * @param <T>
  */
-public interface Combiner<T> extends java.io.Serializable {
+public interface Combiner<T> {
 	public T apply(T t1, T t2);
 }

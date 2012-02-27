@@ -36,7 +36,7 @@ object AST {
   object RollingInt extends UniqueInt
 
   /** Intermediate representation - closer aligned to actual MSCR contetns. */
-  sealed abstract class Node[A : Manifest : WireFormat] extends Serializable {
+  sealed abstract class Node[A : Manifest : WireFormat] {
     val id = Id.get
 
     def mkStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper[A, Int, A] =

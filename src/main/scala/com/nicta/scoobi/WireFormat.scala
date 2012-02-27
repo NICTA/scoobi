@@ -25,7 +25,7 @@ import scala.collection.mutable.Builder
 
 /** Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
-trait WireFormat[A] extends Serializable {
+trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
 }

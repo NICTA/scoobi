@@ -50,7 +50,7 @@ object SequenceInput {
 
 
   /** Type class for conversion of Hadoop Writable types ot basic Scala types. */
-  trait Conv[To] extends Serializable {
+  trait Conv[To] {
     type From <: Writable
     def fromWritable(x: From): To
   }
