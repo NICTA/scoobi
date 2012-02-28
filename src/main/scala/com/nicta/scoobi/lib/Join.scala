@@ -1,464 +1,138 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2011 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi.lib
 
 import java.io._
 import scala.collection.immutable.VectorBuilder
-
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.WireFormat._
 import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.lib.Multi._
-
+import com.nicta.scoobi.DoFn
+import com.nicta.scoobi.Emitter
+import scala.collection.mutable.MutableList
 
 object Join {
 
-  /** Perform an inner-join of two (2) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)])
-      (jp: K => T)
-    : DList[(A1, A2)] = {
+  private def innerJoin[T, A, B] = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
+    override def setup() {}
+    override def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
+      var alist: MutableList[A] = new MutableList()
 
-    val d1s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-
-    val joined = (d1s ++ d2s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
+      for (v <- input._2) {
+        v match {
+          case Left(a)  => alist += a
+          case Right(b) => for (a <- alist) emitter.emit((input._1._1, (a, b)))
+        }
       }
-      for (a1 <- vb1.result(); a2 <- vb2.result())
-        yield (a1, a2)
     }
 
-    joined
+    override def cleanup(emitter: Emitter[(T, (A, B))]) {}
+  }
+
+  private def rightOuterJoin[T, A, B, A2](has: (T, A, B) => A2, notHas: (T, B) => A2) = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A2, B))] {
+    override def setup() {}
+    override def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A2, B))]) {
+      var alist: MutableList[A] = new MutableList()
+
+      for (v <- input._2) {
+        v match {
+          case Left(a)  => alist += a
+          case Right(b) => {
+            if (alist.isEmpty)
+              emitter.emit((input._1._1, (notHas(input._1._1, b), b)))
+            else
+              for (a <- alist) emitter.emit((input._1._1, (has(input._1._1, a, b), b)))
+          }
+        }
+      }
+    }
+
+    override def cleanup(emitter: Emitter[(T, (A2, B))]) {}
+  }
+
+  /** Perform a join of two distributed lists using a specified join-predicate, and a type. */
+  private def joinWith[K : Manifest : WireFormat : Grouping,
+                       A : Manifest : WireFormat,
+                       B : Manifest : WireFormat,
+                       A2 : Manifest, B2 : Manifest]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+      (dofn: DoFn[((K, Boolean), Iterable[Either[A, B]]), (K, (A2, B2))])
+    : DList[(K, (A2, B2))] = {
+
+    /* Map left and right DLists to be of the same type. Label the left as 'true' and the
+     * right as 'false'. Note the hack cause DList doesn't yet have the co/contravariance. */
+    val left = d1.map(v => { val e: Either[A, B] = Left[A, B](v._2); ((v._1, true), e) })
+    val right = d2.map(v => { val e: Either[A, B] = Right[A, B](v._2); ((v._1, false), e) })
+
+    /* Gropuing type class instance that implements a secondary sort to ensure left
+     * values come before right values. */
+    implicit val grouping = new Grouping[(K, Boolean)] {
+      override def partition(key: (K, Boolean), num: Int): Int =
+        implicitly[Grouping[K]].partition(key._1, num)
+
+      override def groupCompare(a: (K, Boolean), b: (K, Boolean)): Int =
+        implicitly[Grouping[K]].groupCompare(a._1, b._1)
+
+      override def sortCompare(a: (K, Boolean), b: (K, Boolean)): Int = {
+        val n = groupCompare(a, b)
+        if (n != 0) n else implicitly[Ordering[Boolean]].compare(a._2, b._2)
+      }
+    }
+
+    (left ++ right).groupByKey.parallelDo(dofn)
   }
 
   /** Perform an equijoin of two (2) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)])
-    : DList[(A1, A2)] = joinOn(d1, d2)(identity)
+  def join[K : Manifest : WireFormat : Grouping,
+           A : Manifest : WireFormat,
+           B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+    : DList[(K, (A, B))] = joinWith(d1, d2)(innerJoin)
 
+  /** Perform a right outer-join of two (2) distributed lists. The default function
+      says how to create a value A when there was none. */
+  def joinRight[K : Manifest : WireFormat : Grouping,
+                A : Manifest : WireFormat,
+                B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)], default: (K, B) => A)
+    : DList[(K, (A, B))] = joinWith(d1, d2)(rightOuterJoin( (_, x, _) => x , default))
 
-  /** Perform an inner-join of three (3) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat,
-             A3 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)])
-      (jp: K => T)
-    : DList[(A1, A2, A3)] = {
+  /** Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
+      as when there is no value in the left dlist (d1) for a value on the right dlist (d2), it will
+      return none. */
+  def joinRight[K : Manifest : WireFormat : Grouping,
+                A : Manifest : WireFormat,
+                B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+    : DList[(K, (Option[A], B))] = joinWith(d1, d2)(rightOuterJoin( (_, a, _) => Option(a), (_, _) => None))
 
-    val d1s: DList[(T, Multi[A1, A2, A3, A1, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A3, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-    val d3s: DList[(T, Multi[A1, A2, A3, A1, A1, A1, A1, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
+  /** Perform a left outer-join of two (2) distributed lists. The default function specifies how
+      to construct a B, given a K and B, when there is none.*/
+  def joinLeft[K : Manifest : WireFormat : Grouping,
+               A : Manifest : WireFormat,
+               B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)], default: (K, A) => B)
+    : DList[(K, (A, B))] = joinRight(d2, d1, default).map(v => (v._1, v._2.swap))
 
-    val joined = (d1s ++ d2s ++ d3s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
-        case Some3(a3) => vb3 += a3
-      }
-      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result())
-        yield (a1, a2, a3)
-    }
-
-    joined
-  }
-
-  /** Perform an equijoin of three (3) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat,
-           A3 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)])
-    : DList[(A1, A2, A3)] = joinOn(d1, d2, d3)(identity)
-
-
-  /** Perform an inner-join of four (4) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat,
-             A3 : Manifest : WireFormat,
-             A4 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)])
-      (jp: K => T)
-    : DList[(A1, A2, A3, A4)] = {
-
-    val d1s: DList[(T, Multi[A1, A2, A3, A4, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A3, A4, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-    val d3s: DList[(T, Multi[A1, A2, A3, A4, A1, A1, A1, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
-    val d4s: DList[(T, Multi[A1, A2, A3, A4, A1, A1, A1, A1])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
-
-    val joined = (d1s ++ d2s ++ d3s ++ d4s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
-      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
-        case Some3(a3) => vb3 += a3
-        case Some4(a4) => vb4 += a4
-      }
-      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result())
-        yield (a1, a2, a3, a4)
-    }
-
-    joined
-  }
-
-  /** Perform an equijoin of four (4) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat,
-           A3 : Manifest : WireFormat,
-           A4 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)])
-    : DList[(A1, A2, A3, A4)] = joinOn(d1, d2, d3, d4)(identity)
-
-
-  /** Perform an inner-join of five (5) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat,
-             A3 : Manifest : WireFormat,
-             A4 : Manifest : WireFormat,
-             A5 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)])
-      (jp: K => T)
-    : DList[(A1, A2, A3, A4, A5)] = {
-
-    val d1s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-    val d3s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
-    val d4s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
-    val d5s: DList[(T, Multi[A1, A2, A3, A4, A5, A1, A1, A1])] = d5 map { case (k, a5) => (jp(k), Some5(a5)) }
-
-    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
-      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
-      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
-        case Some3(a3) => vb3 += a3
-        case Some4(a4) => vb4 += a4
-        case Some5(a5) => vb5 += a5
-      }
-      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result())
-        yield (a1, a2, a3, a4, a5)
-    }
-
-    joined
-  }
-
-  /** Perform an equijoin of five (5) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat,
-           A3 : Manifest : WireFormat,
-           A4 : Manifest : WireFormat,
-           A5 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)])
-    : DList[(A1, A2, A3, A4, A5)] = joinOn(d1, d2, d3, d4, d5)(identity)
-
-
-  /** Perform an inner-join of six (6) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat,
-             A3 : Manifest : WireFormat,
-             A4 : Manifest : WireFormat,
-             A5 : Manifest : WireFormat,
-             A6 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)])
-      (jp: K => T)
-    : DList[(A1, A2, A3, A4, A5, A6)] = {
-
-    val d1s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-    val d3s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
-    val d4s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
-    val d5s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d5 map { case (k, a5) => (jp(k), Some5(a5)) }
-    val d6s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A1, A1])] = d6 map { case (k, a6) => (jp(k), Some6(a6)) }
-
-    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s ++ d6s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
-      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
-      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
-      val vb6: VectorBuilder[A6] = new VectorBuilder[A6]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
-        case Some3(a3) => vb3 += a3
-        case Some4(a4) => vb4 += a4
-        case Some5(a5) => vb5 += a5
-        case Some6(a6) => vb6 += a6
-      }
-      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result(); a6 <- vb6.result())
-        yield (a1, a2, a3, a4, a5, a6)
-    }
-
-    joined
-  }
-
-  /** Perform an equijoin of six (6) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat,
-           A3 : Manifest : WireFormat,
-           A4 : Manifest : WireFormat,
-           A5 : Manifest : WireFormat,
-           A6 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)])
-    : DList[(A1, A2, A3, A4, A5, A6)] = joinOn(d1, d2, d3, d4, d5, d6)(identity)
-
-
-  /** Perform an inner-join of seven (7) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat,
-             A3 : Manifest : WireFormat,
-             A4 : Manifest : WireFormat,
-             A5 : Manifest : WireFormat,
-             A6 : Manifest : WireFormat,
-             A7 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)], d7: DList[(K, A7)])
-      (jp: K => T)
-    : DList[(A1, A2, A3, A4, A5, A6, A7)] = {
-
-    val d1s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-    val d3s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
-    val d4s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
-    val d5s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d5 map { case (k, a5) => (jp(k), Some5(a5)) }
-    val d6s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d6 map { case (k, a6) => (jp(k), Some6(a6)) }
-    val d7s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A1])] = d7 map { case (k, a7) => (jp(k), Some7(a7)) }
-
-    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s ++ d6s ++ d7s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
-      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
-      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
-      val vb6: VectorBuilder[A6] = new VectorBuilder[A6]()
-      val vb7: VectorBuilder[A7] = new VectorBuilder[A7]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
-        case Some3(a3) => vb3 += a3
-        case Some4(a4) => vb4 += a4
-        case Some5(a5) => vb5 += a5
-        case Some6(a6) => vb6 += a6
-        case Some7(a7) => vb7 += a7
-      }
-      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result(); a6 <- vb6.result(); a7 <- vb7.result())
-        yield (a1, a2, a3, a4, a5, a6, a7)
-    }
-
-    joined
-  }
-
-  /** Perform an equijoin of seven (7) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat,
-           A3 : Manifest : WireFormat,
-           A4 : Manifest : WireFormat,
-           A5 : Manifest : WireFormat,
-           A6 : Manifest : WireFormat,
-           A7 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)], d7: DList[(K, A7)])
-    : DList[(A1, A2, A3, A4, A5, A6, A7)] = joinOn(d1, d2, d3, d4, d5, d6, d7)(identity)
-
-
-  /** Perform an inner-join of eight (8) distributed lists using a specified join-predicate. */
-  def joinOn[K  : Manifest : WireFormat,
-             T  : Manifest : WireFormat : Grouping,
-             A1 : Manifest : WireFormat,
-             A2 : Manifest : WireFormat,
-             A3 : Manifest : WireFormat,
-             A4 : Manifest : WireFormat,
-             A5 : Manifest : WireFormat,
-             A6 : Manifest : WireFormat,
-             A7 : Manifest : WireFormat,
-             A8 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)], d7: DList[(K, A7)], d8: DList[(K, A8)])
-      (jp: K => T)
-    : DList[(A1, A2, A3, A4, A5, A6, A7, A8)] = {
-
-    val d1s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-    val d2s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-    val d3s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d3 map { case (k, a3) => (jp(k), Some3(a3)) }
-    val d4s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d4 map { case (k, a4) => (jp(k), Some4(a4)) }
-    val d5s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d5 map { case (k, a5) => (jp(k), Some5(a5)) }
-    val d6s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d6 map { case (k, a6) => (jp(k), Some6(a6)) }
-    val d7s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d7 map { case (k, a7) => (jp(k), Some7(a7)) }
-    val d8s: DList[(T, Multi[A1, A2, A3, A4, A5, A6, A7, A8])] = d8 map { case (k, a8) => (jp(k), Some8(a8)) }
-
-    val joined = (d1s ++ d2s ++ d3s ++ d4s ++ d5s ++ d6s ++ d7s ++ d8s).groupByKey flatMap { case (_, as) =>
-      val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-      val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-      val vb3: VectorBuilder[A3] = new VectorBuilder[A3]()
-      val vb4: VectorBuilder[A4] = new VectorBuilder[A4]()
-      val vb5: VectorBuilder[A5] = new VectorBuilder[A5]()
-      val vb6: VectorBuilder[A6] = new VectorBuilder[A6]()
-      val vb7: VectorBuilder[A7] = new VectorBuilder[A7]()
-      val vb8: VectorBuilder[A8] = new VectorBuilder[A8]()
-      as foreach {
-        case Some1(a1) => vb1 += a1
-        case Some2(a2) => vb2 += a2
-        case Some3(a3) => vb3 += a3
-        case Some4(a4) => vb4 += a4
-        case Some5(a5) => vb5 += a5
-        case Some6(a6) => vb6 += a6
-        case Some7(a7) => vb7 += a7
-        case Some8(a8) => vb8 += a8
-      }
-      for (a1 <- vb1.result(); a2 <- vb2.result(); a3 <- vb3.result(); a4 <- vb4.result(); a5 <- vb5.result(); a6 <- vb6.result(); a7 <- vb7.result(); a8 <- vb8.result())
-        yield (a1, a2, a3, a4, a5, a6, a7, a8)
-    }
-
-    joined
-  }
-
-  /** Perform an equijoin of eight (8) distributed lists. */
-  def join[K  : Manifest : WireFormat : Grouping,
-           A1 : Manifest : WireFormat,
-           A2 : Manifest : WireFormat,
-           A3 : Manifest : WireFormat,
-           A4 : Manifest : WireFormat,
-           A5 : Manifest : WireFormat,
-           A6 : Manifest : WireFormat,
-           A7 : Manifest : WireFormat,
-           A8 : Manifest : WireFormat]
-      (d1: DList[(K, A1)], d2: DList[(K, A2)], d3: DList[(K, A3)], d4: DList[(K, A4)], d5: DList[(K, A5)], d6: DList[(K, A6)], d7: DList[(K, A7)], d8: DList[(K, A8)])
-    : DList[(A1, A2, A3, A4, A5, A6, A7, A8)] = joinOn(d1, d2, d3, d4, d5, d6, d7, d8)(identity)
-
-
-    /** Perform a left outer-join of two (2) distributed lists using a specified join-predicate. */
-    def leftJoinOn[K  : Manifest : WireFormat,
-                   T  : Manifest : WireFormat : Ordering,
-                   A1 : Manifest : WireFormat,
-                   A2 : Manifest : WireFormat]
-        (d1: DList[(K, A1)], d2: DList[(K, A2)])
-        (jp: K => T)
-        (default: (T, A1) => A2)
-      : DList[(A1, A2)] = {
-
-      val d1s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-      val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-
-      val joined = (d1s ++ d2s).groupByKey flatMap { case (key, as) =>
-        val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-        val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-
-        as foreach {
-          case Some1(a1) => vb1 += a1
-          case Some2(a2) => vb2 += a2
-        }
-
-        val a1s = vb1.result()
-        val a2s = vb2.result()
-
-        if (List(a1s, a2s) forall {_.size > 0 }) {
-          for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))
-        } else if (a1s.size > 0 && a2s.size == 0) {
-          for (a1 <- a1s) yield ((a1, default(key, a1)))
-        } else {
-          Nil
-        }
-      }
-
-      joined
-    }
-
-    /** Perform a left outer-join of two (2) distributed lists. */
-    def leftJoin[K  : Manifest : WireFormat : Ordering,
-                 A1 : Manifest : WireFormat,
-                 A2 : Manifest : WireFormat]
-        (d1: DList[(K, A1)], d2: DList[(K, A2)])
-        (default: (K, A1) => A2)
-      : DList[(A1, A2)] = leftJoinOn(d1, d2)(identity)(default)
-
-
-    /** Perform a right outer-join of two (2) distributed lists using a specified join-predicate. */
-    def rightJoinOn[K  : Manifest : WireFormat,
-                    T  : Manifest : WireFormat : Ordering,
-                    A1 : Manifest : WireFormat,
-                    A2 : Manifest : WireFormat]
-        (d1: DList[(K, A1)], d2: DList[(K, A2)])
-        (jp: K => T)
-        (default: (T, A2) => A1)
-      : DList[(A1, A2)] = {
-
-      val d1s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d1 map { case (k, a1) => (jp(k), Some1(a1)) }
-      val d2s: DList[(T, Multi[A1, A2, A1, A1, A1, A1, A1, A1])] = d2 map { case (k, a2) => (jp(k), Some2(a2)) }
-
-      val joined = (d1s ++ d2s).groupByKey flatMap { case (key, as) =>
-        val vb1: VectorBuilder[A1] = new VectorBuilder[A1]()
-        val vb2: VectorBuilder[A2] = new VectorBuilder[A2]()
-
-        as foreach {
-          case Some1(a1) => vb1 += a1
-          case Some2(a2) => vb2 += a2
-        }
-
-        val a1s = vb1.result()
-        val a2s = vb2.result()
-
-        if (List(a1s, a2s) forall {_.size > 0 }) {
-          for (a1 <- a1s; a2 <- a2s) yield ((a1, a2))
-        } else if (a1s.size == 0 && a2s.size > 0) {
-          for (a2 <- a2s) yield ((default(key, a2), a2))
-        } else {
-          Nil
-        }
-      }
-
-      joined
-    }
-
-    /** Perform a left outer-join of two (2) distributed lists. */
-    def rightJoin[K  : Manifest : WireFormat : Ordering,
-                  A1 : Manifest : WireFormat,
-                  A2 : Manifest : WireFormat]
-        (d1: DList[(K, A1)], d2: DList[(K, A2)])
-        (default: (K, A2) => A1)
-      : DList[(A1, A2)] = rightJoinOn(d1, d2)(identity)(default)
-
+  /** Perform a left outer-join of two (2) distributed lists. Note the return type of Option[B]
+      for when there is no value in the right dlist (d1). */
+  def joinLeft[K : Manifest : WireFormat : Grouping,
+               A : Manifest : WireFormat,
+               B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+    : DList[(K, (A, Option[B]))] = joinRight(d2, d1).map(v => (v._1, v._2.swap))
 }

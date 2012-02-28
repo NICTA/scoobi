@@ -834,6 +834,18 @@ object WireFormat {
     }
   }
 
+   implicit def LeftFmt[T1, T2](implicit wt1: WireFormat[T1]) = new WireFormat[Left[T1, T2]] {
+    def toWire(x: Left[T1, T2], out: DataOutput) = wt1.toWire(x.a, out)
+    def fromWire(in: DataInput): Left[T1, T2] = Left[T1, T2](wt1.fromWire(in))
+    def show(x: Left[T1, T2]) = x.toString
+  }
+
+  implicit def RightFmt[T1, T2](implicit wt1: WireFormat[T2]) = new WireFormat[Right[T1, T2]] {
+    def toWire(x: Right[T1, T2], out: DataOutput) = wt1.toWire(x.b, out)
+    def fromWire(in: DataInput): Right[T1, T2] = Right[T1, T2](wt1.fromWire(in))
+    def show(x: Right[T1, T2]) = x.toString
+  }
+
   /*
    * Java's Date
    */

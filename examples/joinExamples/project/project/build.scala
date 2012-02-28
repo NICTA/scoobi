@@ -5,4 +5,3 @@ object Plugins extends Build {
     uri("git://github.com/NICTA/sbt-scoobi.git#master")
   )
 }
-
