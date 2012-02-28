@@ -15,6 +15,7 @@
   */
 package com.nicta.scoobi.impl.exec
 
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.OutputFormat
@@ -62,6 +63,11 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
       job.setOutputValueClass(conf.getClass(ChannelOutputFormat.valueClassProperty(channel, output), null))
       job.getConfiguration.set("mapreduce.output.basename", "ch" + channel + "out" + output)
 
+      val PropertyPrefix = (ChannelOutputFormat.otherProperty(channel, output) + """(.*)""").r
+      ChannelOutputFormat.confToMap(conf) collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
+        case (k, v) => job.getConfiguration.set(k, v)
+      }
+
       new TaskAttemptContext(job.getConfiguration, context.getTaskAttemptID())
     }
 
@@ -83,7 +89,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
 /** Object that allows for channels with different output format requirements
   * to be specified. */
-object ChannelOutputFormat {
+object ChannelOutputFormat extends ChannelFormatBase {
 
   private def propertyPrefix(ch: Int, ix: Int) = "scoobi.output." + ch + ":" + ix
   private def formatProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".format"
@@ -97,5 +103,11 @@ object ChannelOutputFormat {
     conf.set(formatProperty(channel, output), sink.outputFormat.getName)
     conf.set(keyClassProperty(channel, output), sink.outputKeyClass.getName)
     conf.set(valueClassProperty(channel, output), sink.outputValueClass.getName)
+
+    val jobCopy = new Job(conf)
+    sink.outputConfigure(jobCopy)
+    (confToMap(jobCopy.getConfiguration) -- confToMap(conf).keys) foreach { case (k, v) =>
+      conf.set(otherProperty(channel, output) + k, v)
+    }
   }
 }

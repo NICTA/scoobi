@@ -42,7 +42,7 @@ import com.nicta.scoobi.io.DataSource
 
 /** Object that allows for channels with different input format requirements
   * to be specified. Makes use of ChannelInputFormat. */
-object ChannelInputFormat {
+object ChannelInputFormat extends ChannelFormatBase {
 
   private val INPUT_FORMAT_PROPERTY = "scoobi.input.formats"
 
@@ -82,8 +82,6 @@ object ChannelInputFormat {
       case Entry(ch, infmt) => (ch.toInt, ReflectionUtils.newInstance(Class.forName(infmt), conf).asInstanceOf[InputFormat[_,_]])
     } toMap
   }
-
-  def confToMap(conf: Configuration): Map[String, String] = conf.map(me => (me.getKey, me.getValue)).toMap
 }
 
 
@@ -100,9 +98,7 @@ class ChannelInputFormat[K, V] extends InputFormat[K, V] {
       val jobCopy = new Job(conf)
       val ChannelPrefix = ("scoobi.input" + channel + ":" + """(.*)""").r
 
-      ChannelInputFormat.confToMap(conf) collect {
-        case (ChannelPrefix(k), v) => (k, v)
-      } foreach {
+      ChannelInputFormat.confToMap(conf) collect { case (ChannelPrefix(k), v) => (k, v) } foreach {
         case (k, v) => jobCopy.getConfiguration.set(k, v)
       }
 
@@ -116,7 +112,20 @@ class ChannelInputFormat[K, V] extends InputFormat[K, V] {
   }
 
   def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[K, V] = {
-    new ChannelRecordReader(split, context)
+
+    val taggedInputSplit: TaggedInputSplit = split.asInstanceOf[TaggedInputSplit]
+
+    val conf = context.getConfiguration
+    val jobCopy = new Job(conf)
+    val ChannelPrefix = ("scoobi.input" + taggedInputSplit.channel + ":" + """(.*)""").r
+
+    ChannelInputFormat.confToMap(conf) collect { case (ChannelPrefix(k), v) => (k, v) } foreach {
+      case (k, v) => jobCopy.getConfiguration.set(k, v)
+    }
+
+    val contextCopy = new TaskAttemptContext(jobCopy.getConfiguration, context.getTaskAttemptID)
+
+    new ChannelRecordReader(split, contextCopy)
   }
 }
 
