@@ -239,7 +239,7 @@ class MapReduceJob(stepId: Int) {
 
     /* Move named file-based sinks to their correct output paths. */
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
-    val FileName = """ch(\d+)out(\d+)-.-\d+""".r
+    val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
 
     reducers.foreach { case (sinks, reducer) =>
 
