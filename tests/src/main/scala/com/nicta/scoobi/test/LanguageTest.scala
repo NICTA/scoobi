@@ -35,7 +35,7 @@ object LanguageTest {
   /** "Join" example. */
   def joinTest() = {
 
-    val joined = joinOn(names by (_._1), cnts by (_._1))(_ % 2)
+    val joined = join(names by (_._1), cnts by (_._1))
     val coGrouped = coGroup(names by (_._1), cnts by (_._1))
 
     persist(toTextFile(joined, "test-out/id-names-cnt"),
