@@ -255,8 +255,8 @@ object DList {
 
   /* Pimping from generic collection types (i.e. Seq) to a Distributed List */
   trait PimpWrapper[A] { def toDList: DList[A] }
-  implicit def seqPimp[A : Manifest : WireFormat](seq: Seq[A]) = new PimpWrapper[A] {
-    def toDList: DList[A] = FunctionInput.fromFunction(seq.size)(seq)
+  implicit def travPimp[A : Manifest : WireFormat](trav: Traversable[A]) = new PimpWrapper[A] {
+    def toDList: DList[A] = FunctionInput.fromFunction(trav.size)(trav.toSeq)
   }
 
   /** Persist one or more distributed lists - will trigger MapReduce computations. */
