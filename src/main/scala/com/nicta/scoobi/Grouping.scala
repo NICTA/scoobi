@@ -25,7 +25,7 @@ import annotation.implicitNotFound
   * 'DList'. */
 @implicitNotFound(msg = "Cannot find Grouping type class for ${K}")
 trait Grouping[K] extends Serializable {
-  /** Specifies how key-values are partitioned among Reduer tasks. */
+  /** Specifies how key-values are partitioned among Reducer tasks. */
   def partition(key: K, num: Int): Int = (key.hashCode & Int.MaxValue) % num
 
   /** Specifies how values, for a given partition, are grouped together in
@@ -41,13 +41,13 @@ trait Grouping[K] extends Serializable {
 /** Implicit definitions of Grouping instances for common types. */
 object Grouping {
 
-  /** An implicity Grouping type class instance where sorting is implemented via an Ordering
+  /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
     * type class instance. Partitioning and grouping use the default implementation. */
   implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
     def sortCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
   }
 
-  /** An implicity Grouping type class instance where sorting is implemented via an Ordering
+  /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
     * type class instance. Partitioning and grouping use the default implementation. */
   implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
     def sortCompare(x: T, y: T): Int = x.compareTo(y)
