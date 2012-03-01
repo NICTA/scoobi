@@ -23,14 +23,14 @@ import com.nicta.scoobi.WireFormat._
 import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.DoFn
 import com.nicta.scoobi.Emitter
-import scala.collection.mutable.MutableList
+import scala.collection.mutable.ArrayBuffer
 
 object Join {
 
   private def innerJoin[T, A, B] = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
     override def setup() {}
     override def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
-      var alist: MutableList[A] = new MutableList()
+      var alist = new ArrayBuffer[A]
 
       for (v <- input._2) {
         v match {
@@ -46,7 +46,7 @@ object Join {
   private def rightOuterJoin[T, A, B, A2](has: (T, A, B) => A2, notHas: (T, B) => A2) = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A2, B))] {
     override def setup() {}
     override def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A2, B))]) {
-      var alist: MutableList[A] = new MutableList()
+      var alist = new ArrayBuffer[A]
 
       for (v <- input._2) {
         v match {
@@ -89,7 +89,13 @@ object Join {
 
       override def sortCompare(a: (K, Boolean), b: (K, Boolean)): Int = {
         val n = groupCompare(a, b)
-        if (n != 0) n else implicitly[Ordering[Boolean]].compare(a._2, b._2)
+        if (n != 0)
+          n
+        else (a._2, b._2) match {
+          case (true, false) => -1
+          case (false, true) => 1
+          case _ => 0
+        }
       }
     }
 
@@ -135,4 +141,27 @@ object Join {
                B : Manifest : WireFormat]
       (d1: DList[(K, A)], d2: DList[(K, B)])
     : DList[(K, (A, Option[B]))] = joinRight(d2, d1).map(v => (v._1, v._2.swap))
+
+
+  /** Perform a co-group of two (2) distributed lists */
+  def coGroup[K  : Manifest : WireFormat : Grouping,
+              A : Manifest : WireFormat,
+              B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+      : DList[(K, (Iterable[A], Iterable[B]))] = {
+        val d1s: DList[(K, Either[A, B])] = d1 map { case (k, a1) => (k, Left(a1)) }
+        val d2s: DList[(K, Either[A, B])] = d2 map { case (k, a2) => (k, Right(a2)) }
+
+        (d1s ++ d2s).groupByKey map {
+          case (k, as) => {
+            val vb1 = new VectorBuilder[A]()
+            val vb2 = new VectorBuilder[B]()
+            as foreach {
+              case Left(a1) => vb1 += a1
+              case Right(a2) => vb2 += a2
+            }
+            (k, (vb1.result().toIterable, vb2.result().toIterable))
+          }
+        }
+  }
 }

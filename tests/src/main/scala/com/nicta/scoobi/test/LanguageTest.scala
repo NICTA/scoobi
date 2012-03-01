@@ -19,7 +19,6 @@ import java.io._
 import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.lib.Join._
-import com.nicta.scoobi.lib.CoGroup._
 
 
 /** Test the language front-end */
@@ -35,8 +34,8 @@ object LanguageTest {
   /** "Join" example. */
   def joinTest() = {
 
-    val joined = join(names by (_._1), cnts by (_._1))
-    val coGrouped = coGroup(names by (_._1), cnts by (_._1))
+    val joined = join(names, cnts)
+    val coGrouped = coGroup(names, cnts)
 
     persist(toTextFile(joined, "test-out/id-names-cnt"),
             toTextFile(coGrouped, "test-out/id-names-cnt-cg"))
