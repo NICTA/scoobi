@@ -248,6 +248,12 @@ object DList {
     FunctionInput.fromFunction(vec.size)(ix => vec(ix))
   }
 
+  /** Concatenates all arguement distributed lists into a single distributed list. */
+  def concat[A : Manifest : WireFormat](xss: List[DList[A]]): DList[A] = new DList(Smart.Flatten(xss.map(_.ast)))
+
+  /** Concatenates all arguement distributed lists into a single distributed list. */
+  def concat[A : Manifest : WireFormat](xss: DList[A]*): DList[A] = concat(xss: _*)
+
   /** Creates a distributed list containing values of a given function over a range of
     * integer values starting from 0. */
   def tabulate[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] =
