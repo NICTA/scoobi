@@ -68,7 +68,7 @@ object AvroInput {
             logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
             logger.debug("Input schema: " + sch.schema)
           } else {
-             throw new IOException("Input path" + p + " does not exist.")
+             throw new IOException("Input path " + p + " does not exist.")
           }
         }
 

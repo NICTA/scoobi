@@ -183,7 +183,7 @@ object SequenceInput {
         if (Helper.pathExists(p))
           logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
         else
-           throw new IOException("Input path" + p + " does not exist.")
+           throw new IOException("Input path " + p + " does not exist.")
       }
 
       def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
