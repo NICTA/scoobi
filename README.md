@@ -64,7 +64,7 @@ Then build and package one of the examples:
 Finally, run on Hadoop:
 
 ```
-  $ hadoop jar ./target/Scoobi_Word_Count-hadoop.jar <input> <output>
+  $ hadoop jar ./target/Scoobi_Word_Count-hadoop-0.1.jar <input> <output>
 ```
 
 
