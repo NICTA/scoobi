@@ -72,7 +72,7 @@ final case class BridgeStore[A](n: AST.Node[A])
   def inputConfigure(job: Job) = FileInputFormat.addInputPath(job, new Path(path, "ch*"))
   def inputSize(): Long = Helper.pathSize(new Path(path, "ch*"))
   val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
-    def fromKeyValue(key: NullWritable, value: ScoobiWritable[A]): A = value.get
+    def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get
   }
 
 

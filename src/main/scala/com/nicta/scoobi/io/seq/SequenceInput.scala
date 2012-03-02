@@ -101,7 +101,7 @@ object SequenceInput {
     val convK = implicitly[Conv[K]]
 
     val converter = new InputConverter[convK.From, NullWritable, K] {
-      def fromKeyValue(k: convK.From, v: NullWritable) = convK.fromWritable(k)
+      def fromKeyValue(context: InputContext, k: convK.From, v: NullWritable) = convK.fromWritable(k)
     }
 
     new DList(Smart.Load(new SeqLoader[convK.From, NullWritable, K](paths, converter)))
@@ -122,7 +122,7 @@ object SequenceInput {
     val convV = implicitly[Conv[V]]
 
     val converter = new InputConverter[NullWritable, convV.From, V] {
-      def fromKeyValue(k: NullWritable, v: convV.From) = convV.fromWritable(v)
+      def fromKeyValue(context: InputContext, k: NullWritable, v: convV.From) = convV.fromWritable(v)
     }
 
     new DList(Smart.Load(new SeqLoader[NullWritable, convV.From, V](paths, converter)))
@@ -145,7 +145,7 @@ object SequenceInput {
     val convV = implicitly[Conv[V]]
 
     val converter = new InputConverter[convK.From, convV.From, (K, V)] {
-      def fromKeyValue(k: convK.From, v: convV.From) = (convK.fromWritable(k), convV.fromWritable(v))
+      def fromKeyValue(context: InputContext, k: convK.From, v: convV.From) = (convK.fromWritable(k), convV.fromWritable(v))
     }
 
     new DList(Smart.Load(new SeqLoader[convK.From, convV.From, (K, V)](paths, converter)))
@@ -165,7 +165,7 @@ object SequenceInput {
     * that directory. */
   def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: List[String]): DList[(K, V)] = {
     val converter = new InputConverter[K, V, (K, V)] {
-      def fromKeyValue(k: K, v: V) = (k, v)
+      def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
     }
 
     new DList(Smart.Load(new SeqLoader[K, V, (K, V)](paths, converter)))

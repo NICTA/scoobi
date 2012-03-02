@@ -17,6 +17,7 @@ package com.nicta.scoobi.io
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.InputFormat
+import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job
 
 
@@ -41,5 +42,6 @@ trait DataSource[K, V, A] {
 
 /** Convert an InputFormat's key-value types to the type produced by a DataSource. */
 trait InputConverter[K, V, A] {
-  def fromKeyValue(key: K, value: V): A
+  type InputContext = MapContext[K, V, _, _]
+  def fromKeyValue(context: InputContext, key: K, value: V): A
 }

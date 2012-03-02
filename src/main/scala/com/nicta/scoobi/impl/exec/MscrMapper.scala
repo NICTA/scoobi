@@ -51,7 +51,7 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
   }
 
   override def map(key: K1, value: V1, context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
-    val v: A = converter.fromKeyValue(key, value).asInstanceOf[A]
+    val v: A = converter.fromKeyValue(context, key, value).asInstanceOf[A]
     mappers foreach { mapper =>
       val emitter = new Emitter[(K2, V2)] {
         def emit(x: (K2, V2)) = {
