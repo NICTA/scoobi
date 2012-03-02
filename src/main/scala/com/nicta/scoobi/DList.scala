@@ -236,6 +236,59 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
                 mV:   Manifest[V],
                 wtV:  WireFormat[V])
     : DList[V] = map(ev(_)._2)
+
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Derrived functionality (reduction operations)
+  // TODO - should eventually return DObjects, not DLists.
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /** Reduce the elemets of this distributed list using the specified associative binary operator. The
+    * order in which the elements are reduced is unspecified and may be nondeterministic. */
+  def reduce(op: (A, A) => A): DList[A] = {
+    /* First, perform in-mapper combining. */
+    val imc: DList[A] = self.parallelDo(new DoFn[A, A] {
+      var acc: A = _
+      var first = true
+      def setup() = {}
+      def process(input: A, emitter: Emitter[A]) =
+        { if (first) { acc = input; first = false } else { acc = op(acc, input) }}
+      def cleanup(emitter: Emitter[A]) = emitter.emit(acc)
+    })
+
+    /* Group all elements together (so they go to the same reducer task) and then
+     * combine them. */
+    imc.groupBy(_ => 0).combine(op).map(_._2)
+  }
+
+  /** Multiply up the elements of this distribute list. */
+  def product(implicit num: Numeric[A]): DList[A] = reduce(num.times)
+
+  /** Sum up the elements of this distribute list. */
+  def sum(implicit num: Numeric[A]): DList[A] = reduce(num.plus)
+
+  /** The length of the distributed list. */
+  def length: DList[Int] = map(_ => 1).sum
+
+  /** The size of the distributed list. */
+  def size: DList[Int] = length
+
+  /** Count the number of elements in the list which satisfy a predicate. */
+  def count(p: A => Boolean): DList[Int] = filter(p).length
+
+  /** Find the largest element in the distributed list. */
+  def max(implicit cmp: Ordering[A]): DList[A] = reduce((x, y) => if (cmp.gteq(x, y)) x else y)
+
+  /** Find the largest element in the distributed list. */
+  def maxBy[B](f: A => B)(cmp: Ordering[B]): DList[A] =
+    reduce((x, y) => if (cmp.gteq(f(x), f(y))) x else y)
+
+  /** Find the smallest element in the distributed list. */
+  def min(implicit cmp: Ordering[A]): DList[A] = reduce((x, y) => if (cmp.lteq(x, y)) x else y)
+
+  /** Find the smallest element in the distributed list. */
+  def minBy[B](f: A => B)(cmp: Ordering[B]): DList[A] =
+    reduce((x, y) => if (cmp.lteq(f(x), f(y))) x else y)
 }
 
 
