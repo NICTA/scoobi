@@ -124,7 +124,6 @@ object AvroSchema {
     val sch2 = implicitly[AvroSchema[T2]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -133,6 +132,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record
@@ -147,7 +147,6 @@ object AvroSchema {
     val sch3 = implicitly[AvroSchema[T3]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2, sch3))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2, T3) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -157,6 +156,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2, T3)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record.put(2, sch3.toAvro(x._3))
@@ -173,7 +173,6 @@ object AvroSchema {
     val sch4 = implicitly[AvroSchema[T4]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2, sch3, sch4))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2, T3, T4) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -184,6 +183,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2, T3, T4)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record.put(2, sch3.toAvro(x._3))
@@ -202,7 +202,6 @@ object AvroSchema {
     val sch5 = implicitly[AvroSchema[T5]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2, sch3, sch4, sch5))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2, T3, T4, T5) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -214,6 +213,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2, T3, T4, T5)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record.put(2, sch3.toAvro(x._3))
@@ -234,7 +234,6 @@ object AvroSchema {
     val sch6 = implicitly[AvroSchema[T6]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2, sch3, sch4, sch5, sch6))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2, T3, T4, T5, T6) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -247,6 +246,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2, T3, T4, T5, T6)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record.put(2, sch3.toAvro(x._3))
@@ -269,7 +269,6 @@ object AvroSchema {
     val sch7 = implicitly[AvroSchema[T7]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2, sch3, sch4, sch5, sch6, sch7))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2, T3, T4, T5, T6, T7) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -283,6 +282,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2, T3, T4, T5, T6, T7)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record.put(2, sch3.toAvro(x._3))
@@ -307,7 +307,6 @@ object AvroSchema {
     val sch8 = implicitly[AvroSchema[T8]]
 
     val schema: Schema = mkRecordSchema(List(sch1, sch2, sch3, sch4, sch5, sch6, sch7, sch8))
-    val record = new GenericData.Record(schema)
 
     def fromAvro(record: GenericData.Record): (T1, T2, T3, T4, T5, T6, T7, T8) = {
       val x1 = sch1.fromAvro(record.get(0).asInstanceOf[sch1.AvroType])
@@ -322,6 +321,7 @@ object AvroSchema {
     }
 
     def toAvro(x: (T1, T2, T3, T4, T5, T6, T7, T8)): GenericData.Record = {
+      val record = new GenericData.Record(schema)
       record.put(0, sch1.toAvro(x._1))
       record.put(1, sch2.toAvro(x._2))
       record.put(2, sch3.toAvro(x._3))
