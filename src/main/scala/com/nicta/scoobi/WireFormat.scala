@@ -455,6 +455,7 @@ object WireFormat {
   /*
    * Catch-all
    */
+  @deprecated("Not actually deprecated, but you are using inefficient serialization, try use explicit stuff instead", "since 0.1")
   implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) = {
       val bytesOut = new ByteArrayOutputStream
