@@ -90,14 +90,21 @@ class TaggedValueClassBuilder
                                      ctClass)
     ctClass.addMethod(setMethod)
 
+    def toWireCode(t: Int) = "writer" + t + ".toWire(value" + t + ", $1);";
+
     /* Tagged 'write' method */
     val taggedWriteCode =
-      "$1.writeInt(tag());" +
-      "switch(tag()) {" +
+      if (tags.size == 1)
+        "setTag(0);" +
+        toWireCode(0)
+      else
+        "$1.writeInt(tag());" +
+        "switch(tag()) {" +
         tags.map {
-          case (t, (m, _)) => "case " + t + ": writer" + t + ".toWire(value" + t + ", $1); break;"
+          case (t, (m, _)) => "case " + t + ": " + toWireCode(t) + " break;"
         }.mkString +
-      "default: break; }"
+        "default: break; }"
+
     val writeMethod = CtNewMethod.make(CtClass.voidType,
                                        "write",
                                        Array(pool.get("java.io.DataOutput")),
@@ -106,14 +113,22 @@ class TaggedValueClassBuilder
                                        ctClass)
     ctClass.addMethod(writeMethod)
 
+    def toReadCode(t: Int, name: String) = "value" + t + " = (" + name + ")writer" + t + ".fromWire($1);"
+
     /* Tagged 'readFields' method */
     val taggedReadFieldsCode =
-      "setTag($1.readInt());" +
-      "switch(tag()) {" +
-        tags.map{ case (t, (m, _)) =>
-          "case " + t + ": value" + t + " = (" + m.erasure.getName  + ")writer" + t + ".fromWire($1); break;"
+      if (tags.size == 1)
+        "setTag(0);"+
+        toReadCode(0, tags(0)._1.erasure.getName)
+      else
+        "setTag($1.readInt());" +
+        "switch(tag()) {" +
+        tags.map {
+         case (t, (m, _)) =>
+           "case " + t + ": " + toReadCode(t, m.erasure.getName) + " break;"
         }.mkString +
-      "default: break; }"
+        "default: break; }"
+
     val readFieldsMethod = CtNewMethod.make(CtClass.voidType,
                                             "readFields",
                                             Array(pool.get("java.io.DataInput")),
