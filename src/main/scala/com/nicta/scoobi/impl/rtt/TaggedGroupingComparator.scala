@@ -65,23 +65,31 @@ class TaggedGroupingComparatorClassBuilder
 
     /* 'compare' - if the tags are the same for the two TaggedKeys, use the Grouping's
      * groupCompare method to compare the two keys. */
+
+    def genFromObj(t: Int, m: Manifest[_])=
+      "return grouper" + t + ".groupCompare(" +fromObject("(" + m.erasure.getName  + ")writer" + t + ".fromWire(buffer1)", m) + ", " +
+        fromObject("(" + m.erasure.getName  + ")writer" + t + ".fromWire(buffer2)", m) + ");"
+
     val compareCode =
       "buffer1.reset($1, $2, $3);" +
       "buffer2.reset($4, $5, $6);" +
-      "int tag1 = buffer1.readInt();" +
-      "int tag2 = buffer2.readInt();" +
-      "if (tag1 == tag2) {" +
-        "switch(tag1) {" +
-          tags.map { case (t, (m, _, _)) =>
-            "case " + t + ": return grouper" + t + ".groupCompare(" +
-            fromObject("(" + m.erasure.getName  + ")writer" + t + ".fromWire(buffer1)", m) + ", " +
-            fromObject("(" + m.erasure.getName  + ")writer" + t + ".fromWire(buffer2)", m) + ");"
-          } .mkString +
-          "default: return 0;" +
-        "}" +
-      "} else {" +
-        "return tag1 - tag2;" +
-      "}"
+      (if (tags.size == 1) {
+        genFromObj(0, tags(0)._1)
+      } else {
+        "int tag1 = buffer1.readInt();" +
+        "int tag2 = buffer2.readInt();" +
+        "if (tag1 == tag2) {" +
+          "switch(tag1) {" +
+            tags.map { case (t, (m, _, _)) =>
+              "case " + t + ": " +genFromObj(t, m)
+            } .mkString +
+            "default: return 0;" +
+          "}" +
+        "} else {" +
+          "return tag1 - tag2;" +
+        "}"
+      })
+
 
     val compareMethod = CtNewMethod.make(CtClass.intType,
                                          "compare",
