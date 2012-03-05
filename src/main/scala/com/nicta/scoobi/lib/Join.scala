@@ -68,7 +68,8 @@ object Join {
   private def joinWith[K : Manifest : WireFormat : Grouping,
                        A : Manifest : WireFormat,
                        B : Manifest : WireFormat,
-                       A2 : Manifest, B2 : Manifest]
+                       A2 : Manifest : WireFormat,
+                       B2 : Manifest : WireFormat]
       (d1: DList[(K, A)], d2: DList[(K, B)])
       (dofn: DoFn[((K, Boolean), Iterable[Either[A, B]]), (K, (A2, B2))])
     : DList[(K, (A2, B2))] = {
