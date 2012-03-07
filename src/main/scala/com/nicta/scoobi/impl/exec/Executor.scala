@@ -100,29 +100,29 @@ object Executor {
     /* Rumble over each output and execute their containing MSCR. Thread-through the
      * the execution state as it is updated. */
     val st = new ExecState(computeTable, MMap(refcnts.toSeq: _*))
+    var step = 1
     outputs.foreach { out =>
       if (!st.computeTable.contains(out.node))
-        executeMSCR(mscrs, st, MSCR.containingOutput(mscrs, out.node))
+        step = executeMSCR(mscrs, st, MSCR.containingOutput(mscrs, out.node), step)
     }
   }
 
-  class IntWrapper(var value: Int)
 
   /** Execute an MSCR. */
-  private def executeMSCR(mscrs: Set[MSCR], st: ExecState, mscr: MSCR, step: IntWrapper = new IntWrapper(0)): Unit = {
+  private def executeMSCR(mscrs: Set[MSCR], st: ExecState, mscr: MSCR, nextStep: Int): Int = {
 
     /* Make sure all inputs have been computed - recurse into executeMSCR. */
+    var step = nextStep
     mscr.inputNodes.foreach { input =>
       if (!st.computeTable.contains(input))
-        executeMSCR(mscrs, st, MSCR.containingOutput(mscrs, input), step)
+        step = executeMSCR(mscrs, st, MSCR.containingOutput(mscrs, input), step)
     }
 
-    step.value = step.value + 1
 
     /* Make a Hadoop job and run it. */
-    logger.info("Running step: " + step.value + " of " + mscrs.size)
-    val job = MapReduceJob(step.value, mscr)
-    job.run()
+    logger.info("Running step: " + step + " of " + mscrs.size)
+    MapReduceJob(step, mscr).run()
+
 
     /* Update compute table - all MSCR output nodes have now been produced. */
     mscr.outputNodes.foreach { node => st.computeTable += node }
@@ -143,5 +143,7 @@ object Executor {
         case _                                        => Unit
       }
     }
+
+    step + 1
   }
 }
