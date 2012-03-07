@@ -99,7 +99,7 @@ object Join {
       }
     }
 
-    (left ++ right).groupByKey.parallelDo(dofn)
+    (left ++ right).groupByKey.parallelDo(dofn).groupBarrier
   }
 
   /** Perform an equijoin of two (2) distributed lists. */
@@ -152,7 +152,7 @@ object Join {
         val d1s: DList[(K, Either[A, B])] = d1 map { case (k, a1) => (k, Left(a1)) }
         val d2s: DList[(K, Either[A, B])] = d2 map { case (k, a2) => (k, Right(a2)) }
 
-        (d1s ++ d2s).groupByKey map {
+        val grouped = (d1s ++ d2s).groupByKey map {
           case (k, as) => {
             val vb1 = new VectorBuilder[A]()
             val vb2 = new VectorBuilder[B]()
@@ -163,5 +163,7 @@ object Join {
             (k, (vb1.result().toIterable, vb2.result().toIterable))
           }
         }
+
+        grouped.groupBarrier
   }
 }

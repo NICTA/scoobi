@@ -54,6 +54,11 @@ object Smart {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Optimisation strategies:
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /** An optimisation strategy that any ParallelDo that is connected to an output is marked
+      * with a fuse barrier. */
+    def optAddFuseBar(copied: CopyTable, outputs: Set[DList[_]]): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optAddFuseBar(_, outputs))
+
     /** An optimisation strategy that replicates any Flatten nodes that have multiple outputs
       * such that in the resulting AST Flatten nodes only have single outputs. */
     def optSplitFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
@@ -194,21 +199,31 @@ object Smart {
     * all elements of an existing DList and concatenating the results. */
   case class ParallelDo[A, B]
       (in: DList[A],
-       dofn: DoFn[A, B])
+       dofn: DoFn[A, B],
+       groupBarrier: Boolean = false,
+       fuseBarrier: Boolean = false)
       (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
     extends DList[B] {
 
-    override val toString = "ParallelDo" + id
+    override val toString = "ParallelDo" + id + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
 
     val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
-    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[B], CopyTable, Boolean) = {
+    def justCopy(copied: CopyTable, cf: CopyFn[_])  = justCopy(copied, cf, fuseBarrier)
+
+    def justCopy(copied: CopyTable, cf: CopyFn[_], fb: Boolean): (DList[B], CopyTable, Boolean) = {
       val cfA = cf.asInstanceOf[CopyFn[A]]
       val (inUpd, copiedUpd, b) = cfA(in, copied)
-      val pd = ParallelDo(inUpd, dofn)
+      val pd = ParallelDo(inUpd, dofn, groupBarrier, fb)
       (pd, copiedUpd + (this -> pd), b)
+    }
+
+    /** If this ParallelDo is connected to an output, replicate it with a fuse barrier. */
+    override def optAddFuseBar(copied: CopyTable, outputs: Set[DList[_]]): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
+      val requireFuseBarrier = outputs.contains(this)
+      justCopy(copied, (n: DList[A], ct: CopyTable) => n.optAddFuseBar(ct, outputs), requireFuseBarrier)
     }
 
     /** If the input to this ParallelDo is a Flatten node, re-write the tree as a Flatten node with the
@@ -221,7 +236,7 @@ object Smart {
             (ctUpd + (in -> inUpd), copies :+ inUpd)
           }
 
-          val flat: DList[B] = Flatten(insUpd.map(ParallelDo(_, dofn)))
+          val flat: DList[B] = Flatten(insUpd.map(ParallelDo(_, dofn, groupBarrier, fuseBarrier)))
           (flat, copiedUpd + (this -> flat), true)
         }
         case _            => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optSinkFlattens(ct))
@@ -250,10 +265,10 @@ object Smart {
       }
 
       in match {
-        case ParallelDo(_, _) => {
+        case ParallelDo(_, _, _, false) => {
           val (inUpd, copiedUpd, _) = in.optFuseParDos(copied)
-          val prev@ParallelDo(inPrev, dofnPrev) = inUpd
-          val pd = new ParallelDo(inPrev, fuse(dofnPrev, dofn))(prev.mA, prev.wtA, mB, wtB)
+          val prev@ParallelDo(inPrev, dofnPrev, gbPrev, _) = inUpd
+          val pd = new ParallelDo(inPrev, fuse(dofnPrev, dofn), groupBarrier || gbPrev, fuseBarrier)(prev.mA, prev.wtA, mB, wtB)
           (pd, copiedUpd + (this -> pd), true)
         }
         case _                => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseParDos(ct))
@@ -401,7 +416,7 @@ object Smart {
             }
             def cleanup(emitter: Emitter[(K, V)]) = {}
           }
-          val pd = ParallelDo(inUpd, dofn)
+          val pd = ParallelDo(inUpd, dofn, false, false)
           (pd, copiedUpd + (this -> pd), true)
         }
       }
@@ -587,7 +602,11 @@ object Smart {
       (splitCombineOpt, c1 || c2 || c3 || c4 || c5)
     }
 
-    val (optOutputs, _) = untilChanged(outputs, allStrategies)
+    /* Any outputs that are ParallelDo's should be marked with fuse barriers. */
+    val (outputsWithBarriers, _) = travOnce(_.optAddFuseBar(_, outputs.toSet))(outputs)
+
+    /* Run all strategies. */
+    val (optOutputs, _) = untilChanged(outputsWithBarriers, allStrategies)
     optOutputs
   }
 
@@ -616,18 +635,18 @@ object Smart {
 
   def parentsOf(d: DList[_]): List[DList[_]] = {
     d match {
-      case Load(_)          => List()
-      case ParallelDo(in,_) => List(in)
-      case GroupByKey(in)   => List(in)
-      case Combine(in,_)    => List(in)
-      case Flatten(ins)     => ins
+      case Load(_)                 => List()
+      case ParallelDo(in, _, _, _) => List(in)
+      case GroupByKey(in)          => List(in)
+      case Combine(in, _)          => List(in)
+      case Flatten(ins)            => ins
     }
   }
 
   def getParallelDo(d: DList[_]): Option[ParallelDo[_,_]] = {
     d match {
-      case parDo@ParallelDo(_,_) => Some(parDo)
-      case _                     => None
+      case parDo@ParallelDo(_, _, _, _) => Some(parDo)
+      case _                            => None
     }
   }
 

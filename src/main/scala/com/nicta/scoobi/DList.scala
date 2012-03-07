@@ -48,7 +48,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * zero or more output elements. The resulting output elements from the many "chunks" form
     * a new distributed list. */
   def parallelDo[B] (dofn: DoFn[A, B])(implicit mB:  Manifest[B], wtB: WireFormat[B]): DList[B] =
-    new DList(Smart.ParallelDo(ast, dofn))
+    new DList(Smart.ParallelDo(ast, dofn, false, false))
 
   /** Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))
@@ -110,6 +110,18 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
         new DListPersister(self, persister)
       }
     }
+  }
+
+  /** Used in conjunction with with Grouping options, to ensure that all prior computations up
+    * to the next GroupBy or GroupByKey are contained within the same MapReduce job. For expert
+    * use only. */
+  def groupBarrier: DList[A] = {
+    val dofn = new DoFn[A, A] {
+      def setup() = {}
+      def process(input: A, emitter: Emitter[A]) = emitter.emit(input)
+      def cleanup(emitter: Emitter[A]) = {}
+    }
+    new DList(Smart.ParallelDo(ast, dofn, true, false))
   }
 
 

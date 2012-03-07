@@ -460,7 +460,7 @@ object Intermediate {
         /* Create a MapperInputChannel for each group of ParallelDo nodes, "belonging" to this
          * set of related GBKs, that share the same input. */
         val pdos = related.pdos map { getParallelDo(_).orNull }
-        val mapperICs = pdos.toList.groupBy { case ParallelDo(i, _) => i }
+        val mapperICs = pdos.toList.groupBy { case ParallelDo(i, _, _, _) => i }
                                    .values
                                    .map { MapperInputChannel(_) }
                                    .toSet
@@ -498,10 +498,10 @@ object Intermediate {
 
       val allMSCRs = if (floatingOutputs.isEmpty) gbkMSCRs else {
         val (ics, ocs) = floatingOutputs map {
-          case pd@ParallelDo(_, _) => (List(MapperInputChannel(List(pd))), BypassOutputChannel(pd))
+          case pd@ParallelDo(_, _, _, _) => (List(MapperInputChannel(List(pd))), BypassOutputChannel(pd))
           case flat@Flatten(_)     => {
             (flat.ins map {
-              case pd@ParallelDo(_,_) => MapperInputChannel(List(pd))
+              case pd@ParallelDo(_, _, _, _) => MapperInputChannel(List(pd))
               case other => StraightInputChannel(other)
             }, FlattenOutputChannel(flat))
           }
@@ -547,26 +547,26 @@ object Intermediate {
 
         def parallelDos(dlist: DList[_]): Set[DList[_]] = {
           dlist match {
-            case Flatten(ds)      => ds.flatMap(parallelDos(_)).toSet
-            case ParallelDo(_, _) => Set(dlist)
-            case _                => Set()
+            case Flatten(ds)            => ds.flatMap(parallelDos(_)).toSet
+            case ParallelDo(_, _, _, _) => Set(dlist)
+            case _                      => Set()
           }
         }
 
         def parallelDoInputs(dlist: DList[_]): Set[DList[_]] = {
           dlist match {
-            case Flatten(ds)     => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
-            case ParallelDo(d,_) => Set(d)
-            case _               => Set()
+            case Flatten(ds)            => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
+            case ParallelDo(d, _, _, _) => Set(d)
+            case _                      => Set()
           }
         }
 
         def dependentGbks(dlist: DList[_]): Set[DList[_]] = dlist match {
-          case Load(_)            => Set.empty
-          case ParallelDo(in, _)  => dependentGbks(in)
-          case gbk@GroupByKey(in) => Set(gbk) ++ dependentGbks(in)
-          case Combine(in, _)     => dependentGbks(in)
-          case Flatten(ins)       => ins.map(dependentGbks(_).toList).flatten.toSet
+          case Load(_)                 => Set.empty
+          case ParallelDo(in, _, _, _) => dependentGbks(in)
+          case gbk@GroupByKey(in)      => Set(gbk) ++ dependentGbks(in)
+          case Combine(in, _)          => dependentGbks(in)
+          case Flatten(ins)            => ins.map(dependentGbks(_).toList).flatten.toSet
         }
 
         val (GroupByKey(d)) = gbk
@@ -676,7 +676,10 @@ object Intermediate {
             for { d_              <- getSingleSucc(d)
                   reducer         <- getParallelDo(d_)
                   hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
-            } yield (if (hasNoSuccessors) { oc.addReducer(reducer)} else { oc })
+                  hasGroupBarrier <- Some(reducer.groupBarrier)
+                  hasFuseBarrier  <- Some(reducer.fuseBarrier)
+
+            } yield (if (hasNoSuccessors || hasGroupBarrier || hasFuseBarrier) { oc.addReducer(reducer)} else { oc })
           maybeOC.getOrElse(oc)
         }
 
