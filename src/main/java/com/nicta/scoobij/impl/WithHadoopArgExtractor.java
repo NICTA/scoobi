@@ -4,7 +4,7 @@ public class WithHadoopArgExtractor extends
 		scala.runtime.AbstractFunction1<String[], scala.runtime.BoxedUnit> {
 	public String[] extract(String[] args) {
 		newArgs = null;
-		com.nicta.scoobi.Scoobi.withHadoopArgs(args, this);
+		com.nicta.scoobi.Conf.withHadoopArgs(args, this);
 		assert (newArgs != null);
 		return newArgs;
 

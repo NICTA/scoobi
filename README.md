@@ -134,31 +134,22 @@ complete application for word count looks like this:
 
 ```scala
   import com.nicta.scoobi.Scoobi._
-  import com.nicta.scoobi.DList._
-  import com.nicta.scoobi.io.text.TextInput._
-  import com.nicta.scoobi.io.text.TextOutput._
 
-  object WordCount {
-    def main(allArgs: Array[String]) = withHadoopArgs(allArgs) { args =>
+  object WordCount extends ScoobiApp {
+    val lines: DList[String] = fromTextFile(args(0))
 
-      val lines: DList[String] = fromTextFile(args(0))
+    val counts: DList[(String, Int)] = lines.flatMap(_.split(" "))
+                                            .map(word => (word, 1))
+                                            .groupByKey
+                                            .combine(_+_)
 
-      val counts: DList[(String, Int)] = lines.flatMap(_.split(" "))
-                                              .map(word => (word, 1))
-                                              .groupByKey
-                                              .combine(_+_)
-
-      persist(toTextFile(counts, args(1)))
-    }
+    persist(toTextFile(counts, args(1)))
   }
 ```
 
-Our word count example is implemented by the object `WordCount`. First, there are few
-imports to specify for brining in `DList` and text I/O. The guts of the implementation
-are within the enclosing braces of the `withHadoopArgs` control structure. The purpose of
-`withHadoopArgs` is to parse the [generic Hadoop command line options](http://hadoop.apache.org/common/docs/current/commands_manual.html#Generic+Options)
-before passing the remaining arguments to the guts of the implementation. This implementation
-uses the remaining two arguments for the input (`args(0)`) and output directory (`args(1)`).
+Our word count example is implemented by the object `WordCount`, wich extends a `ScoobiApp`. This
+is a convience in Scoobi to avoid having to write a `main` function, as well as automatically
+handling arguments intended for hadoop. The remaining arguments are available as `args`
 
 Within the implementation guts, the first task is to construct a `DList` representing the data
 located at the input directory. In this situation, because the input data are simple text files,

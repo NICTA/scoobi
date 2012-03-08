@@ -19,7 +19,6 @@ import java.io._
 import scala.collection.immutable.VectorBuilder
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.WireFormat._
 import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.DoFn
 import com.nicta.scoobi.Emitter

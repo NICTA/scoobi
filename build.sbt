@@ -31,6 +31,8 @@ libraryDependencies ++= Seq(
 
 publishArtifact in packageDoc := false
 
+compileOrder := CompileOrder.ScalaThenJava
+
 resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
 
 resolvers += "Packaged Avro" at "http://nicta.github.com/scoobi/releases/"

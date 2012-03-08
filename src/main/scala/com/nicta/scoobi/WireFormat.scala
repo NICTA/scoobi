@@ -30,9 +30,10 @@ trait WireFormat[A] {
   def fromWire(in: DataInput): A
 }
 
+object WireFormat extends WireFormatImplicits
 
 /** Implicit definitions of WireFormat instances for common types. */
-object WireFormat {
+trait WireFormatImplicits {
   def mkObjectWireFormat[T](x: T) = new WireFormat[T] {
 
     override def toWire(obj: T, out: DataOutput) {}

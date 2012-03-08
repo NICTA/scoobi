@@ -15,52 +15,45 @@
   */
 package com.nicta.scoobi.examples
 
-import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.io.text._
 import java.io._
 
-
-object WordCount {
-
-  def main(args: Array[String]) = withHadoopArgs(args) { a =>
-
-    val (inputPath, outputPath) =
-      if (a.length == 0) {
-        if (!new File("output-dir").mkdir) {
-          sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
-        }
-
-        val fileName = "output-dir/all-words.txt"
-
-        // generate 5000 random words (with high collisions) and save at fileName
-        generateWords(fileName, 5000)
-
-        (fileName, "output-dir")
-
-      } else if (a.length == 2) {
-        (a(0), a(1))
-      } else {
-        sys.error("Expecting input and output path, or no arguments at all.")
+object WordCount extends ScoobiApp {
+  val (inputPath, outputPath) =
+    if (args.length == 0) {
+      if (!new File("output-dir").mkdir) {
+        sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
       }
 
-    // Firstly we load up all the (new-line-separated) words into a DList
-    val lines: DList[String] = TextInput.fromTextFile(inputPath)
+      val fileName = "output-dir/all-words.txt"
 
-    // What we want to do, is record the frequency of words. So we'll convert it to a key-value
-    // pairs where the key is the word, and the value the frequency (which to start with is 1)
-    val keyValuePair: DList[(String, Int)] = lines flatMap { _.split(" ") } map { w => (w, 1) }
+      // generate 5000 random words (with high collisions) and save at fileName
+      generateWords(fileName, 5000)
 
-    // Now let's group all words that compare the same
-    val grouped: DList[(String, Iterable[Int])] = keyValuePair.groupByKey
-    // Now we have it in the form (Word, ['1', '1', '1', 1' etc.])
+      (fileName, "output-dir")
 
-    // So what we want to do, is combine all the numbers into a single value (the frequency)
-    val combined: DList[(String, Int)] = grouped.combine((_+_))
+    } else if (args.length == 2) {
+      (args(0), args(1))
+    } else {
+      sys.error("Expecting input and output path, or no arguments at all.")
+    }
 
-    // We can evaluate this, and write it to a text file
-    DList.persist(TextOutput.toTextFile(combined, outputPath + "/word-results"));
-  }
+  // Firstly we load up all the (new-line-separated) words into a DList
+  val lines: DList[String] = fromTextFile(inputPath)
+
+  // What we want to do, is record the frequency of words. So we'll convert it to a key-value
+  // pairs where the key is the word, and the value the frequency (which to start with is 1)
+  val keyValuePair: DList[(String, Int)] = lines flatMap { _.split(" ") } map { w => (w, 1) }
+
+  // Now let's group all words that compare the same
+  val grouped: DList[(String, Iterable[Int])] = keyValuePair.groupByKey
+  // Now we have it in the form (Word, ['1', '1', '1', 1' etc.])
+
+  // So what we want to do, is combine all the numbers into a single value (the frequency)
+  val combined: DList[(String, Int)] = grouped.combine((_+_))
+
+  // We can evaluate this, and write it to a text file
+  DList.persist(toTextFile(combined, outputPath + "/word-results"));
 
   /* Write 'count' random words to the file 'filename', with a high amount of collisions */
   private def generateWords(filename: String, count: Int) {

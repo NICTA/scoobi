@@ -25,7 +25,7 @@ import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 
 
-/** A job that persists distrubted lists and computes distributed objects. */
+/** A job that persists distributed lists and computes distributed objects. */
 final case class Job() {
 
   private val persisters: MList[DListPersister[_]] = MList.empty

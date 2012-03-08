@@ -41,60 +41,60 @@ import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.AST
 
-
-/** Smart functions for persisting distributed lists by storing them as Sequence files. */
-object SequenceOutput {
-  lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
-
-
+trait SequenceOutputConversions {
   /** Type class for conversions of basic Scala types to Hadoop Writable types. */
-  trait Conv[From] {
+  trait OutConv[From] {
     type To <: Writable
     def toWritable(x: From): To
     val mf: Manifest[To]
   }
 
   /* Implicits for Conv type class. */
-  implicit def BoolConv = new Conv[Boolean] {
+  implicit def OutBoolConv = new OutConv[Boolean] {
     type To = BooleanWritable
     def toWritable(x: Boolean) = new BooleanWritable(x)
     val mf: Manifest[To] = implicitly
   }
 
-  implicit def IntConv = new Conv[Int] {
+  implicit def OutIntConv = new OutConv[Int] {
     type To = IntWritable
     def toWritable(x: Int) = new IntWritable(x)
     val mf: Manifest[To] = implicitly
   }
 
-  implicit def FloatConv = new Conv[Float] {
+  implicit def OutFloatConv = new OutConv[Float] {
     type To = FloatWritable
     def toWritable(x: Float) = new FloatWritable(x)
     val mf: Manifest[To] = implicitly
   }
 
-  implicit def LongConv = new Conv[Long] {
+  implicit def OutLongConv = new OutConv[Long] {
     type To = LongWritable
     def toWritable(x: Long) = new LongWritable(x)
     val mf: Manifest[To] = implicitly
   }
 
-  implicit def DoubleConv = new Conv[Double] {
+  implicit def OutDoubleConv = new OutConv[Double] {
     type To = DoubleWritable
     def toWritable(x: Double) = new DoubleWritable(x)
     val mf: Manifest[To] = implicitly
   }
 
-  implicit def StringConv = new Conv[String] {
+  implicit def OutStringConv = new OutConv[String] {
     type To = Text
     def toWritable(x: String) = new Text(x)
     val mf: Manifest[To] = implicitly
   }
+}
 
+
+/** Smart functions for persisting distributed lists by storing them as Sequence files. */
+object SequenceOutput extends SequenceOutputConversions {
+  lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "key" component in a Sequence File. */
-  def convertKeyToSequenceFile[K](dl: DList[K], path: String)(implicit convK: Conv[K]): DListPersister[K] = {
+  def convertKeyToSequenceFile[K](dl: DList[K], path: String)(implicit convK: OutConv[K]): DListPersister[K] = {
 
     val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
     val valueClass = classOf[NullWritable]
@@ -109,7 +109,7 @@ object SequenceOutput {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "value" component in a Sequence File. */
-  def convertValueToSequenceFile[V](dl: DList[V], path: String)(implicit convV: Conv[V]): DListPersister[V] = {
+  def convertValueToSequenceFile[V](dl: DList[V], path: String)(implicit convV: OutConv[V]): DListPersister[V] = {
 
     val keyClass = classOf[NullWritable]
     val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]
@@ -124,7 +124,7 @@ object SequenceOutput {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as "key-values" in a Sequence File. */
-  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String)(implicit convK: Conv[K], convV: Conv[V]): DListPersister[(K, V)] = {
+  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String)(implicit convK: OutConv[K], convV: OutConv[V]): DListPersister[(K, V)] = {
 
     val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
     val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]

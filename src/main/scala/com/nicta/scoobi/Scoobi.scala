@@ -15,81 +15,108 @@
   */
 package com.nicta.scoobi
 
-import java.util.Date
-import java.text.SimpleDateFormat
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
-import org.apache.hadoop.util.GenericOptionsParser
-import org.apache.hadoop.conf.Configuration
-import scala.collection.JavaConversions._
-import Option.{apply => ?}
-
-import com.nicta.scoobi.impl.util.JarBuilder
 
 
 /** Global Scoobi functions and values. */
-object Scoobi {
+object Scoobi extends com.nicta.scoobi.WireFormatImplicits
+  with com.nicta.scoobi.io.seq.SequenceOutputConversions with com.nicta.scoobi.io.seq.SequenceInputConversions  {
 
-  /** Helper method that parses the generic Haddop command line arguments before
-    * calling the user's code with the remaining arguments. */
-  def withHadoopArgs(args: Array[String])(f: Array[String] => Unit) = {
-    /* Parse options then update current configuration. Becuase the filesystem
-     * property may have changed, also update working directory property. */
-    val parser = new GenericOptionsParser(args)
-    parser.getConfiguration.foreach { entry => internalConf.set(entry.getKey, entry.getValue) }
+  val DList = com.nicta.scoobi.DList
+  type DList[A] = com.nicta.scoobi.DList[A]
+  type DObject[A] = com.nicta.scoobi.DObject[A]
+  val DoFn = com.nicta.scoobi.DoFn
+  type DoFn[A, B] = com.nicta.scoobi.DoFn[A, B]
+  val Grouping = com.nicta.scoobi.Grouping
+  type Grouping[A] = com.nicta.scoobi.Grouping[A]
+  type Job = com.nicta.scoobi.Job
+  val Job = com.nicta.scoobi.Job
+  type ScoobiApp = com.nicta.scoobi.ScoobiApp
+  val Conf = com.nicta.scoobi.Conf
 
-    /* Run the user's code */
-    f(parser.getRemainingArgs)
-  }
+  type WireFormat[A] = com.nicta.scoobi.WireFormat[A]
 
-  private var userJars: Set[String] = Set.empty
+  val TextOutput = com.nicta.scoobi.io.text.TextOutput
+  val TextInput = com.nicta.scoobi.io.text.TextInput
+  val Int = TextInput.Int
+  val Long = TextInput.Long
+  val Double = TextInput.Double
 
-  /** A list of JARs required by the user for their Scoobi job. */
-  def getUserJars = userJars
+  val SequenceOutput = com.nicta.scoobi.io.seq.SequenceOutput
+  val SequenceInput = com.nicta.scoobi.io.seq.SequenceInput
 
-  /** Set a Scoobi user JAR. */
-  def setJar(jar: String) = {
-    userJars = userJars + jar
-  }
+  val AvroInput = com.nicta.scoobi.io.avro.AvroInput
+  val AvroOutput = com.nicta.scoobi.io.avro.AvroOutput
+  val AvroSchema = com.nicta.scoobi.io.avro.AvroSchema
+  type AvroSchema[A] = com.nicta.scoobi.io.avro.AvroSchema[A]
 
-  /** Set a Scoobi user JAR by finding an example class location. */
-  def setJarByClass(clazz: Class[_]) {
-    userJars = userJars ++ JarBuilder.findContainingJar(clazz)
-  }
+  val Join = com.nicta.scoobi.lib.Join
 
-  /* Timestamp used to mark each Scoobi working directory. */
-  private val timestamp = {
-    val now = new Date
-    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
-    sdf.format(now)
-  }
+  // dlist
+  def persist = DList.persist _
 
-  /** The id for the current Scoobi job being (or about to be) executed. */
-  val jobId: String = "scoobi-" + timestamp
+  // conf functions
+  def getWorkingDirectory = Conf.getWorkingDirectory _
+  def conf = Conf.conf
+  def jobId = Conf.jobId
+  def getUserJars = Conf.getUserJars
+  def withHadoopArgs = Conf.withHadoopArgs _
+
+  // text file functions
+  def fromTextFile(paths: String*) = TextInput.fromTextFile(paths: _*)
+  def fromTextFile(paths: List[String]) = TextInput.fromTextFile(paths)
+  def fromDelimitedTextFile[A : Manifest : WireFormat]
+      (path: String, sep: String = "\t")
+      (extractFn: PartialFunction[List[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
+  def toTextFile[A : Manifest](dl: DList[A], path: String) = TextOutput.toTextFile(dl, path)
+  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t") = TextOutput.toDelimitedTextFile(dl, path, sep)
 
 
-  /** Scoobi's configuration. */
-  lazy val conf: Configuration = {
-    setWorkingDirectory(internalConf)
-    new Configuration(internalConf)
-  }
+  // Join lib
 
-  /** Scoobi's configuration. */
-  private val internalConf = new Configuration
+  def join[K : Manifest : WireFormat : Grouping,
+           A : Manifest : WireFormat,
+           B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+      = Join.join(d1, d1)
 
-  /* The Scoobi working directory is in the user's home directory under '.scoobi' and
-   * a timestamped directory. e.g. /home/fred/.scoobi/201110041326. */
-  private def setWorkingDirectory(conf: Configuration) = {
-    val workdirPath = new Path(FileSystem.get(conf).getHomeDirectory, ".scoobi/" + jobId)
-    val workdir = workdirPath.toUri.toString
-    conf.set("scoobi.workdir", workdir)
-  }
 
-  /** Get the Scoobi working directory. */
-  def getWorkingDirectory(conf: Configuration): Path = {
-    ?(conf.get("scoobi.workdir")) match {
-      case Some(s)  => new Path(s)
-      case None     => sys.error("Scoobi working directory not set.")
-    }
-  }
+  def joinRight[K : Manifest : WireFormat : Grouping,
+                A : Manifest : WireFormat,
+                B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)], default: (K, B) => A)
+      = Join.joinRight(d1, d2, default)
+
+
+  def joinRight[K : Manifest : WireFormat : Grouping,
+                A : Manifest : WireFormat,
+                B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+      = Join.joinRight(d1, d2)
+
+
+  def joinLeft[K : Manifest : WireFormat : Grouping,
+               A : Manifest : WireFormat,
+               B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)], default: (K, A) => B)
+      = Join.joinLeft(d1, d2, default)
+
+
+  def joinLeft[K : Manifest : WireFormat : Grouping,
+               A : Manifest : WireFormat,
+               B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+      = Join.joinLeft(d2, d1)
+
+  def coGroup[K  : Manifest : WireFormat : Grouping,
+              A : Manifest : WireFormat,
+              B : Manifest : WireFormat]
+      (d1: DList[(K, A)], d2: DList[(K, B)])
+      = Join.coGroup(d1, d2)
+
+
+  // Avro
+  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
+  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]) = AvroInput.fromAvroFile(paths)
+  def toAvroFile[B : AvroSchema](dl: DList[B], path: String) = AvroOutput.toAvroFile(dl, path)
+
 }

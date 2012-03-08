@@ -15,11 +15,7 @@
   */
 package com.nicta.scoobi.examples
 
-import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.WireFormat._
-import com.nicta.scoobi.io.text.TextInput._
-import com.nicta.scoobi.io.text.TextOutput._
 import java.io._
 
 /*
@@ -27,52 +23,57 @@ import java.io._
  * then gets the average age for each first name.
  */
 
-object AverageAge {
+object AverageAge extends ScoobiApp {
 
-  def main(args: Array[String]) = withHadoopArgs(args) { _ =>
-
-    if (!new File("output-dir").mkdir) {
-      sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
-    }
-
-    val fileName = "output-dir/names.txt"
-
-    // write some names to a file (so this example has no external requirements)
-    generateNames(fileName)
-
-    case class Person(val id: Long,
-                      val secondName: String,
-                      val firstName: String,
-                      val age: Int)
-
-    // With this implicit conversion, we let Scoobi know the apply and unapply function, which it uses
-    // to construct and deconstruct Person objects. Now it can very efficiently serialize them (i.e. no overhead)
-    implicit val PersonFmt = mkCaseWireFormat(Person, Person.unapply _)
-
-
-    // Read in lines of the form: 234242, Bob, Smith, 31.
-    val persons : DList[Person] = fromDelimitedTextFile(fileName, ",") {
-      case Long(id) :: fN :: sN :: Int(age) :: _ => Person(id, sN, fN, age)
-    }
-
-    // The only thing we're interested in, is the firstName and age
-    val nameAndAge: DList[(String, Int)] = persons.map { p => (p.firstName, p.age) }
-
-    // Let's group everyone with the same name together
-    val grouped: DList[(String, Iterable[Int])] = nameAndAge groupByKey
-
-    // And for every name, we will average all the avages
-    val avgAgeForName: DList[(String, Int)] = grouped map { case (n, ages) => (n, average(ages)) }
-
-    // Execute everything, and throw it into a directory
-    DList.persist (toTextFile(avgAgeForName, "output-dir/avg-age"))
+  if (!new File("output-dir").mkdir) {
+    sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
   }
+
+  val fileName = "output-dir/names.txt"
+
+  // write some names to a file (so this example has no external requirements)
+  generateNames(fileName)
+
+  case class Person(val id: Long,
+                    val secondName: String,
+                    val firstName: String,
+                    val age: Int)
+
+  // With this implicit conversion, we let Scoobi know the apply and unapply function, which it uses
+  // to construct and deconstruct Person objects. Now it can very efficiently serialize them (i.e. no overhead)
+  implicit val PersonFmt = mkCaseWireFormat(Person, Person.unapply _)
+
+
+  // Read in lines of the form: 234242, Bob, Smith, 31.
+  val persons : DList[Person] = fromDelimitedTextFile(fileName, ",") {
+    case Long(id) :: fN :: sN :: Int(age) :: _ => Person(id, sN, fN, age)
+  }
+
+  // The only thing we're interested in, is the firstName and age
+  val nameAndAge: DList[(String, Int)] = persons.map { p => (p.firstName, p.age) }
+
+  // Let's group everyone with the same name together
+  val grouped: DList[(String, Iterable[Int])] = nameAndAge groupByKey
+
+  // And for every name, we will average all the avages
+  val avgAgeForName: DList[(String, Int)] = grouped map { case (n, ages) => (n, average(ages)) }
+
+  // Execute everything, and throw it into a directory
+  DList.persist (toTextFile(avgAgeForName, "output-dir/avg-age"))
 
   private def average[A](values: Iterable[A])(implicit ev: Numeric[A]) = {
     import ev._
-    toInt(values.sum) / values.size
-  }
 
+    var value: Int = 0
+    var count = 0
+
+    for (i <- values) {
+      value = value + toInt(i)
+      count = count + 1
+    }
+
+    value / count
+  }
 
   private def generateNames(filename: String) {
     val fstream = new FileWriter(filename)

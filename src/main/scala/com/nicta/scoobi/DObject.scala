@@ -22,5 +22,5 @@ abstract class DObject[A] {
   /** Get the value being wrapped. */
   def get: A
 
-  def mkPersister: DListPersister[_]
+  def use: DListPersister[_]
 }

@@ -103,7 +103,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
         }
       }
 
-      def mkPersister: DListPersister[_] = {
+      def use: DListPersister[_] = {
         val persister = new Persister[A] {
           def mkOutputStore(node: AST.Node[A]) = MaterializeStore(node, id, path)
         }
@@ -348,7 +348,4 @@ object DList {
 
     Executor.executePlan(mscrGraph)
   }
-
-  /* Convert a DObject to a DListPersister for use in a ScoobiJob. */
-  def use(dobject: DObject[_]): DListPersister[_] = dobject.mkPersister
 }

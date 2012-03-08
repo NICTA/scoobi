@@ -15,12 +15,7 @@
   */
 package com.nicta.scoobi.examples
 
-import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.WireFormat._
-import com.nicta.scoobi.io.text.TextInput._
-import com.nicta.scoobi.io.text.TextOutput._
-import com.nicta.scoobi.lib.Join._
 import java.io._
 
 /*
