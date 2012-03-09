@@ -20,6 +20,20 @@ import java.io._
 
 object ShortestPath extends ScoobiApp
 {
+  implicit val NodeOrderImp = NodeComparator
+
+  //implicits for efficient serialization
+
+  implicit val unprocessedFormat = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _) //mkObjectWireFormat(Unprocessed)
+  implicit val frontierFormat = mkCaseWireFormat(Frontier, Frontier.unapply _)
+  implicit val doneFormat = mkCaseWireFormat(Done, Done.unapply _)
+
+  implicit val progressFormat = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]
+
+  implicit val nodeFormat = mkCaseWireFormat(Node, Node.unapply _)
+  implicit val nodeInfoFormat = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
+
+
   // To do a parallel distributed shortest-path search we want to represent the
   // graph with a list of:
   // Node as the Key, NodeInfo as the value
@@ -56,7 +70,7 @@ object ShortestPath extends ScoobiApp
 
   // The generated graph is in the form of a list of edges e.g (A, B), (C, D)
 
-  val edges: DList[(Node, Node)] = fromDelimitedTextFile("output-dir/graph.txt", ",") {
+  val edges: DList[(Node, Node)] = fromDelimitedTextFile("output-dir/graph.txt", " ") {
     case a :: b :: _ => (Node(a), Node(b))
   }
 
@@ -189,20 +203,6 @@ private def breadthFirst(dlist: DList[(Node, NodeInfo)], depth: Int): DList[(Nod
   object NodeComparator extends Ordering[Node] {
     def compare(a: Node, b: Node) = a.data compareTo b.data
   }
-
-  implicit val NodeOrderImp = NodeComparator
-
-  //implicits for efficient serialization
-
-  implicit val unprocessedFormat = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _) //mkObjectWireFormat(Unprocessed)
-  implicit val frontierFormat = mkCaseWireFormat(Frontier, Frontier.unapply _)
-  implicit val doneFormat = mkCaseWireFormat(Done, Done.unapply _)
-
-  implicit val progressFormat = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]
-
-  implicit val nodeFormat = mkCaseWireFormat(Node, Node.unapply _)
-  implicit val nodeInfoFormat = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
-
 
   private def generateGraph(filename: String) {
     // TODO: generate something more interesting..
