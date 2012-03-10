@@ -1,3 +1,36 @@
+master relase notes (will become 0.4.0)
+
+### New Features
+
+* ScoobiApp trait for making scoobi apps even easier
+
+* Single import `import com.nicta.scoobi.Scoobi._`
+
+* IO support for avro
+
+* Sequence files automatically convert to/from writable
+
+* DList reduction methods (e.g. DList.reduce, product, min, etc.)
+
+### Changes
+
+* All methods of Scoobi object are now in Conf object
+
+* `DList.use(x: DObject)` has been removed, use `DObject.use` instead
+
+### Improvements
+
+* Lots of bug fixes
+
+* Improvements in optimizer
+
+* MSCR now imposes less overhead on objects that need no fusion
+
+* Join/coGroup API cleaned up, and performance improved
+
+
+
+
 0.3.0 release notes
 -------------------
 [All Issues fixed](https://github.com/NICTA/scoobi/issues?milestone=1&state=closed)
