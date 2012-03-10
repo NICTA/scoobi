@@ -33,7 +33,7 @@ Here's how you use it:
   val x: DObject[Iterable[Int]] = a.materialize
 
   val job = Job()
-  job << use(x)
+  job << use(x)  // note: in later versions of scoobi, this becomes 'job << x.use'
   job.run()
 
   x.get foreach { println }
