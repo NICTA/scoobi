@@ -21,7 +21,7 @@ trait ConfTrait {
     /* Parse options then update current configuration. Becuase the filesystem
      * property may have changed, also update working directory property. */
     val parser = new GenericOptionsParser(args)
-    parser.getConfiguration.foreach { entry => internalConf.set(entry.getKey, entry.getValue) }
+    parser.getConfiguration.foreach { entry => conf.set(entry.getKey, entry.getValue) }
 
     /* Run the user's code */
     f(parser.getRemainingArgs)
@@ -54,27 +54,21 @@ trait ConfTrait {
 
 
   /** Scoobi's configuration. */
-  lazy val conf: Configuration = {
-    setWorkingDirectory(internalConf)
-    new Configuration(internalConf)
+  val conf = {
+    val c = new Configuration
+    c.set("scoobi-job-id", jobId)
+    c
   }
+  
+  private def withTrailingSlash(s: String) = if (s endsWith "/") s else s + '/'
 
-  /** Scoobi's configuration. */
-  private val internalConf = new Configuration
-
-  /* The Scoobi working directory is in the user's home directory under '.scoobi' and
-   * a timestamped directory. e.g. /home/fred/.scoobi/201110041326. */
-  private def setWorkingDirectory(conf: Configuration) = {
-    val workdirPath = new Path(FileSystem.get(conf).getHomeDirectory, ".scoobi/" + jobId)
-    val workdir = workdirPath.toUri.toString
-    conf.set("scoobi.workdir", workdir)
-  }
+  def getJobId(conf: Configuration): String =
+    ?(conf.get("scoobi-job-id")).getOrElse(sys.error("Scoobi job id not set."))
 
   /** Get the Scoobi working directory. */
-  def getWorkingDirectory(conf: Configuration): Path = {
-    ?(conf.get("scoobi.workdir")) match {
-      case Some(s)  => new Path(s)
-      case None     => sys.error("Scoobi working directory not set.")
-    }
-  }
+  def getWorkingDirectory(conf: Configuration): Path = new Path(
+    (?(conf.get("scoobi.workdir")) match {
+      case Some(s) => withTrailingSlash(s)
+      case None    => withTrailingSlash(FileSystem.get(conf).getHomeDirectory.toUri.toString) + ".scoobi-tmp/"
+     }) + getJobId(conf))
 }
