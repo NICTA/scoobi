@@ -25,7 +25,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.OutputStore
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.util.UniqueInt
@@ -35,8 +35,8 @@ import com.nicta.scoobi.impl.rtt.RuntimeClass
 
 /** A MaterializeStore is a DataSink for eventual consumption by a Scala program. It is used
   * in conjunction with 'materialize'. */
-final case class MaterializeStore[A : Manifest : WireFormat](n: AST.Node[A], id: Int, path: Path)
-  extends OutputStore[NullWritable, ScoobiWritable[A], A](n) {
+final case class MaterializeStore[A : Manifest : WireFormat](id: Int, path: Path)
+  extends DataSink[NullWritable, ScoobiWritable[A], A] {
 
   lazy val logger = LogFactory.getLog("scoobi.Materialize")
   private val typeName = "MS" + id

@@ -31,10 +31,8 @@ import scala.collection.JavaConversions._
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
-import com.nicta.scoobi.io.OutputStore
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.AST
 
@@ -52,31 +50,29 @@ object AvroOutput {
       def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
-    val persister = new Persister[B] {
-      def mkOutputStore(node: AST.Node[B]) = new OutputStore[AvroKey[sch.AvroType], NullWritable, B](node) {
-        protected val outputPath = new Path(path)
+    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
+      protected val outputPath = new Path(path)
 
-        val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
-        val outputKeyClass = classOf[AvroKey[sch.AvroType]]
-        val outputValueClass = classOf[NullWritable]
+      val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
+      val outputKeyClass = classOf[AvroKey[sch.AvroType]]
+      val outputValueClass = classOf[NullWritable]
 
-        def outputCheck() =
-          if (Helper.pathExists(outputPath)) {
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-          } else {
-            logger.info("Output path: " + outputPath.toUri.toASCIIString)
-            logger.debug("Output Schema: " + sch.schema)
-          }
-
-        def outputConfigure(job: Job) = {
-          FileOutputFormat.setOutputPath(job, outputPath)
-          job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
+      def outputCheck() =
+        if (Helper.pathExists(outputPath)) {
+          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+        } else {
+          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+          logger.debug("Output Schema: " + sch.schema)
         }
 
-        val outputConverter = converter
+      def outputConfigure(job: Job) = {
+        FileOutputFormat.setOutputPath(job, outputPath)
+        job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
+
+      val outputConverter = converter
     }
 
-    new DListPersister(dl, persister)
+    new DListPersister(dl, sink)
   }
 }

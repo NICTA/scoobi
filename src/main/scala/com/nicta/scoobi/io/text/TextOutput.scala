@@ -26,10 +26,8 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.io.DataStore
-import com.nicta.scoobi.io.OutputStore
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.AST
 
@@ -40,38 +38,36 @@ object TextOutput {
 
   /** Persist a distributed list as a text file. */
   def toTextFile[A : Manifest](dl: DList[A], path: String): DListPersister[A] = {
-    val persister = new Persister[A] {
-      def mkOutputStore(node: AST.Node[A]) = new OutputStore[NullWritable, A, A](node) {
-        private val outputPath = new Path(path)
+    val sink = new DataSink[NullWritable, A, A] {
+      private val outputPath = new Path(path)
 
-        val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
-        val outputKeyClass = classOf[NullWritable]
-        val outputValueClass = implicitly[Manifest[A]] match {
-          case Manifest.Boolean => classOf[java.lang.Boolean].asInstanceOf[Class[A]]
-          case Manifest.Char    => classOf[java.lang.Character].asInstanceOf[Class[A]]
-          case Manifest.Short   => classOf[java.lang.Short].asInstanceOf[Class[A]]
-          case Manifest.Int     => classOf[java.lang.Integer].asInstanceOf[Class[A]]
-          case Manifest.Long    => classOf[java.lang.Long].asInstanceOf[Class[A]]
-          case Manifest.Float   => classOf[java.lang.Float].asInstanceOf[Class[A]]
-          case Manifest.Double  => classOf[java.lang.Double].asInstanceOf[Class[A]]
-          case Manifest.Byte    => classOf[java.lang.Byte].asInstanceOf[Class[A]]
-          case mf               => mf.erasure.asInstanceOf[Class[A]]
-        }
+      val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
+      val outputKeyClass = classOf[NullWritable]
+      val outputValueClass = implicitly[Manifest[A]] match {
+        case Manifest.Boolean => classOf[java.lang.Boolean].asInstanceOf[Class[A]]
+        case Manifest.Char    => classOf[java.lang.Character].asInstanceOf[Class[A]]
+        case Manifest.Short   => classOf[java.lang.Short].asInstanceOf[Class[A]]
+        case Manifest.Int     => classOf[java.lang.Integer].asInstanceOf[Class[A]]
+        case Manifest.Long    => classOf[java.lang.Long].asInstanceOf[Class[A]]
+        case Manifest.Float   => classOf[java.lang.Float].asInstanceOf[Class[A]]
+        case Manifest.Double  => classOf[java.lang.Double].asInstanceOf[Class[A]]
+        case Manifest.Byte    => classOf[java.lang.Byte].asInstanceOf[Class[A]]
+        case mf               => mf.erasure.asInstanceOf[Class[A]]
+      }
 
-        def outputCheck() =
-          if (Helper.pathExists(outputPath))
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-          else
-            logger.info("Output path: " + outputPath.toUri.toASCIIString)
+      def outputCheck() =
+        if (Helper.pathExists(outputPath))
+          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+        else
+          logger.info("Output path: " + outputPath.toUri.toASCIIString)
 
-        def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
+      def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
 
-        val outputConverter = new OutputConverter[NullWritable, A, A] {
-          def toKeyValue(x: A) = (NullWritable.get, x)
-        }
+      val outputConverter = new OutputConverter[NullWritable, A, A] {
+        def toKeyValue(x: A) = (NullWritable.get, x)
       }
     }
-    new DListPersister(dl, persister)
+    new DListPersister(dl, sink)
   }
 
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file. */

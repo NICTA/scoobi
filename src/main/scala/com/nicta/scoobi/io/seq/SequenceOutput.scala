@@ -28,10 +28,8 @@ import org.apache.hadoop.mapreduce.Job
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
-import com.nicta.scoobi.io.OutputStore
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.AST
 
@@ -51,7 +49,7 @@ object SequenceOutput {
       def toKeyValue(k: K) = (convK.toWritable(k), NullWritable.get)
     }
 
-    new DListPersister(dl, new SeqPersister[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter))
   }
 
 
@@ -66,7 +64,7 @@ object SequenceOutput {
       def toKeyValue(v: V) = (NullWritable.get, convV.toWritable(v))
     }
 
-    new DListPersister(dl, new SeqPersister[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter))
   }
 
 
@@ -81,7 +79,7 @@ object SequenceOutput {
       def toKeyValue(kv: (K, V)) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
 
-    new DListPersister(dl, new SeqPersister[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter))
   }
 
 
@@ -95,34 +93,32 @@ object SequenceOutput {
       def toKeyValue(kv: (K, V)) = (kv._1, kv._2)
     }
 
-    new DListPersister(dl, new SeqPersister[K, V, (K, V)](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter))
   }
 
 
   /* Class that abstracts all the common functionality of persisting to sequence files. */
-  private class SeqPersister[K, V, B](
+  private class SeqSink[K, V, B](
       path: String,
       keyClass: Class[K],
       valueClass: Class[V],
       converter: OutputConverter[K, V, B])
-    extends Persister[B] {
+    extends DataSink[K, V, B] {
 
-    def mkOutputStore(node: AST.Node[B]) = new OutputStore[K, V, B](node) {
-      protected val outputPath = new Path(path)
+    protected val outputPath = new Path(path)
 
-      val outputFormat = classOf[SequenceFileOutputFormat[K, V]]
-      val outputKeyClass = keyClass
-      val outputValueClass = valueClass
+    val outputFormat = classOf[SequenceFileOutputFormat[K, V]]
+    val outputKeyClass = keyClass
+    val outputValueClass = valueClass
 
-      def outputCheck() =
-        if (Helper.pathExists(outputPath))
-          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-        else
-          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+    def outputCheck() =
+      if (Helper.pathExists(outputPath))
+        throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+      else
+        logger.info("Output path: " + outputPath.toUri.toASCIIString)
 
-      def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
+    def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
 
-      val outputConverter = converter
-    }
+    val outputConverter = converter
   }
 }
