@@ -36,7 +36,7 @@ object AST {
   object RollingInt extends UniqueInt
 
   /** Intermediate representation - closer aligned to actual MSCR contents. */
-  sealed abstract class Node[A : Manifest : WireFormat] {
+  sealed abstract class Node[A : Manifest : WireFormat, Sh <: Shape] {
     val id = Id.get
 
     def mkStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper[A, Int, A] =
@@ -53,9 +53,9 @@ object AST {
   /** Input channel mapper that is not hooked up to a GBK. */
   case class Mapper[A : Manifest : WireFormat,
                     B : Manifest : WireFormat]
-      (in: Node[A],
+      (in: Node[A, Arr],
        dofn: DoFn[A, B])
-    extends Node[B] with MapperLike[A, Int, B] with ReducerLike[Int, B, B] {
+    extends Node[B, Arr] with MapperLike[A, Int, B] with ReducerLike[Int, B, B] {
 
     def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, Int, B](tags) {
       /* The output key will be an integer that is continually incrementing. This will ensure
@@ -85,9 +85,9 @@ object AST {
   case class GbkMapper[A : Manifest : WireFormat,
                        K : Manifest : WireFormat : Grouping,
                        V : Manifest : WireFormat]
-      (in: Node[A],
+      (in: Node[A, Arr],
        dofn: DoFn[A, (K, V)])
-    extends Node[(K, V)] with MapperLike[A, K, V] with ReducerLike[K, V, (K, V)] {
+    extends Node[(K, V), Arr] with MapperLike[A, K, V] with ReducerLike[K, V, (K, V)] {
 
     def mkTaggedMapper(tags: Set[Int]) = new TaggedMapper[A, K, V](tags) {
       def setup() = dofn.setup()
@@ -110,12 +110,12 @@ object AST {
 
   /** Combiner. */
   case class Combiner[K, V]
-      (in: Node[(K, Iterable[V])],
+      (in: Node[(K, Iterable[V]), Arr],
        f: (V, V) => V)
       (implicit mK:  Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
                 mV:  Manifest[V], wtV: WireFormat[V],
                 mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
-    extends Node[(K, V)] with CombinerLike[V] with ReducerLike[K, V, (K, V)] {
+    extends Node[(K, V), Arr] with CombinerLike[V] with ReducerLike[K, V, (K, V)] {
 
     def mkTaggedCombiner(tag: Int) = new TaggedCombiner[V](tag) {
       def combine(x: V, y: V): V = f(x, y)
@@ -147,9 +147,9 @@ object AST {
   case class GbkReducer[K : Manifest : WireFormat : Grouping,
                         V : Manifest : WireFormat,
                         B : Manifest : WireFormat]
-      (in: Node[(K, Iterable[V])],
+      (in: Node[(K, Iterable[V]), Arr],
        dofn: DoFn[((K, Iterable[V])), B])
-    extends Node[B] with ReducerLike[K, V, B] {
+    extends Node[B, Arr] with ReducerLike[K, V, B] {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, B](tag) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[B]) = {
@@ -169,9 +169,9 @@ object AST {
   case class Reducer[K : Manifest : WireFormat : Grouping,
                      V : Manifest : WireFormat,
                      B : Manifest : WireFormat]
-      (in: Node[(K, V)],
+      (in: Node[(K, V), Arr],
        dofn: DoFn[(K, V), B])
-    extends Node[B] with ReducerLike[K, V, B] {
+    extends Node[B, Arr] with ReducerLike[K, V, B] {
 
     /* It is expected that this Reducer is preceded by a Combiner. */
     def mkTaggedReducer(tag: Int) = in match {
@@ -186,7 +186,7 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load[A : Manifest : WireFormat]() extends Node[A] with ReducerLike[Int, A, A]{
+  case class Load[A : Manifest : WireFormat]() extends Node[A, Arr] with ReducerLike[Int, A, A] {
     override def toString = "Load" + id
 
     def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
@@ -195,7 +195,7 @@ object AST {
 
 
   /** Usual Flatten node. */
-  case class Flatten[A : Manifest : WireFormat](ins: List[Node[A]]) extends Node[A] with ReducerLike[Int, A, A] {
+  case class Flatten[A : Manifest : WireFormat](ins: List[Node[A, Arr]]) extends Node[A, Arr] with ReducerLike[Int, A, A] {
     override def toString = "Flatten" + id
 
     def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
@@ -207,8 +207,8 @@ object AST {
   /** Usual GBK node. */
   case class GroupByKey[K : Manifest : WireFormat : Grouping,
                         V : Manifest : WireFormat]
-      (in: Node[(K, V)])
-    extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] {
+      (in: Node[(K, V), Arr])
+    extends Node[(K, Iterable[V]), Arr] with ReducerLike[K, V, (K, Iterable[V])] {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = {
@@ -225,10 +225,10 @@ object AST {
 
 
   /** Apply a function to each node of the AST (visit each node only once). */
-  def eachNode[U](starts: Set[Node[_]])(f: Node[_] => U): Unit = {
+  def eachNode[U](starts: Set[Node[_, _ <: Shape]])(f: Node[_, _ <: Shape] => U): Unit = {
     starts foreach { visitOnce(_, f, Set()) }
 
-    def visitOnce(node: Node[_], f: Node[_] => U, visited: Set[Node[_]]): Unit = {
+    def visitOnce(node: Node[_, _ <: Shape], f: Node[_, _ <: Shape] => U, visited: Set[Node[_, _ <: Shape]]): Unit = {
       if (!visited.contains(node)) {
         node match {
           case Mapper(n, _)     => visitOnce(n, f, visited + node); f(node)

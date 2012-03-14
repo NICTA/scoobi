@@ -17,6 +17,8 @@ package com.nicta.scoobij.impl;
 
 import scala.Tuple2;
 
+import com.nicta.scoobi.impl.plan.Arr;
+import com.nicta.scoobi.impl.plan.Smart;
 import com.nicta.scoobij.Combiner;
 import com.nicta.scoobij.DGroupedTable;
 import com.nicta.scoobij.DTable;
@@ -39,7 +41,7 @@ public class DGroupedTableImpl<K, V> extends
 
 		Object obj = scala.Predef$.MODULE$.conforms();
 
-		scala.Predef.$less$colon$less<com.nicta.scoobi.impl.plan.Smart.DList<scala.Tuple2<K, scala.collection.Iterable<V>>>, com.nicta.scoobi.impl.plan.Smart.DList<scala.Tuple2<K, scala.collection.Iterable<V>>>> evidence = (scala.Predef.$less$colon$less<com.nicta.scoobi.impl.plan.Smart.DList<scala.Tuple2<K, scala.collection.Iterable<V>>>, com.nicta.scoobi.impl.plan.Smart.DList<scala.Tuple2<K, scala.collection.Iterable<V>>>>) obj;
+		scala.Predef.$less$colon$less<Smart.DComp<scala.Tuple2<K, scala.collection.Iterable<V>>, Arr>, Smart.DComp<scala.Tuple2<K, scala.collection.Iterable<V>>, Arr>> evidence = (scala.Predef.$less$colon$less<Smart.DComp<scala.Tuple2<K, scala.collection.Iterable<V>>, Arr>, Smart.DComp<scala.Tuple2<K, scala.collection.Iterable<V>>, Arr>>) obj;
 
 		return new DTableImpl<K, V>(getImpl().combine(
 				Conversions.toScala(combiner), evidence,

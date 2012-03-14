@@ -18,6 +18,7 @@ package com.nicta.scoobij.impl;
 import scala.Predef;
 import scala.Tuple2;
 
+import com.nicta.scoobi.impl.plan.Arr;
 import com.nicta.scoobi.impl.plan.Smart;
 import com.nicta.scoobij.DGroupedTable;
 import com.nicta.scoobij.DTable;
@@ -38,7 +39,7 @@ public class DTableImpl<K, V> extends DListImpl<scala.Tuple2<K, V>> implements
 
 		Object obj = scala.Predef$.MODULE$.conforms();
 
-		Predef.$less$colon$less<Smart.DList<Tuple2<K, V>>, Smart.DList<Tuple2<K, V>>> confirms = (Predef.$less$colon$less<Smart.DList<Tuple2<K, V>>, Smart.DList<Tuple2<K, V>>>) obj;
+		Predef.$less$colon$less<Smart.DComp<Tuple2<K, V>, Arr>, Smart.DComp<Tuple2<K, V>, Arr>> confirms = (Predef.$less$colon$less<Smart.DComp<Tuple2<K, V>, Arr>, Smart.DComp<Tuple2<K, V>, Arr>>) obj;
 		// .conforms();
 
 		return new DGroupedTableImpl<K, V>(getImpl().groupByKey(confirms,

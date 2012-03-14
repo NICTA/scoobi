@@ -15,6 +15,7 @@
   */
 package com.nicta.scoobi.impl.plan
 
+
 object DGraph {
 
   /**
@@ -23,11 +24,11 @@ object DGraph {
    * abstract syntax tree. This is invaluable in determining
    * the boundaries of intermediate MSCRs (see Intermediate.scala)
    */
-  def apply(outputs: Iterable[Smart.DList[_]]): DGraph = {
+  def apply(outputs: Iterable[Smart.DComp[_, _ <: Shape]]): DGraph = {
     /*
      * Add a node as an @input@ for the graph if it has no predecessors
      */
-    def addInput(g: DGraph, d: Smart.DList[_]): DGraph = {
+    def addInput(g: DGraph, d: Smart.DComp[_, _ <: Shape]): DGraph = {
       g.preds.get(d) match {
         case Some(_)   => g
         case None      => new DGraph(g.inputs + d, g.outputs, g.nodes, g.succs, g.preds)
@@ -46,7 +47,7 @@ object DGraph {
     /*
      * Add the edge (src,tgt) to the graph.
      */
-    def addEdge(src: Smart.DList[_], tgt: Smart.DList[_], g: DGraph): DGraph = {
+    def addEdge(src: Smart.DComp[_, _ <: Shape], tgt: Smart.DComp[_, _ <: Shape], g: DGraph): DGraph = {
       new DGraph(g.inputs, g.outputs, g.nodes.+(src, tgt), addToAssocMap(src, tgt, g.succs),
                  addToAssocMap(tgt, src, g.preds))
     }
@@ -54,8 +55,8 @@ object DGraph {
     /*
      * Adds all the edges in the graph that have a path ending in node @tgt@
      */
-    def addEdgesEndingAt(g: DGraph, tgt: Smart.DList[_]): DGraph = {
-      val parents: Iterable[Smart.DList[_]] = Smart.parentsOf(tgt)
+    def addEdgesEndingAt(g: DGraph, tgt: Smart.DComp[_, _ <: Shape]): DGraph = {
+      val parents: Iterable[Smart.DComp[_, _ <: Shape]] = Smart.parentsOf(tgt)
       val thisLevel = parents.foldLeft(g){ case (g,src) => addEdge(src,tgt,g) }
       addEdges(thisLevel, parents)
     }
@@ -63,7 +64,7 @@ object DGraph {
     /*
      * Adds all the edges in the graph that have paths ending at nodes in @nodes@.
      */
-    def addEdges(g: DGraph, nodes: Iterable[Smart.DList[_]]): DGraph = {
+    def addEdges(g: DGraph, nodes: Iterable[Smart.DComp[_, _ <: Shape]]): DGraph = {
       nodes.foldLeft(g)(addEdgesEndingAt)
     }
 
@@ -92,32 +93,32 @@ object DGraph {
   }
 }
 
-class DGraph(val inputs:  Set[Smart.DList[_]],
-             val outputs: Set[Smart.DList[_]],
-             val nodes:   Set[Smart.DList[_]],
-             val succs:   Map[Smart.DList[_], Set[Smart.DList[_]]],
-             val preds:   Map[Smart.DList[_], Set[Smart.DList[_]]]) {
+class DGraph(val inputs:  Set[Smart.DComp[_, _ <: Shape]],
+             val outputs: Set[Smart.DComp[_, _ <: Shape]],
+             val nodes:   Set[Smart.DComp[_, _ <: Shape]],
+             val succs:   Map[Smart.DComp[_, _ <: Shape], Set[Smart.DComp[_, _ <: Shape]]],
+             val preds:   Map[Smart.DComp[_, _ <: Shape], Set[Smart.DComp[_, _ <: Shape]]]) {
 
-  def this(outputs: Set[Smart.DList[_]]) = this(Set(), outputs, Set(), Map(), Map())
+  def this(outputs: Set[Smart.DComp[_, _ <: Shape]]) = this(Set.empty, outputs, Set.empty, Map.empty, Map.empty)
 
   override def toString() = {
     /* Generate a map from nodes to unique integers on the fly */
     val idSeq = nodes.toIndexedSeq
-    val idMap: Map[Smart.DList[_],Int] =
-      idSeq.foldLeft(Map():Map[Smart.DList[_], Int])((m,e) => m + ((e, idSeq.indexOf(e))))
+    val idMap: Map[Smart.DComp[_, _ <: Shape], Int] =
+      idSeq.foldLeft(Map():Map[Smart.DComp[_, _ <: Shape], Int])((m,e) => m + ((e, idSeq.indexOf(e))))
 
-    def toStr(e: Smart.DList[_]) = {
+    def toStr(e: Smart.DComp[_, _ <: Shape]) = {
       val i = idMap.get(e) match { case Some(i) => i; case None => 0 }
       e + " " + i.toString()
     }
 
-    def setToStr(s: Set[Smart.DList[_]]): String = {
+    def setToStr(s: Set[Smart.DComp[_, _ <: Shape]]): String = {
       val xs: List[String] = List()
       val elems = s.foldLeft(xs){ case (xs,d) => xs :+ toStr(d) }
       elems.mkString("{", ", ", "}")
     }
 
-    def mapToStr(m: Map[Smart.DList[_], Set[Smart.DList[_]]]): String = {
+    def mapToStr(m: Map[Smart.DComp[_, _ <: Shape], Set[Smart.DComp[_, _ <: Shape]]]): String = {
       val xs: List[String] = List()
       val elems = m.foldLeft(xs){case (xs,(d,s)) => xs :+ (toStr(d) + " -> " + setToStr(s)) }
       elems.mkString("[", ", ", "]")

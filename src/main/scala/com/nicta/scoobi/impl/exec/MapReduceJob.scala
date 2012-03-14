@@ -33,6 +33,19 @@ import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.OutputConverter
+import com.nicta.scoobi.impl.plan.Shape
+import com.nicta.scoobi.impl.plan.AST
+import com.nicta.scoobi.impl.plan.MapperInputChannel
+import com.nicta.scoobi.impl.plan.BypassInputChannel
+import com.nicta.scoobi.impl.plan.StraightInputChannel
+import com.nicta.scoobi.impl.plan.GbkOutputChannel
+import com.nicta.scoobi.impl.plan.BypassOutputChannel
+import com.nicta.scoobi.impl.plan.FlattenOutputChannel
+import com.nicta.scoobi.impl.plan.MSCR
+import com.nicta.scoobi.impl.plan.Empty
+import com.nicta.scoobi.impl.plan.JustCombiner
+import com.nicta.scoobi.impl.plan.JustReducer
+import com.nicta.scoobi.impl.plan.CombinerReducer
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 import com.nicta.scoobi.impl.rtt.TaggedPartitioner
@@ -258,12 +271,12 @@ object MapReduceJob {
   /** Construct a MapReduce job from an MSCR. */
   def apply(stepId: Int, mscr: MSCR): MapReduceJob = {
     val job = new MapReduceJob(stepId)
-    val mapperTags: MMap[AST.Node[_], Set[Int]] = MMap.empty
+    val mapperTags: MMap[AST.Node[_, _ <: Shape], Set[Int]] = MMap.empty
 
     /* Tag each output channel with a unique index. */
     mscr.outputChannels.zipWithIndex.foreach { case (oc, tag) =>
 
-      def addTag(n: AST.Node[_], tag: Int) {
+      def addTag(n: AST.Node[_, _ <: Shape], tag: Int) = {
         val s = mapperTags.getOrElse(n, Set())
         mapperTags += (n -> (s + tag))
       }

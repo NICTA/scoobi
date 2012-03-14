@@ -20,6 +20,8 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import scala.collection.mutable.{Set => MSet, Map => MMap}
 
+import com.nicta.scoobi.Scoobi
+import com.nicta.scoobi.impl.plan.Shape
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MapperInputChannel
 import com.nicta.scoobi.impl.plan.StraightInputChannel
@@ -39,9 +41,9 @@ object Executor {
     *
     * @param computeTable Which nodes have already been computed.
     * @param refcnts Number of nodes that are still to consume the output of an MSCR. */
-  private class ExecState
-      (val computeTable: MSet[AST.Node[_]],
-       val refcnts: MMap[BridgeStore[_], Int])
+  private case class ExecState(
+      computeTable: MSet[AST.Node[_, _ <: Shape]],
+      refcnts: MMap[BridgeStore[_], Int])
 
 
   /** For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
@@ -74,7 +76,7 @@ object Executor {
     outputs.flatMap(_.sinks.toList) foreach { _.outputCheck() }
 
     /* Initialize compute table with all input (Load) nodes. */
-    val computeTable: MSet[AST.Node[_]] = MSet.empty
+    val computeTable: MSet[AST.Node[_, _ <: Shape]] = MSet.empty
     AST.eachNode(outputs.map(_.node).toSet) {
       case n @ AST.Load() => computeTable += n
       case _              => Unit

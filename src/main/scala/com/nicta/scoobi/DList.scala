@@ -27,6 +27,9 @@ import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.func.FunctionInput
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
+import com.nicta.scoobi.impl.plan.Shape
+import com.nicta.scoobi.impl.plan.Arr
+import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 import com.nicta.scoobi.impl.exec.MaterializeStore
@@ -45,7 +48,7 @@ import Configurations._
  * - combine: a parallel 'reduce' operation
  * - materialize: transforms a distributed list into a non-distributed list
  */
-class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =>
+class DList[A : Manifest : WireFormat](private val ast: Smart.DComp[A, Arr]) { self =>
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.
@@ -62,7 +65,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
 
   /** Group the values of a distributed list with key-value elements by key. */
   def groupByKey[K, V]
-      (implicit ev:   Smart.DList[A] <:< Smart.DList[(K, V)],
+      (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
                 mK:   Manifest[K],
                 wtK:  WireFormat[K],
                 grpK: Grouping[K],
@@ -73,7 +76,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * key-value-collection distributed list. */
   def combine[K, V]
       (f: (V, V) => V)
-      (implicit ev:   Smart.DList[A] <:< Smart.DList[(K,Iterable[V])],
+      (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K,Iterable[V]), Arr],
                 mK:   Manifest[K],
                 wtK:  WireFormat[K],
                 grpK: Grouping[K],
@@ -344,15 +347,15 @@ object DList {
     configuration.deleteWorkingDirectory
 
     /* Produce map of all unique outputs and their corresponding persisters. */
-    val rawOutMap: Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {
-      val emptyM: Map[Smart.DList[_], Set[DataSink[_,_,_]]] = Map.empty
+    val rawOutMap: Map[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]] = {
+      val emptyM: Map[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]] = Map.empty
       outputs.foldLeft(emptyM)((m, p) => m + ((p.dlist.ast, m.getOrElse(p.dlist.ast, Set.empty) + p.sink)))
     }
 
     /* Optimise the plan associated with the outpus. */
-    val outMap : Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {
-      val optOuts: List[Smart.DList[_]] = Smart.optimisePlan(rawOutMap.keys.toList)
-      (rawOutMap.toList zip optOuts).map { case ((_, p), o) => (o, p) }.toMap
+    val outMap : Map[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]] = {
+      val optOuts: List[Smart.DComp[_, _ <: Shape]] = Smart.optimisePlan(rawOutMap.keys.toList)
+      (rawOutMap.toList zip optOuts) map { case ((_, p), o) => (o, p) } toMap
     }
 
     val ds = outMap.keys
@@ -362,7 +365,7 @@ object DList {
     val ci = ConvertInfo(outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
 
     /*
-     *  Convert the Smart.DList abstract syntax tree to AST.Node abstract syntax tree.
+     *  Convert the Smart.DComp abstract syntax tree to AST.Node abstract syntax tree.
      *  This is a side-effecting expression. The @m@ field of the @ci@ parameter is updated.
      */
     ds.foreach(_.convert(ci))     // Step 3 (see top of Intermediate.scala)
