@@ -77,7 +77,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits
            A : Manifest : WireFormat,
            B : Manifest : WireFormat]
       (d1: DList[(K, A)], d2: DList[(K, B)])
-      = Join.join(d1, d1)
+      = Join.join(d1, d2)
 
 
   def joinRight[K : Manifest : WireFormat : Grouping,
