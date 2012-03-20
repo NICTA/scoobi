@@ -286,15 +286,25 @@ object Smart {
     def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat](ci: ConvertInfo):
                     AST.Node[(K,V)] with KVLike[K,V] = {
-      val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
-      val n: AST.Node[A] = pd.in.convert(ci)
 
-      if ( ci.mscrs.exists(_.containsGbkMapper(pd)) ) {
-        pd.insert2(ci, new AST.GbkMapper(n, pd.dofn) with KVLike[K,V] {
+      if (ci.mscrs.exists(_.containsGbkReducer(this))) {
+        val pd: ParallelDo[(K, Iterable[V]),(K,V)] = this.asInstanceOf[ParallelDo[(K, Iterable[V]),(K,V)]]
+        val n: AST.Node[(K, Iterable[V])] = pd.in.convert(ci)
+
+        pd.insert2(ci, new AST.GbkReducer(n, pd.dofn) with KVLike[K,V] {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
+
       } else {
-        pd.insert2(ci, new AST.Mapper(n, pd.dofn) with KVLike[K,V] {
-          def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
+        val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
+        val n: AST.Node[A] = pd.in.convert(ci)
+
+        if ( ci.mscrs.exists(_.containsGbkMapper(pd)) ) {
+          pd.insert2(ci, new AST.GbkMapper(n, pd.dofn) with KVLike[K,V] {
+            def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
+        } else {
+          pd.insert2(ci, new AST.Mapper(n, pd.dofn) with KVLike[K,V] {
+            def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
+        }
       }
     }
   }
