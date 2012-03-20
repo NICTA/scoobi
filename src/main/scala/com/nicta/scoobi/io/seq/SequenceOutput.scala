@@ -26,6 +26,8 @@ import org.apache.hadoop.io.LongWritable
 import org.apache.hadoop.io.DoubleWritable
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.io.ByteWritable
+import org.apache.hadoop.io.BytesWritable
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
@@ -83,6 +85,18 @@ trait SequenceOutputConversions {
   implicit def OutStringConv = new OutConv[String] {
     type To = Text
     def toWritable(x: String) = new Text(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def OutByteConv = new OutConv[Byte] {
+    type To = ByteWritable
+    def toWritable(x: Byte) = new ByteWritable(x)
+    val mf: Manifest[To] = implicitly
+  }
+
+  implicit def OutBytesConv[CC[X] <: Traversable[X]] = new OutConv[CC[Byte]] {
+    type To = BytesWritable
+    def toWritable(xs: CC[Byte]) = new BytesWritable(xs.toArray)
     val mf: Manifest[To] = implicitly
   }
 }

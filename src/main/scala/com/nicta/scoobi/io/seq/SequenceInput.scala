@@ -29,9 +29,14 @@ import org.apache.hadoop.io.LongWritable
 import org.apache.hadoop.io.DoubleWritable
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.io.ByteWritable
+import org.apache.hadoop.io.BytesWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.Job
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.Builder
+import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
@@ -80,6 +85,21 @@ trait SequenceInputConversions {
   implicit def InStringConv = new InConv[String] {
     type From = Text
     def fromWritable(x: Text): String = x.toString
+  }
+
+  implicit def InByteConv = new InConv[Byte] {
+    type From = ByteWritable
+    def fromWritable(x: ByteWritable): Byte = x.get
+  }
+
+  implicit def InBytesConv[CC[X] <: Traversable[X]](implicit bf: CanBuildFrom[_, Byte, CC[Byte]]) = new InConv[CC[Byte]] {
+    type From = BytesWritable
+    val b: Builder[Byte, CC[Byte]] = bf()
+    def fromWritable(xs: BytesWritable): CC[Byte]= {
+      b.clear()
+      xs.getBytes.take(xs.getLength).foreach { x => b += x }
+      b.result()
+    }
   }
 }
 
