@@ -22,7 +22,6 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Writable
-import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.Job
@@ -56,11 +55,11 @@ object SequenceInput {
   def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[K] = {
     val convK = implicitly[SeqSchema[K]]
 
-    val converter = new InputConverter[convK.SeqType, NullWritable, K] {
-      def fromKeyValue(context: InputContext, k: convK.SeqType, v: NullWritable) = convK.fromWritable(k)
+    val converter = new InputConverter[convK.SeqType, Writable, K] {
+      def fromKeyValue(context: InputContext, k: convK.SeqType, v: Writable) = convK.fromWritable(k)
     }
 
-    new DList(Smart.Load(new SeqLoader[convK.SeqType, NullWritable, K](paths, converter)))
+    new DList(Smart.Load(new SeqLoader[convK.SeqType, Writable, K](paths, converter)))
   }
 
 
@@ -77,11 +76,11 @@ object SequenceInput {
   def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[V] = {
     val convV = implicitly[SeqSchema[V]]
 
-    val converter = new InputConverter[NullWritable, convV.SeqType, V] {
-      def fromKeyValue(context: InputContext, k: NullWritable, v: convV.SeqType) = convV.fromWritable(v)
+    val converter = new InputConverter[Writable, convV.SeqType, V] {
+      def fromKeyValue(context: InputContext, k: Writable, v: convV.SeqType) = convV.fromWritable(v)
     }
 
-    new DList(Smart.Load(new SeqLoader[NullWritable, convV.SeqType, V](paths, converter)))
+    new DList(Smart.Load(new SeqLoader[Writable, convV.SeqType, V](paths, converter)))
   }
 
 
