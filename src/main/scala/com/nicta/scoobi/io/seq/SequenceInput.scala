@@ -22,21 +22,10 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Writable
-import org.apache.hadoop.io.BooleanWritable
-import org.apache.hadoop.io.IntWritable
-import org.apache.hadoop.io.FloatWritable
-import org.apache.hadoop.io.LongWritable
-import org.apache.hadoop.io.DoubleWritable
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.io.Text
-import org.apache.hadoop.io.ByteWritable
-import org.apache.hadoop.io.BytesWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.Job
-import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable.Builder
-import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
@@ -49,128 +38,73 @@ import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.AST
 
 
-trait SequenceInputConversions {
-  /** Type class for conversion of Hadoop Writable types ot basic Scala types. */
-  trait InConv[To] {
-    type From <: Writable
-    def fromWritable(x: From): To
-  }
-
-  /* Implicits for Conv type class. */
-  implicit def InBoolConv = new InConv[Boolean] {
-    type From = BooleanWritable
-    def fromWritable(x: BooleanWritable): Boolean = x.get
-  }
-
-  implicit def InIntConv = new InConv[Int] {
-    type From = IntWritable
-    def fromWritable(x: IntWritable): Int = x.get
-  }
-
-  implicit def InFloatConv = new InConv[Float] {
-    type From = FloatWritable
-    def fromWritable(x: FloatWritable): Float = x.get
-  }
-
-  implicit def InLongConv = new InConv[Long] {
-    type From = LongWritable
-    def fromWritable(x: LongWritable): Long = x.get
-  }
-
-  implicit def InDoubleConv = new InConv[Double] {
-    type From = DoubleWritable
-    def fromWritable(x: DoubleWritable): Double = x.get
-  }
-
-  implicit def InStringConv = new InConv[String] {
-    type From = Text
-    def fromWritable(x: Text): String = x.toString
-  }
-
-  implicit def InByteConv = new InConv[Byte] {
-    type From = ByteWritable
-    def fromWritable(x: ByteWritable): Byte = x.get
-  }
-
-  implicit def InBytesConv[CC[X] <: Traversable[X]](implicit bf: CanBuildFrom[_, Byte, CC[Byte]]) = new InConv[CC[Byte]] {
-    type From = BytesWritable
-    val b: Builder[Byte, CC[Byte]] = bf()
-    def fromWritable(xs: BytesWritable): CC[Byte]= {
-      b.clear()
-      xs.getBytes.take(xs.getLength).foreach { x => b += x }
-      b.result()
-    }
-  }
-}
-
-
 /** Smart functions for materializing distributed lists by loading Sequence files. */
-object SequenceInput extends SequenceInputConversions {
+object SequenceInput {
   lazy val logger = LogFactory.getLog("scoobi.SequenceInput")
 
 
   /** Create a new DList from the "key" contents of one or more Sequence Files. Note that the type parameter K
     * is the "converted" Scala type for the Writable key type that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertKeyFromSequenceFile[K : Manifest : WireFormat : InConv](paths: String*): DList[K] =
+  def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: String*): DList[K] =
     convertKeyFromSequenceFile(List(paths: _*))
 
 
   /** Create a new DList from the "key" contents of a list of one or more Sequence Files. Note that the type parameter
     * K is the "converted" Scala type for the Writable key type that must be contained in the the
     * Sequence Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertKeyFromSequenceFile[K : Manifest : WireFormat : InConv](paths: List[String]): DList[K] = {
-    val convK = implicitly[InConv[K]]
+  def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[K] = {
+    val convK = implicitly[SeqSchema[K]]
 
-    val converter = new InputConverter[convK.From, NullWritable, K] {
-      def fromKeyValue(context: InputContext, k: convK.From, v: NullWritable) = convK.fromWritable(k)
+    val converter = new InputConverter[convK.SeqType, NullWritable, K] {
+      def fromKeyValue(context: InputContext, k: convK.SeqType, v: NullWritable) = convK.fromWritable(k)
     }
 
-    new DList(Smart.Load(new SeqLoader[convK.From, NullWritable, K](paths, converter)))
+    new DList(Smart.Load(new SeqLoader[convK.SeqType, NullWritable, K](paths, converter)))
   }
 
 
   /** Create a new DList from the "value" contents of one or more Sequence Files. Note that the type parameter V
     * is the "converted" Scala type for the Writable value type that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertValueFromSequenceFile[V : Manifest : WireFormat : InConv](paths: String*): DList[V] =
+  def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: String*): DList[V] =
     convertValueFromSequenceFile(List(paths: _*))
 
 
   /** Create a new DList from the "value" contents of a list of one or more Sequence Files. Note that the type parameter
     * V is the "converted" Scala type for the Writable value type that must be contained in the the
     * Sequence Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertValueFromSequenceFile[V : Manifest : WireFormat : InConv](paths: List[String]): DList[V] = {
-    val convV = implicitly[InConv[V]]
+  def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[V] = {
+    val convV = implicitly[SeqSchema[V]]
 
-    val converter = new InputConverter[NullWritable, convV.From, V] {
-      def fromKeyValue(context: InputContext, k: NullWritable, v: convV.From) = convV.fromWritable(v)
+    val converter = new InputConverter[NullWritable, convV.SeqType, V] {
+      def fromKeyValue(context: InputContext, k: NullWritable, v: convV.SeqType) = convV.fromWritable(v)
     }
 
-    new DList(Smart.Load(new SeqLoader[NullWritable, convV.From, V](paths, converter)))
+    new DList(Smart.Load(new SeqLoader[NullWritable, convV.SeqType, V](paths, converter)))
   }
 
 
   /** Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
     * are the "converted" Scala types for the Writable key-value types that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertFromSequenceFile[K : Manifest : WireFormat : InConv, V : Manifest : WireFormat : InConv](paths: String*): DList[(K, V)] =
+  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: String*): DList[(K, V)] =
     convertFromSequenceFile(List(paths: _*))
 
 
   /** Create a new DList from the contents of a list of one or more Sequence Files. Note that the type parameters
     * K and V are the "converted" Scala types for the Writable key-value types that must be contained in the the
     * Sequence Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertFromSequenceFile[K : Manifest : WireFormat : InConv, V : Manifest : WireFormat : InConv](paths: List[String]): DList[(K, V)] = {
+  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[(K, V)] = {
 
-    val convK = implicitly[InConv[K]]
-    val convV = implicitly[InConv[V]]
+    val convK = implicitly[SeqSchema[K]]
+    val convV = implicitly[SeqSchema[V]]
 
-    val converter = new InputConverter[convK.From, convV.From, (K, V)] {
-      def fromKeyValue(context: InputContext, k: convK.From, v: convV.From) = (convK.fromWritable(k), convV.fromWritable(v))
+    val converter = new InputConverter[convK.SeqType, convV.SeqType, (K, V)] {
+      def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
     }
 
-    new DList(Smart.Load(new SeqLoader[convK.From, convV.From, (K, V)](paths, converter)))
+    new DList(Smart.Load(new SeqLoader[convK.SeqType, convV.SeqType, (K, V)](paths, converter)))
   }
 
 

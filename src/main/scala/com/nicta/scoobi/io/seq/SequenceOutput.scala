@@ -19,15 +19,7 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Writable
-import org.apache.hadoop.io.BooleanWritable
-import org.apache.hadoop.io.IntWritable
-import org.apache.hadoop.io.FloatWritable
-import org.apache.hadoop.io.LongWritable
-import org.apache.hadoop.io.DoubleWritable
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.io.Text
-import org.apache.hadoop.io.ByteWritable
-import org.apache.hadoop.io.BytesWritable
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
@@ -43,111 +35,53 @@ import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.AST
 
-trait SequenceOutputConversions {
-  /** Type class for conversions of basic Scala types to Hadoop Writable types. */
-  trait OutConv[From] {
-    type To <: Writable
-    def toWritable(x: From): To
-    val mf: Manifest[To]
-  }
-
-  /* Implicits for Conv type class. */
-  implicit def OutBoolConv = new OutConv[Boolean] {
-    type To = BooleanWritable
-    def toWritable(x: Boolean) = new BooleanWritable(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutIntConv = new OutConv[Int] {
-    type To = IntWritable
-    def toWritable(x: Int) = new IntWritable(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutFloatConv = new OutConv[Float] {
-    type To = FloatWritable
-    def toWritable(x: Float) = new FloatWritable(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutLongConv = new OutConv[Long] {
-    type To = LongWritable
-    def toWritable(x: Long) = new LongWritable(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutDoubleConv = new OutConv[Double] {
-    type To = DoubleWritable
-    def toWritable(x: Double) = new DoubleWritable(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutStringConv = new OutConv[String] {
-    type To = Text
-    def toWritable(x: String) = new Text(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutByteConv = new OutConv[Byte] {
-    type To = ByteWritable
-    def toWritable(x: Byte) = new ByteWritable(x)
-    val mf: Manifest[To] = implicitly
-  }
-
-  implicit def OutBytesConv[CC[X] <: Traversable[X]] = new OutConv[CC[Byte]] {
-    type To = BytesWritable
-    def toWritable(xs: CC[Byte]) = new BytesWritable(xs.toArray)
-    val mf: Manifest[To] = implicitly
-  }
-}
-
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
-object SequenceOutput extends SequenceOutputConversions {
+object SequenceOutput {
   lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "key" component in a Sequence File. */
-  def convertKeyToSequenceFile[K](dl: DList[K], path: String)(implicit convK: OutConv[K]): DListPersister[K] = {
+  def convertKeyToSequenceFile[K](dl: DList[K], path: String)(implicit convK: SeqSchema[K]): DListPersister[K] = {
 
-    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
+    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.SeqType]]
     val valueClass = classOf[NullWritable]
 
-    val converter = new OutputConverter[convK.To, NullWritable, K] {
+    val converter = new OutputConverter[convK.SeqType, NullWritable, K] {
       def toKeyValue(k: K) = (convK.toWritable(k), NullWritable.get)
     }
 
-    new DListPersister(dl, new SeqPersister[convK.To, NullWritable, K](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqPersister[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter))
   }
 
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "value" component in a Sequence File. */
-  def convertValueToSequenceFile[V](dl: DList[V], path: String)(implicit convV: OutConv[V]): DListPersister[V] = {
+  def convertValueToSequenceFile[V](dl: DList[V], path: String)(implicit convV: SeqSchema[V]): DListPersister[V] = {
 
     val keyClass = classOf[NullWritable]
-    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]
+    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
 
-    val converter = new OutputConverter[NullWritable, convV.To, V] {
+    val converter = new OutputConverter[NullWritable, convV.SeqType, V] {
       def toKeyValue(v: V) = (NullWritable.get, convV.toWritable(v))
     }
 
-    new DListPersister(dl, new SeqPersister[NullWritable, convV.To, V](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqPersister[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter))
   }
 
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as "key-values" in a Sequence File. */
-  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String)(implicit convK: OutConv[K], convV: OutConv[V]): DListPersister[(K, V)] = {
+  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String)(implicit convK: SeqSchema[K], convV: SeqSchema[V]): DListPersister[(K, V)] = {
 
-    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
-    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]
+    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.SeqType]]
+    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
 
-    val converter = new OutputConverter[convK.To, convV.To, (K, V)] {
+    val converter = new OutputConverter[convK.SeqType, convV.SeqType, (K, V)] {
       def toKeyValue(kv: (K, V)) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
 
-    new DListPersister(dl, new SeqPersister[convK.To, convV.To, (K, V)](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqPersister[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter))
   }
 
 
