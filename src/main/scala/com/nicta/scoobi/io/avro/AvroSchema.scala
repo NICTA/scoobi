@@ -116,6 +116,19 @@ object AvroSchema {
   }
 
 
+  /* AvroSchema type class instance for Arrays. */
+  implicit def ArraySchema[T](implicit mf: Manifest[T], sch: AvroSchema[T]) = new AvroSchema[Array[T]] {
+    type AvroType = GenericData.Array[sch.AvroType]
+    val schema: Schema = Schema.createArray(sch.schema)
+
+    def fromAvro(array: GenericData.Array[sch.AvroType]): Array[T] =
+      array.iterator.map(v => sch.fromAvro(v)).toArray
+
+    def toAvro(xs: Array[T]): GenericData.Array[sch.AvroType] =
+      new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
+  }
+
+
   /* Tuple types AvroSchema type class instances. */
   implicit def Tuple2Schema[T1 : AvroSchema, T2 : AvroSchema] = new AvroSchema[(T1, T2)] {
     type AvroType = GenericData.Record
