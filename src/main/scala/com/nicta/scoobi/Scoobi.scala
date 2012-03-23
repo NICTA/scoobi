@@ -51,6 +51,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits {
   val Int = TextInput.Int
   val Long = TextInput.Long
   val Double = TextInput.Double
+  val Float = TextInput.Float
 
   def fromTextFile(paths: String*) = TextInput.fromTextFile(paths: _*)
   def fromTextFile(paths: List[String]) = TextInput.fromTextFile(paths)
