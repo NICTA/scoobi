@@ -242,16 +242,16 @@ In this case, we can use `fromTextFile` followed by a `map` to pull out fields o
 ```
 
 This works fine, but because it's such a common task, `TextInput` also provides the function
-`extractFromDelimitedTextFile` specifically for these types of field extractions:
+`fromDelimitedTextFile` specifically for these types of field extractions:
 
 ```scala
   // load CSV and pull out id and second_name
-  val names: DList[(Int, String)] = extractFromDelimitedTextFile(",", "hdfs://path/to/CVS/files/*") {
+  val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CVS/files/*", ",") {
     case id :: first_name :: second_name :: age :: _ => (id.toInt, second_name)
   }
 ```
 
-When using `extractFromDelimitedTextFile`, the first
+When using `fromDelimitedTextFile`, the first
 argument specifies the delimiter and the second is the path. However, there is also
 a second *parameter list* which is used to specify what to do with fields once they are separated out.
 This is specified by supplying a *partial function* that takes a list of separated `String` fields as its input
@@ -267,7 +267,7 @@ This allows us implement simple filtering inline with the extraction:
 
 ```scala
   // load CSV and pull out id and second_name if first_name is "Harry"
-  val names: DList[(Int, String)] = extractFromDelimitedTextFile(",", "hdfs://path/to/CSV/files/*") {
+  val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
     case id :: "Harry" :: second_name :: age :: _ => (id.toInt, second_name)
   }
 ```
@@ -276,7 +276,7 @@ We can of course supply multiple patterns:
 
 ```scala
   // load CSV and pull out id and second_name if first_name is "Harry" or "Lucy"
-  val names: DList[(Int, String)] = extractFromDelimitedTextFile(",", "hdfs://path/to/CSV/files/*") {
+  val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
     case id :: "Harry" :: second_name :: age :: _ => (id.toInt, second_name)
     case id :: "Lucy"  :: second_name :: age :: _ => (id.toInt, second_name)
   }
@@ -289,7 +289,7 @@ another. For example:
   val thisYear: Int = ...
 
   // load CSV with schema "event,year,year_designation" and pull out event and how many years ago it occurred
-  val yearsAgo: DList[(String, Int)] = extractFromDelimitedTextFile(",", "hdfs://path/to/CSV/files/*") {
+  val yearsAgo: DList[(String, Int)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
     case event :: year :: "BC" :: _ => (event, thisYear + year.toInt - 1) // No 0 AD
     case event :: year :: "AD" :: _ => (event, thisYear - year.toInt)
   }
@@ -304,7 +304,7 @@ Using the `Int` extractor we can rewrite one of the above examples:
 
 ```scala
   // load CSV and pull out id and second_name
-  val names: DList[(Int, String)] = extractFromDelimitedTextFile(",", "hdfs://path/to/CSV/files/*") {
+  val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
     case Int(id) :: first_name :: second_name :: Int(age) :: _ => (id, second_name)
   }
 ```
