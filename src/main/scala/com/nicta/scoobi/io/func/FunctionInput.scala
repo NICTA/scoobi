@@ -153,6 +153,7 @@ object FunctionInput {
   /** RecordReader for producing values based on a function. */
   class FunctionRecordReader[A](split: FunctionInputSplit[A]) extends RecordReader[NullWritable, A] {
 
+    private val end = split.start + split.length
     private var ix = split.start
     private var x: A = _
 
@@ -162,10 +163,10 @@ object FunctionInput {
 
     def getCurrentValue(): A = x
 
-    def getProgress(): Float = ix / split.length
+    def getProgress(): Float = (ix - (end - split.length)) / split.length
 
     def nextKeyValue(): Boolean = {
-      if (ix < split.length) {
+      if (ix < end) {
         x = split.f(ix)
         ix += 1
         true
