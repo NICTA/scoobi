@@ -39,7 +39,7 @@ object TextOutput {
   lazy val logger = LogFactory.getLog("scoobi.TextOutput")
 
   /** Persist a distributed list as a text file. */
-  def toTextFile[A : Manifest](dl: DList[A], path: String): DListPersister[A] = {
+  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite:Boolean = false): DListPersister[A] = {
     val persister = new Persister[A] {
       def mkOutputStore(node: AST.Node[A]) = new OutputStore[NullWritable, A, A](node) {
         private val outputPath = new Path(path)
@@ -59,8 +59,13 @@ object TextOutput {
         }
 
         def outputCheck() =
-          if (Helper.pathExists(outputPath))
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+          if (Helper.pathExists(outputPath)){
+            if (overwrite){
+              logger.info("Delete the existed output path:" + outputPath.toUri.toASCIIString)
+              Helper.deletePath(outputPath)
+            }else 
+              throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+          }
           else
             logger.info("Output path: " + outputPath.toUri.toASCIIString)
 
@@ -75,11 +80,11 @@ object TextOutput {
   }
 
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file. */
-  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t"): DListPersister[String] = {
+  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", forceDelete:Boolean): DListPersister[String] = {
     def anyToString(any: Any, sep: String): String = any match {
       case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
       case _             => any.toString
     }
-    toTextFile(dl map { anyToString(_, sep) }, path)
+    toTextFile(dl map { anyToString(_, sep) }, path, forceDelete)
   }
 }
