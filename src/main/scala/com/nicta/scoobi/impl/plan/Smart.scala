@@ -20,6 +20,7 @@ import scala.collection.mutable.{Map => MMap}
 import com.nicta.scoobi.DoFn
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.DataStore
@@ -45,13 +46,19 @@ object Smart {
     /* We don't want structural equality */
     override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
 
-    def name: String
-
     val id = Id.get
+
+    def toVerboseString: String
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Optimisation strategies:
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /** An optimisation strategy that any ParallelDo that is connected to an output is marked
+      * with a fuse barrier. */
+    def optAddFuseBar(copied: CopyTable, outputs: Set[DList[_]]): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optAddFuseBar(_, outputs))
+
     /** An optimisation strategy that replicates any Flatten nodes that have multiple outputs
       * such that in the resulting AST Flatten nodes only have single outputs. */
     def optSplitFlattens(copied: CopyTable): (DList[A], CopyTable, Boolean) =
@@ -82,13 +89,18 @@ object Smart {
     def optSplitGbks(copied: CopyTable): (DList[A], CopyTable, Boolean) =
       copyOnceWith(copied, _.optSplitGbks(_))
 
+    /** An optimisation strategy that replicates any Combine nodes that have multiple outputs
+      * such that in the resulting AST, Combine nodes have only single outputs. */
+    def optSplitCombines(copied: CopyTable): (DList[A], CopyTable, Boolean) =
+      copyOnceWith(copied, _.optSplitCombines(_))
+
 
     /** Perform a depth-first traversal copy of the DList node. When copying the input DList
       * node(s), a the CopyFn function is used (somewhat like a callback). */
     protected def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[A], CopyTable, Boolean)
 
     /** A helper method that checks whether the node has already been copied, and if so returns the copy, else
-      * invokes a user provided code implmenting the copy. */
+      * invokes a user provided code implementing the copy. */
     protected def copyOnce(copied: CopyTable)(newCopy: => (DList[A], CopyTable, Boolean)): (DList[A], CopyTable, Boolean) =
       copied.get(this) match {
         case Some(copy) => (copy.asInstanceOf[DList[A]], copied, false)
@@ -108,7 +120,7 @@ object Smart {
       n
     }
 
-    final def insert2[K : Manifest : WireFormat : Ordering,
+    final def insert2[K : Manifest : WireFormat : Grouping,
                 V : Manifest : WireFormat]
                 (ci: ConvertInfo, n: AST.Node[(K,V)] with KVLike[K,V]):
                 AST.Node[(K,V)] with KVLike[K,V] = {
@@ -116,7 +128,7 @@ object Smart {
       n
     }
 
-    def dataSource(ci: ConvertInfo): DataStore with DataSource = ci.getBridgeStore(this)
+    def dataSource(ci: ConvertInfo): DataStore with DataSource[_,_,_] = ci.getBridgeStore(this)
 
     final def convert(ci: ConvertInfo): AST.Node[A]  = {
       val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
@@ -126,7 +138,7 @@ object Smart {
       }
     }
 
-    final def convert2[K : Manifest : WireFormat : Ordering,
+    final def convert2[K : Manifest : WireFormat : Grouping,
                  V : Manifest : WireFormat]
                  (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]  = {
       val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
@@ -139,7 +151,7 @@ object Smart {
 
     def convertNew(ci: ConvertInfo): AST.Node[A]
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V]
 
@@ -154,9 +166,9 @@ object Smart {
     * the materialization is performed. */
   case class Load[A : Manifest : WireFormat](loader: Loader[A]) extends DList[A] {
 
-    def name = "Load" + id
+    override val toString = "Load" + id
 
-    override def toString = name
+    val toVerboseString = toString
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -170,7 +182,7 @@ object Smart {
       insert(ci, AST.Load())
     }
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
 
@@ -178,7 +190,7 @@ object Smart {
                     def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
 
-    override def dataSource(ci: ConvertInfo): DataStore with DataSource =
+    override def dataSource(ci: ConvertInfo): DataStore with DataSource[_,_,_] =
       loader.mkInputStore(ci.getASTNode(this).asInstanceOf[AST.Load[A]])
   }
 
@@ -187,21 +199,31 @@ object Smart {
     * all elements of an existing DList and concatenating the results. */
   case class ParallelDo[A, B]
       (in: DList[A],
-       dofn: DoFn[A, B])
+       dofn: DoFn[A, B],
+       groupBarrier: Boolean = false,
+       fuseBarrier: Boolean = false)
       (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
     extends DList[B] {
 
-    def name = "ParallelDo" + id
+    override val toString = "ParallelDo" + id + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
-    def justCopy(copied: CopyTable, cf: CopyFn[_]): (DList[B], CopyTable, Boolean) = {
+    def justCopy(copied: CopyTable, cf: CopyFn[_])  = justCopy(copied, cf, fuseBarrier)
+
+    def justCopy(copied: CopyTable, cf: CopyFn[_], fb: Boolean): (DList[B], CopyTable, Boolean) = {
       val cfA = cf.asInstanceOf[CopyFn[A]]
       val (inUpd, copiedUpd, b) = cfA(in, copied)
-      val pd = ParallelDo(inUpd, dofn)
+      val pd = ParallelDo(inUpd, dofn, groupBarrier, fb)
       (pd, copiedUpd + (this -> pd), b)
+    }
+
+    /** If this ParallelDo is connected to an output, replicate it with a fuse barrier. */
+    override def optAddFuseBar(copied: CopyTable, outputs: Set[DList[_]]): (DList[B], CopyTable, Boolean) = copyOnce(copied) {
+      val requireFuseBarrier = outputs.contains(this)
+      justCopy(copied, (n: DList[A], ct: CopyTable) => n.optAddFuseBar(ct, outputs), requireFuseBarrier)
     }
 
     /** If the input to this ParallelDo is a Flatten node, re-write the tree as a Flatten node with the
@@ -214,7 +236,7 @@ object Smart {
             (ctUpd + (in -> inUpd), copies :+ inUpd)
           }
 
-          val flat: DList[B] = Flatten(insUpd.map(ParallelDo(_, dofn)))
+          val flat: DList[B] = Flatten(insUpd.map(ParallelDo(_, dofn, groupBarrier, fuseBarrier)))
           (flat, copiedUpd + (this -> flat), true)
         }
         case _            => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optSinkFlattens(ct))
@@ -243,10 +265,10 @@ object Smart {
       }
 
       in match {
-        case ParallelDo(_, _) => {
+        case ParallelDo(_, _, _, false) => {
           val (inUpd, copiedUpd, _) = in.optFuseParDos(copied)
-          val prev@ParallelDo(inPrev, dofnPrev) = inUpd
-          val pd = new ParallelDo(inPrev, fuse(dofnPrev, dofn))(prev.mA, prev.wtA, mB, wtB)
+          val prev@ParallelDo(inPrev, dofnPrev, gbPrev, _) = inUpd
+          val pd = new ParallelDo(inPrev, fuse(dofnPrev, dofn), groupBarrier || gbPrev, fuseBarrier)(prev.mA, prev.wtA, mB, wtB)
           (pd, copiedUpd + (this -> pd), true)
         }
         case _                => justCopy(copied, (n: DList[A], ct: CopyTable) => n.optFuseParDos(ct))
@@ -261,7 +283,7 @@ object Smart {
       in.convertParallelDo(ci, this)
     }
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat](ci: ConvertInfo):
                     AST.Node[(K,V)] with KVLike[K,V] = {
       val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
@@ -280,14 +302,14 @@ object Smart {
 
   /** The GroupByKey node type specifies the building of a DList as a result of partitioning an exiting
     * key-value DList by key. */
-  case class GroupByKey[K : Manifest : WireFormat : Ordering,
+  case class GroupByKey[K : Manifest : WireFormat : Grouping,
                         V : Manifest : WireFormat]
       (in: DList[(K, V)])
     extends DList[(K, Iterable[V])] {
 
-    def name = "GroupByKey" + id
+    override val toString = "GroupByKey" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -328,7 +350,7 @@ object Smart {
       insert(ci, AST.GroupByKey(in.convert2(ci)))
     }
 
-    def convertAux[A: Manifest : WireFormat : Ordering,
+    def convertAux[A: Manifest : WireFormat : Grouping,
               B: Manifest : WireFormat]
               (ci: ConvertInfo, d: DList[(A,B)]):
               AST.Node[(A, Iterable[B])] with KVLike[A, Iterable[B]] = {
@@ -336,7 +358,7 @@ object Smart {
            def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[A,Iterable[B]](tags)})
       }
 
-    def convertNew2[K1 : Manifest : WireFormat : Ordering,
+    def convertNew2[K1 : Manifest : WireFormat : Grouping,
                     V1 : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
       convertAux(ci, in).asInstanceOf[AST.Node[(K1,V1)] with KVLike[K1,V1]]
@@ -358,15 +380,15 @@ object Smart {
 
   /** The Combine node type specifies the building of a DList as a result of applying an associative
     * function to the values of an existing key-values DList. */
-  case class Combine[K : Manifest : WireFormat : Ordering,
+  case class Combine[K : Manifest : WireFormat : Grouping,
                      V : Manifest : WireFormat]
       (in: DList[(K, Iterable[V])],
        f: (V, V) => V)
     extends DList[(K, V)] {
 
-    def name = "Combine" + id
+    override val toString = "Combine" + id
 
-    override def toString = name + "(" + in + ")"
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -394,11 +416,43 @@ object Smart {
             }
             def cleanup(emitter: Emitter[(K, V)]) = {}
           }
-          val pd = ParallelDo(inUpd, dofn)
+          val pd = ParallelDo(inUpd, dofn, false, false)
           (pd, copiedUpd + (this -> pd), true)
         }
       }
     }
+
+    /** Perform a normal copy of this Combine node, along with subsequent GroupByKey and Flatten nodes, but
+      * do not mark it as copied in the CopyTable. This will mean subsequent encounters of this node (that
+      * is, other outputs of this Combine node) will result in another copy, thereby replicating Combine
+      * nodes with multiple outputs. */
+    override def optSplitCombines(copied: CopyTable): (DList[(K, V)], CopyTable, Boolean) = copyOnce(copied) {
+      in match {
+        case GroupByKey(groupIn) => groupIn match {
+
+          case Flatten(ins) => {
+            val (insUpd, copiedUpd, b) = ins.foldLeft((Nil: List[DList[(K, V)]], copied, false)) { case ((cps, ct, b), n) =>
+              val (nUpd, ctUpd, bb) = n.optSplitCombines(ct)
+              (cps :+ nUpd, ctUpd + (n -> nUpd), bb || b)
+            }
+            val flat = Flatten(insUpd)
+            val gbk = GroupByKey(flat)
+            val cv = Combine(gbk, f)
+            (cv, copiedUpd, b)
+          }
+
+          case _            => {
+            val (inUpd, copiedUpd, b) = groupIn.optSplitCombines(copied)
+            val gbk = GroupByKey(inUpd)
+            val cv = Combine(gbk, f)
+            (cv, copiedUpd, b)
+          }
+        }
+
+        case _ => sys.error("Expecting Combine input to be a GroupByKey")
+      }
+    }
+
 
 
     // Conversion
@@ -406,7 +460,7 @@ object Smart {
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Combiner(in.convert(ci), f))
 
     /* An almost exact copy of convertNew */
-    def convertNew2[K1 : Manifest : WireFormat : Ordering,
+    def convertNew2[K1 : Manifest : WireFormat : Grouping,
                     V1 : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K1,V1)] with KVLike[K1,V1] = {
        val c: Combine[K1,V1] = this.asInstanceOf[Combine[K1,V1]]
@@ -432,9 +486,9 @@ object Smart {
     * one or more exsiting DLists of the same type. */
   case class Flatten[A : Manifest : WireFormat](ins: List[DList[A]]) extends DList[A] {
 
-    def name = "Flatten" + id
+    override val toString = "Flatten" + id
 
-    override def toString = name + "([" + ins.mkString(",") + "])"
+    val toVerboseString = toString + "([" + ins.map(_.toVerboseString).mkString(",") + "])"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -477,7 +531,7 @@ object Smart {
     // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo) = insert(ci, AST.Flatten(ins.map(_.convert(ci))))
 
-    def convertNew2[K : Manifest : WireFormat : Ordering,
+    def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V)] with KVLike[K,V] = {
       val d: Flatten[(K,V)] = this.asInstanceOf[Flatten[(K,V)]]
@@ -498,12 +552,13 @@ object Smart {
     *   - splitting of Flattens with multiple outputs
     *   - sinking of Flattens
     *   - fusing Flattens
-    *   - morphing CombineValues into ParallelDos when they don't follow a GroupByKey
+    *   - morphing Combine into ParallelDos when they don't follow a GroupByKey
     *   - fusing of ParallelDos
-    *   - splitting of GroupByKeys with multiple outputs. */
+    *   - splitting of GroupByKeys with multiple outputs
+    *   - splitting of Combine with multiple outputs. */
   def optimisePlan(outputs: List[DList[_]]): List[DList[_]] = {
 
-    /** Perform a computation 'f' recursively stating with input 'x'. Return the
+    /** Perform a computation 'f' recursively starting with input 'x'. Return the
       * result of 'f' once the outputs are no longer changing, and an indication as
       * to whether there was ever a change. */
     def untilChanged[A](x: A, f: A => (A, Boolean)): (A, Boolean) = {
@@ -543,17 +598,22 @@ object Smart {
       val (combinerToParDoOpt, c2) = untilChanged(flattenOpt, travOnce(_.optCombinerToParDos(_)))
       val (parDoOpt, c3)           = untilChanged(combinerToParDoOpt, travOnce(_.optFuseParDos(_)))
       val (splitGbkOpt, c4)        = untilChanged(parDoOpt, travOnce(_.optSplitGbks(_)))
-      (splitGbkOpt, c1 || c2 || c3 || c4)
+      val (splitCombineOpt, c5)    = untilChanged(splitGbkOpt, travOnce(_.optSplitCombines(_)))
+      (splitCombineOpt, c1 || c2 || c3 || c4 || c5)
     }
 
-    val (optOutputs, _) = untilChanged(outputs, allStrategies)
+    /* Any outputs that are ParallelDo's should be marked with fuse barriers. */
+    val (outputsWithBarriers, _) = travOnce(_.optAddFuseBar(_, outputs.toSet))(outputs)
+
+    /* Run all strategies. */
+    val (optOutputs, _) = untilChanged(outputsWithBarriers, allStrategies)
     optOutputs
   }
 
 
   /** Helper method for traversing the graph from */
   private def travOnce
-      (fuseFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
+      (optFn: (DList[_], CopyTable) => (DList[_], CopyTable, Boolean))
       (outputs: List[DList[_]])
     : (List[DList[_]], Boolean) = {
 
@@ -561,8 +621,8 @@ object Smart {
     val noCopies: List[DList[_]] = Nil
 
     val (_, copies, changes) = outputs.foldLeft((emptyCopyTable, noCopies, false)) { case ((ct, cps, b), n) =>
-      val (nCopy, ctUpd, bb) = fuseFn(n, ct)
-      (ctUpd + (n -> nCopy), cps :+ nCopy, bb || b)
+      val (nCopy, ctUpd, bb) = optFn(n, ct)
+      (ctUpd, cps :+ nCopy, bb || b)
     }
 
     (copies, changes)
@@ -575,18 +635,18 @@ object Smart {
 
   def parentsOf(d: DList[_]): List[DList[_]] = {
     d match {
-      case Load(_)          => List()
-      case ParallelDo(in,_) => List(in)
-      case GroupByKey(in)   => List(in)
-      case Combine(in,_)    => List(in)
-      case Flatten(ins)     => ins
+      case Load(_)                 => List()
+      case ParallelDo(in, _, _, _) => List(in)
+      case GroupByKey(in)          => List(in)
+      case Combine(in, _)          => List(in)
+      case Flatten(ins)            => ins
     }
   }
 
   def getParallelDo(d: DList[_]): Option[ParallelDo[_,_]] = {
     d match {
-      case parDo@ParallelDo(_,_) => Some(parDo)
-      case _                     => None
+      case parDo@ParallelDo(_, _, _, _) => Some(parDo)
+      case _                            => None
     }
   }
 
@@ -621,7 +681,7 @@ object Smart {
    * Class that maintains state while the Smart.DList abstract syntax tree
    * is transformed to an AST.Node abstract syntax tree.
    *
-   * Contains mutable maps. Beware, many uses of this data structure may look pureley
+   * Contains mutable maps. Beware, many uses of this data structure may look purely
    * functional but aren't.
    *
    */
@@ -630,7 +690,7 @@ object Smart {
                     val g: DGraph,
                     val astMap: MMap[Smart.DList[_], AST.Node[_]],
                     /* A map of AST nodes to BridgeStores*/
-                    val bridgeStoreMap: MMap[AST.Node[_], BridgeStore]
+                    val bridgeStoreMap: MMap[AST.Node[_], BridgeStore[_]]
                     ) {
 
     def getASTNode[A](d: Smart.DList[_]): AST.Node[A] = astMap.get(d) match {
@@ -663,12 +723,12 @@ object Smart {
       case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
     }
 
-    def getBridgeStore(d: Smart.DList[_]): BridgeStore = {
+    def getBridgeStore(d: Smart.DList[_]): BridgeStore[_] = {
       val n: AST.Node[_] = getASTNode(d)
       bridgeStoreMap.get(n) match {
         case Some(bs) => bs
         case None     => {
-          val newBS: BridgeStore = BridgeStore(n)
+          val newBS: BridgeStore[_] = BridgeStore(n)
           bridgeStoreMap += ((n, newBS))
           newBS
         }

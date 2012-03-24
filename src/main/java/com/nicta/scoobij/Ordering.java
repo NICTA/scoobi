@@ -15,14 +15,20 @@
  */
 package com.nicta.scoobij;
 
-import java.io.Serializable;
 
 /**
  * Based on scala.Ordering, same idea as Java's comparable but designed more
  * like a "trait"
  *
  */
+public abstract class Ordering<T> implements com.nicta.scoobi.Grouping<T> {
 
-public interface Ordering<T> extends Serializable {
-	public int compare(T a, T b);
+	public abstract int sortCompare(T a, T b);
+
+	public int partition(T key, int num) {
+		return (key.hashCode() & Integer.MAX_VALUE) % num;
+	}
+	public int groupCompare(T a, T b) {
+		return sortCompare(a, b);
+	}
 }

@@ -20,5 +20,5 @@ import com.nicta.scoobi.impl.plan.AST
 
 /** A Persister class specifies how a distributed list is persisted. */
 abstract class Persister[A] {
-  def mkOutputStore(node: AST.Node[A]): OutputStore
+  def mkOutputStore(node: AST.Node[A]): OutputStore[_, _, A]
 }

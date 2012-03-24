@@ -42,10 +42,10 @@ public class DTableImpl<K, V> extends DListImpl<scala.Tuple2<K, V>> implements
 		// .conforms();
 
 		return new DGroupedTableImpl<K, V>(getImpl().groupByKey(confirms,
-				Conversions.toManifest(keyBundle.typeInfo()),
+				keyBundle.typeInfo(),
 				keyBundle.wireFormat(),
-				Conversions.toScala(keyBundle.ordering()),
-				Conversions.toManifest(valueBundle.typeInfo()),
+				keyBundle.ordering(),
+				valueBundle.typeInfo(),
 				valueBundle.wireFormat()));
 	}
 }

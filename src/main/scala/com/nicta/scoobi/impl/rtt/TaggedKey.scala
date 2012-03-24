@@ -19,6 +19,7 @@ import org.apache.hadoop.io.WritableComparable
 import javassist._
 
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 
 
 /** A tagged value for Hadoop keys. Specifically this will be a K2 type so must
@@ -31,7 +32,7 @@ abstract class TaggedKey(tag: Int) extends Tagged(tag) with WritableComparable[T
 /** Companion object for dynamically constructing a subclass of TaggedKey. */
 object TaggedKey {
 
-  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_], Ordering[_])]): RuntimeClass = {
+  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])]): RuntimeClass = {
     val builder = new TaggedKeyClassBuilder(name, tags)
     builder.toRuntimeClass
   }
@@ -41,7 +42,7 @@ object TaggedKey {
 /** Class for building TaggedKey classes at runtime. */
 class TaggedKeyClassBuilder
     (name: String,
-     tags: Map[Int, (Manifest[_], WireFormat[_], Ordering[_])])
+     tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])])
   extends TaggedValueClassBuilder(name, tags.map{case (t, (m, wt, _)) => (t, (m, wt))}.toMap) {
 
   override def extendClass: Class[_] = classOf[TaggedKey]
@@ -51,18 +52,22 @@ class TaggedKeyClassBuilder
     /* TaggedKey sub-classes are super-classes of TaggedValue sub-classes. */
     super.build
 
-    tags.foreach { case (t, (_, _, ord)) =>
-      /* 'comparerN' - Ordering type class field for each tagged-type. */
-      addTypeClassModel(ord, "comparer" + t)
+    tags.foreach { case (t, (m, _, grp)) =>
+      /* 'grouperN' - Grouping type class field for each tagged-type. */
+      addTypeClassModel(grp, "grouper" + t)
     }
 
-    /* 'compareTo' - peform comparison on tags first then, if equal, perform
-     * comparison on selected tagged value using 'comparerN'. */
+    /* 'compareTo' - perform comparison on tags first then, if equal, perform
+     * comparison on selected tagged value using 'grouperN'. */
     val compareToCode =
       className + " tk = (" + className + ")$1;" +
       "if (tk.tag() == this.tag()) {" +
         "switch(this.tag()) {" +
-          tags.keys.map(t => "case " + t + ": return comparer" + t + ".compare(value" + t + ", tk.value" + t + ");").mkString +
+          tags.map { case (t, (m, _, _)) =>
+            "case " + t + ": return grouper" + t + ".sortCompare(" +
+            fromObject("value" + t, m) + ", " +
+            fromObject("tk.value" + t, m) + ");"
+          }.mkString +
           "default: return 0;" +
         "}" +
       "} else {" +

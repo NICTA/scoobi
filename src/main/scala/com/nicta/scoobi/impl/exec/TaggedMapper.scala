@@ -15,12 +15,12 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.Serializable
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.Emitter
 
 
-/** A prodcuer of a TaggedMapper. */
+/** A producer of a TaggedMapper. */
 trait MapperLike[A, K, V] {
   def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, K, V]
 }
@@ -30,9 +30,8 @@ trait MapperLike[A, K, V] {
 abstract class TaggedMapper[A, K, V]
     (val tags: Set[Int])
     (implicit val mA: Manifest[A], val wtA: WireFormat[A],
-              val mK: Manifest[K], val wtK: WireFormat[K], val ordK: Ordering[K],
-              val mV: Manifest[V], val wtV: WireFormat[V])
-  extends Serializable {
+              val mK: Manifest[K], val wtK: WireFormat[K], val grpK: Grouping[K],
+              val mV: Manifest[V], val wtV: WireFormat[V]) {
 
   /** The actual 'map' function that will be used by Hadoop in the mapper task. */
   def setup(): Unit
@@ -44,10 +43,10 @@ abstract class TaggedMapper[A, K, V]
 /** A TaggedMapper that is an identity mapper. */
 class TaggedIdentityMapper[K, V]
     (tags: Set[Int])
-    (implicit mK: Manifest[K], wtK: WireFormat[K], ordK: Ordering[K],
+    (implicit mK: Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
               mV: Manifest[V], wtV: WireFormat[V],
               mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
-  extends TaggedMapper[(K, V), K, V](tags)(mKV, wtKV, mK, wtK, ordK, mV, wtV) {
+  extends TaggedMapper[(K, V), K, V](tags)(mKV, wtKV, mK, wtK, grpK, mV, wtV) {
 
   /** Identity mapping */
   def setup() = {}

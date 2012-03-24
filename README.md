@@ -28,49 +28,12 @@ programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid
 development of analytics and machine-learning algorithms.
 
 
-0.2.0 release notes
--------------------
-
-### New features
-
-* [Java bindings](http://nicta.github.com/scoobi/java/master/index.html)
-* Relational functionality: [`join`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.Join$), [`joinOn`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.Join$), [`coGroup`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.CoGroup$) and [`coGroupOn`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.CoGroup$)
-* New [`DList`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList) methods:
-  * `parallelDo` - a sledge-hammer for when `flatMap` isn't enough
-  * `collect` - applies a partial function to each element
-  * `by` - create a keyed `DList` for join and co-group operations
-* [`WireFormat`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.WireFormat) helpers support for algebraic data types (ADTs):
-  * `mkAbstractWireFormat`
-  * `mkCaseWireFormat` (formerly just `mkWireFormat`)
-  * `mkObjectWireFormat`
-  Read more on the [wiki page for serialization](https://github.com/NICTA/scoobi/wiki/Serialization)
-* Migration to new Hadoop API (i.e. use of *context* objects)
-* [*Shortest path* example](https://github.com/NICTA/scoobi/blob/master/examples/shortestPath/src/main/scala/Graph.scala)
-
-### Bug fixes
-
-* Checking all inputs exist before running a job
-* Bug fixes in *word count* example
-* Typos in documentation
-* Speed ups and support for all dataypes in ClassBuilder
-* Fix for reference counting intermediate data
-
-
-### 0.3.0 and beyond
-
-* `materialize` method on `DList` objects for getting a `DList` off HDFS and on to the client
-* I/O support for Sequence and Avro files
-* Client-side computations that can be dependent on and/or create depenecices on `DList` computations
-* `DList` methods that produce *scalar* values, e.g. `reduce`, `product`, `sum`, `min`, `max`, `length`, `count`
-* Sugar for implementing interative algorithms
-
-
 Quick start
 -----------
 
 Scoobi has the following requirements:
 
-* [Hadoop 0.20.2](http://www.cloudera.com/hadoop/)
+* [Cloudera's Hadoop 0.20.2](http://www.cloudera.com/hadoop/)
 * [Scala 2.9.1](http://www.scala-lang.org/downloads): Note that this is typically set in build.sbt
 * [Sbt 0.11.0](https://github.com/harrah/xsbt/wiki)
 
@@ -101,7 +64,7 @@ Then build and package one of the examples:
 Finally, run on Hadoop:
 
 ```
-  $ hadoop jar ./target/Scoobi_Word_Count-hadoop.jar <input> <output>
+  $ hadoop jar ./target/Scoobi_Word_Count-hadoop-0.1.jar <input> <output>
 ```
 
 
@@ -171,31 +134,22 @@ complete application for word count looks like this:
 
 ```scala
   import com.nicta.scoobi.Scoobi._
-  import com.nicta.scoobi.DList._
-  import com.nicta.scoobi.io.text.TextInput._
-  import com.nicta.scoobi.io.text.TextOutput._
 
-  object WordCount {
-    def main(allArgs: Array[String]) = withHadoopArgs(allArgs) { args =>
+  object WordCount extends ScoobiApp {
+    val lines: DList[String] = fromTextFile(args(0))
 
-      val lines: DList[String] = fromTextFile(args(0))
+    val counts: DList[(String, Int)] = lines.flatMap(_.split(" "))
+                                            .map(word => (word, 1))
+                                            .groupByKey
+                                            .combine(_+_)
 
-      val counts: DList[(String, Int)] = lines.flatMap(_.split(" "))
-                                              .map(word => (word, 1))
-                                              .groupByKey
-                                              .combine(_+_)
-
-      persist(toTextFile(counts, args(1)))
-    }
+    persist(toTextFile(counts, args(1)))
   }
 ```
 
-Our word count example is implemented by the object `WordCount`. First, there are few
-imports to specify for brining in `DList` and text I/O. The guts of the implementation
-are within the enclosing braces of the `withHadoopArgs` control structure. The purpose of
-`withHadoopArgs` is to parse the [generic Hadoop command line options](http://hadoop.apache.org/common/docs/current/commands_manual.html#Generic+Options)
-before passing the remaining arguments to the guts of the implementation. This implementation
-uses the remaining two arguments for the input (`args(0)`) and output directory (`args(1)`).
+Our word count example is implemented by the object `WordCount`, wich extends a `ScoobiApp`. This
+is a convience in Scoobi to avoid having to write a `main` function, as well as automatically
+handling arguments intended for hadoop. The remaining arguments are available as `args`
 
 Within the implementation guts, the first task is to construct a `DList` representing the data
 located at the input directory. In this situation, because the input data are simple text files,
@@ -608,7 +562,7 @@ And, we can add a pretty standard `build.sbt` that has a dependency on Scoobi:
 
     scalaVersion := "2.9.1"
 
-    libraryDependencies += "com.nicta" %% "scoobi" % "0.2.0" % "provided"
+    libraryDependencies += "com.nicta" %% "scoobi" % "0.3.0" % "provided"
 ```
 
 The `provided` is added to the `scoobi` dependency to let sbt know that Scoobi
@@ -634,13 +588,30 @@ and then `hadoop` being given the correct object to run. e.g.:
 ```
 
 
-Issues
-------
-Please use our GitHub [issue tracker](https://github.com/NICTA/scoobi/issues) for any bugs, issues, problems or
-questions you might have. Please tag *questions* accordingly.
+Issues, questions and contributions
+-----------------------------------
 
-
-Contributions
--------------
 Scoobi is released under the Apache license v2. We welcome contributions of bug fixes and/or new
-features via GitHib pull requests.
+features via GitHib pull requests. In addition, it is important to us to build a friendly user
+and developer community around Scoobi, so:
+
+* If you happen to encounter something that looks suspiciously like a bug, be sure to log it on the
+[GitHub issue tracker](https://github.com/NICTA/scoobi/issues) so that it can be fixed for everyone - the
+more information the better;
+* If, on the other hand, you simply have questions about how to use Scoobi, take a look at the posts on the
+[scoobi-users](http://groups.google.com/group/scoobi-users) mailing list or post a question of your own;
+* And, if you're keen to get your hands dirty and contribute new features to Scoobi, or are hoping to get some
+insight into Scoobi's internal architecture, or simply want to know what's going on in developer-land, head
+over to the [scoobi-dev](http://groups.google.com/group/scoobi-dev) mailing list.
+
+We will try our best to respond to all issues and questions quickly.
+
+
+Release notes
+-------------------
+[Changes in 0.3.0](https://github.com/nicta/scoobi/blob/master/CHANGES.md)
+
+### Next Milestone
+[0.4.0 Open issues](https://github.com/NICTA/scoobi/issues?milestone=2)
+
+[0.4.0 Closed issues](https://github.com/NICTA/scoobi/issues?milestone=2&state=closed)

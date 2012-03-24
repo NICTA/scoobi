@@ -15,39 +15,29 @@
   */
 package com.nicta.scoobi.examples
 
-import com.nicta.scoobi._
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.io.text._
 import java.io._
 
 
-object NumberPartitioner {
+object NumberPartitioner extends ScoobiApp {
+  val fileName = "output-dir/all-ints.txt"
 
-  def main(args: Array[String]) = withHadoopArgs(args) { _ =>
+  // Write 50 (new line seperated) ints to a file. We do this to make the example self contained
+  generateInts(fileName, 50)
 
-    if (!new File("output-dir").mkdir) {
-      sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
-    }
+  // fromTextFile creates a list of Strings, where each String is a line
+  val data : DList[String] = fromTextFile(fileName);
 
-    val fileName = "output-dir/all-ints.txt"
+  // since they're numbers, we can easily parse them
+  val intData : DList[Int] = data.map(_.toInt)
 
-    // Write 50 (new line seperated) ints to a file. We do this to make the example self contained
-    generateInts(fileName, 50)
+  // Now we can parition this data into two lists, one where they're even one where they're odd
+  val (evens, odds) = intData.partition(_ % 2 == 0)
 
-    // fromTextFile creates a list of Strings, where each String is a line
-    val data : DList[String] = TextInput.fromTextFile(fileName);
-
-    // since they're numbers, we can easily parse them
-    val intData : DList[Int] = data.map(_.toInt)
-
-    // Now we can parition this data into two lists, one where they're even one where they're odd
-    val (evens, odds) = intData.partition(_ % 2 == 0)
-
-    DList.persist (
-      TextOutput.toTextFile(evens, "output-dir/evens"),
-      TextOutput.toTextFile(odds,  "output-dir/odds")
-    )
-  }
+  DList.persist (
+    TextOutput.toTextFile(evens, "output-dir/evens"),
+    TextOutput.toTextFile(odds,  "output-dir/odds")
+  )
 
   private def generateInts(filename: String, count: Int) {
     val fstream = new FileWriter(filename)

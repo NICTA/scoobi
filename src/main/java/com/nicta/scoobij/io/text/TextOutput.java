@@ -19,7 +19,6 @@ import com.nicta.scoobij.DList;
 import com.nicta.scoobij.DTable;
 import com.nicta.scoobij.WireFormats;
 import com.nicta.scoobij.WireFormatType;
-
 public class TextOutput {
 
 	// The return type of this should be used with Scoobi.Persist
@@ -27,7 +26,7 @@ public class TextOutput {
 			DList<T> dl, String path, WireFormatType<T> bundle) {
 
 		return com.nicta.scoobi.io.text.TextOutput.toTextFile(dl.getImpl(),
-				path, bundle.wireFormat());
+				path, bundle.typeInfo());
 	}
 
 	public static <K, V> com.nicta.scoobi.DListPersister<scala.Tuple2<K, V>> toTextFile(
@@ -37,8 +36,7 @@ public class TextOutput {
 		return com.nicta.scoobi.io.text.TextOutput.toTextFile(
 				dt.getImpl(),
 				path,
-				WireFormats.wireFormatPair(bundleK.wireFormat(),
-						bundleV.wireFormat()));
+				WireFormats.wireFormatPair(bundleK, bundleV).typeInfo());
 	}
 
 }

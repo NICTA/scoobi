@@ -18,6 +18,9 @@ package com.nicta.scoobi.impl.rtt
 import org.apache.hadoop.mapreduce.Partitioner
 import javassist._
 
+import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
+
 
 /** Custom paritioner for tagged key-values. */
 abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
@@ -26,15 +29,18 @@ abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
 /** Companion object for dynamically constructing a subclass of TaggedPartitioner. */
 object TaggedPartitioner {
 
-  def apply(name: String, numTags: Int): RuntimeClass = {
-    val builder = new TaggedPartitionerClassBuilder(name, numTags)
+  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])]): RuntimeClass = {
+    val builder = new TaggedPartitionerClassBuilder(name, tags)
     builder.toRuntimeClass
   }
 }
 
 
 /** Class for building TaggedPartitioner classes at runtime. */
-class TaggedPartitionerClassBuilder(name: String, numTags: Int) extends ClassBuilder {
+class TaggedPartitionerClassBuilder
+    (name: String,
+     tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])])
+  extends ClassBuilder {
 
   def className = name
 
@@ -42,12 +48,17 @@ class TaggedPartitionerClassBuilder(name: String, numTags: Int) extends ClassBui
 
   def build = {
 
+    tags.foreach { case (t, (_, _, grp)) =>
+      /* 'grouperN' - Grouping type class field for each tagged-type. */
+      addTypeClassModel(grp, "grouper" + t)
+    }
+
     /* 'getPartition' - do hash paritioning on the key value that is tagged. */
     val getPartitionCode =
       "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
       "switch(tag) {" +
-        (0 to numTags - 1).map { t =>
-          "case " + t + ": return (((com.nicta.scoobi.impl.rtt.TaggedKey)$1).get(tag).hashCode() & Integer.MAX_VALUE) % $3;"
+        (0 to tags.size - 1).map { t =>
+          "case " + t + ": return grouper" + t + ".partition(((com.nicta.scoobi.impl.rtt.TaggedKey)$1).get(tag), $3);"
         }.mkString +
         "default: return 0;" +
       "}"

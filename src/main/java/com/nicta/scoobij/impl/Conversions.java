@@ -21,7 +21,6 @@ import com.nicta.scoobij.Filterer;
 import com.nicta.scoobij.FlatMapper;
 import com.nicta.scoobij.KeyValue;
 import com.nicta.scoobij.Mapper;
-import com.nicta.scoobij.Ordering;
 import com.nicta.scoobij.TableFlatMapper;
 import com.nicta.scoobij.TableMapper;
 
@@ -64,10 +63,6 @@ public class Conversions {
 
 		return scala.reflect.Manifest$.MODULE$.classType(clazz, typeArg1,
 				toScalaSeq(typeArgs));
-	}
-
-	public static <T> scala.math.Ordering<T> toScala(final Ordering<T> ordering) {
-		return new OrderingAdaptor<T>(ordering);
 	}
 
 	public static <K, V> com.nicta.scoobi.DoFn<K, V> toScalaDoFn(

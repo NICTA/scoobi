@@ -51,7 +51,7 @@ object ScoobiWritable {
 
 
 /** A ScoobiWritable subclass is constructed based on a WireFormat typeclass
-  * model imiplicit parameter. Using this model object, the Hadoop Writable methods
+  * model implicit parameter. Using this model object, the Hadoop Writable methods
   * 'write' and 'readFields' can be generated. */
 class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: WireFormat[_]) extends ClassBuilder {
 
@@ -86,7 +86,7 @@ class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: WireFormat[_]
                                           "toString",
                                           Array(),
                                           Array(),
-                                          "return writer.show(" + toObject("get()", m) + ");",
+                                          "return get().toString();",
                                           ctClass)
     ctClass.addMethod(toStringMethod)
   }

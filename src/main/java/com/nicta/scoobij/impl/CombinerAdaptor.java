@@ -15,14 +15,10 @@
  */
 package com.nicta.scoobij.impl;
 
-import java.io.Serializable;
-
 import com.nicta.scoobij.Combiner;
 
-public class CombinerAdaptor<T> extends
-		scala.runtime.AbstractFunction2<T, T, T> implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+public class CombinerAdaptor<T> extends scala.runtime.AbstractFunction2<T, T, T> {
 
 	public CombinerAdaptor(Combiner<T> cmb) {
 		combiner = cmb;

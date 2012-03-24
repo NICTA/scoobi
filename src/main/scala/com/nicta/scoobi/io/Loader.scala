@@ -21,5 +21,5 @@ import com.nicta.scoobi.impl.plan.AST
 
 /** A Loader class specifies how a distributed list is materialised. */
 abstract class Loader[A : Manifest : WireFormat] {
-  def mkInputStore(node: AST.Load[A]): InputStore
+  def mkInputStore(node: AST.Load[A]): InputStore[_, _, A]
 }

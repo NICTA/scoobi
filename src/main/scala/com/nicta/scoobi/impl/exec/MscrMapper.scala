@@ -15,43 +15,46 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.{Mapper => HMapper, _}
 
 import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.impl.rtt.ScoobiWritable
+import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.impl.rtt.Tagged
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 
 
 /** Hadoop Mapper class for an MSCR. */
-class MscrMapper[A, K, V] extends HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue] {
+class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
 
-  var inputs: Map[Int, Set[TaggedMapper[_,_,_]]] = _
-  var mappers: Set[TaggedMapper[A, K, V]] = _
-  var tk: TaggedKey = _
-  var tv: TaggedValue = _
+  private var inputs: Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A, _, _]])] = _
+  private var converter: InputConverter[K1, V1, A] = _
+  private var mappers: Set[TaggedMapper[A, K2, V2]] = _
+  private var tk: TaggedKey = _
+  private var tv: TaggedValue = _
 
+  override def setup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
 
-  override def setup(context: HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]#Context) = {
-    inputs = DistCache.pullObject(context.getConfiguration, "scoobi.input.mappers").asInstanceOf[Map[Int, Set[TaggedMapper[_,_,_]]]]
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 
-    /* Find the mappers for this input channel from the tagged input split. */
+    /* Find the converter and its mappers for this input channel from the tagged input split. */
+    inputs = DistCache.pullObject(context.getConfiguration, "scoobi.mappers")
+                      .asInstanceOf[Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A,_,_]])]]
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
-    mappers = inputs(inputSplit.channel).asInstanceOf[Set[TaggedMapper[A, K, V]]]
+    val input = inputs(inputSplit.channel)
+
+    converter = input._1.asInstanceOf[InputConverter[K1, V1, A]]
+    mappers = input._2.asInstanceOf[Set[TaggedMapper[A, K2, V2]]]
+
     mappers.foreach { _.setup() }
   }
 
-  override def map(key: NullWritable,
-                   value: ScoobiWritable[A],
-                   context: HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]#Context) = {
-
+  override def map(key: K1, value: V1, context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
+    val v: A = converter.fromKeyValue(context, key, value).asInstanceOf[A]
     mappers foreach { mapper =>
-      val emitter = new Emitter[(K, V)] {
-        def emit(x: (K, V)) = {
+      val emitter = new Emitter[(K2, V2)] {
+        def emit(x: (K2, V2)) = {
           mapper.tags.foreach { tag =>
             tk.set(tag, x._1)
             tv.set(tag, x._2)
@@ -59,15 +62,14 @@ class MscrMapper[A, K, V] extends HMapper[NullWritable, ScoobiWritable[A], Tagge
           }
         }
       }
-      mapper.map(value.get.asInstanceOf[A], emitter)
+      mapper.map(v, emitter)
     }
   }
 
-  override def cleanup(context: HMapper[NullWritable, ScoobiWritable[A], TaggedKey, TaggedValue]#Context) = {
-
+  override def cleanup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
     mappers foreach { mapper =>
-      val emitter = new Emitter[(K, V)] {
-        def emit(x: (K, V)) = {
+      val emitter = new Emitter[(K2, V2)] {
+        def emit(x: (K2, V2)) = {
           mapper.tags.foreach { tag =>
             tk.set(tag, x._1)
             tv.set(tag, x._2)

@@ -50,11 +50,14 @@ class JarBuilder(val name: String) {
   def addJar(jarFile: String): Unit = addJarEntries(jarFile, e => true)
 
   /** Add the entire contents of a JAR that contains a particular class. */
-  def addContainingJar(clazz: Class[_]): Unit = addJar(findContainingJar(clazz))
+  def addContainingJar(clazz: Class[_]) {
+    findContainingJar(clazz).foreach(addJar(_))
+  }
 
   /** Add a class that has been loaded and is contained in some exising JAR. */
-  def addClass(clazz: Class[_]): Unit =
-    addJarEntries(findContainingJar(clazz), (mkClassFile(clazz) == _.getName))
+  def addClass(clazz: Class[_]) {
+    findContainingJar(clazz).foreach(addJarEntries(_, (mkClassFile(clazz) == _.getName)))
+  }
 
   /** Add a single class to the JAR where its bytecode is given directly. */
   def addClassFromBytecode(className: String, bytecode: Array[Byte]): Unit = {
@@ -103,7 +106,7 @@ class JarBuilder(val name: String) {
 object JarBuilder {
 
   /** Find the location of JAR that contains a particular class. */
-  def findContainingJar(clazz: Class[_]): String = {
+  def findContainingJar(clazz: Class[_]): Option[String] = {
 
     val classFile = mkClassFile(clazz)
     val loader = ?(clazz.getClassLoader) match {
@@ -112,15 +115,18 @@ object JarBuilder {
     }
 
     val foundPaths =
-      for {
+      (for {
         url <- loader.getResources(classFile)
         if ("jar" == url.getProtocol)
         path = url.getPath.replaceAll("file:", "")
                           .replaceAll("\\+", "%2B")
                           .replaceAll("!.*$", "")
-      } yield URLDecoder.decode(path, "UTF-8")
+      } yield URLDecoder.decode(path, "UTF-8")).toList
 
-    foundPaths.toList.head
+    if (foundPaths.isEmpty)
+      None
+    else
+      Some(foundPaths.head)
   }
 
   /** Return the class file path string as specified in a JAR for a give class. */

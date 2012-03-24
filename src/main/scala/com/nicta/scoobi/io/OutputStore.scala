@@ -20,4 +20,4 @@ import com.nicta.scoobi.impl.plan.AST
 
 /** An output store is data that must first be computed. Once computed it
   * must persist. A single output channel can have multiple output stores. */
-abstract class OutputStore(n: AST.Node[_]) extends DataStore(n) with DataSink
+abstract class OutputStore[K, V, B](n: AST.Node[B]) extends DataStore(n) with DataSink[K, V, B]

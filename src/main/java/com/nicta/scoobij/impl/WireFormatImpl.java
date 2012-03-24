@@ -15,6 +15,8 @@
  */
 package com.nicta.scoobij.impl;
 
+import scala.reflect.Manifest;
+
 import com.nicta.scoobi.WireFormat;
 import com.nicta.scoobij.OrderedWireFormatType;
 import com.nicta.scoobij.Ordering;
@@ -28,8 +30,8 @@ public class WireFormatImpl<T> implements OrderedWireFormatType<T> {
 	}
 
 	@Override
-	public Class<T> typeInfo() {
-		return clazz;
+	public Manifest<T> typeInfo() {
+		return Conversions.toManifest(clazz);
 	}
 
 	@Override

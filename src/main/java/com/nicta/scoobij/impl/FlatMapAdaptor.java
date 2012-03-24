@@ -15,15 +15,10 @@
  */
 package com.nicta.scoobij.impl;
 
-import java.io.Serializable;
-
 import com.nicta.scoobij.FlatMapper;
 
-public class FlatMapAdaptor<T, V> extends
-		scala.runtime.AbstractFunction1<T, scala.collection.Iterable<V>>
-		implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+public class FlatMapAdaptor<T, V> extends scala.runtime.AbstractFunction1<T, scala.collection.Iterable<V>> {
 
 	public FlatMapAdaptor(FlatMapper<T, V> fm) {
 		flatMapper = fm;

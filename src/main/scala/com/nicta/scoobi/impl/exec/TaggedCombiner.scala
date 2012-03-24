@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.Serializable
 import com.nicta.scoobi._
 
 
@@ -28,10 +27,9 @@ trait CombinerLike[V] {
 /** A wrapper for a 'combine' function tagged for a specific output channel. */
 abstract class TaggedCombiner[V]
     (val tag: Int)
-    (implicit val mV: Manifest[V], val wtV: WireFormat[V])
-  extends Serializable {
+    (implicit val mV: Manifest[V], val wtV: WireFormat[V]) {
 
-  /** The acutal 'combine' function that will be called by Hadoop at the
+  /** The actual 'combine' function that will be called by Hadoop at the
     * completion of the mapping phase. */
   def combine(x: V, y: V): V
 }

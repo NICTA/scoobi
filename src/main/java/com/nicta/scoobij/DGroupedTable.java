@@ -15,6 +15,7 @@
  */
 package com.nicta.scoobij;
 
+
 /**
  * A DGroupTable is a DTable<K, V> where V is actually a list of values. It is
  * the return result of DList.groupByKey. A DGroupedTable has the additional

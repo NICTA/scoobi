@@ -313,7 +313,7 @@ trait ClassBuilder {
     case CShort   => "((Short)("      + objCode + ")).shortValue()"
     case CInt     => "((Integer)("    + objCode + ")).intValue()"
     case CLong    => "((Long)("       + objCode + ")).longValue()"
-    case CFloat   => "((Floag)("      + objCode + ")).floatValue()"
+    case CFloat   => "((Float)("      + objCode + ")).floatValue()"
     case CDouble  => "((Double)("     + objCode + ")).doubleValue()"
     case CByte    => "((Byte)("       + objCode + ")).byteValue()"
     case _        => "("              + objCode + ")"

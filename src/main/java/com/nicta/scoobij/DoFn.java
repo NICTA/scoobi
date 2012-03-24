@@ -15,13 +15,13 @@
  */
 package com.nicta.scoobij;
 
+
 /**
  * Used by DList.parallelDo to process data. Setup is called before the any
  * elements. Then process is called for each element And then cleanup is called
  * (giving you the option to emit anything)
  */
-abstract public class DoFn<A, B> implements java.io.Serializable {
-	private static final long serialVersionUID = 1L;
+abstract public class DoFn<A, B> {
 
 	public void setup() {
 	}

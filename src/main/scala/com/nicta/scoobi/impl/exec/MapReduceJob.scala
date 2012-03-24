@@ -16,30 +16,35 @@
 package com.nicta.scoobi.impl.exec
 
 import java.io.File
-import org.apache.hadoop.io.NullWritable
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem
-import org.apache.hadoop.fs.FileStatus
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.mapreduce.Reducer
 import org.apache.hadoop.mapreduce.Partitioner
 import org.apache.hadoop.mapreduce.OutputFormat
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
-import org.apache.hadoop.io.compress.GzipCodec
-import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable.{Map => MMap}
+import Option.{apply => ?}
 
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
+import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.DataSink
+import com.nicta.scoobi.io.Helper
+import com.nicta.scoobi.io.InputConverter
+import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MapperInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
+import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.GbkOutputChannel
 import com.nicta.scoobi.impl.plan.BypassOutputChannel
+import com.nicta.scoobi.impl.plan.FlattenOutputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.Empty
 import com.nicta.scoobi.impl.plan.JustCombiner
@@ -48,35 +53,37 @@ import com.nicta.scoobi.impl.plan.CombinerReducer
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 import com.nicta.scoobi.impl.rtt.TaggedPartitioner
+import com.nicta.scoobi.impl.rtt.TaggedGroupingComparator
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.util.JarBuilder
 
 
-/** A class that defines a single Hadoop MapRedcue job. */
-class MapReduceJob {
+/** A class that defines a single Hadoop MapReduce job. */
+class MapReduceJob(stepId: Int) {
+  lazy val logger = LogFactory.getLog("scoobi.Step")
 
   import scala.collection.mutable.{Set => MSet, Map => MMap}
 
   /* Keep track of all the mappers for each input channel. */
-  private val mappers: MMap[DataSource, MSet[TaggedMapper[_,_,_]]] = MMap.empty
+  private val mappers: MMap[DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]] = MMap.empty
   private val combiners: MSet[TaggedCombiner[_]] = MSet.empty
-  private val reducers: MMap[List[_ <: DataSink], TaggedReducer[_,_,_]] = MMap.empty
+  private val reducers: MMap[List[_ <: DataSink[_,_,_]], TaggedReducer[_,_,_]] = MMap.empty
 
   /* The types that will be combined together to form (K2, V2). */
-  private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Ordering[_])] = MMap.empty
+  private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Grouping[_])] = MMap.empty
   private val valueTypes: MMap[Int, (Manifest[_], WireFormat[_])] = MMap.empty
 
 
   /** Add an input mapping function to thie MapReduce job. */
-  def addTaggedMapper[A, K, V](input: DataSource, m: TaggedMapper[A, K, V]): Unit = {
+  def addTaggedMapper(input: DataSource[_,_,_], m: TaggedMapper[_,_,_]): Unit = {
     if (!mappers.contains(input))
       mappers += (input -> MSet(m))
     else
       mappers(input) += m
 
     m.tags.foreach { tag =>
-      keyTypes   += (tag -> (m.mK, m.wtK, m.ordK))
+      keyTypes   += (tag -> (m.mK, m.wtK, m.grpK))
       valueTypes += (tag -> (m.mV, m.wtV))
     }
   }
@@ -87,14 +94,14 @@ class MapReduceJob {
   }
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer[K, V, B](outputs: Set[_ <: DataSink], r: TaggedReducer[K, V, B]): Unit = {
+  def addTaggedReducer(outputs: Set[_ <: DataSink[_,_,_]], r: TaggedReducer[_,_,_]): Unit = {
     reducers += (outputs.toList -> r)
   }
 
   /** Take this MapReduce job and run it on Hadoop. */
   def run() = {
 
-    val job = new Job(Scoobi.conf, Scoobi.jobId)
+    val job = new Job(Scoobi.conf, Scoobi.jobId + "(Step-" + stepId + ")")
     val fs = FileSystem.get(job.getConfiguration)
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
@@ -112,45 +119,48 @@ class MapReduceJob {
     Scoobi.getUserJars.foreach { jar.addJar(_) }  //  User JARs
 
 
-    /** (K2,V2):
-      *   - are (TaggedKey, TaggedValue), the wrappers for all K-V types
-      *   - generate their runtime classes and add to JAR */
+    /** Sort-and-shuffle:
+      *   - (K2, V2) are (TaggedKey, TaggedValue), the wrappers for all K-V types
+      *   - Partitioner is generated and of type TaggedPartitioner
+      *   - GroupingComparator is generated and of type TaggedGroupingComparator
+      *   - SortComparator is handled by TaggedKey which is WritableComparable */
     val id = UniqueId.get
+
     val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
-    val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
-    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.size)
-
-
     jar.addRuntimeClass(tkRtClass)
-    jar.addRuntimeClass(tvRtClass)
-    jar.addRuntimeClass(tpRtClass)
-
     job.setMapOutputKeyClass(tkRtClass.clazz)
+
+    val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
+    jar.addRuntimeClass(tvRtClass)
     job.setMapOutputValueClass(tvRtClass.clazz)
+
+    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.toMap)
+    jar.addRuntimeClass(tpRtClass)
     job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
 
-    /* Compress mapper outputs */
-    job.getConfiguration.setBoolean("mapred.compress.map.output", true)
-    job.getConfiguration.setClass("mapred.map.output.compression.codec", classOf[GzipCodec], classOf[CompressionCodec])
+    val tgRtClass = TaggedGroupingComparator("TG" + id, keyTypes.toMap)
+    jar.addRuntimeClass(tgRtClass)
+    job.setGroupingComparatorClass(tgRtClass.clazz.asInstanceOf[Class[_ <: RawComparator[_]]])
 
 
     /** Mappers:
+      *     - use ChannelInputs to specify multiple mappers through job
       *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
-      *       mapper for a given input channel can be used as they all have the same input type
-      *     - use ChannelInputs to specify multiple mappers through job */
-    val inputChannels = mappers.toList.zipWithIndex
-    inputChannels.foreach { case ((input, ms), ix) =>
-      val mapper = ms.head
-      val valRtClass = ScoobiWritable(input.inputTypeName, mapper.mA, mapper.wtA)
-      jar.addRuntimeClass(valRtClass)
-      ChannelInputFormat.addInputChannel(job,
-                                         ix,
-                                         input.inputPath,
-                                         input.inputFormat.asInstanceOf[Class[_ <: FileInputFormat[_,_]]])
+      *       mapper for a given input channel can be used as they all have the same input type */
+    val inputChannels: List[((DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]), Int)] = mappers.toList.zipWithIndex
+    inputChannels.foreach { case ((source, ms), ix) =>
+      ChannelInputFormat.addInputChannel(job, ix, source)
+      source match {
+        case bs@BridgeStore(_) => jar.addRuntimeClass(bs.rtClass.getOrElse(sys.error("Run-time class should be set.")))
+        case _                 => {}
+      }
     }
 
-    DistCache.pushObject(job.getConfiguration, inputChannels map { case((_, ms), ix) => (ix, ms.toSet) } toMap, "scoobi.input.mappers")
-    job.setMapperClass(classOf[MscrMapper[_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
+    val inputs: Map[Int, (InputConverter[_, _, _], Set[TaggedMapper[_, _, _]])] =
+      inputChannels map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) } toMap
+
+    DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
+    job.setMapperClass(classOf[MscrMapper[_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
 
 
     /** Combiners:
@@ -165,23 +175,37 @@ class MapReduceJob {
 
 
     /** Reducers:
-      *     - add a named output for each output channel
-      *     - generate runtime class (ScoobiWritable) for each output value type and add to JAR */
+      *     - generate runtime class (ScoobiWritable) for each output values being written to
+      *       a BridgeStore or MaterializeStore and add to JAR
+      *     - add a named output for each output channel */
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
-    reducers.foreach { case (outputs, reducer) =>
-      val valRtClass = ScoobiWritable(outputs.head.outputTypeName, reducer.mB, reducer.wtB)
-      jar.addRuntimeClass(valRtClass)
-      outputs.zipWithIndex.foreach { case (out, ix) =>
-        ChannelOutputFormat.addOutputChannel(job,
-                                             reducer.tag,
-                                             ix,
-                                             out.outputFormat.asInstanceOf[Class[_ <: OutputFormat[_,_]]],
-                                             valRtClass.clazz)
+    reducers.foreach { case (sinks, reducer) =>
+      sinks foreach {
+        case bs@BridgeStore(_) => {
+          // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
+          bs.rtClass match {
+            case Some(rtc) => jar.addRuntimeClass(rtc)
+            case None      => {
+              /* NOTE: must do this before calling addOutputChannel */
+              val rtClass = ScoobiWritable(bs.typeName, reducer.mB, reducer.wtB)
+              jar.addRuntimeClass(rtClass)
+              bs.rtClass = Some(rtClass)
+            }
+          }
+        }
+        case ms@MaterializeStore(_, _, _) => jar.addRuntimeClass(ms.rtClass)
+        case _ => {}
       }
+      sinks.zipWithIndex.foreach { case (sink, ix) => ChannelOutputFormat.addOutputChannel(job, reducer.tag, ix, sink) }
     }
 
-    DistCache.pushObject(job.getConfiguration, reducers map { case (os, tr) => (tr.tag, (os.size, tr)) } toMap, "scoobi.output.reducers")
-    job.setReducerClass(classOf[MscrReducer[_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
+    val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])] =
+      reducers map { case (sinks, reducer) =>
+        (reducer.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
+      } toMap
+
+    DistCache.pushObject(job.getConfiguration, outputs, "scoobi.reducers")
+    job.setReducerClass(classOf[MscrReducer[_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 
     /* Calculate the number of reducers to use with a simple heuristic:
@@ -189,27 +213,53 @@ class MapReduceJob {
      * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mappers.toIterable.flatMap{case (src, _) => fs.globStatus(src.inputPath).map(_.getLen)}.sum
+    val inputBytes: Long = mappers.keys.map(_.inputSize()).sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
-    job.setNumReduceTasks(inputGigabytes)
+    val numReducers: Int = inputGigabytes.toInt
+    job.setNumReduceTasks(numReducers)
 
 
-    /* Run job then tidy-up. */
+    /* Log stats on this MR job. */
+    val sizeStr = Helper.sizeString(inputBytes)
+    logger.info("Total input size: " +  Helper.sizeString(inputBytes))
+    logger.info("Number of reducers: " + numReducers)
+
+
+    /* Run job */
     jar.close()
-    job.waitForCompletion(true)
+    job.submit()
+
+    val map = new Progress(job.mapProgress())
+    val reduce = new Progress(job.reduceProgress())
+
+    while (!job.isComplete()) {
+      Thread.sleep(5000)
+      if (map.hasProgressed() || reduce.hasProgressed())
+        logger.info("Map " + map.getProgress().formatted("%3d") + "%    " +
+                    "Reduce " + reduce.getProgress().formatted("%3d") + "%")
+    }
+
+    /* Tidy-up */
     tmpFile.delete
 
 
-    /* Move named outputs to the correct directories */
+    /* Move named file-based sinks to their correct output paths. */
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
-    val FileName = """ch(\d+)out(\d+)-.-\d+""".r
+    val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
 
-    reducers.foreach { case (outputs, reducer) =>
+    reducers.foreach { case (sinks, reducer) =>
 
-      outputs.zipWithIndex.foreach { case (output, ix) =>
+      sinks.zipWithIndex.foreach { case (sink, ix) =>
         outputFiles filter (forOutput) foreach { srcPath =>
-          fs.mkdirs(output.outputPath)
-          fs.rename(srcPath, new Path(output.outputPath, srcPath.getName))
+          val outputPath = {
+            val jobCopy = new Job(job.getConfiguration)
+            sink.outputConfigure(jobCopy)
+            FileOutputFormat.getOutputPath(jobCopy)
+          }
+          ?(outputPath) foreach { p =>
+            fs.mkdirs(p)
+            fs.rename(srcPath, new Path(p, srcPath.getName))
+          }
         }
 
         def forOutput = (f: Path) => f.getName match {
@@ -228,8 +278,8 @@ class MapReduceJob {
 object MapReduceJob {
 
   /** Construct a MapReduce job from an MSCR. */
-  def apply(mscr: MSCR): MapReduceJob = {
-    val job = new MapReduceJob
+  def apply(stepId: Int, mscr: MSCR): MapReduceJob = {
+    val job = new MapReduceJob(stepId)
     val mapperTags: MMap[AST.Node[_], Set[Int]] = MMap.empty
 
     /* Tag each output channel with a unique index. */
@@ -245,6 +295,7 @@ object MapReduceJob {
         case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => addTag(in, tag) }
         case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => addTag(in, tag)
         case BypassOutputChannel(_, origin)                     => addTag(origin, tag)
+        case FlattenOutputChannel(_, flat)                      => flat.ins.foreach { in => addTag(in, tag) }
       }
 
       /* Add combiner functionality from output channel descriptions. */
@@ -260,7 +311,8 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, _, JustReducer(r))        => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
         case GbkOutputChannel(outputs, _, g, Empty)                 => job.addTaggedReducer(outputs, g.mkTaggedReducer(tag))
-        case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedIdentityReducer(tag))
+        case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedReducer(tag))
+        case FlattenOutputChannel(outputs, flat)                    => job.addTaggedReducer(outputs, flat.mkTaggedReducer(tag))
       }
     }
 
@@ -273,6 +325,8 @@ object MapReduceJob {
         case MapperInputChannel(input, mappers) => mappers.foreach { m =>
           job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))
         }
+        case StraightInputChannel(input, origin) =>
+          job.addTaggedMapper(input, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
       }
     }
 
@@ -280,4 +334,24 @@ object MapReduceJob {
   }
 }
 
+
 object UniqueId extends UniqueInt
+
+
+/* Helper class to track progress of Map or Reduce tasks and whether or not
+ * progress has advanced. */
+class Progress(updateFn: => Float) {
+  private var progressed = true
+  private var progress = (updateFn * 100).toInt
+
+  def hasProgressed() = {
+    val p = (updateFn * 100).toInt
+    if (p > progress) { progressed = true; progress = p } else { progressed = false }
+    progressed
+  }
+
+  def getProgress(): Int = {
+    hasProgressed
+    progress
+  }
+}

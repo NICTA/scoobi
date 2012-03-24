@@ -15,71 +15,99 @@
   */
 package com.nicta.scoobi.impl.exec
 
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.JobContext
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
-import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs
-import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.RecordWriter
+import org.apache.hadoop.util.ReflectionUtils
 import scala.util.matching.Regex
+import scala.collection.JavaConversions._
 import scala.collection.mutable.{Map => MMap}
 
-
-/** Object that allows for channels with different output format requirements
-  * to be specified. */
-object ChannelOutputFormat {
-
-  private val OUTPUT_FORMAT_PROPERTY = "scoobi.output.formats"
-
-  /** Add a new output channel. */
-  def addOutputChannel
-      (job: Job,
-       channel: Int,
-       output: Int,
-       outputFormat: Class[_ <: OutputFormat[_,_]],
-       valueClass: Class[_]) = {
-
-    val conf = job.getConfiguration
-
-    val outputFormatMapping = List(channel.toString, valueClass.getName).mkString(";")
-    val outputFormats = conf.get(OUTPUT_FORMAT_PROPERTY)
-
-    if (outputFormats == null)
-      conf.set(OUTPUT_FORMAT_PROPERTY, outputFormatMapping)
-    else
-      conf.set(OUTPUT_FORMAT_PROPERTY, outputFormats + "," + outputFormatMapping)
-
-    MultipleOutputs.addNamedOutput(job, "ch" + channel + "out" + output, outputFormat, classOf[NullWritable], valueClass)
-  }
-
-
-  /** Get the value class for a particular output channel. */
-  def getValueClass(job: JobContext, channel: Int): Class[_] = {
-  
-    val Entry = """(.*);(.*)""".r
-
-    val valueClasses = job.getConfiguration.get(OUTPUT_FORMAT_PROPERTY).split(",").toList map {
-      case Entry(ch, outfmt) => (ch.toInt -> outfmt)
-    } toMap
-  
-    Class.forName(valueClasses(channel))
-  }
-}
+import com.nicta.scoobi.io.DataSink
 
 
 /** A class that simplifies writing output to different paths and with different types
   * depending on the output channel and required outputs per channel. */
-class ChannelOutputFormat[V3](context: TaskInputOutputContext[_, _, NullWritable, V3]) {
+class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
-  private val mos = new MultipleOutputs(context)
+  private val taskContexts: MMap[(Int, Int), TaskAttemptContext] = MMap.empty
+  private val recordWriters: MMap[(Int, Int), RecordWriter[_,_]] = MMap.empty
+
 
   /** Write a value out on multiple outputs of a given output channel.*/
-  def write(channel: Int, numOutputs: Int, value: V3) = {
-    (0 to numOutputs - 1) map { "ch" + channel + "out" + _ } foreach {
-      mos.write(_,  NullWritable.get, value)
-    }
+  def write[K, V](channel: Int, output: Int, kv: (K, V)) = {
+    val taskContext = getContext(channel, output)
+    val recordWriter = getRecordWriter(taskContext, channel, output).asInstanceOf[RecordWriter[K, V]]
+    recordWriter.write(kv._1, kv._2)
   }
 
   /** Close all opened output channels. */
-  def close() = mos.close()
+  def close() = recordWriters.values foreach { _.close(context) }
+
+  private def getContext(channel: Int, output: Int): TaskAttemptContext = {
+    /* The following trick leverages the instantiation of a record writer via
+     * the job thus supporting arbitrary output formats. */
+    def mkTaskContext = {
+      val conf = context.getConfiguration
+      val job = new Job(conf)
+
+      /* Set standard properties. */
+      val format = conf.getClass(ChannelOutputFormat.formatProperty(channel, output), null)
+                       .asInstanceOf[Class[_ <: OutputFormat[_,_]]]
+      job.setOutputFormatClass(format)
+      job.setOutputKeyClass(conf.getClass(ChannelOutputFormat.keyClassProperty(channel, output), null))
+      job.setOutputValueClass(conf.getClass(ChannelOutputFormat.valueClassProperty(channel, output), null))
+      job.getConfiguration.set("mapreduce.output.basename", "ch" + channel + "out" + output)
+
+      val PropertyPrefix = (ChannelOutputFormat.otherProperty(channel, output) + """(.*)""").r
+      ChannelOutputFormat.confToMap(conf) collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
+        case (k, v) => job.getConfiguration.set(k, v)
+      }
+
+      new TaskAttemptContext(job.getConfiguration, context.getTaskAttemptID())
+    }
+
+    taskContexts.getOrElseUpdate((channel, output), mkTaskContext)
+   }
+
+  private def getRecordWriter(taskContext: TaskAttemptContext, channel: Int, output: Int): RecordWriter[_,_] = {
+
+    /* Get the record writer from context output format. */
+    def mkRecordWriter =
+      ReflectionUtils.newInstance(taskContext.getOutputFormatClass, taskContext.getConfiguration)
+                     .asInstanceOf[OutputFormat[_,_]]
+                     .getRecordWriter(taskContext)
+
+    recordWriters.getOrElseUpdate((channel, output), mkRecordWriter)
+  }
+}
+
+
+/** Object that allows for channels with different output format requirements
+  * to be specified. */
+object ChannelOutputFormat extends ChannelFormatBase {
+
+  private def propertyPrefix(ch: Int, ix: Int) = "scoobi.output." + ch + ":" + ix
+  private def formatProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".format"
+  private def keyClassProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".key"
+  private def valueClassProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".value"
+  private def otherProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ":"
+
+  /** Add a new output channel. */
+  def addOutputChannel(job: Job, channel: Int, output: Int, sink: DataSink[_,_,_]) = {
+    val conf = job.getConfiguration
+    conf.set(formatProperty(channel, output), sink.outputFormat.getName)
+    conf.set(keyClassProperty(channel, output), sink.outputKeyClass.getName)
+    conf.set(valueClassProperty(channel, output), sink.outputValueClass.getName)
+
+    val jobCopy = new Job(conf)
+    sink.outputConfigure(jobCopy)
+    (confToMap(jobCopy.getConfiguration) -- confToMap(conf).keys) foreach { case (k, v) =>
+      conf.set(otherProperty(channel, output) + k, v)
+    }
+  }
 }

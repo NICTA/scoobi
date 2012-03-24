@@ -16,7 +16,7 @@
 package com.nicta.scoobi.impl.rtt
 
 
-/** A heterogenous type. */
+/** A heterogeneous type. */
 abstract class Tagged(private var t: Int) { self =>
   /* Get/set the tag */
   def tag = t
