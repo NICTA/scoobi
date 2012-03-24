@@ -43,7 +43,7 @@ object AvroOutput {
 
 
   /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
-  def toAvroFile[B : AvroSchema](dl: DList[B], path: String): DListPersister[B] = {
+  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false): DListPersister[B] = {
     val sch = implicitly[AvroSchema[B]]
 
     val converter = new OutputConverter[AvroKey[sch.AvroType], NullWritable, B] {
@@ -59,7 +59,12 @@ object AvroOutput {
 
       def outputCheck() =
         if (Helper.pathExists(outputPath)) {
-          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+          if (overwrite) {
+            logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
+            Helper.deletePath(outputPath)
+          } else {
+            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+          }
         } else {
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)

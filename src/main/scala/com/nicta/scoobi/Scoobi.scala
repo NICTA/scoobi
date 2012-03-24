@@ -58,8 +58,8 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits {
   def fromDelimitedTextFile[A : Manifest : WireFormat]
       (path: String, sep: String = "\t")
       (extractFn: PartialFunction[List[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
-  def toTextFile[A : Manifest](dl: DList[A], path: String) = TextOutput.toTextFile(dl, path)
-  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t") = TextOutput.toDelimitedTextFile(dl, path, sep)
+  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false) = TextOutput.toTextFile(dl, path, overwrite)
+  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false) = TextOutput.toDelimitedTextFile(dl, path, sep, overwrite)
 
 
   /* Sequence File I/O */
@@ -77,10 +77,10 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits {
   def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: String*): DList[(K, V)] = SequenceInput.fromSequenceFile(paths: _*)
   def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: List[String]): DList[(K, V)] = SequenceInput.fromSequenceFile(paths)
 
-  def convertKeyToSequenceFile[K : SeqSchema](dl: DList[K], path: String): DListPersister[K] = SequenceOutput.convertKeyToSequenceFile(dl, path)
-  def convertValueToSequenceFile[V : SeqSchema](dl: DList[V], path: String): DListPersister[V] = SequenceOutput.convertValueToSequenceFile(dl, path)
-  def convertToSequenceFile[K : SeqSchema, V : SeqSchema](dl: DList[(K, V)], path: String): DListPersister[(K, V)] = SequenceOutput.convertToSequenceFile(dl, path)
-  def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String): DListPersister[(K, V)] = SequenceOutput.toSequenceFile(dl, path)
+  def convertKeyToSequenceFile[K : SeqSchema](dl: DList[K], path: String, overwrite: Boolean = false): DListPersister[K] = SequenceOutput.convertKeyToSequenceFile(dl, path, overwrite)
+  def convertValueToSequenceFile[V : SeqSchema](dl: DList[V], path: String, overwrite: Boolean = false): DListPersister[V] = SequenceOutput.convertValueToSequenceFile(dl, path, overwrite)
+  def convertToSequenceFile[K : SeqSchema, V : SeqSchema](dl: DList[(K, V)], path: String, overwrite: Boolean = false): DListPersister[(K, V)] = SequenceOutput.convertToSequenceFile(dl, path, overwrite)
+  def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String, overwrite: Boolean = false): DListPersister[(K, V)] = SequenceOutput.toSequenceFile(dl, path, overwrite)
 
 
   /* Avro I/O */
@@ -91,7 +91,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits {
 
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]) = AvroInput.fromAvroFile(paths)
-  def toAvroFile[B : AvroSchema](dl: DList[B], path: String) = AvroOutput.toAvroFile(dl, path)
+  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
 
 
   /* join and coGroup */
