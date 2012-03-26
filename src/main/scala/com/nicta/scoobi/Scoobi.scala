@@ -67,8 +67,8 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits
   def fromDelimitedTextFile[A : Manifest : WireFormat]
       (path: String, sep: String = "\t")
       (extractFn: PartialFunction[List[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
-  def toTextFile[A : Manifest](dl: DList[A], path: String) = TextOutput.toTextFile(dl, path)
-  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t") = TextOutput.toDelimitedTextFile(dl, path, sep)
+  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false) = TextOutput.toTextFile(dl, path, overwrite)
+  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite:Boolean = false) = TextOutput.toDelimitedTextFile(dl, path, sep, overwrite)
 
 
   // Join lib
@@ -77,7 +77,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits
            A : Manifest : WireFormat,
            B : Manifest : WireFormat]
       (d1: DList[(K, A)], d2: DList[(K, B)])
-      = Join.join(d1, d1)
+      = Join.join(d1, d2)
 
 
   def joinRight[K : Manifest : WireFormat : Grouping,

@@ -124,7 +124,7 @@ object SequenceOutput extends SequenceOutputConversions {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as "key-values" in a Sequence File. */
-  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String)(implicit convK: OutConv[K], convV: OutConv[V]): DListPersister[(K, V)] = {
+  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite:Boolean = false)(implicit convK: OutConv[K], convV: OutConv[V]): DListPersister[(K, V)] = {
 
     val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.To]]
     val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.To]]
@@ -133,12 +133,12 @@ object SequenceOutput extends SequenceOutputConversions {
       def toKeyValue(kv: (K, V)) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
 
-    new DListPersister(dl, new SeqPersister[convK.To, convV.To, (K, V)](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqPersister[convK.To, convV.To, (K, V)](path, keyClass, valueClass, converter, overwrite))
   }
 
 
   /** Specify a distributed list to be persistent by storing it to disk as a Sequence File. */
-  def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String): DListPersister[(K, V)] = {
+  def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String, overwrite:Boolean = false): DListPersister[(K, V)] = {
 
     val keyClass = implicitly[Manifest[K]].erasure.asInstanceOf[Class[K]]
     val valueClass = implicitly[Manifest[V]].erasure.asInstanceOf[Class[V]]
@@ -147,7 +147,7 @@ object SequenceOutput extends SequenceOutputConversions {
       def toKeyValue(kv: (K, V)) = (kv._1, kv._2)
     }
 
-    new DListPersister(dl, new SeqPersister[K, V, (K, V)](path, keyClass, valueClass, converter))
+    new DListPersister(dl, new SeqPersister[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite))
   }
 
 
@@ -156,7 +156,8 @@ object SequenceOutput extends SequenceOutputConversions {
       path: String,
       keyClass: Class[K],
       valueClass: Class[V],
-      converter: OutputConverter[K, V, B])
+      converter: OutputConverter[K, V, B],
+      overwrite: Boolean = false)
     extends Persister[B] {
 
     def mkOutputStore(node: AST.Node[B]) = new OutputStore[K, V, B](node) {
@@ -168,7 +169,11 @@ object SequenceOutput extends SequenceOutputConversions {
 
       def outputCheck() =
         if (Helper.pathExists(outputPath))
-          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+            if (overwrite){
+              logger.info("Delete the existed output path:" + outputPath.toUri.toASCIIString)
+              Helper.deletePath(outputPath)
+            }else 
+              throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
         else
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
 

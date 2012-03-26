@@ -32,6 +32,8 @@ object Helper {
     case Some(_)                  => true
   }
 
+  def deletePath(p: Path)= FileSystem.get(Scoobi.conf).delete(p)
+    
   /** Determine the byte size of data specified by a path. */
   def pathSize(p: Path): Long = {
     val fs = FileSystem.get(Scoobi.conf)
