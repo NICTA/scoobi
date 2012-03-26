@@ -18,7 +18,7 @@ package com.nicta.scoobij;
 public interface Extractor<T> {
 
 	// Return null to indicate that this record should be skipped
-	// Warning: please make this side-effect free and determanistic, it may be
+	// Warning: please make this side-effect free and deterministic, it may be
 	// called multiple times for the same thing
 	T apply(java.lang.Iterable<String> strings);
 }
