@@ -26,16 +26,25 @@ libraryDependencies ++= Seq(
   "javassist" % "javassist" % "3.12.1.GA",
   "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
   "org.apache.avro" % "avro-mapred" % "1.6.0",
-  "com.thoughtworks.xstream" % "xstream" % "1.4.2"
+  "com.thoughtworks.xstream" % "xstream" % "1.4.2",
+  "org.specs2" %% "specs2" % "1.9-SNAPSHOT" % "test",
+  "org.specs2" %% "specs2-scalaz-core" % "6.0.1" % "test",
+  "org.specs2" % "classycle" % "1.4.1"% "test",
+  "org.scala-tools.testing" %% "scalacheck" % "1.9" % "test",
+  "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
+  "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
+  "org.mockito" % "mockito-all" % "1.9.0" % "test",
+  "org.pegdown" % "pegdown" % "1.0.2" % "test",
+  "junit" % "junit" % "4.7" % "test"
 )
 
 publishArtifact in packageDoc := false
 
 compileOrder := CompileOrder.ScalaThenJava
 
-resolvers += "Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/"
-
-resolvers += "Packaged Avro" at "http://nicta.github.com/scoobi/releases/"
+resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
+                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
+                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")
 
