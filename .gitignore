@@ -1,5 +1,8 @@
 target
 project/boot/
 
+*.iml
+.idea/
+
 src/test/resources/out/
 examples/joinExamples/output-dir/
