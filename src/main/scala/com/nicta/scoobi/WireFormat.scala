@@ -34,36 +34,22 @@ object WireFormat extends WireFormatImplicits
 
 /** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits {
+
   def mkObjectWireFormat[T](x: T) = new WireFormat[T] {
-
     override def toWire(obj: T, out: DataOutput) {}
-
-    override def fromWire(in: DataInput): T = {
-      x
-    }
+    override def fromWire(in: DataInput): T = x
   }
 
   def mkCaseWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new WireFormat[T] {
-
     override def toWire(obj: T, out: DataOutput) {}
-
-    override def fromWire(in: DataInput): T = {
-      apply()
-    }
+    override def fromWire(in: DataInput): T = apply()
   }
 
   def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new WireFormat[T] {
-
     override def toWire(obj: T, out: DataOutput) {
-      val v: A1 = unapply(obj).get
-
-      implicitly[WireFormat[A1]].toWire(v, out)
+      implicitly[WireFormat[A1]].toWire(unapply(obj).get, out)
     }
-
-    override def fromWire(in: DataInput): T = {
-      val a1: A1 = implicitly[WireFormat[A1]].fromWire(in)
-      apply(a1)
-    }
+    override def fromWire(in: DataInput): T = apply(implicitly[WireFormat[A1]].fromWire(in))
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]): WireFormat[T] = new WireFormat[T] {
@@ -453,12 +439,12 @@ trait WireFormatImplicits {
       }
   }
 
-  /*
+  /**
    * Catch-all
    */
-  @slow("You are using inefficient serialization, try using explicit stuff instead", "since 0.1")
+  @slow("You are using inefficient serialization, try creating an explicit WireFormat instance instead", "since 0.1")
   implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
-    def toWire(x: T, out: DataOutput) = {
+    def toWire(x: T, out: DataOutput) {
       val bytesOut = new ByteArrayOutputStream
       val bOut =  new ObjectOutputStream(bytesOut)
       bOut.writeObject(x)
@@ -479,11 +465,11 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Hadoop Writable types.
    */
   implicit def WritableFmt[T <: Writable : Manifest] = new WireFormat[T] {
-    def toWire(x: T, out: DataOutput) = x.write(out)
+    def toWire(x: T, out: DataOutput) { x.write(out) }
     def fromWire(in: DataInput): T = {
       val x: T = implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T]
       x.readFields(in)
@@ -492,7 +478,7 @@ trait WireFormatImplicits {
   }
 
 
-  /*
+  /**
    * "Primitive" types.
    */
   implicit def IntFmt = new WireFormat[Int] {
@@ -696,7 +682,7 @@ trait WireFormatImplicits {
       }
   }
 
-  /*
+  /**
    * Travesable structures
    */
   implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]) = {
@@ -718,7 +704,7 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Map structures
    */
   implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]) = {
@@ -744,7 +730,7 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Option type.
    */
   implicit def OptionFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Option[T]] {
@@ -764,7 +750,7 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Either types.
    */
   implicit def EitherFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new WireFormat[Either[T1, T2]] {
@@ -795,10 +781,9 @@ trait WireFormatImplicits {
     def fromWire(in: DataInput): Right[T1, T2] = Right[T1, T2](wt1.fromWire(in))
   }
 
-  /*
+  /**
    * Java's Date
    */
-
   implicit def DateFmt = new WireFormat[java.util.Date] {
     def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
     def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())

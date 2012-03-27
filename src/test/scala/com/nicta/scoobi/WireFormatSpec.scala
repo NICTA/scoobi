@@ -1,15 +1,50 @@
 package com.nicta.scoobi
 
+import io.NullDataOutput
 import java.io._
 import org.specs2.mutable.Specification
+import org.specs2.specification._
 import org.specs2.ScalaCheck
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Prop, Arbitrary, Gen}
+import Gen._
 import Prop.forAll
 import com.nicta.scoobi.WireFormat._
 
 @SuppressWarnings(Array("slow"))
 class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
+
+  "Basic types".p
+
+  "A WireFormat instance is available for basic types" >> {
+    serializationIsOkFor[Int]
+    serializationIsOkFor[java.lang.Integer]
+    serializationIsOkFor[Boolean]
+    serializationIsOkFor[Long]
+    serializationIsOkFor[Double]
+    serializationIsOkFor[Float]
+    serializationIsOkFor[Char]
+    serializationIsOkFor[Byte]
+    serializationIsOkFor[Option[Int]]
+    serializationIsOkFor[Either[String, Boolean]]
+    serializationIsOkFor[java.util.Date]
+    serializationIsOkFor[(Int, String)]
+    serializationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
+    serializationIsOkFor[String]
+    "but a null string cannot be serialized" >> {
+      implicitly[WireFormat[String]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
+    } lt;
+    serializationIsOkFor[Seq[Int]]
+    "but a null traversable cannot be serialized" >> {
+      implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
+    } lt;
+    serializationIsOkFor[Map[Int, String]].t
+    "but a null map cannot be serialized" >> {
+      implicitly[WireFormat[Map[Int, String]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
+    }
+  }
+
+  "Case classes".newbr;end
 
   "A WireFormat instance can be automatically created, using the Serializable interface of a case class" >> {
     "for a case class with a Double, a String, an Int" >> {
@@ -43,7 +78,8 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
       }
     }
 
-    "for case classes of an ADT, by making WireFormats for each node type,\n including the base type" >> {
+    "for case classes of an ADT, by making WireFormats for each node type,\n "+
+    "including the base type, up to 8 different types" >> {
       implicit val BaseIntWritable    = mkCaseWireFormat(BaseInt, BaseInt.unapply _)
       implicit val BaseStringWritable = mkCaseWireFormat(BaseString, BaseString.unapply _)
       implicit val BaseObjectWritable = mkObjectWireFormat(BaseObject)
@@ -62,9 +98,9 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
 
   }
 
-  def serializationIsOkFor[T : WireFormat : Gen : Manifest] =
+  def serializationIsOkFor[T : WireFormat : Arbitrary : Manifest] =
     implicitly[Manifest[T]].erasure.getSimpleName+" serializes correctly" >>
-      forAll(implicitly[Gen[T]])((t: T) => serializationIsOkWith[T](t))
+      forAll(implicitly[Arbitrary[T]].arbitrary)((t: T) => serializationIsOkWith[T](t))
 
   def serializationIsOkWith[T : WireFormat](x: T) : Boolean = deserialize[T](serialize(x)) must_== x
 
@@ -85,14 +121,22 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
  * case classes generators
  */
 trait CaseClassData {
+  import org.scalacheck.util.Buildable._
+
+  implicit def arbitraryOf[T: Gen]: Arbitrary[T] = Arbitrary(implicitly[Gen[T]])
+  def genOf[T: Arbitrary]: Gen[T] = implicitly[Arbitrary[T]].arbitrary
+
+  implicit def arbitraryInteger: Arbitrary[java.lang.Integer] =
+    Arbitrary(implicitly[Arbitrary[Int]].arbitrary.map(i => new java.lang.Integer(i)))
+
+  implicit def arbitrarySeq[T : Arbitrary]: Arbitrary[Seq[T]] =
+    Arbitrary(containerOf1(implicitly[Arbitrary[T]].arbitrary)(buildableList[T]))
 
   /**
    * Generators
    */
   val genString = arbitrary[String] suchThat (_ != null)
-
   implicit val genIntHolder: Gen[IntHolder] = arbitrary[Int].map(IntHolder)
-  implicit def arbitraryOf[T: Gen]: Arbitrary[T] = Arbitrary(implicitly[Gen[T]])
   implicit val genWritableDoubleStringInt: Gen[WritableDoubleStringInt] = for {
     d <- arbitrary[Double]
     s <- genString
@@ -132,3 +176,4 @@ sealed trait Base
 case class BaseInt(v: Int) extends Base
 case class BaseString(v: String) extends Base
 object BaseObject extends Base
+
