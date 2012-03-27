@@ -20,7 +20,7 @@ import org.apache.hadoop.io._
 import annotation.implicitNotFound
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
-
+import impl.slow
 
 
 /** Type-class for sending types across the Hadoop wire. */
@@ -456,7 +456,7 @@ trait WireFormatImplicits {
   /*
    * Catch-all
    */
-  @deprecated("Not actually deprecated, but you are using inefficient serialization, try use explicit stuff instead", "since 0.1")
+  @slow("You are using inefficient serialization, try using explicit stuff instead", "since 0.1")
   implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) = {
       val bytesOut = new ByteArrayOutputStream
