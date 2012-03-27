@@ -23,6 +23,7 @@ import com.nicta.scoobij.KeyValue;
 import com.nicta.scoobij.Mapper;
 import com.nicta.scoobij.TableFlatMapper;
 import com.nicta.scoobij.TableMapper;
+import com.nicta.scoobi.impl.ExtractorAdaptor;
 
 public class Conversions {
 
