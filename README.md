@@ -490,7 +490,7 @@ constructs a `WireFormat` for **case classes**:
 
 ```scala
   case class Tick(val date: Int, val symbol: String, val price: Double)
-  implicit val tickFmt = mkCaseWireFormat(Tick)(Tick.unapply _)
+  implicit val tickFmt = mkCaseWireFormat(Tick, Tick.unapply _)
 
   val ticks: DList[Tick] = ...  /* Still OK */
 ```
@@ -503,7 +503,7 @@ fields in a case class when used in conjunction with `mkCaseWireFormat`:
 
 ```scala
   case class Tick(val date: Int, val symbol: String, val price: Double, val high_low: (Double, Double))
-  implicit val tickFmt = mkCaseWireFormat(Tick)(Tick.unapply _)
+  implicit val tickFmt = mkCaseWireFormat(Tick, Tick.unapply _)
 
   val ticks: DList[Tick] = ...  /* Amazingly, still OK */
 ```
@@ -513,10 +513,10 @@ Thus, it's possible to have nested case classes that can parameterize `DList` ob
 
 ```scala
   case class PriceAttr(val: price: Double, val high_low: (Double, Double))
-  implicit val priceAttrFmt = mkCaseWireFormat(PriceAttr)(PriceAttr.unapply _)
+  implicit val priceAttrFmt = mkCaseWireFormat(PriceAttr, PriceAttr.unapply _)
 
   case class Tick(val date: Int, val symbol: String, val attr: PriceAttr)
-  implicit val tickFmt = mkCaseWireFormat(Tick)(Tick.unapply _)
+  implicit val tickFmt = mkCaseWireFormat(Tick, Tick.unapply _)
 
   val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
 ```
