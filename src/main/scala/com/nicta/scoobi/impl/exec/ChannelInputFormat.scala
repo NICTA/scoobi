@@ -41,7 +41,7 @@ import com.nicta.scoobi.io.DataSource
 
 /** Object that allows for channels with different input format requirements
   * to be specified. Makes use of ChannelInputFormat. */
-object ChannelInputFormat extends ChannelFormatBase {
+object ChannelInputFormat {
 
   private val INPUT_FORMAT_PROPERTY = "scoobi.input.formats"
 
@@ -67,7 +67,7 @@ object ChannelInputFormat extends ChannelFormatBase {
      * but prefixed with "scoobi.inputX", where X is the channel number. */
     val jobCopy = new Job(conf)
     source.inputConfigure(jobCopy)
-    (confToMap(jobCopy.getConfiguration) -- confToMap(conf).keys) foreach { case (k, v) =>
+    (jobCopy.getConfiguration.toMap -- conf.toMap.keys) foreach { case (k, v) =>
       conf.set("scoobi.input" + channel + ":" + k, v)
     }
   }
@@ -97,7 +97,7 @@ class ChannelInputFormat[K, V] extends InputFormat[K, V] {
       val jobCopy = new Job(conf)
       val ChannelPrefix = ("scoobi.input" + channel + ":" + """(.*)""").r
 
-      ChannelInputFormat.confToMap(conf) collect { case (ChannelPrefix(k), v) => (k, v) } foreach {
+      conf.toMap collect { case (ChannelPrefix(k), v) => (k, v) } foreach {
         case (k, v) => jobCopy.getConfiguration.set(k, v)
       }
 
@@ -118,7 +118,7 @@ class ChannelInputFormat[K, V] extends InputFormat[K, V] {
     val jobCopy = new Job(conf)
     val ChannelPrefix = ("scoobi.input" + taggedInputSplit.channel + ":" + """(.*)""").r
 
-    ChannelInputFormat.confToMap(conf) collect { case (ChannelPrefix(k), v) => (k, v) } foreach {
+    conf.toMap collect { case (ChannelPrefix(k), v) => (k, v) } foreach {
       case (k, v) => jobCopy.getConfiguration.set(k, v)
     }
 
