@@ -3,7 +3,6 @@ package com.nicta.scoobi
 import io.NullDataOutput
 import java.io._
 import org.specs2.mutable.Specification
-import org.specs2.specification._
 import org.specs2.ScalaCheck
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Prop, Arbitrary, Gen}
@@ -44,9 +43,9 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
     }
   }
 
-  "Case classes".newbr;end
+  "Case classes".newbr
 
-  "A WireFormat instance can be automatically created, using the Serializable interface of a case class" >> {
+  "A WireFormat instance can be created, using the Serializable interface" >> {
     "for a case class with a Double, a String, an Int" >> {
       serializationIsOkFor[DefaultDoubleStringInt]
     }
