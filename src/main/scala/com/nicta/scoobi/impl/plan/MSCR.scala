@@ -17,7 +17,6 @@ package com.nicta.scoobi.impl.plan
 
 import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.OutputStore
-import com.nicta.scoobi.io.InputStore
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.impl.exec.MapperLike

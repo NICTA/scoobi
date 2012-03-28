@@ -34,7 +34,6 @@ import org.apache.hadoop.mapreduce.InputSplit
 import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.TaskAttemptContext
 import org.apache.hadoop.util.ReflectionUtils
-import scala.util.matching.Regex
 import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.io.DataSource

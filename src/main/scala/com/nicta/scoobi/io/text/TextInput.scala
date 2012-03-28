@@ -16,24 +16,17 @@
 package com.nicta.scoobi.io.text
 
 import java.io.IOException
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
-import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
-import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.InputStore
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Loader

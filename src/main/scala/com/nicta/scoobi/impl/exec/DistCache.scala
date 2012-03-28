@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._

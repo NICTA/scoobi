@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.io.text
 
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
@@ -26,7 +25,6 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Persister

@@ -27,7 +27,6 @@ import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.impl.exec.BridgeStore
 import com.nicta.scoobi.impl.exec.TaggedIdentityMapper
-import com.nicta.scoobi.impl.exec.TaggedIdentityReducer
 import com.nicta.scoobi.impl.util.UniqueInt
 
 

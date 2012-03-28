@@ -15,9 +15,7 @@
   */
 package com.nicta.scoobi.io.avro
 
-import java.util.UUID
 import java.util.{Map => JMap}
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.FileAlreadyExistsException
@@ -26,12 +24,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyOutputFormat
-import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Persister

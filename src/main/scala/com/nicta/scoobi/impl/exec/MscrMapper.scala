@@ -15,11 +15,10 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.mapreduce.{Mapper => HMapper, _}
+import org.apache.hadoop.mapreduce.{Mapper => HMapper}
 
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.impl.rtt.Tagged
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 

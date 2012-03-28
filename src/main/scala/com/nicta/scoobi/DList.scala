@@ -15,8 +15,6 @@
   */
 package com.nicta.scoobi
 
-import scala.collection.mutable.{Map => MMap}
-import scala.collection.mutable.{MutableList => MList}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
@@ -25,7 +23,6 @@ import org.apache.hadoop.io.NullWritable
 
 import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.func.FunctionInput
-import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
 import com.nicta.scoobi.impl.plan.AST
@@ -33,11 +30,20 @@ import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 import com.nicta.scoobi.impl.exec.MaterializeStore
 import com.nicta.scoobi.impl.exec.MaterializeId
-import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 
-/** A list that is distributed across multiple machines. */
+/**
+ * A list that is distributed across multiple machines.
+ *
+ * It supports a few Traversable-like methods:
+ *
+ * - parallelDo: a 'map' operation transforming elements of the list in parallel
+ * - ++: to concatenate 2 DLists
+ * - groupByKey: to group a list of (key, value) elements by key, so as to get (key, values)
+ * - combine: a parallel 'reduce' operation
+ * - materialize: transforms a distributed list into a non-distributed list
+ */
 class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =>
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +54,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * zero or more output elements. The resulting output elements from the many "chunks" form
     * a new distributed list. */
   def parallelDo[B] (dofn: DoFn[A, B])(implicit mB:  Manifest[B], wtB: WireFormat[B]): DList[B] =
-    new DList(Smart.ParallelDo(ast, dofn, false, false))
+    new DList(Smart.ParallelDo(ast, dofn))
 
   /** Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))
@@ -251,12 +257,12 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Derrived functionality (reduction operations)
+  // Derived functionality (reduction operations)
   // TODO - should eventually return DObjects, not DLists.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /** Reduce the elemets of this distributed list using the specified associative binary operator. The
-    * order in which the elements are reduced is unspecified and may be nondeterministic. */
+  /** Reduce the elements of this distributed list using the specified associative binary operator. The
+    * order in which the elements are reduced is unspecified and may be non-deterministic. */
   def reduce(op: (A, A) => A): DList[A] = {
     /* First, perform in-mapper combining. */
     val imc: DList[A] = self.parallelDo(new DoFn[A, A] {
@@ -339,7 +345,7 @@ object DList {
       outputs.foldLeft(emptyM)((m,p) => m + ((p.dl.ast, m.getOrElse(p.dl.ast, Set()) + p.persister)))
     }
 
-    /* Optimise the plan associated with the outpus. */
+    /* Optimise the plan associated with the outputs. */
     val outMap : Map[Smart.DList[_], Set[Persister[_]]] = {
       val optOuts: List[Smart.DList[_]] = Smart.optimisePlan(rawOutMap.keys.toList)
       (rawOutMap.toList zip optOuts) map { case ((_, p), o) => (o, p) } toMap

@@ -22,7 +22,7 @@ import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
 
 
-/** Custom paritioner for tagged key-values. */
+/** Custom partitioner for tagged key-values. */
 abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
 
 
@@ -53,7 +53,7 @@ class TaggedPartitionerClassBuilder
       addTypeClassModel(grp, "grouper" + t)
     }
 
-    /* 'getPartition' - do hash paritioning on the key value that is tagged. */
+    /* 'getPartition' - do hash partitioning on the key value that is tagged. */
     val getPartitionCode =
       "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
       "switch(tag) {" +

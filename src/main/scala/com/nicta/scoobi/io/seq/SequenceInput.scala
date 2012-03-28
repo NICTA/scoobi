@@ -16,11 +16,8 @@
 package com.nicta.scoobi.io.seq
 
 import java.io.IOException
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.BooleanWritable
 import org.apache.hadoop.io.IntWritable
@@ -35,7 +32,6 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.InputStore
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Loader

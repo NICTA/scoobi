@@ -4,8 +4,8 @@ import io.NullDataOutput
 import java.io._
 import org.specs2.mutable.Specification
 import org.specs2.ScalaCheck
-import org.scalacheck.Arbitrary._
 import org.scalacheck.{Prop, Arbitrary, Gen}
+import Arbitrary._
 import Gen._
 import Prop.forAll
 import com.nicta.scoobi.WireFormat._
