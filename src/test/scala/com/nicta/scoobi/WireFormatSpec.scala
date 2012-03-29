@@ -8,7 +8,8 @@ import org.scalacheck.{Prop, Arbitrary, Gen}
 import Arbitrary._
 import Gen._
 import Prop.forAll
-import com.nicta.scoobi.WireFormat._
+import WireFormat._
+import data._
 
 @SuppressWarnings(Array("slow"))
 class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
@@ -115,64 +116,4 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
   }
 
 }
-
-/**
- * case classes generators
- */
-trait CaseClassData {
-  import org.scalacheck.util.Buildable._
-
-  implicit def arbitraryOf[T: Gen]: Arbitrary[T] = Arbitrary(implicitly[Gen[T]])
-  def genOf[T: Arbitrary]: Gen[T] = implicitly[Arbitrary[T]].arbitrary
-
-  implicit def arbitraryInteger: Arbitrary[java.lang.Integer] =
-    Arbitrary(implicitly[Arbitrary[Int]].arbitrary.map(i => new java.lang.Integer(i)))
-
-  implicit def arbitrarySeq[T : Arbitrary]: Arbitrary[Seq[T]] =
-    Arbitrary(containerOf1(implicitly[Arbitrary[T]].arbitrary)(buildableList[T]))
-
-  /**
-   * Generators
-   */
-  val genString = arbitrary[String] suchThat (_ != null)
-  implicit val genIntHolder: Gen[IntHolder] = arbitrary[Int].map(IntHolder)
-  implicit val genWritableDoubleStringInt: Gen[WritableDoubleStringInt] = for {
-    d <- arbitrary[Double]
-    s <- genString
-    i <- arbitrary[Int]
-  } yield WritableDoubleStringInt(d, s, i)
-
-  implicit val genDefaultDoubleStringInt: Gen[DefaultDoubleStringInt] = for {
-    d <- arbitrary[Double]
-    s <- genString
-    i <- arbitrary[Int]
-  } yield DefaultDoubleStringInt(d, s, i)
-
-  implicit val genWritableStringNested: Gen[WritableStringNested] = for {
-    s <- genString
-    wdsi <- genWritableDoubleStringInt
-  } yield WritableStringNested(s, wdsi)
-
-  implicit val genDefaultStringNested: Gen[DefaultStringNested] = for {
-    s <- genString
-    ddsi <- genDefaultDoubleStringInt
-  } yield DefaultStringNested(s, ddsi)
-
-}
-case class IntHolder(a: Int)
-
-case class DefaultDoubleStringInt(a: Double, b: String, c: Int)
-case class WritableDoubleStringInt(a: Double, b: String, c: Int) {
-  def toDefault = DefaultDoubleStringInt(a, b, c)
-}
-
-case class DefaultStringNested(a: String, b: DefaultDoubleStringInt)
-case class WritableStringNested(a: String, b: WritableDoubleStringInt) {
-  def toDefault = DefaultStringNested(a, b.toDefault)
-}
-
-sealed trait Base
-case class BaseInt(v: Int) extends Base
-case class BaseString(v: String) extends Base
-object BaseObject extends Base
 
