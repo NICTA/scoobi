@@ -38,10 +38,11 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
     "but a null traversable cannot be serialized" >> {
       implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
     } lt;
-    serializationIsOkFor[Map[Int, String]].t
+    serializationIsOkFor[Map[Int, String]]
     "but a null map cannot be serialized" >> {
       implicitly[WireFormat[Map[Int, String]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
-    }
+    } lt;
+    serializationIsOkFor[Array[Int]]
   }
 
   "Case classes".newbr
