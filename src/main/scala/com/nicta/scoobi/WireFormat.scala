@@ -23,6 +23,7 @@ import scala.collection.mutable.Builder
 import impl.slow
 
 
+
 /** Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
 trait WireFormat[A] {
@@ -683,7 +684,7 @@ trait WireFormatImplicits {
   }
 
   /**
-   * Travesable structures
+   * Traversable structures
    */
   implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]) = {
     val builder: Builder[T, CC[T]] = bf()
@@ -730,6 +731,21 @@ trait WireFormatImplicits {
     }
   }
 
+  /* Arrays */
+  implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]) = new WireFormat[Array[T]] {
+    val builder = ArrayBuilder.make()(m)
+    def toWire(xs: Array[T], out: DataOutput) = {
+      out.writeInt(xs.length)
+      xs.foreach { wt.toWire(_, out) }
+    }
+    def fromWire(in: DataInput): Array[T] = {
+      builder.clear()
+      val length = in.readInt()
+      (0 to (length - 1)).foreach { _ => builder += wt.fromWire(in) }
+      builder.result()
+    }
+  }
+
   /**
    * Option type.
    */
@@ -750,7 +766,7 @@ trait WireFormatImplicits {
     }
   }
 
-  /**
+  /*
    * Either types.
    */
   implicit def EitherFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new WireFormat[Either[T1, T2]] {

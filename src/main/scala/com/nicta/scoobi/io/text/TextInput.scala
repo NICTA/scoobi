@@ -117,6 +117,12 @@ object TextInput {
       try { Some(s.toDouble) } catch { case _: NFE => None }
   }
 
+  /** Extract a Float from a String. */
+  object Float {
+    def unapply(s: String): Option[Float] =
+      try { Some(s.toFloat ) } catch { case _: NFE => None }
+  }
+
 
   /* Class that abstracts all the common functionality of reading from text files. */
   class TextLoader[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A]) extends Loader[A] {
