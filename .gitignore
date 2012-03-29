@@ -1,7 +1,7 @@
 target
 project/boot/
 
-*.iml
+examples/*.iml
 .idea/
 
 src/test/resources/out/
