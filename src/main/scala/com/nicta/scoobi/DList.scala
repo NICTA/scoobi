@@ -83,7 +83,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     new DObject[Iterable[A]] {
       def get: Iterable[A] = new Iterable[A] {
         def iterator = {
-          val fs = FileSystem.get(Scoobi.conf)
+          val fs = FileSystem.get(path.toUri, Scoobi.conf)
           val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
             new SequenceFile.Reader(fs, stat.getPath, Scoobi.conf)
           }
