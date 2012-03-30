@@ -36,7 +36,7 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.9.0" % "test",
   "org.pegdown" % "pegdown" % "1.0.2" % "test",
   "junit" % "junit" % "4.7" % "test",
-  "org.scalaz" %% "scalaz-core" % "7.0-SNAPSHOT" % "test"
+  "org.scalaz" %% "scalaz-core" % "7.0-SNAPSHOT"
 )
 
 publishArtifact in packageDoc := false

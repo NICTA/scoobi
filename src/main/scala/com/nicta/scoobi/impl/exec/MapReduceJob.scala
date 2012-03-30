@@ -145,15 +145,9 @@ class MapReduceJob(stepId: Int) {
       *     - use ChannelInputs to specify multiple mappers through job
       *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
       *       mapper for a given input channel can be used as they all have the same input type */
-    val inputChannels: List[((DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]), Int)] = mappers.toList.zipWithIndex
-    inputChannels.foreach { case ((source, ms), ix) =>
-      ChannelInputFormat.addInputChannel(job, ix, source)
-      source match {
-        case bs@BridgeStore(_) => jar.addRuntimeClass(bs.rtClass.getOrElse(sys.error("Run-time class should be set.")))
-        case _                 => {}
-      }
-    }
+    ChannelsInputFormat.configureSources(job, jar, mappers.keys.toList)
 
+    val inputChannels: List[((DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]), Int)] = mappers.toList.zipWithIndex
     val inputs: Map[Int, (InputConverter[_, _, _], Set[TaggedMapper[_, _, _]])] =
       inputChannels map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) } toMap
 

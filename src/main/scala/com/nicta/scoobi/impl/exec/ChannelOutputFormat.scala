@@ -24,6 +24,7 @@ import org.apache.hadoop.util.ReflectionUtils
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.io.DataSink
+import com.nicta.scoobi.impl._
 
 
 /** A class that simplifies writing output to different paths and with different types
