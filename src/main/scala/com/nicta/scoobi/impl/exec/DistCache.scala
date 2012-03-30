@@ -38,30 +38,35 @@ object DistCache {
   }
 
   /** Distribute an object to be available for tasks in the current job. */
-  def pushObject[T](conf: Configuration, obj: T, tag: String): Unit = {
+  def pushObject[T](conf: Configuration, obj: T, tag: String) {
     /* Serialize */
     val path = mkPath(conf, tag)
-    val dos = path.getFileSystem(Scoobi.conf).create(path)
-    xstream.toXML(obj, dos)
-    dos.close()
-
-    /* Add as distributed cache file. */
-    DistributedCache.addCacheFile(path.toUri, conf)
+    val dos = path.getFileSystem(conf).create(path)
+    try {
+      xstream.toXML(obj, dos)
+      /* Add as distributed cache file. */
+      DistributedCache.addCacheFile(path.toUri, conf)
+    } finally {
+      dos.close()
+    }
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
-  def pullObject[T : Manifest](conf: Configuration, tag: String): T = {
+  def pullObject[T](conf: Configuration, tag: String): Option[T] = {
     /* Get distributed cache file. */
     val path = mkPath(conf, tag)
     val cacheFiles = DistributedCache.getCacheFiles(conf)
-    val cacheFile = new Path(cacheFiles.filter(_.toString.compareTo(path.toString) == 0)(0).toString)
-
-    /* Deserialize */
-    val dis = cacheFile.getFileSystem(Scoobi.conf).open(cacheFile)
-    val obj = xstream.fromXML(dis).asInstanceOf[T]
-    dis.close()
-    obj
+    cacheFiles.find(_.toString == path.toString).map { uri =>
+      val cacheFile = new Path(uri.toString)
+      val dis = cacheFile.getFileSystem(conf).open(cacheFile)
+      try {
+        /* Deserialize */
+        xstream.fromXML(dis).asInstanceOf[T]
+      } finally {
+        dis.close()
+      }
+    }
   }
 }
 
