@@ -20,7 +20,7 @@ import _root_.com.nicta.scoobij.Extractor
 import runtime.AbstractFunction1
 
 private[nicta]
-class ExtractorAdaptor[T](private val extractor: Extractor[T]) extends AbstractFunction1[List[String], T] with scala.PartialFunction[List[String], T] {
+class ExtractorAdaptor[T](private val extractor: AnExtractor[T]) extends AbstractFunction1[List[String], T] with scala.PartialFunction[List[String], T] {
 
   override def apply(strings: List[String]): T = {
     extractor.apply(scala.collection.JavaConversions.asJavaIterable(strings))
@@ -29,4 +29,9 @@ class ExtractorAdaptor[T](private val extractor: Extractor[T]) extends AbstractF
   override def isDefinedAt(strings: List[String]): Boolean = {
     extractor.apply(scala.collection.JavaConversions.asJavaIterable(strings)) != null
   }
+}
+
+private[nicta]
+trait AnExtractor[T] {
+  def apply(strings: java.lang.Iterable[String]): T
 }

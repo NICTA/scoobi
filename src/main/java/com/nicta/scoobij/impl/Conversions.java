@@ -15,6 +15,7 @@
  */
 package com.nicta.scoobij.impl;
 
+import com.nicta.scoobi.impl.AnExtractor;
 import com.nicta.scoobij.Combiner;
 import com.nicta.scoobij.Extractor;
 import com.nicta.scoobij.Filterer;
@@ -44,7 +45,12 @@ public class Conversions {
 
 	public static <T> scala.PartialFunction<scala.collection.immutable.List<String>, T> toScala(
 			final Extractor<T> ex) {
-		return new ExtractorAdaptor<T>(ex);
+        AnExtractor<T> anExtractor = new AnExtractor<T>() {
+            public T apply(java.lang.Iterable<String> strings) {
+                return ex.apply(strings);
+            }
+        };
+		return new ExtractorAdaptor<T>(anExtractor);
 	}
 
 	public static <T> scala.collection.Seq<T> toScalaSeq(T[] v) {
