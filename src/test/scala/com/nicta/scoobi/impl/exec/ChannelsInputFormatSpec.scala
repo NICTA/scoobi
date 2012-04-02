@@ -20,9 +20,7 @@ class ChannelsInputFormatSpec extends Specification with Mockito {
     val job = new Job(new Configuration, "id")
     val jarBuilder = mock[JarBuilder]
     configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore))
-    val configuration = job.getConfiguration.toMap
-       // uncomment to read the failure messages more easily
-       // .filter { case (k, v) => k startsWith "scoobi" }
+    val configuration = job.getConfiguration.toMap.showAs(_.filter { case (k, v) => k startsWith "scoobi" }.mkString("=n"))
 
     "the input format class must be set" >> {
       job.getInputFormatClass.getSimpleName must_== "ChannelsInputFormat"
