@@ -10,6 +10,8 @@ import com.nicta.scoobi.impl.util.JarBuilder
 import org.specs2.mock.Mockito
 import plan.AST.Load
 import rtt.RuntimeClass
+import com.nicta.scoobi.impl.Configurations._
+
 
 class ChannelsInputFormatSpec extends Specification with Mockito {
 
@@ -19,8 +21,7 @@ class ChannelsInputFormatSpec extends Specification with Mockito {
   "Each input format can be configured as an input channel on a job's configuration" >> {
     val job = new Job(new Configuration, "id")
     val jarBuilder = mock[JarBuilder]
-    configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore))
-    val configuration = job.getConfiguration.toMap.showAs(_.filter { case (k, v) => k startsWith "scoobi" }.mkString("=n"))
+    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore)).toMap
 
     "the input format class must be set" >> {
       job.getInputFormatClass.getSimpleName must_== "ChannelsInputFormat"

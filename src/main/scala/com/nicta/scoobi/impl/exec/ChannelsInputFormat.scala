@@ -39,9 +39,9 @@ import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.io.DataSource
 import ChannelsInputFormat._
-import com.nicta.scoobi.impl._
+import com.nicta.scoobi.impl.Configurations._
+import com.nicta.scoobi.impl.util.JarBuilder
 import scalaz.Scalaz._
-import util.JarBuilder
 
 /** An input format that delegates to multiple input formats, one for each
  * input channel. */
@@ -81,18 +81,30 @@ object ChannelsInputFormat {
 
   private val INPUT_FORMAT_PROPERTY = "scoobi.input.formats"
 
+  /**
+   * configure the sources for multiple channels:
+   *
+   * - add the necessary classes to the jar builder
+   * - set the input format for each source
+   * - configure the input channel for each source
+   *
+   */
   def configureSources(job: Job, jar: JarBuilder, sources: List[DataSource[_,_,_]]) = {
-    configureChannelsInputFormat(job)
+    configureChannelsInputFormat(job) |>
+    configureSourcesChannels(jar, sources)
+  }
 
-    sources.zipWithIndex.foreach { case (source, channel) =>
-      configureSourceRuntimeClass(jar, source)
-      configureInputChannel(job, channel, source)
+  private def configureSourcesChannels(jar: JarBuilder, sources: List[DataSource[_,_,_]]) = (initial: Configuration) => {
+    sources.zipWithIndex.foldLeft(initial) { case (conf, (source, channel)) =>
+      conf |>
+      configureSourceRuntimeClass(jar, source) |>
+      configureInputChannel(channel, source)
     }
   }
 
   /** configure a new input channel on the job's configuration */
-  private def configureInputChannel(job: Job, channel: Int, source: DataSource[_,_,_]) {
-    job.getConfiguration |>
+  private def configureInputChannel(channel: Int, source: DataSource[_,_,_]) = (conf: Configuration) => {
+    conf |>
     configureSourceInputFormat(source, channel) |>
     configureSource(source, channel)
   }
@@ -102,11 +114,12 @@ object ChannelsInputFormat {
     job.getConfiguration
   }
 
-  private def configureSourceRuntimeClass(jar: JarBuilder, source: DataSource[_,_,_]) = {
+  private def configureSourceRuntimeClass(jar: JarBuilder, source: DataSource[_,_,_]) = (conf: Configuration) => {
     source match {
       case bs @ BridgeStore(_) => jar.addRuntimeClass(bs.rtClass.getOrElse(sys.error("Run-time class should be set.")))
       case _                   => ()
     }
+    conf
   }
   /**
    * Record as configuration properties the channel number to InputFormat mappings
@@ -127,10 +140,9 @@ object ChannelsInputFormat {
     val job = new Job(conf)
     source.inputConfigure(job)
     conf.set(ChannelPrefix.prefix(channel, CACHE_FILES), Option(job.getConfiguration.get(CACHE_FILES)).getOrElse(""))
-    (job.getConfiguration.toMap -- conf.toMap.keys) foreach { case (k, v) =>
-      conf.set(ChannelPrefix.prefix(channel, k), v)
+    conf.updateWith(job.getConfiguration) { case (k, v) =>
+      (ChannelPrefix.prefix(channel, k), v)
     }
-    conf
   }
 
   /**

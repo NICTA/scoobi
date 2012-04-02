@@ -24,7 +24,7 @@ import org.apache.hadoop.util.ReflectionUtils
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl._
+import com.nicta.scoobi.impl.Configurations._
 
 
 /** A class that simplifies writing output to different paths and with different types
@@ -103,8 +103,8 @@ object ChannelOutputFormat {
 
     val jobCopy = new Job(conf)
     sink.outputConfigure(jobCopy)
-    (jobCopy.getConfiguration.toMap -- conf.toMap.keys) foreach { case (k, v) =>
-      conf.set(otherProperty(channel, output) + k, v)
+    conf.updateWith(jobCopy.getConfiguration) { case (k, v) =>
+      (otherProperty(channel, output) + k, v)
     }
   }
 }
