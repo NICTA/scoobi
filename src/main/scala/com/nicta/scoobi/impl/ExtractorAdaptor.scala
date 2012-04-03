@@ -16,7 +16,6 @@ package com.nicta.scoobi.impl
  * limitations under the License.
  */
 
-import _root_.com.nicta.scoobij.Extractor
 import runtime.AbstractFunction1
 
 private[nicta]

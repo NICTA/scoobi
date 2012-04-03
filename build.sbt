@@ -39,12 +39,15 @@ libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.0-SNAPSHOT"
 )
 
+compileOrder := CompileOrder.ScalaThenJava
+
+scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")
+
+javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
+
 publishArtifact in packageDoc := false
 
 resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
                   "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
                   "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 
-scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")
-
-javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
