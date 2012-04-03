@@ -1,6 +1,7 @@
 package com.nicta.scoobi.impl
 
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.mapreduce.Job
 
 /**
  * This trait adds functionalities to Hadoop's Configuration object
@@ -38,10 +39,17 @@ trait Configurations {
       conf.overrideWith(conf.toMutableMap.updateWith(other.toMap)(update))
     }
     /**
+     * set all the keys defined by the partial function
+     * @return the modified configuration object
+     */
+    def updateWith(update: PartialFunction[(String, String), (String, String)]): Configuration = {
+      conf.overrideWith(conf.toMap.collect(update))
+    }
+    /**
      * add all the keys found in the other map to this configuration
      * @return the modified configuration object
      */
-    def overrideWith(map: scala.collection.mutable.Map[String, String]): Configuration = {
+    def overrideWith(map: scala.collection.Map[String, String]): Configuration = {
       map foreach { case (k, v) => conf.set(k, v) }
       conf
     }
@@ -52,6 +60,7 @@ trait Configurations {
    */
   def configuration(pairs: (String, String)*): Configuration = {
     val configuration = new Configuration
+    val job = new Job(configuration, "1")
     pairs.foreach { case (k, v) => configuration.set(k, v) }
     configuration
   }

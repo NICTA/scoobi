@@ -49,25 +49,23 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
 
-    getInputChannels(context).flatMap { case (channel, format) =>
-
-      /** Construct a Job object that simulates the configuration for a single InputFormat. */
-      val job = mkChannelJob(context, channel)
+    getInputFormats(context).flatMap { case (channel, format) =>
+      val conf = extractChannelConfiguration(context, channel)
 
       /** Wrap each of the splits for this InputFormat, tagged with the channel number. InputSplits
        * will be queried in the Mapper to determine the channel being processed. */
-      format.getSplits(job) map { (pathSplit: InputSplit) =>
-        new TaggedInputSplit(job.getConfiguration, channel, pathSplit,
+      format.getSplits(new Job(conf)).map { (pathSplit: InputSplit) =>
+        new TaggedInputSplit(conf, channel, pathSplit,
                              format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
       }
-
     }.toList
   }
 
   def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[K, V] = {
-    val taggedInputSplit: TaggedInputSplit = split.asInstanceOf[TaggedInputSplit]
-    val job = mkChannelJob(context, taggedInputSplit.channel)
-    new ChannelRecordReader(split, new TaskAttemptContext(job.getConfiguration, context.getTaskAttemptID))
+    val taggedInputSplit = split.asInstanceOf[TaggedInputSplit]
+    new ChannelRecordReader(taggedInputSplit,
+                            new TaskAttemptContext(extractChannelConfiguration(context, taggedInputSplit.channel),
+                                                   context.getTaskAttemptID))
   }
 
 }
@@ -146,19 +144,17 @@ object ChannelsInputFormat {
   }
 
   /**
-   * Configure a new job for a given channel by extracting the channel keys from the current context
+   * Configure a new configuration object for a given channel by extracting the channel keys from the current context
    *
-   * @return a new Job from an existing context (for the configuration) and a channel id
+   * @return a new Configuration from an existing context (for the configuration) and a channel id
    */
-  private def mkChannelJob(context: JobContext, channel: Int): Job = {
-    val job = new Job(context.getConfiguration)
+  private def extractChannelConfiguration(context: JobContext, channel: Int): Configuration = {
     val Prefix = ChannelPrefix.regex(channel)
-    context.getConfiguration.toMap collect { case (Prefix(k), v) => job.getConfiguration.set(k, v) }
-    job
+    context.getConfiguration.updateWith { case (Prefix(k), v) => (k, v) }
   }
 
-  /** Get a map of all the input channels. */
-  private def getInputChannels(context: JobContext): Map[Int, InputFormat[_,_]] = {
+  /** Get a map of all the input formats per channel id. */
+  private def getInputFormats(context: JobContext): Map[Int, InputFormat[_,_]] = {
     val conf = context.getConfiguration
     val Entry = """(.*);(.*)""".r
 
@@ -202,7 +198,7 @@ class ChannelRecordReader[K, V](split: InputSplit, context: TaskAttemptContext) 
 
 
 /** A wrapper around an InputSplit that is tagged with an input channel id. Is
-  * used with ChannelInputForamt. */
+  * used with ChannelInputFormat. */
 class TaggedInputSplit
     (private var conf: Configuration,
      var channel: Int,
