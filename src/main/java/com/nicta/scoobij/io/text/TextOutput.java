@@ -23,19 +23,20 @@ public class TextOutput {
 
 	// The return type of this should be used with Scoobi.Persist
 	public static <T> com.nicta.scoobi.DListPersister<T> toTextFile(
-			DList<T> dl, String path, WireFormatType<T> bundle) {
+			DList<T> dl, String path, boolean overwrite, WireFormatType<T> bundle) {
 
 		return com.nicta.scoobi.io.text.TextOutput.toTextFile(dl.getImpl(),
-				path, bundle.typeInfo());
+				path, overwrite, bundle.typeInfo());
 	}
 
 	public static <K, V> com.nicta.scoobi.DListPersister<scala.Tuple2<K, V>> toTextFile(
-			DTable<K, V> dt, String path, WireFormatType<K> bundleK,
+			DTable<K, V> dt, String path, boolean overwrite, WireFormatType<K> bundleK,
 			WireFormatType<V> bundleV) {
 
 		return com.nicta.scoobi.io.text.TextOutput.toTextFile(
 				dt.getImpl(),
 				path,
+				overwrite,
 				WireFormats.wireFormatPair(bundleK, bundleV).typeInfo());
 	}
 

@@ -331,6 +331,14 @@ trait ClassBuilder {
     case CByte    => "new Byte("      + valCode + ")"
     case _        =>                    valCode
   }
+
+  /** Generate a Java type string from a Class object. */
+  protected def classToJavaTypeString(c: Class[_]): String = {
+    if (c.isArray)
+      classToJavaTypeString(c.getComponentType) + "[]"
+    else
+      c.getName
+  }
 }
 
 object VarGenerator extends UniqueInt {

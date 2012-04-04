@@ -30,10 +30,8 @@ import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
-import com.nicta.scoobi.io.InputStore
+import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.AST
@@ -57,34 +55,32 @@ object AvroInput {
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]): DList[A] = {
     val sch = implicitly[AvroSchema[A]]
 
-    val loader = new Loader[A] {
-      def mkInputStore(node: AST.Load[A]) = new InputStore[AvroKey[sch.AvroType], NullWritable, A](node) {
-        private val inputPaths = paths.map(p => new Path(p))
+    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
+      private val inputPaths = paths.map(p => new Path(p))
 
-        val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
+      val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 
-        def inputCheck() = inputPaths foreach { p =>
-          if (Helper.pathExists(p)) {
-            logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-            logger.debug("Input schema: " + sch.schema)
-          } else {
-             throw new IOException("Input path " + p + " does not exist.")
-          }
+      def inputCheck() = inputPaths foreach { p =>
+        if (Helper.pathExists(p)) {
+          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+          logger.debug("Input schema: " + sch.schema)
+        } else {
+           throw new IOException("Input path " + p + " does not exist.")
         }
+      }
 
-        def inputConfigure(job: Job) = {
-          inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-          job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
-        }
+      def inputConfigure(job: Job) = {
+        inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+        job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
+      }
 
-        def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+      def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
 
-        val inputConverter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
-          def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
-        }
+      val inputConverter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
+        def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
       }
     }
 
-    new DList(Smart.Load(loader))
+    DList.fromSource(source)
   }
 }

@@ -33,10 +33,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit
 import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataStore
-import com.nicta.scoobi.io.InputStore
+import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.AST
@@ -59,7 +57,7 @@ object TextInput {
       def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
     }
 
-    new DList(Smart.Load(new TextLoader(paths, converter)))
+    DList.fromSource(new TextSource(paths, converter))
   }
 
 
@@ -84,7 +82,7 @@ object TextInput {
       }
     }
 
-    new DList(Smart.Load(new TextLoader(paths, converter)))
+    DList.fromSource(new TextSource(paths, converter))
   }
 
 
@@ -124,26 +122,32 @@ object TextInput {
       try { Some(s.toDouble) } catch { case _: NFE => None }
   }
 
+  /** Extract a Float from a String. */
+  object Float {
+    def unapply(s: String): Option[Float] =
+      try { Some(s.toFloat ) } catch { case _: NFE => None }
+  }
+
 
   /* Class that abstracts all the common functionality of reading from text files. */
-  class TextLoader[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A]) extends Loader[A] {
-    def mkInputStore(node: AST.Load[A]) = new InputStore[LongWritable, Text, A](node) {
-      private val inputPaths = paths.map(p => new Path(p))
+  class TextSource[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
+    extends DataSource[LongWritable, Text, A] {
 
-      val inputFormat = classOf[TextInputFormat]
+    private val inputPaths = paths.map(p => new Path(p))
 
-      def inputCheck() = inputPaths foreach { p =>
-        if (Helper.pathExists(p))
-          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-        else
-           throw new IOException("Input path " + p + " does not exist.")
-      }
+    val inputFormat = classOf[TextInputFormat]
 
-      def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-
-      def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
-
-      val inputConverter = converter
+    def inputCheck() = inputPaths foreach { p =>
+      if (Helper.pathExists(p))
+        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+      else
+         throw new IOException("Input path " + p + " does not exist.")
     }
+
+    def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+
+    def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+
+    val inputConverter = converter
   }
 }
