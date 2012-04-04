@@ -11,19 +11,18 @@ import plan.AST.Load
 import rtt.RuntimeClass
 import com.nicta.scoobi.impl.Configurations._
 import org.apache.hadoop.mapreduce.{JobID, JobContext, Job}
-import java.net.URI
-import org.apache.hadoop.fs.{Path, FileSystem}
 
 
 class ChannelsInputFormatSpec extends Specification with Mockito {
 
-  """
-    Several input formats can be grouped as one `ChannelsInputFormat` class.""".txt
+"""
+Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 
   "Each input format can be configured as an input channel on a job's configuration" >> {
     val job = new Job(new Configuration, "id")
     val jarBuilder = mock[JarBuilder]
-    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore)).toMap
+    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore))
+                          .toMap.showAs(_.toList.sorted.mkString("\n")).evaluate
 
     "the input format class must be set as 'ChannelsInputFormat' " >> {
       job.getInputFormatClass.getSimpleName must_== "ChannelsInputFormat"
@@ -36,7 +35,7 @@ class ChannelsInputFormatSpec extends Specification with Mockito {
                                   ("0;com.nicta.scoobi.io.ConstantStringInputFormat,"+
                                    "1;org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat"))
     }
-    "all the configuration values of a source must be prefixed with scoobi.input<channel id>" >> {
+    "all the configuration values of a source must be prefixed with scoobi.input 'channel id'" >> {
       configuration must haveKeys("scoobi.input0:mapred.constant.string",
                                   "scoobi.input1:mapred.input.dir")
     }

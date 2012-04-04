@@ -49,6 +49,10 @@ fork in Test := true
 
 javaOptions += "-Xmx2G"
 
+testOptions := Seq(Tests.Filter(s =>
+    s.endsWith("Spec") ||
+  	s.contains("index")))
+
 publishArtifact in packageDoc := false
 
 resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",

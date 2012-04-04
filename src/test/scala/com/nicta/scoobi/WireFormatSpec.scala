@@ -14,7 +14,7 @@ import data._
 @SuppressWarnings(Array("slow"))
 class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
 
-  "Basic types".p
+  "**Basic types**".p
 
   "A WireFormat instance is available for basic types" >> {
     serializationIsOkFor[Int]
@@ -45,7 +45,7 @@ class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
     serializationIsOkFor[Array[Int]]
   }
 
-  "Case classes".newbr
+  "**Case classes**".newbr
 
   "A WireFormat instance can be created, using the Serializable interface" >> {
     "for a case class with a Double, a String, an Int" >> {
