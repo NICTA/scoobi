@@ -21,11 +21,11 @@ import org.apache.hadoop.fs.FileStatus
 import org.apache.hadoop.io.SequenceFile
 import org.apache.hadoop.io.NullWritable
 
-import com.nicta.scoobi.io.Persister
+import com.nicta.scoobi.io.DataSource
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.func.FunctionInput
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
-import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 import com.nicta.scoobi.impl.exec.MaterializeStore
@@ -89,7 +89,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     new DObject[Iterable[A]] {
       def get: Iterable[A] = new Iterable[A] {
         def iterator = {
-          val fs = FileSystem.get(Scoobi.conf)
+          val fs = FileSystem.get(path.toUri, Scoobi.conf)
           val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
             new SequenceFile.Reader(fs, stat.getPath, Scoobi.conf)
           }
@@ -109,12 +109,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
         }
       }
 
-      def use: DListPersister[_] = {
-        val persister = new Persister[A] {
-          def mkOutputStore(node: AST.Node[A]) = MaterializeStore(node, id, path)
-        }
-        new DListPersister(self, persister)
-      }
+      def use: DListPersister[_] = new DListPersister(self, new MaterializeStore(id, path))
     }
   }
 
@@ -319,6 +314,10 @@ object DList {
     FunctionInput.fromFunction(vec.size)(ix => vec(ix))
   }
 
+  /** Creates a distributed list from a data source. */
+  def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A] =
+    new DList(Smart.Load(source))
+
   /** Concatenates all arguement distributed lists into a single distributed list. */
   def concat[A : Manifest : WireFormat](xss: List[DList[A]]): DList[A] = new DList(Smart.Flatten(xss.map(_.ast)))
 
@@ -340,13 +339,13 @@ object DList {
   def persist(outputs: DListPersister[_]*) = {
 
     /* Produce map of all unique outputs and their corresponding persisters. */
-    val rawOutMap: Map[Smart.DList[_], Set[Persister[_]]] = {
-      val emptyM: Map[Smart.DList[_], Set[Persister[_]]] = Map()
-      outputs.foldLeft(emptyM)((m,p) => m + ((p.dl.ast, m.getOrElse(p.dl.ast, Set()) + p.persister)))
+    val rawOutMap: Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {
+      val emptyM: Map[Smart.DList[_], Set[DataSink[_,_,_]]] = Map.empty
+      outputs.foldLeft(emptyM)((m, p) => m + ((p.dlist.ast, m.getOrElse(p.dlist.ast, Set.empty) + p.sink)))
     }
 
-    /* Optimise the plan associated with the outputs. */
-    val outMap : Map[Smart.DList[_], Set[Persister[_]]] = {
+    /* Optimise the plan associated with the outpus. */
+    val outMap : Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {
       val optOuts: List[Smart.DList[_]] = Smart.optimisePlan(rawOutMap.keys.toList)
       (rawOutMap.toList zip optOuts) map { case ((_, p), o) => (o, p) } toMap
     }

@@ -39,6 +39,19 @@ libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.0-SNAPSHOT"
 )
 
+shellPrompt <<= name(name => { state: State =>
+	object devnull extends ProcessLogger {
+		def info(s: => String) {}
+		def error(s: => String) { }
+		def buffer[T](f: => T): T = f
+	}
+	val current = """\*\s+((\w|\-)+)""".r
+	def gitBranches = ("git branch --no-color" lines_! devnull mkString)
+	val currentBranch = current findFirstMatchIn gitBranches map (_.group(1)) getOrElse "-"
+	if (currentBranch == "master") ">"
+	else                           "%s>" format currentBranch
+})
+
 compileOrder := CompileOrder.ScalaThenJava
 
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")

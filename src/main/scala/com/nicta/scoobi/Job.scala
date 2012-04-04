@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 
 import scala.collection.mutable.{MutableList => MList}
-import com.nicta.scoobi.io.Persister
+import com.nicta.scoobi.io.DataSink
 
 
 /** A job that persists distributed lists and computes distributed objects. */
@@ -37,4 +37,4 @@ final case class Job() {
 
 
 /** A class that specifies how to make a distributed list persistent. */
-class DListPersister[A](val dl: DList[A], val persister: Persister[A])
+case class DListPersister[A](dlist: DList[A], val sink: DataSink[_, _, A])

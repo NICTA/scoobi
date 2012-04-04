@@ -27,11 +27,9 @@ import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.io.OutputStore
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Persister
 import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.AST
 
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
@@ -40,38 +38,41 @@ object AvroOutput {
 
 
   /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
-  def toAvroFile[B : AvroSchema](dl: DList[B], path: String): DListPersister[B] = {
+  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false): DListPersister[B] = {
     val sch = implicitly[AvroSchema[B]]
 
     val converter = new OutputConverter[AvroKey[sch.AvroType], NullWritable, B] {
       def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
-    val persister = new Persister[B] {
-      def mkOutputStore(node: AST.Node[B]) = new OutputStore[AvroKey[sch.AvroType], NullWritable, B](node) {
-        protected val outputPath = new Path(path)
+    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
+      protected val outputPath = new Path(path)
 
-        val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
-        val outputKeyClass = classOf[AvroKey[sch.AvroType]]
-        val outputValueClass = classOf[NullWritable]
+      val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
+      val outputKeyClass = classOf[AvroKey[sch.AvroType]]
+      val outputValueClass = classOf[NullWritable]
 
-        def outputCheck() =
-          if (Helper.pathExists(outputPath)) {
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+      def outputCheck() =
+        if (Helper.pathExists(outputPath)) {
+          if (overwrite) {
+            logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
+            Helper.deletePath(outputPath)
           } else {
-            logger.info("Output path: " + outputPath.toUri.toASCIIString)
-            logger.debug("Output Schema: " + sch.schema)
+            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }
-
-        def outputConfigure(job: Job) = {
-          FileOutputFormat.setOutputPath(job, outputPath)
-          job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
+        } else {
+          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+          logger.debug("Output Schema: " + sch.schema)
         }
 
-        val outputConverter = converter
+      def outputConfigure(job: Job) = {
+        FileOutputFormat.setOutputPath(job, outputPath)
+        job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
+
+      val outputConverter = converter
     }
 
-    new DListPersister(dl, persister)
+    new DListPersister(dl, sink)
   }
 }

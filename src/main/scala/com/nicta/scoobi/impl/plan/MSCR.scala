@@ -15,8 +15,6 @@
   */
 package com.nicta.scoobi.impl.plan
 
-import com.nicta.scoobi.io.DataStore
-import com.nicta.scoobi.io.OutputStore
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.impl.exec.MapperLike
@@ -31,52 +29,24 @@ object MSCRGraph {
    */
   def apply(ci: Smart.ConvertInfo): MSCRGraph = {
     val mscrs = ci.mscrs.map{_.convert(ci)}.toSet
-
-    val outputStores = {
-      def toOutputStore(ds: DataStore with DataSink[_,_,_]): Option[OutputStore[_,_,_]] = {
-        if ( ds.isInstanceOf[OutputStore[_,_,_]] ) {
-          Some(ds.asInstanceOf[OutputStore[_,_,_]])
-        } else {
-          None
-        }
-      }
-
-      def outputsOf(oc: OutputChannel): Set[DataStore with DataSink[_,_,_]] = oc match {
-        case GbkOutputChannel(outputs,_,_,_) => outputs
-        case BypassOutputChannel(outputs,_)  => outputs
-        case FlattenOutputChannel(outputs, _) => outputs
-      }
-
-      mscrs.flatMap{mscr => mscr.outputChannels.flatMap{outputsOf(_).flatMap{toOutputStore(_).toList}}}
-    }
-
-    new MSCRGraph(outputStores, mscrs)
+    val outputs = ci.outMap.map { case (dcomp, sinks) => OutputStore(ci.astMap(dcomp), sinks) } .toList
+    new MSCRGraph(outputs, mscrs)
   }
 }
 
-class MSCRGraph(val outputStores: Set[_ <: OutputStore[_,_,_]], val mscrs: Set[MSCR])
+case class OutputStore(node: AST.Node[_], sinks: Set[_ <: DataSink[_,_,_]])
+case class MSCRGraph(outputs: List[OutputStore], mscrs: Set[MSCR])
 
 
 /** A Map-Shuffle-Combiner-Reducer. Defined by a set of input and output
   * channels. */
-case class MSCR
-    (val inputChannels: Set[InputChannel],
-     val outputChannels: Set[OutputChannel]) {
+case class MSCR(inputChannels: Set[InputChannel], outputChannels: Set[OutputChannel]) {
 
   /** The nodes that are inputs to this MSCR. */
-  val inputNodes: Set[AST.Node[_]] = inputChannels map {
-    case BypassInputChannel(store, _) => store.node
-    case MapperInputChannel(store, _) => store.node
-    case StraightInputChannel(store, _) => store.node
-  }
+  val inputNodes: Set[AST.Node[_]] = inputChannels.map(_.inputNode)
 
   /** The nodes that are outputs to this MSCR. */
-  val outputNodes: Set[AST.Node[_]] = outputChannels flatMap {
-    case BypassOutputChannel(outputs, _)    => outputs.map(_.node)
-    case GbkOutputChannel(outputs, _, _, _) => outputs.map(_.node)
-    case FlattenOutputChannel(outputs, _)   => outputs.map(_.node)
-  }
-
+  val outputNodes: Set[AST.Node[_]] = outputChannels.map(_.outputNode)
 }
 
 
@@ -96,43 +66,56 @@ object MSCR {
 
 
 /** ADT for MSCR input channels. */
-sealed abstract class InputChannel
+sealed abstract class InputChannel {
+  def inputNode: AST.Node[_]
+}
 
-case class BypassInputChannel[I <: DataStore with DataSource[_,_,_]]
-    (val input: I,
-     origin: AST.Node[_] with KVLike[_,_])
-  extends InputChannel
+case class BypassInputChannel(source: DataSource[_,_,_], origin: AST.Node[_] with KVLike[_,_]) extends InputChannel {
+  def inputNode: AST.Node[_] = origin
+}
 
-case class MapperInputChannel[I <: DataStore with DataSource[_,_,_]]
-    (val input: I,
-     val mappers: Set[AST.Node[_] with MapperLike[_,_,_]])
-  extends InputChannel
+case class StraightInputChannel(source: DataSource[_,_,_], origin: AST.Node[_]) extends InputChannel {
+  def inputNode: AST.Node[_] = origin
+}
 
-case class StraightInputChannel[I <: DataStore with DataSource[_,_,_]]
-    (val input: I,
-     origin: AST.Node[_])
-  extends InputChannel
+abstract case class MapperInputChannel(source: DataSource[_,_,_], mappers: Set[AST.Node[_] with MapperLike[_,_,_]]) extends InputChannel
 
 
 /** ADT for MSCR output channels. */
-sealed abstract class OutputChannel
+sealed abstract class OutputChannel {
+  def outputNode: AST.Node[_]
+}
 
-case class BypassOutputChannel[O <: DataStore with DataSink[_,_,_]]
-    (val outputs: Set[O],
-     val origin: AST.Node[_] with MapperLike[_,_,_] with ReducerLike[_,_,_])
-  extends OutputChannel
+case class BypassOutputChannel
+    (outputs: Set[_ <: DataSink[_,_,_]],
+     origin: AST.Node[_] with MapperLike[_,_,_] with ReducerLike[_,_,_])
+  extends OutputChannel {
 
-case class FlattenOutputChannel[O <: DataStore with DataSink[_,_,_]]
-    (val outputs: Set[O],
-     val flatten: AST.Flatten[_])
-  extends OutputChannel
+  def outputNode: AST.Node[_] = origin
+}
 
-case class GbkOutputChannel[O <: DataStore with DataSink[_,_,_]]
-    (val outputs: Set[O],
+case class FlattenOutputChannel
+    (outputs: Set[_ <: DataSink[_,_,_]],
+     flatten: AST.Flatten[_])
+  extends OutputChannel {
+
+  def outputNode: AST.Node[_] = flatten
+}
+
+case class GbkOutputChannel
+    (val outputs: Set[_ <: DataSink[_,_,_]],
      val flatten: Option[AST.Flatten[_]],
      val groupByKey: AST.GroupByKey[_,_],
      val crPipe: CRPipe)
-  extends OutputChannel
+  extends OutputChannel {
+
+  def outputNode: AST.Node[_] = crPipe match {
+    case Empty                 => groupByKey
+    case JustCombiner(c)       => c
+    case JustReducer(r)        => r
+    case CombinerReducer(_, r) => r
+  }
+}
 
 
 /** ADT for the possible combiner-reducer pipeline combinations. */

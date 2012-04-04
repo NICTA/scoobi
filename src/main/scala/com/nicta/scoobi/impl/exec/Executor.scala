@@ -48,42 +48,42 @@ object Executor {
   def executePlan(mscrGraph: MSCRGraph): Unit = {
 
     val mscrs   = mscrGraph.mscrs
-    val outputs = mscrGraph.outputStores
+    val outputs = mscrGraph.outputs
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {
-      val s = FileSystem.get(Scoobi.conf).globStatus(p)
+      val s = FileSystem.get(p.toUri, Scoobi.conf).globStatus(p)
       if (s == null)          false
       else if (s.length == 0) false
       else                    true
     }
 
     /* Check all input sources. */
-    mscrs flatMap { _.inputChannels } flatMap {
-      case BypassInputChannel(input, _)   => List(input)
-      case MapperInputChannel(input, _)   => List(input)
-      case StraightInputChannel(input, _) => List(input)
+    mscrs flatMap { _.inputChannels } map {
+      case BypassInputChannel(source, _)   => source
+      case MapperInputChannel(source, _)   => source
+      case StraightInputChannel(source, _) => source
     } filter {
-      case BridgeStore(_) => false
-      case _              => true
+      case BridgeStore() => false
+      case _             => true
     } foreach { _.inputCheck() }
 
 
     /* Check all output targets. */
-    outputs foreach { _.outputCheck() }
+    outputs.flatMap(_.sinks.toList) foreach { _.outputCheck() }
 
     /* Initialize compute table with all input (Load) nodes. */
     val computeTable: MSet[AST.Node[_]] = MSet.empty
-    AST.eachNode(outputs.map(_.node)) {
+    AST.eachNode(outputs.map(_.node).toSet) {
       case n@AST.Load() => computeTable += n
       case _            => Unit
     }
 
     /* Initialize reference counts of all intermediate data (i.e. BridgeStores). */
     val bridges: List[BridgeStore[_]] = mscrs.toList flatMap (_.inputChannels) flatMap {
-      case BypassInputChannel(bs@BridgeStore(_), _) => List(bs)
-      case MapperInputChannel(bs@BridgeStore(_), _) => List(bs)
-      case _                                        => Nil
+      case BypassInputChannel(bs@BridgeStore(), _) => List(bs)
+      case MapperInputChannel(bs@BridgeStore(), _) => List(bs)
+      case _                                       => Nil
     }
 
     val refcnts: Map[BridgeStore[_], Int] =
@@ -136,9 +136,9 @@ object Executor {
       }
 
       ic match {
-        case BypassInputChannel(bs@BridgeStore(_), _) => updateRefcnt(bs)
-        case MapperInputChannel(bs@BridgeStore(_), _) => updateRefcnt(bs)
-        case _                                        => Unit
+        case BypassInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
+        case MapperInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
+        case _                                       => Unit
       }
     }
 

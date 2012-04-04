@@ -25,12 +25,9 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.InputStore
+import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Loader
 import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.AST
 
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */
@@ -55,7 +52,7 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: Writable) = convK.fromWritable(k)
     }
 
-    new DList(Smart.Load(new SeqLoader[convK.SeqType, Writable, K](paths, converter)))
+    DList.fromSource(new SeqSource[convK.SeqType, Writable, K](paths, converter))
   }
 
 
@@ -76,7 +73,7 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: Writable, v: convV.SeqType) = convV.fromWritable(v)
     }
 
-    new DList(Smart.Load(new SeqLoader[Writable, convV.SeqType, V](paths, converter)))
+    DList.fromSource(new SeqSource[Writable, convV.SeqType, V](paths, converter))
   }
 
 
@@ -99,7 +96,7 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
     }
 
-    new DList(Smart.Load(new SeqLoader[convK.SeqType, convV.SeqType, (K, V)](paths, converter)))
+    DList.fromSource(new SeqSource[convK.SeqType, convV.SeqType, (K, V)](paths, converter))
   }
 
 
@@ -119,29 +116,29 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
     }
 
-    new DList(Smart.Load(new SeqLoader[K, V, (K, V)](paths, converter)))
+    DList.fromSource(new SeqSource[K, V, (K, V)](paths, converter))
   }
 
 
   /* Class that abstracts all the common functionality of reading from sequence files. */
-  private class SeqLoader[K, V, A : Manifest : WireFormat](paths: List[String], converter: InputConverter[K, V, A]) extends Loader[A] {
-    def mkInputStore(node: AST.Load[A]) = new InputStore[K, V, A](node) {
-      private val inputPaths = paths.map(p => new Path(p))
+  private class SeqSource[K, V, A : Manifest : WireFormat](paths: List[String], converter: InputConverter[K, V, A])
+    extends DataSource[K, V, A] {
 
-      val inputFormat = classOf[SequenceFileInputFormat[K, V]]
+    private val inputPaths = paths.map(p => new Path(p))
 
-      def inputCheck() = inputPaths foreach { p =>
-        if (Helper.pathExists(p))
-          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-        else
-           throw new IOException("Input path " + p + " does not exist.")
-      }
+    val inputFormat = classOf[SequenceFileInputFormat[K, V]]
 
-      def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-
-      def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
-
-      val inputConverter = converter
+    def inputCheck() = inputPaths foreach { p =>
+      if (Helper.pathExists(p))
+        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+      else
+         throw new IOException("Input path " + p + " does not exist.")
     }
+
+    def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+
+    def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+
+    val inputConverter = converter
   }
 }

@@ -21,10 +21,8 @@ import com.nicta.scoobi.DoFn
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.io.Loader
-import com.nicta.scoobi.io.Persister
-import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.DataSource
+import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.impl.exec.BridgeStore
 import com.nicta.scoobi.impl.exec.TaggedIdentityMapper
 import com.nicta.scoobi.impl.util.UniqueInt
@@ -127,7 +125,7 @@ object Smart {
       n
     }
 
-    def dataSource(ci: ConvertInfo): DataStore with DataSource[_,_,_] = ci.getBridgeStore(this)
+    def dataSource(ci: ConvertInfo): DataSource[_,_,_] = ci.getBridgeStore(this)
 
     final def convert(ci: ConvertInfo): AST.Node[A]  = {
       val maybeN: Option[AST.Node[_]] = ci.astMap.get(this)
@@ -161,9 +159,9 @@ object Smart {
   }
 
 
-  /** The Load node type specifies the materialization of a DList. A Loader object specifies how
-    * the materialization is performed. */
-  case class Load[A : Manifest : WireFormat](loader: Loader[A]) extends DList[A] {
+  /** The Load node type specifies the creation of a DList from some source other than another DList.
+    * A DataSource object specifies how the loading is performed. */
+  case class Load[A : Manifest : WireFormat](source: DataSource[_, _, A]) extends DList[A] {
 
     override val toString = "Load" + id
 
@@ -189,8 +187,7 @@ object Smart {
                     def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
 
-    override def dataSource(ci: ConvertInfo): DataStore with DataSource[_,_,_] =
-      loader.mkInputStore(ci.getASTNode(this).asInstanceOf[AST.Load[A]])
+    override def dataSource(ci: ConvertInfo): DataSource[_,_,_] = source
   }
 
 
@@ -694,7 +691,7 @@ object Smart {
    * functional but aren't.
    *
    */
-  class ConvertInfo(val outMap: Map[Smart.DList[_], Set[Persister[_]]],
+  class ConvertInfo(val outMap: Map[Smart.DList[_], Set[DataSink[_,_,_]]],
                     val mscrs: Iterable[Intermediate.MSCR],
                     val g: DGraph,
                     val astMap: MMap[Smart.DList[_], AST.Node[_]],
@@ -737,7 +734,7 @@ object Smart {
       bridgeStoreMap.get(n) match {
         case Some(bs) => bs
         case None     => {
-          val newBS: BridgeStore[_] = BridgeStore(n)
+          val newBS: BridgeStore[_] = BridgeStore()
           bridgeStoreMap += ((n, newBS))
           newBS
         }
@@ -748,7 +745,7 @@ object Smart {
   }
 
   object ConvertInfo {
-    def apply(outMap: Map[Smart.DList[_], Set[Persister[_]]],
+    def apply(outMap: Map[Smart.DList[_], Set[DataSink[_,_,_]]],
               mscrs: Iterable[Intermediate.MSCR],
               g: DGraph): ConvertInfo = {
       new ConvertInfo(outMap, mscrs, g, MMap(), MMap())
