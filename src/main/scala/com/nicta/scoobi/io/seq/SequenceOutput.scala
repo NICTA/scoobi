@@ -26,15 +26,9 @@ import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.DListPersister
-<<<<<<< HEAD
-import com.nicta.scoobi.io.OutputStore
-=======
-import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSink
->>>>>>> master
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.AST
 
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
