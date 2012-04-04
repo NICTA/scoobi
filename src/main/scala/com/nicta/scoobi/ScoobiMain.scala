@@ -10,7 +10,7 @@ object ScoobiMain extends ScoobiApp {
     o.getClass.getField("MODULE$").get(this)
   }
 
-  DistCache.pushObject(conf, "hello", "scoobi-ScoobiMain")
+  DistCache.pushObject(conf, module(this), "scoobi-ScoobiMain")
 
   val threshold = 2
   val list = DList(1, 2, 3, 4)

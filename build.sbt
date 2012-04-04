@@ -45,6 +45,10 @@ scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")
 
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 
+fork in Test := true
+
+javaOptions += "-Xmx2G"
+
 publishArtifact in packageDoc := false
 
 resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
