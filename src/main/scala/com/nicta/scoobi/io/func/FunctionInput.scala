@@ -93,8 +93,6 @@ object FunctionInput {
       val n = context.getConfiguration.getInt(LengthProperty, 0)
       val id = context.getConfiguration.getInt(IdProperty, 0)
 
-      DistCache.pullObject(context.getConfiguration, "scoobi-ScoobiMain").getOrElse(sys.error("can't find ScoobiMain"))
-
       val f = DistCache.pullObject[Int => A](context.getConfiguration, functionProperty(id)).getOrElse((i:Int) => sys.error("no function found in the distributed cache for: "+functionProperty(id)))
 
       val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
