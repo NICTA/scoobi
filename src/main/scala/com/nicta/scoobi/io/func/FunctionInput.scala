@@ -92,7 +92,8 @@ object FunctionInput {
       val conf = context.getConfiguration
       val n = context.getConfiguration.getInt(LengthProperty, 0)
       val id = context.getConfiguration.getInt(IdProperty, 0)
-      val f = DistCache.pullObject(context.getConfiguration, functionProperty(id)).asInstanceOf[Int => A]
+
+      val f = DistCache.pullObject[Int => A](context.getConfiguration, functionProperty(id)).getOrElse((i:Int) => sys.error("no function found in the distributed cache for: "+functionProperty(id)))
 
       val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
       val splitSize = n / numSplitsHint

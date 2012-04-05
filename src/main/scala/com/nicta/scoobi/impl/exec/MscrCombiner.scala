@@ -25,11 +25,12 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 /** Hadoop Combiner class for an MSCR. */
 class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
 
-  private var combiners: Map[Int, TaggedCombiner[_]] = _
+  private type Combiners = Map[Int, TaggedCombiner[_]]
+  private var combiners: Combiners = _
   private var tv: TaggedValue = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) = {
-    combiners = DistCache.pullObject(context.getConfiguration, "scoobi.combiners").asInstanceOf[Map[Int, TaggedCombiner[_]]]
+    combiners = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 

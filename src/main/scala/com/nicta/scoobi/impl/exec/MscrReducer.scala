@@ -27,12 +27,12 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer[K2, V2, B, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3, V3] {
 
-  private var outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])] = _
+  private type Reducers = Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])]
+  private var outputs: Reducers = _
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {
-    outputs = DistCache.pullObject(context.getConfiguration, "scoobi.reducers")
-                       .asInstanceOf[Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])]]
+    outputs = DistCache.pullObject[Reducers](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
     channelOutput = new ChannelOutputFormat(context)
   }
 

@@ -54,7 +54,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * zero or more output elements. The resulting output elements from the many "chunks" form
     * a new distributed list. */
   def parallelDo[B] (dofn: DoFn[A, B])(implicit mB:  Manifest[B], wtB: WireFormat[B]): DList[B] =
-    new DList(Smart.ParallelDo(ast, dofn, false, false))
+    new DList(Smart.ParallelDo(ast, dofn))
 
   /** Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A] = new DList(Smart.Flatten(List(ast) ::: ins.map(_.ast).toList))

@@ -34,36 +34,22 @@ object WireFormat extends WireFormatImplicits
 
 /** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits {
+
   def mkObjectWireFormat[T](x: T) = new WireFormat[T] {
-
     override def toWire(obj: T, out: DataOutput) {}
-
-    override def fromWire(in: DataInput): T = {
-      x
-    }
+    override def fromWire(in: DataInput): T = x
   }
 
   def mkCaseWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new WireFormat[T] {
-
     override def toWire(obj: T, out: DataOutput) {}
-
-    override def fromWire(in: DataInput): T = {
-      apply()
-    }
+    override def fromWire(in: DataInput): T = apply()
   }
 
   def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new WireFormat[T] {
-
     override def toWire(obj: T, out: DataOutput) {
-      val v: A1 = unapply(obj).get
-
-      implicitly[WireFormat[A1]].toWire(v, out)
+      implicitly[WireFormat[A1]].toWire(unapply(obj).get, out)
     }
-
-    override def fromWire(in: DataInput): T = {
-      val a1: A1 = implicitly[WireFormat[A1]].fromWire(in)
-      apply(a1)
-    }
+    override def fromWire(in: DataInput): T = apply(implicitly[WireFormat[A1]].fromWire(in))
   }
 
   def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]): WireFormat[T] = new WireFormat[T] {
@@ -458,7 +444,7 @@ trait WireFormatImplicits {
    */
   @slow("You are using inefficient serialization, try creating an explicit WireFormat instance instead", "since 0.1")
   implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
-    def toWire(x: T, out: DataOutput) = {
+    def toWire(x: T, out: DataOutput) {
       val bytesOut = new ByteArrayOutputStream
       val bOut =  new ObjectOutputStream(bytesOut)
       bOut.writeObject(x)
@@ -479,11 +465,11 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Hadoop Writable types.
    */
   implicit def WritableFmt[T <: Writable : Manifest] = new WireFormat[T] {
-    def toWire(x: T, out: DataOutput) = x.write(out)
+    def toWire(x: T, out: DataOutput) { x.write(out) }
     def fromWire(in: DataInput): T = {
       val x: T = implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T]
       x.readFields(in)
