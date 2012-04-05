@@ -454,7 +454,7 @@ trait WireFormatImplicits {
       }
   }
 
-  /*
+  /**
    * Catch-all
    */
   @deprecated("Not actually deprecated, but you are using inefficient serialization, try use explicit stuff instead", "since 0.1")
@@ -493,7 +493,7 @@ trait WireFormatImplicits {
   }
 
 
-  /*
+  /**
    * "Primitive" types.
    */
   implicit def UnitFmt = new WireFormat[Unit] {
@@ -702,8 +702,8 @@ trait WireFormatImplicits {
       }
   }
 
-  /*
-   * Travesable structures
+  /**
+   * Traversable structures
    */
   implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]) = {
     val builder: Builder[T, CC[T]] = bf()
@@ -724,7 +724,7 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Map structures
    */
   implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]) = {
@@ -765,7 +765,7 @@ trait WireFormatImplicits {
     }
   }
 
-  /*
+  /**
    * Option type.
    */
   implicit def OptionFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Option[T]] {
@@ -816,10 +816,9 @@ trait WireFormatImplicits {
     def fromWire(in: DataInput): Right[T1, T2] = Right[T1, T2](wt1.fromWire(in))
   }
 
-  /*
+  /**
    * Java's Date
    */
-
   implicit def DateFmt = new WireFormat[java.util.Date] {
     def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
     def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())

@@ -35,7 +35,7 @@ object AST {
   object Id extends UniqueInt
   object RollingInt extends UniqueInt
 
-  /** Intermediate representation - closer aligned to actual MSCR contetns. */
+  /** Intermediate representation - closer aligned to actual MSCR contents. */
   sealed abstract class Node[A : Manifest : WireFormat] {
     val id = Id.get
 
@@ -173,7 +173,7 @@ object AST {
        dofn: DoFn[(K, V), B])
     extends Node[B] with ReducerLike[K, V, B] {
 
-    /* It is expected that this Reducer is preceeded by a Combiner. */
+    /* It is expected that this Reducer is preceded by a Combiner. */
     def mkTaggedReducer(tag: Int) = in match {
       case c@Combiner(_, _) => c.mkTaggedReducerWithCombiner(tag, dofn)
       case _                => sys.error("Reducer must be preceeded by Combiner")

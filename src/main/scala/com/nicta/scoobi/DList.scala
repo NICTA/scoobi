@@ -37,7 +37,17 @@ import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 
-/** A list that is distributed across multiple machines. */
+/**
+ * A list that is distributed across multiple machines.
+ *
+ * It supports a few Traversable-like methods:
+ *
+ * - parallelDo: a 'map' operation transforming elements of the list in parallel
+ * - ++: to concatenate 2 DLists
+ * - groupByKey: to group a list of (key, value) elements by key, so as to get (key, values)
+ * - combine: a parallel 'reduce' operation
+ * - materialize: transforms a distributed list into a non-distributed list
+ */
 class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =>
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -246,12 +256,12 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Derrived functionality (reduction operations)
+  // Derived functionality (reduction operations)
   // TODO - should eventually return DObjects, not DLists.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /** Reduce the elemets of this distributed list using the specified associative binary operator. The
-    * order in which the elements are reduced is unspecified and may be nondeterministic. */
+  /** Reduce the elements of this distributed list using the specified associative binary operator. The
+    * order in which the elements are reduced is unspecified and may be non-deterministic. */
   def reduce(op: (A, A) => A): DList[A] = {
     /* First, perform in-mapper combining. */
     val imc: DList[A] = self.parallelDo(new DoFn[A, A] {
