@@ -16,11 +16,8 @@
 package com.nicta.scoobi.io.seq
 
 import java.io.IOException
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
@@ -31,8 +28,6 @@ import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.AST
 
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */

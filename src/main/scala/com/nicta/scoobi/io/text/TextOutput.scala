@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.io.text
 
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
@@ -29,7 +28,6 @@ import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.AST
 
 
 /** Smart functions for persisting distributed lists by storing them as text files. */

@@ -211,7 +211,6 @@ object AST {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, Iterable[V])](tag) {
       def reduce(key: K, values: Iterable[V], emitter: Emitter[(K, Iterable[V])]) = {
-        import scala.collection.immutable.VectorBuilder
         val b = new scala.collection.immutable.VectorBuilder[V]
         values foreach { b += _ }
         emitter.emit((key, b.result().toIterable))

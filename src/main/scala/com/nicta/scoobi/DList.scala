@@ -15,8 +15,6 @@
   */
 package com.nicta.scoobi
 
-import scala.collection.mutable.{Map => MMap}
-import scala.collection.mutable.{MutableList => MList}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
@@ -28,12 +26,10 @@ import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.func.FunctionInput
 import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
-import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 import com.nicta.scoobi.impl.exec.MaterializeStore
 import com.nicta.scoobi.impl.exec.MaterializeId
-import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 
 

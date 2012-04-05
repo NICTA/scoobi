@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
@@ -23,14 +22,11 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
-import com.nicta.scoobi.impl.rtt.RuntimeClass
 
 
 /** A MaterializeStore is a DataSink for eventual consumption by a Scala program. It is used

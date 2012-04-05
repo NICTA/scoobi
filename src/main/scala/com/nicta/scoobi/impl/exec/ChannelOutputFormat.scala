@@ -15,19 +15,16 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
 import org.apache.hadoop.mapreduce.TaskAttemptContext
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.util.ReflectionUtils
-import scala.util.matching.Regex
-import scala.collection.JavaConversions._
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.io.DataSink
+import com.nicta.scoobi.impl.Configurations._
 
 
 /** A class that simplifies writing output to different paths and with different types

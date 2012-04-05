@@ -16,7 +16,6 @@
 package com.nicta.scoobi.impl.util
 
 import scala.collection.JavaConversions._
-import scala.collection.Traversable._
 import scala.collection.mutable.{Set => MSet}
 import Option.{apply => ?}
 
@@ -26,12 +25,9 @@ import java.util.jar.JarEntry
 
 import java.io.InputStream
 import java.io.FileInputStream
-import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 
 import java.io.FileOutputStream
-import java.io.DataOutputStream
-import java.io.ByteArrayOutputStream
 
 import java.net.URLDecoder
 

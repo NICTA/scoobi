@@ -15,11 +15,9 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.mapreduce.{Reducer => HReducer, _}
+import org.apache.hadoop.mapreduce.{Reducer => HReducer}
 import scala.collection.JavaConversions._
 
-import com.nicta.scoobi.impl.rtt.ScoobiWritable
-import com.nicta.scoobi.impl.rtt.Tagged
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 
