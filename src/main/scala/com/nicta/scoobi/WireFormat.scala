@@ -21,6 +21,7 @@ import annotation.implicitNotFound
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.mutable.ArrayBuilder
+import impl.slow
 
 
 
@@ -457,7 +458,7 @@ trait WireFormatImplicits {
   /**
    * Catch-all
    */
-  @deprecated("Not actually deprecated, but you are using inefficient serialization, try use explicit stuff instead", "since 0.1")
+  @slow("You are using inefficient serialization, try creating an explicit WireFormat instance instead", "since 0.1")
   implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) = {
       val bytesOut = new ByteArrayOutputStream
