@@ -1,6 +1,7 @@
 package com.nicta.scoobi
 
 import com.nicta.scoobi.Scoobi._
+import org.apache.hadoop.conf.Configuration
 
 trait ScoobiApp extends DelayedInit {
 
@@ -8,12 +9,16 @@ trait ScoobiApp extends DelayedInit {
 
   protected var args: Array[String] = _
 
+  protected implicit val configuration: ScoobiConfiguration = ScoobiConfiguration()
+
   override def delayedInit(body: => Unit) {
      initCode = (() => body)
   }
 
-  def main(arguments: Array[String]) = withHadoopArgs(arguments) { remainingArgs =>
-    args = remainingArgs
-    initCode()
+  def main(arguments: Array[String]) {
+    configuration.withHadoopArgs(arguments) { remainingArgs =>
+      args = remainingArgs
+      initCode()
+    }
   }
 }

@@ -29,19 +29,9 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   type Job = com.nicta.scoobi.Job
   val Job = com.nicta.scoobi.Job
   type ScoobiApp = com.nicta.scoobi.ScoobiApp
-  val Conf = com.nicta.scoobi.Conf
-
-
-  /* Conf functions */
-  def getWorkingDirectory = Conf.getWorkingDirectory _
-  def conf = Conf.conf
-  def jobId = Conf.jobId
-  def getUserJars = Conf.getUserJars
-  def withHadoopArgs = Conf.withHadoopArgs _
-
 
   /* Persisting */
-  def persist = DList.persist _
+  def persist(implicit configuration: ScoobiConfiguration) = DList.persist _
 
 
   /* Text file I/O */

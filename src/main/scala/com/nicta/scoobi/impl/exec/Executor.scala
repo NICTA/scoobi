@@ -20,13 +20,13 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import scala.collection.mutable.{Set => MSet, Map => MMap}
 
-import com.nicta.scoobi.Scoobi
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.plan.MapperInputChannel
 import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.MSCRGraph
+import com.nicta.scoobi.{ScoobiConfiguration, Scoobi}
 
 
 /** Object for executing a Scoobi "plan". */
@@ -45,14 +45,14 @@ object Executor {
 
   /** For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
     * be multiple outputs, only visit each MSCR once. */
-  def executePlan(mscrGraph: MSCRGraph): Unit = {
+  def executePlan(mscrGraph: MSCRGraph)(implicit configuration: ScoobiConfiguration): Unit = {
 
     val mscrs   = mscrGraph.mscrs
     val outputs = mscrGraph.outputs
 
     /* Check that all output dirs don't already exist. */
     def pathExists(p: Path) = {
-      val s = FileSystem.get(p.toUri, Scoobi.conf).globStatus(p)
+      val s = FileSystem.get(p.toUri, configuration).globStatus(p)
       if (s == null)          false
       else if (s.length == 0) false
       else                    true
@@ -91,7 +91,7 @@ object Executor {
 
 
     /* Total number of Scoobi "tasks" is the number of MSCRs, i.e. number of MR jobs. */
-    logger.info("Running job: " + Scoobi.jobId)
+    logger.info("Running job: " + configuration.jobId)
     logger.info("Number of steps: " + mscrs.size)
 
 
@@ -107,7 +107,8 @@ object Executor {
 
 
   /** Execute an MSCR. */
-  private def executeMSCR(mscrs: Set[MSCR], st: ExecState, mscr: MSCR, nextStep: Int): Int = {
+  private def executeMSCR(mscrs: Set[MSCR], st: ExecState, mscr: MSCR, nextStep: Int)
+                         (implicit configuration: ScoobiConfiguration): Int = {
 
     /* Make sure all inputs have been computed - recurse into executeMSCR. */
     var step = nextStep
@@ -119,7 +120,7 @@ object Executor {
 
     /* Make a Hadoop job and run it. */
     logger.info("Running step: " + step + " of " + mscrs.size)
-    MapReduceJob(step, mscr).run()
+    MapReduceJob(step, mscr).run(configuration)
 
 
     /* Update compute table - all MSCR output nodes have now been produced. */

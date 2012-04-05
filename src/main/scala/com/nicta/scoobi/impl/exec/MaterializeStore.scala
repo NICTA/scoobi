@@ -42,9 +42,9 @@ final case class MaterializeStore[A : Manifest : WireFormat](id: Int, path: Path
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck() = {}
-  def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, path)
+  def outputCheck() {}
+  def outputConfigure(job: Job) {
+    FileOutputFormat.setOutputPath(job, path)
+  }
   val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 }
-
-object MaterializeId extends UniqueInt

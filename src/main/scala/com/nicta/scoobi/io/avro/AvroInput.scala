@@ -29,6 +29,8 @@ import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Helper
+import org.apache.hadoop.conf.Configuration
+import com.nicta.scoobi.impl.Configured
 
 
 /** Smart functions for materializing distributed lists by loading Avro files. */
@@ -49,9 +51,9 @@ object AvroInput {
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]): DList[A] = {
     val sch = implicitly[AvroSchema[A]]
 
-    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
-      private val inputPaths = paths.map(p => new Path(p))
+    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] with Configured {
 
+      private val inputPaths = paths.map(p => new Path(p))
       val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 
       def inputCheck() = inputPaths foreach { p =>
@@ -64,6 +66,7 @@ object AvroInput {
       }
 
       def inputConfigure(job: Job) = {
+        configure(job)
         inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
         job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
       }

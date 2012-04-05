@@ -15,6 +15,8 @@
  */
 package com.nicta.scoobij;
 
+import com.nicta.scoobi.ScoobiConfiguration;
+import com.nicta.scoobi.ScoobiConfiguration$;
 import com.nicta.scoobij.impl.WithHadoopArgExtractor;
 
 public class Scoobi {
@@ -26,7 +28,7 @@ public class Scoobi {
 		}
 
 		com.nicta.scoobi.DList$.MODULE$
-				.persist(scala.collection.JavaConversions.asScalaBuffer(copy));
+				.persist(scala.collection.JavaConversions.asScalaBuffer(copy), ScoobiConfiguration$.MODULE$.apply(new String[]{}));
 	}
 
 	// Helper method that parsers the command line arguments, it filters out

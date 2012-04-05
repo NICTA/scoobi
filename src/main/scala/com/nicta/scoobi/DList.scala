@@ -15,6 +15,7 @@
   */
 package com.nicta.scoobi
 
+import impl.Configurations
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
@@ -29,9 +30,9 @@ import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
 import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.impl.exec.Executor
 import com.nicta.scoobi.impl.exec.MaterializeStore
-import com.nicta.scoobi.impl.exec.MaterializeId
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
-
+import ScoobiConfiguration._
+import Configurations._
 
 /**
  * A list that is distributed across multiple machines.
@@ -81,28 +82,28 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
 
   /** Turn a distributed list into a normal, non-distributed collection that can be accessed
     * by the client. */
-  def materialize: DObject[Iterable[A]] = {
+  def materialize(implicit configuration: ScoobiConfiguration): DObject[Iterable[A]] = {
 
-    val id = MaterializeId.get
-    val path = new Path(Scoobi.getWorkingDirectory(Scoobi.conf), "materialize/" + id)
+    val id = configuration.conf.increment("scoobi.materializeid")
+    val path = new Path(configuration.workingDirectory, "materialize/" + id)
 
     new DObject[Iterable[A]] {
       def get: Iterable[A] = new Iterable[A] {
         def iterator = {
-          val fs = FileSystem.get(path.toUri, Scoobi.conf)
+          val fs = FileSystem.get(path.toUri, configuration)
           val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-            new SequenceFile.Reader(fs, stat.getPath, Scoobi.conf)
+            new SequenceFile.Reader(fs, stat.getPath, configuration)
           }
 
           val iterators = readers.toIterable map { reader =>
             new Iterator[A] {
               val key = NullWritable.get
               val value: ScoobiWritable[A] =
-                Class.forName(reader.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
+                configuration.getClassLoader.loadClass(reader.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
               def next(): A = value.get
               def hasNext: Boolean = reader.next(key, value)
 
-            } toIterable
+            }.toIterable
           }
 
           iterators.flatten.toIterator
@@ -118,9 +119,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * use only. */
   def groupBarrier: DList[A] = {
     val dofn = new DoFn[A, A] {
-      def setup() = {}
-      def process(input: A, emitter: Emitter[A]) = emitter.emit(input)
-      def cleanup(emitter: Emitter[A]) = {}
+      def setup() {}
+      def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
+      def cleanup(emitter: Emitter[A]) {}
     }
     new DList(Smart.ParallelDo(ast, dofn, true, false))
   }
@@ -135,9 +136,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * new distributed list. */
   def flatMap[B : Manifest : WireFormat](f: A => Iterable[B]): DList[B] = {
     val dofn = new DoFn[A, B] {
-      def setup() = {}
-      def process(input: A, emitter: Emitter[B]) = f(input).foreach { emitter.emit(_) }
-      def cleanup(emitter: Emitter[B]) = {}
+      def setup() {}
+      def process(input: A, emitter: Emitter[B]) { f(input).foreach { emitter.emit(_) } }
+      def cleanup(emitter: Emitter[B]) {}
     }
     parallelDo(dofn)
   }
@@ -147,9 +148,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * distributed list. */
   def map[B : Manifest : WireFormat](f: A => B): DList[B] = {
     val dofn = new DoFn[A, B] {
-      def setup() = {}
-      def process(input: A, emitter: Emitter[B]) = emitter.emit(f(input))
-      def cleanup(emitter: Emitter[B]) = {}
+      def setup() {}
+      def process(input: A, emitter: Emitter[B]) { emitter.emit(f(input)) }
+      def cleanup(emitter: Emitter[B]) {}
     }
     parallelDo(dofn)
   }
@@ -157,9 +158,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
   /** Keep elements from the distributed list that pass a specified predicate function. */
   def filter(p: A => Boolean): DList[A] = {
     val dofn = new DoFn[A, A] {
-      def setup() = {}
-      def process(input: A, emitter: Emitter[A]) = if (p(input)) { emitter.emit(input) }
-      def cleanup(emitter: Emitter[A]) = {}
+      def setup() {}
+      def process(input: A, emitter: Emitter[A]) { if (p(input)) { emitter.emit(input) } }
+      def cleanup(emitter: Emitter[A]) {}
     }
     parallelDo(dofn)
   }
@@ -172,9 +173,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * which the function is defined. */
   def collect[B : Manifest : WireFormat](pf: PartialFunction[A, B]): DList[B] = {
     val dofn = new DoFn[A, B] {
-      def setup() = {}
-      def process(input: A, emitter: Emitter[B]) = if (pf.isDefinedAt(input)) { emitter.emit(pf(input)) }
-      def cleanup(emitter: Emitter[B]) = {}
+      def setup() {}
+      def process(input: A, emitter: Emitter[B]) { if (pf.isDefinedAt(input)) { emitter.emit(pf(input)) } }
+      def cleanup(emitter: Emitter[B]) {}
     }
     parallelDo(dofn)
   }
@@ -192,9 +193,9 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * all the values are concatenated. */
   def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] = {
     val dofn = new DoFn[A, B] {
-      def setup() = {}
-      def process(input: A, emitter: Emitter[B]) = input.foreach { emitter.emit(_) }
-      def cleanup(emitter: Emitter[B]) = {}
+      def setup() {}
+      def process(input: A, emitter: Emitter[B]) { input.foreach { emitter.emit(_) } }
+      def cleanup(emitter: Emitter[B]) {}
     }
     parallelDo(dofn)
   }
@@ -209,14 +210,14 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
      * policy once it is full otherwise there is the risk of running out of memory. */
     val dropCached = new DoFn[A, (A, Int)] {
       val cache: MSet[A] = MSet.empty
-      def setup() = {}
-      def process(input: A, emitter: Emitter[(A, Int)]) = {
+      def setup() {}
+      def process(input: A, emitter: Emitter[(A, Int)]) {
         if (!cache.contains(input)) {
           emitter.emit((input, 0))
           cache += input
         }
       }
-      def cleanup(emitter: Emitter[(A, Int)]) = {}
+      def cleanup(emitter: Emitter[(A, Int)]) {}
     }
 
     /* A Grouping type where sorting is implemented by taking the difference between hash
@@ -263,10 +264,10 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     val imc: DList[A] = self.parallelDo(new DoFn[A, A] {
       var acc: A = _
       var first = true
-      def setup() = {}
-      def process(input: A, emitter: Emitter[A]) =
+      def setup() {}
+      def process(input: A, emitter: Emitter[A])
         { if (first) { acc = input; first = false } else { acc = op(acc, input) }}
-      def cleanup(emitter: Emitter[A]) = emitter.emit(acc)
+      def cleanup(emitter: Emitter[A]) { emitter.emit(acc) }
     })
 
     /* Group all elements together (so they go to the same reducer task) and then
@@ -336,7 +337,7 @@ object DList {
   }
 
   /** Persist one or more distributed lists - will trigger MapReduce computations. */
-  def persist(outputs: DListPersister[_]*) = {
+  def persist(outputs: DListPersister[_]*)(implicit configuration: ScoobiConfiguration) {
 
     /* Produce map of all unique outputs and their corresponding persisters. */
     val rawOutMap: Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {
@@ -347,7 +348,7 @@ object DList {
     /* Optimise the plan associated with the outpus. */
     val outMap : Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {
       val optOuts: List[Smart.DList[_]] = Smart.optimisePlan(rawOutMap.keys.toList)
-      (rawOutMap.toList zip optOuts) map { case ((_, p), o) => (o, p) } toMap
+      (rawOutMap.toList zip optOuts).map { case ((_, p), o) => (o, p) }.toMap
     }
 
     val ds = outMap.keys

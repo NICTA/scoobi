@@ -34,37 +34,47 @@ import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.rtt.RuntimeClass
-
+import org.apache.hadoop.conf.Configuration
+import com.nicta.scoobi.impl.{Configurations, Configured}
+import Configurations._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
 final case class BridgeStore[A]()
   extends DataSource[NullWritable, ScoobiWritable[A], A]
-  with DataSink[NullWritable, ScoobiWritable[A], A] {
+  with DataSink[NullWritable, ScoobiWritable[A], A] with Configured {
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
-
-  private val id = BridgeId.get
-  private val path = new Path(Scoobi.getWorkingDirectory(Scoobi.conf), "bridges/" + id)
-  val typeName = "BS" + id
 
   /* rtClass will be created at runtime as part of building the MapReduce job. */
   var rtClass: Option[RuntimeClass] = None
 
+  /**
+   * this value is set by the configuration so as to be unique for this bridge store
+   */
+  private var id = 0
+  lazy val typeName = "BS" + id
+  lazy val path = new Path(conf.workingDirectory, "bridges/" + id)
 
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck() = {}
-  def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, path)
+  def outputCheck() {}
+  def outputConfigure(job: Job) {
+    id = conf.increment("scoobi.bridgestoreid")
+    FileOutputFormat.setOutputPath(job, path)
+  }
   val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 
 
   /* Input (i.e. output of bridge) */
   val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
-  def inputCheck() = {}
-  def inputConfigure(job: Job) = FileInputFormat.addInputPath(job, new Path(path, "ch*"))
+  def inputCheck() {}
+  def inputConfigure(job: Job) {
+    configure(job)
+    FileInputFormat.addInputPath(job, new Path(path, "ch*"))
+  }
   def inputSize(): Long = Helper.pathSize(new Path(path, "ch*"))
   val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get
@@ -72,13 +82,11 @@ final case class BridgeStore[A]()
 
 
   /* Free up the disk space being taken up by this intermediate data. */
-  def freePath: Unit = {
-    val fs = path.getFileSystem(Scoobi.conf)
+  def freePath {
+    val fs = path.getFileSystem(conf)
     fs.delete(path, true)
   }
 }
-
-object BridgeId extends UniqueInt
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
   * the Class for 'value' will exist and be known by the ClassLoader. */

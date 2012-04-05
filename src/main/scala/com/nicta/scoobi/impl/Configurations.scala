@@ -23,12 +23,17 @@ trait Configurations {
     def toMutableMap: scala.collection.mutable.Map[String, String] = scala.collection.mutable.Map(toList: _*)
 
     /**
-     * add a list of values to a Configuration, for a given key
+     * add a list of values to a Configuration, for a given key, using a specific separator
      */
-    def addValues(key: String, values: String*): Configuration = {
-      conf.set(key, (toMap.get(key).toSeq ++ values).mkString(","))
+    def addValues(key: String, values: Seq[String], separator: String): Configuration = {
+      conf.set(key, (toMap.get(key).toSeq ++ values).mkString(separator))
       conf
     }
+
+    /**
+     * add a list of values to a Configuration, for a given key, with a comma separator
+     */
+    def addValues(key: String, values: String*): Configuration = addValues(key, values, ",")
 
     /**
      * add all the keys found in the other Configuration to this configuration, possibly mapping to different keys
@@ -53,6 +58,27 @@ trait Configurations {
       map foreach { case (k, v) => conf.set(k, v) }
       conf
     }
+
+    /**
+     * update the value of a given key, using a default value if missing
+     */
+    def update(key: String, default: =>String)(f: String => String) = {
+      conf.set(key, f(Option(conf.get(key)).getOrElse(f(default))))
+      conf
+    }
+
+    /**
+     * increment an Int property by 1
+     */
+    def increment(key: String): Int = synchronized {
+      val value = conf.getInt(key, 0) + 1
+      conf.setInt(key, value)
+      value
+    }
+
+    /** @return the scoobi work directory */
+    def workingDirectory = conf.get("scoobi.workdir")
+
   }
 
   /**

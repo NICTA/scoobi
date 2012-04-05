@@ -29,6 +29,7 @@ import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Helper
+import com.nicta.scoobi.impl.Configured
 
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
@@ -101,7 +102,7 @@ object SequenceOutput {
       valueClass: Class[V],
       converter: OutputConverter[K, V, B],
       overwrite: Boolean)
-    extends DataSink[K, V, B] {
+    extends DataSink[K, V, B] with Configured {
 
     protected val outputPath = new Path(path)
 
@@ -120,7 +121,10 @@ object SequenceOutput {
       else
         logger.info("Output path: " + outputPath.toUri.toASCIIString)
 
-    def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
+    def outputConfigure(job: Job) {
+      configure(job)
+      FileOutputFormat.setOutputPath(job, outputPath)
+    }
 
     val outputConverter = converter
   }

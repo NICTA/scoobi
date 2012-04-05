@@ -23,15 +23,11 @@ import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
 import java.util.jar.JarEntry
 
-import java.io.InputStream
-import java.io.FileInputStream
-import java.io.ByteArrayInputStream
-
-import java.io.FileOutputStream
-
-import java.net.URLDecoder
 
 import com.nicta.scoobi.impl.rtt.RuntimeClass
+import java.io._
+import java.net.{URLClassLoader, URL, URLDecoder}
+import com.nicta.scoobi.ScoobiConfiguration
 
 
 /** Class to manage the creation of a new JAR file. */
@@ -43,7 +39,7 @@ class JarBuilder(val name: String) {
   private val entries: MSet[String] = MSet.empty
 
   /** Merge in the contents of an entire JAR. */
-  def addJar(jarFile: String): Unit = addJarEntries(jarFile, e => true)
+  def addJar(jarFile: String) { addJarEntries(jarFile, e => true) }
 
   /** Add the entire contents of a JAR that contains a particular class. */
   def addContainingJar(clazz: Class[_]) {
@@ -55,26 +51,65 @@ class JarBuilder(val name: String) {
     findContainingJar(clazz).foreach(addJarEntries(_, (mkClassFile(clazz) == _.getName)))
   }
 
+  /** Add the class files found in a given directory */
+  def addClassDirectory(path: String) {
+    def addSubDirectory(p: String, baseDirectory: String) {
+      new File(p).listFiles.foreach { f =>
+        if (f.isDirectory) addSubDirectory(f.getPath, baseDirectory)
+        else {
+          val stream = new FileInputStream(f)
+          try { addEntryFromStream(f.getPath.replace(baseDirectory, ""), stream) } finally { stream.close() }
+        }
+      }
+
+    }
+    addSubDirectory(path, path)
+  }
+
   /** Add a single class to the JAR where its bytecode is given directly. */
-  def addClassFromBytecode(className: String, bytecode: Array[Byte]): Unit = {
+  def addClassFromBytecode(className: String, bytecode: Array[Byte]) {
     addEntryFromStream(className + ".class", new ByteArrayInputStream(bytecode))
   }
 
   /** Add a class to the JAR that was generated at runtime. */
-  def addRuntimeClass(runtimeClass: RuntimeClass): Unit = {
+  def addRuntimeClass(runtimeClass: RuntimeClass) {
     addClassFromBytecode(runtimeClass.name, runtimeClass.bytecode)
   }
 
   /** Write-out the JAR file. Once this method is called, the JAR cannot be
     * modified further. */
-  def close() = {
+  def close(implicit configuration: ScoobiConfiguration) {
     jos.close()
+    if (configuration.getClassLoader.isInstanceOf[URLClassLoader]) {
+      val loader = configuration.getClassLoader.asInstanceOf[URLClassLoader]
+       invoke(loader, "addURL", Array(new File(name).toURI.toURL))
+       // load the classes right away so that they're always available
+       // otherwise the job jar will be removed when the MapReduce job
+       // has finished running and the classes won't be available for further use
+       // like acceptance tests where we need to read the results from a SequenceFile
+       try { entries.foreach(e => loader.loadClass(e)) }
+       // this might fail for some entries like scala/util/continuations/ControlContext*
+       catch { case e => () }
+    }
   }
+
+  private def invoke[T](t: T, method: String, params: Array[AnyRef]) {
+    try {
+      val m = t.getClass.getDeclaredMethod(method, params.map(_.getClass):_*)
+      m.setAccessible(true)
+      import scala.collection.JavaConversions._
+      m.invoke(t, asJavaCollection(params.toList).toArray:_*)
+    }
+    // the invocation will fail when run from sbt in the 'local' mode
+    // so don't log anything
+    catch { case e => () }
+  }
+
 
 
   /** Add an entry to the JAR file from an input stream. If the entry already exists,
     * do not add it. */
-  private def addEntryFromStream(entryName: String, is: InputStream): Unit = {
+  private def addEntryFromStream(entryName: String, is: InputStream) {
     if (!entries.contains(entryName)) {
       entries += entryName
       jos.putNextEntry(new JarEntry(entryName))
@@ -87,7 +122,7 @@ class JarBuilder(val name: String) {
   }
 
   /** Add entries for an existing JAR file based on some predicate. */
-  private def addJarEntries(jarFile: String, p: JarEntry => Boolean): Unit = {
+  private def addJarEntries(jarFile: String, p: JarEntry => Boolean) {
     val jis = new JarInputStream(new FileInputStream(jarFile))
     Stream.continually(jis.getNextJarEntry).takeWhile(_ != null) foreach { entry =>
       if (p(entry)) {
@@ -127,6 +162,6 @@ object JarBuilder {
 
   /** Return the class file path string as specified in a JAR for a give class. */
   private def mkClassFile(clazz: Class[_]): String = {
-    clazz.getName().replaceAll("\\.", "/") + ".class"
+    clazz.getName.replaceAll("\\.", "/") + ".class"
   }
 }

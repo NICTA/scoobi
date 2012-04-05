@@ -28,9 +28,6 @@ import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable.{Map => MMap}
 import Option.{apply => ?}
 
-import com.nicta.scoobi.Scoobi
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.Helper
@@ -55,7 +52,8 @@ import com.nicta.scoobi.impl.rtt.TaggedGroupingComparator
 import com.nicta.scoobi.impl.rtt.ScoobiWritable
 import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.util.JarBuilder
-
+import com.nicta.scoobi.{ScoobiConfiguration, Scoobi, WireFormat, Grouping}
+import ScoobiConfiguration._
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int) {
@@ -74,7 +72,7 @@ class MapReduceJob(stepId: Int) {
 
 
   /** Add an input mapping function to thie MapReduce job. */
-  def addTaggedMapper(input: DataSource[_,_,_], m: TaggedMapper[_,_,_]): Unit = {
+  def addTaggedMapper(input: DataSource[_,_,_], m: TaggedMapper[_,_,_]) {
     if (!mappers.contains(input))
       mappers += (input -> MSet(m))
     else
@@ -87,24 +85,24 @@ class MapReduceJob(stepId: Int) {
   }
 
   /** Add a combiner function to this MapReduce job. */
-  def addTaggedCombiner[V](c: TaggedCombiner[V]): Unit = {
+  def addTaggedCombiner[V](c: TaggedCombiner[V]) {
     combiners += c
   }
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer(outputs: Set[_ <: DataSink[_,_,_]], r: TaggedReducer[_,_,_]): Unit = {
+  def addTaggedReducer(outputs: Set[_ <: DataSink[_,_,_]], r: TaggedReducer[_,_,_]) {
     reducers += (outputs.toList -> r)
   }
 
   /** Take this MapReduce job and run it on Hadoop. */
-  def run() = {
+  def run(implicit configuration: ScoobiConfiguration) = {
 
-    val job = new Job(Scoobi.conf, Scoobi.jobId + "(Step-" + stepId + ")")
+    val job = new Job(configuration, configuration.jobId + "(Step-" + stepId + ")")
     val fs = FileSystem.get(job.getConfiguration)
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
-    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out")
+    val tmpOutputPath = new Path(configuration.workingDirectory, "tmp-out")
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
@@ -112,10 +110,9 @@ class MapReduceJob(stepId: Int) {
     var jar = new JarBuilder(tmpFile.getAbsolutePath)
     job.getConfiguration.set("mapred.jar", tmpFile.getAbsolutePath)
 
-    jar.addContainingJar(classOf[List[_]])        //  Scala
-    jar.addContainingJar(this.getClass)           //  Scoobi
-    Scoobi.getUserJars.foreach { jar.addJar(_) }  //  User JARs
-
+    jar.addContainingJar(this.getClass)                          //  Scoobi
+    configuration.userJars.foreach { jar.addJar(_) }             //  User JARs
+    configuration.userDirs.foreach { jar.addClassDirectory(_) }
 
     /** Sort-and-shuffle:
       *   - (K2, V2) are (TaggedKey, TaggedValue), the wrappers for all K-V types
@@ -149,7 +146,7 @@ class MapReduceJob(stepId: Int) {
 
     val inputChannels: List[((DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]), Int)] = mappers.toList.zipWithIndex
     val inputs: Map[Int, (InputConverter[_, _, _], Set[TaggedMapper[_, _, _]])] =
-      inputChannels map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) } toMap
+      inputChannels.map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) }.toMap
 
     DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper[_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
@@ -192,9 +189,9 @@ class MapReduceJob(stepId: Int) {
     }
 
     val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])] =
-      reducers map { case (sinks, reducer) =>
+      reducers.map { case (sinks, reducer) =>
         (reducer.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
-      } toMap
+      }.toMap
 
     DistCache.pushObject(job.getConfiguration, outputs, "scoobi.reducers")
     job.setReducerClass(classOf[MscrReducer[_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
@@ -216,19 +213,18 @@ class MapReduceJob(stepId: Int) {
     logger.info("Total input size: " +  Helper.sizeString(inputBytes))
     logger.info("Number of reducers: " + numReducers)
 
-
     /* Run job */
-    jar.close()
+    jar.close(configuration)
     job.submit()
 
     val map = new Progress(job.mapProgress())
     val reduce = new Progress(job.reduceProgress())
 
-    while (!job.isComplete()) {
+    while (!job.isComplete) {
       Thread.sleep(5000)
-      if (map.hasProgressed() || reduce.hasProgressed())
-        logger.info("Map " + map.getProgress().formatted("%3d") + "%    " +
-                    "Reduce " + reduce.getProgress().formatted("%3d") + "%")
+      if (map.hasProgressed || reduce.hasProgressed)
+        logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
+                    "Reduce " + reduce.getProgress.formatted("%3d") + "%")
     }
 
     /* Tidy-up */
@@ -277,7 +273,7 @@ object MapReduceJob {
     /* Tag each output channel with a unique index. */
     mscr.outputChannels.zipWithIndex.foreach { case (oc, tag) =>
 
-      def addTag(n: AST.Node[_], tag: Int): Unit = {
+      def addTag(n: AST.Node[_], tag: Int) {
         val s = mapperTags.getOrElse(n, Set())
         mapperTags += (n -> (s + tag))
       }
@@ -336,13 +332,13 @@ class Progress(updateFn: => Float) {
   private var progressed = true
   private var progress = (updateFn * 100).toInt
 
-  def hasProgressed() = {
+  def hasProgressed = {
     val p = (updateFn * 100).toInt
     if (p > progress) { progressed = true; progress = p } else { progressed = false }
     progressed
   }
 
-  def getProgress(): Int = {
+  def getProgress: Int = {
     hasProgressed
     progress
   }

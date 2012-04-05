@@ -28,6 +28,8 @@ import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Helper
+import org.apache.hadoop.conf.Configuration
+import com.nicta.scoobi.impl.Configured
 
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */
@@ -122,7 +124,7 @@ object SequenceInput {
 
   /* Class that abstracts all the common functionality of reading from sequence files. */
   private class SeqSource[K, V, A : Manifest : WireFormat](paths: List[String], converter: InputConverter[K, V, A])
-    extends DataSource[K, V, A] {
+    extends DataSource[K, V, A] with Configured {
 
     private val inputPaths = paths.map(p => new Path(p))
 
@@ -135,7 +137,10 @@ object SequenceInput {
          throw new IOException("Input path " + p + " does not exist.")
     }
 
-    def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    def inputConfigure(job: Job) = {
+      configure(job)
+      inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    }
 
     def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
 

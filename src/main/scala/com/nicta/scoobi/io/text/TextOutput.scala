@@ -28,6 +28,7 @@ import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Helper
+import com.nicta.scoobi.impl.Configured
 
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
@@ -36,7 +37,7 @@ object TextOutput {
 
   /** Persist a distributed list as a text file. */
   def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false): DListPersister[A] = {
-    val sink = new DataSink[NullWritable, A, A] {
+    val sink = new DataSink[NullWritable, A, A] with Configured {
       private val outputPath = new Path(path)
 
       val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
@@ -64,7 +65,10 @@ object TextOutput {
         else
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
 
-      def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
+      def outputConfigure(job: Job) {
+        configure(job)
+        FileOutputFormat.setOutputPath(job, outputPath)
+      }
 
       val outputConverter = new OutputConverter[NullWritable, A, A] {
         def toKeyValue(x: A) = (NullWritable.get, x)

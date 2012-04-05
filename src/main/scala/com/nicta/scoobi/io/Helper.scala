@@ -20,23 +20,24 @@ import org.apache.hadoop.fs.FileSystem
 import Option.{apply => ?}
 
 import com.nicta.scoobi.Scoobi
+import org.apache.hadoop.conf.Configuration
 
 
 /** A set of helper functions for implementing DataSources and DataSinks. */
 object Helper {
 
   /* Determine whether a path exists or not. */
-  def pathExists(p: Path): Boolean = ?(FileSystem.get(p.toUri, Scoobi.conf).globStatus(new Path(p, "*"))) match {
+  def pathExists(p: Path)(implicit conf: Configuration): Boolean = ?(FileSystem.get(p.toUri, conf).globStatus(new Path(p, "*"))) match {
     case None                     => false
     case Some(s) if s.length == 0 => false
     case Some(_)                  => true
   }
 
-  def deletePath(p: Path)= FileSystem.get(Scoobi.conf).delete(p, true)
+  def deletePath(p: Path)(implicit conf: Configuration) = FileSystem.get(conf).delete(p, true)
 
   /** Determine the byte size of data specified by a path. */
-  def pathSize(p: Path): Long = {
-    val fs = FileSystem.get(p.toUri, Scoobi.conf)
+  def pathSize(p: Path)(implicit conf: Configuration): Long = {
+    val fs = FileSystem.get(p.toUri, conf)
     fs.globStatus(p).map(stat => fs.getContentSummary(stat.getPath).getLength).sum
   }
 

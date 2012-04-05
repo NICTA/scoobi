@@ -30,6 +30,7 @@ import com.nicta.scoobi.DListPersister
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.OutputConverter
 import com.nicta.scoobi.io.Helper
+import com.nicta.scoobi.impl.Configured
 
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
@@ -45,7 +46,7 @@ object AvroOutput {
       def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
-    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
+    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] with Configured {
       protected val outputPath = new Path(path)
 
       val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
@@ -65,7 +66,8 @@ object AvroOutput {
           logger.debug("Output Schema: " + sch.schema)
         }
 
-      def outputConfigure(job: Job) = {
+      def outputConfigure(job: Job) {
+        configure(job)
         FileOutputFormat.setOutputPath(job, outputPath)
         job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }

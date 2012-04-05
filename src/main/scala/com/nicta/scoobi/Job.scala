@@ -29,7 +29,7 @@ final case class Job() {
 
 
   /** Run the job. */
-  def run() = {
+  def run(implicit configuration: ScoobiConfiguration) = {
     DList.persist(persisters.toArray: _*)
     persisters.clear
   }

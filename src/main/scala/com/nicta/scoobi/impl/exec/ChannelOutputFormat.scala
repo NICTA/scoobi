@@ -21,6 +21,7 @@ import org.apache.hadoop.mapreduce.TaskInputOutputContext
 import org.apache.hadoop.mapreduce.TaskAttemptContext
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.util.ReflectionUtils
+import org.apache.hadoop.filecache.DistributedCache._
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.io.DataSink
@@ -103,7 +104,10 @@ object ChannelOutputFormat {
 
     val jobCopy = new Job(conf)
     sink.outputConfigure(jobCopy)
-    conf.updateWith(jobCopy.getConfiguration) { case (k, v) =>
+    Option(jobCopy.getConfiguration.get(CACHE_FILES)).foreach { files =>
+      conf.set(otherProperty(channel, output) + CACHE_FILES, files)
+    }
+    conf.updateWith(jobCopy.getConfiguration) { case (k, v) if k != CACHE_FILES =>
       (otherProperty(channel, output) + k, v)
     }
   }

@@ -42,6 +42,7 @@ import ChannelsInputFormat._
 import com.nicta.scoobi.impl.Configurations._
 import com.nicta.scoobi.impl.util.JarBuilder
 import scalaz.Scalaz._
+import org.apache.hadoop.filecache.DistributedCache
 
 /** An input format that delegates to multiple input formats, one for each
  * input channel. */
@@ -137,10 +138,11 @@ object ChannelsInputFormat {
   private def configureSource(source: DataSource[_,_,_], channel: Int) = (conf: Configuration) => {
     val job = new Job(conf)
     source.inputConfigure(job)
-    conf.set(ChannelPrefix.prefix(channel, CACHE_FILES), Option(job.getConfiguration.get(CACHE_FILES)).getOrElse(""))
-    conf.updateWith(job.getConfiguration) { case (k, v) =>
-      (ChannelPrefix.prefix(channel, k), v)
+    Option(job.getConfiguration.get(CACHE_FILES)).foreach { files =>
+      conf.set(ChannelPrefix.prefix(channel, CACHE_FILES), files)
+      conf.addValues(CACHE_FILES, files)
     }
+    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  => (ChannelPrefix.prefix(channel, k), v) }
   }
 
   /**
@@ -150,7 +152,7 @@ object ChannelsInputFormat {
    */
   private def extractChannelConfiguration(context: JobContext, channel: Int): Configuration = {
     val Prefix = ChannelPrefix.regex(channel)
-    context.getConfiguration.updateWith { case (Prefix(k), v) => (k, v) }
+    context.getConfiguration.updateWith { case (Prefix(k), v) if k != CACHE_FILES => (k, v) }
   }
 
   /** Get a map of all the input formats per channel id. */

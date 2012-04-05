@@ -40,7 +40,8 @@ import com.nicta.scoobi.impl.plan.Smart
 import com.nicta.scoobi.impl.plan.AST
 import com.nicta.scoobi.impl.exec.DistCache
 import com.nicta.scoobi.impl.util.UniqueInt
-
+import com.nicta.scoobi.impl.Configurations
+import Configurations._
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {
@@ -50,15 +51,17 @@ object FunctionInput {
     * a function that maps list indices to element values. */
   def fromFunction[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
-      private val id = FunctionId.get
       val inputFormat = classOf[FunctionInputFormat[A]]
-      def inputCheck() = {}
+      def inputCheck() {}
 
-      def inputConfigure(job: Job) = {
+      def inputConfigure(job: Job) {
         val conf = job.getConfiguration
         conf.setInt(LengthProperty, n)
-        conf.setInt(IdProperty, id)
-        DistCache.pushObject(conf, f, functionProperty(id))
+        /* Because FunctionInputFormat is shared between multiple instances of the Function
+         * DataSource, each must have a unique id to distinguish their serialised
+         * functions that are pushed out by the distributed cache. */
+        conf.increment(IdProperty)
+        DistCache.pushObject(conf, f, functionProperty(conf.getInt(IdProperty, 0)))
       }
 
       def inputSize(): Long = n.toLong
@@ -69,11 +72,6 @@ object FunctionInput {
     }
     DList.fromSource(source)
   }
-
-  /* Because FunctionInputFormat is shared between multiple instances of the Function
-   * DataSource, each must have a unique id to distinguish their serialised
-   * functions that are pushed out by the distributed cache. */
-  object FunctionId extends UniqueInt
 
   /* Configuration property names. */
   private val PropertyPrefix = "scoobi.function"
