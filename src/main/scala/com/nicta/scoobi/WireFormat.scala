@@ -20,6 +20,7 @@ import org.apache.hadoop.io._
 import annotation.implicitNotFound
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
+import scala.collection.mutable.ArrayBuilder
 
 
 
@@ -495,6 +496,11 @@ trait WireFormatImplicits {
   /*
    * "Primitive" types.
    */
+  implicit def UnitFmt = new WireFormat[Unit] {
+    def toWire(x: Unit, out: DataOutput) = {}
+    def fromWire(in: DataInput): Unit = ()
+  }
+
   implicit def IntFmt = new WireFormat[Int] {
     def toWire(x: Int, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): Int = in.readInt()
@@ -741,6 +747,21 @@ trait WireFormatImplicits {
         }
         b.result()
       }
+    }
+  }
+
+  /* Arrays */
+  implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]) = new WireFormat[Array[T]] {
+    val builder = ArrayBuilder.make()(m)
+    def toWire(xs: Array[T], out: DataOutput) = {
+      out.writeInt(xs.length)
+      xs.foreach { wt.toWire(_, out) }
+    }
+    def fromWire(in: DataInput): Array[T] = {
+      builder.clear()
+      val length = in.readInt()
+      (0 to (length - 1)).foreach { _ => builder += wt.fromWire(in) }
+      builder.result()
     }
   }
 

@@ -79,7 +79,7 @@ class TaggedValueClassBuilder
       "setTag($1);" +
       "switch($1) {" +
          tags.map { case (t, (m, _)) =>
-          "case " + t + ": value" + t + " = (" + m.erasure.getName  + ")" + toObject("$2", m) + "; break;"
+          "case " + t + ": value" + t + " = (" + classToJavaTypeString(m.erasure)  + ")" + toObject("$2", m) + "; break;"
          }.mkString +
       "default: break; }"
     val setMethod = CtNewMethod.make(CtClass.voidType,
@@ -119,13 +119,13 @@ class TaggedValueClassBuilder
     val taggedReadFieldsCode =
       if (tags.size == 1)
         "setTag(0);"+
-        toReadCode(0, tags(0)._1.erasure.getName)
+        toReadCode(0, classToJavaTypeString(tags(0)._1.erasure))
       else
         "setTag($1.readInt());" +
         "switch(tag()) {" +
         tags.map {
          case (t, (m, _)) =>
-           "case " + t + ": " + toReadCode(t, m.erasure.getName) + " break;"
+           "case " + t + ": " + toReadCode(t, classToJavaTypeString(m.erasure)) + " break;"
         }.mkString +
         "default: break; }"
 

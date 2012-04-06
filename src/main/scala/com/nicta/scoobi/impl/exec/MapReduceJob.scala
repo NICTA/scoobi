@@ -151,8 +151,8 @@ class MapReduceJob(stepId: Int) {
     inputChannels.foreach { case ((source, ms), ix) =>
       ChannelInputFormat.addInputChannel(job, ix, source)
       source match {
-        case bs@BridgeStore(_) => jar.addRuntimeClass(bs.rtClass.getOrElse(sys.error("Run-time class should be set.")))
-        case _                 => {}
+        case bs@BridgeStore() => jar.addRuntimeClass(bs.rtClass.getOrElse(sys.error("Run-time class should be set.")))
+        case _                => {}
       }
     }
 
@@ -181,7 +181,7 @@ class MapReduceJob(stepId: Int) {
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
     reducers.foreach { case (sinks, reducer) =>
       sinks foreach {
-        case bs@BridgeStore(_) => {
+        case bs@BridgeStore() => {
           // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
           bs.rtClass match {
             case Some(rtc) => jar.addRuntimeClass(rtc)
@@ -193,7 +193,7 @@ class MapReduceJob(stepId: Int) {
             }
           }
         }
-        case ms@MaterializeStore(_, _, _) => jar.addRuntimeClass(ms.rtClass)
+        case ms@MaterializeStore(_, _) => jar.addRuntimeClass(ms.rtClass)
         case _ => {}
       }
       sinks.zipWithIndex.foreach { case (sink, ix) => ChannelOutputFormat.addOutputChannel(job, reducer.tag, ix, sink) }

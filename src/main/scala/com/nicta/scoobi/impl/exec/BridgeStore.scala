@@ -28,7 +28,6 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
 import com.nicta.scoobi.Scoobi
-import com.nicta.scoobi.io.DataStore
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.InputConverter
@@ -42,9 +41,8 @@ import com.nicta.scoobi.impl.rtt.RuntimeClass
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-final case class BridgeStore[A](n: AST.Node[A])
-  extends DataStore(n)
-  with DataSource[NullWritable, ScoobiWritable[A], A]
+final case class BridgeStore[A]()
+  extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] {
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")

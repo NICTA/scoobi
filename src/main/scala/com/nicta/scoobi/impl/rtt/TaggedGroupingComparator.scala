@@ -67,8 +67,8 @@ class TaggedGroupingComparatorClassBuilder
      * groupCompare method to compare the two keys. */
 
     def genFromObj(t: Int, m: Manifest[_])=
-      "return grouper" + t + ".groupCompare(" +fromObject("(" + m.erasure.getName  + ")writer" + t + ".fromWire(buffer1)", m) + ", " +
-        fromObject("(" + m.erasure.getName  + ")writer" + t + ".fromWire(buffer2)", m) + ");"
+      "return grouper" + t + ".groupCompare(" +fromObject("(" + classToJavaTypeString(m.erasure) + ")writer" + t + ".fromWire(buffer1)", m) + ", " +
+        fromObject("(" + classToJavaTypeString(m.erasure) + ")writer" + t + ".fromWire(buffer2)", m) + ");"
 
     val compareCode =
       "buffer1.reset($1, $2, $3);" +

@@ -1,4 +1,4 @@
-name := "Scoobi Number Filter"
+name := "Scoobi Secondary Sort"
 
 version := "0.1"
 

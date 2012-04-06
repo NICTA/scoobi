@@ -26,17 +26,17 @@ import com.nicta.scoobi.Scoobi
 object Helper {
 
   /* Determine whether a path exists or not. */
-  def pathExists(p: Path): Boolean = ?(FileSystem.get(Scoobi.conf).globStatus(p)) match {
+  def pathExists(p: Path): Boolean = ?(FileSystem.get(p.toUri, Scoobi.conf).globStatus(new Path(p, "*"))) match {
     case None                     => false
     case Some(s) if s.length == 0 => false
     case Some(_)                  => true
   }
 
-  def deletePath(p: Path)= FileSystem.get(Scoobi.conf).delete(p)
-    
+  def deletePath(p: Path)= FileSystem.get(Scoobi.conf).delete(p, true)
+
   /** Determine the byte size of data specified by a path. */
   def pathSize(p: Path): Long = {
-    val fs = FileSystem.get(Scoobi.conf)
+    val fs = FileSystem.get(p.toUri, Scoobi.conf)
     fs.globStatus(p).map(stat => fs.getContentSummary(stat.getPath).getLength).sum
   }
 
