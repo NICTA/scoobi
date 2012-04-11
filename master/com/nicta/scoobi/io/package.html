@@ -69,17 +69,6 @@
       </span>
       </h4>
       <p class="comment cmt">An input data store to a MapReduce job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.DataStore" data-isabs="true">
-      <a id="DataStore:DataStore"></a>
-      <h4 class="signature">
-      <span class="kind">class</span>
-      <span class="symbol"> 
-        <a href="DataStore.html"><span class="name">DataStore</span></a>
-        
-        <span class="result"> extends AnyRef</span>
-      </span>
-      </h4>
-      <p class="comment cmt">A data store represents data that is external to an MSCRs.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.io.InputConverter" data-isabs="true">
       <a id="InputConverter:InputConverter[K, V, A]"></a>
       <h4 class="signature">
@@ -87,32 +76,10 @@
       <span class="symbol"> 
         <a href="InputConverter.html"><span class="name">InputConverter</span></a>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span>
-        <span class="result"> extends Serializable</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Convert an InputFormat's key-value types to the type produced by a DataSource.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.InputStore" data-isabs="true">
-      <a id="InputStore:InputStore[K, V, A]"></a>
-      <h4 class="signature">
-      <span class="kind">class</span>
-      <span class="symbol"> 
-        <a href="InputStore.html"><span class="name">InputStore</span></a>
-        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span>
-        <span class="result"> extends DataStore with DataSource[K, V, A]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">An input store is synonymous with a 'Load' node.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.Loader" data-isabs="true">
-      <a id="Loader:Loader[A]"></a>
-      <h4 class="signature">
-      <span class="kind">class</span>
-      <span class="symbol"> 
-        <a href="Loader.html"><span class="name">Loader</span></a>
-        <span class="tparams">[<span name="A">A</span>]</span>
         <span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">A Loader class specifies how a distributed list is materialised.</p>
+      <p class="comment cmt">Convert an InputFormat's key-value types to the type produced by a DataSource.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.io.OutputConverter" data-isabs="true">
       <a id="OutputConverter:OutputConverter[K, V, B]"></a>
       <h4 class="signature">
@@ -120,32 +87,10 @@
       <span class="symbol"> 
         <a href="OutputConverter.html"><span class="name">OutputConverter</span></a>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
-        <span class="result"> extends Serializable</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Convert the type consumed by a DataSink into an OutputFormat's key-value types.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.OutputStore" data-isabs="true">
-      <a id="OutputStore:OutputStore[K, V, B]"></a>
-      <h4 class="signature">
-      <span class="kind">class</span>
-      <span class="symbol"> 
-        <a href="OutputStore.html"><span class="name">OutputStore</span></a>
-        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
-        <span class="result"> extends DataStore with DataSink[K, V, B]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">An output store is data that must first be computed.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.Persister" data-isabs="true">
-      <a id="Persister:Persister[A]"></a>
-      <h4 class="signature">
-      <span class="kind">class</span>
-      <span class="symbol"> 
-        <a href="Persister.html"><span class="name">Persister</span></a>
-        <span class="tparams">[<span name="A">A</span>]</span>
         <span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">A Persister class specifies how a distributed list is persisted.</p>
+      <p class="comment cmt">Convert the type consumed by a DataSink into an OutputFormat's key-value types.</p>
     </li></ol>
             </div>
         
@@ -164,6 +109,17 @@
       </span>
       </h4>
       <p class="comment cmt">A set of helper functions for implementing DataSources and DataSinks.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro" data-isabs="false">
+      <a id="avro:avro"></a>
+      <h4 class="signature">
+      <span class="kind">package</span>
+      <span class="symbol"> 
+        <a href="avro/package.html"><span class="name">avro</span></a>
+        
+        
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.io.func" data-isabs="false">
       <a id="func:func"></a>
       <h4 class="signature">

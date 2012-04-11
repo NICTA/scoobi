@@ -23,12 +23,12 @@
       <span class="kind">case class</span>
       <span class="symbol"> 
         <span class="name">MapperInputChannel</span>
-        <span class="tparams">[<span name="I">I &lt;: <a name="com.nicta.scoobi.io.DataStore" class="extype" href="../../io/DataStore.html">DataStore</a> with com.nicta.scoobi.io.DataSource[_, _, _]</span>]</span>
-        <span class="params">(<span name="input">input: I</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
-          <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
+          <div class="fullcommenttop" id="comment"><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
@@ -57,13 +57,13 @@
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#this" data-isabs="false">
-      <a id="this:MapperInputChannel[I]"></a>
+      <a id="this:MapperInputChannel"></a>
       <h4 class="signature">
       <span class="kind">new</span>
       <span class="symbol"> 
         <span class="name">MapperInputChannel</span>
         
-        <span class="params">(<span name="input">input: I</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span>
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span>
       </span>
       </h4>
       
@@ -72,10 +72,24 @@
 
         
         
+        <div class="values members" id="values">
+              <h3>Abstract Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.InputChannel#inputNode" data-isabs="true">
+      <a id="inputNode:com.nicta.scoobi.impl.plan.AST.Node[_]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">inputNode</span>
         
+        <span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div class="values members" id="values">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li visbl="pub" name="scala.AnyRef#!=" data-isabs="false">
       <a id="!=(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -225,17 +239,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#input" data-isabs="false">
-      <a id="input:I"></a>
-      <h4 class="signature">
-      <span class="kind">val</span>
-      <span class="symbol"> 
-        <span class="name">input</span>
-        
-        <span class="result">: I</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -335,6 +338,17 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#source" data-isabs="false">
+      <a id="source:com.nicta.scoobi.io.DataSource[_, _, _]"></a>
+      <h4 class="signature">
+      <span class="kind">val</span>
+      <span class="symbol"> 
+        <span class="name">source</span>
+        
+        <span class="result">: com.nicta.scoobi.io.DataSource[_, _, _]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

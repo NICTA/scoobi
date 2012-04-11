@@ -248,13 +248,13 @@ key-value DList by key.</p></div><div class="toggleContainer block">
 invokes a user provided code implementing the copy.</p><div class="fullcomment"><div class="comment cmt"><p>A helper method that checks whether the node has already been copied, and if so returns the copy, else
 invokes a user provided code implementing the copy.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#dataSource" data-isabs="false">
-      <a id="dataSource(ConvertInfo):DataStore with com.nicta.scoobi.io.DataSource[_, _, _]"></a>
+      <a id="dataSource(ConvertInfo):com.nicta.scoobi.io.DataSource[_, _, _]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">dataSource</span>
         
-        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.DataStore" class="extype" href="../../io/DataStore.html">DataStore</a> with com.nicta.scoobi.io.DataSource[_, _, _]</span>
+        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>)</span><span class="result">: com.nicta.scoobi.io.DataSource[_, _, _]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
@@ -416,6 +416,19 @@ node(s), a the CopyFn function is used (somewhat like a callback).</p></div><dl 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optAddFuseBar" data-isabs="false">
+      <a id="optAddFuseBar(CopyTable,Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]):(DList[(K, Iterable[V])], CopyTable, Boolean)"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">optAddFuseBar</span>
+        
+        <span class="params">(<span name="copied">copied: CopyTable</span>, <span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[(K, Iterable[V])], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">An optimisation strategy that any ParallelDo that is connected to an output is marked
+with a fuse barrier.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that any ParallelDo that is connected to an output is marked
+with a fuse barrier.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optCombinerToParDos" data-isabs="false">
       <a id="optCombinerToParDos(CopyTable):(DList[(K, Iterable[V])], CopyTable, Boolean)"></a>
       <h4 class="signature">

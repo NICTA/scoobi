@@ -167,6 +167,28 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#concat" data-isabs="false">
+      <a id="concat[A](DList[A]*)(Manifest[A],WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">concat</span>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="params">(<span name="xss">xss: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[A]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Concatenates all arguement distributed lists into a single distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#concat" data-isabs="false">
+      <a id="concat[A](List[DList[A]])(Manifest[A],WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">concat</span>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="params">(<span name="xss">xss: List[<a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[A]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Concatenates all arguement distributed lists into a single distributed list.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -203,6 +225,17 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#fromSource" data-isabs="false">
+      <a id="fromSource[K, V, A](DataSource[K, V, A])(Manifest[A],WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">fromSource</span>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span>
+        <span class="params">(<span name="source">source: <a name="com.nicta.scoobi.io.DataSource" class="extype" href="io/DataSource.html">DataSource</a>[K, V, A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates a distributed list from a data source.</p>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -280,17 +313,6 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Persist one or more distributed lists - will trigger MapReduce computations.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.DList#seqPimp" data-isabs="false">
-      <a id="seqPimp[A](Seq[A])(Manifest[A],WireFormat[A]):PimpWrapper[A]"></a>
-      <h4 class="signature">
-      <span class="kind">implicit def</span>
-      <span class="symbol"> 
-        <span class="name">seqPimp</span>
-        <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="seq">seq: Seq[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList.PimpWrapper" class="extype" href="DList$$PimpWrapper.html">PimpWrapper</a>[A]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>implicit </dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -325,17 +347,17 @@ integer values starting from 0.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.DList#use" data-isabs="false">
-      <a id="use(com.nicta.scoobi.DObject[_]):com.nicta.scoobi.DListPersister[_]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#travPimp" data-isabs="false">
+      <a id="travPimp[A](Traversable[A])(Manifest[A],WireFormat[A]):PimpWrapper[A]"></a>
       <h4 class="signature">
-      <span class="kind">def</span>
+      <span class="kind">implicit def</span>
       <span class="symbol"> 
-        <span class="name">use</span>
-        
-        <span class="params">(<span name="dobject">dobject: com.nicta.scoobi.DObject[_]</span>)</span><span class="result">: com.nicta.scoobi.DListPersister[_]</span>
+        <span class="name">travPimp</span>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="params">(<span name="trav">trav: Traversable[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList.PimpWrapper" class="extype" href="DList$$PimpWrapper.html">PimpWrapper</a>[A]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>implicit </dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">

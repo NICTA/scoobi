@@ -54,10 +54,21 @@
       <span class="symbol"> 
         <a href="BridgeStore.html"><span class="name">BridgeStore</span></a>
         <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="n">n: Node[A]</span>)</span><span class="result"> extends DataStore with DataSource[NullWritable, ScoobiWritable[A], A] with DataSink[NullWritable, ScoobiWritable[A], A] with Product with Serializable</span>
+        <span class="params">()</span><span class="result"> extends DataSource[NullWritable, ScoobiWritable[A], A] with DataSink[NullWritable, ScoobiWritable[A], A] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">A bridge store is any data that moves between MSCRs.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelFormatBase" data-isabs="true">
+      <a id="ChannelFormatBase:ChannelFormatBase"></a>
+      <h4 class="signature">
+      <span class="kind">trait</span>
+      <span class="symbol"> 
+        <a href="ChannelFormatBase.html"><span class="name">ChannelFormatBase</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelInputFormat" data-isabs="false">
       <a id="ChannelInputFormat:ChannelInputFormat[K, V]"></a>
       <h4 class="signature">
@@ -134,7 +145,7 @@ in TaggedInputSplit.</p>
       <span class="symbol"> 
         <a href="MaterializeStore.html"><span class="name">MaterializeStore</span></a>
         <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="n">n: Node[A]</span>, <span name="id">id: Int</span>, <span name="path">path: Path</span>, <span name="evidence$1">evidence$1: Manifest[A]</span>, <span name="evidence$2">evidence$2: WireFormat[A]</span>)</span><span class="result"> extends OutputStore[NullWritable, ScoobiWritable[A], A] with Product with Serializable</span>
+        <span class="params">(<span name="id">id: Int</span>, <span name="path">path: Path</span>, <span name="evidence$1">evidence$1: Manifest[A]</span>, <span name="evidence$2">evidence$2: WireFormat[A]</span>)</span><span class="result"> extends DataSink[NullWritable, ScoobiWritable[A], A] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">A MaterializeStore is a DataSink for eventual consumption by a Scala program.</p>
@@ -211,7 +222,7 @@ in TaggedInputSplit.</p>
       <span class="symbol"> 
         <a href="TaggedCombiner.html"><span class="name">TaggedCombiner</span></a>
         <span class="tparams">[<span name="V">V</span>]</span>
-        <span class="result"> extends Serializable</span>
+        <span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">A wrapper for a 'combine' function tagged for a specific output channel.</p>
@@ -255,7 +266,7 @@ in TaggedInputSplit.</p>
       <span class="symbol"> 
         <a href="TaggedMapper.html"><span class="name">TaggedMapper</span></a>
         <span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span>
-        <span class="result"> extends Serializable</span>
+        <span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">A wrapper for a 'map' function tagged for a specific output channel.</p>
@@ -266,7 +277,7 @@ in TaggedInputSplit.</p>
       <span class="symbol"> 
         <a href="TaggedReducer.html"><span class="name">TaggedReducer</span></a>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span>
-        <span class="result"> extends Serializable</span>
+        <span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">A wrapper for a 'reduce' function tagged for a specific output channel.</p>
@@ -295,7 +306,7 @@ in TaggedInputSplit.</p>
       <span class="symbol"> 
         <a href="ChannelInputFormat$.html"><span class="name">ChannelInputFormat</span></a>
         
-        <span class="result"> extends AnyRef</span>
+        <span class="result"> extends ChannelFormatBase</span>
       </span>
       </h4>
       <p class="comment cmt">Object that allows for channels with different input format requirements
@@ -307,7 +318,7 @@ to be specified.</p>
       <span class="symbol"> 
         <a href="ChannelOutputFormat$.html"><span class="name">ChannelOutputFormat</span></a>
         
-        <span class="result"> extends AnyRef</span>
+        <span class="result"> extends ChannelFormatBase</span>
       </span>
       </h4>
       <p class="comment cmt">Object that allows for channels with different output format requirements

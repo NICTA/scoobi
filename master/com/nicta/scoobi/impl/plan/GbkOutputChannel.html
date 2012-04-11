@@ -23,8 +23,8 @@
       <span class="kind">case class</span>
       <span class="symbol"> 
         <span class="name">GbkOutputChannel</span>
-        <span class="tparams">[<span name="O">O &lt;: <a name="com.nicta.scoobi.io.DataStore" class="extype" href="../../io/DataStore.html">DataStore</a> with com.nicta.scoobi.io.DataSink[_, _, _]</span>]</span>
-        <span class="params">(<span name="outputs">outputs: Set[O]</span>, <span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.AST.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.AST.GroupByKey[_, _]</span>, <span name="crPipe">crPipe: <a name="com.nicta.scoobi.impl.plan.CRPipe" class="extype" href="CRPipe.html">CRPipe</a></span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        
+        <span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.AST.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.AST.GroupByKey[_, _]</span>, <span name="crPipe">crPipe: <a name="com.nicta.scoobi.impl.plan.CRPipe" class="extype" href="CRPipe.html">CRPipe</a></span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -57,13 +57,13 @@
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.GbkOutputChannel#this" data-isabs="false">
-      <a id="this:GbkOutputChannel[O]"></a>
+      <a id="this:GbkOutputChannel"></a>
       <h4 class="signature">
       <span class="kind">new</span>
       <span class="symbol"> 
         <span class="name">GbkOutputChannel</span>
         
-        <span class="params">(<span name="outputs">outputs: Set[O]</span>, <span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.AST.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.AST.GroupByKey[_, _]</span>, <span name="crPipe">crPipe: <a name="com.nicta.scoobi.impl.plan.CRPipe" class="extype" href="CRPipe.html">CRPipe</a></span>)</span>
+        <span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="flatten">flatten: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.AST.Flatten[_]]</span>, <span name="groupByKey">groupByKey: com.nicta.scoobi.impl.plan.AST.GroupByKey[_, _]</span>, <span name="crPipe">crPipe: <a name="com.nicta.scoobi.impl.plan.CRPipe" class="extype" href="CRPipe.html">CRPipe</a></span>)</span>
       </span>
       </h4>
       
@@ -302,14 +302,25 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.GbkOutputChannel#outputNode" data-isabs="false">
+      <a id="outputNode:com.nicta.scoobi.impl.plan.AST.Node[_]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">outputNode</span>
+        
+        <span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.GbkOutputChannel" class="extype" href="">GbkOutputChannel</a> → <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.GbkOutputChannel#outputs" data-isabs="false">
-      <a id="outputs:Set[O]"></a>
+      <a id="outputs:Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]"></a>
       <h4 class="signature">
       <span class="kind">val</span>
       <span class="symbol"> 
         <span class="name">outputs</span>
         
-        <span class="result">: Set[O]</span>
+        <span class="result">: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>
       </span>
       </h4>
       

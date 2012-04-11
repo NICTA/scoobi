@@ -23,8 +23,8 @@
       <span class="kind">case class</span>
       <span class="symbol"> 
         <span class="name">BypassInputChannel</span>
-        <span class="tparams">[<span name="I">I &lt;: <a name="com.nicta.scoobi.io.DataStore" class="extype" href="../../io/DataStore.html">DataStore</a> with com.nicta.scoobi.io.DataSource[_, _, _]</span>]</span>
-        <span class="params">(<span name="input">input: I</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -57,13 +57,13 @@
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel#this" data-isabs="false">
-      <a id="this:BypassInputChannel[I]"></a>
+      <a id="this:BypassInputChannel"></a>
       <h4 class="signature">
       <span class="kind">new</span>
       <span class="symbol"> 
         <span class="name">BypassInputChannel</span>
         
-        <span class="params">(<span name="input">input: I</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span>
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span>
       </span>
       </h4>
       
@@ -225,17 +225,17 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.BypassInputChannel" class="extype" href="">BypassInputChannel</a> → AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel#input" data-isabs="false">
-      <a id="input:I"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel#inputNode" data-isabs="false">
+      <a id="inputNode:com.nicta.scoobi.impl.plan.AST.Node[_]"></a>
       <h4 class="signature">
-      <span class="kind">val</span>
+      <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">input</span>
+        <span class="name">inputNode</span>
         
-        <span class="result">: I</span>
+        <span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.BypassInputChannel" class="extype" href="">BypassInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -335,6 +335,17 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.BypassInputChannel" class="extype" href="">BypassInputChannel</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel#source" data-isabs="false">
+      <a id="source:com.nicta.scoobi.io.DataSource[_, _, _]"></a>
+      <h4 class="signature">
+      <span class="kind">val</span>
+      <span class="symbol"> 
+        <span class="name">source</span>
+        
+        <span class="result">: com.nicta.scoobi.io.DataSource[_, _, _]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

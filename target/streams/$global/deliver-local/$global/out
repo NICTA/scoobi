@@ -1,5 +1,0 @@
-[0m[[0minfo[0m] [0m:: delivering :: com.nicta#scoobi_2.9.1;0.3.0 :: 0.3.0 :: release :: Tue Feb 14 10:21:01 EST 2012[0m
-[0m[[0mdebug[0m] [0m	options = status=release pubdate=Tue Feb 14 10:21:01 EST 2012 validate=true resolveDynamicRevisions=true merge=true resolveId=null pubBranch=null[0m
-[0m[[0mdebug[0m] [0mpost 1.3 ivy file: using exact as default matcher[0m
-[0m[[0minfo[0m] [0m	delivering ivy file to /home/eric/workspace/scoobi/target/scala-2.9.1/ivy-0.3.0.xml[0m
-[0m[[0mdebug[0m] [0m	deliver done (183ms)[0m

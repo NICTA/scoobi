@@ -267,13 +267,13 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextOutput#toDelimitedTextFile" data-isabs="false">
-      <a id="toDelimitedTextFile[A&lt;:Product](DList[A],String,String)(Manifest[A]):DListPersister[String]"></a>
+      <a id="toDelimitedTextFile[A&lt;:Product](DList[A],String,String,Boolean)(Manifest[A]):DListPersister[String]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">toDelimitedTextFile</span>
         <span class="tparams">[<span name="A">A &lt;: <span name="scala.Product" class="extype">Product</span></span>]</span>
-        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="sep">sep: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[String]</span>
+        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="sep">sep: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[String]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Persist a distributed lists of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file.</p></div></div>
@@ -289,13 +289,13 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextOutput#toTextFile" data-isabs="false">
-      <a id="toTextFile[A](DList[A],String)(Manifest[A]):DListPersister[A]"></a>
+      <a id="toTextFile[A](DList[A],String,Boolean)(Manifest[A]):DListPersister[A]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">toTextFile</span>
         <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>, <span name="path">path: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[A]</span>
+        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Persist a distributed list as a text file.</p>

@@ -1,5 +1,0 @@
-(Employee(Rafferty,31),Department(31,Sales))
-(Employee(Jones,33),Department(33,Engineering))
-(Employee(Steinberg,33),Department(33,Engineering))
-(Employee(Robinson,34),Department(34,Clerical))
-(Employee(Smith,34),Department(34,Clerical))

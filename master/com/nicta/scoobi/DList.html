@@ -202,6 +202,17 @@ which the function is defined.</p>
       </h4>
       <p class="shortcomment cmt">Apply an associative function to reduce the collection of values to a single value in a
 key-value-collection distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#count" data-isabs="false">
+      <a id="count((A) ⇒ Boolean):DList[Int]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">count</span>
+        
+        <span class="params">(<span name="p">p: (A) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[<span name="scala.Int" class="extype">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Count the number of elements in the list which satisfy a predicate.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.DList#distinct" data-isabs="false">
       <a id="distinct:DList[A]"></a>
       <h4 class="signature">
@@ -309,6 +320,20 @@ all the values are concatenated.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#groupBarrier" data-isabs="false">
+      <a id="groupBarrier:DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">groupBarrier</span>
+        
+        <span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Used in conjunction with with Grouping options, to ensure that all prior computations up
+to the next GroupBy or GroupByKey are contained within the same MapReduce job.</p><div class="fullcomment"><div class="comment cmt"><p>Used in conjunction with with Grouping options, to ensure that all prior computations up
+to the next GroupBy or GroupByKey are contained within the same MapReduce job. For expert
+use only.</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.DList#groupBy" data-isabs="false">
       <a id="groupBy[K]((A) ⇒ K)(Manifest[K],WireFormat[K],Grouping[K]):DList[(K, Iterable[A])]"></a>
       <h4 class="signature">
@@ -353,6 +378,28 @@ all the values are concatenated.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#keys" data-isabs="false">
+      <a id="keys[K, V](&lt;:&lt;[A, (K, V)],Manifest[K],WireFormat[K],Manifest[V],WireFormat[V]):DList[K]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">keys</span>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[A, (K, V)]</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distribued list containing just the keys of a key-value distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#length" data-isabs="false">
+      <a id="length:DList[Int]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">length</span>
+        
+        <span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[<span name="scala.Int" class="extype">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The length of the distributed list.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.DList#map" data-isabs="false">
       <a id="map[B]((A) ⇒ B)(Manifest[B],WireFormat[B]):DList[B]"></a>
       <h4 class="signature">
@@ -379,6 +426,50 @@ distributed list.</p></div></div>
       </h4>
       <p class="shortcomment cmt">Turn a distributed list into a normal, non-distributed collection that can be accessed
 by the client.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#max" data-isabs="false">
+      <a id="max(Ordering[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">max</span>
+        
+        <span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: Ordering[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the largest element in the distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#maxBy" data-isabs="false">
+      <a id="maxBy[B]((A) ⇒ B)(Ordering[B]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">maxBy</span>
+        <span class="tparams">[<span name="B">B</span>]</span>
+        <span class="params">(<span name="f">f: (A) ⇒ B</span>)</span><span class="params">(<span name="cmp">cmp: Ordering[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the largest element in the distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#min" data-isabs="false">
+      <a id="min(Ordering[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">min</span>
+        
+        <span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: Ordering[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the smallest element in the distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#minBy" data-isabs="false">
+      <a id="minBy[B]((A) ⇒ B)(Ordering[B]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">minBy</span>
+        <span class="tparams">[<span name="B">B</span>]</span>
+        <span class="params">(<span name="f">f: (A) ⇒ B</span>)</span><span class="params">(<span name="cmp">cmp: Ordering[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the smallest element in the distributed list.</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -440,6 +531,51 @@ a new distributed list.</p></div></div>
 predicate.</p><div class="fullcomment"><div class="comment cmt"><p>Partitions this distributed list into a pair of distributed lists according to some
 predicate. The first distributed list consists of elements that satisfy the predicate
 and the second of all elements that don't.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#product" data-isabs="false">
+      <a id="product(Numeric[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">product</span>
+        
+        <span class="params">(<span class="implicit">implicit </span><span name="num">num: Numeric[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Multiply up the elements of this distribute list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#reduce" data-isabs="false">
+      <a id="reduce((A, A) ⇒ A):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">reduce</span>
+        
+        <span class="params">(<span name="op">op: (A, A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reduce the elemets of this distributed list using the specified associative binary operator.</p><div class="fullcomment"><div class="comment cmt"><p>Reduce the elemets of this distributed list using the specified associative binary operator. The
+order in which the elements are reduced is unspecified and may be nondeterministic.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#size" data-isabs="false">
+      <a id="size:DList[Int]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">size</span>
+        
+        <span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[<span name="scala.Int" class="extype">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The size of the distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#sum" data-isabs="false">
+      <a id="sum(Numeric[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">sum</span>
+        
+        <span class="params">(<span class="implicit">implicit </span><span name="num">num: Numeric[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Sum up the elements of this distribute list.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -462,6 +598,17 @@ and the second of all elements that don't.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#values" data-isabs="false">
+      <a id="values[K, V](&lt;:&lt;[A, (K, V)],Manifest[K],WireFormat[K],Manifest[V],WireFormat[V]):DList[V]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">values</span>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[A, (K, V)]</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="">DList</a>[V]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distribued list containing just the values of a key-value distributed list.</p>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">

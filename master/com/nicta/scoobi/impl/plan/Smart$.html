@@ -145,10 +145,10 @@ key-value DList by key.</p>
       <span class="symbol"> 
         <a href="Smart$$Load.html"><span class="name">Load</span></a>
         <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="loader">loader: Loader[A]</span>, <span name="evidence$20">evidence$20: Manifest[A]</span>, <span name="evidence$21">evidence$21: WireFormat[A]</span>)</span><span class="result"> extends DList[A] with Product with Serializable</span>
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, A]</span>, <span name="evidence$20">evidence$20: Manifest[A]</span>, <span name="evidence$21">evidence$21: WireFormat[A]</span>)</span><span class="result"> extends DList[A] with Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">The Load node type specifies the materialization of a DList.</p>
+      <p class="comment cmt">The Load node type specifies the creation of a DList from some source other than another DList.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo" data-isabs="false">
       <a id="ParallelDo:ParallelDo[A, B]"></a>
       <h4 class="signature">
@@ -156,7 +156,7 @@ key-value DList by key.</p>
       <span class="symbol"> 
         <a href="Smart$$ParallelDo.html"><span class="name">ParallelDo</span></a>
         <span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: DList[A]</span>, <span name="dofn">dofn: DoFn[A, B]</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>)</span><span class="result"> extends DList[B] with Product with Serializable</span>
+        <span class="params">(<span name="in">in: DList[A]</span>, <span name="dofn">dofn: DoFn[A, B]</span>, <span name="groupBarrier">groupBarrier: Boolean</span>, <span name="fuseBarrier">fuseBarrier: Boolean</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>)</span><span class="result"> extends DList[B] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">The ParallelDo node type specifies the building of a DList as a result of applying a function to

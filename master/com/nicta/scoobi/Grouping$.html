@@ -24,13 +24,13 @@
       <span class="symbol"> 
         <span class="name">Grouping</span>
         
-        <span class="result"> extends <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
           <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Implicit definitions of Grouping instances for common types.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -46,7 +46,7 @@
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.Grouping" class="in"><span>Grouping</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.Grouping" class="in"><span>Grouping</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -127,8 +127,8 @@
         <span class="result">: <a name="com.nicta.scoobi.Grouping" class="extype" href="Grouping.html">Grouping</a>[T]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">An implicity Grouping type class instance where sorting is implemented via an Ordering
-type class instance.</p><div class="fullcomment"><div class="comment cmt"><p>An implicity Grouping type class instance where sorting is implemented via an Ordering
+      <p class="shortcomment cmt">An implicitly Grouping type class instance where sorting is implemented via an Ordering
+type class instance.</p><div class="fullcomment"><div class="comment cmt"><p>An implicitly Grouping type class instance where sorting is implemented via an Ordering
 type class instance. Partitioning and grouping use the default implementation.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>implicit </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.Grouping#OrderingGrouping" data-isabs="false">
       <a id="OrderingGrouping[T](Ordering[T]):Grouping[T]"></a>
@@ -140,8 +140,8 @@ type class instance. Partitioning and grouping use the default implementation.</
         <span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.Grouping" class="extype" href="Grouping.html">Grouping</a>[T]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">An implicity Grouping type class instance where sorting is implemented via an Ordering
-type class instance.</p><div class="fullcomment"><div class="comment cmt"><p>An implicity Grouping type class instance where sorting is implemented via an Ordering
+      <p class="shortcomment cmt">An implicitly Grouping type class instance where sorting is implemented via an Ordering
+type class instance.</p><div class="fullcomment"><div class="comment cmt"><p>An implicitly Grouping type class instance where sorting is implemented via an Ordering
 type class instance. Partitioning and grouping use the default implementation.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>implicit </dd></dl></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -270,17 +270,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="prt" name="com.nicta.scoobi.Grouping#readResolve" data-isabs="false">
-      <a id="readResolve():AnyRef"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">readResolve</span>
-        
-        <span class="params">()</span><span class="result">: AnyRef</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -350,11 +339,7 @@ type class instance. Partitioning and grouping use the default implementation.</
 
         
 
-        <div name="scala.Serializable" class="parent">
-              <h3>Inherited from <span name="scala.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="java.io.Serializable" class="parent">
-              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

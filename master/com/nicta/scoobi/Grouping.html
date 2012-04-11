@@ -24,7 +24,7 @@
       <span class="symbol"> 
         <span class="name">Grouping</span>
         <span class="tparams">[<span name="K">K</span>]</span>
-        <span class="result"> extends <span name="java.io.Serializable" class="extype">Serializable</span></span>
+        <span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
@@ -37,7 +37,7 @@
               
         </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="java.io.Serializable" class="extype">Serializable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -53,7 +53,7 @@
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.Grouping" class="in"><span>Grouping</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.Grouping" class="in"><span>Grouping</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -67,19 +67,19 @@
         
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.Grouping#sortCompare" data-isabs="true">
-      <a id="sortCompare(K,K):Int"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.Grouping#groupCompare" data-isabs="true">
+      <a id="groupCompare(K,K):Int"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
-        <span class="name">sortCompare</span>
+        <span class="name">groupCompare</span>
         
         <span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Specifies the order in which grouped values are presented to a Reducer
-task, for a given partition.</p><div class="fullcomment"><div class="comment cmt"><p>Specifies the order in which grouped values are presented to a Reducer
-task, for a given partition.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd></dl></div>
+      <p class="shortcomment cmt">Specifies how values, for a given partition, are grouped together in
+a given partition.</p><div class="fullcomment"><div class="comment cmt"><p>Specifies how values, for a given partition, are grouped together in
+a given partition.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd></dl></div>
     </li></ol>
             </div>
 
@@ -212,18 +212,6 @@ task, for a given partition.</p></div><dl class="attributes block"> <dt>Attribut
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Grouping#groupCompare" data-isabs="false">
-      <a id="groupCompare(K,K):Int"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">groupCompare</span>
-        
-        <span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Specifies how values, for a given partition, are grouped together in
-a given partition.</p>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -289,7 +277,19 @@ a given partition.</p>
         <span class="params">(<span name="key">key: K</span>, <span name="num">num: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Specifies how key-values are partitioned among Reduer tasks.</p>
+      <p class="shortcomment cmt">Specifies how key-values are partitioned among Reducer tasks.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.Grouping#sortCompare" data-isabs="false">
+      <a id="sortCompare(K,K):Int"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">sortCompare</span>
+        
+        <span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Specifies the order in which grouped values are presented to a Reducer
+task, for a given partition.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -359,9 +359,7 @@ a given partition.</p>
 
         
 
-        <div name="java.io.Serializable" class="parent">
-              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

@@ -24,13 +24,13 @@
       <span class="symbol"> 
         <span class="name">InputConverter</span>
         <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span>
-        <span class="result"> extends <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
           <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Convert an InputFormat's key-value types to the type produced by a DataSource.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
         
 
@@ -46,7 +46,7 @@
                 <span class="filtertype">Inherited</span>
                 <ol><li class="hideall out"><span>Hide All</span></li>
                 <li class="showall in"><span>Show all</span></li></ol>
-                <ol id="linearization"><li name="com.nicta.scoobi.io.InputConverter" class="in"><span>InputConverter</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+                <ol id="linearization"><li name="com.nicta.scoobi.io.InputConverter" class="in"><span>InputConverter</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
               </div>
           <div id="visbl">
               <span class="filtertype">Visibility</span>
@@ -56,18 +56,32 @@
 
         
 
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.InputConverter#InputContext" data-isabs="false">
+      <a id="InputContext:InputContext"></a>
+      <h4 class="signature">
+      <span class="kind">type</span>
+      <span class="symbol"> 
+        <span class="name">InputContext</span>
         
+        <span class="result"> = org.apache.hadoop.mapreduce.MapContext[K, V, _, _]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
         
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.io.InputConverter#fromKeyValue" data-isabs="true">
-      <a id="fromKeyValue(K,V):A"></a>
+      <a id="fromKeyValue(InputContext,K,V):A"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">fromKeyValue</span>
         
-        <span class="params">(<span name="key">key: K</span>, <span name="value">value: V</span>)</span><span class="result">: A</span>
+        <span class="params">(<span name="context">context: InputContext</span>, <span name="key">key: K</span>, <span name="value">value: V</span>)</span><span class="result">: A</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>abstract </dd></dl></div>
@@ -327,11 +341,7 @@
 
         
 
-        <div name="scala.Serializable" class="parent">
-              <h3>Inherited from <span name="scala.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="java.io.Serializable" class="parent">
-              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

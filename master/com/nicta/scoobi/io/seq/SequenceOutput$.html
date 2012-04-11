@@ -142,6 +142,42 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceOutput#convertKeyToSequenceFile" data-isabs="false">
+      <a id="convertKeyToSequenceFile[K](DList[K],String,Boolean)(SeqSchema[K]):DListPersister[K]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertKeyToSequenceFile</span>
+        <span class="tparams">[<span name="K">K</span>]</span>
+        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[K]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
+to disk as the &quot;key&quot; component in a Sequence File.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceOutput#convertToSequenceFile" data-isabs="false">
+      <a id="convertToSequenceFile[K, V](DList[(K, V)],String,Boolean)(SeqSchema[K],SeqSchema[V]):DListPersister[(K, V)]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertToSequenceFile</span>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(K, V)]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[K]</span>, <span name="convV">convV: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[(K, V)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
+to disk as &quot;key-values&quot; in a Sequence File.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceOutput#convertValueToSequenceFile" data-isabs="false">
+      <a id="convertValueToSequenceFile[V](DList[V],String,Boolean)(SeqSchema[V]):DListPersister[V]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertValueToSequenceFile</span>
+        <span class="tparams">[<span name="V">V</span>]</span>
+        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[V]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convV">convV: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[V]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
+to disk as the &quot;value&quot; component in a Sequence File.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -267,13 +303,13 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceOutput#toSequenceFile" data-isabs="false">
-      <a id="toSequenceFile[K&lt;:Writable, V&lt;:Writable](DList[(K, V)],String)(Manifest[K],Manifest[V]):DListPersister[(K, V)]"></a>
+      <a id="toSequenceFile[K&lt;:Writable, V&lt;:Writable](DList[(K, V)],String,Boolean)(Manifest[K],Manifest[V]):DListPersister[(K, V)]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">toSequenceFile</span>
         <span class="tparams">[<span name="K">K &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>, <span name="V">V &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>]</span>
-        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(K, V)]</span>, <span name="path">path: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: Manifest[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[(K, V)]</span>
+        <span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(K, V)]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: Manifest[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="../../DListPersister.html">DListPersister</a>[(K, V)]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Specify a distributed list to be persistent by storing it to disk as a Sequence File.</p>

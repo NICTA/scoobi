@@ -24,7 +24,7 @@
       <span class="symbol"> 
         <span class="name">ParallelDo</span>
         <span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span>
-        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[B] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>, <span name="groupBarrier">groupBarrier: <span name="scala.Boolean" class="extype">Boolean</span></span>, <span name="fuseBarrier">fuseBarrier: <span name="scala.Boolean" class="extype">Boolean</span></span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[B] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -64,7 +64,7 @@ all elements of an existing DList and concatenating the results.</p></div><div c
       <span class="symbol"> 
         <span class="name">ParallelDo</span>
         
-        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span>
+        <span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>, <span name="groupBarrier">groupBarrier: <span name="scala.Boolean" class="extype">Boolean</span></span>, <span name="fuseBarrier">fuseBarrier: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span>
       </span>
       </h4>
       
@@ -237,13 +237,13 @@ all elements of an existing DList and concatenating the results.</p></div><div c
 invokes a user provided code implementing the copy.</p><div class="fullcomment"><div class="comment cmt"><p>A helper method that checks whether the node has already been copied, and if so returns the copy, else
 invokes a user provided code implementing the copy.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#dataSource" data-isabs="false">
-      <a id="dataSource(ConvertInfo):DataStore with com.nicta.scoobi.io.DataSource[_, _, _]"></a>
+      <a id="dataSource(ConvertInfo):com.nicta.scoobi.io.DataSource[_, _, _]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">dataSource</span>
         
-        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.DataStore" class="extype" href="../../io/DataStore.html">DataStore</a> with com.nicta.scoobi.io.DataSource[_, _, _]</span>
+        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>)</span><span class="result">: com.nicta.scoobi.io.DataSource[_, _, _]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
@@ -294,6 +294,17 @@ invokes a user provided code implementing the copy.</p></div><dl class="attribut
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo#fuseBarrier" data-isabs="false">
+      <a id="fuseBarrier:Boolean"></a>
+      <h4 class="signature">
+      <span class="kind">val</span>
+      <span class="symbol"> 
+        <span class="name">fuseBarrier</span>
+        
+        <span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -305,6 +316,17 @@ invokes a user provided code implementing the copy.</p></div><dl class="attribut
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo#groupBarrier" data-isabs="false">
+      <a id="groupBarrier:Boolean"></a>
+      <h4 class="signature">
+      <span class="kind">val</span>
+      <span class="symbol"> 
+        <span class="name">groupBarrier</span>
+        
+        <span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -372,6 +394,17 @@ invokes a user provided code implementing the copy.</p></div><dl class="attribut
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo#justCopy" data-isabs="false">
+      <a id="justCopy(CopyTable,com.nicta.scoobi.impl.plan.Smart.CopyFn[_],Boolean):(DList[B], CopyTable, Boolean)"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">justCopy</span>
+        
+        <span class="params">(<span name="copied">copied: CopyTable</span>, <span name="cf">cf: com.nicta.scoobi.impl.plan.Smart.CopyFn[_]</span>, <span name="fb">fb: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[B], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo#justCopy" data-isabs="false">
       <a id="justCopy(CopyTable,com.nicta.scoobi.impl.plan.Smart.CopyFn[_]):(DList[B], CopyTable, Boolean)"></a>
       <h4 class="signature">
       <span class="kind">def</span>
@@ -427,6 +460,17 @@ node(s), a the CopyFn function is used (somewhat like a callback).</p></div><dl 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo#optAddFuseBar" data-isabs="false">
+      <a id="optAddFuseBar(CopyTable,Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]):(DList[B], CopyTable, Boolean)"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">optAddFuseBar</span>
+        
+        <span class="params">(<span name="copied">copied: CopyTable</span>, <span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[B], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">If this ParallelDo is connected to an output, replicate it with a fuse barrier.</p><div class="fullcomment"><div class="comment cmt"><p>If this ParallelDo is connected to an output, replicate it with a fuse barrier.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.ParallelDo" class="extype" href="">ParallelDo</a> → <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optCombinerToParDos" data-isabs="false">
       <a id="optCombinerToParDos(CopyTable):(DList[B], CopyTable, Boolean)"></a>
       <h4 class="signature">

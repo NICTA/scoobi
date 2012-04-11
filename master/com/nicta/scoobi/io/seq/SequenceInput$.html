@@ -142,6 +142,84 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceInput#convertFromSequenceFile" data-isabs="false">
+      <a id="convertFromSequenceFile[K, V](List[String])(Manifest[K],WireFormat[K],SeqSchema[K],Manifest[V],WireFormat[V],SeqSchema[V]):DList[(K, V)]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertFromSequenceFile</span>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(K, V)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Sequence Files. Note that the type parameters
+K and V are the &quot;converted&quot; Scala types for the Writable key-value types that must be contained in the the
+Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceInput#convertFromSequenceFile" data-isabs="false">
+      <a id="convertFromSequenceFile[K, V](String*)(Manifest[K],WireFormat[K],SeqSchema[K],Manifest[V],WireFormat[V],SeqSchema[V]):DList[(K, V)]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertFromSequenceFile</span>
+        <span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span>
+        <span class="params">(<span name="paths">paths: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(K, V)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
+are the &quot;converted&quot; Scala types for the Writable key-value types that must be contained in the the Sequence
+Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceInput#convertKeyFromSequenceFile" data-isabs="false">
+      <a id="convertKeyFromSequenceFile[K](List[String])(Manifest[K],WireFormat[K],SeqSchema[K]):DList[K]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertKeyFromSequenceFile</span>
+        <span class="tparams">[<span name="K">K</span>]</span>
+        <span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;key&quot; contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;key&quot; contents of a list of one or more Sequence Files. Note that the type parameter
+K is the &quot;converted&quot; Scala type for the Writable key type that must be contained in the the
+Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceInput#convertKeyFromSequenceFile" data-isabs="false">
+      <a id="convertKeyFromSequenceFile[K](String*)(Manifest[K],WireFormat[K],SeqSchema[K]):DList[K]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertKeyFromSequenceFile</span>
+        <span class="tparams">[<span name="K">K</span>]</span>
+        <span class="params">(<span name="paths">paths: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;key&quot; contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;key&quot; contents of one or more Sequence Files. Note that the type parameter K
+is the &quot;converted&quot; Scala type for the Writable key type that must be contained in the the Sequence
+Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceInput#convertValueFromSequenceFile" data-isabs="false">
+      <a id="convertValueFromSequenceFile[V](List[String])(Manifest[V],WireFormat[V],SeqSchema[V]):DList[V]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertValueFromSequenceFile</span>
+        <span class="tparams">[<span name="V">V</span>]</span>
+        <span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[V]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;value&quot; contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;value&quot; contents of a list of one or more Sequence Files. Note that the type parameter
+V is the &quot;converted&quot; Scala type for the Writable value type that must be contained in the the
+Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.seq.SequenceInput#convertValueFromSequenceFile" data-isabs="false">
+      <a id="convertValueFromSequenceFile[V](String*)(Manifest[V],WireFormat[V],SeqSchema[V]):DList[V]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">convertValueFromSequenceFile</span>
+        <span class="tparams">[<span name="V">V</span>]</span>
+        <span class="params">(<span name="paths">paths: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.seq.SeqSchema" class="extype" href="SeqSchema.html">SeqSchema</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[V]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;value&quot; contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;value&quot; contents of one or more Sequence Files. Note that the type parameter V
+is the &quot;converted&quot; Scala type for the Writable value type that must be contained in the the Sequence
+Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">

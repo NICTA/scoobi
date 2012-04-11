@@ -56,7 +56,21 @@
 
         
 
-        
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput.TextSource" data-isabs="false">
+      <a id="TextSource:TextSource[A]"></a>
+      <h4 class="signature">
+      <span class="kind">class</span>
+      <span class="symbol"> 
+        <a href="TextInput$$TextSource.html"><span class="name">TextSource</span></a>
+        <span class="tparams">[<span name="A">A</span>]</span>
+        <span class="result"> extends DataSource[LongWritable, Text, A]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
         
         
 
@@ -128,6 +142,17 @@
       </span>
       </h4>
       <p class="comment cmt">Extract a Double from a String.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput.Float" data-isabs="false">
+      <a id="Float:Float"></a>
+      <h4 class="signature">
+      <span class="kind">object</span>
+      <span class="symbol"> 
+        <a href="TextInput$$Float$.html"><span class="name">Float</span></a>
+        
+        <span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Extract a Float from a String.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput.Int" data-isabs="false">
       <a id="Int:Int"></a>
       <h4 class="signature">
@@ -197,20 +222,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#extractFromDelimitedTextFile" data-isabs="false">
-      <a id="extractFromDelimitedTextFile[A](String,String)(PartialFunction[List[String], A])(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="kind">def</span>
-      <span class="symbol"> 
-        <span class="name">extractFromDelimitedTextFile</span>
-        <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="sep">sep: String</span>, <span name="path">path: String</span>)</span><span class="params">(<span name="extractFn">extractFn: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[List[String], A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a distributed list from a text file that is a number of fields delimited
-by some separator.</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from a text file that is a number of fields delimited
-by some separator. Use an extractor function to pull out the required fields to
-create the distributed list.</p></div></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -226,19 +237,19 @@ create the distributed list.</p></div></div>
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#fromDelimitedTextFile" data-isabs="false">
-      <a id="fromDelimitedTextFile[A](String,String)(Manifest[A],Schema[A],WireFormat[A]):DList[A]"></a>
+      <a id="fromDelimitedTextFile[A](String,String)(PartialFunction[List[String], A])(Manifest[A],WireFormat[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">fromDelimitedTextFile</span>
         <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="sep">sep: String</span>, <span name="path">path: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.io.text.Schema" class="extype" href="Schema.html">Schema</a>[A]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>
+        <span class="params">(<span name="path">path: String</span>, <span name="sep">sep: String = <span class="symbol">&quot;\t&quot;</span></span>)</span><span class="params">(<span name="extractFn">extractFn: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[List[String], A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Create a distributed list from a text file that is a number of fields delimited
 by some separator.</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from a text file that is a number of fields delimited
-by some separator. The type of the resultant list is determined by type inference.
-An implicit schema must be in scope for the required resultant type.</p></div></div>
+by some separator. Use an extractor function to pull out the required fields to
+create the distributed list.</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#fromTextFile" data-isabs="false">
       <a id="fromTextFile(List[String]):DList[String]"></a>
       <h4 class="signature">
@@ -263,6 +274,36 @@ a directory, the input forms all files in that directory).</p>
       </h4>
       <p class="shortcomment cmt">Create a distributed list from one or more files or directories (in the case of a directory,
 the input forms all files in that directory).</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#fromTextFileWithPath" data-isabs="false">
+      <a id="fromTextFileWithPath(List[String]):DList[(String, String)]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">fromTextFileWithPath</span>
+        
+        <span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(String, String)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list from a list of one or more files or directories (in the case of
+a directory, the input forms all files in that directory).</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from a list of one or more files or directories (in the case of
+a directory, the input forms all files in that directory). The distributed list is a tuple
+where the first part is the path of the originating file and the second part is a line of
+text.</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#fromTextFileWithPath" data-isabs="false">
+      <a id="fromTextFileWithPath(String*):DList[(String, String)]"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">fromTextFileWithPath</span>
+        
+        <span class="params">(<span name="paths">paths: String*</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="../../DList.html">DList</a>[(String, String)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list from one or more files or directories (in the case of
+a directory, the input forms all files in that directory).</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list from one or more files or directories (in the case of
+a directory, the input forms all files in that directory). The distributed list is a tuple
+where the first part is the path of the originating file and the second part is a line of
+text.</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">

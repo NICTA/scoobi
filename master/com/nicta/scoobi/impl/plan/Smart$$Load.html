@@ -24,12 +24,12 @@
       <span class="symbol"> 
         <span class="name">Load</span>
         <span class="tparams">[<span name="A">A</span>]</span>
-        <span class="params">(<span name="loader">loader: <a name="com.nicta.scoobi.io.Loader" class="extype" href="../../io/Loader.html">Loader</a>[A]</span>, <span name="evidence$20">evidence$20: Manifest[A]</span>, <span name="evidence$21">evidence$21: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, A]</span>, <span name="evidence$20">evidence$20: Manifest[A]</span>, <span name="evidence$21">evidence$21: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
-          <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>The Load node type specifies the materialization of a DList. A Loader object specifies how
-the materialization is performed.</p></div><div class="toggleContainer block">
+          <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>The Load node type specifies the creation of a DList from some source other than another DList.
+A DataSource object specifies how the loading is performed.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
@@ -64,7 +64,7 @@ the materialization is performed.</p></div><div class="toggleContainer block">
       <span class="symbol"> 
         <span class="name">Load</span>
         
-        <span class="params">(<span name="loader">loader: <a name="com.nicta.scoobi.io.Loader" class="extype" href="../../io/Loader.html">Loader</a>[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span>
+        <span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>)</span>
       </span>
       </h4>
       
@@ -237,13 +237,13 @@ the materialization is performed.</p></div><div class="toggleContainer block">
 invokes a user provided code implementing the copy.</p><div class="fullcomment"><div class="comment cmt"><p>A helper method that checks whether the node has already been copied, and if so returns the copy, else
 invokes a user provided code implementing the copy.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Load#dataSource" data-isabs="false">
-      <a id="dataSource(ConvertInfo):DataStore with com.nicta.scoobi.io.DataSource[_, _, _]"></a>
+      <a id="dataSource(ConvertInfo):com.nicta.scoobi.io.DataSource[_, _, _]"></a>
       <h4 class="signature">
       <span class="kind">def</span>
       <span class="symbol"> 
         <span class="name">dataSource</span>
         
-        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.DataStore" class="extype" href="../../io/DataStore.html">DataStore</a> with com.nicta.scoobi.io.DataSource[_, _, _]</span>
+        <span class="params">(<span name="ci">ci: <a name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" class="extype" href="Smart$$ConvertInfo.html">ConvertInfo</a></span>)</span><span class="result">: com.nicta.scoobi.io.DataSource[_, _, _]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.Load" class="extype" href="">Load</a> → <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
@@ -361,17 +361,6 @@ invokes a user provided code implementing the copy.</p></div><dl class="attribut
       </h4>
       <p class="shortcomment cmt">Perform a depth-first traversal copy of the DList node.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a depth-first traversal copy of the DList node. When copying the input DList
 node(s), a the CopyFn function is used (somewhat like a callback).</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.Load" class="extype" href="">Load</a> → <a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Load#loader" data-isabs="false">
-      <a id="loader:Loader[A]"></a>
-      <h4 class="signature">
-      <span class="kind">val</span>
-      <span class="symbol"> 
-        <span class="name">loader</span>
-        
-        <span class="result">: <a name="com.nicta.scoobi.io.Loader" class="extype" href="../../io/Loader.html">Loader</a>[A]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -405,6 +394,19 @@ node(s), a the CopyFn function is used (somewhat like a callback).</p></div><dl 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>final </dd><dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optAddFuseBar" data-isabs="false">
+      <a id="optAddFuseBar(CopyTable,Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]):(DList[A], CopyTable, Boolean)"></a>
+      <h4 class="signature">
+      <span class="kind">def</span>
+      <span class="symbol"> 
+        <span class="name">optAddFuseBar</span>
+        
+        <span class="params">(<span name="copied">copied: CopyTable</span>, <span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[A], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">An optimisation strategy that any ParallelDo that is connected to an output is marked
+with a fuse barrier.</p><div class="fullcomment"><div class="comment cmt"><p>An optimisation strategy that any ParallelDo that is connected to an output is marked
+with a fuse barrier.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList#optCombinerToParDos" data-isabs="false">
       <a id="optCombinerToParDos(CopyTable):(DList[A], CopyTable, Boolean)"></a>
       <h4 class="signature">
@@ -540,6 +542,17 @@ such that in the resulting AST, GroupByKey nodes have only single outputs.</p></
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Smart.Load" class="extype" href="">Load</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Load#source" data-isabs="false">
+      <a id="source:com.nicta.scoobi.io.DataSource[_, _, A]"></a>
+      <h4 class="signature">
+      <span class="kind">val</span>
+      <span class="symbol"> 
+        <span class="name">source</span>
+        
+        <span class="result">: com.nicta.scoobi.io.DataSource[_, _, A]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
