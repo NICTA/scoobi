@@ -28,13 +28,13 @@ trait Grouping[K] {
   /** Specifies how key-values are partitioned among Reducer tasks. */
   def partition(key: K, num: Int): Int = (key.hashCode & Int.MaxValue) % num
 
-  /** Specifies how values, for a given partition, are grouped together in
-    * a given partition. */
-  def groupCompare(x: K, y: K): Int = sortCompare(x, y)
-
   /** Specifies the order in which grouped values are presented to a Reducer
     * task, for a given partition. */
-  def sortCompare(x: K, y: K): Int
+  def sortCompare(x: K, y: K): Int = groupCompare(x, y)
+
+  /** Specifies how values, for a given partition, are grouped together in
+    * a given partition. */
+  def groupCompare(x: K, y: K): Int
 }
 
 
@@ -44,12 +44,12 @@ object Grouping {
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
     * type class instance. Partitioning and grouping use the default implementation. */
   implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
-    def sortCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
+    def groupCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
   }
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
     * type class instance. Partitioning and grouping use the default implementation. */
   implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
-    def sortCompare(x: T, y: T): Int = x.compareTo(y)
+    def groupCompare(x: T, y: T): Int = x.compareTo(y)
   }
 }
