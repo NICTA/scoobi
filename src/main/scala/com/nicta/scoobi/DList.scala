@@ -217,7 +217,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
       * codes of the two values. In this case, not concerned with ordering, just that the
       * same values are grouped together. This Grouping instance will provide that. */
     implicit val grouping = new Grouping[A] {
-      def sortCompare(x: A, y: A): Int = (x.hashCode - y.hashCode)
+      def groupCompare(x: A, y: A): Int = (x.hashCode - y.hashCode)
     }
 
     parallelDo(dropCached).groupByKey.map(_._1)
