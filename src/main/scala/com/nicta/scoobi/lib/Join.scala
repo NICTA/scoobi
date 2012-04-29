@@ -17,17 +17,17 @@ package com.nicta.scoobi.lib
 
 import scala.collection.immutable.VectorBuilder
 import com.nicta.scoobi.DList
+import com.nicta.scoobi.DObject
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.DoFn
+import com.nicta.scoobi.BasicDoFn
 import com.nicta.scoobi.Emitter
 import scala.collection.mutable.ArrayBuffer
 
 object Join {
 
-  private def innerJoin[T, A, B] = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
-    override def setup() {}
-    override def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
+  private def innerJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
+    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
       var alist = new ArrayBuffer[A]
 
       for (v <- input._2) {
@@ -37,13 +37,10 @@ object Join {
         }
       }
     }
-
-    override def cleanup(emitter: Emitter[(T, (A, B))]) {}
   }
 
-  private def rightOuterJoin[T, A, B, A2](has: (T, A, B) => A2, notHas: (T, B) => A2) = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A2, B))] {
-    override def setup() {}
-    override def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A2, B))]) {
+  private def rightOuterJoin[T, A, B, A2](has: (T, A, B) => A2, notHas: (T, B) => A2) = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A2, B))] {
+    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A2, B))]) {
       var alist = new ArrayBuffer[A]
 
       for (v <- input._2) {
@@ -58,8 +55,6 @@ object Join {
         }
       }
     }
-
-    override def cleanup(emitter: Emitter[(T, (A2, B))]) {}
   }
 
   /** Perform a join of two distributed lists using a specified join-predicate, and a type. */
@@ -69,7 +64,7 @@ object Join {
                        A2 : Manifest : WireFormat,
                        B2 : Manifest : WireFormat]
       (d1: DList[(K, A)], d2: DList[(K, B)])
-      (dofn: DoFn[((K, Boolean), Iterable[Either[A, B]]), (K, (A2, B2))])
+      (dofn: BasicDoFn[((K, Boolean), Iterable[Either[A, B]]), (K, (A2, B2))])
     : DList[(K, (A2, B2))] = {
 
     /* Map left and right DLists to be of the same type. Label the left as 'true' and the
@@ -98,7 +93,7 @@ object Join {
       }
     }
 
-    (left ++ right).groupByKey.parallelDo(dofn).groupBarrier
+    (left ++ right).groupByKey.parallelDo(DObject(()), dofn).groupBarrier
   }
 
   /** Perform an equijoin of two (2) distributed lists. */

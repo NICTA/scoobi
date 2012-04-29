@@ -25,15 +25,22 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 
 
 /** Hadoop Reducer class for an MSCR. */
-class MscrReducer[K2, V2, B, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3, V3] {
+class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3, V3] {
 
-  private type Reducers = Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])]
+  private type Reducers = Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer[_,_,_,_]))]
   private var outputs: Reducers = _
+  private var envs: Map[Int, _] = _
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {
     outputs = DistCache.pullObject[Reducers](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
     channelOutput = new ChannelOutputFormat(context)
+
+    envs = outputs map { case (ix, (_, (env, _))) => (ix, env.pull(context.getConfiguration)) }
+
+    outputs foreach { case (ix, (_, (_, reducer: TaggedReducer[_, _, _, _]))) =>
+      reducer.setup(envs(ix).asInstanceOf[E])
+    }
   }
 
   override def reduce(key: TaggedKey,
@@ -44,7 +51,8 @@ class MscrReducer[K2, V2, B, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3
      * specified by the key's tag. */
     val channel = key.tag
     val converters = outputs(channel)._1.asInstanceOf[List[(Int, OutputConverter[K3, V3, B])]]
-    val reducer = outputs(channel)._2.asInstanceOf[TaggedReducer[K2, V2, B]]
+    val env = envs(channel).asInstanceOf[E]
+    val reducer = outputs(channel)._2._2.asInstanceOf[TaggedReducer[K2, V2, B, E]]
 
     /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
     val untaggedValues = new Iterable[V2] { def iterator = values.iterator map (_.get(channel).asInstanceOf[V2]) }
@@ -53,7 +61,7 @@ class MscrReducer[K2, V2, B, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3
     val emitter = new Emitter[B] {
       def emit(x: B) = converters foreach { case (ix, converter) => channelOutput.write(channel, ix, converter.toKeyValue(x)) }
     }
-    reducer.reduce(key.get(channel).asInstanceOf[K2], untaggedValues, emitter)
+    reducer.reduce(env, key.get(channel).asInstanceOf[K2], untaggedValues, emitter)
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {

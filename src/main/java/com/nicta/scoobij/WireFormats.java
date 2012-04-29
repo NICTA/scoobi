@@ -88,4 +88,24 @@ public class WireFormats {
 
 		};
 	}
+
+	public static WireFormatType<scala.runtime.BoxedUnit> wireFormatUnit() {
+
+		return new WireFormatType<scala.runtime.BoxedUnit>() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public com.nicta.scoobi.WireFormat<scala.runtime.BoxedUnit> wireFormat() {
+				return com.nicta.scoobi.WireFormat$.MODULE$.UnitFmt();
+			}
+
+			@Override
+			public Manifest<scala.runtime.BoxedUnit> typeInfo() {
+				return Conversions.toManifest(scala.runtime.BoxedUnit.class);
+			};
+
+
+
+		};
+	}
 }

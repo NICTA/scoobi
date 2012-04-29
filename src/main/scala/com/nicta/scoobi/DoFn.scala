@@ -26,24 +26,36 @@ package com.nicta.scoobi
   *
   * These 3 steps encapsulate the entire life-cycle of a DoFn. A DoFn object
   * will not be referenced after these steps. */
-trait DoFn[A, B] {
+trait EnvDoFn[A, B, E] {
+  def setup(env: E): Unit
+  def process(env: E, input: A, emitter: Emitter[B]): Unit
+  def cleanup(env: E, emitter: Emitter[B]): Unit
+}
+
+/** Interface for specifing parallel operation over DLists in the absence of an
+  * environment. */
+trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   def setup(): Unit
   def process(input: A, emitter: Emitter[B]): Unit
   def cleanup(emitter: Emitter[B]): Unit
+
+  final def setup(env: Unit) { setup() }
+  final def process(env: Unit, input: A, emitter: Emitter[B]) { process(input, emitter) }
+  final def cleanup(env: Unit, emitter: Emitter[B]) { cleanup(emitter) }
+}
+
+/** Interface for specifing parallel operation over DLists in the absence of an
+  * environment and explicit setup and cleanup phases. */
+trait BasicDoFn[A, B] extends EnvDoFn[A, B, Unit] {
+  def process(input: A, emitter: Emitter[B]): Unit
+
+  final def setup(env: Unit) {}
+  final def process(env: Unit, input: A, emitter: Emitter[B]) { process(input, emitter) }
+  final def cleanup(env: Unit, emitter: Emitter[B]) {}
 }
 
 
 /** Interface for writing outputs from a DoFn. */
 trait Emitter[A] {
   def emit(value: A): Unit
-}
-
-
-object DoFn {
-  /** Convert a 1-ary function to a DoFn. */
-  implicit def function1ToDoFn[A, B](f: A => Iterable[B]) = new DoFn[A, B] {
-    def setup() = {}
-    def process(input: A, emitter: Emitter[B]) = f(input).foreach { emitter.emit(_) }
-    def cleanup(emitter: Emitter[B]) = {}
-  }
 }

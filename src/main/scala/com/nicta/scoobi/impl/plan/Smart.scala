@@ -17,12 +17,14 @@ package com.nicta.scoobi.impl.plan
 
 import scala.collection.mutable.{Map => MMap}
 
-import com.nicta.scoobi.DoFn
+import com.nicta.scoobi.ScoobiConfiguration
+import com.nicta.scoobi.EnvDoFn
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.DataSink
+import com.nicta.scoobi.impl.exec.Env
 import com.nicta.scoobi.impl.exec.BridgeStore
 import com.nicta.scoobi.impl.exec.TaggedIdentityMapper
 import com.nicta.scoobi.impl.util.UniqueInt
@@ -152,7 +154,11 @@ object Smart {
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V), Sh] with KVLike[K,V]
 
-    def convertParallelDo[B : Manifest : WireFormat](ci: ConvertInfo, pd: ParallelDo[A, B]): AST.Node[B, Sh]
+    def convertParallelDo[B : Manifest : WireFormat,
+                          E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[A, B, E])
+      : AST.Node[B, Arr]
   }
 
 
@@ -184,9 +190,14 @@ object Smart {
                     def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
 
-    def convertParallelDo[B : Manifest : WireFormat](ci: ConvertInfo, pd: ParallelDo[A, B]): AST.Node[B, Arr] = {
+    def convertParallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[A, B, E])
+      : AST.Node[B, Arr] = {
+
       val n: AST.Node[A, Arr] = convert(ci)
-      pd.insert(ci, AST.Mapper(n, pd.dofn))
+      val e: AST.Node[E, Exp] = pd.env.convert(ci)
+      pd.insert(ci, AST.Mapper(n, e, pd.dofn))
     }
 
     override def dataSource(ci: ConvertInfo): DataSource[_,_,_] = source
@@ -195,17 +206,20 @@ object Smart {
 
   /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
     * all elements of an existing DComp and concatenating the results. */
-  case class ParallelDo[A, B]
+  case class ParallelDo[A, B, E]
       (in: DComp[A, Arr],
-       dofn: DoFn[A, B],
+       env: DComp[E, Exp],
+       dofn: EnvDoFn[A, B, E],
        groupBarrier: Boolean = false,
        fuseBarrier: Boolean = false)
-      (implicit val mA: Manifest[A], val wtA: WireFormat[A], mB: Manifest[B], wtB: WireFormat[B])
+      (implicit val mA: Manifest[A], val wtA: WireFormat[A],
+                mB: Manifest[B], wtB: WireFormat[B],
+                val mE: Manifest[E], val wtE: WireFormat[E])
     extends DComp[B, Arr] {
 
     override val toString = "ParallelDo" + id + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
 
-    val toVerboseString = toString + "(" + in.toVerboseString + ")"
+    val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -214,9 +228,13 @@ object Smart {
 
     def justCopy(copied: CopyTable, cf: CopyFn[_,_], fb: Boolean): (DComp[B, Arr], CopyTable, Boolean) = {
       val cfA = cf.asInstanceOf[CopyFn[A, Arr]]
-      val (inUpd, copiedUpd, b) = cfA(in, copied)
-      val pd = ParallelDo(inUpd, dofn, groupBarrier, fb)
-      (pd, copiedUpd + (this -> pd), b)
+      val (inUpd, copiedUpd1, b1) = cfA(in, copied)
+
+      val cfE = cf.asInstanceOf[CopyFn[E, Exp]]
+      val (envUpd, copiedUpd2, b2) = cfE(env, copiedUpd1)
+
+      val pd = ParallelDo(inUpd, envUpd, dofn, groupBarrier, fb)
+      (pd, copiedUpd2 + (this -> pd), b1 || b2)
     }
 
     /** If this ParallelDo is connected to an output, replicate it with a fuse barrier. */
@@ -235,7 +253,7 @@ object Smart {
             (ctUpd + (in -> inUpd), copies :+ inUpd)
           }
 
-          val flat: DComp[B, Arr] = Flatten(insUpd.map(ParallelDo(_, dofn, groupBarrier, fuseBarrier)))
+          val flat: DComp[B, Arr] = Flatten(insUpd.map(ParallelDo(_, env, dofn, groupBarrier, fuseBarrier)))
           (flat, copiedUpd + (this -> flat), true)
         }
         case _            => justCopy(copied, (n: DComp[A, Arr], ct: CopyTable) => n.optSinkFlattens(ct))
@@ -247,30 +265,57 @@ object Smart {
     override def optFuseParDos(copied: CopyTable): (DComp[B, Arr], CopyTable, Boolean) = copyOnce(copied) {
 
       /* Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
-      def fuse[X, Y, Z](f: DoFn[X, Y], g: DoFn[Y, Z]): DoFn[X, Z] = new DoFn[X, Z] {
-        def setup() = {
-          f.setup()
-          g.setup()
+      def fuseDoFn[X, Y, Z, F, G](f: EnvDoFn[X, Y, F], g: EnvDoFn[Y, Z, G]): EnvDoFn[X, Z, (F, G)] = new EnvDoFn[X, Z, (F, G)] {
+        def setup(env: (F, G)) = {
+          f.setup(env._1)
+          g.setup(env._2)
         }
 
-        def process(input: X, emitter: Emitter[Z]) = {
-          f.process(input, new Emitter[Y] { def emit(value: Y) = g.process(value, emitter) } )
+        def process(env: (F, G), input: X, emitter: Emitter[Z]) = {
+          f.process(env._1, input, new Emitter[Y] { def emit(value: Y) = g.process(env._2, value, emitter) } )
         }
 
-        def cleanup(emitter: Emitter[Z]) = {
-          f.cleanup(new Emitter[Y] { def emit(value: Y) = g.process(value, emitter) } )
-          g.cleanup(emitter)
+        def cleanup(env: (F, G), emitter: Emitter[Z]) = {
+          f.cleanup(env._1, new Emitter[Y] { def emit(value: Y) = g.process(env._2, value, emitter) } )
+          g.cleanup(env._2, emitter)
         }
       }
 
+      /* Create a new environment by forming a tuple from two seperate evironments.*/
+      def fuseEnv[F : Manifest : WireFormat, G : Manifest : WireFormat](fExp: DComp[F, Exp], gExp: DComp[G, Exp]): DComp[(F, G), Exp] =
+        Op(fExp, gExp, (f: F, g: G) => (f, g))
+
+      def fuseParallelDos[X : Manifest : WireFormat,
+                          Y : Manifest : WireFormat,
+                          Z : Manifest : WireFormat,
+                          F : Manifest : WireFormat,
+                          G : Manifest : WireFormat]
+          (pd1: ParallelDo[X, Y, F],
+           pd2: ParallelDo[Y, Z, G])
+        : ParallelDo[X, Z, (F, G)] = {
+
+          val ParallelDo(in1, env1, dofn1, gb1, _) = pd1
+          val ParallelDo(in2, env2, dofn2, gb2, fb2) = pd2
+
+          val fusedDoFn = fuseDoFn(dofn1, dofn2)
+          val fusedEnv = fuseEnv(env1, env2)
+
+          implicit val mFG: Manifest[(F, G)] =
+            Manifest.classType(classOf[Tuple2[F,G]], implicitly[Manifest[F]], implicitly[Manifest[G]])
+          implicit val wtFG: WireFormat[(F, G)] =
+            WireFormat.Tuple2Fmt(implicitly[WireFormat[F]], implicitly[WireFormat[G]])
+
+          new ParallelDo(in1, fusedEnv, fusedDoFn, gb1 || gb2, fb2)
+      }
+
       in match {
-        case ParallelDo(_, _, _, false) => {
+        case ParallelDo(_, _, _, _, false) => {
           val (inUpd, copiedUpd, _) = in.optFuseParDos(copied)
-          val prev@ParallelDo(inPrev, dofnPrev, gbPrev, _) = inUpd
-          val pd = new ParallelDo(inPrev, fuse(dofnPrev, dofn), groupBarrier || gbPrev, fuseBarrier)(prev.mA, prev.wtA, mB, wtB)
+          val prev@ParallelDo(_, _, _, _, _) = inUpd
+          val pd = fuseParallelDos(prev, this)(prev.mA, prev.wtA, mA, wtA, mB, wtB, prev.mE, prev.wtE, mE, wtE)
           (pd, copiedUpd + (this -> pd), true)
         }
-        case _                => justCopy(copied, (n: DComp[A, Arr], ct: CopyTable) => n.optFuseParDos(ct))
+        case _ => justCopy(copied, (n: DComp[A, Arr], ct: CopyTable) => n.optFuseParDos(ct))
       }
     }
 
@@ -285,33 +330,39 @@ object Smart {
     def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat](ci: ConvertInfo):
                     AST.Node[(K,V), Arr] with KVLike[K,V] = {
-      val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
-      val n: AST.Node[A, Arr] = pd.in.convert(ci)
 
       if (ci.mscrs.exists(_.containsGbkReducer(this))) {
-        val pd: ParallelDo[(K, Iterable[V]),(K,V)] = this.asInstanceOf[ParallelDo[(K, Iterable[V]),(K,V)]]
+        val pd: ParallelDo[(K, Iterable[V]), (K,V), E] = this.asInstanceOf[ParallelDo[(K, Iterable[V]), (K,V), E]]
         val n: AST.Node[(K, Iterable[V]), Arr] = pd.in.convert(ci)
+        val e: AST.Node[E, Exp] = pd.env.convert(ci)
 
-        pd.insert2(ci, new AST.GbkReducer(n, pd.dofn) with KVLike[K,V] {
+        pd.insert2(ci, new AST.GbkReducer(n, e, pd.dofn) with KVLike[K,V] {
           def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
 
       } else {
-        val pd: ParallelDo[A,(K,V)] = this.asInstanceOf[ParallelDo[A,(K,V)]]
+        val pd: ParallelDo[A, (K,V), E] = this.asInstanceOf[ParallelDo[A, (K,V), E]]
         val n: AST.Node[A, Arr] = pd.in.convert(ci)
+        val e: AST.Node[E, Exp] = pd.env.convert(ci)
 
         if ( ci.mscrs.exists(_.containsGbkMapper(pd)) ) {
-          pd.insert2(ci, new AST.GbkMapper(n, pd.dofn) with KVLike[K,V] {
+          pd.insert2(ci, new AST.GbkMapper(n, e, pd.dofn) with KVLike[K,V] {
             def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
         } else {
-          pd.insert2(ci, new AST.Mapper(n, pd.dofn) with KVLike[K,V] {
+          pd.insert2(ci, new AST.Mapper(n, e, pd.dofn) with KVLike[K,V] {
             def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
         }
       }
     }
 
-    def convertParallelDo[C : Manifest : WireFormat](ci: ConvertInfo, pd: ParallelDo[B, C]): AST.Node[C, Arr] = {
+    def convertParallelDo[C : Manifest : WireFormat,
+                          F : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[B, C, F])
+      : AST.Node[C, Arr] = {
+
       val n: AST.Node[B, Arr] = pd.in.convert(ci)
-      pd.insert(ci, AST.Mapper(n, pd.dofn))
+      val e: AST.Node[F, Exp] = pd.env.convert(ci)
+      pd.insert(ci, AST.Mapper(n, e, pd.dofn))
     }
   }
 
@@ -382,13 +433,18 @@ object Smart {
 
     }
 
-    override def convertParallelDo[B : Manifest : WireFormat]
-                               (ci: ConvertInfo, pd: ParallelDo[(K,Iterable[V]), B]): AST.Node[B, Arr] = {
+    override def convertParallelDo[B : Manifest : WireFormat,
+                                   E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[(K,Iterable[V]), B, E])
+      : AST.Node[B, Arr] = {
+
       val n: AST.Node[(K, Iterable[V]), Arr] = convert(ci)
+      val e: AST.Node[E, Exp] = pd.env.convert(ci)
       if ( ci.mscrs.exists(_.containsGbkReducer(pd)) ) {
-        pd.insert(ci, AST.GbkReducer(n, pd.dofn))
+        pd.insert(ci, AST.GbkReducer(n, e, pd.dofn))
       } else {
-        pd.insert(ci, AST.Mapper(n, pd.dofn))
+        pd.insert(ci, AST.Mapper(n, e, pd.dofn))
       }
     }
   }
@@ -423,16 +479,16 @@ object Smart {
         case _                => {
           val (inUpd, copiedUpd, _) = in.optCombinerToParDos(copied)
 
-          val dofn = new DoFn[(K, Iterable[V]), (K, V)] {
-            def setup() = {}
-            def process(input: (K, Iterable[V]), emitter: Emitter[(K, V)]) = {
+          val dofn = new EnvDoFn[(K, Iterable[V]), (K, V), Unit] {
+            def setup(env: Unit) = {}
+            def process(env: Unit, input: (K, Iterable[V]), emitter: Emitter[(K, V)]) = {
               val key = input._1
               val values = input._2
               emitter.emit(key, values.tail.foldLeft(values.head)(f))
             }
-            def cleanup(emitter: Emitter[(K, V)]) = {}
+            def cleanup(env: Unit, emitter: Emitter[(K, V)]) = {}
           }
-          val pd = ParallelDo(inUpd, dofn, false, false)
+          val pd = ParallelDo(inUpd, Return(()), dofn, false, false)
           (pd, copiedUpd + (this -> pd), true)
         }
       }
@@ -486,13 +542,18 @@ object Smart {
 
     }
 
-    override def convertParallelDo[B : Manifest : WireFormat]
-                               (ci: ConvertInfo, pd: ParallelDo[(K,V), B]): AST.Node[B, Arr] = {
+    override def convertParallelDo[B : Manifest : WireFormat,
+                                   E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[(K,V), B, E])
+      : AST.Node[B, Arr] = {
+
       val n: AST.Node[(K, V), Arr] = convert(ci)
+      val e: AST.Node[E, Exp] = pd.env.convert(ci)
       if ( ci.mscrs.exists(_.containsReducer(pd)) ) {
-        pd.insert(ci, AST.Reducer(n, pd.dofn))
+        pd.insert(ci, AST.Reducer(n, e, pd.dofn))
       } else {
-        pd.insert(ci, AST.Mapper(n, pd.dofn))
+        pd.insert(ci, AST.Mapper(n, e, pd.dofn))
       }
     }
   }
@@ -556,10 +617,139 @@ object Smart {
                       def mkTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper[K,V](tags)})
     }
 
-    def convertParallelDo[B : Manifest : WireFormat](ci: ConvertInfo, pd: ParallelDo[A, B]): AST.Node[B, Arr] = {
+    def convertParallelDo[B : Manifest : WireFormat,
+                          E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[A, B, E])
+      : AST.Node[B, Arr] = {
+
       val n: AST.Node[A, Arr] = convert(ci)
-      pd.insert(ci, AST.Mapper(n, pd.dofn))
+      val e: AST.Node[E, Exp] = pd.env.convert(ci)
+      pd.insert(ci, AST.Mapper(n, e, pd.dofn))
     }
+  }
+
+
+  /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
+  case class Materialize[A : Manifest : WireFormat](in: DComp[A, Arr]) extends DComp[Iterable[A], Exp] {
+
+    override val toString = "Materialize" + id
+
+    val toVerboseString = toString + "(" + in.toVerboseString + ")"
+
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_,_]): (DComp[Iterable[A], Exp], CopyTable, Boolean) = {
+      val cfA = cf.asInstanceOf[CopyFn[A, Arr]]
+      val (inUpd, copiedUpd, b) = cfA(in, copied)
+      val mat = Materialize(inUpd)
+      (mat, copiedUpd + (this -> mat), b)
+    }
+
+
+    // Conversion
+    // ~~~~~~~~~~
+    def convertNew(ci: ConvertInfo): AST.Node[Iterable[A], Exp] = {
+      val node = AST.Materialize(in.convert(ci))
+      ci.envMap += (node -> Env(implicitly[WireFormat[Iterable[A]]], ci.conf))
+      insert(ci, node)
+    }
+
+    def convertNew2[K : Manifest : WireFormat : Grouping,
+                    V : Manifest : WireFormat]
+                    (ci: ConvertInfo): AST.Node[(K,V), Exp] with KVLike[K,V] =
+      sys.error("Materialize can not be in an input to a GroupByKey")
+
+    def convertParallelDo[B : Manifest : WireFormat,
+                          E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[Iterable[A], B, E])
+      : AST.Node[B, Arr] = sys.error("Materialize can not be an input to ParallelDo")
+  }
+
+
+  /** The Op node type specifies the building of Exp DComp by applying a function to the values
+    * of two other Exp DComp nodes. */
+  case class Op[A : Manifest : WireFormat,
+                B : Manifest : WireFormat,
+                C : Manifest : WireFormat]
+      (in1: DComp[A, Exp],
+       in2: DComp[B, Exp],
+       f: (A, B) => C)
+    extends DComp[C, Exp] {
+
+    override val toString = "Op" + id
+
+    val toVerboseString = toString + "[" + in1.toVerboseString + "," + in2.toVerboseString + "]"
+
+
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_,_]): (DComp[C, Exp], CopyTable, Boolean) = {
+      val cfA = cf.asInstanceOf[CopyFn[A, Exp]]
+      val (inUpd1, copiedUpd1, b1) = cfA(in1, copied)
+      val cfB = cf.asInstanceOf[CopyFn[B, Exp]]
+      val (inUpd2, copiedUpd2, b2) = cfB(in2, copiedUpd1)
+      val op = Op(inUpd1, inUpd2, f)
+      (op, copiedUpd2 + (this -> op), b1 || b2)
+    }
+
+
+    // Conversion
+    // ~~~~~~~~~~
+    def convertNew(ci: ConvertInfo): AST.Node[C, Exp] = {
+      val exp1 = in1.convert(ci)
+      val exp2 = in2.convert(ci)
+      val node = AST.Op(exp1, exp2, f)
+      ci.envMap += (node -> Env(implicitly[WireFormat[C]], ci.conf))
+      insert(ci, node)
+    }
+
+    def convertNew2[K : Manifest : WireFormat : Grouping,
+                    V : Manifest : WireFormat]
+                    (ci: ConvertInfo): AST.Node[(K,V), Exp] with KVLike[K,V] =
+      sys.error("Op can not be in an input to a GroupByKey")
+
+    def convertParallelDo[D : Manifest : WireFormat,
+                          E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[C, D, E])
+      : AST.Node[D, Arr] = sys.error("Op can not be an input to ParallelDo")
+  }
+
+
+  /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
+  case class Return[A : Manifest : WireFormat](x: A) extends DComp[A, Exp] {
+
+    override val toString = "Return" + id
+
+    val toVerboseString = toString + "(" + x.toString + ")"
+
+
+    // Optimisation
+    // ~~~~~~~~~~~~
+    def justCopy(copied: CopyTable, cf: CopyFn[_,_]): (DComp[A, Exp], CopyTable, Boolean) =
+      (this, copied, false)
+
+
+    // Conversion
+    // ~~~~~~~~~~
+    def convertNew(ci: ConvertInfo): AST.Node[A, Exp] = {
+      val node = AST.Return(x)
+      ci.envMap += (node -> Env(implicitly[WireFormat[A]], ci.conf))
+      insert(ci, node)
+    }
+
+    def convertNew2[K : Manifest : WireFormat : Grouping,
+                    V : Manifest : WireFormat]
+                    (ci: ConvertInfo): AST.Node[(K,V), Exp] with KVLike[K,V] =
+      sys.error("Return can not be in an input to a GroupByKey")
+
+    def convertParallelDo[B : Manifest : WireFormat,
+                          E : Manifest : WireFormat]
+        (ci: ConvertInfo,
+         pd: ParallelDo[A, B, E])
+      : AST.Node[B, Arr] = sys.error("Return can not be an input to ParallelDo")
   }
 
 
@@ -656,18 +846,21 @@ object Smart {
 
   def parentsOf(d: DComp[_, _ <: Shape]): List[DComp[_, _ <: Shape]] = {
     d match {
-      case Load(_)                 => List()
-      case ParallelDo(in, _, _, _) => List(in)
-      case GroupByKey(in)          => List(in)
-      case Combine(in, _)          => List(in)
-      case Flatten(ins)            => ins
+      case Load(_)                      => Nil
+      case ParallelDo(in, env, _, _, _) => List(in, env)
+      case GroupByKey(in)               => List(in)
+      case Combine(in, _)               => List(in)
+      case Flatten(ins)                 => ins
+      case Materialize(in)              => List(in)
+      case Op(in1, in2, f)              => List(in1, in2)
+      case Return(_)                    => Nil
     }
   }
 
-  def getParallelDo(d: DComp[_, _ <: Shape]): Option[ParallelDo[_,_]] = {
+  def getParallelDo(d: DComp[_, _ <: Shape]): Option[ParallelDo[_,_,_]] = {
     d match {
-      case parDo@ParallelDo(_, _, _, _) => Some(parDo)
-      case _                            => None
+      case parDo@ParallelDo(_, _, _, _, _) => Some(parDo)
+      case _                               => None
     }
   }
 
@@ -692,10 +885,18 @@ object Smart {
     }
   }
 
-  def isParallelDo(d: DComp[_, _ <: Shape]): Boolean = getParallelDo(d).isDefined
-  def isFlatten(d: DComp[_, _ <: Shape]):    Boolean = getFlatten(d).isDefined
-  def isGroupByKey(d: DComp[_, _ <: Shape]): Boolean = getGroupByKey(d).isDefined
-  def isCombine(d: DComp[_, _ <: Shape]):    Boolean = getCombine(d).isDefined
+  def getMaterialize(d: DComp[_, _ <: Shape]): Option[Materialize[_]] = {
+    d match {
+      case m@Materialize(_) => Some(m)
+      case _                => None
+    }
+  }
+
+  def isParallelDo(d: DComp[_, _ <: Shape]):  Boolean = getParallelDo(d).isDefined
+  def isFlatten(d: DComp[_, _ <: Shape]):     Boolean = getFlatten(d).isDefined
+  def isGroupByKey(d: DComp[_, _ <: Shape]):  Boolean = getGroupByKey(d).isDefined
+  def isCombine(d: DComp[_, _ <: Shape]):     Boolean = getCombine(d).isDefined
+  def isMaterialize(d: DComp[_, _ <: Shape]): Boolean = getMaterialize(d).isDefined
 
 
   /*
@@ -707,12 +908,14 @@ object Smart {
    *
    */
   case class ConvertInfo(
+      conf: ScoobiConfiguration,
       outMap: Map[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]],
       mscrs: Iterable[Intermediate.MSCR],
       g: DGraph,
       astMap: MMap[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]],
+      envMap: MMap[AST.Node[_, _ <: Shape], Env[_]],
       /* A map of AST nodes to BridgeStores*/
-      bridgeStoreMap: MMap[AST.Node[_,_], BridgeStore[_]]) {
+      bridgeStoreMap: MMap[AST.Node[_, _ <: Shape], BridgeStore[_]]) {
 
     def getASTNode[A](d: Smart.DComp[_, _ <: Shape]): AST.Node[A, _ <: Shape] = astMap.get(d) match {
        case Some(n) => n.asInstanceOf[AST.Node[A, _ <: Shape]]
@@ -724,13 +927,13 @@ object Smart {
       case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
     }
 
-    def getASTReducer[A, B, C](d: Smart.DComp[_, _ <: Shape]): AST.Reducer[A, B, C] = astMap.get(d) match {
-      case Some(n) => n.asInstanceOf[AST.Reducer[A,B,C]]
+    def getASTReducer[A, B, C, D](d: Smart.DComp[_, _ <: Shape]): AST.Reducer[A, B, C, D] = astMap.get(d) match {
+      case Some(n) => n.asInstanceOf[AST.Reducer[A, B, C, D]]
       case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
     }
 
-    def getASTGbkReducer[A, B, C](d: Smart.DComp[_, _ <: Shape]): AST.GbkReducer[A,B,C] = astMap.get(d) match {
-      case Some(n) => n.asInstanceOf[AST.GbkReducer[A,B,C]]
+    def getASTGbkReducer[A, B, C, D](d: Smart.DComp[_, _ <: Shape]): AST.GbkReducer[A, B, C, D] = astMap.get(d) match {
+      case Some(n) => n.asInstanceOf[AST.GbkReducer[A, B, C, D]]
       case None    => throw new RuntimeException("Node not found in map: " + d + "\n" + astMap)
     }
 
@@ -753,12 +956,13 @@ object Smart {
 
   object ConvertInfo {
     def apply(
+        conf: ScoobiConfiguration,
         outMap: Map[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]],
         mscrs: Iterable[Intermediate.MSCR],
         g: DGraph)
       : ConvertInfo = {
 
-      new ConvertInfo(outMap, mscrs, g, MMap(), MMap())
+      new ConvertInfo(conf, outMap, mscrs, g, MMap.empty, MMap.empty, MMap.empty)
     }
   }
 }

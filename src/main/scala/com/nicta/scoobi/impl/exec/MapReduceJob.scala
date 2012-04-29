@@ -64,9 +64,9 @@ class MapReduceJob(stepId: Int) {
   import scala.collection.mutable.{Set => MSet, Map => MMap}
 
   /* Keep track of all the mappers for each input channel. */
-  private val mappers: MMap[DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]] = MMap.empty
+  private val mappers: MMap[DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]] = MMap.empty
   private val combiners: MSet[TaggedCombiner[_]] = MSet.empty
-  private val reducers: MMap[List[_ <: DataSink[_,_,_]], TaggedReducer[_,_,_]] = MMap.empty
+  private val reducers: MMap[List[_ <: DataSink[_,_,_]], (Env[_], TaggedReducer[_,_,_,_])] = MMap.empty
 
   /* The types that will be combined together to form (K2, V2). */
   private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Grouping[_])] = MMap.empty
@@ -74,11 +74,16 @@ class MapReduceJob(stepId: Int) {
 
 
   /** Add an input mapping function to thie MapReduce job. */
-  def addTaggedMapper(input: DataSource[_,_,_], m: TaggedMapper[_,_,_]) {
+  def addTaggedMapper(input: DataSource[_,_,_], env: Option[Env[_]], m: TaggedMapper[_,_,_,_]) {
+    val tm = env match {
+      case Some(e) => (e, m)
+      case None    => (Env.empty, m)
+    }
+
     if (!mappers.contains(input))
-      mappers += (input -> MSet(m))
+      mappers += (input -> MSet(tm))
     else
-      mappers(input) += m
+      mappers(input) += tm
 
     m.tags.foreach { tag =>
       keyTypes   += (tag -> (m.mK, m.wtK, m.grpK))
@@ -92,8 +97,13 @@ class MapReduceJob(stepId: Int) {
   }
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer(outputs: Set[_ <: DataSink[_,_,_]], r: TaggedReducer[_,_,_]) {
-    reducers += (outputs.toList -> r)
+  def addTaggedReducer(outputs: Set[_ <: DataSink[_,_,_]], env: Option[Env[_]], r: TaggedReducer[_,_,_,_]) {
+    val tr = env match {
+      case Some(e) => (e, r)
+      case None    => (Env.empty, r)
+    }
+
+    reducers += (outputs.toList -> tr)
   }
 
   /** Take this MapReduce job and run it on Hadoop. */
@@ -146,12 +156,12 @@ class MapReduceJob(stepId: Int) {
       *       mapper for a given input channel can be used as they all have the same input type */
     ChannelsInputFormat.configureSources(job, jar, mappers.keys.toList)
 
-    val inputChannels: List[((DataSource[_,_,_], MSet[TaggedMapper[_,_,_]]), Int)] = mappers.toList.zipWithIndex
-    val inputs: Map[Int, (InputConverter[_, _, _], Set[TaggedMapper[_, _, _]])] =
-      inputChannels.map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) }.toMap
+    val inputChannels: List[((DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]), Int)] = mappers.toList.zipWithIndex
+    val inputs: Map[Int, (InputConverter[_, _, _], Set[(Env[_], TaggedMapper[_,_,_,_])])] =
+      inputChannels map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) } toMap
 
     DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
-    job.setMapperClass(classOf[MscrMapper[_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
+    job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
 
 
     /** Combiners:
@@ -170,7 +180,7 @@ class MapReduceJob(stepId: Int) {
       *       a BridgeStore or MaterializeStore and add to JAR
       *     - add a named output for each output channel */
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
-    reducers.foreach { case (sinks, reducer) =>
+    reducers.foreach { case (sinks, (_, reducer)) =>
       sinks foreach {
         case bs@BridgeStore() => {
           // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
@@ -190,13 +200,13 @@ class MapReduceJob(stepId: Int) {
       sinks.zipWithIndex.foreach { case (sink, ix) => ChannelOutputFormat.addOutputChannel(job, reducer.tag, ix, sink) }
     }
 
-    val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], TaggedReducer[_,_,_])] =
-      reducers.map { case (sinks, reducer) =>
-        (reducer.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
-      }.toMap
+    val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer[_,_,_,_]))] =
+      reducers map { case (sinks, reducer) =>
+        (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
+      } toMap
 
     DistCache.pushObject(job.getConfiguration, outputs, "scoobi.reducers")
-    job.setReducerClass(classOf[MscrReducer[_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
+    job.setReducerClass(classOf[MscrReducer[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 
     /* Calculate the number of reducers to use with a simple heuristic:
@@ -238,7 +248,7 @@ class MapReduceJob(stepId: Int) {
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
     val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
 
-    reducers.foreach { case (sinks, reducer) =>
+    reducers.foreach { case (sinks, (_, reducer)) =>
 
       sinks.zipWithIndex.foreach { case (sink, ix) =>
         outputFiles filter (forOutput) foreach { srcPath =>
@@ -292,20 +302,20 @@ object MapReduceJob {
 
       /* Add combiner functionality from output channel descriptions. */
       oc match {
-        case GbkOutputChannel(_, _, _, JustCombiner(c))       => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
-        case GbkOutputChannel(_, _, _, CombinerReducer(c, _)) => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
-        case _                                                => Unit
+        case GbkOutputChannel(_, _, _, JustCombiner(c))          => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
+        case GbkOutputChannel(_, _, _, CombinerReducer(c, _, _)) => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
+        case _                                                   => Unit
       }
 
       /* Add reducer functionality from output channel descriptions. */
       oc match {
-        case GbkOutputChannel(outputs, _, _, JustCombiner(c))       => job.addTaggedReducer(outputs, c.mkTaggedReducer(tag))
-        case GbkOutputChannel(outputs, _, _, JustReducer(r))        => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
-        case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r)) => job.addTaggedReducer(outputs, r.mkTaggedReducer(tag))
-        case GbkOutputChannel(outputs, _, g, Empty)                 => job.addTaggedReducer(outputs, g.mkTaggedReducer(tag))
-        case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedReducer(tag))
-        case FlattenOutputChannel(outputs, flat)                    => job.addTaggedReducer(outputs, flat.mkTaggedReducer(tag))
-        case StraightOutputChannel(outputs, origin)                 => job.addTaggedReducer(outputs, origin.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, _, JustCombiner(c))            => job.addTaggedReducer(outputs, None, c.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, _, JustReducer(r, env))        => job.addTaggedReducer(outputs, Some(env), r.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r, env)) => job.addTaggedReducer(outputs, Some(env), r.mkTaggedReducer(tag))
+        case GbkOutputChannel(outputs, _, g, Empty)                      => job.addTaggedReducer(outputs, None, g.mkTaggedReducer(tag))
+        case BypassOutputChannel(outputs, origin)                        => job.addTaggedReducer(outputs, None, origin.mkTaggedReducer(tag))
+        case FlattenOutputChannel(outputs, flat)                         => job.addTaggedReducer(outputs, None, flat.mkTaggedReducer(tag))
+        case StraightOutputChannel(outputs, origin)                      => job.addTaggedReducer(outputs, None, origin.mkTaggedReducer(tag))
       }
     }
 
@@ -313,13 +323,13 @@ object MapReduceJob {
     mscr.inputChannels.foreach { ic =>
       ic match {
         case b@BypassInputChannel(input, origin) => {
-          job.addTaggedMapper(input, origin.mkTaggedIdentityMapper(mapperTags(origin)))
+          job.addTaggedMapper(input, None, origin.mkTaggedIdentityMapper(mapperTags(origin)))
         }
-        case MapperInputChannel(input, mappers) => mappers.foreach { m =>
-          job.addTaggedMapper(input, m.mkTaggedMapper(mapperTags(m)))
+        case MapperInputChannel(input, mappers) => mappers.foreach { case (env, m) =>
+          job.addTaggedMapper(input, Some(env), m.mkTaggedMapper(mapperTags(m)))
         }
         case StraightInputChannel(input, origin) =>
-          job.addTaggedMapper(input, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
+          job.addTaggedMapper(input, None, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
       }
     }
 

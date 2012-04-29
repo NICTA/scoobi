@@ -17,7 +17,10 @@ package com.nicta.scoobi.impl.exec
 
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.FileStatus
 import org.apache.hadoop.io.NullWritable
+import org.apache.hadoop.io.SequenceFile
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
@@ -88,6 +91,33 @@ final case class BridgeStore[A]()
     val fs = path.getFileSystem(conf)
     fs.delete(path, true)
   }
+
+
+  /* Read the contents of this bridge store sequence files as an Iterable collection. */
+  def readAsIterable: Iterable[A] = new Iterable[A] {
+    def iterator = {
+      val fs = FileSystem.get(path.toUri, conf)
+      val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
+        new SequenceFile.Reader(fs, stat.getPath, conf)
+      }
+
+      val iterators = readers.toIterable map { reader =>
+        new Iterator[A] {
+          val key = NullWritable.get
+          val value: ScoobiWritable[A] =
+            Class.forName(reader.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
+          def next(): A = value.get
+          def hasNext: Boolean = reader.next(key, value)
+
+        } toIterable
+      }
+
+      iterators.flatten.toIterator
+    }
+  }
+
+
+  override def toString = typeName
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,

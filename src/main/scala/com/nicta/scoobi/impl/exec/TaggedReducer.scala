@@ -21,29 +21,32 @@ import com.nicta.scoobi.Emitter
 
 
 /** A producer of a TaggedReducer. */
-trait ReducerLike[K, V, B] {
-  def mkTaggedReducer(tag: Int): TaggedReducer[K, V, B]
+trait ReducerLike[K, V, B, E] {
+  def mkTaggedReducer(tag: Int): TaggedReducer[K, V, B, E]
 }
 
 
 /** A wrapper for a 'reduce' function tagged for a specific output channel. */
-abstract class TaggedReducer[K, V, B]
+abstract case class TaggedReducer[K, V, B, E]
     (val tag: Int)
-    (implicit val mK: Manifest[K], val wtK: WireFormat[K], val grpK: Grouping[K],
-              val mV: Manifest[V], val wtV: WireFormat[V],
-              val mB: Manifest[B], val wtB: WireFormat[B]) {
+    (implicit mK: Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
+              mV: Manifest[V], wtV: WireFormat[V],
+              val mB: Manifest[B], val wtB: WireFormat[B],
+              mE: Manifest[E], wtE: WireFormat[E]) {
 
   /** The actual 'reduce' function that will be by Hadoop in the reducer task. */
-  def reduce(key: K, values: Iterable[V], emitter: Emitter[B]): Unit
+  def setup(env: E): Unit
+  def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]): Unit
 }
 
 /** A TaggedReducer that is an identity reducer. */
-class TaggedIdentityReducer[B]
-    (tag: Int)
-    (implicit mK: Manifest[Int], wtK: WireFormat[Int], grpK: Grouping[Int],
-              mB: Manifest[B], wtB: WireFormat[B])
-  extends TaggedReducer[Int, B, B](tag)(mK, wtK, grpK, mB, wtB, mB, wtB) {
+class TaggedIdentityReducer[B : Manifest : WireFormat](tag: Int)
+  extends TaggedReducer[Int, B, B, Unit](tag)(implicitly[Manifest[Int]], implicitly[WireFormat[Int]], implicitly[Grouping[Int]],
+                                              implicitly[Manifest[B]], implicitly[WireFormat[B]],
+                                              implicitly[Manifest[B]], implicitly[WireFormat[B]],
+                                              implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]]) {
 
   /** Identity reducing - ignore the key. */
-  def reduce(key: Int, values: Iterable[B], emitter: Emitter[B]) = values.foreach { emitter.emit(_) }
+  def setup(env: Unit) = {}
+  def reduce(env: Unit, key: Int, values: Iterable[B], emitter: Emitter[B]) = values.foreach { emitter.emit(_) }
 }

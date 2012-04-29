@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
 
 compileOrder := CompileOrder.ScalaThenJava
 
-scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types")
+scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 

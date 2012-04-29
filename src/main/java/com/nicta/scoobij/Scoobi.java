@@ -15,19 +15,41 @@
  */
 package com.nicta.scoobij;
 
+import com.nicta.scoobi.PFn;
+import com.nicta.scoobi.Persister;
 import com.nicta.scoobi.ScoobiConfiguration$;
 import com.nicta.scoobij.impl.WithHadoopArgExtractor;
 
 public class Scoobi {
-	public static void persist(com.nicta.scoobi.DListPersister<?>... persisters) {
-		java.util.Vector<com.nicta.scoobi.DListPersister<?>> copy = new java.util.Vector<com.nicta.scoobi.DListPersister<?>>(
-				persisters.length);
-		for (int i = 0; i < persisters.length; ++i) {
-			copy.add(persisters[i]);
-		}
+	@SuppressWarnings("unchecked")
+	public static <T> void persist(com.nicta.scoobi.DListPersister<T> persister) {
+		com.nicta.scoobi.PFn<com.nicta.scoobi.DListPersister<T>> pfn = (PFn<com.nicta.scoobi.DListPersister<T>>) com.nicta.scoobi.PFn$.MODULE$
+				.<T> DListPersister();
 
-		com.nicta.scoobi.DList$.MODULE$
-				.persist(scala.collection.JavaConversions.asScalaBuffer(copy), ScoobiConfiguration$.MODULE$.apply(new String[]{}));
+		com.nicta.scoobi.Persister<com.nicta.scoobi.DListPersister<T>> per = (Persister<com.nicta.scoobi.DListPersister<T>>) com.nicta.scoobi.Persister$.MODULE$
+				.tuple1persister(pfn);
+
+		com.nicta.scoobi.Persist.persist(persister, ScoobiConfiguration$.MODULE$.apply(new String[] {}), per);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T, V> void persist(
+			com.nicta.scoobi.DListPersister<T> persister1,
+			com.nicta.scoobi.DListPersister<T> persister2) {
+
+		com.nicta.scoobi.PFn<com.nicta.scoobi.DListPersister<T>> pfn1 = (PFn<com.nicta.scoobi.DListPersister<T>>) com.nicta.scoobi.PFn$.MODULE$
+				.<T> DListPersister();
+
+		com.nicta.scoobi.PFn<com.nicta.scoobi.DListPersister<V>> pfn2 = (PFn<com.nicta.scoobi.DListPersister<V>>) com.nicta.scoobi.PFn$.MODULE$
+				.<V> DListPersister();
+
+		com.nicta.scoobi.Persister<scala.Tuple2<com.nicta.scoobi.DListPersister<T>, com.nicta.scoobi.DListPersister<V>>> per = (com.nicta.scoobi.Persister<scala.Tuple2<com.nicta.scoobi.DListPersister<T>, com.nicta.scoobi.DListPersister<V>>>) com.nicta.scoobi.Persister$.MODULE$
+				.tuple2persister(pfn1, pfn2);
+
+		scala.Tuple2<com.nicta.scoobi.DListPersister<T>, com.nicta.scoobi.DListPersister<V>> persisters = scala.Tuple2$.MODULE$.apply(persister1,
+				persister2);
+
+		com.nicta.scoobi.Persist.persist(persisters, ScoobiConfiguration$.MODULE$.apply(new String[] {}), per);
 	}
 
 	// Helper method that parsers the command line arguments, it filters out

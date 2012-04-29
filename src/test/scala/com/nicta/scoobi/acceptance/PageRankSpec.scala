@@ -52,9 +52,9 @@ object PageRank {
                  (implicit configuration: ScoobiConfiguration): Float = {
     val curr = if (i == 0) initialise(graph) else latestRankings(outputDir, i)
     val next = update(curr, 0.5f)
-    val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max.materialize
-    persist(configuration)(toAvroFile(next, outputFile(outputDir, i + 1)), maxDelta.use)
-    maxDelta.get.head
+    val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max
+    val (_, d) = persist(configuration)(toAvroFile(next, outputFile(outputDir, i + 1)), maxDelta)
+    d
   }
 
   /**

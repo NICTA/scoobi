@@ -21,22 +21,23 @@ import com.nicta.scoobi.Emitter
 
 
 /** A producer of a TaggedMapper. */
-trait MapperLike[A, K, V] {
-  def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, K, V]
+trait MapperLike[A, E, K, V] {
+  def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, E, K, V]
 }
 
 
 /** A wrapper for a 'map' function tagged for a specific output channel. */
-abstract class TaggedMapper[A, K, V]
-    (val tags: Set[Int])
-    (implicit val mA: Manifest[A], val wtA: WireFormat[A],
+abstract case class TaggedMapper[A, E, K, V]
+    (tags: Set[Int])
+    (implicit mA: Manifest[A], wtA: WireFormat[A],
+              mE: Manifest[E], wtE: WireFormat[E],
               val mK: Manifest[K], val wtK: WireFormat[K], val grpK: Grouping[K],
               val mV: Manifest[V], val wtV: WireFormat[V]) {
 
   /** The actual 'map' function that will be used by Hadoop in the mapper task. */
-  def setup(): Unit
-  def map(input: A, emitter: Emitter[(K, V)]): Unit
-  def cleanup(emitter: Emitter[(K, V)]): Unit
+  def setup(env: E): Unit
+  def map(env: E, input: A, emitter: Emitter[(K, V)]): Unit
+  def cleanup(env: E, emitter: Emitter[(K, V)]): Unit
 }
 
 
@@ -46,10 +47,10 @@ class TaggedIdentityMapper[K, V]
     (implicit mK: Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
               mV: Manifest[V], wtV: WireFormat[V],
               mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
-  extends TaggedMapper[(K, V), K, V](tags)(mKV, wtKV, mK, wtK, grpK, mV, wtV) {
+  extends TaggedMapper[(K, V), Unit, K, V](tags)(mKV, wtKV, implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]], mK, wtK, grpK, mV, wtV) {
 
   /** Identity mapping */
-  def setup() = {}
-  def map(input: (K, V), emitter: Emitter[(K, V)]) = emitter.emit(input)
-  def cleanup(emitter: Emitter[(K, V)]) = {}
+  def setup(env: Unit) = {}
+  def map(env: Unit, input: (K, V), emitter: Emitter[(K, V)]) = emitter.emit(input)
+  def cleanup(env: Unit, emitter: Emitter[(K, V)]) = {}
 }

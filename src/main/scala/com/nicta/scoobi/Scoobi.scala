@@ -22,16 +22,23 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   type WireFormat[A] = com.nicta.scoobi.WireFormat[A]
   val DList = com.nicta.scoobi.DList
   type DList[A] = com.nicta.scoobi.DList[A]
+
+  val DObject = com.nicta.scoobi.DObject
   type DObject[A] = com.nicta.scoobi.DObject[A]
-  val DoFn = com.nicta.scoobi.DoFn
-  type DoFn[A, B] = com.nicta.scoobi.DoFn[A, B]
+
+  type DoFn[A, B, E] = com.nicta.scoobi.DoFn[A, B]
+  type BasicDoFn[A, B] = com.nicta.scoobi.BasicDoFn[A, B]
+  type EnvDoFn[A, B, E] = com.nicta.scoobi.EnvDoFn[A, B, E]
+
+  val Grouping = com.nicta.scoobi.Grouping
   type Grouping[A] = com.nicta.scoobi.Grouping[A]
-  type Job = com.nicta.scoobi.Job
-  val Job = com.nicta.scoobi.Job
+
   type ScoobiApp = com.nicta.scoobi.ScoobiApp
 
   /* Persisting */
-  def persist(implicit configuration: ScoobiConfiguration) = DList.persist _
+  def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = Persist.persist(p)(conf, persister)
+  def persist[P](conf: ScoobiConfiguration)(p: P)(implicit persister: Persister[P]): persister.Out = Persist.persist(p)(conf, persister)
+  val Persister = com.nicta.scoobi.Persister
 
 
   /* Text file I/O */

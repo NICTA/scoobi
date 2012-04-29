@@ -24,12 +24,12 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 
 
 /** Hadoop Mapper class for an MSCR. */
-class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
+class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
 
-  private type Mappers = Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A,_,_]])]
+  private type Mappers = Map[Int, (InputConverter[K1, V1, A], Set[(Env[_], TaggedMapper[A, _, _, _])])]
   private var inputs: Mappers = _
   private var converter: InputConverter[K1, V1, A] = _
-  private var mappers: Set[TaggedMapper[A, K2, V2]] = _
+  private var mappers: Set[(_, TaggedMapper[A, _, _, _])] = _
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
 
@@ -41,17 +41,20 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
     /* Find the converter and its mappers for this input channel from the tagged input split. */
     inputs = DistCache.pullObject[Mappers](context.getConfiguration, "scoobi.mappers").getOrElse(Map())
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
-    val input = inputs(inputSplit.channel)
+    val input: (InputConverter[K1, V1, A], Set[(Env[_], TaggedMapper[A, _, _, _])]) = inputs(inputSplit.channel)
 
     converter = input._1.asInstanceOf[InputConverter[K1, V1, A]]
-    mappers = input._2.asInstanceOf[Set[TaggedMapper[A, K2, V2]]]
 
-    mappers.foreach { _.setup() }
+    mappers = input._2 map { case (env, mapper) => (env.pull(context.getConfiguration), mapper) }
+
+    mappers.foreach { case (env, mapper: TaggedMapper[_, _, _, _]) =>
+      mapper.setup(env)
+    }
   }
 
   override def map(key: K1, value: V1, context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
     val v: A = converter.fromKeyValue(context, key, value).asInstanceOf[A]
-    mappers foreach { mapper =>
+    mappers foreach { case (env, mapper: TaggedMapper[_, _, _, _]) =>
       val emitter = new Emitter[(K2, V2)] {
         def emit(x: (K2, V2)) = {
           mapper.tags.foreach { tag =>
@@ -61,12 +64,12 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
           }
         }
       }
-      mapper.map(v, emitter)
+      mapper.map(env, v, emitter)
     }
   }
 
   override def cleanup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
-    mappers foreach { mapper =>
+    mappers foreach { case (env, mapper: TaggedMapper[_, _, _, _]) =>
       val emitter = new Emitter[(K2, V2)] {
         def emit(x: (K2, V2)) = {
           mapper.tags.foreach { tag =>
@@ -76,7 +79,7 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
           }
         }
       }
-      mapper.cleanup(emitter)
+      mapper.cleanup(env, emitter)
     }
   }
 }

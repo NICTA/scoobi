@@ -482,7 +482,7 @@ trait WireFormatImplicits {
    * "Primitive" types.
    */
   implicit def UnitFmt = new WireFormat[Unit] {
-    def toWire(x: Unit, out: DataOutput) = {}
+    def toWire(x: Unit, out: DataOutput) {}
     def fromWire(in: DataInput): Unit = ()
   }
 

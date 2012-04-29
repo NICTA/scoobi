@@ -15,6 +15,7 @@
  */
 package com.nicta.scoobij.impl;
 
+
 import java.util.Vector;
 
 import com.nicta.scoobij.DGroupedTable;
@@ -38,8 +39,8 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 
 	@Override
 	public <B> DList<B> parallelDo(DoFn<A, B> fun, WireFormatType<B> wf) {
-		return new DListImpl<B>(getImpl().parallelDo(Conversions.toScala(fun),
-				wf.typeInfo(), wf.wireFormat()));
+		return new DListImpl<B>(getImpl().parallelDo(DObjectImpl.empty(), Conversions.toScala(fun),
+				wf.typeInfo(), wf.wireFormat(), WireFormats.wireFormatUnit().typeInfo(), WireFormats.wireFormatUnit().wireFormat()));
 	}
 
 	@Override
@@ -88,9 +89,9 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 	@Override
 	public <B> DList<B> map(Mapper<A, B> mapper, WireFormatType<B> wf) {
 
-		return new DListImpl<B>(getImpl().parallelDo(
+		return new DListImpl<B>(getImpl().parallelDo(DObjectImpl.empty(),
 				Conversions.toScalaDoFn(mapper),
-				wf.typeInfo(), wf.wireFormat()));
+				wf.typeInfo(), wf.wireFormat(), WireFormats.wireFormatUnit().typeInfo(), WireFormats.wireFormatUnit().wireFormat()));
 	}
 
 	@Override
