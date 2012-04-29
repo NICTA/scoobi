@@ -315,6 +315,9 @@ object DList {
     FunctionInput.fromFunction(vec.size)(ix => vec(ix))
   }
 
+  /** Create a distributed list of Ints from a Range. */
+  def apply(range: Range): DList[Int] = tabulate(range.length)(ix => range(ix))
+
   /** Creates a distributed list from a data source. */
   def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A] =
     new DList(Smart.Load(source))
