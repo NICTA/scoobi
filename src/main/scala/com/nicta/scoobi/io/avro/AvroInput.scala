@@ -16,25 +16,19 @@
 package com.nicta.scoobi.io.avro
 
 import java.io.IOException
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyInputFormat
-import scala.collection.JavaConversions._
 
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.io.DataSource
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.AST
 
 
 /** Smart functions for materializing distributed lists by loading Avro files. */

@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
@@ -28,7 +27,6 @@ import com.nicta.scoobi.impl.plan.StraightInputChannel
 import com.nicta.scoobi.impl.plan.BypassInputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.MSCRGraph
-import com.nicta.scoobi.impl.util.UniqueInt
 
 
 /** Object for executing a Scoobi "plan". */

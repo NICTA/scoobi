@@ -15,11 +15,10 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.mapreduce.{Mapper => HMapper, _}
+import org.apache.hadoop.mapreduce.{Mapper => HMapper}
 
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.impl.rtt.Tagged
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 
@@ -27,7 +26,8 @@ import com.nicta.scoobi.impl.rtt.TaggedValue
 /** Hadoop Mapper class for an MSCR. */
 class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
 
-  private var inputs: Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A, _, _]])] = _
+  private type Mappers = Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A,_,_]])]
+  private var inputs: Mappers = _
   private var converter: InputConverter[K1, V1, A] = _
   private var mappers: Set[TaggedMapper[A, K2, V2]] = _
   private var tk: TaggedKey = _
@@ -39,8 +39,7 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 
     /* Find the converter and its mappers for this input channel from the tagged input split. */
-    inputs = DistCache.pullObject(context.getConfiguration, "scoobi.mappers")
-                      .asInstanceOf[Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A,_,_]])]]
+    inputs = DistCache.pullObject[Mappers](context.getConfiguration, "scoobi.mappers").getOrElse(Map())
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
     val input = inputs(inputSplit.channel)
 

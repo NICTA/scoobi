@@ -15,19 +15,16 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
 import org.apache.hadoop.mapreduce.TaskAttemptContext
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.util.ReflectionUtils
-import scala.util.matching.Regex
-import scala.collection.JavaConversions._
 import scala.collection.mutable.{Map => MMap}
 
 import com.nicta.scoobi.io.DataSink
+import com.nicta.scoobi.impl.Configurations._
 
 
 /** A class that simplifies writing output to different paths and with different types
@@ -64,7 +61,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
       job.getConfiguration.set("mapreduce.output.basename", "ch" + channel + "out" + output)
 
       val PropertyPrefix = (ChannelOutputFormat.otherProperty(channel, output) + """(.*)""").r
-      ChannelOutputFormat.confToMap(conf) collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
+      conf.toMap collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
         case (k, v) => job.getConfiguration.set(k, v)
       }
 
@@ -89,7 +86,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
 /** Object that allows for channels with different output format requirements
   * to be specified. */
-object ChannelOutputFormat extends ChannelFormatBase {
+object ChannelOutputFormat {
 
   private def propertyPrefix(ch: Int, ix: Int) = "scoobi.output." + ch + ":" + ix
   private def formatProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".format"
@@ -106,8 +103,8 @@ object ChannelOutputFormat extends ChannelFormatBase {
 
     val jobCopy = new Job(conf)
     sink.outputConfigure(jobCopy)
-    (confToMap(jobCopy.getConfiguration) -- confToMap(conf).keys) foreach { case (k, v) =>
-      conf.set(otherProperty(channel, output) + k, v)
+    conf.updateWith(jobCopy.getConfiguration) { case (k, v) =>
+      (otherProperty(channel, output) + k, v)
     }
   }
 }

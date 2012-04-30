@@ -15,7 +15,6 @@
   */
 package com.nicta.scoobi.io
 
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job

@@ -65,6 +65,7 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 	}
 
 	// ++ from scoobi.DList
+    @SuppressWarnings("unchecked")
 	@Override
 	public DListImpl<A> concat(DList<A>... dLists) {
 

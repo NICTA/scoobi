@@ -15,9 +15,7 @@
   */
 package com.nicta.scoobi
 
-import java.io._
 import java.lang.Comparable
-import org.apache.hadoop.io._
 import annotation.implicitNotFound
 
 

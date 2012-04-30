@@ -16,13 +16,7 @@
 package com.nicta.scoobi
 
 import scala.collection.mutable.{MutableList => MList}
-
 import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.plan.MSCRGraph
-import com.nicta.scoobi.impl.exec.Executor
 
 
 /** A job that persists distributed lists and computes distributed objects. */

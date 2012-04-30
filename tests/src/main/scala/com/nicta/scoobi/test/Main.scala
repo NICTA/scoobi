@@ -24,6 +24,5 @@ object Main {
 
     LanguageTest.main(args)
     ClassBuilderTest.main(args)
-    SerializationTest.main(args)
   }
 }

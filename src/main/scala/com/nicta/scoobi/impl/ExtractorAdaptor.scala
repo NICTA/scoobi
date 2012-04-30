@@ -1,3 +1,5 @@
+package com.nicta.scoobi.impl
+
 /**
  * Copyright 2011 National ICT Australia Limited
  *
@@ -13,12 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobij;
 
-public interface Extractor<T> {
+import runtime.AbstractFunction1
 
-	// Return null to indicate that this record should be skipped
-	// Warning: please make this side-effect free and deterministic, it may be
-	// called multiple times for the same thing
-	T apply(java.lang.Iterable<String> strings);
+private[nicta]
+class ExtractorAdaptor[T](private val extractor: AnExtractor[T]) extends AbstractFunction1[List[String], T] with scala.PartialFunction[List[String], T] {
+
+  override def apply(strings: List[String]): T = {
+    extractor.apply(scala.collection.JavaConversions.asJavaIterable(strings))
+  }
+
+  override def isDefinedAt(strings: List[String]): Boolean = {
+    extractor.apply(scala.collection.JavaConversions.asJavaIterable(strings)) != null
+  }
+}
+
+private[nicta]
+trait AnExtractor[T] {
+  def apply(strings: java.lang.Iterable[String]): T
 }

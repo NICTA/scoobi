@@ -66,9 +66,10 @@ public interface DList<A> {
 	 * Is ++ from scoobi.DList
 	 * 
 	 * @param dLists
-	 *            are all concatinated together
+	 *            are all concatenated together
 	 * @return a new DList that is the concatenated product
 	 */
+    @SuppressWarnings("unchecked")
 	public DList<A> concat(DList<A>... dLists);
 
 	// derived

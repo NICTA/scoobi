@@ -15,7 +15,6 @@
  */
 package com.nicta.scoobi.lib
 
-import java.io._
 import scala.collection.immutable.VectorBuilder
 import com.nicta.scoobi.DList
 import com.nicta.scoobi.WireFormat

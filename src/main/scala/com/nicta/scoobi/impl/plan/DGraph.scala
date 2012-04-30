@@ -17,7 +17,7 @@ package com.nicta.scoobi.impl.plan
 
 object DGraph {
 
-  /*
+  /**
    * Takes the outputs of the Execution Plan and returns a DGraph.
    * The DGraph data structure makes it easy to navigate the
    * abstract syntax tree. This is invaluable in determining
