@@ -31,7 +31,6 @@ trait FileSystems {
                     (onRemoteFiles: Path => Path = identity)(implicit configuration: ScoobiConfiguration): Seq[File] = {
 
     val uploaded = listFiles(dest)
-    if (!fileSystem.exists(new Path(dest))) fileSystem.mkdirs(new Path(dest))
 
     val newFiles = sourceFiles.filterNot((f: File) => uploaded.map(_.getName).contains(f.getName))
     newFiles.map { file: File =>
@@ -46,6 +45,7 @@ trait FileSystems {
    * @return the list of files in a given directory on the file system
    */
   def listFiles(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
+    if (!fileSystem.exists(new Path(dest))) fileSystem.mkdirs(new Path(dest))
     fileSystem.listStatus(new Path(dest)).map(_.getPath)
   }
 

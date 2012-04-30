@@ -6,6 +6,7 @@ import com.nicta.scoobi.testing.NictaHadoopSpecification
 
 class WordCountSpec(args: Arguments) extends NictaHadoopSpecification(args) {
 
+  override def context = localThenCluster
   "Counting words frequencies must return the frequency for each word" >> { c: SC =>
 
     val frequencies =

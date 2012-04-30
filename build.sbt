@@ -50,8 +50,8 @@ fork in Test := true
 javaOptions += "-Xmx2G"
 
 testOptions := Seq(Tests.Filter(s =>
-    s.endsWith("Spec") ||
-  	s.contains("index")))
+    s.endsWith("Spec")      ||
+    Seq("UserGuide", "index").exists(s.contains)))
 
 publishArtifact in packageDoc := false
 

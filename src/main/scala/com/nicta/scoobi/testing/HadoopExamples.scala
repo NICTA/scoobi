@@ -5,6 +5,7 @@ import org.specs2.time.SimpleTimer
 import com.nicta.scoobi.ScoobiConfiguration
 import org.specs2.specification._
 import org.specs2.main.Arguments
+import org.specs2.Specification
 
 
 /**
@@ -68,14 +69,19 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] {
     def outside = configureForLocal(new ScoobiConfiguration)
 
     def around[R <% Result](a: =>R) = locally(a)
-    override def apply[R <% Result](a: ScoobiConfiguration => R) = super.apply(a(outside))
+
+    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
+      if (commandLineArguments.keep("local")) super.apply(a(outside))
+      else                                      Skipped("excluded", "No local execution time")
+    }
+
     override def isRemote = false
   }
 
   /**
    * Context for running examples locally, then on the cluster if it succeeds locally
    */
-  case class LocalThenClusterHadoopContext() extends LocalHadoopContext {
+  case class LocalThenClusterHadoopContext() extends ClusterHadoopContext {
     /** simply return a */
     override def around[R <% Result](a: =>R) = a
     /**
@@ -87,6 +93,10 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] {
 
   /** change the separator of a Result */
   private def changeSeparator(r: Result) = r.mapExpected((_:String).replace("; ", "\n"))
+
+  override def showTimes = commandLineArguments.contains("scoobi.times") || super.showTimes
+  override def quiet     = commandLineArguments.contains("scoobi.quiet") || super.quiet
+
   /**
    * @return an executed Result updated with its execution time
    */
@@ -96,6 +106,7 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] {
       result.updateExpected(prefix+": "+timer.time)
     } else t
   }
+
 
 }
 
@@ -113,11 +124,16 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] {
 abstract class HadoopSpecificationStructure(args: Arguments) extends
   HadoopExamples with
   UploadedLibJars with
+  HadoopHomeDefinedCluster with
   SpecificationStructure {
 
   override def commandLineArguments = args
 }
 
+/**
+ * Hadoop specification with an acceptance specification
+ */
+abstract class HadoopSpecification(args: Arguments) extends HadoopSpecificationStructure(args) with Specification
 
 /**
  * trait for creating contexts having ScoobiConfigurations

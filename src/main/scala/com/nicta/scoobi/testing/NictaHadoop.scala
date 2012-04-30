@@ -8,7 +8,7 @@ import org.specs2.main.Arguments
  * This trait can be used to create Hadoop specifications on the NictaCluster
  */
 abstract class NictaHadoop(args: Arguments) extends
-  HadoopSpecificationStructure(args)  with
+  mutable.HadoopSpecification(args)  with
   NictaTags       with
   NictaCluster    {
 
@@ -33,10 +33,10 @@ trait NictaTags extends Tags {
 }
 
 /**
- * Addresses for the filesystem and jobtracker for the Nicta cluster
+ * Addresses for the filesystem and jobtracker for the Nicta cluster. They override the search for those values in the local configuration files
  */
-trait NictaCluster extends Cluster {
-  def fs         = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
-  def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
+trait NictaCluster extends HadoopHomeDefinedCluster {
+  override def fs         = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
+  override def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
 }
 
