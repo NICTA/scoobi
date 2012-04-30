@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 
 /** Global Scoobi functions and values. */
-object Scoobi extends com.nicta.scoobi.WireFormatImplicits {
+object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi.GroupingImplicits {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.WireFormat[A]
@@ -25,7 +25,6 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits {
   type DObject[A] = com.nicta.scoobi.DObject[A]
   val DoFn = com.nicta.scoobi.DoFn
   type DoFn[A, B] = com.nicta.scoobi.DoFn[A, B]
-  val Grouping = com.nicta.scoobi.Grouping
   type Grouping[A] = com.nicta.scoobi.Grouping[A]
   type Job = com.nicta.scoobi.Job
   val Job = com.nicta.scoobi.Job
