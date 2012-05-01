@@ -2,8 +2,9 @@ package com.nicta.scoobi.impl
 
 import org.specs2.mutable.Specification
 import com.nicta.scoobi.impl.Configurations._
+import com.nicta.scoobi.testing.mutable.Unit
 
-class ConfigurationsSpec extends Specification {
+class ConfigurationsSpec extends Specification with Unit {
   "A configuration can be updated with the keys existing in another configuration" >> {
     val updated = configuration("a" -> "1", "b" -> "2").updateWith(configuration("c" -> "3", "d" -> "4")) {
       case (k, v) => ("got: "+k, "and: "+v)

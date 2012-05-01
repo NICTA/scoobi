@@ -2,8 +2,9 @@ package com.nicta.scoobi.impl.control
 
 import org.specs2.Specification
 import sys._
+import com.nicta.scoobi.testing.Unit
 
-class ExceptionsSpec extends Specification with Exceptions {  def is =
+class ExceptionsSpec extends Specification with Exceptions with Unit {  def is =
                                                                                                                         """
 The Exceptions trait provides functional ways to catch exceptions and deal with them:
 

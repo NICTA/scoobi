@@ -12,8 +12,9 @@ import com.nicta.scoobi.impl.Configurations._
 import org.apache.hadoop.mapreduce.{JobID, JobContext, Job}
 import com.nicta.scoobi.ScoobiConfiguration
 import ScoobiConfiguration._
+import com.nicta.scoobi.testing.mutable.Unit
 
-class ChannelsInputFormatSpec extends Specification with Mockito {
+class ChannelsInputFormatSpec extends Specification with Mockito with Unit {
                                                                         """
 Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 

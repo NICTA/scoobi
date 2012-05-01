@@ -10,9 +10,10 @@ import Gen._
 import Prop.forAll
 import WireFormat._
 import data._
+import com.nicta.scoobi.testing.mutable.Unit
 
 @SuppressWarnings(Array("slow"))
-class WireFormatSpec extends Specification with ScalaCheck with CaseClassData {
+class WireFormatSpec extends Specification with ScalaCheck with CaseClassData with Unit {
 
   "**Basic types**".p
 
