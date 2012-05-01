@@ -7,4 +7,4 @@ import org.specs2.mutable.Specification
 /**
  * Hadoop specification with an acceptance specification
  */
-class HadoopSpecification(args: Arguments) extends HadoopSpecificationStructure(args) with Specification
+trait HadoopSpecification extends Specification with HadoopSpecificationStructure

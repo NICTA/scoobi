@@ -37,13 +37,13 @@ trait WithHadoop extends WithLocalHadoop with ClusterConfiguration with LibJars 
    * @return a configuration with cluster setup
    */
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
+    setLogFactory()
     configuration.set("fs.default.name", fs)
     configuration.set("mapred.job.tracker", jobTracker)
-    if (includeLibJars)
-      new GenericOptionsParser(configuration.conf, Array("-libjars", jars.map(_.getFile).mkString(",")))
+    if (includeLibJars) configuration.includeJars(jars)
 
     configureJars
-    classDirs.foldLeft(configuration) { (result, dir) => result.addUserDir(dir) }
+    configuration.addUserDirs(classDirs)
   }
 
   /**

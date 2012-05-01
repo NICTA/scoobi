@@ -1,9 +1,8 @@
 package com.nicta.scoobi.testing
 
-import org.specs2.mutable.Tags
-import org.specs2.mutable.Specification
+import org.specs2.Specification
+import org.specs2.specification.{Fragments, Tags}
 
-trait Unit extends Tags {
-  this: Specification =>
-  section("unit")
+trait Unit extends Specification with Tags {
+  override def map(fs: =>Fragments) = section("unit") ^ fs
 }

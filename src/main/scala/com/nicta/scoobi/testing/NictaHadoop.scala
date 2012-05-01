@@ -7,10 +7,10 @@ import org.specs2.main.Arguments
 /**
  * This trait can be used to create Hadoop specifications on the NictaCluster
  */
-abstract class NictaHadoop(args: Arguments) extends
-  mutable.HadoopSpecification(args)  with
-  NictaTags       with
-  NictaCluster    {
+trait NictaHadoop extends
+  mutable.HadoopSpecification with
+  NictaTags                   with
+  NictaCluster {
 
   /** this type alias makes it shorter to pass a new configuration object to each example */
   type SC = ScoobiConfiguration
@@ -21,7 +21,7 @@ abstract class NictaHadoop(args: Arguments) extends
 /**
  * a mutable specification for the Nicta cluster
  */
-abstract class NictaHadoopSpecification(args: Arguments) extends NictaHadoop(args) with org.specs2.mutable.Specification
+trait NictaHadoopSpecification extends NictaHadoop with org.specs2.mutable.Specification
 
 /**
  * examples running on the cluster will be tagged as "acceptance"

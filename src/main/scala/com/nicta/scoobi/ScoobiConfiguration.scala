@@ -11,6 +11,7 @@ import scala.collection.JavaConversions._
 import scala.util.Random
 import Configurations._
 import com.nicta.scoobi.impl.util.JarBuilder
+import java.net.URL
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -36,9 +37,38 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
     this
   }
 
+  def includeJars(jars: Seq[URL]) = parse("libjars", jars.map(_.getFile).mkString(","))
+
+  /**
+   * use the GenericOptionsParser to parse the value of a command line argument and update the current configuration
+   * The command line argument doesn't have to start with a dash.
+   */
+  def parse(commandLineArg: String, value: String) = {
+    new GenericOptionsParser(configuration, Array((if (!commandLineArg.startsWith("-")) "-" else "")+commandLineArg, value))
+    this
+  }
+
+  /**
+   * add a new jar url (as a String) to the current configuration
+   */
   def addJar(jar: String)  = copy(userJars = userJars + jar)
+  /**
+   * add several user jars to the classpath of this configuration
+   */
+  def addJars(jars: Seq[String]) = jars.foldLeft(this) { (result, jar) => result.addJar(jar) }
+  /**
+   * add a new jar of a given class, by finding the url in the current classloader, to the current configuration
+   */
   def addJarByClass(clazz: Class[_])  = JarBuilder.findContainingJar(clazz).map(addJar).getOrElse(this)
+
+  /**
+   * add a user directory to the classpath of this configuration
+   */
   def addUserDir(dir: String)  = copy(userDirs = userDirs + withTrailingSlash(dir))
+  /**
+   * add several user directories to the classpath of this configuration
+   */
+  def addUserDirs(dirs: Seq[String]) = dirs.foldLeft(this) { (result, dir) => result.addUserDir(dir) }
 
   /* Timestamp used to mark each Scoobi working directory. */
   private def timestamp = {

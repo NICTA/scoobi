@@ -4,8 +4,10 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import com.nicta.scoobi.ScoobiConfiguration
 import org.specs2.execute.Result
+import org.apache.commons.logging.{Log, LogFactory}
+import collection.mutable.ListBuffer
 
-class HadoopExamplesSpec extends Specification with Mockito { isolated
+class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { isolated
 
   "the local context runs the examples locally only" >> {
     val context = localExamples
@@ -17,6 +19,10 @@ class HadoopExamplesSpec extends Specification with Mockito { isolated
     }
     "with timing" >> {
       context.withTiming.example1.execute.expected must startWith ("Local execution time: ")
+    }
+    "with verbose logging" >> {
+      context.withVerbose.example1.execute
+      there was atLeastOne(context.logger).info(any[Any])
     }
   }
   "the cluster context runs the examples remotely only" >> {
@@ -65,19 +71,41 @@ class HadoopExamplesSpec extends Specification with Mockito { isolated
 
   trait HadoopExamplesForTesting extends HadoopExamples { outer =>
     val mocked = mock[HadoopExamples]
+    lazy val factory = LogFactory.getFactory.asInstanceOf[MockLogFactory]
+    lazy val logger = factory.logger
+
+    override def setLogFactory(name: String = classOf[MockLogFactory].getName) {
+      super.setLogFactory(classOf[MockLogFactory].getName)
+    }
+
     val fs = "fs"
     val jobTracker = "jobtracker"
     var timing = false
+    var verbose = false
 
     override def showTimes = timing
+    override def quiet = !verbose
 
-    def withTiming = { timing = true; this }
+    def withTiming  = { timing = true; this }
+    def withVerbose = { verbose = true; this }
 
-    def example1 = "ex1" >> { conf: ScoobiConfiguration => ok }
-    def example2 = "ex2" >> { conf: ScoobiConfiguration => ko }
+    def example1 = "ex1" >> { conf: ScoobiConfiguration =>
+      conf.getConfResourceAsInputStream("") // trigger some logs
+      ok
+    }
+    def example2 = "ex2" >> { conf: ScoobiConfiguration =>
+      conf.getConfResourceAsInputStream("") // trigger some logs
+      ko
+    }
 
-    override def runOnLocal[T](t: =>T)   = { mocked.runOnLocal(t); t }
-    override def runOnCluster[T](t: =>T) = { mocked.runOnCluster(t); t }
+    override def runOnLocal[T](t: =>T)   = {
+      mocked.runOnLocal(t)
+      t
+    }
+    override def runOnCluster[T](t: =>T) = {
+      mocked.runOnCluster(t)
+      t
+    }
 
     override def configureForLocal(implicit conf: ScoobiConfiguration) = {
       mocked.configureForLocal(conf)
@@ -88,5 +116,12 @@ class HadoopExamplesSpec extends Specification with Mockito { isolated
       conf
     }
   }
+
+}
+
+class MockLogFactory() extends WithHadoopLogFactory() with Mockito {
+  val logger = mock[Log]
+  override def getInstance(s: String) = logger
+  override def getInstance(klass: Class[_]) = logger
 
 }

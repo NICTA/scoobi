@@ -19,11 +19,13 @@ trait WithLocalHadoop {
   /**
    * Static setup to use a testing log factory
    */
-  System.setProperty("org.apache.commons.logging.LogFactory", classOf[WithHadoopLogFactory].getName)
-  // release any previously set LogFactory for this class loader
-  LogFactory.release(Thread.currentThread.getContextClassLoader)
-  LogFactory.getFactory.setAttribute(QUIET, quiet)
-  LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
+  def setLogFactory(name: String = classOf[WithHadoopLogFactory].getName) {
+    System.setProperty("org.apache.commons.logging.LogFactory", name)
+    // release any previously set LogFactory for this class loader
+    LogFactory.release(Thread.currentThread.getContextClassLoader)
+    LogFactory.getFactory.setAttribute(QUIET, quiet)
+    LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
+  }
 
 
   /** execute some code locally, possibly showing execution times */
@@ -43,7 +45,10 @@ trait WithLocalHadoop {
   /**
    * @return a configuration with local setup
    */
-  def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = configuration
+  def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
+    setLogFactory()
+    configuration
+  }
 
   /** @return a function to display execution times. The default uses log messages */
   def displayTime(prefix: String) = (timer: SimpleTimer) => {
