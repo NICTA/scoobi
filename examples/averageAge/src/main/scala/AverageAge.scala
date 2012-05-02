@@ -46,7 +46,7 @@ object AverageAge extends ScoobiApp {
 
   // Read in lines of the form: 234242, Bob, Smith, 31.
   val persons : DList[Person] = fromDelimitedTextFile(fileName, ",") {
-    case Long(id) :: fN :: sN :: Int(age) :: _ => Person(id, sN, fN, age)
+    case ALong(id) :: fN :: sN :: AnInt(age) :: _ => Person(id, sN, fN, age)
   }
 
   // The only thing we're interested in, is the firstName and age

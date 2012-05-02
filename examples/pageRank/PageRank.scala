@@ -71,7 +71,7 @@ object PageRank extends ScoobiApp {
 
   /* Write out final results to text file */
   val pageranks = latestRankings(i).map { case (id, (pr, _, _)) => (id, pr) }
-  val urls = fromDelimitedTextFile(names) { case Int(id) :: url :: _ => (id, url) }
+  val urls = fromDelimitedTextFile(names) { case AnInt(id) :: url :: _ => (id, url) }
   persist(toDelimitedTextFile(join(urls, pageranks).values, output + "result"))
 }
 

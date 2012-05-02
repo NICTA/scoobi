@@ -48,12 +48,12 @@ object JoinExamples {
 
     // Read in lines of the form: Bob Smith, 31
     val employees : DList[Employee] = fromDelimitedTextFile(employeesFile, ",") {
-      case name :: Long(departmentId) :: _ => Employee(name, departmentId)
+      case name :: ALong(departmentId) :: _ => Employee(name, departmentId)
     }
     
     // Read in lines of the form: 31, Finance
     val departments : DList[Department] = fromDelimitedTextFile(departmentsFile, ",") {
-      case Long(id) :: name :: _ => Department(id, name)
+      case ALong(id) :: name :: _ => Department(id, name)
     }
 
     val employeesByDepartmentId: DList[(Long, Employee)] = employees.by(_.departmentId)
