@@ -1,4 +1,5 @@
 master relase notes (will become 0.4.0)
+--------------
 
 ### New Features
 
@@ -17,6 +18,8 @@ master relase notes (will become 0.4.0)
 * All methods of Scoobi object are now in Conf object
 
 * `DList.use(x: DObject)` has been removed, use `DObject.use` instead
+
+* To avoid hiding the scala types, the TextInput pattern matcher helpers have been renamed: Int to AnInt, Float to AFloat, Double to ADouble, Long to ALong.
 
 ### Improvements
 
