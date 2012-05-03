@@ -2,7 +2,7 @@ package com.nicta.scoobi.guide
 
 import org.specs2.Specification
 
-class Testing extends Specification { def is = "Testing guide".title^
+class Testing extends ScoobiPage { def is = "Testing guide".title^
                                                                                                                         """
 ### Introduction
 
@@ -62,6 +62,30 @@ By default, all the examples of a specification are executed concurrently, which
         }
       }
 
+##### Cluster properties
+
+If you only have one cluster for your testing you can hardcode the `fs` and `jobTracker` properties by overriding the corresponding methods:
+
+      class WordCountSpec extends HadoopSpecification {
+        override def fs         = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
+        override def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
+        ...
+      }
+
+This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.
+
+##### Type alias
+
+Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:
+
+      class WordCountSpec extends HadoopSpecification {
+        type SC = ScoobiConfiguration
+
+        "Counting words frequencies must return the frequency for each word" >> { conf: SC =>
+          // your Scoobi code goes here
+        }
+      }
+
 ### Using your own
 
 Some of the functionalities described above has been extracted into traits which you can reuse with your own test framework:
@@ -73,7 +97,6 @@ Some of the functionalities described above has been extracted into traits which
  * `WithLocalHadoop` provides the `onLocal` method to execute Hadoop code locally. It also defines the `quiet` and `showTimes` methods to display log statement and/or execution times
 
  * `WithHadoop` extends the `WithLocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
-                                                                                                                         """^
-                                                                                                                        end
+                                                                                                                        """
 
 }

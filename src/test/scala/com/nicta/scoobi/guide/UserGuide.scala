@@ -1,8 +1,6 @@
 package com.nicta.scoobi.guide
 
-import org.specs2.Specification
-
-class UserGuide extends Specification { def is = "User Guide".title                                                     ^
+class UserGuide extends ScoobiPage { def is = "User Guide".title                                                        ^
                                                                                                                         """
 <notoc><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></notoc>
 
@@ -23,11 +21,29 @@ Scoobi is a library that leverages the Scala programming language to provide a p
 
 In this user guide, you will find:                                                                                      """^
                                                                                                                         p^
-    "a " ~ ("quick start guide", new QuickStart)                                                                        ^
-    "an " ~ ("overview of Scoobi's concepts", new Overview)                                                             ^
-    "various ways to " ~ ("load and persist data", new LoadAndPersist)                                                  ^
-    "support your own " ~ ("data types", new DataTypes)                                                                 ^
-    "a " ~ ("testing guide", new Testing)                                                                               ^
+    Seq(
+   "a " + qs.markdownLink + " guide",
+   "an overview of Scoobi's concepts: " + dl.markdownLink+", " + dobj.markdownLink,
+   "the supported " + inout.markdownLink("Input and Output types"),
+   "how to support your own " + data.markdownLink,
+   "how to use " + gp.markdownLink,
+   "extensions ".markdownLink(ext) + "for db-like programming",
+   "a "+ ts.markdownLink("testing guide"),
+   "how to " + bpd.markdownLink("build, package and deploy")).map("* "+_).mkString("\n")                                ^
+                                                                                                                        p^
+  link(all.map(_.hide))                                                                                                 ^
                                                                                                                         end
+
+  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, bpd, ts)
+
+  val qs    = new QuickStart
+  val dl    = new DistributedLists
+  val dobj  = new DistributedObjects
+  val data  = new DataTypes
+  val inout = new InputOutput
+  val gp    = new Grouping
+  val ext   = new Extensions
+  val bpd   = new BuildingPackagingDeploying
+  val ts    = new Testing
 
 }

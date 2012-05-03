@@ -3,6 +3,7 @@ project/boot/
 *.jar
 
 examples/*.iml
+src/main/*.iml
 .idea/
 
 src/test/resources/out/
