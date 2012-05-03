@@ -8,7 +8,7 @@ class LoadAndPersist extends Specification { def is = "Loading and persisting da
 
 ### Loading
 
-Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.text.TextInput$).
+Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.text.TextInput$).
 
 The simplest, which we have seen already, is `fromTextFile`. It takes a path (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a `DList[String]` object, where each element of the distributed collection refers to one of the lines of text from the files.
 
@@ -74,7 +74,7 @@ Here, the pattern will only match if the `id` (and `age`) field(s) can be conver
 1. Calling `persist`, which bundles all `DList` objects being persisted;
 2. Specifying how each `DList` object is to be persisted.
 
-Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
+Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
 
       val rankings: DList[(String, Int)] = ...
 

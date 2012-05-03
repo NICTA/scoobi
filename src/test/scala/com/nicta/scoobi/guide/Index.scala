@@ -52,10 +52,10 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
 ### Community
 
  * [Issues](https://github.com/NICTA/scoobi/issues)
- * [Change history](https://github.com/NICTA/scoobi/blob/VERSION/CHANGES.md)
+ * [Change history](https://github.com/NICTA/scoobi/blob/SCOOBI_BRANCH/CHANGES.md)
  * [Source code (github)](https://github.com/NICTA/scoobi)
- * [API Documentation](http://nicta.github.com/scoobi/VERSION/index.html)
- * [Examples](https://github.com/NICTA/scoobi/tree/VERSION/examples)
+ * [API Documentation](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html)
+ * [Examples](https://github.com/NICTA/scoobi/tree/SCOOBI_BRANCH/examples)
  * Mailing Lists: [scoobi-users](http://groups.google.com/group/scoobi-users), [scoobi-dev](http://groups.google.com/group/scoobi-dev)
                                """
 

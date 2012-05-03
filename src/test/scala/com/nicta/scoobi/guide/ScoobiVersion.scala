@@ -7,6 +7,8 @@ object ScoobiVersion {
 
   lazy val version = versionLine.flatMap(extractVersion).getOrElse("version not found")
 
+  lazy val branch = if (version endsWith "SNAPSHOT") "master" else version
+
   private lazy val versionLine = buildSbt.flatMap(_.getLines.find(line => line contains "version"))
   private def extractVersion(line: String) = "version\\s*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
 
@@ -15,7 +17,13 @@ object ScoobiVersion {
 
   implicit def toVersionedText(t: String): VersionedText = VersionedText(t)
   case class VersionedText(t: String) {
-    def setVersion = t.replaceAll("VERSION", version)
+    /**
+     * set the version and branch tags in the pages
+     */
+    def setVersionAndBranch = {
+      t.replaceAll("SCOOBI_VERSION", version)
+      t.replaceAll("SCOOBI_BRANCH", branch)
+    }
   }
 
 }

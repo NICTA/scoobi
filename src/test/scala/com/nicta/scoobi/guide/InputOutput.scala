@@ -4,7 +4,7 @@ class InputOutput extends ScoobiPage { def is = "Input and Output".title ^
                                                                                                                        """
 ### Text files
 
-Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which `DList`s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text [input](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.text.TextInput$) and [output](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.text.TextOutput$).
+Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which `DList`s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text [input](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.text.TextInput$) and [output](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.text.TextOutput$).
 
 #### Text file input
 
@@ -132,7 +132,7 @@ The second option is for cases when the desired output is a delimited text file,
 
 ### Sequence files
 
-Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.seq.SeqInput$) and [output](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.seq.SeqOutput$).
+Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.seq.SeqInput$) and [output](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.seq.SeqOutput$).
 
 #### Sequence file input
 
@@ -424,10 +424,10 @@ is called prior to running the specific MapReduce job this `DataSoure` provides 
 
 The following Scala objects provided great working examples of `DataSource` implementations in Scoobi:
 
- * [TextInput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.text.TextInput$)
- * [SeqInput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.seq.SeqInput$)
- * [AvroInput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.avro.AvroInput$)
- * [FunctionInput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.func.FunctionInput$)
+ * [TextInput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.text.TextInput$)
+ * [SeqInput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.seq.SeqInput$)
+ * [AvroInput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.avro.AvroInput$)
+ * [FunctionInput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.func.FunctionInput$)
 
 #### Custom output sources
 
@@ -468,9 +468,9 @@ Again, we can follow the types through to get a sense of how it works:
 
 The following Scala objects provided great working examples of `DataSink` implementations in Scoobi:
 
- * [TextOutput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.text.TextOutput$)
- * [SeqOutput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.seq.SeqOutput$)
- * [AvroOutput](http://nicta.github.com/scoobi/VERSION/index.html#com.nicta.scoobi.io.avro.AvroOutput$)
+ * [TextOutput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.text.TextOutput$)
+ * [SeqOutput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.seq.SeqOutput$)
+ * [AvroOutput](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html#com.nicta.scoobi.io.avro.AvroOutput$)
 
 
                                                                                                                         """
