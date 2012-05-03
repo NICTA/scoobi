@@ -19,7 +19,7 @@ organization := "com.nicta"
 
 version := "0.4.0-SNAPSHOT"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
 libraryDependencies ++= Seq(
   "com.odiago.avro" % "odiago-avro" % "1.0.5",
@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2" % "1.10-SNAPSHOT",
   "org.specs2" %% "specs2-scalaz-core" % "6.0.1",
   "org.specs2" % "classycle" % "1.4.1"% "test",
-  "org.scala-tools.testing" %% "scalacheck" % "1.9" % "test",
+  "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
   "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
   "org.mockito" % "mockito-all" % "1.9.0" % "test",
@@ -51,7 +51,7 @@ javaOptions += "-Xmx2G"
 
 testOptions := Seq(Tests.Filter(s =>
     s.endsWith("Spec")      ||
-    Seq("UserGuide", "index").exists(s.contains)))
+    Seq("Index", "All", "UserGuide").exists(s.contains)))
 
 publishArtifact in packageDoc := false
 
