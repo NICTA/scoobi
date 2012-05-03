@@ -42,4 +42,27 @@ object WithHadoopLogFactory {
   val SCOOBI_TIMES = "SCOOBI_TIMES"
   val QUIET        = "QUIET"
   val SHOW_TIMES   = "SHOW_TIMES"
+
+  def setLogFactory(name: String = classOf[WithHadoopLogFactory].getName, quiet: Boolean = true, showTimes: Boolean = false) {
+    // release any previously set LogFactory for this class loader
+    LogFactory.release(Thread.currentThread.getContextClassLoader)
+    setLogFactoryName(name)
+    setAttributes(quiet, showTimes)
+  }
+
+  def setAttributes(quiet: Boolean, showTimes: Boolean) {
+    setQuiet(quiet)
+    setShowTimes(showTimes)
+  }
+
+  def setLogFactoryName(name: String) {
+    System.setProperty("org.apache.commons.logging.LogFactory", name)
+  }
+
+  def setQuiet(quiet: Boolean = true) {
+    LogFactory.getFactory.setAttribute(QUIET, quiet)
+  }
+  def setShowTimes(showTimes: Boolean = false) {
+    LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
+  }
 }

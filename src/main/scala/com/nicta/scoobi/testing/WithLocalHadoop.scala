@@ -20,13 +20,8 @@ trait WithLocalHadoop {
    * Static setup to use a testing log factory
    */
   def setLogFactory(name: String = classOf[WithHadoopLogFactory].getName) {
-    System.setProperty("org.apache.commons.logging.LogFactory", name)
-    // release any previously set LogFactory for this class loader
-    LogFactory.release(Thread.currentThread.getContextClassLoader)
-    LogFactory.getFactory.setAttribute(QUIET, quiet)
-    LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
+    WithHadoopLogFactory.setLogFactory(name, quiet, showTimes)
   }
-
 
   /** execute some code locally, possibly showing execution times */
   def onLocal[T](t: =>T) = showTime(executeOnLocal(t))(displayTime("Local execution time"))

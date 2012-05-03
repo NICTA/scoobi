@@ -1,11 +1,10 @@
 package com.nicta.scoobi.testing
 
-import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import com.nicta.scoobi.ScoobiConfiguration
 import org.specs2.execute.Result
-import org.apache.commons.logging.{Log, LogFactory}
-import collection.mutable.ListBuffer
+import org.apache.commons.logging.LogFactory
+import org.specs2.mutable.Specification
 
 class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { isolated
 
@@ -19,10 +18,6 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { 
     }
     "with timing" >> {
       context.withTiming.example1.execute.expected must startWith ("Local execution time: ")
-    }
-    "with verbose logging" >> {
-      context.withVerbose.example1.execute
-      there was atLeastOne(context.logger).info(any[Any])
     }
   }
   "the cluster context runs the examples remotely only" >> {
@@ -63,6 +58,12 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { 
         result must not containMatch("Cluster execution time: ")
       }
     }
+    step("checking the logs")
+    "if verbose logging is enabled then the Log instance must not be NoOpLog" >> {
+      context.withVerbose.example1.execute
+      LogFactory.getLog("any").getClass.getSimpleName must not(be_==("NoOpLog"))
+    }
+    step(WithHadoopLogFactory.setLogFactory())
   }
 
   def localExamples            = new HadoopExamplesForTesting { override def context = local }
@@ -70,14 +71,8 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { 
   def localThenClusterExamples = new HadoopExamplesForTesting { override def context = localThenCluster }
 
   trait HadoopExamplesForTesting extends HadoopExamples { outer =>
+
     val mocked = mock[HadoopExamples]
-    lazy val factory = LogFactory.getFactory.asInstanceOf[MockLogFactory]
-    lazy val logger = factory.logger
-
-    override def setLogFactory(name: String = classOf[MockLogFactory].getName) {
-      super.setLogFactory(classOf[MockLogFactory].getName)
-    }
-
     val fs = "fs"
     val jobTracker = "jobtracker"
     var timing = false
@@ -108,20 +103,15 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { 
     }
 
     override def configureForLocal(implicit conf: ScoobiConfiguration) = {
+      setLogFactory()
       mocked.configureForLocal(conf)
       conf
     }
     override def configureForCluster(implicit conf: ScoobiConfiguration) = {
+      setLogFactory()
       mocked.configureForCluster(conf)
       conf
     }
   }
-
-}
-
-class MockLogFactory() extends WithHadoopLogFactory() with Mockito {
-  val logger = mock[Log]
-  override def getInstance(s: String) = logger
-  override def getInstance(klass: Class[_]) = logger
 
 }
