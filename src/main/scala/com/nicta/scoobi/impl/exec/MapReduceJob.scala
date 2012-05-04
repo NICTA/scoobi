@@ -100,14 +100,17 @@ class MapReduceJob(stepId: Int) {
 
   /** Take this MapReduce job and run it on Hadoop. */
   def run() = {
-
+    
     val job = new Job(Scoobi.conf, Scoobi.jobId + "(Step-" + stepId + ")")
-    val fs = FileSystem.get(job.getConfiguration)
+    
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
     val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out")
 
+    // this allows us to override the working directory for non-hdfs URI's, like s3n
+    // to use with s3: conf.set("scoobi.workingdir", "s3n://yourbucket/tmp")
+    val fs = FileSystem.get(tmpOutputPath.toUri, job.getConfiguration)
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
     val tmpFile = File.createTempFile("scoobi-job-", ".jar")
@@ -244,6 +247,9 @@ class MapReduceJob(stepId: Int) {
 
 
     /* Move named file-based sinks to their correct output paths. */
+
+
+
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
     val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
 
