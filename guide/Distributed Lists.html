@@ -1,0 +1,220 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../css/maven-base.css');
+        @import url('./../css/maven-theme.css');
+      </style>
+      <link type="text/css" rel="stylesheet" href="./../css/prettify.css" />
+      <script type="text/javascript" src="./../css/prettify.js"></script>
+      <link type="text/css" media="print" rel="stylesheet" href="./../css/print.css" />
+      <link type="text/css" rel="stylesheet" href="./../css/tooltip.css" />
+      <script type="text/javascript" src="./../css/jquery.js"></script>
+      <script type="text/javascript" src="./../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = 'images/collapsed.gif';
+        else 
+          image.src = 'images/expanded.gif';
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../css/tabber.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="./../css/tabber.css" />
+    </head><body><div id="tree">
+      <ul><li id="1268410476"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1246273299"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
+            
+          </li><li id=""><a href="../guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
+            
+          </li><li id=""><a href="../guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
+            
+          </li></ul>
+          </li><li id="1134657466"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../guide/Distributed Lists.html#Overview">Overview</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Creating+a+new+DList">Creating a new DList</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
+            
+          </li></ul>
+          </li><li id="789990194"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+            
+          </li><li id="126473507"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+file+output">Avro file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="68891078"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../guide/Data Types.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../guide/Data Types.html#For+case+classes">For case classes</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="1385691620"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="156187668"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
+            
+          </li></ul>
+          </li><li id="541940532"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../guide/Deployment.html#Sbt+project">Sbt project</a>
+            
+          </li></ul>
+          </li><li id="1724016071"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Using+specs2">Using specs2</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id=""><a href="../guide/Testing guide.html#Using+your+own">Using your own</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1268410476','1134657466'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div><div id="rightcolumn"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="1134657466">Distributed Lists</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Overview"><h3>Overview</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parameterized by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterized by higher-order functions. For example:</p>
+<pre><code class="prettyprint">// Converting a List[Int] to a List[String] keeping only evens
+val stringList = intList filter { _ % 2 == 0 } map { _.toString }
+
+// Converting a DList[Int] to a DList[String] keeping only evens
+val stringDList = intDList filter { _ % 2 == 0 } map { _.toString }
+</code></pre><p>However, unlike a Scala <code class="prettyprint">List</code> object, the contents of <code class="prettyprint">DList</code> objects are not stored on the JVM heap but stored in HDFS. Secondly, calling <code class="prettyprint">DList</code> methods will not immediately result in data being generated in HDFS. This is because, behind the scenes, Scoobi implements a <em>staging compiler</em>. The purpose of <code class="prettyprint">DList</code> methods are to construct a <em>graph</em> of data transformations. Then, the act of <em>persisting</em> a <code class="prettyprint">DList</code> triggers the compilation of the graph into one or more MapReduce jobs and their execution.</p><p>So, <code class="prettyprint">DList</code> objects essentially provide two abstractions:</p>
+<ol>
+  <li>The contents of a <code class="prettyprint">DList</code> object abstracts the storage of data and files in HDFS</li>
+  <li>Calling methods on <code class="prettyprint">DList</code> objects to transform and manipulate them abstracts the <em>mapper</em>, <em>combiner</em>, <em>reducer</em> and <em>sort-and-shuffle</em> phases of MapReduce</li>
+</ol><p>So, what are some of the advantages of using Scoobi?</p>
+<ul>
+  <li><p><strong>The collections abstraction implemented by <code class="prettyprint">DList</code> is a familiar one</strong>: The methods for the <code class="prettyprint">DList</code> class have been designed to be the same or as similar to those implemented in the standard Scala collections. There aren't as many methods, but if you grok the semantics of Scala collections, you shouldn't have too much trouble getting up to speed with Scoobi</p></li>
+  <li><p><strong>The <code class="prettyprint">DList</code> class is strongly typed</strong>: Like the Scala collections, the <code class="prettyprint">DList</code> interface is strongly typed so that more errors are caught at compile time. This is a major improvement over standard Hadoop MapReduce where type-based run-time errors often occur</p></li>
+  <li><p><strong>The <code class="prettyprint">DList</code> class can be easily parameterized on rich data types</strong>: Unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the <code class="prettyprint">Writable</code> interface, Scoobi allows <code class="prettyprint">DList</code> objects to be parameterized by normal Scala types. This includes the primitive types (e.g. <code class="prettyprint">Int</code>, <code class="prettyprint">String</code>, <code class="prettyprint">Double</code>), tuple types (with arbitrary nesting, e.g. <code class="prettyprint">(String, (Int, Char), Double)</code>) as well as <strong>case classes</strong>. This is all implemented without sacrificing performance in serialization and deserialization</p></li>
+  <li><p><strong>Scoobi applications are optimized across library boundaries</strong>: Over time it makes sense to partition Scoobi code into separate logical entities - into separate classes and libraries. The advantage of Scoobi is that its staging compiler works across library boundaries. Therefore you'll get the same Hadoop performance as if you had everything in the one file but with the productivity gains of having modular software</p></li>
+  <li><p><strong>It's Scala</strong>: Of course, with Scala you don't lose access to those precious Java libraries, but you also get functional programming and concise syntax which makes writing Hadoop applications with Scoobi very productive ... and fun!</p></li>
+</ul><a name="Word+count+decomposed"><h3>Word count decomposed</h3></a><p>Let's take a step-by-step look at the simple word count example from above. The complete application for word count looks like this:</p>
+<pre><code class="prettyprint">import com.nicta.scoobi.Scoobi._
+
+object WordCount extends ScoobiApp {
+  val lines: DList[String] = fromTextFile(args(0))
+
+  val counts: DList[(String, Int)] = lines.flatMap(_.split(&quot; &quot;))
+                                          .map(word =&gt; (word, 1))
+                                          .groupByKey
+                                          .combine(_+_)
+
+  persist(toTextFile(counts, args(1)))
+}
+</code></pre><p>Our word count example is implemented by the object <code class="prettyprint">WordCount</code>, wich extends a <code class="prettyprint">ScoobiApp</code>. This is a convenience in Scoobi to avoid having to write a <code class="prettyprint">main</code> function, as well as automatically handling arguments intended for hadoop. The remaining arguments are available as <code class="prettyprint">args</code>.</p><p>Within the implementation guts, the first task is to construct a <code class="prettyprint">DList</code> representing the data located at the input directory. In this situation, because the input data are simple text files, we can use the <code class="prettyprint">fromTextFile</code> method that takes our input directory as an argument and returns a <code class="prettyprint">DList[String]</code> object. Here our <code class="prettyprint">DList</code> object is a distributed collection where each collection element is a line from the input data and is assigned to <code class="prettyprint">lines</code>.</p><p>The second task is to compute a <code class="prettyprint">DList</code> of word counts given all the lines of text from our input data. This is implemented in four steps:</p>
+<ol>
+  <li><p>A <code class="prettyprint">flatMap</code> is performed on <code class="prettyprint">lines</code>. Like <code class="prettyprint">List</code>'s <code class="prettyprint">flatMap</code>, a parameterizing function is supplied which will take as its input a given line (a <code class="prettyprint">String</code>) and will return 0 or more <code class="prettyprint">String</code>s as its result. In this case, that function is the method <code class="prettyprint">split</code> which will split the input string (a line) into a collection of words based on the occurrence of whitespace. The result of the <code class="prettyprint">flatMap</code> then is another <code class="prettyprint">DList[String]</code> representing a distributed collection of words.</p></li>
+  <li><p>A <code class="prettyprint">map</code> is performed on the distributed collection of words. Like <code class="prettyprint">List</code>'s <code class="prettyprint">map</code>, a parameterizing function is supplied which takes as its input a given word (a <code class="prettyprint">String</code>) and will return another value. In this case the supplied function takes the input word and returns a pair: the word and the value 1. The resulting object is a new distributed collection of type <code class="prettyprint">DList[(String, Int)]</code>.</p></li>
+  <li><p>A <code class="prettyprint">groupByKey</code> is performed on the <code class="prettyprint">(String, Int)</code> distributed collection. <code class="prettyprint">groupByKey</code> has no direct counterpart in <code class="prettyprint">List</code> (although there is a <code class="prettyprint">groupBy</code> defined on <code class="prettyprint">DList</code>s). <code class="prettyprint">groupByKey</code> must be called on a key-value <code class="prettyprint">DList</code> object else the program will not type check. The effect of <code class="prettyprint">groupByKey</code> is to collect all distributed collection values with the same key. In this case the <code class="prettyprint">DList</code> object is of type <code class="prettyprint">(String, Int)</code> so a new <code class="prettyprint">DList</code> object will be returned of type <code class="prettyprint">(String, Iterable[Int])</code>. That is, the counts for the same words will be grouped together.</p></li>
+  <li><p>To get the total count for each word, a <code class="prettyprint">combine</code> is performed. <code class="prettyprint">combine</code> also has no counterpart in <code class="prettyprint">List</code> but its semantics are to take a <code class="prettyprint">DList[(K, Iterable[V])]</code> and return a <code class="prettyprint">DList[(K, V)]</code> by reducing all the values. It is parameterized by a function of type <code class="prettyprint">(V, V) =&gt; V</code> that must be associative. In our case we are simply performing addition to sum all the counts.</p></li>
+</ol><p>The final task is to take the <code class="prettyprint">counts</code> object, which represents counts for each word, and <em>persist</em> it. In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using <code class="prettyprint">toTextFile</code>. Note that <code class="prettyprint">toTextFile</code> is used within <code class="prettyprint">persist</code>. Although not demonstrated in this example, <code class="prettyprint">persist</code> takes a variable number of arguments, each of which specifies what <code class="prettyprint">DList</code> is being persisted and how.</p><p>Until <code class="prettyprint">persist</code> is called, our application will only be running on the local client. The act of calling <code class="prettyprint">persist</code>, along with the <code class="prettyprint">DList</code>(s) to be persisted, will trigger Scoobi's staging compiler to take the sequence of <code class="prettyprint">DList</code> transformations and turn them into one or more Hadoop MapReduce jobs. In this example Scoobi will generate a single MapReduce job that would be executed:</p>
+<ul>
+  <li>The functionality associated with the <code class="prettyprint">flatMap</code> and <code class="prettyprint">map</code> will become part of a <em>mapper</em> tasks</li>
+  <li>The transformation associated with <code class="prettyprint">groupByKey</code> will be occur as a consequence of the <em>sort-and-shuffle</em> phase</li>
+  <li>The functionality of the <code class="prettyprint">combine</code> will become part of both a <em>combiner</em> and <em>reducer</em> task</li>
+</ul><p>The word count example is one of a number of examples included with Scoobi. The top level directory <a href="https://github.com/NICTA/scoobi/tree/master/examples">examples</a> contains a number of self-contained tutorial-like examples, as well as a <a href="https://github.com/NICTA/scoobi/tree/master/examples/README.md">guide</a> to building and deploying them. This is an additional starting point for learning and using scoobi.</p><a name="Creating+a+new+DList"><h3>Creating a new DList</h3></a><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with <code class="prettyprint">fromTextFile(...)</code> and <code class="prettyprint">persist(toTextFile(...))</code>. The former is an example of <em>loading</em> data and the latter is an example of <em>persisting</em> data.</p><p><strong><em>Loading</em></strong></p><p>Most of the time when we create <code class="prettyprint">DList</code> objects, it is the result of calling a method on another <code class="prettyprint">DList</code> object (e.g. <code class="prettyprint">map</code>). <em>Loading</em>, on the other hand, is the only way to create a <code class="prettyprint">DList</code> object that is not based on any others. It is the means by which we associate a <code class="prettyprint">DList</code> object with some data files on HDFS. Scoobi provides functions to create <code class="prettyprint">DList</code> objects associated with text files on HDFS, which are implemented in the object <a href="http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.io.text.TextInput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextInput</code></a>.</p><a name="Persisting+a+DList"><h3>Persisting a DList</h3></a><p><em>Persisting</em> is the mechanism Scoobi uses for specifying that the result of executing the computational graph associated with a <code class="prettyprint">DList</code> object is to be associated with a particular data file on HDFS. There are two parts to persisting:</p>
+<ol>
+  <li>Calling <code class="prettyprint">persist</code>, which bundles all <code class="prettyprint">DList</code> objects being persisted</li>
+  <li>Specifying how each <code class="prettyprint">DList</code> object is to be persisted</li>
+</ol><p>Scoobi currently only provides one mechanism for specifying how a <code class="prettyprint">DList</code> is to be persisted. It is <code class="prettyprint">toTextFile</code> and is implemented in the object <a href="http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.io.text.TextOutput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextOutput</code></a>. As we have seen previously, <code class="prettyprint">toTextFile</code> takes two arguments: the <code class="prettyprint">DList</code> object being persisted and the directory path to write the resulting data:</p>
+<pre><code class="prettyprint">val rankings: DList[(String, Int)] = ...
+
+persist(toTextFile(rankings, &quot;hdfs://path/to/output&quot;))
+</code></pre><p><code class="prettyprint">persist</code> can of course bundle together more than one <code class="prettyprint">DList</code>. For example:</p>
+<pre><code class="prettyprint">  val rankings: DList[(String, Int)] = ...
+  val rankings_reverse: DList[(Int, String)] = rankings map { swap }
+  val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) =&gt; (ranking, items.head) }
+
+  persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
+          toTextFile(rankings_reverse, &quot;hdfs://path/to/output-reverse&quot;),
+          toTextFile(rankings_example, &quot;hdfs://path/to/output-example&quot;))
+</code></pre><p>As mentioned previously, <code class="prettyprint">persist</code> is the trigger for executing the computational graph associated with its <code class="prettyprint">DList</code> objects. By bundling <code class="prettyprint">DList</code> objects together, <code class="prettyprint">persist</code> is able to determine computations that are shared by those outputs and ensure that they are only performed once.</p></div></status></div></body></html>
