@@ -3,7 +3,7 @@ package com.nicta.scoobi.guide
 /**
  * This class generates the index.html page used for landing users on http://NICTA.github.com/scoobi
  */
-class Index extends ScoobiPage { def is = args.report(notoc=true) ^  "Welcome!".title(filePath="index.html") ^
+class Index extends ScoobiPage { def is = args.report(notoc=true) ^  "Welcome!".title ^
                                                                                                                         """
 [Hadoop MapReduce](http://hadoop.apache.org/) is awesome, but it seems a little bit crazy when you have to write [this](http://wiki.apache.org/hadoop/WordCount) to count words. Wouldn't it be nicer if you could simply write what you want to do:
 
@@ -24,7 +24,7 @@ Scoobi is a library that leverages the Scala programming language to provide a p
 
 ### Install
 
-See the [install instructions](Quick%20Start.html#Installing+Scoobi) in the QuickStart section of the [User Guide](User%20Guide.html).
+See the [install instructions](SCOOBI_GUIDE/Quick%20Start.html#Installing+Scoobi) in the QuickStart section of the [User Guide](SCOOBI_GUIDE/User%20Guide.html).
 
 ### Features
 
@@ -33,9 +33,9 @@ See the [install instructions](Quick%20Start.html#Installing+Scoobi) in the Quic
  * Strong typing - the APIs are strongly typed so as to catch more errors at compile time, a
  major improvement over standard Hadoop MapReduce where type-based run-time errors often occur
 
- * Ability to parameterize with rich [data types](Data%20types.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterized by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
+ * Ability to parameterize with rich [data types](SCOOBI_GUIDE/Data%20Types.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterized by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
- * Support for multiple types of I/O - currently built-in support for [text](Input%20and%20Output.html#Text+files), [Sequence](Input%20and%20Output.html#Sequence+files) and [Avro](Input%20and%20Output.html#Avro+files) files with the ability to implement support for [custom sources/sinks](Input%20and%20Output.html#Custom+sources+and+sinks)
+ * Support for multiple types of I/O - currently built-in support for [text](SCOOBI_GUIDE/Input%20and%20Output.html#Text+files), [Sequence](SCOOBI_GUIDE/Input%20and%20Output.html#Sequence+files) and [Avro](SCOOBI_GUIDE/Input%20and%20Output.html#Avro+files) files with the ability to implement support for [custom sources/sinks](SCOOBI_GUIDE/Input%20and%20Output.html#Custom+sources+and+sinks)
 
  * Optimization across library boundaries - the optimizer and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 
@@ -45,7 +45,7 @@ See the [install instructions](Quick%20Start.html#Installing+Scoobi) in the Quic
 
 ### Getting Started
 
-To get started, read the [getting started steps](Quick%20Start.html) and the section on [distributed lists](Distributed%20Lists.html). The remaining sections in the [User Guide](User%20Guide.html) provide further detail on various aspects of Scoobi's functionality.
+To get started, read the [getting started steps](SCOOBI_GUIDE/Quick%20Start.html) and the section on [distributed lists](SCOOBI_GUIDE/Distributed%20Lists.html). The remaining sections in the [User Guide](SCOOBI_GUIDE/User%20Guide.html) provide further detail on various aspects of Scoobi's functionality.
 
 The user mailing list is at <http://groups.google.com/group/scoobi-users>. Please use it for questions and comments!
 

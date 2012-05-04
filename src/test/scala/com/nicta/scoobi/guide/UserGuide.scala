@@ -22,16 +22,16 @@ Scoobi is a library that leverages the Scala programming language to provide a p
 In this user guide, you will find:                                                                                      """^
                                                                                                                         p^
     Seq(
-   "a " + qs.markdownLink + " guide",
-   "an overview of Scoobi's concepts: " + dl.markdownLink+", " + dobj.markdownLink,
-   "the supported " + inout.markdownLink("Input and Output types"),
-   "how to support your own " + data.markdownLink,
-   "how to use " + gp.markdownLink,
-   "extensions ".markdownLink(ext) + "for db-like programming",
-   "a "+ ts.markdownLink("testing guide"),
-   "how to " + bpd.markdownLink("build, package and deploy")).map("* "+_).mkString("\n")                                ^
+   "a " + qs.markdownLink.up + " guide",
+   "an overview of Scoobi's concepts: " + dl.markdownLink.up + ", " + dobj.markdownLink.up,
+   "the supported " + inout.markdownLink("Input and Output types").up,
+   "how to support your own " + data.markdownLink.up,
+   "how to use " + gp.markdownLink.up,
+   "extensions ".markdownLink(ext).up + "for db-like programming",
+   "a "+ ts.markdownLink("testing guide").up,
+   "how to " + bpd.markdownLink("build, package and deploy").up).map("* "+_).mkString("\n")                              ^
                                                                                                                         p^
-  link(all.map(_.hide))                                                                                                 ^
+   link(all.map(_.hide))                                                                                                ^
                                                                                                                         end
 
   lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, bpd, ts)

@@ -71,7 +71,7 @@ Until `persist` is called, our application will only be running on the local cli
  * The transformation associated with `groupByKey` will be occur as a consequence of the *sort-and-shuffle* phase
  * The functionality of the `combine` will become part of both a *combiner* and *reducer* task
 
-The word count example is one of a number of examples included with Scoobi. The top level directory [examples](https://github.com/NICTA/scoobi/SCOOBI_BRANCH/examples) contains a number of self-contained tutorial-like examples, as well as a [guide](https://github.com/NICTA/scoobi/blob/SCOOBI_BRANCH/examples/README.md) to building and deploying them. This is an additional starting point for learning and using scoobi.
+The word count example is one of a number of examples included with Scoobi. The top level directory [examples](https://github.com/NICTA/scoobi/tree/SCOOBI_BRANCH/examples) contains a number of self-contained tutorial-like examples, as well as a [guide](https://github.com/NICTA/scoobi/tree/SCOOBI_BRANCH/examples/README.md) to building and deploying them. This is an additional starting point for learning and using scoobi.
 
 ### Creating a new DList
 
