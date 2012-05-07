@@ -63,7 +63,7 @@ trait WithLocalHadoop {
   /**
    * measure the time taken by some executed code and display the time with a specific display function
    */
-  def showTime[T](t: =>T)(display: SimpleTimer => Unit): T = {
+  def showTime[T](t: =>T)(display: SimpleTimer => scala.Unit): T = {
     val (result, timer) = withTimer(t)
     display(timer)
     result

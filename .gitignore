@@ -6,6 +6,10 @@ examples/*.iml
 src/main/*.iml
 .idea/
 
+.cache
+.project
+.classpath
+.settings
 src/test/resources/out/
 examples/joinExamples/output-dir/
 .DS_Store
