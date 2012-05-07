@@ -15,7 +15,6 @@
  */
 package com.nicta.scoobij;
 
-import com.nicta.scoobi.ScoobiConfiguration;
 import com.nicta.scoobi.ScoobiConfiguration$;
 import com.nicta.scoobij.impl.WithHadoopArgExtractor;
 

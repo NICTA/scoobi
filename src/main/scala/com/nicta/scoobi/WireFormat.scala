@@ -491,7 +491,7 @@ trait WireFormatImplicits {
     def fromWire(in: DataInput): Int = in.readInt()
   }
 
-  implicit def IntegerFmt = new WireFormat[java.lang.Integer] {
+  implicit def IntegerFmt: WireFormat[java.lang.Integer] = new WireFormat[java.lang.Integer] {
       def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
       def fromWire(in: DataInput): java.lang.Integer = in.readInt()
   }
@@ -526,7 +526,7 @@ trait WireFormatImplicits {
     def fromWire(in: DataInput): Byte = in.readByte()
   }
 
-  implicit def StringFmt = new WireFormat[String] {
+  implicit def StringFmt: WireFormat[String] = new WireFormat[String] {
     def toWire(x: String, out: DataOutput) {
       require(x != null, "Error, trying to serialize a null String. Consider using an empty string or Option[String]")
       val b = x.getBytes("utf-8")

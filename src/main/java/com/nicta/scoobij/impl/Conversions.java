@@ -75,6 +75,7 @@ public class Conversions {
 	public static <K, V> com.nicta.scoobi.DoFn<K, V> toScalaDoFn(
 			final Mapper<K, V> mapper) {
 		return new com.nicta.scoobi.DoFn<K, V>() {
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -97,6 +98,7 @@ public class Conversions {
 	public static <T, V, W> TableFlatMapper<T, V, W> toTableFlatMapper(
 			final TableMapper<T, V, W> mapper) {
 		return new TableFlatMapper<T, V, W>() {
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -117,6 +119,7 @@ public class Conversions {
 	public static <T> FlatMapper<T, T> toFlatMapper(final Filterer<T> filt,
 			final boolean not) {
 		return new FlatMapper<T, T>() {
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -132,6 +135,7 @@ public class Conversions {
 
 	public static <T, K> TableMapper<T, K, T> toByMap(final Mapper<T, K> mapper) {
 		return new TableMapper<T, K, T>() {
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -144,7 +148,7 @@ public class Conversions {
 	public static <T, V> com.nicta.scoobi.DoFn<T, V> toScala(
 			final com.nicta.scoobij.DoFn<T, V> fun) {
 		return new com.nicta.scoobi.DoFn<T, V>() {
-
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override

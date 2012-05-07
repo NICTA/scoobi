@@ -29,6 +29,7 @@ public class WireFormats {
 
 	public static Ordering<String> stringOrdering() {
 		return new Ordering<String>() {
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -40,6 +41,7 @@ public class WireFormats {
 
 	public static Ordering<Integer> integerOrdering() {
 		return new Ordering<Integer>() {
+			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -57,6 +59,7 @@ public class WireFormats {
 			@Override
 			public com.nicta.scoobi.WireFormat<scala.Tuple2<T,V>> wireFormat() {
 				return new WireFormat<scala.Tuple2<T, V>>() {
+					@SuppressWarnings("unused")
 					private static final long serialVersionUID = 1L;
 
 					@Override
