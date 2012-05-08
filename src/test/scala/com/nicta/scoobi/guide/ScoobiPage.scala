@@ -13,10 +13,11 @@ import org.specs2.specification.{SpecStart, Text, Fragments}
 trait ScoobiPage extends Specification {
   override def map(fs: =>Fragments) =
     noindent ^ fs.map {
-      case start @ SpecStart(_,_,_) if start.specName.javaClassName endsWith "Index" => start.urlIs("index.html")
-      case start @ SpecStart(_,_,_)                                                  => start.baseDirIs("./guide")
-      case Text(t)                                                                   => Text(t.replaceVariables)
-      case other                                                                     => other
+      case start @ SpecStart(_,_,_) if isIndex(start) => start.urlIs("index.html")
+      case start @ SpecStart(_,_,_)                   => start.baseDirIs("./guide")
+      case Text(t)                                    => Text(t.replaceVariables)
+      case other                                      => other
     }
 
+  private def isIndex(start: SpecStart) = start.specName.javaClassName endsWith "Index"
 }

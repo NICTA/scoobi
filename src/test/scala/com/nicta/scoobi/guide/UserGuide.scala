@@ -1,6 +1,6 @@
 package com.nicta.scoobi.guide
 
-class UserGuide extends ScoobiPage { def is = "User Guide".title                                                        ^
+class UserGuide extends ScoobiPage { def is = args.report(notoc=false) ^"User Guide".title                                                        ^
                                                                                                                         """
 <notoc><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></notoc>
 
