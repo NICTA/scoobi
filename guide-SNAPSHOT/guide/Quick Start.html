@@ -1,0 +1,178 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../css/maven-base.css');
+        @import url('./../css/maven-theme.css');
+      </style>
+      <link type="text/css" rel="stylesheet" href="./../css/prettify.css" />
+      <script type="text/javascript" src="./../css/prettify.js"></script>
+      <link type="text/css" media="print" rel="stylesheet" href="./../css/print.css" />
+      <link type="text/css" rel="stylesheet" href="./../css/tooltip.css" />
+      <link type="text/css" rel="stylesheet" href="./../css/specs2-user.css" />
+
+      <script type="text/javascript" src="./../css/jquery.js"></script>
+      <script type="text/javascript" src="./../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = 'images/collapsed.gif';
+        else 
+          image.src = 'images/expanded.gif';
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../css/tabber.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="./../css/tabber.css" />
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Quick Start.html">QuickStart</a></div><div id="leftcolumn"><div id="tree">
+      <ul><li id="402302509"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="690802990"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
+            
+          </li><li id=""><a href="../guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
+            
+          </li><li id=""><a href="../guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
+            
+          </li></ul>
+          </li><li id="712541997"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../guide/Distributed Lists.html#Overview">Overview</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Creating+a+new+DList">Creating a new DList</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
+            
+          </li></ul>
+          </li><li id="1632202137"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+            
+          </li><li id="330072528"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+file+output">Avro file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="442662712"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../guide/Data Types.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../guide/Data Types.html#For+case+classes">For case classes</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="1974060229"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="395864188"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
+            
+          </li></ul>
+          </li><li id="785133089"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../guide/Deployment.html#Sbt+project">Sbt project</a>
+            
+          </li></ul>
+          </li><li id="417426955"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Using+specs2">Using specs2</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id=""><a href="../guide/Testing guide.html#Using+your+own">Using your own</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['402302509','690802990'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Quick Start</title><a name="Quick+Start"><h2 specId="690802990">Quick Start</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Installing+Scoobi"><h3>Installing Scoobi</h3></a><p>Scoobi has the following requirements:</p>
+<ul>
+  <li><a href="http://www.cloudera.com/hadoop/">Cloudera's Hadoop 0.20.2</a></li>
+  <li><a href="http://www.scala-lang.org/downloads">Scala 2.9.1</a>: Note that this is typically set in build.sbt</li>
+  <li><a href="https://github.com/harrah/xsbt/wiki">Sbt 0.11.0</a></li>
+</ul><p>Scala and Hadoop are obvious prerequisites. In addition, the Scoobi library and Scoobi applications use <a href="https://github.com/harrah/xsbt/wiki">sbt</a> (version 0.11 or later) for dependency management and building.</p><p><strong>NOTE</strong>: You will probably have to edit the <code class="prettyprint">sbt</code> launcher script (located in <code class="prettyprint">~/bin/sbt</code> or wherever <code class="prettyprint">sbt</code> has been installed) to increase the maximum heap size, or you will get out-of-memory errors. Try changing the existing <code class="prettyprint">-Xmx</code> option to <code class="prettyprint">-Xmx2048M</code> (or adding this option if it's not already present). If this still leads to errors, <code class="prettyprint">-Xmx4096M</code> should be enough.</p><a name="Building+Word+Count"><h3>Building Word Count</h3></a><p>To build Scoobi:</p>
+<pre><code class="prettyprint">  $ cd scoobi
+  $ sbt publish-local
+</code></pre><p>Then build and package one of the examples:</p>
+<pre><code class="prettyprint">  $ cd examples/wordCount
+  $ sbt package-hadoop
+</code></pre><a name="Deploying+to+Hadoop"><h3>Deploying to Hadoop</h3></a><p>Finally, run on Hadoop:</p>
+<pre><code class="prettyprint">  $ hadoop jar ./target/Scoobi_Word_Count-hadoop-0.1.jar &lt;input&gt; &lt;output&gt;
+</code></pre></div></status></div><div id="rightcolumn"></div></body></html>

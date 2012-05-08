@@ -1,0 +1,218 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../css/maven-base.css');
+        @import url('./../css/maven-theme.css');
+      </style>
+      <link type="text/css" rel="stylesheet" href="./../css/prettify.css" />
+      <script type="text/javascript" src="./../css/prettify.js"></script>
+      <link type="text/css" media="print" rel="stylesheet" href="./../css/print.css" />
+      <link type="text/css" rel="stylesheet" href="./../css/tooltip.css" />
+      <link type="text/css" rel="stylesheet" href="./../css/specs2-user.css" />
+
+      <script type="text/javascript" src="./../css/jquery.js"></script>
+      <script type="text/javascript" src="./../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = 'images/collapsed.gif';
+        else 
+          image.src = 'images/expanded.gif';
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../css/tabber.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="./../css/tabber.css" />
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Testing guide.html">Testing</a></div><div id="leftcolumn"><div id="tree">
+      <ul><li id="402302509"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="690802990"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
+            
+          </li><li id=""><a href="../guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
+            
+          </li><li id=""><a href="../guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
+            
+          </li></ul>
+          </li><li id="712541997"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../guide/Distributed Lists.html#Overview">Overview</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Creating+a+new+DList">Creating a new DList</a>
+            
+          </li><li id=""><a href="../guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
+            
+          </li></ul>
+          </li><li id="1632202137"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+            
+          </li><li id="330072528"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Avro+file+output">Avro file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/Input and Output.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../guide/Input and Output.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../guide/Input and Output.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="442662712"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../guide/Data Types.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../guide/Data Types.html#For+case+classes">For case classes</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="1974060229"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="395864188"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
+            
+          </li></ul>
+          </li><li id="785133089"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../guide/Deployment.html#Sbt+project">Sbt project</a>
+            
+          </li></ul>
+          </li><li id="417426955"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Using+specs2">Using specs2</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../guide/Testing guide.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../guide/Testing guide.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id=""><a href="../guide/Testing guide.html#Using+your+own">Using your own</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['402302509','417426955'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="417426955">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with <a href="http://specs2.org">specs2</a> out-of-the-box, but you can reuse the testing traits with your own favorite testing library.</p><a name="Using+specs2"><h3>Using specs2</h3></a><a name="Base+specification"><h4>Base specification</h4></a><p>The abstract class <code class="prettyprint">com.nicta.scoobi.testing.mutable.HadoopSpecification</code> is the base class for testing Hadoop jobs. Here's an example showing how to use it:</p>
+<pre><code class="prettyprint">  import com.nicta.scoobi.testing.mutable._
+  import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
+
+  class WordCountSpec extends HadoopSpecification {
+
+    &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; { conf: ScoobiConfiguration =&gt;
+      // your Scoobi code goes here
+    }
+
+  }
+</code></pre><p>This specification does several things for you:</p>
+<ul>
+  <li>it creates a new <code class="prettyprint">ScoobiConfiguration</code> for each example so that you should be able to run your examples concurrently</li>
+  <li>this configuration is setup with the properties found in the <code class="prettyprint">$HADOOP_HOME/conf</code> directory. If the <code class="prettyprint">$HADOOP_HOME</code> variable is not set or the properties not found you will get an exception at runtime</li>
+  <li>because you are passed in the configuration you can change those properties if required</li>
+  <li>every example will be executed twice: once locally and once on the cluster if the local execution doesn't fail</li>
+  <li>all the logging is intercepted so as not to clutter the console output</li>
+  <li>before executing the examples, all the dependent jars, as defined by the sbt classpath, will be copied in a directory on the cluster (<code class="prettyprint">~/libjars</code> by default). This upload is only done for missing jars on the cluster</li>
+</ul><a name="Tailoring"><h4>Tailoring</h4></a><p>You can change every step in the process above and create your own Specification trait with a different behavior:</p>
+<ul>
+  <li><p>the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> properties comes from the <code class="prettyprint">Cluster</code> trait and you can override them with hardcoded values so that you don't depend on what's on your build server</p></li>
+  <li><p>you can change the execution context of the examples by overriding the <code class="prettyprint">context</code> method and returning <code class="prettyprint">local</code> or <code class="prettyprint">cluster</code> instead of <code class="prettyprint">localThenCluster</code> which is the default <a href="http://etorreborre.github.com/specs2/guide/org.specs2.guide.Structure.html#Contexts">specs2 context</a>. The same thing is achievable on the sbt command line by using the <code class="prettyprint">exclude</code> argument: <code class="prettyprint">test-only *WordCount* -- exclude cluster</code> will only run locally.</p></li>
+  <li><p>you can show the logs by overriding the <code class="prettyprint">quiet</code> method and set it to <code class="prettyprint">true</code> (on the command line, you can pass: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose</code>)</p></li>
+  <li><p>you can show the execution times by overriding the <code class="prettyprint">showTimes</code> method and set it to <code class="prettyprint">true</code> (on the command line, you can pass: <code class="prettyprint">test-only *WordCount* -- scoobi.times</code>)</p></li>
+  <li><p>the directory for loading the jars is defined by the <code class="prettyprint">libjarsDirectory</code> property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the <code class="prettyprint">LibJars</code> trait</p></li>
+</ul><a name="Fine+tuning"><h4>Fine tuning</h4></a><a name="Implicit+configuration"><h5>Implicit configuration</h5></a><p>By default, all the examples of a specification are executed concurrently, which is why each example needs to be passed its own <code class="prettyprint">ScoobiConfiguration</code> instance. If you prefer having a sequential execution (with the <code class="prettyprint">sequential</code> specs2 argument) you can omit the explicit passing of the <code class="prettyprint">ScoobiConfiguration</code> object:</p>
+<pre><code class="prettyprint">  class WordCountSpec extends HadoopSpecification {
+    sequential
+    &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; {
+      // your Scoobi code goes here
+    }
+  }
+</code></pre><a name="Cluster+properties"><h5>Cluster properties</h5></a><p>If you only have one cluster for your testing you can hardcode the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> properties by overriding the corresponding methods:</p>
+<pre><code class="prettyprint">  class WordCountSpec extends HadoopSpecification {
+    override def fs         = &quot;hdfs://svm-hadoop1.ssrg.nicta.com.au&quot;
+    override def jobTracker = &quot;svm-hadoop1.ssrg.nicta.com.au:8021&quot;
+    ...
+  }
+</code></pre><p>This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.</p><a name="Type+alias"><h5>Type alias</h5></a><p>Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:</p>
+<pre><code class="prettyprint">  class WordCountSpec extends HadoopSpecification {
+    type SC = ScoobiConfiguration
+
+    &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; { conf: SC =&gt;
+      // your Scoobi code goes here
+    }
+  }
+</code></pre><a name="Using+your+own"><h3>Using your own</h3></a><p>Some of the functionalities described above has been extracted into traits which you can reuse with your own test framework:</p>
+<ul>
+  <li><p><code class="prettyprint">HomeDefinedHadoopCluster</code> provides an implementation of the <code class="prettyprint">Cluster</code> trait extracting the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> values from the configuration files</p></li>
+  <li><p><code class="prettyprint">LibJars</code> distributes the dependent jars to the cluster</p></li>
+  <li><p><code class="prettyprint">WithLocalHadoop</code> provides the <code class="prettyprint">onLocal</code> method to execute Hadoop code locally. It also defines the <code class="prettyprint">quiet</code> and <code class="prettyprint">showTimes</code> methods to display log statement and/or execution times</p></li>
+  <li><p><code class="prettyprint">WithHadoop</code> extends the <code class="prettyprint">WithLocalHadoop</code> with the <code class="prettyprint">onCluster</code> method to execute a Hadoop job on the cluster</p></li>
+</ul></div></status></div><div id="rightcolumn"></div></body></html>
