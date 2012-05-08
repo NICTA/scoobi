@@ -6,11 +6,12 @@ import com.nicta.scoobi.impl.control.Exceptions._
 object ScoobiVariables {
 
   lazy val version = versionLine.flatMap(extractVersion).getOrElse("version not found")
+  lazy val isSnapshot = version endsWith "SNAPSHOT"
 
-  lazy val branch = if (version endsWith "SNAPSHOT") "master" else version
+  lazy val branch = if (isSnapshot) "master" else version
 
   lazy val guideDir         = "guide"
-  lazy val guideSnapshotDir = guideDir + "-SNAPSHOT"
+  lazy val guideSnapshotDir = guideDir + "-SNAPSHOT/guide"
 
   private lazy val versionLine = buildSbt.flatMap(_.getLines.find(line => line contains "version"))
   private def extractVersion(line: String) = "version\\s*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
@@ -24,8 +25,8 @@ object ScoobiVariables {
     def replaceVariables = {
       Seq("VERSION"        -> version,
           "BRANCH"         -> branch,
-          "GUIDE"          -> guideDir,
-          "GUIDE-SNAPSHOT" -> guideSnapshotDir).foldLeft(t) { case (res, (k, v)) => res.replaceAll("SCOOBI_"+k, v) }
+          "GUIDE"          -> (if (isSnapshot) guideSnapshotDir else guideDir),
+          "GUIDE-SNAPSHOT" -> guideSnapshotDir).foldLeft(t) { case (res, (k, v)) => res.replaceAll("\\$\\{SCOOBI_"+k+"\\}", v) }
     }
   }
 

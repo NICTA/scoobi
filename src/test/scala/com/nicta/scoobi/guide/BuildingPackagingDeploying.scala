@@ -31,7 +31,7 @@ And, we can add a pretty standard `build.sbt` that has a dependency on Scoobi:
 
       scalaVersion := "2.9.1"
 
-      libraryDependencies += "com.nicta" %% "scoobi" % "SCOOBI_VERSION" % "provided"
+      libraryDependencies += "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" % "provided"
 
       scalacOptions += "-deprecation"
 
