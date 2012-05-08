@@ -56,6 +56,7 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
  * [Source code (github)](https://github.com/NICTA/scoobi)
  * [API Documentation](http://nicta.github.com/scoobi/SCOOBI_BRANCH/index.html)
  * [Examples](https://github.com/NICTA/scoobi/tree/SCOOBI_BRANCH/examples)
+ * User Guide for the [SNAPSHOT](http://nicta.github.com/scoobi/SCOOBI_GUIDE-SNAPSHOT/User%20Guide.html) version
  * Mailing Lists: [scoobi-users](http://groups.google.com/group/scoobi-users), [scoobi-dev](http://groups.google.com/group/scoobi-dev)
                                """ ^
   include((new UserGuide).hide)

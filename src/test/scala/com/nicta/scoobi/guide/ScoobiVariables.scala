@@ -9,7 +9,8 @@ object ScoobiVariables {
 
   lazy val branch = if (version endsWith "SNAPSHOT") "master" else version
 
-  lazy val guideDir = "guide"
+  lazy val guideDir         = "guide"
+  lazy val guideSnapshotDir = guideDir + "-SNAPSHOT"
 
   private lazy val versionLine = buildSbt.flatMap(_.getLines.find(line => line contains "version"))
   private def extractVersion(line: String) = "version\\s*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
@@ -21,9 +22,10 @@ object ScoobiVariables {
      * set the version and branch tags in the pages
      */
     def replaceVariables = {
-      Seq("VERSION" -> version,
-          "BRANCH"  -> branch,
-          "GUIDE"   -> guideDir).foldLeft(t) { case (res, (k, v)) => res.replaceAll("SCOOBI_"+k, v) }
+      Seq("VERSION"        -> version,
+          "BRANCH"         -> branch,
+          "GUIDE"          -> guideDir,
+          "GUIDE-SNAPSHOT" -> guideSnapshotDir).foldLeft(t) { case (res, (k, v)) => res.replaceAll("SCOOBI_"+k, v) }
     }
   }
 
