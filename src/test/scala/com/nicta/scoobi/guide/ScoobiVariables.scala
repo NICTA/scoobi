@@ -10,8 +10,9 @@ object ScoobiVariables {
 
   lazy val branch = if (isSnapshot) "master" else version
 
-  lazy val guideDir         = "guide"
-  lazy val guideSnapshotDir = guideDir + "-SNAPSHOT/guide"
+  lazy val guideOfficialDir = "guide"
+  lazy val guideSnapshotDir = guideOfficialDir + "-SNAPSHOT/guide"
+  lazy val guideDir         = (if (isSnapshot) guideSnapshotDir else guideOfficialDir)
 
   private lazy val versionLine = buildSbt.flatMap(_.getLines.find(line => line contains "version"))
   private def extractVersion(line: String) = "version\\s*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
@@ -25,8 +26,9 @@ object ScoobiVariables {
     def replaceVariables = {
       Seq("VERSION"        -> version,
           "BRANCH"         -> branch,
-          "GUIDE"          -> (if (isSnapshot) guideSnapshotDir else guideDir),
-          "GUIDE-SNAPSHOT" -> guideSnapshotDir).foldLeft(t) { case (res, (k, v)) => res.replaceAll("\\$\\{SCOOBI_"+k+"\\}", v) }
+          "GUIDE"          -> guideDir,
+          "GUIDE_OFFICIAL" -> guideOfficialDir,
+          "GUIDE_SNAPSHOT" -> guideSnapshotDir).foldLeft(t) { case (res, (k, v)) => res.replaceAll("\\$\\{SCOOBI_"+k+"\\}", v) }
     }
   }
 
