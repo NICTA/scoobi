@@ -53,8 +53,13 @@ trait ConfTrait {
     sdf.format(now)
   }
 
-  /** The id for the current Scoobi job being (or about to be) executed. */
-  val jobId: String = "%s-%s-%s".format("scoobi", timestamp, random.nextString(8))
+  /** we don't want some chars in hdfs path names, namely :=/\ etc */
+  private val validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+  private def randomString(num: Int) = List.fill(num)(validChars(random.nextInt(validChars.size))).mkString("")
+
+  /** The id for the current Scoobi job being (or about to be) executed.
+      Using nextString doesn't yield printable characters. This does */
+  val jobId: String = "%s-%s-%s".format("scoobi", timestamp, randomString(16))
 
 
   /** Scoobi's configuration. */
