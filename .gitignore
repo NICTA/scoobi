@@ -1,5 +1,6 @@
 target
 project/boot/
-
+*.jar
 src/test/resources/out/
 examples/joinExamples/output-dir/
+.DS_Store

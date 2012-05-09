@@ -102,11 +102,22 @@ class MapReduceJob(stepId: Int) {
   def run() = {
 
     val job = new Job(Scoobi.conf, Scoobi.jobId + "(Step-" + stepId + ")")
-    val fs = FileSystem.get(job.getConfiguration)
+    
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
-    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out")
+    val outputPath = ?({
+      val jobCopy = new Job(job.getConfiguration)
+      FileOutputFormat.getOutputPath(jobCopy)
+    })
+
+    // should we even do anything if there isn't an output path?
+    val tmpOutputPath = outputPath match {
+      case Some(path) => new Path(path, ".tmp-out")
+      case _ => new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out")
+    }
+
+    val fs = FileSystem.get(tmpOutputPath.toUri, job.getConfiguration)
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
@@ -247,21 +258,21 @@ class MapReduceJob(stepId: Int) {
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
     val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
 
+    
+    
     reducers.foreach { case (sinks, reducer) =>
 
       sinks.zipWithIndex.foreach { case (sink, ix) =>
+        val jobCopy = new Job(job.getConfiguration)
+        sink.outputConfigure(jobCopy)
+
         outputFiles filter (forOutput) foreach { srcPath =>
-          val outputPath = {
-            val jobCopy = new Job(job.getConfiguration)
-            sink.outputConfigure(jobCopy)
-            FileOutputFormat.getOutputPath(jobCopy)
-          }
-          ?(outputPath) foreach { p =>
+          
+          outputPath.foreach { p =>
             fs.mkdirs(p)
             fs.rename(srcPath, new Path(p, srcPath.getName))
           }
         }
-
         def forOutput = (f: Path) => f.getName match {
           case FileName(t, i) => t.toInt == reducer.tag && i.toInt == ix
           case _              => false

@@ -7,6 +7,7 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
+import scala.util.Random
 import Option.{apply => ?}
 
 import com.nicta.scoobi.impl.util.JarBuilder
@@ -42,15 +43,23 @@ trait ConfTrait {
     userJars = userJars ++ JarBuilder.findContainingJar(clazz)
   }
 
-  /* Timestamp used to mark each Scoobi working directory. */
+  private val random = new Random()
+
+  /*  Timestamp used to mark each Scoobi working directory. 
+      Making sure to avoid collisions through some random string goodness*/
   private val timestamp = {
     val now = new Date
-    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
+    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
     sdf.format(now)
   }
 
-  /** The id for the current Scoobi job being (or about to be) executed. */
-  val jobId: String = "scoobi-" + timestamp
+  /** we don't want some chars in hdfs path names, namely :=/\ etc */
+  private val validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+  private def randomString(num: Int) = List.fill(num)(validChars(random.nextInt(validChars.size))).mkString("")
+
+  /** The id for the current Scoobi job being (or about to be) executed.
+      Using nextString doesn't yield printable characters. This does */
+  val jobId: String = "%s-%s-%s".format("scoobi", timestamp, randomString(16))
 
 
   /** Scoobi's configuration. */
