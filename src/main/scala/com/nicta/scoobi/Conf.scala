@@ -1,5 +1,6 @@
 package com.nicta.scoobi
 
+import java.net.URI
 import java.util.Date
 import java.text.SimpleDateFormat
 import org.apache.hadoop.fs.Path
@@ -75,9 +76,16 @@ trait ConfTrait {
     ?(conf.get("scoobi.jobid")).getOrElse(sys.error("Scoobi job id not set."))
 
   /** Get the Scoobi working directory. */
-  def getWorkingDirectory(conf: Configuration): Path = new Path(
+  def getWorkingDirectory(conf: Configuration, uri: Option[URI] = None): Path = new Path(
     (?(conf.get("scoobi.workdir")) match {
       case Some(s) => withTrailingSlash(s)
-      case None    => withTrailingSlash(FileSystem.get(conf).getHomeDirectory.toUri.toString) + ".scoobi-tmp/"
+      case None    => {
+        uri match {
+          case Some(uri) => withTrailingSlash(FileSystem.get(uri, conf).getHomeDirectory.toUri.toString) + ".scoobi-tmp/"
+          case _ => withTrailingSlash(FileSystem.get(conf).getHomeDirectory.toUri.toString) + ".scoobi-tmp/"
+        }
+        
+        
+      }
      }) + getJobId(conf))
 }

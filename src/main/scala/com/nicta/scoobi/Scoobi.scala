@@ -15,6 +15,8 @@
   */
 package com.nicta.scoobi
 
+import org.apache.hadoop.conf.Configuration
+import java.net.URI
 /** Global Scoobi functions and values. */
 object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi.GroupingImplicits {
 
@@ -33,7 +35,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
 
 
   /* Conf functions */
-  def getWorkingDirectory = Conf.getWorkingDirectory _
+  def getWorkingDirectory(conf: Configuration, uri: Option[URI] = None) = Conf.getWorkingDirectory(conf, uri)
   def conf = Conf.conf
   def jobId = Conf.jobId
   def getUserJars = Conf.getUserJars
