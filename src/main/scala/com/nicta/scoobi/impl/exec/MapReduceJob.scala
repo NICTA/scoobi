@@ -102,11 +102,29 @@ class MapReduceJob(stepId: Int) {
   def run() = {
 
     val job = new Job(Scoobi.conf, Scoobi.jobId + "(Step-" + stepId + ")")
-    val fs = FileSystem.get(job.getConfiguration)
+    
+
+
+    val outputPath = ?({  
+      val jobCopy = new Job(job.getConfiguration)
+      FileOutputFormat.getOutputPath(jobCopy)
+    }).getOrElse(throw new IllegalArgumentException("no output path specified"))
+
+    val fs = FileSystem.get(outputPath.toUri, job.getConfiguration)
 
     /* Job output always goes to temporary dir from which files are subsequently moved from
      * once the job is finished. */
-    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out")
+    val tmpOutputPath = new Path(Scoobi.getWorkingDirectory(job.getConfiguration), "tmp-out").makeQualified(fs)
+
+    val tmpScheme = tmpOutputPath.toUri.getScheme
+    val outputScheme = outputPath.toUri.getScheme
+    if(tmpScheme != tmpScheme ) {
+      throw new IllegalArgumentException(
+        "working directory uri scheme %s doesn't match output directory uri scheme %s" format(tmpScheme, outputScheme))
+    }
+
+
+
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
@@ -251,15 +269,15 @@ class MapReduceJob(stepId: Int) {
 
       sinks.zipWithIndex.foreach { case (sink, ix) =>
         outputFiles filter (forOutput) foreach { srcPath =>
-          val outputPath = {
-            val jobCopy = new Job(job.getConfiguration)
-            sink.outputConfigure(jobCopy)
-            FileOutputFormat.getOutputPath(jobCopy)
-          }
-          ?(outputPath) foreach { p =>
-            fs.mkdirs(p)
-            fs.rename(srcPath, new Path(p, srcPath.getName))
-          }
+          val jobCopy = new Job(job.getConfiguration)
+          sink.outputConfigure(jobCopy)
+          // shouldn't we atomically move the entire directory here
+          // instead of moving the results file by file?
+          // like this:
+          // fs.rename(tmpOutputPath, outputPath)
+          fs.mkdirs(outputPath)
+          fs.rename(srcPath, new Path(outputPath, srcPath.getName))
+          
         }
 
         def forOutput = (f: Path) => f.getName match {
