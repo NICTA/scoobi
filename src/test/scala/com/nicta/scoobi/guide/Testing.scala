@@ -1,7 +1,5 @@
 package com.nicta.scoobi.guide
 
-import org.specs2.Specification
-
 class Testing extends ScoobiPage { def is = "Testing guide".title^
                                                                                                                         """
 ### Introduction
@@ -84,6 +82,24 @@ Passing the configuration to each example is a bit verbose so you can use a type
         "Counting words frequencies must return the frequency for each word" >> { conf: SC =>
           // your Scoobi code goes here
         }
+      }
+
+#### Simple jobs
+
+The `HadoopSpecification` class allows to create any kind of job and execute them either locally or on the cluster. The `SimpleJobs` trait is an additional trait which you can use to:
+
+ * write some strings to a simple input text file and get back a `DList` representing this data
+ * execute some transformations based on the `DList` API
+ * get the results as a `Seq[String]` from the output file
+
+      "getting the size of words" >> { implicit c: SC =>
+        fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+      }
+
+`fromInput` creates a temporary file and a new `DList` from a `TextInput`. Then the `run` method executes transformations on the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the `keepFiles` parameter is set:
+
+      "getting the size of words" >> { implicit c: SC =>
+        fromInput(keepFiles = true)("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
       }
 
 ### Using your own

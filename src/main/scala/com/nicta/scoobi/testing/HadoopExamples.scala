@@ -54,8 +54,8 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
 
     def around[R <% Result](a: =>R) = remotely(a)
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("cluster")) super.apply(a(outside))
-      else                           Skipped("excluded", "No cluster execution time")
+      if (arguments.keep("acceptance", "cluster")) super.apply(a(outside))
+      else                                         Skipped("excluded", "No cluster execution time")
     }
   }
 
@@ -68,8 +68,8 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
     def around[R <% Result](a: =>R) = locally(a)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("local")) super.apply(a(outside))
-      else                         Skipped("excluded", "No local execution time")
+      if (arguments.keep("acceptance", "local")) super.apply(a(outside))
+      else                                       Skipped("excluded", "No local execution time")
     }
 
     override def isRemote = false

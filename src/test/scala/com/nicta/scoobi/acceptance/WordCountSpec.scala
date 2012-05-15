@@ -1,10 +1,9 @@
 package com.nicta.scoobi.acceptance
 
 import com.nicta.scoobi.DList
-import org.specs2.main.Arguments
-import com.nicta.scoobi.testing.NictaHadoopSpecification
+import com.nicta.scoobi.testing.NictaHadoop
 
-class WordCountSpec extends NictaHadoopSpecification {
+class WordCountSpec extends NictaHadoop {
 
   "Counting words frequencies must return the frequency for each word" >> { c: SC =>
 
