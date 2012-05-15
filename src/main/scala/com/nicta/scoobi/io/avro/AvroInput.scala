@@ -56,19 +56,21 @@ object AvroInput {
       private val inputPaths = paths.map(p => new Path(p))
       val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 
-      def inputCheck() = inputPaths foreach { p =>
-        if (Helper.pathExists(p)) {
-          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-          logger.debug("Input schema: " + sch.schema)
-        } else {
-           throw new IOException("Input path " + p + " does not exist.")
-        }
-      }
+      def inputCheck {}
 
       def inputConfigure(job: Job) = {
         configure(job)
         inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
         job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
+      }
+
+      protected def checkPaths = inputPaths foreach { p =>
+        if (Helper.pathExists(p)) {
+          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+          logger.debug("Input schema: " + sch.schema)
+        } else {
+          throw new IOException("Input path " + p + " does not exist.")
+        }
       }
 
       def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum

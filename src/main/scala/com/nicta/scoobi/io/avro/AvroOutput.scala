@@ -53,7 +53,15 @@ object AvroOutput {
       val outputKeyClass = classOf[AvroKey[sch.AvroType]]
       val outputValueClass = classOf[NullWritable]
 
-      def outputCheck() =
+      def outputCheck {}
+
+      def outputConfigure(job: Job) {
+        configure(job)
+        FileOutputFormat.setOutputPath(job, outputPath)
+        job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
+      }
+
+      protected def checkPaths = {
         if (Helper.pathExists(outputPath)) {
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
@@ -65,11 +73,6 @@ object AvroOutput {
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)
         }
-
-      def outputConfigure(job: Job) {
-        configure(job)
-        FileOutputFormat.setOutputPath(job, outputPath)
-        job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
 
       val outputConverter = converter

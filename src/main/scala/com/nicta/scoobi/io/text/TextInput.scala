@@ -131,16 +131,18 @@ object TextInput {
 
     val inputFormat = classOf[TextInputFormat]
 
-    def inputCheck() = inputPaths foreach { p =>
-      if (Helper.pathExists(p))
-        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-      else
-         throw new IOException("Input path " + p + " does not exist.")
-    }
+    def inputCheck() {}
 
     def inputConfigure(job: Job) = {
       configure(job)
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    }
+
+    protected def checkPaths = inputPaths foreach { p =>
+      if (Helper.pathExists(p))
+        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+      else
+        throw new IOException("Input path " + p + " does not exist.")
     }
 
     def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum

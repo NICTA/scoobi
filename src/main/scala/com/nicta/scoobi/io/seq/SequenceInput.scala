@@ -130,16 +130,18 @@ object SequenceInput {
 
     val inputFormat = classOf[SequenceFileInputFormat[K, V]]
 
-    def inputCheck() = inputPaths foreach { p =>
-      if (Helper.pathExists(p))
-        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-      else
-         throw new IOException("Input path " + p + " does not exist.")
-    }
+    def inputCheck {}
 
     def inputConfigure(job: Job) = {
       configure(job)
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    }
+
+    protected def checkPaths = inputPaths foreach { p =>
+      if (Helper.pathExists(p))
+        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+      else
+        throw new IOException("Input path " + p + " does not exist.")
     }
 
     def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum

@@ -110,7 +110,14 @@ object SequenceOutput {
     val outputKeyClass = keyClass
     val outputValueClass = valueClass
 
-    def outputCheck() =
+    def outputCheck {}
+
+    def outputConfigure(job: Job) {
+      configure(job)
+      FileOutputFormat.setOutputPath(job, outputPath)
+    }
+
+    protected def checkPaths {
       if (Helper.pathExists(outputPath))
         if (overwrite) {
           logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
@@ -120,10 +127,6 @@ object SequenceOutput {
         }
       else
         logger.info("Output path: " + outputPath.toUri.toASCIIString)
-
-    def outputConfigure(job: Job) {
-      configure(job)
-      FileOutputFormat.setOutputPath(job, outputPath)
     }
 
     val outputConverter = converter
