@@ -9,7 +9,7 @@ class ShortestPathSpec extends NictaHadoop with SimpleJobs {
 
   "The shortest path in a graph can be computed using Hadoop" >> { implicit sc: SC =>
     val paths =
-      fromInput(keepFiles = true)("A B", "A C", "C D", "C E", "D E", "F G", "E F", "G E").run { nodes: DList[String] =>
+      fromInput("A B", "A C", "C D", "C E", "D E", "F G", "E F", "G E").run { nodes: DList[String] =>
 
       val edges = nodes.map { n => val a :: b :: _ = n.split(" ").toList; (Node(a), Node(b)) }
       val adjacencies = edges.flatMap { case (first, second) => List((first, second), (second, first)) }
