@@ -33,18 +33,6 @@ import com.nicta.scoobi.io.DataSink
 import com.nicta.scoobi.io.Helper
 import com.nicta.scoobi.io.InputConverter
 import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.plan.MapperInputChannel
-import com.nicta.scoobi.impl.plan.BypassInputChannel
-import com.nicta.scoobi.impl.plan.StraightInputChannel
-import com.nicta.scoobi.impl.plan.GbkOutputChannel
-import com.nicta.scoobi.impl.plan.BypassOutputChannel
-import com.nicta.scoobi.impl.plan.FlattenOutputChannel
-import com.nicta.scoobi.impl.plan.MSCR
-import com.nicta.scoobi.impl.plan.Empty
-import com.nicta.scoobi.impl.plan.JustCombiner
-import com.nicta.scoobi.impl.plan.JustReducer
-import com.nicta.scoobi.impl.plan.CombinerReducer
 import com.nicta.scoobi.impl.rtt.TaggedKey
 import com.nicta.scoobi.impl.rtt.TaggedValue
 import com.nicta.scoobi.impl.rtt.TaggedPartitioner
@@ -54,6 +42,7 @@ import com.nicta.scoobi.impl.util.UniqueInt
 import com.nicta.scoobi.impl.util.JarBuilder
 import com.nicta.scoobi.{ScoobiConfiguration, Scoobi, WireFormat, Grouping}
 import ScoobiConfiguration._
+import com.nicta.scoobi.impl.plan._
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int) {
@@ -106,7 +95,7 @@ class MapReduceJob(stepId: Int) {
 
     /** Make temporary JAR file for this job. At a minimum need the Scala runtime
       * JAR, the Scoobi JAR, and the user's application code JAR(s). */
-    val tmpFile = File.createTempFile("scoobi-job-", ".jar")
+    val tmpFile = File.createTempFile("scoobi-job-"+configuration.jobId, ".jar")
     var jar = new JarBuilder(tmpFile.getAbsolutePath)
     job.getConfiguration.set("mapred.jar", tmpFile.getAbsolutePath)
 
@@ -209,7 +198,6 @@ class MapReduceJob(stepId: Int) {
 
 
     /* Log stats on this MR job. */
-    val sizeStr = Helper.sizeString(inputBytes)
     logger.info("Total input size: " +  Helper.sizeString(inputBytes))
     logger.info("Number of reducers: " + numReducers)
 
@@ -221,7 +209,7 @@ class MapReduceJob(stepId: Int) {
     val reduce = new Progress(job.reduceProgress())
 
     while (!job.isComplete) {
-      Thread.sleep(5000)
+      Thread.sleep(configuration.getInt("scoobi.progress.time", 5000))
       if (map.hasProgressed || reduce.hasProgressed)
         logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
                     "Reduce " + reduce.getProgress.formatted("%3d") + "%")
@@ -283,6 +271,7 @@ object MapReduceJob {
         case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => addTag(in, tag) }
         case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => addTag(in, tag)
         case BypassOutputChannel(_, origin)                     => addTag(origin, tag)
+        case StraightOutputChannel(_, origin)                   => addTag(origin, tag)
         case FlattenOutputChannel(_, flat)                      => flat.ins.foreach { in => addTag(in, tag) }
       }
 
@@ -301,6 +290,7 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, g, Empty)                 => job.addTaggedReducer(outputs, g.mkTaggedReducer(tag))
         case BypassOutputChannel(outputs, origin)                   => job.addTaggedReducer(outputs, origin.mkTaggedReducer(tag))
         case FlattenOutputChannel(outputs, flat)                    => job.addTaggedReducer(outputs, flat.mkTaggedReducer(tag))
+        case StraightOutputChannel(outputs, origin)                 => job.addTaggedReducer(outputs, origin.mkTaggedReducer(tag))
       }
     }
 

@@ -186,9 +186,10 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load[A : Manifest : WireFormat]() extends Node[A] {
+  case class Load[A : Manifest : WireFormat]() extends Node[A] with ReducerLike[Int, A, A]{
     override def toString = "Load" + id
 
+    def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A] = new TaggedIdentityReducer(tag)
     def toVerboseString = toString
   }
 

@@ -60,7 +60,7 @@ final case class BridgeStore[A]()
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck() {}
+  def outputCheck {}
   def outputConfigure(job: Job) {
     id = conf.increment("scoobi.bridgestoreid")
     FileOutputFormat.setOutputPath(job, path)
@@ -75,6 +75,8 @@ final case class BridgeStore[A]()
     configure(job)
     FileInputFormat.addInputPath(job, new Path(path, "ch*"))
   }
+  protected def checkPaths {}
+
   def inputSize(): Long = Helper.pathSize(new Path(path, "ch*"))
   val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get

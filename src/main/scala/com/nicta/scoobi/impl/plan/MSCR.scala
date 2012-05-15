@@ -94,6 +94,14 @@ case class BypassOutputChannel
   def outputNode: AST.Node[_] = origin
 }
 
+case class StraightOutputChannel
+(outputs: Set[_ <: DataSink[_,_,_]],
+ origin: AST.Node[_] with ReducerLike[_,_,_])
+  extends OutputChannel {
+
+  def outputNode: AST.Node[_] = origin
+}
+
 case class FlattenOutputChannel
     (outputs: Set[_ <: DataSink[_,_,_]],
      flatten: AST.Flatten[_])

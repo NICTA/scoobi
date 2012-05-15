@@ -28,6 +28,7 @@ import com.nicta.scoobi.impl.exec.MapperLike
  */
 import com.nicta.scoobi.impl.plan.{GbkOutputChannel    => CGbkOutputChannel,
                                    BypassOutputChannel => CBypassOutputChannel,
+                                   StraightOutputChannel => CStraightOutputChannel,
                                    MapperInputChannel  => CMapperInputChannel,
                                    StraightInputChannel => CStraightInputChannel,
                                    FlattenOutputChannel => CFlattenOutputChannel,
@@ -362,6 +363,23 @@ object Intermediate {
     }
   }
 
+  case class StraightOutputChannel(input: Load[_]) extends OutputChannel {
+    def hasInput(d: DList[_]) = d == input
+    def hasOutput(d: DList[_]) = d == input
+
+    override def toString = "StraightOutputChannel(" + input.toString + ")"
+
+    def output: DList[_] = input
+
+    def convert(parentMSCR: MSCR, ci: ConvertInfo): CStraightOutputChannel = {
+      val n = ci.getASTNode(input)
+      if (n.isInstanceOf[AST.Load[_]])
+        CStraightOutputChannel(dataSinks(parentMSCR, ci), n.asInstanceOf[AST.Load[_]])
+      else
+        throw new RuntimeException("Expecting Load node.")
+    }
+  }
+
   case class FlattenOutputChannel(input: Flatten[_]) extends OutputChannel {
     override def hasInput(d: DList[_]) = input.ins.exists(_ == d)
     override def hasOutput(d: DList[_]) = d == output
@@ -404,6 +422,7 @@ object Intermediate {
     def containsReducer(d: Smart.ParallelDo[_,_]): Boolean = {
       def pred(oc: OutputChannel): Boolean = oc match {
         case BypassOutputChannel(_) => false
+        case StraightOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
           gbkOC.combiner.isDefined && gbkOC.reducer.map{_ == d}.getOrElse(false)
         case FlattenOutputChannel(_) => false
@@ -486,16 +505,17 @@ object Intermediate {
       val floatingOutputs = outputs filterNot { o => gbkMSCRs.exists(mscr => mscr.hasOutput(o)) }
 
       val allMSCRs = if (floatingOutputs.isEmpty) gbkMSCRs else {
-        val (ics, ocs) = floatingOutputs map {
-          case pd@ParallelDo(_, _, _, _) => (List(MapperInputChannel(List(pd))), BypassOutputChannel(pd))
-          case flat@Flatten(_)     => {
+        val (ics, ocs) = floatingOutputs.map {
+          case pd @ ParallelDo(_, _, _, _) => (List(MapperInputChannel(List(pd))), BypassOutputChannel(pd))
+          case flat @ Flatten(_)     => {
             (flat.ins map {
-              case pd@ParallelDo(_, _, _, _) => MapperInputChannel(List(pd))
+              case pd @ ParallelDo(_, _, _, _) => MapperInputChannel(List(pd))
               case other => StraightInputChannel(other)
             }, FlattenOutputChannel(flat))
           }
-          case node => sys.error("Not expecting " + node + " as remaining node.")
-        } unzip
+          case ld @ Load(_) => (List(StraightInputChannel(ld)), StraightOutputChannel(ld))
+          case node         => sys.error("Not expecting " + node + " as remaining node.")
+        }.unzip
 
         gbkMSCRs :+ new MSCR(ics.flatten.toSet, ocs.toSet)
       }

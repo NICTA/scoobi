@@ -14,6 +14,5 @@ class SimpleMapReduceSpec extends NictaHadoop with SimpleJobs {
       fromInput(keepFiles = true)("second", "example").run { list: DList[String] => list.map(_.size) } must_== Seq("6", "7")
     }
   }
-
 }
 

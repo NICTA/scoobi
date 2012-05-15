@@ -27,18 +27,22 @@ import org.apache.hadoop.conf.Configuration
 object Helper {
 
   /* Determine whether a path exists or not. */
-  def pathExists(p: Path)(implicit conf: Configuration): Boolean = ?(FileSystem.get(p.toUri, conf).globStatus(new Path(p, "*"))) match {
-    case None                     => false
-    case Some(s) if s.length == 0 => false
-    case Some(_)                  => true
-  }
+  def pathExists(p: Path)(implicit conf: Configuration): Boolean =
+    ?(FileSystem.get(p.toUri, conf).globStatus(new Path(p, "*"))) match {
+      case None                     => false
+      case Some(s) if s.length == 0 => false
+      case Some(_)                  => true
+    }
+
 
   def deletePath(p: Path)(implicit conf: Configuration) = FileSystem.get(conf).delete(p, true)
 
   /** Determine the byte size of data specified by a path. */
   def pathSize(p: Path)(implicit conf: Configuration): Long = {
     val fs = FileSystem.get(p.toUri, conf)
-    fs.globStatus(p).map(stat => fs.getContentSummary(stat.getPath).getLength).sum
+    Option(fs.globStatus(p)).getOrElse(Array()).map { stat =>
+      fs.getContentSummary(stat.getPath).getLength
+    }.sum
   }
 
   /** Provide a nicely formatted string for a byte size. */

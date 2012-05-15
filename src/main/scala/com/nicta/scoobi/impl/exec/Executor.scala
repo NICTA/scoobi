@@ -27,6 +27,7 @@ import com.nicta.scoobi.impl.plan.BypassInputChannel
 import com.nicta.scoobi.impl.plan.MSCR
 import com.nicta.scoobi.impl.plan.MSCRGraph
 import com.nicta.scoobi.{ScoobiConfiguration, Scoobi}
+import com.nicta.scoobi.impl.plan.AST.Load
 
 
 /** Object for executing a Scoobi "plan". */
@@ -75,8 +76,8 @@ object Executor {
     /* Initialize compute table with all input (Load) nodes. */
     val computeTable: MSet[AST.Node[_]] = MSet.empty
     AST.eachNode(outputs.map(_.node).toSet) {
-      case n@AST.Load() => computeTable += n
-      case _            => Unit
+      case n @ AST.Load() => computeTable += n
+      case _              => Unit
     }
 
     /* Initialize reference counts of all intermediate data (i.e. BridgeStores). */
@@ -100,7 +101,7 @@ object Executor {
     val st = new ExecState(computeTable, MMap(refcnts.toSeq: _*))
     var step = 1
     outputs.foreach { out =>
-      if (!st.computeTable.contains(out.node))
+      if (!st.computeTable.contains(out.node) || (out.node.isInstanceOf[Load[_]] && !out.sinks.isEmpty))
         step = executeMSCR(mscrs, st, MSCR.containingOutput(mscrs, out.node), step)
     }
   }
