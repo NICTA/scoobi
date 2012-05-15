@@ -4,11 +4,13 @@ import org.apache.commons.logging.LogFactory
 import org.specs2.time.SimpleTimer
 import WithHadoopLogFactory._
 import com.nicta.scoobi.ScoobiConfiguration
+import org.apache.hadoop.mapred.JobConf
 
 /**
  * Execute Hadoop code locally
  */
 trait WithLocalHadoop {
+
   def hadoopArgs = Array[String]()
 
   /** @return true to suppress log messages */
@@ -42,6 +44,7 @@ trait WithLocalHadoop {
    */
   def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     setLogFactory()
+    configuration.setInt("scoobi.progress.time", 500)
     configuration
   }
 

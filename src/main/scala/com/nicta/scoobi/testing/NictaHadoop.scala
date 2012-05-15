@@ -1,8 +1,8 @@
 package com.nicta.scoobi.testing
 
 import com.nicta.scoobi.ScoobiConfiguration
-import org.specs2.specification.{Fragments, Tags}
-import org.specs2.main.Arguments
+import org.specs2.specification.Fragments
+import org.specs2.mutable.Tags
 
 /**
  * This trait can be used to create Hadoop specifications on the NictaCluster
@@ -15,7 +15,7 @@ trait NictaHadoop extends
   /** this type alias makes it shorter to pass a new configuration object to each example */
   type SC = ScoobiConfiguration
 
-  override def map(fs: =>Fragments) = super.map(fs).insert(acceptanceSection)
+  override def map(fs: =>Fragments) = super.map(fs).insert(acceptanceSection).add(acceptanceSection)
 }
 
 /**
@@ -26,7 +26,7 @@ trait NictaHadoopSpecification extends NictaHadoop with org.specs2.mutable.Speci
 /**
  * examples running on the cluster will be tagged as "acceptance"
  */
-trait NictaTags extends Tags {
+trait NictaTags extends Tags { this: NictaHadoop =>
   // all the examples will be tagged as "acceptance" since they are using the local hadoop installation
   // or the cluster
   def acceptanceSection = section("acceptance")
