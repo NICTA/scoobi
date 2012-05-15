@@ -62,7 +62,11 @@ trait Configurations {
     /**
      * update the value of a given key, using a default value if missing
      */
-    def update(key: String, default: =>String)(f: String => String) = {
+    def update(key: String, default: =>String): Configuration = update(key, default, identity)
+    /**
+     * update the value of a given key, using a default value if missing
+     */
+    def update(key: String, default: =>String, f: String => String): Configuration = {
       conf.set(key, f(Option(conf.get(key)).getOrElse(f(default))))
       conf
     }

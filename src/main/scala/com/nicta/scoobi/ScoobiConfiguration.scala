@@ -8,10 +8,10 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
-import scala.util.Random
 import Configurations._
 import com.nicta.scoobi.impl.util.JarBuilder
 import java.net.URL
+import java.io.File
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -70,34 +70,42 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
    */
   def addUserDirs(dirs: Seq[String]) = dirs.foldLeft(this) { (result, dir) => result.addUserDir(dir) }
 
+  /**
+   * @return true if this configuration is used for a remote job execution
+   */
+  def isRemote = configuration.getBoolean("scoobi.remote", false)
+
+  /**
+   * set a flag in order to know that this configuration is for a remote execution
+   */
+  def setRemote { set("scoobi.remote", "true") }
+
   /* Timestamp used to mark each Scoobi working directory. */
   private def timestamp = {
     val now = new Date
-    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
+    val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
     sdf.format(now)
   }
 
-  /** we don't want some chars in hdfs path names, namely :=/\ etc */
-  private val random = new Random()
-  private val validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
-  private def randomString(num: Int) = List.fill(num)(validChars(random.nextInt(validChars.size))).mkString("")
-
   /** The id for the current Scoobi job being (or about to be) executed. */
-  lazy val jobId: String = "%s-%s-%s".format("scoobi", timestamp, randomString(16))
+  lazy val jobId: String = Seq("scoobi", timestamp, uniqueId).mkString("-")
 
   /** Scoobi's configuration. */
   lazy val conf = {
     configuration.set("scoobi.jobid", jobId)
-    configuration.update("scoobi.workdir", defaultWorkDir)(withTrailingSlash)
+    configuration.update("scoobi.workdir", defaultWorkDir)
   }
+
+  /** @return a pseudo-random unique id */
+  private def uniqueId = java.util.UUID.randomUUID
 
   def set(key: String, value: String) { configuration.set(key, value) }
 
-  private lazy val defaultWorkDir = withTrailingSlash(FileSystem.get(configuration).getHomeDirectory.toUri.toString)+".scoobi-tmp/"+jobId
+  private lazy val defaultWorkDir = withTrailingSlash(FileSystem.get(configuration).getHomeDirectory.toUri.toString+"/.scoobi-tmp/"+jobId)
 
   private def withTrailingSlash(s: String) = if (s endsWith "/") s else s + '/'
 
-  lazy val workingDirectory: Path = new Path(conf.workingDirectory)
+  lazy val workingDirectory: Path = new Path(defaultWorkDir)
 }
 
 object ScoobiConfiguration {
