@@ -40,7 +40,7 @@ import Configurations._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-final case class BridgeStore[A]()
+final case class BridgeStore[A](id: Int = 0)
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Configured {
 
@@ -52,7 +52,6 @@ final case class BridgeStore[A]()
   /**
    * this value is set by the configuration so as to be unique for this bridge store
    */
-  private var id = 0
   lazy val typeName = "BS" + id
   lazy val path = new Path(conf.workingDirectory, "bridges/" + id)
 
@@ -62,10 +61,10 @@ final case class BridgeStore[A]()
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
   def outputCheck {}
   def outputConfigure(job: Job) {
-    id = conf.increment("scoobi.bridgestoreid")
+    configure(job)
     FileOutputFormat.setOutputPath(job, path)
   }
-  val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
+  lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 
 
   /* Input (i.e. output of bridge) */
@@ -78,7 +77,7 @@ final case class BridgeStore[A]()
   protected def checkPaths {}
 
   def inputSize(): Long = Helper.pathSize(new Path(path, "ch*"))
-  val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
+  lazy val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get
   }
 

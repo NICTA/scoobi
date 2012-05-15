@@ -129,6 +129,6 @@ object SequenceOutput {
         logger.info("Output path: " + outputPath.toUri.toASCIIString)
     }
 
-    val outputConverter = converter
+    lazy val outputConverter = converter
   }
 }

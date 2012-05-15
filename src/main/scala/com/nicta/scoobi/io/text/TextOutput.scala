@@ -73,7 +73,7 @@ object TextOutput {
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
       }
 
-      val outputConverter = new OutputConverter[NullWritable, A, A] {
+      lazy val outputConverter = new OutputConverter[NullWritable, A, A] {
         def toKeyValue(x: A) = (NullWritable.get, x)
       }
     }

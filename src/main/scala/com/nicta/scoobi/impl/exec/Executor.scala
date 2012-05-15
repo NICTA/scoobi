@@ -65,8 +65,8 @@ object Executor {
       case MapperInputChannel(source, _)   => source
       case StraightInputChannel(source, _) => source
     } filter {
-      case BridgeStore() => false
-      case _             => true
+      case BridgeStore(_) => false
+      case _              => true
     } foreach { _.inputCheck() }
 
 
@@ -82,8 +82,8 @@ object Executor {
 
     /* Initialize reference counts of all intermediate data (i.e. BridgeStores). */
     val bridges: List[BridgeStore[_]] = mscrs.toList flatMap (_.inputChannels) flatMap {
-      case BypassInputChannel(bs@BridgeStore(), _) => List(bs)
-      case MapperInputChannel(bs@BridgeStore(), _) => List(bs)
+      case BypassInputChannel(bs@BridgeStore(_), _) => List(bs)
+      case MapperInputChannel(bs@BridgeStore(_), _) => List(bs)
       case _                                       => Nil
     }
 
@@ -138,8 +138,8 @@ object Executor {
       }
 
       ic match {
-        case BypassInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
-        case MapperInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
+        case BypassInputChannel(bs@BridgeStore(_), _) => updateRefcnt(bs)
+        case MapperInputChannel(bs@BridgeStore(_), _) => updateRefcnt(bs)
         case _                                       => Unit
       }
     }

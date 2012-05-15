@@ -61,7 +61,7 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
   }
 
   lazy val aBridgeStore = {
-    val bs = BridgeStore[String]()
+    val bs = BridgeStore[String](1)
     bs.rtClass = Some(new RuntimeClass("java.lang.String", classOf[String], Array[Byte]()))
     bs
   }

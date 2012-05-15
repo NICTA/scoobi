@@ -29,7 +29,7 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration
    */
-  def fromInput(keepFiles: Boolean)(ts: String*)(implicit c: ScoobiConfiguration) = SimpleJob(ts, keepFiles = true)
+  def fromInput(keepFiles: Boolean)(ts: String*)(implicit c: ScoobiConfiguration) = SimpleJob(ts, keepFiles = keepFiles)
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration
    */

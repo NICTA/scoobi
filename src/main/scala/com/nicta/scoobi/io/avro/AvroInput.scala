@@ -75,7 +75,7 @@ object AvroInput {
 
       def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
 
-      val inputConverter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
+      lazy val inputConverter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
         def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
       }
     }

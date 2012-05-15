@@ -66,7 +66,7 @@ object FunctionInput {
 
       def inputSize(): Long = n.toLong
 
-      val inputConverter = new InputConverter[NullWritable, A, A] {
+      lazy val inputConverter = new InputConverter[NullWritable, A, A] {
         def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
       }
     }

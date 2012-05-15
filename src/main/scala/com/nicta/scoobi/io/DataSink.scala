@@ -37,7 +37,7 @@ trait DataSink[K, V, B] {
   def outputConfigure(job: Job): Unit
 
   /** Maps the type consumed by this DataSink to the key-values of its OutputFormat. */
-  val outputConverter: OutputConverter[K, V, B]
+  def outputConverter: OutputConverter[K, V, B]
 }
 
 

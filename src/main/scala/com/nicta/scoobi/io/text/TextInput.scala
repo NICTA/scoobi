@@ -147,6 +147,6 @@ object TextInput {
 
     def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
 
-    val inputConverter = converter
+    lazy val inputConverter = converter
   }
 }

@@ -46,5 +46,5 @@ final case class MaterializeStore[A : Manifest : WireFormat](id: Int, path: Path
   def outputConfigure(job: Job) {
     FileOutputFormat.setOutputPath(job, path)
   }
-  val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
+  lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 }

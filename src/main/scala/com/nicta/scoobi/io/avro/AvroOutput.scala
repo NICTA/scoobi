@@ -75,7 +75,7 @@ object AvroOutput {
         }
       }
 
-      val outputConverter = converter
+      lazy val outputConverter = converter
     }
 
     new DListPersister(dl, sink)

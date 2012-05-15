@@ -35,7 +35,7 @@ trait DataSource[K, V, A] {
   def inputSize(): Long
 
   /** Maps the key-values of a DataSource's InputFormat to the final type produced by it. */
-  val inputConverter: InputConverter[K, V, A]
+  def inputConverter: InputConverter[K, V, A]
 }
 
 

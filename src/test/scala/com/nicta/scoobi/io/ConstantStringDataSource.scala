@@ -14,7 +14,7 @@ case class ConstantStringDataSource(value: String) extends DataSource[String, St
     DistributedCache.addCacheFile(new java.net.URI("string"), job.getConfiguration)
   }
   def inputSize: Long = value.size
-  val inputConverter = ConstantStringInputConverter(value)
+  lazy val inputConverter = ConstantStringInputConverter(value)
 
   case class ConstantStringInputSplit(value: String) extends InputSplit {
     def getLength = value.size

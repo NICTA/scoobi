@@ -159,7 +159,7 @@ class MapReduceJob(stepId: Int) {
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
     reducers.foreach { case (sinks, reducer) =>
       sinks foreach {
-        case bs@BridgeStore() => {
+        case bs@BridgeStore(_) => {
           // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
           bs.rtClass match {
             case Some(rtc) => jar.addRuntimeClass(rtc)
