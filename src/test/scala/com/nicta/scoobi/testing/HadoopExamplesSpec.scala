@@ -60,7 +60,7 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit wi
     step(WithHadoopLogFactory.setLogFactory())
   }
   "tags can be used to control the execution of examples" >> {
-    "'acceptance' runs locally, then on the cluster" >> runMustBeLocalThenCluster(examples("acceptance"))
+    "'hadoop' runs locally, then on the cluster" >> runMustBeLocalThenCluster(examples("hadoop"))
     "'cluster'    runs on the cluster only"          >> runMustBeCluster(examples("cluster"))
     "'local'      run locally only"                  >> runMustBeLocal(examples("local"))
     "'unit'       no run, that's for unit tests"     >> noRun(examples("unit"))

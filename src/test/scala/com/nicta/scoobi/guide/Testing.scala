@@ -72,6 +72,16 @@ If you only have one cluster for your testing you can hardcode the `fs` and `job
 
 This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.
 
+##### Tags
+
+You can use tags to run only locally or only on the cluster, with the mixed-in the `HadoopTags` trait. This trait automatically tags all your examples with `acceptance, local, cluster`.
+
+Those tags can be called from the sbt command-line to control the execution of the specification:
+
+ * `sbt>test-only -- include hadoop` only runs the `HadoopSpecification`s
+ * `sbt>test-only *WordCount* -- include local` only runs `WordCountSpec` examples locally
+ * `sbt>test-only *WordCount* -- include cluster` only runs `WordCountSpec` examples on the cluster
+
 ##### Type alias
 
 Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:
