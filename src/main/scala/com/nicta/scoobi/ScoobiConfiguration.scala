@@ -109,6 +109,8 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   lazy val conf = {
     configuration.set("scoobi.jobid", jobId)
     configuration.set("mapreduce.jobtracker.staging.root.dir", defaultWorkDir+"/staging/")
+    // this setting avoids unnecessary warnings
+    configuration.set("mapred.used.genericoptionsparser", "true")
     configuration.update("scoobi.workdir", defaultWorkDir)
   }
 
