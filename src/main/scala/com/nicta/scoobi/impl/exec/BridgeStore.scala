@@ -40,7 +40,7 @@ import Configurations._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-final case class BridgeStore[A](id: Int = 0)
+final case class BridgeStore[A]()
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Configured {
 
@@ -52,6 +52,7 @@ final case class BridgeStore[A](id: Int = 0)
   /**
    * this value is set by the configuration so as to be unique for this bridge store
    */
+  lazy val id = java.util.UUID.randomUUID.toString
   lazy val typeName = "BS" + id
   lazy val path = new Path(conf.workingDirectory, "bridges/" + id)
 

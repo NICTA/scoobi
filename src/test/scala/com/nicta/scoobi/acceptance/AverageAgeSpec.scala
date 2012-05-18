@@ -1,12 +1,11 @@
 package com.nicta.scoobi.acceptance
 
-import com.nicta.scoobi.testing.NictaHadoop
-import com.nicta.scoobi.testing.mutable.SimpleJobs
+import com.nicta.scoobi.testing.NictaSimpleJobs
 import AverageAge._
 import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.io.text.TextInput.{ALong, AnInt}
 
-class AverageAgeSpec extends NictaHadoop with SimpleJobs {
+class AverageAgeSpec extends NictaSimpleJobs {
   "The average age of a list of persons can be computed as a distributed job" >> { implicit sc: SC =>
     val averages =
     fromInput("100,Ben,Lever,31",

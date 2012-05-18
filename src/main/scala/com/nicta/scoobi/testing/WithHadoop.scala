@@ -1,9 +1,6 @@
 package com.nicta.scoobi
 package testing
 
-import org.apache.hadoop.util.GenericOptionsParser
-import org.apache.hadoop.mapred.JobConf
-
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
  *
@@ -39,6 +36,7 @@ trait WithHadoop extends WithLocalHadoop with ClusterConfiguration with LibJars 
    */
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     setLogFactory()
+    configuration.jobNameIs(getClass.getSimpleName)
     configuration.setRemote
     configuration.set("fs.default.name", fs)
     configuration.set("mapred.job.tracker", jobTracker)

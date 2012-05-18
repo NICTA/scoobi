@@ -159,7 +159,7 @@ class MapReduceJob(stepId: Int) {
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
     reducers.foreach { case (sinks, reducer) =>
       sinks foreach {
-        case bs@BridgeStore(_) => {
+        case bs@BridgeStore() => {
           // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
           bs.rtClass match {
             case Some(rtc) => jar.addRuntimeClass(rtc)
@@ -201,23 +201,25 @@ class MapReduceJob(stepId: Int) {
     logger.info("Total input size: " +  Helper.sizeString(inputBytes))
     logger.info("Number of reducers: " + numReducers)
 
-    /* Run job */
-    jar.close(configuration)
-    job.submit()
+    try {
 
-    val map = new Progress(job.mapProgress())
-    val reduce = new Progress(job.reduceProgress())
+      /* Run job */
+      jar.close(configuration)
+      job.submit()
 
-    while (!job.isComplete) {
-      Thread.sleep(configuration.getInt("scoobi.progress.time", 5000))
-      if (map.hasProgressed || reduce.hasProgressed)
-        logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
-                    "Reduce " + reduce.getProgress.formatted("%3d") + "%")
+      val map = new Progress(job.mapProgress())
+      val reduce = new Progress(job.reduceProgress())
+
+      while (!job.isComplete) {
+        Thread.sleep(configuration.getInt("scoobi.progress.time", 5000))
+        if (map.hasProgressed || reduce.hasProgressed)
+          logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
+                      "Reduce " + reduce.getProgress.formatted("%3d") + "%")
+      }
+    } finally {
+      /* Tidy-up */
+      tmpFile.delete
     }
-
-    /* Tidy-up */
-    tmpFile.delete
-
 
     /* Move named file-based sinks to their correct output paths. */
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }

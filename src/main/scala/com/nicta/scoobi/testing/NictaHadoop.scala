@@ -1,6 +1,7 @@
 package com.nicta.scoobi.testing
 
 import com.nicta.scoobi.ScoobiConfiguration
+import mutable.SimpleJobs
 import org.specs2.specification.Fragments
 import org.specs2.mutable.Tags
 
@@ -39,4 +40,9 @@ trait NictaCluster extends HadoopHomeDefinedCluster {
   override def fs         = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
   override def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
 }
+
+/**
+ * A trait for simple jobs running on the NICTA cluster
+ */
+trait NictaSimpleJobs extends NictaHadoop with SimpleJobs
 

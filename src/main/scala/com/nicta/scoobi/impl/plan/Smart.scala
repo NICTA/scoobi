@@ -734,7 +734,7 @@ object Smart {
       bridgeStoreMap.get(n) match {
         case Some(bs) => bs
         case None     => {
-          val newBS: BridgeStore[_] = BridgeStore(bridgeStoreMap.size)
+          val newBS: BridgeStore[_] = BridgeStore()
           bridgeStoreMap += ((n, newBS))
           newBS
         }

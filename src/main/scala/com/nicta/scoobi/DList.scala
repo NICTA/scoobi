@@ -84,7 +84,7 @@ class DList[A : Manifest : WireFormat](private val ast: Smart.DList[A]) { self =
     * by the client. */
   def materialize(implicit configuration: ScoobiConfiguration): DObject[Iterable[A]] = {
 
-    val id = configuration.conf.increment("scoobi.materializeid")
+    val id = configuration.jobId + "_" + configuration.conf.increment("scoobi.materializeid")
     val path = new Path(configuration.workingDirectory, "materialize/" + id)
 
     new DObject[Iterable[A]] {
@@ -338,6 +338,7 @@ object DList {
 
   /** Persist one or more distributed lists - will trigger MapReduce computations. */
   def persist(outputs: DListPersister[_]*)(implicit configuration: ScoobiConfiguration) {
+    configuration.deleteWorkingDirectory
 
     /* Produce map of all unique outputs and their corresponding persisters. */
     val rawOutMap: Map[Smart.DList[_], Set[DataSink[_,_,_]]] = {

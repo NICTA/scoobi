@@ -80,6 +80,21 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
    */
   def setRemote { set("scoobi.remote", "true") }
 
+  /**
+   * set a new job name to help recognize the job better
+   */
+  def jobNameIs(name: String) { set("scoobi.jobname", name) }
+
+  /**
+   * the file system for this configuration
+   */
+  lazy val fs = FileSystem.get(configuration)
+
+  /**
+   * @return the job name if one is defined
+   */
+  def jobName: Option[String] = Option(configuration.get("scoobi.jobname"))
+
   /* Timestamp used to mark each Scoobi working directory. */
   private def timestamp = {
     val now = new Date
@@ -88,11 +103,12 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
-  lazy val jobId: String = Seq("scoobi", timestamp, uniqueId).mkString("-")
+  lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
 
   /** Scoobi's configuration. */
   lazy val conf = {
     configuration.set("scoobi.jobid", jobId)
+    configuration.set("mapreduce.jobtracker.staging.root.dir", defaultWorkDir+"/staging/")
     configuration.update("scoobi.workdir", defaultWorkDir)
   }
 
@@ -101,11 +117,15 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
 
   def set(key: String, value: String) { configuration.set(key, value) }
 
-  private lazy val defaultWorkDir = withTrailingSlash(FileSystem.get(configuration).getHomeDirectory.toUri.toString+"/.scoobi-tmp/"+jobId)
+  private lazy val scoobiTmpDir = FileSystem.get(configuration).getHomeDirectory.toUri.toString+"/.scoobi-tmp/"
+  private lazy val defaultWorkDir = withTrailingSlash(scoobiTmpDir+jobId)
 
   private def withTrailingSlash(s: String) = if (s endsWith "/") s else s + '/'
 
   lazy val workingDirectory: Path = new Path(defaultWorkDir)
+
+  def deleteScoobiTmpDirectory = fs.delete(new Path(scoobiTmpDir), true)
+  def deleteWorkingDirectory   = fs.delete(new Path(defaultWorkDir), true)
 }
 
 object ScoobiConfiguration {

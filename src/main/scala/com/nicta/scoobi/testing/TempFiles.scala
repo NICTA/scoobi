@@ -33,8 +33,8 @@ trait TempFiles {
   /**
    * delete a file that is supposed to be either local or remote
    */
-  def deleteFile(f: File)(implicit fs: FileSystem) {
-    deleteFile(f.getPath)
+  def deleteFile(f: File, isRemote: Boolean = false)(implicit fs: FileSystem) {
+    deleteFile(path(f, isRemote))
   }
 
   /**
@@ -63,12 +63,20 @@ trait TempFiles {
   private def safeSeq[A](array: Array[A]) = Option(array).map(_.toSeq).getOrElse(Seq[A]())
 
   /** @return a list of remote paths which is empty if there are no paths */
-  private def listPaths(dir: String)(implicit fs: FileSystem) =
-    safeSeq(fs.listStatus(new Path(dir))).map(f => f.getPath)
+  private def listPaths(dir: String)(implicit fs: FileSystem): Seq[Path] =
+    safeSeq(fs.listStatus(new Path(dir))).flatMap {
+      case f if fs.isFile(f.getPath) => Seq(f.getPath)
+      case d                         => listPaths(d.getPath.toUri.getPath)
+    }
 
-  /** @return a list of local files which is empty if there are no files */
-  private def listFiles(dir: String)(implicit fs: FileSystem) =
-    safeSeq(new File(dir).listFiles)
+  /** @return a list of local files (recursively) which is empty if there are no files */
+  private def listFiles(dir: String)(implicit fs: FileSystem): Seq[File] = {
+   if (new File(dir).isDirectory) {
+     val files = safeSeq(new File(dir).listFiles)
+     files.filterNot(_.isDirectory) ++ files.flatMap(f => listFiles(f.getPath))
+   } else Seq[File]()
+  }
+
 
   /**
    * write lines to a file and return its local or remote path
@@ -91,4 +99,3 @@ trait TempFiles {
 }
 
 object TempFiles extends TempFiles
-

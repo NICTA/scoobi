@@ -2,37 +2,67 @@ package com.nicta.scoobi.testing.mutable
 
 import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
 import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.testing.TestFiles
 import com.nicta.scoobi.Scoobi._
+import java.io.DataInput
+import com.nicta.scoobi.testing.{OutputTestFiles, OutputTestFile, InputTestFile, TestFiles}
 
 
 trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
 
-  case class SimpleJob(ts: Seq[String], keepFiles: Boolean = false)(implicit val configuration: ScoobiConfiguration) extends TestFiles {
+  implicit def testInputToSimpleJob[T](input: InputTestFile[T])
+                                      (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): SimpleJob[T] =
+    SimpleJob(input.lines, input.keepFile)
 
+  case class SimpleJob[T](list: DList[T], keepFiles: Boolean = false)
+                         (implicit val configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]) {
     /**
      * simply persist the list to an output file and return the lines
      */
-    def run: Seq[String] = run[String](identity)
+    def run: Seq[String] = outer.run(list, keepFiles)
 
     /**
      * transform the input list, persist it to an output file and return a list of lines
      */
-    def run[S : Manifest](transform: DList[String] => DList[S]): Seq[String] = try {
-      persist(configuration)(toTextFile(transform(inputLines(ts)), outputPath, overwrite = true))
-      if (outputFiles.isEmpty) fail("There are no output files in "+ outputDir.getName)
-      outputLines
-    } finally { if (!keepFiles) deleteFiles }
+    def run[S : Manifest : WireFormat](transform: DList[T] => DList[S]): Seq[String] = outer.run(transform(list), keepFiles)
+  }
 
+  def run[T, S](lists: =>(DList[T], DList[S]))
+               (implicit configuration: ScoobiConfiguration, m1: Manifest[T], w1: WireFormat[T], m2: Manifest[S], w2: WireFormat[S]): (Seq[String], Seq[String]) =
+    run(lists, false)
+
+  def run[T, S](lists: =>(DList[T], DList[S]), keepFiles: Boolean)
+               (implicit configuration: ScoobiConfiguration, m1: Manifest[T], w1: WireFormat[T], m2: Manifest[S], w2: WireFormat[S]): (Seq[String], Seq[String]) =
+    runWithTestFiles {
+      OutputTestFiles(lists._1, lists._2).lines match {
+        case Left(m)       => fail(m)
+        case Right(result) => result
+      }
+    }
+
+  def run[T](list: =>DList[T], keepFiles: Boolean = false)
+            (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): Seq[String] =
+    runWithTestFiles {
+      OutputTestFile(list, keepFiles).lines match {
+        case Left(msg)     => fail(msg)
+        case Right(result) => result
+      }
+    }
+
+  private def runWithTestFiles[T](t: =>T)(implicit configuration: ScoobiConfiguration) = try {
+    TestFiles.prepare
+    t
+  } finally {
+    TestFiles.deleteFiles
+    configuration.deleteWorkingDirectory
   }
 
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration
    */
-  def fromInput(keepFiles: Boolean)(ts: String*)(implicit c: ScoobiConfiguration) = SimpleJob(ts, keepFiles = keepFiles)
+  def fromInput(ts: String*)(implicit c: ScoobiConfiguration) = InputTestFile[String](ts, mapping = (s:String) => s)
   /**
-   * @return a simple job from a list of strings (for the input file) and the current configuration
+   * @return a DList input keeping track of its temporary input file
    */
-  def fromInput(ts: String*)(implicit c: ScoobiConfiguration) = SimpleJob(ts)
+  def fromDelimitedInput(ts: String*)(implicit c: ScoobiConfiguration) = InputTestFile[List[String]](ts, mapping = (_:String).split(",").toList)
 
 }

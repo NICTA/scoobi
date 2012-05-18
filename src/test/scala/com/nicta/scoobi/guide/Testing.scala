@@ -88,9 +88,9 @@ Passing the configuration to each example is a bit verbose so you can use a type
 
 The `HadoopSpecification` class allows to create any kind of job and execute them either locally or on the cluster. The `SimpleJobs` trait is an additional trait which you can use to:
 
- * write some strings to a simple input text file and get back a `DList` representing this data
+ * write some strings to a temporary input text file and get back a `DList` representing this data
  * execute some transformations based on the `DList` API
- * get the results as a `Seq[String]` from the output file
+ * get the results as a `Seq[String]` from an temporary output file
 
       "getting the size of words" >> { implicit c: SC =>
         fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
@@ -99,8 +99,18 @@ The `HadoopSpecification` class allows to create any kind of job and execute the
 `fromInput` creates a temporary file and a new `DList` from a `TextInput`. Then the `run` method executes transformations on the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the `keepFiles` parameter is set:
 
       "getting the size of words" >> { implicit c: SC =>
-        fromInput(keepFiles = true)("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+        fromInput("hello", "world").keep.run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
       }
+
+ Other jobs might be slightly more complex and require inputs coming from several files:
+
+     "Numbers can be partitioned into even and odd numbers" >> { implicit sc: SC =>
+       val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
+       val (evens, odds) = run(numbers.partition(_ % 2 == 0))
+
+       forall(evens.map(_.toInt))(i => i must beEven)
+       forall(odds.map(_.toInt))(i => i must beOdd)
+     }
 
 ### Using your own
 

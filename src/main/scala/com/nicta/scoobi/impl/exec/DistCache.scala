@@ -76,7 +76,7 @@ object DistCache {
     val dis = path.getFileSystem(conf).open(path)
     try {
       Some(xstream.fromXML(dis).asInstanceOf[T])
-    } catch { case e => None }
+    } catch { case e => { e.printStackTrace(); None } }
     finally { dis.close() }
   }
 }

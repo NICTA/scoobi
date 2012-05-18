@@ -8,42 +8,105 @@ import Scoobi._
 import io.Source
 
 /**
- * This trait provides a test input file, created as a temporary file on the local file system and copied to the cluster
- * if the configuration is a remote one.
- *
- * It also creates an output directory and
+ * This trait creates input and output files which are temporary
+ * The files paths are registered in the configuration so that they can be deleted when the job has been executed
  */
 trait TestFiles {
 
-  def configuration: ScoobiConfiguration
-
-  implicit lazy val fs = FileSystem.get(configuration)
-  lazy val input = {
+  def prepare(implicit configuration: ScoobiConfiguration) {
     // before the creation of the input we set the mapred local dir.
     // this setting is necessary to avoid xml parsing when several jobs are executing concurrently and
     // trying to access the job.xml file
-    configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, localDir.getPath+"/")
-    createTempFile("test.input")
+    configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, createTempDir("test.local").getPath+"/")
   }
-  lazy val localDir  = createTempDir("test.local")
-  lazy val outputDir = createTempDir("test.output")
 
-  lazy val outputPath = TempFiles.path(outputDir, isRemote)
+  def createTempFile(prefix: String, keep: Boolean)(implicit configuration: ScoobiConfiguration) =
+    registerFile(TempFiles.createTempFile(prefix+configuration.jobId), keep)
 
-  def isRemote = configuration.isRemote
+  def createTempFile(prefix: String)(implicit configuration: ScoobiConfiguration) =
+    registerFile(TempFiles.createTempFile(prefix+configuration.jobId))
 
-  def deleteFiles {
-    val files = Seq(input, localDir, outputDir)
+  def createTempDir(prefix: String, keep: Boolean)(implicit configuration: ScoobiConfiguration) =
+    registerFile(TempFiles.createTempDir(prefix+configuration.jobId), keep)
+
+  def createTempDir(prefix: String)(implicit configuration: ScoobiConfiguration) =
+    registerFile(TempFiles.createTempDir(prefix+configuration.jobId))
+
+  def getFiles(dir: File)(implicit configuration: ScoobiConfiguration) =
+    TempFiles.getFiles(dir, isRemote)(fs)
+
+  def deleteFiles(implicit configuration: ScoobiConfiguration) {
+    deleteFiles(configuration.get("scoobi.test.files").split(",").toSeq.map(new File(_)))
+  }
+
+  def isRemote(implicit configuration: ScoobiConfiguration) = configuration.isRemote
+
+  implicit def fs(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)
+
+  private def registerFile(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
+    if (!keep) configuration.addValues("scoobi.test.files", file.getPath)
+    file
+  }
+  private def deleteFiles(files: Seq[File])(implicit configuration: ScoobiConfiguration) {
     if (isRemote)
-      files foreach TempFiles.deleteFile
-    files foreach TempFiles.deleteFile
+      files.foreach(f => TempFiles.deleteFile(f, isRemote))
+    files.foreach(f => TempFiles.deleteFile(f))
   }
-
-  def createTempFile(prefix: String) = TempFiles.createTempFile(prefix+configuration.jobId)
-  def createTempDir(prefix: String)  = TempFiles.createTempDir(prefix+configuration.jobId)
-  def path(file: File)               = TempFiles.path(file, isRemote)
-  def inputLines(lines: Seq[String]) = fromTextFile(TempFiles.writeLines(input, lines, isRemote))
-  def outputFiles                    = TempFiles.getFiles(outputDir, isRemote)
-  def outputLines                    = Source.fromFile(outputFiles.head).getLines.toSeq
 }
 
+object TestFiles extends TestFiles
+
+import TestFiles._
+
+case class InputTestFile[S](ls: Seq[String], mapping: String => S, keepFile: Boolean = false)
+                           (implicit configuration: ScoobiConfiguration, m: Manifest[S], w: WireFormat[S]) {
+
+  lazy val file = createTempFile("test.input", keep = keepFile)
+
+  def keep = copy(keepFile = true)
+  def inputLines = fromTextFile(TempFiles.writeLines(file, ls, isRemote))
+  def map[T : Manifest : WireFormat](f: S => T) = InputTestFile(ls, f compose mapping)
+  def collect[T : Manifest : WireFormat](f: PartialFunction[S, T]) = InputTestFile(ls, f compose mapping)
+  def lines: DList[S] = inputLines.map(mapping)
+}
+
+case class OutputTestFile[T](list: DList[T], keepDir: Boolean = false)
+                            (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]) {
+
+  lazy val outputDir  = TestFiles.createTempDir("test.output", keep = keepDir)
+  lazy val outputPath = TempFiles.path(outputDir, isRemote)
+  def outputFiles     = getFiles(outputDir)
+
+  def keep = copy(keepDir = true)
+
+  lazy val lines: Either[String, Seq[String]] = {
+    persist(configuration)(toTextFile(list, outputPath, overwrite = true))
+    if (outputFiles.isEmpty) Left("There are no output files in "+ outputDir.getName)
+    else                     Right(Source.fromFile(outputFiles.head).getLines.toSeq)
+  }
+}
+
+case class OutputTestFiles[T1, T2](list1: DList[T1],
+                                   list2: DList[T2], keepDir: Boolean = false)
+                                  (implicit configuration: ScoobiConfiguration,
+                                   m1: Manifest[T1], w1: WireFormat[T1],
+                                   m2: Manifest[T2], w2: WireFormat[T2]) {
+
+  lazy val outputDir  = TestFiles.createTempDir("test.output", keep = keepDir)
+  lazy val outputPath = TempFiles.path(outputDir, isRemote)
+  def outputFiles     = getFiles(outputDir)
+
+  def keep = copy(keepDir = true)
+
+  lazy val lines: Either[String, (Seq[String], Seq[String])] = {
+
+    persist(configuration)(toTextFile(list1, outputPath+"/1", overwrite = true),
+                           toTextFile(list2, outputPath+"/2", overwrite = true))
+
+    if (outputFiles.isEmpty)        Left("There are no output files in "+outputDir.getName)
+    else if (outputFiles.size == 1) Left("There is only one output file in "+outputDir.getName+"instead of 2")
+    else                            Right((getFile(0), getFile(1)))
+  }
+
+  private def getFile(i: Int) = Source.fromFile(outputFiles(i)).getLines.toSeq
+}

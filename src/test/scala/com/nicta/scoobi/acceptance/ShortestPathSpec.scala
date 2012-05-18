@@ -1,11 +1,10 @@
 package com.nicta.scoobi.acceptance
 
-import com.nicta.scoobi.testing.NictaHadoop
-import com.nicta.scoobi.testing.mutable.SimpleJobs
+import com.nicta.scoobi.testing.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
 import ShortestPath._
 
-class ShortestPathSpec extends NictaHadoop with SimpleJobs {
+class ShortestPathSpec extends NictaSimpleJobs {
 
   "The shortest path in a graph can be computed using Hadoop" >> { implicit sc: SC =>
     val paths =
