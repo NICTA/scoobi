@@ -2,43 +2,38 @@ package com.nicta.scoobi.testing
 
 import org.specs2.mock.Mockito
 import com.nicta.scoobi.ScoobiConfiguration
-import org.specs2.execute.Result
 import org.apache.commons.logging.LogFactory
 import org.specs2.mutable.Specification
+import org.specs2.execute.Result
+import org.specs2.matcher.ResultMatchers
 
-class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { isolated
+class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit with ResultMatchers { isolated
 
   "the local context runs the examples locally only" >> {
-    val context = localExamples
+    implicit val context = localExamples
 
     "successful local run" >> {
-      context.example1.execute
-      there was one(context.mocked).runOnLocal(any[Result])
-      there was no(context.mocked).runOnCluster(any[Result])
+      runMustBeLocal
     }
     "with timing" >> {
       context.withTiming.example1.execute.expected must startWith ("Local execution time: ")
     }
   }
   "the cluster context runs the examples remotely only" >> {
-    val context = clusterExamples
+    implicit val context = clusterExamples
     "successful cluster run" >> {
-      context.example1.execute
-      there was no(context.mocked).runOnLocal(any[Result])
-      there was one(context.mocked).runOnCluster(any[Result])
+      runMustBeCluster
     }
     "with timing" >> {
       context.withTiming.example1.execute.expected must startWith ("Cluster execution time: ")
     }
   }
   "the localThenCluster context runs the examples" >> {
-    val context = localThenClusterExamples
+    implicit val context = localThenClusterExamples
 
     "locally first, then remotely if there is no failure" >> {
       "normal execution" >> {
-        context.example1.execute
-        there was one(context.mocked).runOnLocal(any[Result])
-        there was one(context.mocked).runOnCluster(any[Result])
+        runMustBeLocalThenCluster
       }
       "with timing" >> {
         forall(Seq("Local execution time: ", "Cluster execution time: ")) { s =>
@@ -49,8 +44,7 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { 
     "only locally if there is a failure" >> {
       "normal execution" >> {
         context.example2.execute
-        there was one(context.mocked).runOnLocal(any[Result])
-        there was no(context.mocked).runOnCluster(any[Result])
+        runMustBeLocal
       }
       "with timing" >> {
         val result = context.withTiming.example2.execute.expected.split("\n").toSeq
@@ -65,13 +59,43 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit { 
     }
     step(WithHadoopLogFactory.setLogFactory())
   }
+  "tags can be used to control the execution of examples" >> {
+    "'acceptance' runs locally, then on the cluster" >> runMustBeLocalThenCluster(examples("acceptance"))
+    "'cluster'    runs on the cluster only"          >> runMustBeCluster(examples("cluster"))
+    "'local'      run locally only"                  >> runMustBeLocal(examples("local"))
+    "'unit'       no run, that's for unit tests"     >> noRun(examples("unit"))
+  }
 
   def localExamples            = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples          = new HadoopExamplesForTesting { override def context = cluster }
   def localThenClusterExamples = new HadoopExamplesForTesting { override def context = localThenCluster }
 
-  trait HadoopExamplesForTesting extends HadoopExamples { outer =>
+  def examples(includeTag: String) = new HadoopExamplesForTesting {
+    override lazy val arguments = include(includeTag)
+  }
 
+  def runMustBeLocal(implicit context: HadoopExamplesForTesting) = {
+    context.example1.execute
+    there was one(context.mocked).runOnLocal(any[Result])
+    there was no(context.mocked).runOnCluster(any[Result])
+  }
+  def runMustBeCluster(implicit context: HadoopExamplesForTesting) = {
+    context.example1.execute
+    there was no(context.mocked).runOnLocal(any[Result])
+    there was one(context.mocked).runOnCluster(any[Result])
+  }
+  def runMustBeLocalThenCluster(implicit context: HadoopExamplesForTesting) = {
+    context.example1.execute
+    there was no(context.mocked).runOnLocal(any[Result])
+    there was one(context.mocked).runOnCluster(any[Result])
+  }
+  def noRun(implicit context: HadoopExamplesForTesting) = {
+    context.example1.execute
+    there was no(context.mocked).runOnLocal(any[Result])
+    there was no(context.mocked).runOnCluster(any[Result])
+  }
+
+  trait HadoopExamplesForTesting extends HadoopExamples { outer =>
     val mocked = mock[HadoopExamples]
     val fs = "fs"
     val jobTracker = "jobtracker"
