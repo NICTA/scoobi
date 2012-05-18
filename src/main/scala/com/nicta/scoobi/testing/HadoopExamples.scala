@@ -54,7 +54,7 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
 
     def around[R <% Result](a: =>R) = remotely(a)
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("acceptance") && arguments.keep("cluster")) super.apply(a(outside))
+      if (arguments.keep("acceptance") || arguments.keep("cluster")) super.apply(a(outside))
       else                                                           Skipped("excluded", "No cluster execution time")
     }
   }
@@ -68,7 +68,7 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
     def around[R <% Result](a: =>R) = locally(a)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("acceptance") && arguments.keep("local")) super.apply(a(outside))
+      if (arguments.keep("acceptance") || arguments.keep("local")) super.apply(a(outside))
       else                                                         Skipped("excluded", "No local execution time")
     }
 
@@ -84,10 +84,18 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
     /**
      * delegate the apply method to the LocalContext, then the Cluster context in case of a Success
      */
-    override def apply[R <% Result](a: ScoobiConfiguration => R) =
-      changeSeparator(local(a) or cluster(a))
+    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
+      local(a) match {
+        case f @ Failure(_,_,_,_) => f
+        case e @ Error(_,_)       => e
+        case s @ Skipped(_,_)     => cluster(a).mapExpected((e: String) => s.expected+"\n"+e)
+        case other                => changeSeparator(other and cluster(a))
+      }
+    }
   }
 
+  /** change the separator of a Result */
+  private def changeSeparator(r: Result) = r.mapExpected((_:String).replace("; ", "\n"))
   /**
    * trait for creating contexts having ScoobiConfigurations
    *
@@ -97,9 +105,6 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
   trait HadoopContext extends AroundOutside[ScoobiConfiguration] {
     def isRemote = true
   }
-
-  /** change the separator of a Result */
-  private def changeSeparator(r: Result) = r.mapExpected((_:String).replace("; ", "\n"))
 
   override def showTimes = arguments.contains("scoobi.times")    || super.showTimes
   override def quiet     = !arguments.contains("scoobi.verbose") && super.quiet

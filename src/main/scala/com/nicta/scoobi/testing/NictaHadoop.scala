@@ -30,7 +30,7 @@ trait NictaHadoopSpecification extends NictaHadoop with org.specs2.mutable.Speci
 trait NictaTags extends Tags { this: NictaHadoop =>
   // all the examples will be tagged as "acceptance" since they are using the local hadoop installation
   // or the cluster
-  def acceptanceSection = section("acceptance")
+  def acceptanceSection = section("acceptance", "local", "cluster")
 }
 
 /**
