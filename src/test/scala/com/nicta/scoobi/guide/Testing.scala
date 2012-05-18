@@ -40,10 +40,6 @@ You can change every step in the process above and create your own Specification
 
   * you can change the execution context of the examples by overriding the `context` method and returning `local` or `cluster` instead of `localThenCluster` which is the default [specs2 context](http://etorreborre.github.com/specs2/guide/org.specs2.guide.Structure.html#Contexts). The same thing is achievable on the sbt command line by using the `exclude` argument: `test-only *WordCount* -- exclude cluster` will only run locally.
 
-  * you can show the logs by overriding the `quiet` method and set it to `true` (on the command line, you can pass: `test-only *WordCount* -- scoobi.verbose`)
-
-  * you can show the execution times by overriding the `showTimes` method and set it to `true` (on the command line, you can pass: `test-only *WordCount* -- scoobi.times`)
-
   * the directory for loading the jars is defined by the `libjarsDirectory` property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the `LibJars` trait
 
 #### Fine tuning
@@ -71,6 +67,18 @@ If you only have one cluster for your testing you can hardcode the `fs` and `job
       }
 
 This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.
+
+##### Logging
+
+By default Hadoop logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:
+
+ * show all logs: `test-only *WordCount* -- scoobi.verbose` (you can also override the `quiet` method
+
+ * show some logs: `test-only *WordCount* -- scoobi.verbose.warning` (you can also override the `level` method). The log levels are the ones defined in `java.util.logging.Level` and translated to the Apache commons logging levels which Hadoop uses
+
+ * you can additionally show the execution times, locally and on the cluster: `test-only *WordCount* -- scoobi.verbose.warning` (or override the `showTimes` method)
+
+ * finally you can combine those flags: `test-only *WordCount* -- scoobi.verbose.warning.times`
 
 ##### Tags
 

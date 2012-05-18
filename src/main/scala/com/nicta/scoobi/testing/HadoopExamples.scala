@@ -5,7 +5,9 @@ import org.specs2.time.SimpleTimer
 import com.nicta.scoobi.ScoobiConfiguration
 import org.specs2.specification._
 import org.specs2.Specification
-import org.specs2.main.{CommandLineArguments, Arguments}
+import org.specs2.main.CommandLineArguments
+import java.util.logging.Level
+import com.nicta.scoobi.impl.control.Exceptions._
 
 
 /**
@@ -106,8 +108,19 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
     def isRemote = true
   }
 
-  override def showTimes = arguments.contains("scoobi.times")    || super.showTimes
-  override def quiet     = !arguments.contains("scoobi.verbose") && super.quiet
+  override def showTimes = arguments.commandLine.arguments.exists(_.matches("scoobi.*.times.*"))   || super.showTimes
+  override def quiet     = !verboseArg.isDefined && super.quiet
+  override def level     = extractLevel(verboseArg.getOrElse(""))
+
+  private[testing]
+  def verboseArg = arguments.commandLine.arguments.find { _.matches("scoobi.*verbose.*") }
+
+  private[testing]
+  def verboseDetails(arg: String) = arg.split("\\.").toSeq.filterNot(_=="scoobi").filterNot(_=="verbose")
+
+  private[testing]
+  def extractLevel(arg: String) =
+    verboseDetails(arg).flatMap(l => tryo(Level.parse(l.toUpperCase))).headOption.getOrElse(Level.INFO)
 
   /**
    * @return an executed Result updated with its execution time

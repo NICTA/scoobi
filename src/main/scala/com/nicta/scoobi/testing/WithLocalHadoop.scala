@@ -4,6 +4,7 @@ import org.apache.commons.logging.LogFactory
 import org.specs2.time.SimpleTimer
 import WithHadoopLogFactory._
 import com.nicta.scoobi.ScoobiConfiguration
+import java.util.logging.Level
 
 /**
  * Execute Hadoop code locally
@@ -16,12 +17,14 @@ trait WithLocalHadoop {
   def quiet = true
   /** @return true to display execution times for each job */
   def showTimes = false
+  /** @return the log level to use when logging */
+  def level = Level.INFO
 
   /**
    * Static setup to use a testing log factory
    */
   def setLogFactory(name: String = classOf[WithHadoopLogFactory].getName) {
-    WithHadoopLogFactory.setLogFactory(name, quiet, showTimes)
+    WithHadoopLogFactory.setLogFactory(name, quiet, showTimes, level)
   }
 
   /** execute some code locally, possibly showing execution times */

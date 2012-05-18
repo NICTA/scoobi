@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory
 import org.specs2.mutable.Specification
 import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
+import java.util.logging.Level
 
 class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit with ResultMatchers { isolated
 
@@ -65,6 +66,11 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit wi
     "'local'      run locally only"                  >> runMustBeLocal(examples("local"))
     "'unit'       no run, that's for unit tests"     >> noRun(examples("unit"))
   }
+  "the log level can be passed from the command line" >> {
+    localExamples.extractLevel("scoobi.verbose")         === Level.INFO
+    localExamples.extractLevel("scoobi.verbose.warning") === Level.WARNING
+    localExamples.extractLevel("scoobi.verbose.all")     === Level.ALL
+  }
 
   def localExamples            = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples          = new HadoopExamplesForTesting { override def context = cluster }
@@ -73,7 +79,6 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit wi
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)
   }
-
   def runMustBeLocal(implicit context: HadoopExamplesForTesting) = {
     context.example1.execute
     there was one(context.mocked).runOnLocal(any[Result])
