@@ -1,6 +1,5 @@
 package com.nicta.scoobi.testing
 
-import org.specs2.execute.Success
 import org.specs2.specification._
 
 /**
@@ -14,6 +13,8 @@ trait UploadedLibJars extends LibJars with SpecificationStructure with HadoopExa
   override def map(fs: =>Fragments) = fs.insert(uploadStep)
 
   /** create a Step to upload the jars on the cluster */
-  def uploadStep = Step(if (arguments.keep("cluster") && context.isRemote) uploadLibJars(clusterConfiguration))
+  def uploadStep = Step(if (executeRemotely && context.isRemote) uploadLibJars(clusterConfiguration))
 
+  /** @return true if the examples need to be executed remotely */
+  private def executeRemotely = arguments.keep("cluster") ||  arguments.keep("hadoop")
 }
