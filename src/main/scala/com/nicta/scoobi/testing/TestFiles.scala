@@ -105,8 +105,14 @@ case class OutputTestFiles[T1, T2](list1: DList[T1],
 
     if (outputFiles.isEmpty)        Left("There are no output files in "+outputDir.getName)
     else if (outputFiles.size == 1) Left("There is only one output file in "+outputDir.getName+"instead of 2")
-    else                            Right((getFile(0), getFile(1)))
+    else                            {
+      val files = getFiles(outputDir)
+      println(files)
+      val (f1, f2) = (files.find(_.getPath.contains("/1")).get, files.find(_.getPath.contains("/2")).get)
+      Right((getLines(f1), getLines(f2)))
+    }
   }
 
-  private def getFile(i: Int) = Source.fromFile(outputFiles(i)).getLines.toSeq
+  private def getFile(i: Int) = getLines(outputFiles(i))
+  private def getLines(file: File) = Source.fromFile(file).getLines.toSeq
 }

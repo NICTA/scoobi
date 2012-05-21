@@ -47,8 +47,7 @@ trait TempFiles {
   }
 
   /**
-   * @return the path of a file, either as an absolute path if it is a local file, or just its name if it is fetched with
-   *         hdfs
+   * @return all the files in a given directory, bringing them back from the cluster if necessary
    */
   def getFiles(dir: File, isRemote: Boolean)(implicit fs: FileSystem) = {
     if (isRemote) {
