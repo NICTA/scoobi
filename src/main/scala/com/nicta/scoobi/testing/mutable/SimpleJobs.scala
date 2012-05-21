@@ -6,7 +6,10 @@ import com.nicta.scoobi.Scoobi._
 import java.io.DataInput
 import com.nicta.scoobi.testing.{OutputTestFiles, OutputTestFile, InputTestFile, TestFiles}
 
-
+/**
+ * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
+ * All data is written to temporary files and is deleted after usage.
+ */
 trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
 
   implicit def testInputToSimpleJob[T](input: InputTestFile[T])

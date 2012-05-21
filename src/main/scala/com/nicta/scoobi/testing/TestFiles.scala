@@ -32,8 +32,11 @@ trait TestFiles {
   def createTempDir(prefix: String)(implicit configuration: ScoobiConfiguration) =
     registerFile(TempFiles.createTempDir(prefix+configuration.jobId))
 
-  def getFiles(dir: File)(implicit configuration: ScoobiConfiguration) =
+  def getFiles(dir: File)(implicit configuration: ScoobiConfiguration): Seq[File] =
     TempFiles.getFiles(dir, isRemote)(fs)
+
+  def getFiles(dir: String)(implicit configuration: ScoobiConfiguration): Seq[File] =
+    getFiles(new File(dir))
 
   def deleteFiles(implicit configuration: ScoobiConfiguration) {
     deleteFiles(configuration.get("scoobi.test.files").split(",").toSeq.map(new File(_)))
@@ -106,11 +109,11 @@ case class OutputTestFiles[T1, T2](list1: DList[T1],
     persist(configuration)(toTextFile(list1, outputPath+"/1", overwrite = true),
                            toTextFile(list2, outputPath+"/2", overwrite = true))
 
-    if (outputFiles.isEmpty)        Left("There are no output files in "+outputDir.getName)
-    else if (outputFiles.size == 1) Left("There is only one output file in "+outputDir.getName+"instead of 2")
+    val files = outputFiles
+    if (files.isEmpty)        Left("There are no output files in "+outputDir.getName)
+    else if (files.size == 1) Left("There is only one output file in "+outputDir.getName+" instead of 2")
     else                            {
-      val files = getFiles(outputDir)
-      val (f1, f2) = (files.find(_.getPath.contains("ch0out")).get, files.find(_.getPath.contains("ch1out")).get)
+      val (f1, f2) = (getFiles(outputDir+"/1").head, getFiles(outputDir+"/2").head)
       Right((getLines(f1), getLines(f2)))
     }
   }

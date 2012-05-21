@@ -52,11 +52,19 @@ trait TempFiles {
   def getFiles(dir: File, isRemote: Boolean)(implicit fs: FileSystem) = {
     if (isRemote) {
       listPaths(path(dir, true)).foreach { p =>
-        fs.copyToLocalFile(p, new Path(dir.getPath))
+        fs.copyToLocalFile(p, new Path(relativePath(dir, p.toUri.getPath)))
       }
     }
     listFiles(dir.getPath).filterNot(_.getPath contains "crc")
   }
+
+  /**
+   * @return a path starting with 'dir' path and ending with the part in 'path' that comes after 'dir' path:
+   *         dir      = /var/temp/d1
+   *         path     = /user/me/temp/d1/1/hello.txt
+   *         relative = /var/temp/d1/1/hello.txt
+   */
+  def relativePath(dir: File, path: String): String = dir.getPath+path.substring(path.indexOf(dir.getName) + dir.getName.size)
 
   /** @return a list of elements which is empty if the input array is null or empty */
   private def safeSeq[A](array: Array[A]) = Option(array).map(_.toSeq).getOrElse(Seq[A]())
