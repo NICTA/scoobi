@@ -88,7 +88,7 @@ trait TempFiles {
   /**
    * write to a file and copy it to the cluster if we're executing a distributed job
    */
-  private def printToFile(f: java.io.File, isRemote: Boolean)(op: java.io.PrintWriter => Unit)(implicit fs: FileSystem) {
+  private def printToFile(f: java.io.File, isRemote: Boolean)(op: java.io.PrintWriter => scala.Unit)(implicit fs: FileSystem) {
     val p = new java.io.PrintWriter(f)
     try { op(p) } finally { p.close() }
     if (isRemote)
