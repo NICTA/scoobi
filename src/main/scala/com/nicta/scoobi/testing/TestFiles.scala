@@ -39,11 +39,14 @@ trait TestFiles {
     deleteFiles(configuration.get("scoobi.test.files").split(",").toSeq.map(new File(_)))
   }
 
+  def path(path: String)(implicit configuration: ScoobiConfiguration): String = TempFiles.path(new File(path), isRemote)
+  def path(file: File)(implicit configuration: ScoobiConfiguration): String = TempFiles.path(file, isRemote)
+
   def isRemote(implicit configuration: ScoobiConfiguration) = configuration.isRemote
 
   implicit def fs(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)
 
-  private def registerFile(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
+  def registerFile(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
     if (!keep) configuration.addValues("scoobi.test.files", file.getPath)
     file
   }
@@ -107,8 +110,7 @@ case class OutputTestFiles[T1, T2](list1: DList[T1],
     else if (outputFiles.size == 1) Left("There is only one output file in "+outputDir.getName+"instead of 2")
     else                            {
       val files = getFiles(outputDir)
-      println(files)
-      val (f1, f2) = (files.find(_.getPath.contains("/1")).get, files.find(_.getPath.contains("/2")).get)
+      val (f1, f2) = (files.find(_.getPath.contains("ch0out")).get, files.find(_.getPath.contains("ch1out")).get)
       Right((getLines(f1), getLines(f2)))
     }
   }

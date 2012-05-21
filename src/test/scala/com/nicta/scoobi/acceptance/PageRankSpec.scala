@@ -2,9 +2,9 @@ package com.nicta.scoobi.acceptance
 
 import PageRank._
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.testing.NictaSimpleJobs
 import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.testing.TestFiles
+import com.nicta.scoobi.testing.{TempFiles, NictaSimpleJobs, TestFiles}
+import java.io.File
 
 class PageRankSpec extends NictaSimpleJobs {
 
@@ -44,20 +44,31 @@ object PageRank {
     }
   }
 
-  def latestRankings(outputDir: String, i: Int): DList[(Int, (Float, Float, Seq[Int]))] =
-    fromDelimitedTextFile[(Int, (Float, Float, Seq[Int]))](outputDir+"/"+i, ",")({case l =>
+  def latestRankings(outputDir: String, i: Int)
+                    (implicit configuration: ScoobiConfiguration): DList[(Int, (Float, Float, Seq[Int]))] = {
+
+    fromDelimitedTextFile[(Int, (Float, Float, Seq[Int]))](TestFiles.path(outputDir+"/"+i), ",")({case l =>
       (l(0).toInt, (l(1).toFloat, l(2).toFloat,
        l.drop(3).toSeq.map(_.replace("Vector(", "").replace(")", "").replace(",", "").trim).filterNot(_.isEmpty).map(_.toInt)))})
+  }
 
   def iterateOnce(i : Int)(outputDir: String, graph: DList[(Int, Seq[Int])])
                  (implicit configuration: ScoobiConfiguration): Float = {
     val curr = if (i == 0) initialise(graph) else latestRankings(outputDir, i)
     val next = update(curr, 0.5f)
     val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max.materialize
-    persist(configuration)(toDelimitedTextFile(next, outputDir+"/"+(i + 1), ","), maxDelta.use)
+    persist(configuration)(toDelimitedTextFile(next, outputFile(outputDir, i + 1), ","), maxDelta.use)
     maxDelta.get.head
   }
 
+  /**
+   * create an output file name and register it for deletion at the end of the program
+   */
+  def outputFile(dir: String, i: Int)(implicit configuration: ScoobiConfiguration) = {
+    val path = TestFiles.path(dir+"/"+i)
+    TestFiles.registerFile(new File(path))
+    path
+  }
 
   def getPageRanks(urls: DList[(Int, String)], graph: DList[(Int, Seq[Int])])(implicit configuration: ScoobiConfiguration) = {
     var i = 0
