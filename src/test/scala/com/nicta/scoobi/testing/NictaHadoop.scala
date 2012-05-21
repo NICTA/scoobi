@@ -1,22 +1,21 @@
 package com.nicta.scoobi.testing
 
 import com.nicta.scoobi.ScoobiConfiguration
-import mutable.{HadoopTags, SimpleJobs}
+import mutable.{SimpleJobs, HadoopTags}
 import org.specs2.specification.Fragments
-import org.specs2.mutable.Tags
 
 /**
  * This trait can be used to create Hadoop specifications on the NictaCluster
  */
 trait NictaHadoop extends
-  mutable.HadoopSpecification with
-  HadoopTags                   with
-  NictaCluster {
+mutable.HadoopSpecification with
+HadoopTags with
+NictaCluster {
 
-  /** this type alias makes it shorter to pass a new configuration object to each example */
+  /**this type alias makes it shorter to pass a new configuration object to each example */
   type SC = ScoobiConfiguration
 
-  override def map(fs: =>Fragments) = super.map(fs).insert(acceptanceSection).add(acceptanceSection)
+  override def map(fs: => Fragments) = super.map(fs).insert(acceptanceSection).add(acceptanceSection)
 }
 
 /**
@@ -36,4 +35,3 @@ trait NictaCluster extends HadoopHomeDefinedCluster {
  * A trait for simple jobs running on the NICTA cluster
  */
 trait NictaSimpleJobs extends NictaHadoop with SimpleJobs
-
