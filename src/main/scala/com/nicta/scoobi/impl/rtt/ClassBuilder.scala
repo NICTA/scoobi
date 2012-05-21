@@ -92,13 +92,12 @@ trait ClassBuilder {
          else
            false
        }
-       override def hashCode(): Int ={
-         1 // sigh... this is really dumb,
-         // but scala case classes seem to like overriding
-         // hasCode with something that's broken
-         // So now our search is O(n) instead of O(~log n) =/
-         // TODO: investigate if reflection can be used
-         // to call Object::hashCode without dynamic dispatch
+       override def hashCode(): Int = {
+         try {
+           data.hashCode
+         } catch { // sometimes scala likes overriding hashCode with something that's broken
+           case _ => 1 // so we can just return a constant collision instead
+         }
        }
     }
 
