@@ -1,0 +1,200 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../../css/maven-base.css');
+        @import url('./../../css/maven-theme.css');
+      </style>
+      <link type="text/css" rel="stylesheet" href="./../../css/prettify.css" />
+      <script type="text/javascript" src="./../../css/prettify.js"></script>
+      <link type="text/css" media="print" rel="stylesheet" href="./../../css/print.css" />
+      <link type="text/css" rel="stylesheet" href="./../../css/tooltip.css" />
+      <link type="text/css" rel="stylesheet" href="./../../css/specs2-user.css" />
+
+      <script type="text/javascript" src="./../../css/jquery.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = 'images/collapsed.gif';
+        else 
+          image.src = 'images/expanded.gif';
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../../css/tabber.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
+    </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Deployment.html">BuildingPackagingDeploying</a></div><div id="leftcolumn"><div id="tree">
+      <ul><li id="841286036"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1803532327"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
+            
+          </li></ul>
+          </li><li id="1517439365"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Overview">Overview</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+a+new+DList">Creating a new DList</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
+            
+          </li></ul>
+          </li><li id="460017522"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+            
+          </li><li id="2050847106"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+file+output">Avro file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="289303356"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#For+case+classes">For case classes</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="87057019"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="526842107"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
+            
+          </li></ul>
+          </li><li id="1138853479"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt+project">Sbt project</a>
+            
+          </li></ul>
+          </li><li id="1034411895"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Tags">Tags</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Simple+jobs">Simple jobs</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+your+own">Using your own</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['841286036','1138853479'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="1138853479">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Sbt+project"><h3>Sbt project</h3></a><p>Scoobi projects are generally developed with <a href="https://github.com/harrah/xsbt/wiki">sbt</a>, and to simplify the task of building and packaging a project for running on Hadoop, it's really handy to use the sbt plugin <a href="https://github.com/NICTA/sbt-scoobi">sbt-scoobi</a>. Here are a few steps for creating a new project:</p><p>Create a new Scoobi application and add some code:</p>
+<pre><code class="prettyprint">  $ mkdir my-app
+  $ cd my-app
+  $ mkdir -p src/main/scala
+  $ vi src/main/scala/MyApp.scala
+</code></pre><p>To use the sbt-scoobi plugin we need to include a <code class="prettyprint">project/project/scoobi.scala</code> file with the following contents:</p>
+<pre><code class="prettyprint">  import sbt._
+
+  object Plugins extends Build {
+    lazy val root = Project(&quot;root&quot;, file(&quot;.&quot;)) dependsOn(
+      uri(&quot;git://github.com/NICTA/sbt-scoobi.git#master&quot;)
+    )
+  }
+</code></pre><p>And, we can add a pretty standard <code class="prettyprint">build.sbt</code> that has a dependency on Scoobi:</p>
+<pre><code class="prettyprint">  name := &quot;MyApp&quot;
+
+  version := &quot;0.1&quot;
+
+  scalaVersion := &quot;2.9.1&quot;
+
+  libraryDependencies += &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.4.0-SNAPSHOT&quot; % &quot;provided&quot;
+
+  scalacOptions += &quot;-deprecation&quot;
+</code></pre><p>The <code class="prettyprint">provided</code> is added to the <code class="prettyprint">scoobi</code> dependency to let sbt know that Scoobi is provided by the sbt-plugin when it packages everything in a jar. If you don't included this <code class="prettyprint">provided</code> nothing bad will happen, but the jar will contain some Scoobi dependencies that are not strictly required.</p><p>We can now use sbt to easily build and package our application into a self-contained executable jar to feed directly into Hadoop:</p>
+<pre><code class="prettyprint">  $ sbt package-hadoop
+  $ hadoop jar ./target/MyApp-app-hadoop-0.1.jar &lt;args&gt;
+</code></pre><p>Note that there appears to be a OSX-specific <a href="https://github.com/NICTA/scoobi/issues/1">issue</a> associated with calling <code class="prettyprint">hadoop</code> in this manner requiring the jar to be added to <code class="prettyprint">HADOOP_CLASSPATH</code><br />and then <code class="prettyprint">hadoop</code> being given the correct object to run. e.g.:</p>
+<pre><code class="prettyprint">  $ export HADOOP_CLASSPATH=$PWD/target/Scoobi_Word_Count-hadoop-0.1.jar
+  $ hadoop WordCount inputFile/to/wordcount nonexistent/outputdir
+</code></pre></div></status></div><div id="rightcolumn"></div></body></html>

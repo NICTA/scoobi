@@ -1,0 +1,248 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../../css/maven-base.css');
+        @import url('./../../css/maven-theme.css');
+      </style>
+      <link type="text/css" rel="stylesheet" href="./../../css/prettify.css" />
+      <script type="text/javascript" src="./../../css/prettify.js"></script>
+      <link type="text/css" media="print" rel="stylesheet" href="./../../css/print.css" />
+      <link type="text/css" rel="stylesheet" href="./../../css/tooltip.css" />
+      <link type="text/css" rel="stylesheet" href="./../../css/specs2-user.css" />
+
+      <script type="text/javascript" src="./../../css/jquery.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = 'images/collapsed.gif';
+        else 
+          image.src = 'images/expanded.gif';
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../../css/tabber.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
+    </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Grouping.html">Grouping</a></div><div id="leftcolumn"><div id="tree">
+      <ul><li id="841286036"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1803532327"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
+            
+          </li></ul>
+          </li><li id="1517439365"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Overview">Overview</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+a+new+DList">Creating a new DList</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
+            
+          </li></ul>
+          </li><li id="460017522"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+            
+          </li><li id="2050847106"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+file+output">Avro file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="289303356"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#For+case+classes">For case classes</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="87057019"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="526842107"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
+            
+          </li></ul>
+          </li><li id="1138853479"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt+project">Sbt project</a>
+            
+          </li></ul>
+          </li><li id="1034411895"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Tags">Tags</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Simple+jobs">Simple jobs</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+your+own">Using your own</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['841286036','87057019'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="87057019">Grouping</h2></a><status class="ok"><div class="level0" style="display: show"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The [http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.Grouping|Grouping] type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
+<ul>
+  <li>Provide a [http://www.scala-lang.org/api/milestone/scala/math/Ordering.html|scala.math.Ordering] for your type.</li>
+  <li>Make your type extend [http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html|java.lang.Comparable].</li>
+  <li>Directly provide a [http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.Grouping|scoobi.Grouping].</li>
+</ul><p>Since the third option is the only one Scoobi specific, and a little more powerful, we'll focus on that.</p><a name="Basic+grouping"><h3>Basic grouping</h3></a><p>Let's say we have a user-defined type, <code class="prettyprint">case class Point(x: Integer, y: Integer)</code> and are using it in a <code class="prettyprint">DList[(Point, String)]</code>. Now if want to group all the same points together, so as to end up with a: <code class="prettyprint">DList[(Point, Iterable[String])</code> we will need to write a function that defines what makes two points equal. It would not be enough to merely provide a pure equality function, as that would require every point to be check against every point (quadratic time).</p><p>Instead, we need to provide strict total ordering. That is, provide a function that can reliably create an ordering for Points. It doesn't really matter how this ordering is done, as long as it is. The scheme normally used is to break the type down into all its members, and provide ordering based on it. So in the <code class="prettyprint">Point</code> case, we can order by <code class="prettyprint">Point.x</code>, if they're the same, order by <code class="prettyprint">Point.y</code> and finally, if they're the same -- we can say the two points are the same.</p><p>The <code class="prettyprint">Grouping[T]</code> trait has a method called <code class="prettyprint">sortCompare</code> that we will override. It takes two T's, and like Java's <code class="prettyprint">Comparable</code> it returns an Int. A negative number to indicate the first <code class="prettyprint">T</code> is less than the second. Zero if the two <code class="prettyprint">T</code>s are equal. And a positive number if the second <code class="prettyprint">T</code> is after the first <code class="prettyprint">T</code>.</p><p>Sample code for our <code class="prettyprint">Point</code>:</p>
+<pre><code class="prettyprint">  implicit val pointGrouping = new Grouping[Point] {
+    override def sortCompare(first: Point, second: Point) {
+      val xResult = first.x.compareTo(second.x)
+      if (xResult != 0)
+        xResult
+      else {
+        val yResult = first.y.compareTo(second.y)
+        if (yResult != 0) yResult
+        else              0
+      }
+    }
+  }
+</code></pre><a name="Secondary+sort"><h3>Secondary sort</h3></a><p>Assuming you have read and understood the previous sections, we will move on to some advanced usage of Grouping by example. Let's start some type alias's to make the code more understandable:</p>
+<pre><code class="prettyprint">  type FirstName = String
+  type LastName = String
+</code></pre><p>And let's start with a DList with some easily understandable data:</p>
+<pre><code class="prettyprint">  val names: DList[(FirstName, LastName)] = DList.apply(
+    (&quot;Michael&quot;, &quot;Jackson&quot;),
+    (&quot;Leonardo&quot;, &quot;Da Vinci&quot;),
+    (&quot;John&quot;, &quot;Kennedy&quot;),
+    (&quot;Mark&quot;, &quot;Twain&quot;),
+    (&quot;Bat&quot;, &quot;Man&quot;),
+    (&quot;Michael&quot;, &quot;Jordan&quot;),
+    (&quot;Mark&quot;, &quot;Edison&quot;),
+    (&quot;Michael&quot;, &quot;Landon&quot;),
+    (&quot;Leonardo&quot;, &quot;De Capro&quot;),
+    (&quot;Michael&quot;, &quot;J. Fox&quot;))
+</code></pre><p>Based on the previous sections, you should know that we could simply do <code class="prettyprint">names.groupByKey</code> to obtain a <code class="prettyprint">DList[(FirstName, Iterable[String])]. However, there's no ordering associated with the</code>Iterable[LastName]` this means, if order is required (e.g. we're processing a time series) or outputting the last names in alphabetical order -- we'd have to use a parallelDo to load the entire reducers collection to memory, then sort it there. This is both slow, and going to likely to use too much memory.</p><p>So this is where a &quot;Secondary Sort&quot;, comes into play. A secondary sort allows us to make sure the <code class="prettyprint">Iterable[LastName]</code> comes to us in a defined ordering, so we can efficiently process it.</p><p>In hadoop (and thus scoobi) sorting only happens on the Key, so what we need to do, is make our Key contain enough information to sort the last names for any given first name.</p><p>Your first instinct might be to <em>move</em> the information to the key, e.g. make the type: <code class="prettyprint">DList[((FirstName, LastName), Unit)]</code> however this will <em>not</em> work. We need to instead <em>duplicate</em> the information to the key, otherwise while things arrive in the correct order, it will not be possible to get the value!</p>
+<pre><code class="prettyprint">  val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a =&gt; ((a._1, a._2), a._2))
+</code></pre><p>Now the key part of <code class="prettyprint">bigKey</code> is <code class="prettyprint">(FirstName, LastName)</code> so this is what we need to provide a <code class="prettyprint">Grouping</code> object for. Our goal is to make sure that two keys with the same FirstName evaluate to being the same, so <code class="prettyprint">groupCompare</code> and <code class="prettyprint">partition</code> should only consider the FirstName part. However, <code class="prettyprint">sortCompare</code> should put everything in the correct order (so it should consider both parts).</p>
+<pre><code class="prettyprint">  implicit val grouping = new Grouping[(FirstName, LastName)] {
+
+    override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {
+      // This function says what reducer this particular 'key' should go to. We must override the
+      // default impl, because it looks at the entire key, and makes sure all the same
+      // keys go to the same reducer. But we want to only 'look' at the 'FirstName' part
+      // so that everything with the same FirstName goes to the same reducer (even if it has a different LastName)
+
+      // So we'll just use the default (string) partition, and only on the first name
+      implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)
+    }
+
+
+    override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
+      // Ok, here's where the fun is! Everything that is sent to the same reducer now needs
+      // an ordering. So this function is called. Here we return -1 if 'a' should be before 'b',
+      // and 0 if they're they same, and 1 if they're different.
+
+      // So the first thing we want to do, is look at first names
+
+      val firstNameOrdering = a._1.compareTo(b._1)
+
+      firstNameOrdering match {
+        case 0 =&gt; {
+          // Interesting! Here the firstName's are the same. So what we want to do, is order by
+          // the lastNames
+
+          a._2.compareTo(b._2)
+        }
+        case x =&gt; x // otherwise, just return the result for which of the FirstName's is first
+      }
+    }
+
+    override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
+      // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)
+      // now hadoop allows us to &quot;collapse&quot; everything that is logically the same. So two keys are logically
+      // the same if the FirstName's are equal
+      a._1.compareTo(b._1)
+    }
+
+  }
+</code></pre><p>Now calling <code class="prettyprint">bigKey.groupByKey</code> will work as intended, with all lastNames arriving in order. All this code is available in a [https://github.com/NICTA/scoobi/tree/master/examples/secondarySort|runnable example]:</p></div></status></div><div id="rightcolumn"></div></body></html>
