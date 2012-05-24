@@ -54,11 +54,11 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
  * [Issues](https://github.com/NICTA/scoobi/issues)
  * [Change history](https://github.com/NICTA/scoobi/blob/${SCOOBI_BRANCH}/CHANGES.md)
  * [Source code (github)](https://github.com/NICTA/scoobi)
- * [API Documentation](http://nicta.github.com/scoobi/${SCOOBI_BRANCH}/index.html)
+ * [API Documentation](http://nicta.github.com/scoobi/api/${SCOOBI_BRANCH}/index.html)
  * [Examples](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples)
- * User Guide for the [SNAPSHOT](${SCOOBI_GUIDE_SNAPSHOT}/User%20Guide.html) version
+ * User Guide for the [SNAPSHOT](${SCOOBI_GUIDE_SNAPSHOT}/User%20Guide.html) version ([latest api](http://nicta.github.com/scoobi/api/master/index.html))
  * Mailing Lists: [scoobi-users](http://groups.google.com/group/scoobi-users), [scoobi-dev](http://groups.google.com/group/scoobi-dev)
-                               """ ^
+                                                                                                                        """ ^
   include((new UserGuide).hide)
 
 }
