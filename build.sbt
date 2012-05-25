@@ -50,8 +50,6 @@ resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.co
                   "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Publishing */
-credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
-
 publishTo <<= version { v: String =>
   val nexus = "https://oss.sonatype.org/"
   if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
