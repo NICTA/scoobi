@@ -20,6 +20,7 @@ import com.nicta.scoobi.DList
 import com.nicta.scoobi.DObject
 import com.nicta.scoobi.EnvDoFn
 import com.nicta.scoobi.DoFn
+import com.nicta.scoobi.BasicDoFn
 import com.nicta.scoobi.Emitter
 import com.nicta.scoobi.WireFormat
 import com.nicta.scoobi.Grouping
@@ -33,7 +34,14 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
   val wf = implicitly[WireFormat[A]]
 
   private[scoobi]
-  def this(source: DataSource[_, _, A]) = this(Smart.Load(source))
+  def this(source: DataSource[_, _, A]) = {
+    this(Smart.ParallelDo(
+      Smart.Load(source),
+      UnitDObject.getComp,
+      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
+      false,
+      false))
+  }
 
   private[scoobi]
   def getComp: Smart.DComp[A, Arr] = comp

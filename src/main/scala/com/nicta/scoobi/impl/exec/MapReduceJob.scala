@@ -297,7 +297,6 @@ object MapReduceJob {
         case GbkOutputChannel(_, Some(AST.Flatten(ins)), _, _)  => ins.foreach { in => addTag(in, tag) }
         case GbkOutputChannel(_, None, AST.GroupByKey(in), _)   => addTag(in, tag)
         case BypassOutputChannel(_, origin)                     => addTag(origin, tag)
-        case StraightOutputChannel(_, origin)                   => addTag(origin, tag)
         case FlattenOutputChannel(_, flat)                      => flat.ins.foreach { in => addTag(in, tag) }
       }
 
@@ -316,7 +315,6 @@ object MapReduceJob {
         case GbkOutputChannel(outputs, _, g, Empty)                      => job.addTaggedReducer(outputs, None, g.mkTaggedReducer(tag))
         case BypassOutputChannel(outputs, origin)                        => job.addTaggedReducer(outputs, None, origin.mkTaggedReducer(tag))
         case FlattenOutputChannel(outputs, flat)                         => job.addTaggedReducer(outputs, None, flat.mkTaggedReducer(tag))
-        case StraightOutputChannel(outputs, origin)                      => job.addTaggedReducer(outputs, None, origin.mkTaggedReducer(tag))
       }
     }
 

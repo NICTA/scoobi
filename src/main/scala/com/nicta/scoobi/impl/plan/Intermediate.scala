@@ -29,7 +29,6 @@ import com.nicta.scoobi.impl.exec.MapperLike
  */
 import com.nicta.scoobi.impl.plan.{GbkOutputChannel    => CGbkOutputChannel,
                                    BypassOutputChannel => CBypassOutputChannel,
-                                   StraightOutputChannel => CStraightOutputChannel,
                                    MapperInputChannel  => CMapperInputChannel,
                                    StraightInputChannel => CStraightInputChannel,
                                    FlattenOutputChannel => CFlattenOutputChannel,
@@ -395,24 +394,6 @@ object Intermediate {
     }
   }
 
-  case class StraightOutputChannel(input: Load[_]) extends OutputChannel {
-    def hasNode(d: DComp[_, _ <: Shape]): Boolean = false
-    def hasInput(d: DComp[_, _ <: Shape]) = d == input
-    def hasOutput(d: DComp[_, _ <: Shape]) = d == input
-
-    override def toString = "StraightOutputChannel(" + input.toString + ")"
-
-    def output: DComp[_, _ <: Shape] = input
-
-    def convert(parentMSCR: MSCR, ci: ConvertInfo): CStraightOutputChannel = {
-      val n = ci.getASTNode(input)
-      if (n.isInstanceOf[AST.Load[_]])
-        CStraightOutputChannel(dataSinks(parentMSCR, ci), n.asInstanceOf[AST.Load[_]])
-      else
-        throw new RuntimeException("Expecting Load node.")
-    }
-  }
-
   case class FlattenOutputChannel(input: Flatten[_]) extends OutputChannel {
     override def hasNode(d: DComp[_, _ <: Shape]): Boolean = input == d
     override def hasInput(d: DComp[_, _ <: Shape]) = input.ins.exists(_ == d)
@@ -457,7 +438,6 @@ object Intermediate {
     def containsReducer(d: Smart.ParallelDo[_,_,_]): Boolean = {
       def pred(oc: OutputChannel): Boolean = oc match {
         case BypassOutputChannel(_) => false
-        case StraightOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
           gbkOC.combiner.isDefined && gbkOC.reducer.map{_ == d}.getOrElse(false)
         case FlattenOutputChannel(_) => false
@@ -551,7 +531,6 @@ object Intermediate {
           }
           MSCR(ics.toSet, Set(FlattenOutputChannel(flat)))
         }
-        //case ld@Load(_) => MSCR(Set(StraightInputChannel(ld)), Set(StraightOutputChannel(ld)))
       }
 
       /* Final MSCR graph contains both GBK MSCRs and Map-only MSCRs. */

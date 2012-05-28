@@ -134,15 +134,6 @@ case class BypassOutputChannel
   def nodes: Set[AST.Node[_, _ <: Shape]] = Set.empty
 }
 
-case class StraightOutputChannel
-(outputs: Set[_ <: DataSink[_,_,_]],
- origin: AST.Node[_, _ <: Shape] with ReducerLike[_,_,_,_])
-  extends OutputChannel {
-
-  def outputNode: AST.Node[_, _ <: Shape] = origin
-  def nodes: Set[AST.Node[_, _ <: Shape]] = Set.empty
-}
-
 case class FlattenOutputChannel
     (outputs: Set[_ <: DataSink[_,_,_]],
      flatten: AST.Flatten[_])
