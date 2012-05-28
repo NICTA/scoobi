@@ -4,7 +4,7 @@ import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
 import com.nicta.scoobi.ScoobiConfiguration
 import com.nicta.scoobi.Scoobi._
 import java.io.DataInput
-import com.nicta.scoobi.testing.{OutputTestFiles, OutputTestFile, InputTestFile, TestFiles}
+import com.nicta.scoobi.testing._
 
 /**
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
@@ -62,10 +62,10 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration
    */
-  def fromInput(ts: String*)(implicit c: ScoobiConfiguration) = InputTestFile[String](ts, mapping = (s:String) => s)
+  def fromInput(ts: String*)(implicit c: ScoobiConfiguration) = InputStringTestFile(ts)
   /**
    * @return a DList input keeping track of its temporary input file
    */
-  def fromDelimitedInput(ts: String*)(implicit c: ScoobiConfiguration) = InputTestFile[List[String]](ts, mapping = (_:String).split(",").toList)
+  def fromDelimitedInput(ts: String*)(implicit c: ScoobiConfiguration) = new InputTestFile[List[String]](ts, mapping = (_:String).split(",").toList)
 
 }

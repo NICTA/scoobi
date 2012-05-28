@@ -64,16 +64,22 @@ object TestFiles extends TestFiles
 
 import TestFiles._
 
-case class InputTestFile[S](ls: Seq[String], mapping: String => S, keepFile: Boolean = false)
-                           (implicit configuration: ScoobiConfiguration, m: Manifest[S], w: WireFormat[S]) {
+class InputTestFile[S](ls: Seq[String], mapping: String => S, val keepFile: Boolean = false)
+                      (implicit configuration: ScoobiConfiguration, m: Manifest[S], w: WireFormat[S]) {
 
   lazy val file = createTempFile("test.input", keep = keepFile)
 
-  def keep = copy(keepFile = true)
+  def keep = new InputTestFile(ls, mapping, keepFile = true)
   def inputLines = fromTextFile(TempFiles.writeLines(file, ls, isRemote))
-  def map[T : Manifest : WireFormat](f: S => T) = InputTestFile(ls, f compose mapping)
-  def collect[T : Manifest : WireFormat](f: PartialFunction[S, T]) = InputTestFile(ls, f compose mapping)
+  def map[T : Manifest : WireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
+  def collect[T : Manifest : WireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
   def lines: DList[S] = inputLines.map(mapping)
+}
+
+case class InputStringTestFile(ls: Seq[String], override val keepFile: Boolean = false)
+                              (implicit configuration: ScoobiConfiguration) extends InputTestFile[String](ls, identity, keepFile) {
+  /** Optimisation: in this case no mapping is necessary (see issue 25)*/
+  override def lines: DList[String] = inputLines
 }
 
 case class OutputTestFile[T](list: DList[T], keepDir: Boolean = false)
