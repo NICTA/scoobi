@@ -26,6 +26,7 @@ import org.apache.hadoop.mapreduce.Partitioner
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable.{Map => MMap}
+import scala.collection.mutable.{MutableList=> MList}
 import Option.{apply => ?}
 
 import com.nicta.scoobi.io.DataSource
@@ -66,7 +67,7 @@ class MapReduceJob(stepId: Int) {
   /* Keep track of all the mappers for each input channel. */
   private val mappers: MMap[DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]] = MMap.empty
   private val combiners: MSet[TaggedCombiner[_]] = MSet.empty
-  private val reducers: MMap[List[_ <: DataSink[_,_,_]], (Env[_], TaggedReducer[_,_,_,_])] = MMap.empty
+  private val reducers: MList[(List[_ <: DataSink[_,_,_]], (Env[_], TaggedReducer[_,_,_,_]))] = MList.empty
 
   /* The types that will be combined together to form (K2, V2). */
   private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Grouping[_])] = MMap.empty
