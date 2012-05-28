@@ -50,7 +50,9 @@ object AvroInput {
     * that directory. */
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]): DList[A] = {
     val sch = implicitly[AvroSchema[A]]
-
+    val converter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
+      def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
+    }
     val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] with Configured {
 
       private val inputPaths = paths.map(p => new Path(p))
@@ -75,9 +77,7 @@ object AvroInput {
 
       def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
 
-      lazy val inputConverter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
-        def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
-      }
+      lazy val inputConverter = converter
     }
 
     DList.fromSource(source)
