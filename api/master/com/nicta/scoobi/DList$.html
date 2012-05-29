@@ -14,7 +14,7 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
       <div id="definition">
-        <a title="Go to companion" href="DList.html"><img src="../../../lib/object_to_class_big.png" /></a>
+        <a title="Go to companion" href="DList.html"><img src="../../../lib/object_to_trait_big.png" /></a>
         <p id="owner"><a name="com" class="extype" href="../../package.html">com</a>.<a name="com.nicta" class="extype" href="../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="package.html">scoobi</a></p>
         <h1><a title="Go to companion" href="DList.html">DList</a></h1>
       </div>
@@ -138,6 +138,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList#apply" data-isabs="false">
+      <a id="apply(Range):DList[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="range">range: Range</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[<span name="scala.Int" class="extype">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list of Ints from a Range.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.DList#apply" data-isabs="false">
       <a id="apply[A](A*)(Manifest[A],WireFormat[A]):DList[A]"></a>
       <h4 class="signature">
@@ -324,18 +336,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.DList#persist" data-isabs="false">
-      <a id="persist(com.nicta.scoobi.DListPersister[_]*)(ScoobiConfiguration):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">persist</span><span class="params">(<span name="outputs">outputs: com.nicta.scoobi.DListPersister[_]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Persist one or more distributed lists - will trigger MapReduce computations.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

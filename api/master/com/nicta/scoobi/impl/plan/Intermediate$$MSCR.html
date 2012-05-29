@@ -22,16 +22,16 @@
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MSCR</span><span class="result"> extends AnyRef</span>
+        <span class="name">MSCR</span><span class="params">(<span name="inputChannels">inputChannels: Set[<a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a>]</span>, <span name="outputChannels">outputChannels: Set[<a name="com.nicta.scoobi.impl.plan.Intermediate.OutputChannel" class="extype" href="Intermediate$$OutputChannel.html">OutputChannel</a>]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="in"><span>MSCR</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="in"><span>MSCR</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.Product" class="in"><span>Product</span></li><li name="scala.Equals" class="in"><span>Equals</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -150,6 +150,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#canEqual" data-isabs="false">
+      <a id="canEqual(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">canEqual</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a> → Equals</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -165,53 +177,53 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#connectsToOtherMSCR" data-isabs="false">
-      <a id="connectsToOtherMSCR(com.nicta.scoobi.impl.plan.Smart.DList[_],Iterable[MSCR]):Boolean"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#connectsToOtherNode" data-isabs="false">
+      <a id="connectsToOtherNode(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape],Iterable[MSCR],DGraph):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">connectsToOtherMSCR</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>, <span name="mscrs">mscrs: Iterable[<a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a>]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">connectsToOtherNode</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>, <span name="mscrs">mscrs: Iterable[<a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a>]</span>, <span name="g">g: <a name="com.nicta.scoobi.impl.plan.DGraph" class="extype" href="DGraph.html">DGraph</a></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#containsGbkMapper" data-isabs="false">
-      <a id="containsGbkMapper(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]):Boolean"></a>
+      <a id="containsGbkMapper(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">containsGbkMapper</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">containsGbkMapper</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns @true@ if this MSCR contains a @Smart.</p><div class="fullcomment"><div class="comment cmt"><p>Returns @true@ if this MSCR contains a @Smart.ParallelDo@ node that should be converted
- to an @AST.GbkMapper@ node. Used during the translation from Smart.DList to AST</p></div></div>
+ to an @AST.GbkMapper@ node. Used during the translation from Smart.DComp to AST</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#containsGbkReducer" data-isabs="false">
-      <a id="containsGbkReducer(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]):Boolean"></a>
+      <a id="containsGbkReducer(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">containsGbkReducer</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">containsGbkReducer</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns @true@ if this MSCR contains a @Smart.</p><div class="fullcomment"><div class="comment cmt"><p>Returns @true@ if this MSCR contains a @Smart.ParallelDo@ node that should be converted
- to an @AST.GbkReducer@ node. Used during the translation from Smart.DList to AST</p></div></div>
+ to an @AST.GbkReducer@ node. Used during the translation from Smart.DComp to AST</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#containsReducer" data-isabs="false">
-      <a id="containsReducer(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]):Boolean"></a>
+      <a id="containsReducer(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">containsReducer</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">containsReducer</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
@@ -239,7 +251,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#equals" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -250,7 +262,7 @@
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a> → Equals → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -279,30 +291,42 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#hasInput" data-isabs="false">
-      <a id="hasInput(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="hasInput(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hasInput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">hasInput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#hasNode" data-isabs="false">
+      <a id="hasNode(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasNode</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#hasOutput" data-isabs="false">
-      <a id="hasOutput(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="hasOutput(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hasOutput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">hasOutput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -313,7 +337,7 @@
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#inputChannels" data-isabs="false">
       <a id="inputChannels:Set[InputChannel]"></a>
       <h4 class="signature">
@@ -386,6 +410,54 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#productArity" data-isabs="false">
+      <a id="productArity:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productArity</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#productElement" data-isabs="false">
+      <a id="productElement(Int):Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productElement</span><span class="params">(<span name="arg0">arg0: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="scala.Product#productIterator" data-isabs="false">
+      <a id="productIterator:Iterator[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productIterator</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MSCR#productPrefix" data-isabs="false">
+      <a id="productPrefix:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productPrefix</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MSCR" class="extype" href="">MSCR</a> → Product</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -458,11 +530,37 @@
     </li></ol>
             </div>
 
-        
+        <div class="values members" id="values">
+              <h3>Deprecated Value Members</h3>
+              <ol><li visbl="pub" name="scala.Product#productElements" data-isabs="false">
+      <a id="productElements:Iterator[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 2.8.0) use productIterator instead">productElements</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.8.0)</i> use productIterator instead</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="scala.Serializable" class="parent">
+              <h3>Inherited from <span name="scala.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="java.io.Serializable" class="parent">
+              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="scala.Product" class="parent">
+              <h3>Inherited from <span name="scala.Product" class="extype">Product</span></h3>
+            </div><div name="scala.Equals" class="parent">
+              <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

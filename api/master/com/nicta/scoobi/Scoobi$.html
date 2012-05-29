@@ -71,6 +71,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#BasicDoFn" data-isabs="false">
+      <a id="BasicDoFn:BasicDoFn[A, B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BasicDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> = <a name="com.nicta.scoobi.BasicDoFn" class="extype" href="BasicDoFn.html">BasicDoFn</a>[A, B]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#DList" data-isabs="false">
       <a id="DList:DList[A]"></a>
       <h4 class="signature">
@@ -96,14 +108,26 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#DoFn" data-isabs="false">
-      <a id="DoFn:DoFn[A, B]"></a>
+      <a id="DoFn:DoFn[A, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">DoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> = <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a>[A, B]</span>
+        <span class="name">DoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> = <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a>[A, B]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#EnvDoFn" data-isabs="false">
+      <a id="EnvDoFn:EnvDoFn[A, B, E]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">EnvDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> = <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a>[A, B, E]</span>
       </span>
       </h4>
       
@@ -116,18 +140,6 @@
       </span>
       <span class="symbol">
         <span class="name">Grouping</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <a name="com.nicta.scoobi.Grouping" class="extype" href="Grouping.html">Grouping</a>[A]</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Job" data-isabs="false">
-      <a id="Job:Job"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Job</span><span class="result"> = <a name="com.nicta.scoobi.Job" class="extype" href="Job.html">Job</a></span>
       </span>
       </h4>
       
@@ -415,6 +427,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#DObject" data-isabs="false">
+      <a id="DObject:com.nicta.scoobi.DObject.type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">DObject</span><span class="result">: com.nicta.scoobi.DObject.type</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormatImplicits#DateFmt" data-isabs="false">
       <a id="DateFmt:WireFormat[Date]"></a>
       <h4 class="signature">
@@ -429,18 +453,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       <p class="shortcomment cmt">Java's Date
 </p><div class="fullcomment"><div class="comment cmt"><p>Java's Date
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#DoFn" data-isabs="false">
-      <a id="DoFn:com.nicta.scoobi.DoFn.type"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">DoFn</span><span class="result">: com.nicta.scoobi.DoFn.type</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormatImplicits#DoubleFmt" data-isabs="false">
       <a id="DoubleFmt:WireFormat[Double]"></a>
       <h4 class="signature">
@@ -477,6 +489,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Grouping" data-isabs="false">
+      <a id="Grouping:com.nicta.scoobi.Grouping.type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Grouping</span><span class="result">: com.nicta.scoobi.Grouping.type</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormatImplicits#IntFmt" data-isabs="false">
       <a id="IntFmt:WireFormat[Int]"></a>
       <h4 class="signature">
@@ -501,18 +525,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Job" data-isabs="false">
-      <a id="Job:com.nicta.scoobi.Job.type"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Job</span><span class="result">: com.nicta.scoobi.Job.type</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Join" data-isabs="false">
       <a id="Join:com.nicta.scoobi.lib.Join.type"></a>
       <h4 class="signature">
@@ -590,6 +602,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       <p class="shortcomment cmt">An implicitly Grouping type class instance where sorting is implemented via an Ordering
 type class instance.</p><div class="fullcomment"><div class="comment cmt"><p>An implicitly Grouping type class instance where sorting is implemented via an Ordering
 type class instance. Partitioning and grouping use the default implementation.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Persister" data-isabs="false">
+      <a id="Persister:com.nicta.scoobi.Persister.type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Persister</span><span class="result">: com.nicta.scoobi.Persister.type</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormatImplicits#RightFmt" data-isabs="false">
       <a id="RightFmt[T1, T2](WireFormat[T2]):WireFormat[Right[T1, T2]]"></a>
       <h4 class="signature">
@@ -1489,14 +1513,26 @@ type class instance. Partitioning and grouping use the default implementation.</
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#persist" data-isabs="false">
-      <a id="persist(ScoobiConfiguration):(com.nicta.scoobi.DListPersister[_]*) ⇒ Unit"></a>
+      <a id="persist[P](ScoobiConfiguration)(P)(Persister[P]):Out"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">persist</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: (com.nicta.scoobi.DListPersister[_]*) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">persist</span><span class="tparams">[<span name="P">P</span>]</span><span class="params">(<span name="conf">conf: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="params">(<span name="p">p: P</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="persister">persister: <a name="com.nicta.scoobi.Persister" class="extype" href="Persister.html">Persister</a>[P]</span>)</span><span class="result">: Out</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#persist" data-isabs="false">
+      <a id="persist[P](P)(ScoobiConfiguration,Persister[P]):Out"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">persist</span><span class="tparams">[<span name="P">P</span>]</span><span class="params">(<span name="p">p: P</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="conf">conf: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="persister">persister: <a name="com.nicta.scoobi.Persister" class="extype" href="Persister.html">Persister</a>[P]</span>)</span><span class="result">: Out</span>
       </span>
       </h4>
       
@@ -1569,6 +1605,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       <span class="symbol">
         <span class="name">toTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dl">dl: DList[A]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="DListPersister.html">DListPersister</a>[A]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#travPimp" data-isabs="false">
+      <a id="travPimp[A](Traversable[A])(Manifest[A],WireFormat[A]):PimpWrapper[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">travPimp</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="trav">trav: Traversable[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: WireFormat[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList.PimpWrapper" class="extype" href="DList$$PimpWrapper.html">PimpWrapper</a>[A]</span>
       </span>
       </h4>
       

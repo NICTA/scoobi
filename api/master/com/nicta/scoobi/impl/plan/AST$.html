@@ -67,7 +67,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$Combiner.html"><span class="name">Combiner</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: Node[(K, Iterable[V])]</span>, <span name="f">f: (V, V) ⇒ V</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: WireFormat[K]</span>, <span name="grpK">grpK: Grouping[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: WireFormat[V]</span>, <span name="mKV">mKV: Manifest[(K, V)]</span>, <span name="wtKV">wtKV: WireFormat[(K, V)]</span>)</span><span class="result"> extends Node[(K, V)] with CombinerLike[V] with ReducerLike[K, V, (K, V)] with Product with Serializable</span>
+        <a href="AST$$Combiner.html"><span class="name">Combiner</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: Node[(K, Iterable[V]), Arr]</span>, <span name="f">f: (V, V) ⇒ V</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: WireFormat[K]</span>, <span name="grpK">grpK: Grouping[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: WireFormat[V]</span>, <span name="mKV">mKV: Manifest[(K, V)]</span>, <span name="wtKV">wtKV: WireFormat[(K, V)]</span>)</span><span class="result"> extends Node[(K, V), Arr] with CombinerLike[V] with ReducerLike[K, V, (K, V), Unit] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Combiner.</p>
@@ -79,31 +79,31 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$Flatten.html"><span class="name">Flatten</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ins">ins: List[Node[A]]</span>, <span name="evidence$30">evidence$30: Manifest[A]</span>, <span name="evidence$31">evidence$31: WireFormat[A]</span>)</span><span class="result"> extends Node[A] with ReducerLike[Int, A, A] with Product with Serializable</span>
+        <a href="AST$$Flatten.html"><span class="name">Flatten</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ins">ins: List[Node[A, Arr]]</span>, <span name="evidence$38">evidence$38: Manifest[A]</span>, <span name="evidence$39">evidence$39: WireFormat[A]</span>)</span><span class="result"> extends Node[A, Arr] with ReducerLike[Int, A, A, Unit] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Usual Flatten node.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.GbkMapper" data-isabs="false">
-      <a id="GbkMapper:GbkMapper[A, K, V]"></a>
+      <a id="GbkMapper:GbkMapper[A, K, V, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$GbkMapper.html"><span class="name">GbkMapper</span></a><span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: Node[A]</span>, <span name="dofn">dofn: DoFn[A, (K, V)]</span>, <span name="evidence$7">evidence$7: Manifest[A]</span>, <span name="evidence$8">evidence$8: WireFormat[A]</span>, <span name="evidence$9">evidence$9: Manifest[K]</span>, <span name="evidence$10">evidence$10: WireFormat[K]</span>, <span name="evidence$11">evidence$11: Grouping[K]</span>, <span name="evidence$12">evidence$12: Manifest[V]</span>, <span name="evidence$13">evidence$13: WireFormat[V]</span>)</span><span class="result"> extends Node[(K, V)] with MapperLike[A, K, V] with ReducerLike[K, V, (K, V)] with Product with Serializable</span>
+        <a href="AST$$GbkMapper.html"><span class="name">GbkMapper</span></a><span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>, <span name="E">E</span>]</span><span class="params">(<span name="in">in: Node[A, Arr]</span>, <span name="env">env: Node[E, Exp]</span>, <span name="dofn">dofn: EnvDoFn[A, (K, V), E]</span>, <span name="evidence$9">evidence$9: Manifest[A]</span>, <span name="evidence$10">evidence$10: WireFormat[A]</span>, <span name="evidence$11">evidence$11: Manifest[K]</span>, <span name="evidence$12">evidence$12: WireFormat[K]</span>, <span name="evidence$13">evidence$13: Grouping[K]</span>, <span name="evidence$14">evidence$14: Manifest[V]</span>, <span name="evidence$15">evidence$15: WireFormat[V]</span>, <span name="evidence$16">evidence$16: Manifest[E]</span>, <span name="evidence$17">evidence$17: WireFormat[E]</span>)</span><span class="result"> extends Node[(K, V), Arr] with MapperLike[A, E, K, V] with ReducerLike[K, V, (K, V), Unit] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Input channel mapper that is hooked up to a GBK.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.GbkReducer" data-isabs="false">
-      <a id="GbkReducer:GbkReducer[K, V, B]"></a>
+      <a id="GbkReducer:GbkReducer[K, V, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$GbkReducer.html"><span class="name">GbkReducer</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="params">(<span name="in">in: Node[(K, Iterable[V])]</span>, <span name="dofn">dofn: DoFn[(K, Iterable[V]), B]</span>, <span name="evidence$14">evidence$14: Manifest[K]</span>, <span name="evidence$15">evidence$15: WireFormat[K]</span>, <span name="evidence$16">evidence$16: Grouping[K]</span>, <span name="evidence$17">evidence$17: Manifest[V]</span>, <span name="evidence$18">evidence$18: WireFormat[V]</span>, <span name="evidence$19">evidence$19: Manifest[B]</span>, <span name="evidence$20">evidence$20: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with ReducerLike[K, V, B] with Product with Serializable</span>
+        <a href="AST$$GbkReducer.html"><span class="name">GbkReducer</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="params">(<span name="in">in: Node[(K, Iterable[V]), Arr]</span>, <span name="env">env: Node[E, Exp]</span>, <span name="dofn">dofn: EnvDoFn[(K, Iterable[V]), B, E]</span>, <span name="evidence$18">evidence$18: Manifest[K]</span>, <span name="evidence$19">evidence$19: WireFormat[K]</span>, <span name="evidence$20">evidence$20: Grouping[K]</span>, <span name="evidence$21">evidence$21: Manifest[V]</span>, <span name="evidence$22">evidence$22: WireFormat[V]</span>, <span name="evidence$23">evidence$23: Manifest[B]</span>, <span name="evidence$24">evidence$24: WireFormat[B]</span>, <span name="evidence$25">evidence$25: Manifest[E]</span>, <span name="evidence$26">evidence$26: WireFormat[E]</span>)</span><span class="result"> extends Node[B, Arr] with ReducerLike[K, V, B, E] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">GbkReducer - a reduce (i.</p>
@@ -115,7 +115,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$GroupByKey.html"><span class="name">GroupByKey</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: Node[(K, V)]</span>, <span name="evidence$32">evidence$32: Manifest[K]</span>, <span name="evidence$33">evidence$33: WireFormat[K]</span>, <span name="evidence$34">evidence$34: Grouping[K]</span>, <span name="evidence$35">evidence$35: Manifest[V]</span>, <span name="evidence$36">evidence$36: WireFormat[V]</span>)</span><span class="result"> extends Node[(K, Iterable[V])] with ReducerLike[K, V, (K, Iterable[V])] with Product with Serializable</span>
+        <a href="AST$$GroupByKey.html"><span class="name">GroupByKey</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: Node[(K, V), Arr]</span>, <span name="evidence$40">evidence$40: Manifest[K]</span>, <span name="evidence$41">evidence$41: WireFormat[K]</span>, <span name="evidence$42">evidence$42: Grouping[K]</span>, <span name="evidence$43">evidence$43: Manifest[V]</span>, <span name="evidence$44">evidence$44: WireFormat[V]</span>)</span><span class="result"> extends Node[(K, Iterable[V]), Arr] with ReducerLike[K, V, (K, Iterable[V]), Unit] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Usual GBK node.</p>
@@ -127,46 +127,82 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$Load.html"><span class="name">Load</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$28">evidence$28: Manifest[A]</span>, <span name="evidence$29">evidence$29: WireFormat[A]</span>)</span><span class="result"> extends Node[A] with ReducerLike[Int, A, A] with Product with Serializable</span>
+        <a href="AST$$Load.html"><span class="name">Load</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$36">evidence$36: Manifest[A]</span>, <span name="evidence$37">evidence$37: WireFormat[A]</span>)</span><span class="result"> extends Node[A, Arr] with ReducerLike[Int, A, A, Unit] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Usual Load node.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper" data-isabs="false">
-      <a id="Mapper:Mapper[A, B]"></a>
+      <a id="Mapper:Mapper[A, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$Mapper.html"><span class="name">Mapper</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="in">in: Node[A]</span>, <span name="dofn">dofn: DoFn[A, B]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: WireFormat[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with MapperLike[A, Int, B] with ReducerLike[Int, B, B] with Product with Serializable</span>
+        <a href="AST$$Mapper.html"><span class="name">Mapper</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="params">(<span name="in">in: Node[A, Arr]</span>, <span name="env">env: Node[E, Exp]</span>, <span name="dofn">dofn: EnvDoFn[A, B, E]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: WireFormat[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: WireFormat[B]</span>, <span name="evidence$7">evidence$7: Manifest[E]</span>, <span name="evidence$8">evidence$8: WireFormat[E]</span>)</span><span class="result"> extends Node[B, Arr] with MapperLike[A, E, Int, B] with ReducerLike[Int, B, B, Unit] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Input channel mapper that is not hooked up to a GBK.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Materialize" data-isabs="false">
+      <a id="Materialize:Materialize[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AST$$Materialize.html"><span class="name">Materialize</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="in">in: Node[A, Arr]</span>, <span name="evidence$45">evidence$45: Manifest[A]</span>, <span name="evidence$46">evidence$46: WireFormat[A]</span>)</span><span class="result"> extends Node[Iterable[A], Exp] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt"></p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Node" data-isabs="true">
-      <a id="Node:Node[A]"></a>
+      <a id="Node:Node[A, Sh]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">sealed abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$Node.html"><span class="name">Node</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="AST$$Node.html"><span class="name">Node</span></a><span class="tparams">[<span name="A">A</span>, <span name="Sh">Sh &lt;: Shape</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">Intermediate representation - closer aligned to actual MSCR contents.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Reducer" data-isabs="false">
-      <a id="Reducer:Reducer[K, V, B]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Op" data-isabs="false">
+      <a id="Op:Op[A, B, C]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AST$$Reducer.html"><span class="name">Reducer</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="params">(<span name="in">in: Node[(K, V)]</span>, <span name="dofn">dofn: DoFn[(K, V), B]</span>, <span name="evidence$21">evidence$21: Manifest[K]</span>, <span name="evidence$22">evidence$22: WireFormat[K]</span>, <span name="evidence$23">evidence$23: Grouping[K]</span>, <span name="evidence$24">evidence$24: Manifest[V]</span>, <span name="evidence$25">evidence$25: WireFormat[V]</span>, <span name="evidence$26">evidence$26: Manifest[B]</span>, <span name="evidence$27">evidence$27: WireFormat[B]</span>)</span><span class="result"> extends Node[B] with ReducerLike[K, V, B] with Product with Serializable</span>
+        <a href="AST$$Op.html"><span class="name">Op</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>]</span><span class="params">(<span name="in1">in1: Node[A, Exp]</span>, <span name="in2">in2: Node[B, Exp]</span>, <span name="f">f: (A, B) ⇒ C</span>, <span name="evidence$47">evidence$47: Manifest[A]</span>, <span name="evidence$48">evidence$48: WireFormat[A]</span>, <span name="evidence$49">evidence$49: Manifest[B]</span>, <span name="evidence$50">evidence$50: WireFormat[B]</span>, <span name="evidence$51">evidence$51: Manifest[C]</span>, <span name="evidence$52">evidence$52: WireFormat[C]</span>)</span><span class="result"> extends Node[C, Exp] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt"></p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Reducer" data-isabs="false">
+      <a id="Reducer:Reducer[K, V, B, E]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AST$$Reducer.html"><span class="name">Reducer</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="params">(<span name="in">in: Node[(K, V), Arr]</span>, <span name="env">env: Node[E, Exp]</span>, <span name="dofn">dofn: EnvDoFn[(K, V), B, E]</span>, <span name="evidence$27">evidence$27: Manifest[K]</span>, <span name="evidence$28">evidence$28: WireFormat[K]</span>, <span name="evidence$29">evidence$29: Grouping[K]</span>, <span name="evidence$30">evidence$30: Manifest[V]</span>, <span name="evidence$31">evidence$31: WireFormat[V]</span>, <span name="evidence$32">evidence$32: Manifest[B]</span>, <span name="evidence$33">evidence$33: WireFormat[B]</span>, <span name="evidence$34">evidence$34: Manifest[E]</span>, <span name="evidence$35">evidence$35: WireFormat[E]</span>)</span><span class="result"> extends Node[B, Arr] with ReducerLike[K, V, B, E] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">Reducer - a reduce (i.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Return" data-isabs="false">
+      <a id="Return:Return[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AST$$Return.html"><span class="name">Return</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="x">x: A</span>, <span name="evidence$53">evidence$53: Manifest[A]</span>, <span name="evidence$54">evidence$54: WireFormat[A]</span>)</span><span class="result"> extends Node[A, Exp] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt"></p>
     </li></ol>
             </div>
 
@@ -286,14 +322,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST#eachNode" data-isabs="false">
-      <a id="eachNode[U](Set[com.nicta.scoobi.impl.plan.AST.Node[_]])((com.nicta.scoobi.impl.plan.AST.Node[_]) ⇒ U):Unit"></a>
+      <a id="eachNode[U](Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]])((com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]) ⇒ U):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eachNode</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="starts">starts: Set[com.nicta.scoobi.impl.plan.AST.Node[_]]</span>)</span><span class="params">(<span name="f">f: (com.nicta.scoobi.impl.plan.AST.Node[_]) ⇒ U</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">eachNode</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="starts">starts: Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>)</span><span class="params">(<span name="f">f: (com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]) ⇒ U</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Apply a function to each node of the AST (visit each node only once).</p>

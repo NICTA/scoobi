@@ -34,7 +34,7 @@
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.plan.BypassOutputChannel" class="extype" href="BypassOutputChannel.html">BypassOutputChannel</a>, <a name="com.nicta.scoobi.impl.plan.FlattenOutputChannel" class="extype" href="FlattenOutputChannel.html">FlattenOutputChannel</a>, <a name="com.nicta.scoobi.impl.plan.GbkOutputChannel" class="extype" href="GbkOutputChannel.html">GbkOutputChannel</a>, <a name="com.nicta.scoobi.impl.plan.StraightOutputChannel" class="extype" href="StraightOutputChannel.html">StraightOutputChannel</a></div>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.plan.BypassOutputChannel" class="extype" href="BypassOutputChannel.html">BypassOutputChannel</a>, <a name="com.nicta.scoobi.impl.plan.FlattenOutputChannel" class="extype" href="FlattenOutputChannel.html">FlattenOutputChannel</a>, <a name="com.nicta.scoobi.impl.plan.GbkOutputChannel" class="extype" href="GbkOutputChannel.html">GbkOutputChannel</a></div>
         </div></div>
     
 
@@ -79,15 +79,27 @@
 
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.OutputChannel#outputNode" data-isabs="true">
-      <a id="outputNode:com.nicta.scoobi.impl.plan.AST.Node[_]"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.OutputChannel#nodes" data-isabs="true">
+      <a id="nodes:Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputNode</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_]</span>
+        <span class="name">nodes</span><span class="result">: Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.OutputChannel#outputNode" data-isabs="true">
+      <a id="outputNode:com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputNode</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>
       </span>
       </h4>
       

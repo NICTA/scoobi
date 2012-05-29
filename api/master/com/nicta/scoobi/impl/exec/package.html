@@ -111,6 +111,32 @@ input channel.</p>
       </span>
       </h4>
       <p class="comment cmt">A producer of a TaggedCombiner.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Env" data-isabs="false">
+      <a id="Env:Env[E]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Env.html"><span class="name">Env</span></a><span class="tparams">[<span name="E">E</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A reference to the storage location of a value that represents the &quot;environment&quot;
+in which a computation is performed within.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ExecState" data-isabs="false">
+      <a id="ExecState:ExecState"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ExecState.html"><span class="name">ExecState</span></a><span class="params">(<span name="conf">conf: ScoobiConfiguration</span>, <span name="computeTable">computeTable: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Option[_]]</span>, <span name="refcnts">refcnts: Map[com.nicta.scoobi.impl.exec.BridgeStore[_], Int]</span>, <span name="step">step: Int</span>, <span name="environments">environments: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="mscrEnvs">mscrEnvs: Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>, <span name="mscrs">mscrs: Set[MSCR]</span>, <span name="matTable">matTable: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.exec.BridgeStore[_]]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The only state required to be passed around during execution of the
+Scoobi compute graph.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob" data-isabs="false">
       <a id="MapReduceJob:MapReduceJob"></a>
       <h4 class="signature">
@@ -124,14 +150,14 @@ input channel.</p>
       </h4>
       <p class="comment cmt">A class that defines a single Hadoop MapReduce job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapperLike" data-isabs="true">
-      <a id="MapperLike:MapperLike[A, K, V]"></a>
+      <a id="MapperLike:MapperLike[A, E, K, V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="MapperLike.html"><span class="name">MapperLike</span></a><span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="MapperLike.html"><span class="name">MapperLike</span></a><span class="tparams">[<span name="A">A</span>, <span name="E">E</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">A producer of a TaggedMapper.</p>
@@ -160,26 +186,26 @@ input channel.</p>
       </h4>
       <p class="comment cmt">Hadoop Combiner class for an MSCR.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrMapper" data-isabs="false">
-      <a id="MscrMapper:MscrMapper[K1, V1, A, K2, V2]"></a>
+      <a id="MscrMapper:MscrMapper[K1, V1, A, E, K2, V2]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="MscrMapper.html"><span class="name">MscrMapper</span></a><span class="tparams">[<span name="K1">K1</span>, <span name="V1">V1</span>, <span name="A">A</span>, <span name="K2">K2</span>, <span name="V2">V2</span>]</span><span class="result"> extends Mapper[K1, V1, TaggedKey, TaggedValue]</span>
+        <a href="MscrMapper.html"><span class="name">MscrMapper</span></a><span class="tparams">[<span name="K1">K1</span>, <span name="V1">V1</span>, <span name="A">A</span>, <span name="E">E</span>, <span name="K2">K2</span>, <span name="V2">V2</span>]</span><span class="result"> extends Mapper[K1, V1, TaggedKey, TaggedValue]</span>
       </span>
       </h4>
       <p class="comment cmt">Hadoop Mapper class for an MSCR.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrReducer" data-isabs="false">
-      <a id="MscrReducer:MscrReducer[K2, V2, B, K3, V3]"></a>
+      <a id="MscrReducer:MscrReducer[K2, V2, B, E, K3, V3]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="MscrReducer.html"><span class="name">MscrReducer</span></a><span class="tparams">[<span name="K2">K2</span>, <span name="V2">V2</span>, <span name="B">B</span>, <span name="K3">K3</span>, <span name="V3">V3</span>]</span><span class="result"> extends Reducer[TaggedKey, TaggedValue, K3, V3]</span>
+        <a href="MscrReducer.html"><span class="name">MscrReducer</span></a><span class="tparams">[<span name="K2">K2</span>, <span name="V2">V2</span>, <span name="B">B</span>, <span name="E">E</span>, <span name="K3">K3</span>, <span name="V3">V3</span>]</span><span class="result"> extends Reducer[TaggedKey, TaggedValue, K3, V3]</span>
       </span>
       </h4>
       <p class="comment cmt">Hadoop Reducer class for an MSCR.</p>
@@ -196,14 +222,14 @@ input channel.</p>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ReducerLike" data-isabs="true">
-      <a id="ReducerLike:ReducerLike[K, V, B]"></a>
+      <a id="ReducerLike:ReducerLike[K, V, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ReducerLike.html"><span class="name">ReducerLike</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="ReducerLike.html"><span class="name">ReducerLike</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">A producer of a TaggedReducer.</p>
@@ -239,7 +265,7 @@ input channel.</p>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="TaggedIdentityMapper.html"><span class="name">TaggedIdentityMapper</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends TaggedMapper[(K, V), K, V]</span>
+        <a href="TaggedIdentityMapper.html"><span class="name">TaggedIdentityMapper</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends TaggedMapper[(K, V), Unit, K, V]</span>
       </span>
       </h4>
       <p class="comment cmt">A TaggedMapper that is an identity mapper.</p>
@@ -251,7 +277,7 @@ input channel.</p>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="TaggedIdentityReducer.html"><span class="name">TaggedIdentityReducer</span></a><span class="tparams">[<span name="B">B</span>]</span><span class="result"> extends TaggedReducer[Int, B, B]</span>
+        <a href="TaggedIdentityReducer.html"><span class="name">TaggedIdentityReducer</span></a><span class="tparams">[<span name="B">B</span>]</span><span class="result"> extends TaggedReducer[Int, B, B, Unit]</span>
       </span>
       </h4>
       <p class="comment cmt">A TaggedReducer that is an identity reducer.</p>
@@ -268,26 +294,26 @@ input channel.</p>
       </h4>
       <p class="comment cmt">A wrapper around an InputSplit that is tagged with an input channel id.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedMapper" data-isabs="true">
-      <a id="TaggedMapper:TaggedMapper[A, K, V]"></a>
+      <a id="TaggedMapper:TaggedMapper[A, E, K, V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="TaggedMapper.html"><span class="name">TaggedMapper</span></a><span class="tparams">[<span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="TaggedMapper.html"><span class="name">TaggedMapper</span></a><span class="tparams">[<span name="A">A</span>, <span name="E">E</span>, <span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="tags">tags: Set[Int]</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mE">mE: Manifest[E]</span>, <span name="wtE">wtE: WireFormat[E]</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: WireFormat[K]</span>, <span name="grpK">grpK: Grouping[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: WireFormat[V]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">A wrapper for a 'map' function tagged for a specific output channel.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaggedReducer" data-isabs="true">
-      <a id="TaggedReducer:TaggedReducer[K, V, B]"></a>
+      <a id="TaggedReducer:TaggedReducer[K, V, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="TaggedReducer.html"><span class="name">TaggedReducer</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="TaggedReducer.html"><span class="name">TaggedReducer</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="params">(<span name="tag">tag: Int</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: WireFormat[K]</span>, <span name="grpK">grpK: Grouping[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: WireFormat[V]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>, <span name="mE">mE: Manifest[E]</span>, <span name="wtE">wtE: WireFormat[E]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">A wrapper for a 'reduce' function tagged for a specific output channel.</p>
@@ -348,6 +374,18 @@ to be specified.</p>
       </span>
       </h4>
       <p class="comment cmt">Faciliate making an object available to all tasks (mappers, reducers, etc).</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Env" data-isabs="false">
+      <a id="Env:Env"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Env$.html"><span class="name">Env</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Executor" data-isabs="false">
       <a id="Executor:Executor"></a>
       <h4 class="signature">

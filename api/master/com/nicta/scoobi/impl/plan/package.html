@@ -48,7 +48,19 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel" data-isabs="false">
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.Arr" data-isabs="false">
+      <a id="Arr:Arr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Arr.html"><span class="name">Arr</span></a><span class="params">()</span><span class="result"> extends Shape with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassInputChannel" data-isabs="false">
       <a id="BypassInputChannel:BypassInputChannel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -56,7 +68,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="BypassInputChannel.html"><span class="name">BypassInputChannel</span></a><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
+        <a href="BypassInputChannel.html"><span class="name">BypassInputChannel</span></a><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.plan.KVLike[_, _]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
       </span>
       </h4>
       
@@ -68,7 +80,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
+        <a href="BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _, _]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
       </span>
       </h4>
       
@@ -92,7 +104,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="CombinerReducer.html"><span class="name">CombinerReducer</span></a><span class="params">(<span name="combiner">combiner: com.nicta.scoobi.impl.plan.AST.Combiner[_, _]</span>, <span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.Reducer[_, _, _]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
+        <a href="CombinerReducer.html"><span class="name">CombinerReducer</span></a><span class="params">(<span name="combiner">combiner: com.nicta.scoobi.impl.plan.AST.Combiner[_, _]</span>, <span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.Reducer[_, _, _, _]</span>, <span name="env">env: com.nicta.scoobi.impl.exec.Env[_]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
       </span>
       </h4>
       
@@ -105,6 +117,42 @@
       </span>
       <span class="symbol">
         <a href="DGraph.html"><span class="name">DGraph</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DListImpl" data-isabs="false">
+      <a id="DListImpl:DListImpl[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DListImpl.html"><span class="name">DListImpl</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends DList[A]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An implemenentation of the DList trait that builds up a DAG of computation nodes.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DObjectImpl" data-isabs="false">
+      <a id="DObjectImpl:DObjectImpl[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DObjectImpl.html"><span class="name">DObjectImpl</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends DObject[A]</span>
+      </span>
+      </h4>
+      <p class="comment cmt"></p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Exp" data-isabs="false">
+      <a id="Exp:Exp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Exp.html"><span class="name">Exp</span></a><span class="params">()</span><span class="result"> extends Shape with Product with Serializable</span>
       </span>
       </h4>
       
@@ -164,7 +212,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="JustReducer.html"><span class="name">JustReducer</span></a><span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
+        <a href="JustReducer.html"><span class="name">JustReducer</span></a><span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _, _]</span>, <span name="env">env: com.nicta.scoobi.impl.exec.Env[_]</span>)</span><span class="result"> extends CRPipe with Product with Serializable</span>
       </span>
       </h4>
       
@@ -200,7 +248,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="MSCRGraph.html"><span class="name">MSCRGraph</span></a><span class="params">(<span name="outputs">outputs: List[OutputStore]</span>, <span name="mscrs">mscrs: Set[MSCR]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="MSCRGraph.html"><span class="name">MSCRGraph</span></a><span class="params">(<span name="outputs">outputs: List[OutputStore]</span>, <span name="mscrs">mscrs: Set[MSCR]</span>, <span name="matTable">matTable: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.exec.BridgeStore[_]]</span>, <span name="environments">environments: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.exec.Env[_]]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
@@ -212,7 +260,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="MapperInputChannel.html"><span class="name">MapperInputChannel</span></a><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
+        <a href="MapperInputChannel.html"><span class="name">MapperInputChannel</span></a><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[(com.nicta.scoobi.impl.exec.Env[_], com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _])]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
       </span>
       </h4>
       
@@ -236,10 +284,22 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="OutputStore.html"><span class="name">OutputStore</span></a><span class="params">(<span name="node">node: com.nicta.scoobi.impl.plan.AST.Node[_]</span>, <span name="sinks">sinks: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="OutputStore.html"><span class="name">OutputStore</span></a><span class="params">(<span name="node">node: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>, <span name="sinks">sinks: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Shape" data-isabs="true">
+      <a id="Shape:Shape"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Shape.html"><span class="name">Shape</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">ADT (sum type) representing Shapes of computation results.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.StraightInputChannel" data-isabs="false">
       <a id="StraightInputChannel:StraightInputChannel"></a>
       <h4 class="signature">
@@ -248,19 +308,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="StraightInputChannel.html"><span class="name">StraightInputChannel</span></a><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.StraightOutputChannel" data-isabs="false">
-      <a id="StraightOutputChannel:StraightOutputChannel"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="StraightOutputChannel.html"><span class="name">StraightOutputChannel</span></a><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _]</span>)</span><span class="result"> extends OutputChannel with Product with Serializable</span>
+        <a href="StraightInputChannel.html"><span class="name">StraightInputChannel</span></a><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result"> extends InputChannel with Product with Serializable</span>
       </span>
       </h4>
       
@@ -295,6 +343,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DObjectImpl" data-isabs="false">
+      <a id="DObjectImpl:DObjectImpl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DObjectImpl$.html"><span class="name">DObjectImpl</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt"></p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Empty" data-isabs="false">
       <a id="Empty:Empty"></a>
       <h4 class="signature">
@@ -355,6 +415,18 @@
       </span>
       </h4>
       <p class="comment cmt">Abstract syntax of tree of primitive &quot;language&quot;.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.UnitDObject" data-isabs="false">
+      <a id="UnitDObject:UnitDObject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="UnitDObject$.html"><span class="name">UnitDObject</span></a><span class="result"> extends DObjectImpl[Unit]</span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 

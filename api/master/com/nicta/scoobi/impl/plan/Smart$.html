@@ -67,32 +67,32 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$Combine.html"><span class="name">Combine</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: DList[(K, Iterable[V])]</span>, <span name="f">f: (V, V) ⇒ V</span>, <span name="evidence$49">evidence$49: Manifest[K]</span>, <span name="evidence$50">evidence$50: WireFormat[K]</span>, <span name="evidence$51">evidence$51: Grouping[K]</span>, <span name="evidence$52">evidence$52: Manifest[V]</span>, <span name="evidence$53">evidence$53: WireFormat[V]</span>)</span><span class="result"> extends DList[(K, V)] with Product with Serializable</span>
+        <a href="Smart$$Combine.html"><span class="name">Combine</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: DComp[(K, Iterable[V]), Arr]</span>, <span name="f">f: (V, V) ⇒ V</span>, <span name="evidence$75">evidence$75: Manifest[K]</span>, <span name="evidence$76">evidence$76: WireFormat[K]</span>, <span name="evidence$77">evidence$77: Grouping[K]</span>, <span name="evidence$78">evidence$78: Manifest[V]</span>, <span name="evidence$79">evidence$79: WireFormat[V]</span>)</span><span class="result"> extends DComp[(K, V), Arr] with Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">The Combine node type specifies the building of a DList as a result of applying an associative
-function to the values of an existing key-values DList.</p>
+      <p class="comment cmt">The Combine node type specifies the building of a DComp as a result of applying an associative
+function to the values of an existing key-values DComp.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ConvertInfo" data-isabs="false">
       <a id="ConvertInfo:ConvertInfo"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$ConvertInfo.html"><span class="name">ConvertInfo</span></a><span class="result"> extends AnyRef</span>
+        <a href="Smart$$ConvertInfo.html"><span class="name">ConvertInfo</span></a><span class="params">(<span name="conf">conf: ScoobiConfiguration</span>, <span name="outMap">outMap: Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.io.DataSink[_, _, _]]]</span>, <span name="mscrs">mscrs: Iterable[MSCR]</span>, <span name="g">g: DGraph</span>, <span name="astMap">astMap: Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>, <span name="envMap">envMap: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="bridgeStoreMap">bridgeStoreMap: Map[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.exec.BridgeStore[_]]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#CopyFn" data-isabs="false">
-      <a id="CopyFn:(DList[T], CopyTable) ⇒ (DList[T], CopyTable, Boolean)"></a>
+      <a id="CopyFn:(DComp[A, Sh], CopyTable) ⇒ (DComp[A, Sh], CopyTable, Boolean)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">CopyFn</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[T], CopyTable) ⇒ (<a name="com.nicta.scoobi.impl.plan.Smart.DList" class="extype" href="Smart$$DList.html">DList</a>[T], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
+        <span class="name">CopyFn</span><span class="tparams">[<span name="A">A</span>, <span name="Sh">Sh &lt;: <a name="com.nicta.scoobi.impl.plan.Shape" class="extype" href="Shape.html">Shape</a></span>]</span><span class="result"> = (<a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[A, Sh], CopyTable) ⇒ (<a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[A, Sh], CopyTable, <span name="scala.Boolean" class="extype">Boolean</span>)</span>
       </span>
       </h4>
       
@@ -104,19 +104,19 @@ function to the values of an existing key-values DList.</p>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">CopyTable</span><span class="result"> = <span name="scala.collection.immutable.Map" class="extype">Map</span>[com.nicta.scoobi.impl.plan.Smart.DList[_], com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>
+        <span class="name">CopyTable</span><span class="result"> = <span name="scala.collection.immutable.Map" class="extype">Map</span>[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DList" data-isabs="true">
-      <a id="DList:DList[A]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DComp" data-isabs="true">
+      <a id="DComp:DComp[A, Sh]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">sealed abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$DList.html"><span class="name">DList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="Smart$$DComp.html"><span class="name">DComp</span></a><span class="tparams">[<span name="A">A</span>, <span name="Sh">Sh &lt;: Shape</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       <p class="comment cmt">GADT for distributed list computation graph.</p>
@@ -128,10 +128,10 @@ function to the values of an existing key-values DList.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$Flatten.html"><span class="name">Flatten</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ins">ins: List[DList[A]]</span>, <span name="evidence$61">evidence$61: Manifest[A]</span>, <span name="evidence$62">evidence$62: WireFormat[A]</span>)</span><span class="result"> extends DList[A] with Product with Serializable</span>
+        <a href="Smart$$Flatten.html"><span class="name">Flatten</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ins">ins: List[DComp[A, Arr]]</span>, <span name="evidence$89">evidence$89: Manifest[A]</span>, <span name="evidence$90">evidence$90: WireFormat[A]</span>)</span><span class="result"> extends DComp[A, Arr] with Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">The Flatten node type spcecifies the building of a DList that contains all the elements from
+      <p class="comment cmt">The Flatten node type spcecifies the building of a DComp that contains all the elements from
 one or more exsiting DLists of the same type.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.GroupByKey" data-isabs="false">
       <a id="GroupByKey:GroupByKey[K, V]"></a>
@@ -141,11 +141,11 @@ one or more exsiting DLists of the same type.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$GroupByKey.html"><span class="name">GroupByKey</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: DList[(K, V)]</span>, <span name="evidence$32">evidence$32: Manifest[K]</span>, <span name="evidence$33">evidence$33: WireFormat[K]</span>, <span name="evidence$34">evidence$34: Grouping[K]</span>, <span name="evidence$35">evidence$35: Manifest[V]</span>, <span name="evidence$36">evidence$36: WireFormat[V]</span>)</span><span class="result"> extends DList[(K, Iterable[V])] with Product with Serializable</span>
+        <a href="Smart$$GroupByKey.html"><span class="name">GroupByKey</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: DComp[(K, V), Arr]</span>, <span name="evidence$56">evidence$56: Manifest[K]</span>, <span name="evidence$57">evidence$57: WireFormat[K]</span>, <span name="evidence$58">evidence$58: Grouping[K]</span>, <span name="evidence$59">evidence$59: Manifest[V]</span>, <span name="evidence$60">evidence$60: WireFormat[V]</span>)</span><span class="result"> extends DComp[(K, Iterable[V]), Arr] with Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">The GroupByKey node type specifies the building of a DList as a result of partitioning an exiting
-key-value DList by key.</p>
+      <p class="comment cmt">The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
+key-value DComp by key.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Load" data-isabs="false">
       <a id="Load:Load[A]"></a>
       <h4 class="signature">
@@ -154,23 +154,60 @@ key-value DList by key.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$Load.html"><span class="name">Load</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, A]</span>, <span name="evidence$20">evidence$20: Manifest[A]</span>, <span name="evidence$21">evidence$21: WireFormat[A]</span>)</span><span class="result"> extends DList[A] with Product with Serializable</span>
+        <a href="Smart$$Load.html"><span class="name">Load</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, A]</span>, <span name="evidence$22">evidence$22: Manifest[A]</span>, <span name="evidence$23">evidence$23: WireFormat[A]</span>)</span><span class="result"> extends DComp[A, Arr] with Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">The Load node type specifies the creation of a DList from some source other than another DList.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo" data-isabs="false">
-      <a id="ParallelDo:ParallelDo[A, B]"></a>
+      <p class="comment cmt">The Load node type specifies the creation of a DComp from some source other than another DComp.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Materialize" data-isabs="false">
+      <a id="Materialize:Materialize[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$ParallelDo.html"><span class="name">ParallelDo</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="in">in: DList[A]</span>, <span name="dofn">dofn: DoFn[A, B]</span>, <span name="groupBarrier">groupBarrier: Boolean</span>, <span name="fuseBarrier">fuseBarrier: Boolean</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>)</span><span class="result"> extends DList[B] with Product with Serializable</span>
+        <a href="Smart$$Materialize.html"><span class="name">Materialize</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="in">in: DComp[A, Arr]</span>, <span name="evidence$100">evidence$100: Manifest[A]</span>, <span name="evidence$101">evidence$101: WireFormat[A]</span>)</span><span class="result"> extends DComp[Iterable[A], Exp] with Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">The ParallelDo node type specifies the building of a DList as a result of applying a function to
-all elements of an existing DList and concatenating the results.</p>
+      <p class="comment cmt">The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Op" data-isabs="false">
+      <a id="Op:Op[A, B, C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Smart$$Op.html"><span class="name">Op</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>]</span><span class="params">(<span name="in1">in1: DComp[A, Exp]</span>, <span name="in2">in2: DComp[B, Exp]</span>, <span name="f">f: (A, B) ⇒ C</span>, <span name="evidence$111">evidence$111: Manifest[A]</span>, <span name="evidence$112">evidence$112: WireFormat[A]</span>, <span name="evidence$113">evidence$113: Manifest[B]</span>, <span name="evidence$114">evidence$114: WireFormat[B]</span>, <span name="evidence$115">evidence$115: Manifest[C]</span>, <span name="evidence$116">evidence$116: WireFormat[C]</span>)</span><span class="result"> extends DComp[C, Exp] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The Op node type specifies the building of Exp DComp by applying a function to the values
+of two other Exp DComp nodes.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.ParallelDo" data-isabs="false">
+      <a id="ParallelDo:ParallelDo[A, B, E]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Smart$$ParallelDo.html"><span class="name">ParallelDo</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="params">(<span name="in">in: DComp[A, Arr]</span>, <span name="env">env: DComp[E, Exp]</span>, <span name="dofn">dofn: EnvDoFn[A, B, E]</span>, <span name="groupBarrier">groupBarrier: Boolean</span>, <span name="fuseBarrier">fuseBarrier: Boolean</span>, <span name="mA">mA: Manifest[A]</span>, <span name="wtA">wtA: WireFormat[A]</span>, <span name="mB">mB: Manifest[B]</span>, <span name="wtB">wtB: WireFormat[B]</span>, <span name="mE">mE: Manifest[E]</span>, <span name="wtE">wtE: WireFormat[E]</span>)</span><span class="result"> extends DComp[B, Arr] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The ParallelDo node type specifies the building of a DComp as a result of applying a function to
+all elements of an existing DComp and concatenating the results.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.Return" data-isabs="false">
+      <a id="Return:Return[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Smart$$Return.html"><span class="name">Return</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="x">x: A</span>, <span name="evidence$126">evidence$126: Manifest[A]</span>, <span name="evidence$127">evidence$127: WireFormat[A]</span>)</span><span class="result"> extends DComp[A, Exp] with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The Return node type specifies the building of a Exp DComp from an &quot;ordinary&quot; value.</p>
     </li></ol>
             </div>
 
@@ -246,7 +283,7 @@ all elements of an existing DList and concatenating the results.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Smart$$ConvertInfo$.html"><span class="name">ConvertInfo</span></a><span class="result"> extends AnyRef</span>
+        <a href="Smart$$ConvertInfo$.html"><span class="name">ConvertInfo</span></a><span class="result"> extends Serializable</span>
       </span>
       </h4>
       
@@ -341,50 +378,62 @@ all elements of an existing DList and concatenating the results.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getCombine" data-isabs="false">
-      <a id="getCombine(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]"></a>
+      <a id="getCombine(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Option[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getCombine</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>
+        <span class="name">getCombine</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Combine[_, _]]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getFlatten" data-isabs="false">
-      <a id="getFlatten(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]"></a>
+      <a id="getFlatten(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Option[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getFlatten</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>
+        <span class="name">getFlatten</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Flatten[_]]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getGroupByKey" data-isabs="false">
-      <a id="getGroupByKey(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]]"></a>
+      <a id="getGroupByKey(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Option[com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getGroupByKey</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]]</span>
+        <span class="name">getGroupByKey</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.GroupByKey[_, _]]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getMaterialize" data-isabs="false">
+      <a id="getMaterialize(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Option[com.nicta.scoobi.impl.plan.Smart.Materialize[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getMaterialize</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.Materialize[_]]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#getParallelDo" data-isabs="false">
-      <a id="getParallelDo(com.nicta.scoobi.impl.plan.Smart.DList[_]):Option[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]"></a>
+      <a id="getParallelDo(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Option[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getParallelDo</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>
+        <span class="name">getParallelDo</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]]</span>
       </span>
       </h4>
       
@@ -401,38 +450,38 @@ all elements of an existing DList and concatenating the results.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isCombine" data-isabs="false">
-      <a id="isCombine(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="isCombine(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isCombine</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isCombine</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isFlatten" data-isabs="false">
-      <a id="isFlatten(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="isFlatten(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isFlatten</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isFlatten</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isGroupByKey" data-isabs="false">
-      <a id="isGroupByKey(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="isGroupByKey(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isGroupByKey</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isGroupByKey</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
@@ -448,15 +497,27 @@ all elements of an existing DList and concatenating the results.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isParallelDo" data-isabs="false">
-      <a id="isParallelDo(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isMaterialize" data-isabs="false">
+      <a id="isMaterialize(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isParallelDo</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isMaterialize</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#isParallelDo" data-isabs="false">
+      <a id="isParallelDo(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isParallelDo</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
@@ -497,14 +558,14 @@ all elements of an existing DList and concatenating the results.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#optimisePlan" data-isabs="false">
-      <a id="optimisePlan(List[com.nicta.scoobi.impl.plan.Smart.DList[_]]):List[com.nicta.scoobi.impl.plan.Smart.DList[_]]"></a>
+      <a id="optimisePlan(List[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]):List[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">optimisePlan</span><span class="params">(<span name="outputs">outputs: List[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>)</span><span class="result">: List[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>
+        <span class="name">optimisePlan</span><span class="params">(<span name="outputs">outputs: List[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>)</span><span class="result">: List[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Apply a series of stategies to optimise the strucuture of the logical plan (that
@@ -512,14 +573,14 @@ is the graph).</p><div class="fullcomment"><div class="comment cmt"><p>Apply a s
 is the graph). The purpose of this is to transform the graph into a form that
 is suitable for forming MSCRs. The strategies are:</p><ul><li>splitting of Flattens with multiple outputs</li><li>sinking of Flattens</li><li>fusing Flattens</li><li>morphing Combine into ParallelDos when they don't follow a GroupByKey</li><li>fusing of ParallelDos</li><li>splitting of GroupByKeys with multiple outputs</li><li>splitting of Combine with multiple outputs.</li></ul></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart#parentsOf" data-isabs="false">
-      <a id="parentsOf(com.nicta.scoobi.impl.plan.Smart.DList[_]):List[com.nicta.scoobi.impl.plan.Smart.DList[_]]"></a>
+      <a id="parentsOf(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):List[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">parentsOf</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: List[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>
+        <span class="name">parentsOf</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: List[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
       

@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">JustReducer</span><span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.CRPipe" class="extype" href="CRPipe.html">CRPipe</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">JustReducer</span><span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _, _]</span>, <span name="env">env: com.nicta.scoobi.impl.exec.Env[_]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.CRPipe" class="extype" href="CRPipe.html">CRPipe</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">JustReducer</span><span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _]</span>)</span>
+        <span class="name">JustReducer</span><span class="params">(<span name="reducer">reducer: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _, _]</span>, <span name="env">env: com.nicta.scoobi.impl.exec.Env[_]</span>)</span>
       </span>
       </h4>
       
@@ -177,6 +177,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.JustReducer#env" data-isabs="false">
+      <a id="env:com.nicta.scoobi.impl.exec.Env[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">env</span><span class="result">: com.nicta.scoobi.impl.exec.Env[_]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -337,14 +349,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.JustReducer" class="extype" href="">JustReducer</a> → Product</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.JustReducer#reducer" data-isabs="false">
-      <a id="reducer:com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _]"></a>
+      <a id="reducer:com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _, _]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">reducer</span><span class="result">: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _]</span>
+        <span class="name">reducer</span><span class="result">: com.nicta.scoobi.impl.plan.AST.GbkReducer[_, _, _, _]</span>
       </span>
       </h4>
       

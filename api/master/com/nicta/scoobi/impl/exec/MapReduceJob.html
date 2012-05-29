@@ -151,26 +151,26 @@
       </h4>
       <p class="shortcomment cmt">Add a combiner function to this MapReduce job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedMapper" data-isabs="false">
-      <a id="addTaggedMapper(com.nicta.scoobi.io.DataSource[_, _, _],com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _]):Unit"></a>
+      <a id="addTaggedMapper(com.nicta.scoobi.io.DataSource[_, _, _],Option[com.nicta.scoobi.impl.exec.Env[_]],com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _, _]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addTaggedMapper</span><span class="params">(<span name="input">input: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="m">m: com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">addTaggedMapper</span><span class="params">(<span name="input">input: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="env">env: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="m">m: com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Add an input mapping function to thie MapReduce job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedReducer" data-isabs="false">
-      <a id="addTaggedReducer(Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]],com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _]):Unit"></a>
+      <a id="addTaggedReducer(Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]],Option[com.nicta.scoobi.impl.exec.Env[_]],com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _, _]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addTaggedReducer</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="r">r: com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">addTaggedReducer</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="env">env: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="r">r: com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Add an output reducing function to this MapReduce job.</p>
