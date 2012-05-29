@@ -522,8 +522,15 @@ object Intermediate {
        *      Load node(s). */
       val floatingNodes = g.nodes filterNot { n => gbkMSCRs.exists(_.hasNode(n)) }
 
-      val floatingMSCRs = floatingNodes collect {
-        case pd@ParallelDo(_, _, _, _, _) => MSCR(Set(MapperInputChannel(List(pd))), Set(BypassOutputChannel(pd))) // TODO - no sharing of inputs
+      /* Case 1 */
+      val floatingPDs = floatingNodes collect { case pd@ParallelDo(_, _, _, _, _) => pd }
+      val groupedPDs = floatingPDs.groupBy { case ParallelDo(in, _, _, _, _) => in }
+      val parallelDoMSCRs = groupedPDs map {
+        case (in, pds) => MSCR(Set(MapperInputChannel(pds.toList)), pds.map(BypassOutputChannel(_)).toSet)
+      }
+
+      /* Case 2 */
+      val flattenMSCRs = floatingNodes collect {
         case flat@Flatten(_) => {
           val ics = flat.ins map {
             case pd@ParallelDo(_, _, _, _, _) => MapperInputChannel(List(pd))
@@ -534,7 +541,7 @@ object Intermediate {
       }
 
       /* Final MSCR graph contains both GBK MSCRs and Map-only MSCRs. */
-      new MSCRGraph(gbkMSCRs ++ floatingMSCRs, g)
+      new MSCRGraph(gbkMSCRs ++ parallelDoMSCRs ++ flattenMSCRs, g)
     }
 
 
