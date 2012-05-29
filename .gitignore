@@ -6,6 +6,7 @@ examples/*.iml
 src/main/*.iml
 .idea/
 
+pgp.sbt
 .cache
 .project
 .classpath
