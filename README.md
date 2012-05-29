@@ -27,7 +27,7 @@ To use the sbt-scoobi plugin we need to include a `project/project/scoobi.scala`
     }
 ```
 
-And, we can add a pretty standard `build.sbt` that has a dependency on Scoobi:
+And, we can add a `build.sbt` that has a dependency on Scoobi:
 
 ```scala
     name := "MyApp"
@@ -38,7 +38,9 @@ And, we can add a pretty standard `build.sbt` that has a dependency on Scoobi:
 
     libraryDependencies += "com.nicta" %% "scoobi" % "0.4.0-SNAPSHOT" % "provided"
 
-    scalacOptions += "-deprecation"
+    scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
+    
+    resolvers += "snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
 ```
 
 The `provided` is added to the `scoobi` dependency to let sbt know that Scoobi

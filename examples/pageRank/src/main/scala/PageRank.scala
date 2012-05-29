@@ -20,7 +20,7 @@ import com.nicta.scoobi.Scoobi._
 object PageRank extends ScoobiApp {
 
   /* Load raw graph from a file. */
-  def loadGraph(path: String): DList[(Int, List[Int])] = {
+  private def loadGraph(path: String): DList[(Int, List[Int])] = {
     val Node = """^(\d+): (.*)$""".r
     val lines = fromTextFile(path)
     lines collect { case Node(n, rest) => (n.toInt, rest.split(" ").map(_.toInt).toList) }
@@ -28,12 +28,12 @@ object PageRank extends ScoobiApp {
 
 
   /* Get graph data into correct form. */
-  def initialise[K : Manifest : WireFormat](input: DList[(K, List[K])]) =
+  private def initialise[K : Manifest : WireFormat](input: DList[(K, List[K])]) =
     input map { case (url, links) => (url, (1f, 0f, links)) }
 
 
   /* Perform a single iteration of page-rank. */
-  def update[K : Manifest : WireFormat : Grouping](prev: DList[(K, (Float, Float, List[K]))], d: Float) = {
+  private def update[K : Manifest : WireFormat : Grouping](prev: DList[(K, (Float, Float, List[K]))], d: Float) = {
 
     val outbound = prev flatMap { case (url, (pr, _, links)) => links.map((_, pr / links.size)) }
 
@@ -46,32 +46,33 @@ object PageRank extends ScoobiApp {
     }
   }
 
-  def latestRankings(i: Int): DList[(Int, (Float, Float, List[Int]))] = fromAvroFile(output + i)
+
+  def run() {
+    val names = args(0)
+    val graph = args(1)
+    val output = args(2) + "/pr/"
+
+    def latestRankings(i: Int): DList[(Int, (Float, Float, List[Int]))] = fromAvroFile(output + i)
+
+    /* Perform a single iteration of PageRank. */
+    def iterateOnce(i : Int): Float = {
+      val curr = if (i == 0) initialise(loadGraph(graph)) else latestRankings(i)
+      val next = update(curr, 0.5f)
+      val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) } .max
+      val (_, md) = persist(toAvroFile(next, output + (i + 1)), maxDelta)
+      println("Current delta = " + md)
+      md
+    }
+
+    /* Iterate until convergence. */
+    var i = 0
+    var delta = 10.0f
+    while (delta > 1.0f) { delta = iterateOnce(i); i += 1 }
 
 
-  /* Perform a single iteration of PageRank. */
-  def iterateOnce(i : Int): Float = {
-    val curr = if (i == 0) initialise(loadGraph(graph)) else latestRankings(i)
-    val next = update(curr, 0.5f)
-    val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) } .max.materialize
-    persist(toAvroFile(next, output + (i + 1)), maxDelta.use)
-    val d = maxDelta.get.head
-    println("Current delta = " + d)
-    d
+    /* Write out final results to text file */
+    val pageranks = latestRankings(i).map { case (id, (pr, _, _)) => (id, pr) }
+    val urls = fromDelimitedTextFile(names) { case AnInt(id) :: url :: _ => (id, url) }
+    persist(toDelimitedTextFile(join(urls, pageranks).values, output + "result"))
   }
-
-  /* Iterate until convergence. */
-  val names = args(0)
-  val graph = args(1)
-  val output = args(2) + "/pr/"
-  var i = 0
-  var delta = 10.0f
-  while (delta > 1.0f) { delta = iterateOnce(i); i += 1 }
-
-
-  /* Write out final results to text file */
-  val pageranks = latestRankings(i).map { case (id, (pr, _, _)) => (id, pr) }
-  val urls = fromDelimitedTextFile(names) { case AnInt(id) :: url :: _ => (id, url) }
-  persist(toDelimitedTextFile(join(urls, pageranks).values, output + "result"))
 }
-
