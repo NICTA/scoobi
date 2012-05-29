@@ -265,8 +265,23 @@
         <span class="name">increment</span><span class="params">(<span name="key">key: String</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">increment an Int property by 1
-</p>
+      <p class="shortcomment cmt">increment an Int property by 1.</p><div class="fullcomment"><div class="comment cmt"><p>increment an Int property by 1.</p><p>Add a new key/value pair with value == 1 if the key didn't exist before
+</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#incrementRegex" data-isabs="false">
+      <a id="incrementRegex(String,String):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">incrementRegex</span><span class="params">(<span name="key">key: String</span>, <span name="keyRegex">keyRegex: String</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">increment an Int property by 1.</p><div class="fullcomment"><div class="comment cmt"><p>increment an Int property by 1.</p><p>The value to be incremented is specified as a list of values for keys corresponding to a regex.
+In that case the maximum value for those keys is taken and incremented
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>FunctionInput
+</p></span></dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -328,6 +343,18 @@
       </h4>
       <p class="shortcomment cmt">add all the keys found in the other map to this configuration</p><div class="fullcomment"><div class="comment cmt"><p>add all the keys found in the other map to this configuration</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the modified configuration object
 </p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#show" data-isabs="false">
+      <a id="show:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">show</span><span class="result">: String</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a string with all the key/values, one per line</p></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
