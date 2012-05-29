@@ -1,7 +1,6 @@
 package com.nicta.scoobi.acceptance
 
 import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.DList._
 import com.nicta.scoobi.testing.NictaHadoop
 
 class BoundedFilterSpec extends NictaHadoop {

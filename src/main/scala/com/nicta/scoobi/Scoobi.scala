@@ -22,6 +22,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   type WireFormat[A] = com.nicta.scoobi.WireFormat[A]
   val DList = com.nicta.scoobi.DList
   type DList[A] = com.nicta.scoobi.DList[A]
+  implicit def travPimp[A : Manifest : WireFormat](trav: Traversable[A]) = DList.travPimp(trav)
 
   val DObject = com.nicta.scoobi.DObject
   type DObject[A] = com.nicta.scoobi.DObject[A]
