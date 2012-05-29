@@ -1,7 +1,9 @@
 package com.nicta.scoobi.impl
 
+import control.Exceptions
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.Job
+import Exceptions._
 
 /**
  * This trait adds functionalities to Hadoop's Configuration object
@@ -72,7 +74,9 @@ trait Configurations {
     }
 
     /**
-     * increment an Int property by 1
+     * increment an Int property by 1.
+     *
+     * Add a new key/value pair with value == 1 if the key didn't exist before
      */
     def increment(key: String): Int = synchronized {
       val value = conf.getInt(key, 0) + 1
@@ -80,17 +84,34 @@ trait Configurations {
       value
     }
 
+    /**
+     * increment an Int property by 1.
+     *
+     * The value to be incremented is specified as a list of values for keys corresponding to a regex.
+     * In that case the maximum value for those keys is taken and incremented
+     *
+     * @see FunctionInput
+     */
+    def incrementRegex(key: String, keyRegex: String): Int = synchronized {
+      val value = conf.getValByRegex(keyRegex).values().toList.map(s => tryo(s.toInt)).flatten.sorted.lastOption.getOrElse(0) + 1
+      conf.setInt(key, value)
+      value
+    }
+
     /** @return the scoobi work directory */
     def workingDirectory = conf.get("scoobi.workdir")
 
+    /** @return a string with all the key/values, one per line */
+    def show = conf.getValByRegex(".*").entrySet().mkString("\n")
   }
 
   /**
-   * @return a Configuration object from a sequence of key/value
+   * @return a Configuration object from a sequence of key/value (and only those, for testing)
    */
+  private[scoobi]
   def configuration(pairs: (String, String)*): Configuration = {
     val configuration = new Configuration
-    val job = new Job(configuration, "1")
+    configuration.clear()
     pairs.foreach { case (k, v) => configuration.set(k, v) }
     configuration
   }
