@@ -25,14 +25,14 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">BasicDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a>[A, B, <span name="scala.Unit" class="extype">Unit</span>]</span>
+        <span class="name">BasicDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a>[A, B]</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Interface for specifing parallel operation over DLists in the absence of an
-environment and explicit setup and cleanup phases.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Interface for specifying parallel operation over DLists in the absence of an
+environment with an do-nothing setup and cleanup phases.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a>[A, B, <span name="scala.Unit" class="extype">Unit</span>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a>[A, B], <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a>[A, B, <span name="scala.Unit" class="extype">Unit</span>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -46,7 +46,7 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.BasicDoFn" class="in"><span>BasicDoFn</span></li><li name="com.nicta.scoobi.EnvDoFn" class="in"><span>EnvDoFn</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.BasicDoFn" class="in"><span>BasicDoFn</span></li><li name="com.nicta.scoobi.DoFn" class="in"><span>DoFn</span></li><li name="com.nicta.scoobi.EnvDoFn" class="in"><span>EnvDoFn</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -62,7 +62,7 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
 
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.BasicDoFn#process" data-isabs="true">
+              <ol><li visbl="pub" name="com.nicta.scoobi.DoFn#process" data-isabs="true">
       <a id="process(A,Emitter[B]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -73,7 +73,7 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
         <span class="name">process</span><span class="params">(<span name="input">input: A</span>, <span name="emitter">emitter: <a name="com.nicta.scoobi.Emitter" class="extype" href="Emitter.html">Emitter</a>[B]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -152,6 +152,18 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.BasicDoFn#cleanup" data-isabs="false">
+      <a id="cleanup(Emitter[B]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cleanup</span><span class="params">(<span name="emitter">emitter: <a name="com.nicta.scoobi.Emitter" class="extype" href="Emitter.html">Emitter</a>[B]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.BasicDoFn" class="extype" href="">BasicDoFn</a> → <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DoFn#cleanup" data-isabs="false">
       <a id="cleanup(Unit,Emitter[B]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -162,7 +174,7 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
         <span class="name">cleanup</span><span class="params">(<span name="env">env: <span name="scala.Unit" class="extype">Unit</span></span>, <span name="emitter">emitter: <a name="com.nicta.scoobi.Emitter" class="extype" href="Emitter.html">Emitter</a>[B]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.BasicDoFn" class="extype" href="">BasicDoFn</a> → <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a> → <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a></dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -289,7 +301,7 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.BasicDoFn#process" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.DoFn#process" data-isabs="false">
       <a id="process(Unit,A,Emitter[B]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -300,8 +312,20 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
         <span class="name">process</span><span class="params">(<span name="env">env: <span name="scala.Unit" class="extype">Unit</span></span>, <span name="input">input: A</span>, <span name="emitter">emitter: <a name="com.nicta.scoobi.Emitter" class="extype" href="Emitter.html">Emitter</a>[B]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.BasicDoFn" class="extype" href="">BasicDoFn</a> → <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a> → <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.BasicDoFn#setup" data-isabs="false">
+      <a id="setup():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setup</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.BasicDoFn" class="extype" href="">BasicDoFn</a> → <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.DoFn#setup" data-isabs="false">
       <a id="setup(Unit):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -312,7 +336,7 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
         <span class="name">setup</span><span class="params">(<span name="env">env: <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.BasicDoFn" class="extype" href="">BasicDoFn</a> → <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a> → <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -389,7 +413,9 @@ environment and explicit setup and cleanup phases.</p></div><div class="toggleCo
         </div>
 
         <div id="inheritedMembers">
-        <div name="com.nicta.scoobi.EnvDoFn" class="parent">
+        <div name="com.nicta.scoobi.DoFn" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.DoFn" class="extype" href="DoFn.html">DoFn</a>[A, B]</h3>
+            </div><div name="com.nicta.scoobi.EnvDoFn" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="EnvDoFn.html">EnvDoFn</a>[A, B, <span name="scala.Unit" class="extype">Unit</span>]</h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
