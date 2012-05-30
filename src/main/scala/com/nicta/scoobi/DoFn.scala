@@ -32,7 +32,7 @@ trait EnvDoFn[A, B, E] {
   def cleanup(env: E, emitter: Emitter[B]): Unit
 }
 
-/** Interface for specifing parallel operation over DLists in the absence of an
+/** Interface for specifying parallel operation over DLists in the absence of an
   * environment. */
 trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   def setup(): Unit
@@ -44,14 +44,11 @@ trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   final def cleanup(env: Unit, emitter: Emitter[B]) { cleanup(emitter) }
 }
 
-/** Interface for specifing parallel operation over DLists in the absence of an
-  * environment and explicit setup and cleanup phases. */
-trait BasicDoFn[A, B] extends EnvDoFn[A, B, Unit] {
-  def process(input: A, emitter: Emitter[B]): Unit
-
-  final def setup(env: Unit) {}
-  final def process(env: Unit, input: A, emitter: Emitter[B]) { process(input, emitter) }
-  final def cleanup(env: Unit, emitter: Emitter[B]) {}
+/** Interface for specifying parallel operation over DLists in the absence of an
+  * environment with an do-nothing setup and cleanup phases. */
+trait BasicDoFn[A, B] extends DoFn[A, B] {
+  def setup() {}
+  def cleanup(emitter: Emitter[B]) {}
 }
 
 
