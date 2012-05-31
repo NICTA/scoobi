@@ -71,6 +71,15 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit wi
     localExamples.extractLevel("scoobi.verbose.warning") === Level.WARNING
     localExamples.extractLevel("scoobi.verbose.all")     === Level.ALL
   }
+  "the categories to show can be passed from the command line" >> {
+    localExamples.extractCategories("scoobi.verbose")                   === ".*"
+    localExamples.extractCategories("scoobi.verbose.warning")           === ".*"
+    localExamples.extractCategories("scoobi.verbose.all")               === ".*"
+    localExamples.extractCategories("scoobi.verbose.TESTING")           === "TESTING"
+    localExamples.extractCategories("scoobi.verbose.all.TESTING")       === "TESTING"
+    localExamples.extractCategories("scoobi.verbose.all.[scoobi.Step]") === "scoobi.Step"
+    localExamples.extractCategories("scoobi.verbose.all.scoobi")        === "scoobi"
+  }
 
   def localExamples            = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples          = new HadoopExamplesForTesting { override def context = cluster }

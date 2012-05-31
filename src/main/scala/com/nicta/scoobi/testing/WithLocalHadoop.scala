@@ -19,12 +19,14 @@ trait WithLocalHadoop {
   def showTimes = false
   /** @return the log level to use when logging */
   def level = Level.INFO
+  /** @return the categories to show when logging, as a regular expression */
+  def categories = ".*"
 
   /**
    * Static setup to use a testing log factory
    */
   def setLogFactory(name: String = classOf[WithHadoopLogFactory].getName) {
-    WithHadoopLogFactory.setLogFactory(name, quiet, showTimes, level)
+    WithHadoopLogFactory.setLogFactory(name, quiet, showTimes, level, categories)
   }
 
   /** execute some code locally, possibly showing execution times */

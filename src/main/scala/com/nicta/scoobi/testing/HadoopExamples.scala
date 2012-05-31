@@ -7,6 +7,8 @@ import org.specs2.specification._
 import org.specs2.Specification
 import org.specs2.main.CommandLineArguments
 import java.util.logging.Level
+import Level._
+import WithHadoopLogFactory._
 import com.nicta.scoobi.impl.control.Exceptions._
 
 
@@ -108,19 +110,33 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
     def isRemote = true
   }
 
-  override def showTimes = arguments.commandLine.arguments.exists(_.matches("scoobi.*.times.*"))   || super.showTimes
-  override def quiet     = !verboseArg.isDefined && super.quiet
-  override def level     = extractLevel(verboseArg.getOrElse(""))
+  override def showTimes  = arguments.commandLine.arguments.exists(_.matches("scoobi.*.times.*"))  || super.showTimes
+  override def quiet      = !verboseArg.isDefined && super.quiet
+  override def level      = extractLevel(verboseArg.getOrElse(""))
+  override def categories = extractCategories(verboseArg.getOrElse(""))
 
   private[testing]
   def verboseArg = arguments.commandLine.arguments.find { _.matches("scoobi.*verbose.*") }
 
   private[testing]
-  def verboseDetails(arg: String) = arg.split("\\.").toSeq.filterNot(_=="scoobi").filterNot(_=="verbose")
+  def verboseDetails(args: String) = args.replaceFirst("scoobi\\.", "").split("\\.").toSeq.filterNot(Seq("verbose", "times").contains)
 
   private[testing]
-  def extractLevel(arg: String) =
-    verboseDetails(arg).flatMap(l => tryo(Level.parse(l.toUpperCase))).headOption.getOrElse(Level.INFO)
+  def extractLevel(args: String) =
+    verboseDetails(args).flatMap(l => tryo(Level.parse(l.toUpperCase))).headOption.getOrElse(INFO)
+
+  /**
+   * extract the categories as a regular expression from the scoobi arguments, once all the other argument names have been
+   * removed.
+   *
+   * While this not strictly necessary right now the categories regular expression can be enclosed in `[]` to facilitate
+   * reading the options
+   */
+  private[testing]
+  def extractCategories(args: String) = {
+    val extracted = verboseDetails(args).filterNot(a => allLevels contains a.toUpperCase).mkString(".").replace("[", "").replace("]", "")
+    if (extracted.isEmpty) ".*" else extracted
+  }
 
   /**
    * @return an executed Result updated with its execution time

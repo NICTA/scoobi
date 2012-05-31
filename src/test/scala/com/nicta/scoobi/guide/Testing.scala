@@ -74,7 +74,9 @@ By default Hadoop logs will not be shown in the console. However they are essent
 
  * show all logs: `test-only *WordCount* -- scoobi.verbose` (you can also override the `quiet` method
 
- * show some logs: `test-only *WordCount* -- scoobi.verbose.warning` (you can also override the `level` method). The log levels are the ones defined in `java.util.logging.Level` and translated to the Apache commons logging levels which Hadoop uses. For example `scoobi.verbose.all` will show the `DEBUG` level
+ * show some log levels: `test-only *WordCount* -- scoobi.verbose.warning` (you can also override the `level` method). The log levels are the ones defined in `java.util.logging.Level` and translated to the Apache commons logging levels which Hadoop uses. For example `scoobi.verbose.all` will show the `DEBUG` level
+
+ * show some log categories: `test-only *WordCount* -- scoobi.verbose.warning.(hadoop|scoobi)` will only display the log lines where the category matches `.*(hadoop|scoobi).*`. Note that you can visually separate this regular expression for log categories with brackets to help the reading: `test-only *WordCount* -- scoobi.verbose.warning.[(hadoop|scoobi)].times`
 
  * you can additionally show the execution times, locally and on the cluster: `test-only *WordCount* -- scoobi.verbose.times` (or override the `showTimes` method)
 
