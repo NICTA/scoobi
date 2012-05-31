@@ -62,8 +62,8 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Testing guide.html">Testing</a></div><div id="leftcolumn"><div id="tree">
-      <ul><li id="808205122"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1363094499"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1081281001"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1310736637"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
@@ -71,7 +71,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
             
           </li></ul>
-          </li><li id="1025036841"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1969537832"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Overview">Overview</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -81,9 +81,9 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
             
           </li></ul>
-          </li><li id="1013887681"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="92969143"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             
-          </li><li id="1636195542"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1370829670"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -113,7 +113,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="942389053"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="2099330218"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -123,7 +123,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="408681926"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="842357733"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -131,15 +131,15 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="319753757"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="913792911"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
             
           </li></ul>
-          </li><li id="1833387939"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1955275922"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt+project">Sbt project</a>
             
           </li></ul>
-          </li><li id="18260925"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1533759804"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
@@ -167,8 +167,8 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['808205122','18260925'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
-    </div></div><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="18260925">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with <a href="http://specs2.org">specs2</a> out-of-the-box, but you can reuse the testing traits with your own favorite testing library.</p><a name="Using+specs2"><h3>Using specs2</h3></a><a name="Base+specification"><h4>Base specification</h4></a><p>The abstract class <code class="prettyprint">com.nicta.scoobi.testing.mutable.HadoopSpecification</code> is the base class for testing Hadoop jobs. Here's an example showing how to use it:</p>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1081281001','1533759804'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="1533759804">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with <a href="http://specs2.org">specs2</a> out-of-the-box, but you can reuse the testing traits with your own favorite testing library.</p><a name="Using+specs2"><h3>Using specs2</h3></a><a name="Base+specification"><h4>Base specification</h4></a><p>The abstract class <code class="prettyprint">com.nicta.scoobi.testing.mutable.HadoopSpecification</code> is the base class for testing Hadoop jobs. Here's an example showing how to use it:</p>
 <pre><code class="prettyprint">  import com.nicta.scoobi.testing.mutable._
   import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
 
@@ -208,8 +208,9 @@
 </code></pre><p>This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.</p><a name="Logging"><h5>Logging</h5></a><p>By default Hadoop logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:</p>
 <ul>
   <li><p>show all logs: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose</code> (you can also override the <code class="prettyprint">quiet</code> method</p></li>
-  <li><p>show some logs: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.warning</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones defined in <code class="prettyprint">java.util.logging.Level</code> and translated to the Apache commons logging levels which Hadoop uses</p></li>
-  <li><p>you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.warning</code> (or override the <code class="prettyprint">showTimes</code> method)</p></li>
+  <li><p>show some log levels: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.warning</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones defined in <code class="prettyprint">java.util.logging.Level</code> and translated to the Apache commons logging levels which Hadoop uses. For example <code class="prettyprint">scoobi.verbose.all</code> will show the <code class="prettyprint">DEBUG</code> level</p></li>
+  <li><p>show some log categories: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.warning.(hadoop|scoobi)</code> will only display the log lines where the category matches <code class="prettyprint">.*(hadoop|scoobi).*</code>. Note that you can visually separate this regular expression for log categories with brackets to help the reading: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.warning.[(hadoop|scoobi)].times</code></p></li>
+  <li><p>you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.times</code> (or override the <code class="prettyprint">showTimes</code> method)</p></li>
   <li><p>finally you can combine those flags: <code class="prettyprint">test-only *WordCount* -- scoobi.verbose.warning.times</code></p></li>
 </ul><a name="Tags"><h5>Tags</h5></a><p>You can use tags to run only locally or only on the cluster, with the mixed-in the <code class="prettyprint">HadoopTags</code> trait. This trait automatically tags all your examples with <code class="prettyprint">acceptance, local, cluster</code>.</p><p>Those tags can be called from the sbt command-line to control the execution of the specification:</p>
 <ul>
