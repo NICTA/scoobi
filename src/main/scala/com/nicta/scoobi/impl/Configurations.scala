@@ -110,8 +110,7 @@ trait Configurations {
    */
   private[scoobi]
   def configuration(pairs: (String, String)*): Configuration = {
-    val configuration = new Configuration
-    configuration.clear()
+    val configuration = new Configuration(false)
     pairs.foreach { case (k, v) => configuration.set(k, v) }
     configuration
   }
