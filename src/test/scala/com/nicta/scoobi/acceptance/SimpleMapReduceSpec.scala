@@ -24,6 +24,18 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
     persist(c)((xs.toDList ++ ys.toDList).materialize).toSeq.sorted must_== (xs ++ ys).toSeq.sorted
   }
 
+  tag("issue #60")
+  "Persisting an empty list shouldn't fail" >> { implicit c: SC =>
+    val list = DList[String]()
+    persist(c)(list.materialize).toSeq must beEmpty
+  }
+
+  tag("issue #75")
+  "Concatenating to an empty list shouldn't fail" >> { implicit c: SC =>
+    val list = DList[String]() ++ fromInput("hello", "world").lines
+    persist(c)(list.materialize).toSeq must_== Seq("hello", "world")
+  }
+
   // tag all the example as "acceptance"
   // this way:
   // when "test-only -- include unit" is called, those tests won't be executed
