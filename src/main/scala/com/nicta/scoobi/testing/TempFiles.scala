@@ -2,6 +2,7 @@ package com.nicta.scoobi.testing
 
 import java.io.File
 import org.apache.hadoop.fs.{FileSystem, Path}
+import sys.process._
 
 /**
  * This trait helps with the creation of temporary files and directories
@@ -26,7 +27,7 @@ trait TempFiles {
   /**
    * delete a file that is supposed to be either local or remote
    */
-  def deleteFile(p: String)(implicit fs: FileSystem) {
+  def deleteFile(p: String)(implicit fs: FileSystem) = {
     fs.delete(new Path(p), true)
   }
 
@@ -34,7 +35,8 @@ trait TempFiles {
    * delete a file that is supposed to be either local or remote
    */
   def deleteFile(f: File, isRemote: Boolean = false)(implicit fs: FileSystem) {
-    deleteFile(path(f, isRemote))
+    val result = deleteFile(path(f, isRemote))
+    if (!result && !isRemote) ("rm -rf "+f.getPath).!
   }
 
   /**
