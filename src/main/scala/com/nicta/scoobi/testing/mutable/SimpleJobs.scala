@@ -52,7 +52,6 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
     }
 
   private def runWithTestFiles[T](t: =>T)(implicit configuration: ScoobiConfiguration) = try {
-    TestFiles.prepare
     t
   } finally {
     TestFiles.deleteFiles

@@ -12,6 +12,7 @@ import Configurations._
 import com.nicta.scoobi.impl.util.JarBuilder
 import java.net.URL
 import java.io.File
+import org.apache.hadoop.mapred.JobConf
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -109,6 +110,10 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   lazy val conf = {
     configuration.set("scoobi.jobid", jobId)
     configuration.set("mapreduce.jobtracker.staging.root.dir", defaultWorkDir+"/staging/")
+    // before the creation of the input we set the mapred local dir.
+    // this setting is necessary to avoid xml parsing when several scoobi jobs are executing concurrently and
+    // trying to access the job.xml file
+    configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, defaultWorkDir+"/localRunner/")
     // this setting avoids unnecessary warnings
     configuration.set("mapred.used.genericoptionsparser", "true")
     configuration.update("scoobi.workdir", defaultWorkDir)

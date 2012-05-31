@@ -13,13 +13,6 @@ import io.Source
  */
 trait TestFiles {
 
-  def prepare(implicit configuration: ScoobiConfiguration) {
-    // before the creation of the input we set the mapred local dir.
-    // this setting is necessary to avoid xml parsing when several jobs are executing concurrently and
-    // trying to access the job.xml file
-    configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, createTempDir("test.local").getPath+"/")
-  }
-
   def createTempFile(prefix: String, keep: Boolean)(implicit configuration: ScoobiConfiguration) =
     registerFile(TempFiles.createTempFile(prefix+configuration.jobId), keep)
 
