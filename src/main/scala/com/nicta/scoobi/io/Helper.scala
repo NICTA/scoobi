@@ -19,20 +19,20 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import Option.{apply => ?}
 
-import com.nicta.scoobi.Scoobi
 import org.apache.hadoop.conf.Configuration
-
+import com.nicta.scoobi.impl.control.Exceptions._
 
 /** A set of helper functions for implementing DataSources and DataSinks. */
 object Helper {
 
-  /* Determine whether a path exists or not. */
-  def pathExists(p: Path)(implicit conf: Configuration): Boolean =
+  /** Determine whether a path exists or not. */
+  def pathExists(p: Path)(implicit conf: Configuration): Boolean = tryOrElse {
     ?(FileSystem.get(p.toUri, conf).globStatus(new Path(p, "*"))) match {
       case None                     => false
       case Some(s) if s.length == 0 => false
       case Some(_)                  => true
     }
+  }(false)
 
 
   def deletePath(p: Path)(implicit conf: Configuration) = FileSystem.get(conf).delete(p, true)
