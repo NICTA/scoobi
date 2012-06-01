@@ -97,7 +97,7 @@ trait DList[A] {
     val dofn = new BasicDoFn[A, B] {
       def process(input: A, emitter: Emitter[B]) { proc(input, emitter) }
     }
-    parallelDo(UnitDObject, dofn)
+    parallelDo(dofn)
   }
 
   /** For each element of the distributed list produce zero or more elements by
@@ -163,7 +163,7 @@ trait DList[A] {
       def groupCompare(x: A, y: A): Int = (x.hashCode - y.hashCode)
     }
 
-    parallelDo(UnitDObject, dropCached).groupByKey.map(_._1)
+    parallelDo(dropCached).groupByKey.map(_._1)
   }
 
   /** Create a new distributed list that is keyed based on a specified function. */
@@ -196,7 +196,7 @@ trait DList[A] {
     * order in which the elements are reduced is unspecified and may be non-deterministic. */
   def reduce(op: (A, A) => A): DObject[A] = {
     /* First, perform in-mapper combining. */
-    val imc: DList[A] = parallelDo(UnitDObject, new DoFn[A, A] {
+    val imc: DList[A] = parallelDo(new DoFn[A, A] {
       var acc: A = _
       var first = true
       def setup() {}

@@ -93,7 +93,7 @@ object Join {
       }
     }
 
-    (left ++ right).groupByKey.parallelDo(DObject(()), dofn).groupBarrier
+    (left ++ right).groupByKey.parallelDo(dofn).groupBarrier
   }
 
   /** Perform an equijoin of two (2) distributed lists. */
