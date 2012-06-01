@@ -84,7 +84,7 @@ class MapReduceJob(stepId: Int) {
     if (!mappers.contains(input))
       mappers += (input -> MSet(tm))
     else
-      mappers(input) += tm
+      mappers(input) += tm : Unit   // This annotation is required due to a bug in Scala
 
     m.tags.foreach { tag =>
       keyTypes   += (tag -> (m.mK, m.wtK, m.grpK))
