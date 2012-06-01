@@ -38,10 +38,10 @@ import com.nicta.scoobi.impl.plan.Arr
 trait DList[A] {
 
   /** Manifest typeclass constraint. */
-  implicit val m: Manifest[A]
+  implicit def m: Manifest[A]
 
   /** WireFormat typeclass constraint. */
-  implicit val wf: WireFormat[A]
+  implicit def wf: WireFormat[A]
 
   private[scoobi]
   def getComp: Smart.DComp[A, Arr]
