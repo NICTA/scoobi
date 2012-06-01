@@ -62,8 +62,8 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Deployment.html">BuildingPackagingDeploying</a></div><div id="leftcolumn"><div id="tree">
-      <ul><li id="1423542371"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1055224400"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="831592382"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="975813494"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Installing+Scoobi">Installing Scoobi</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Building+Word+Count">Building Word Count</a>
@@ -71,7 +71,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Deploying+to+Hadoop">Deploying to Hadoop</a>
             
           </li></ul>
-          </li><li id="1619433273"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1061572931"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Overview">Overview</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -81,9 +81,9 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
             
           </li></ul>
-          </li><li id="1305163065"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="660488819"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             
-          </li><li id="1644970190"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1738020315"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -113,7 +113,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="298184065"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="945992018"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -123,7 +123,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1253405761"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1380169300"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -131,15 +131,15 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1906405389"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="816900270"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Joins+and+Co-Groups">Joins and Co-Groups</a>
             
           </li></ul>
-          </li><li id="743069197"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="348507703"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt+project">Sbt project</a>
             
           </li></ul>
-          </li><li id="1772065039"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="933549882"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
@@ -167,8 +167,8 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1423542371','743069197'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
-    </div></div><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="743069197">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Sbt+project"><h3>Sbt project</h3></a><p>Scoobi projects are generally developed with <a href="https://github.com/harrah/xsbt/wiki">sbt</a>, and to simplify the task of building and packaging a project for running on Hadoop, it's really handy to use the sbt plugin <a href="https://github.com/NICTA/sbt-scoobi">sbt-scoobi</a>. Here are a few steps for creating a new project:</p><p>Create a new Scoobi application and add some code:</p>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['831592382','348507703'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="348507703">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Sbt+project"><h3>Sbt project</h3></a><p>Scoobi projects are generally developed with <a href="https://github.com/harrah/xsbt/wiki">sbt</a>, and to simplify the task of building and packaging a project for running on Hadoop, it's really handy to use the sbt plugin <a href="https://github.com/NICTA/sbt-scoobi">sbt-scoobi</a>. Here are a few steps for creating a new project:</p><p>Create a new Scoobi application and add some code:</p>
 <pre><code class="prettyprint">  $ mkdir my-app
   $ cd my-app
   $ mkdir -p src/main/scala
