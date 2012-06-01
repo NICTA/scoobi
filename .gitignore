@@ -7,10 +7,10 @@ src/main/*.iml
 .idea/
 
 pgp.sbt
+.history
 .cache
 .project
 .classpath
 .settings
-src/test/resources/out/
-examples/joinExamples/output-dir/
+examples/wordCount/output-dir/
 .DS_Store
