@@ -35,8 +35,6 @@ scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 
-fork in Test := true
-
 javaOptions += "-Xmx2G"
 
 testOptions := Seq(Tests.Filter(s =>
@@ -99,7 +97,7 @@ site.settings
 
 seq(site.settings:_*)
 
-siteSourceDirectory := new java.io.File("target/specs2-reports")
+siteSourceDirectory <<= target (_ / "specs2-reports")
 
 // depending on the version, copy the api files to a different directory
 siteMappings <++= (mappings in packageDoc in Compile, version) map { (m, v) =>
