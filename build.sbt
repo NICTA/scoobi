@@ -11,6 +11,8 @@ version := "0.4.0-SNAPSHOT"
 
 scalaVersion := "2.9.2"
 
+crossScalaVersions := Seq("2.9.1", "2.9.2")
+
 libraryDependencies ++= Seq(
   "com.odiago.avro" % "odiago-avro" % "1.0.5",
   "javassist" % "javassist" % "3.12.1.GA",
