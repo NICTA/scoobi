@@ -11,7 +11,6 @@ import com.nicta.scoobij.impl.Conversions;
 
 public class WireFormats {
 
-	@SuppressWarnings("unchecked")
 	public static OrderedWireFormatType<Integer> integer() {
 
 		return new com.nicta.scoobij.impl.WireFormatImpl<Integer>(
@@ -20,7 +19,6 @@ public class WireFormats {
 				integerOrdering());
 	}
 
-	@SuppressWarnings("unchecked")
 	public static OrderedWireFormatType<String> string() {
 		return new com.nicta.scoobij.impl.WireFormatImpl<String>(String.class,
 				com.nicta.scoobi.WireFormat$.MODULE$.StringFmt(),
