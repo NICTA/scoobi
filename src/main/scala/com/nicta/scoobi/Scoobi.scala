@@ -94,5 +94,52 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   
   implicit def dlistToRelational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat](dl: DList[(K, A)]): com.nicta.scoobi.lib.Relational[K,A] = com.nicta.scoobi.lib.Relational(dl)
   implicit def relationalToDList[K, A](r: com.nicta.scoobi.lib.Relational[K, A]): DList[(K,A)] = r.left
+  
+  import com.nicta.scoobi.lib.LinearAlgebra._
+  import com.nicta.scoobi.lib.DVector
+  import com.nicta.scoobi.lib.InMemDenseVector
+  import com.nicta.scoobi.lib.DRowWiseMatrix
+  import com.nicta.scoobi.lib.DColWiseMatrix
+  import com.nicta.scoobi.lib.InMemVector
+  import com.nicta.scoobi.lib.DMatrix
+  
+  implicit def dlistToDVector[Elem: Manifest: WireFormat: Ordering, V: Manifest: WireFormat: Ordering](v: DList[(Elem, V)]) = DVector(v)
+  implicit def dvectorToDList[Elem, V](v: DVector[Elem, V]) = v.data
+  
+  implicit def inMemDenseVectorToDObject[T](in: InMemDenseVector[T]) = in.data
+  
+   /**
+   * Note this is an expensive conversion (it adds an extra map-reduce job), try save the result to reuse if applicable
+   */
+  implicit def dlistToRowWiseWithMapReduceJob[E: Manifest: WireFormat: Ordering, T: Manifest: WireFormat](m: DMatrix[E, T]): DRowWiseMatrix[E, T] =
+    DRowWiseMatrix(m.map { case ((r, c), v) => (r, (c, v)) }.groupByKey)
+
+  implicit def dlistToRowWise[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DRowWiseMatrix[Elem, T] =
+    DRowWiseMatrix(m)
+
+  implicit def rowWiseToDList[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFormat](m: DRowWiseMatrix[Elem, T]) = m.data
+
+  
+  implicit def dlistToDMatrix[Elem: Manifest: WireFormat: Ordering, Value: Manifest: WireFormat](
+    v: DList[((Elem, Elem), Value)]): DMatrix[Elem, Value] =
+    DMatrix[Elem, Value](v)
+    
+  implicit def dmatrixToDlist[Elem: Manifest: WireFormat: Ordering, Value: Manifest: WireFormat](v: DMatrix[Elem, Value]): DList[((Elem, Elem), Value)] = v.data
+  
+  /**
+   * Note this is an expensive conversion (it adds an extra map-reduce job), try save the result to reuse if applicable.
+   */
+  implicit def dlistToColWiseWithMapReduceJob[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFormat](m: DMatrix[Elem, T]): DColWiseMatrix[Elem, T] =
+    DColWiseMatrix(m.map { case ((r, c), v) => (c, (r, v)) }.groupByKey)
+
+  implicit def dlistToColWise[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DColWiseMatrix[Elem, T] =
+    DColWiseMatrix(m)
+
+  implicit def colWiseToDList[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFormat](m: DColWiseMatrix[Elem, T]) = m.data
+  
+  
+  implicit def inMemVectorToDObject[Elem, T](in: InMemVector[Elem, T]) = in.data
+
+
 
 }

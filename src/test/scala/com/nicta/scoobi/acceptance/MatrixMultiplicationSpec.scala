@@ -1,0 +1,91 @@
+package com.nicta.scoobi.acceptance
+
+import org.specs2.ScalaCheck
+import com.nicta.scoobi.testing.NictaSimpleJobs
+import com.nicta.scoobi.{ Scoobi, ScoobiConfiguration }
+import com.nicta.scoobi.lib.DMatrix
+import org.scalacheck.Gen
+import org.scalacheck.{ Arbitrary, Gen, Prop }
+import com.nicta.scoobi.Scoobi._
+import org.apache.commons.math.linear.FieldMatrixPreservingVisitor
+import org.apache.commons.math.linear.FieldMatrix
+import org.apache.commons.math.linear.SparseFieldMatrix
+import org.apache.commons.math.util.BigReal
+import org.apache.commons.math.util.BigRealField
+import org.scalacheck.Prop
+
+class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
+
+  skipAllIf(true)
+
+  "Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
+    run()
+  }
+
+  def run()(implicit sc: ScoobiConfiguration) = Prop.forAll(genMatrixData, genMatrixData)(runTest).set('minTestsOk -> 1)
+
+  def runTest(matrix1: Iterable[MatrixEntry], matrix2: Iterable[MatrixEntry])(implicit sc: ScoobiConfiguration): Boolean = {
+
+    val res = toDMatrix(matrix1) byMatrix (toDMatrix(matrix2), mult, add) // normal multiplication
+    val ref = toApacheMatrix(matrix1).multiply(toApacheMatrix(matrix2)) // sanity check
+
+    toEntrySet(res) == toEntrySet(ref)
+  }
+
+  def mult(x: Int, y: Int) = x * y
+  def add(x: Int, y: Int) = x + y
+
+  def toDMatrix(m: Iterable[MatrixEntry])(implicit sc: ScoobiConfiguration): DMatrix[Int, Int] =
+    fromDelimitedInput(m.map(entry => entry.row + "," + entry.col + "," + entry.value).toSeq: _*).lines.collect { case AnInt(r) :: AnInt(c) :: AnInt(v) :: _ => ((r, c), v) }
+
+  def toEntrySet(m: DMatrix[Int, Int])(implicit conf: ScoobiConfiguration) =
+    Set[MatrixEntry]() ++ Scoobi.persist(m.materialize).collect { case ((r, c), v) if v != 0 => MatrixEntry(r, c, v) }
+
+  def toEntrySet(m: FieldMatrix[BigReal]): Set[MatrixEntry] = {
+
+    class SetAdder(var ms: Set[MatrixEntry] = Set[MatrixEntry]()) extends FieldMatrixPreservingVisitor[BigReal] {
+      def start(rows: Int, columns: Int, startRows: Int, endRow: Int, startColumn: Int, endColumn: Int) {}
+      def end(): BigReal = null
+      def visit(row: Int, col: Int, value: BigReal) = {
+
+        val v = value.bigDecimalValue.intValueExact
+
+        if (v != 0)
+          ms = ms + MatrixEntry(row, col, v)
+      }
+    }
+
+    val sa = new SetAdder()
+
+    m.walkInOptimizedOrder(sa)
+
+    sa.ms
+  }
+
+  case class MatrixEntry(row: Int, col: Int, value: Int)
+
+  val matrixMaxSize = 200 // Needs to be pretty small, for apache's maths lib
+  val dimensionsInt = Gen.choose(0, matrixMaxSize - 1) // value given to a row or column
+
+  val valueInt = Gen.choose(0, 50) // I want this to be pretty small, so as to not have to worry about overflow differences
+
+  // TODO: this should just be listOf when scoobi supports empty DLists (issue #60)
+  private def genMatrixDataMap: Gen[Map[(Int, Int), Int]] = Gen.listOfN(500, for {
+    row <- dimensionsInt
+    col <- dimensionsInt
+    value <- valueInt
+  } yield ((row, col), value)).map(_.toMap)
+
+  def genMatrixData: Gen[Iterable[MatrixEntry]] = genMatrixDataMap.map(m => for { entry <- m } yield MatrixEntry(entry._1._1, entry._1._2, entry._2))
+
+  def toApacheMatrix(d: Iterable[MatrixEntry]): SparseFieldMatrix[BigReal] = {
+    val sfm = new SparseFieldMatrix[BigReal](BigRealField.getInstance, matrixMaxSize, matrixMaxSize)
+
+    d.foreach { q =>
+      sfm.setEntry(q.row, q.col, new BigReal(q.value))
+    }
+
+    sfm
+  }
+
+}
