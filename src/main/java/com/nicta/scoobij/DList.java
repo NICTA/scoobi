@@ -69,6 +69,7 @@ public interface DList<A> {
 	 *            are all concatenated together
 	 * @return a new DList that is the concatenated product
 	 */
+	@SuppressWarnings("unchecked")
 	public DList<A> concat(DList<A>... dLists);
 
 	// derived
