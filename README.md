@@ -34,7 +34,7 @@ And, we can add a `build.sbt` that has a dependency on Scoobi:
 
     version := "0.1"
 
-    scalaVersion := "2.9.1"
+    scalaVersion := "2.9.2"
 
     libraryDependencies += "com.nicta" %% "scoobi" % "0.4.0-SNAPSHOT" % "provided"
 
@@ -56,7 +56,7 @@ jar to feed directly into Hadoop:
     $ hadoop jar ./target/MyApp-app-hadoop-0.1.jar <args>
 ```
 
-Note that there appears to be a OSX-specific [issue](https://github.com/NICTA/scoobi/issues/1)
+Note that there appears to be an OSX-specific [issue](https://github.com/NICTA/scoobi/issues/1)
 associated with calling `hadoop` in this manner requiring the jar to be added to `HADOOP_CLASSPATH`
 and then `hadoop` being given the correct object to run. e.g.:
 
