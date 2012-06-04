@@ -825,6 +825,18 @@ type class instance. Partitioning and grouping use the default implementation.</
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#colWiseToDList" data-isabs="false">
+      <a id="colWiseToDList[Elem, T](DColWiseMatrix[Elem, T])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[T],WireFormat[T]):DList[(Elem, Iterable[(Elem, T)])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">colWiseToDList</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DColWiseMatrix" class="extype" href="lib/DColWiseMatrix.html">DColWiseMatrix</a>[Elem, T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span><span class="result">: DList[(Elem, Iterable[(Elem, T)])]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#convertFromSequenceFile" data-isabs="false">
       <a id="convertFromSequenceFile[K, V](List[String])(Manifest[K],WireFormat[K],SeqSchema[K],Manifest[V],WireFormat[V],SeqSchema[V]):DList[(K, V)]"></a>
       <h4 class="signature">
@@ -933,6 +945,54 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToColWise" data-isabs="false">
+      <a id="dlistToColWise[Elem, T](DList[(Elem, Iterable[(Elem, T)])])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[T],WireFormat[T]):DColWiseMatrix[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToColWise</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="m">m: DList[(Elem, Iterable[(Elem, T)])]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DColWiseMatrix" class="extype" href="lib/DColWiseMatrix.html">DColWiseMatrix</a>[Elem, T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToColWiseWithMapReduceJob" data-isabs="false">
+      <a id="dlistToColWiseWithMapReduceJob[Elem, T](DMatrix[Elem, T])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[T],WireFormat[T]):DColWiseMatrix[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToColWiseWithMapReduceJob</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="lib/DMatrix.html">DMatrix</a>[Elem, T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DColWiseMatrix" class="extype" href="lib/DColWiseMatrix.html">DColWiseMatrix</a>[Elem, T]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Note this is an expensive conversion (it adds an extra map-reduce job), try save the result to reuse if applicable.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToDMatrix" data-isabs="false">
+      <a id="dlistToDMatrix[Elem, Value](DList[((Elem, Elem), Value)])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[Value],WireFormat[Value]):DMatrix[Elem, Value]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToDMatrix</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="Value">Value</span>]</span><span class="params">(<span name="v">v: DList[((Elem, Elem), Value)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[Value]</span>, <span name="arg4">arg4: WireFormat[Value]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="lib/DMatrix.html">DMatrix</a>[Elem, Value]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToDVector" data-isabs="false">
+      <a id="dlistToDVector[Elem, V](DList[(Elem, V)])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[V],WireFormat[V],Ordering[V]):DVector[Elem, V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToDVector</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="V">V</span>]</span><span class="params">(<span name="v">v: DList[(Elem, V)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: WireFormat[V]</span>, <span name="arg5">arg5: Ordering[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DVector" class="extype" href="lib/DVector.html">DVector</a>[Elem, V]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToRelational" data-isabs="false">
       <a id="dlistToRelational[K, A](DList[(K, A)])(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A]):Relational[K, A]"></a>
       <h4 class="signature">
@@ -942,6 +1002,55 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       <span class="symbol">
         <span class="name">dlistToRelational</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="dl">dl: DList[(K, A)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.Relational" class="extype" href="lib/Relational.html">Relational</a>[K, A]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToRowWise" data-isabs="false">
+      <a id="dlistToRowWise[Elem, T](DList[(Elem, Iterable[(Elem, T)])])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[T],WireFormat[T]):DRowWiseMatrix[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToRowWise</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="m">m: DList[(Elem, Iterable[(Elem, T)])]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="lib/DRowWiseMatrix.html">DRowWiseMatrix</a>[Elem, T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToRowWiseWithMapReduceJob" data-isabs="false">
+      <a id="dlistToRowWiseWithMapReduceJob[E, T](DMatrix[E, T])(Manifest[E],WireFormat[E],Ordering[E],Manifest[T],WireFormat[T]):DRowWiseMatrix[E, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToRowWiseWithMapReduceJob</span><span class="tparams">[<span name="E">E</span>, <span name="T">T</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="lib/DMatrix.html">DMatrix</a>[E, T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[E]</span>, <span name="arg1">arg1: WireFormat[E]</span>, <span name="arg2">arg2: Ordering[E]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="lib/DRowWiseMatrix.html">DRowWiseMatrix</a>[E, T]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Note this is an expensive conversion (it adds an extra map-reduce job), try save the result to reuse if applicable
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dmatrixToDlist" data-isabs="false">
+      <a id="dmatrixToDlist[Elem, Value](DMatrix[Elem, Value])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[Value],WireFormat[Value]):DList[((Elem, Elem), Value)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dmatrixToDlist</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="Value">Value</span>]</span><span class="params">(<span name="v">v: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="lib/DMatrix.html">DMatrix</a>[Elem, Value]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[Value]</span>, <span name="arg4">arg4: WireFormat[Value]</span>)</span><span class="result">: DList[((Elem, Elem), Value)]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dvectorToDList" data-isabs="false">
+      <a id="dvectorToDList[Elem, V](DVector[Elem, V]):DList[(Elem, V)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dvectorToDList</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="V">V</span>]</span><span class="params">(<span name="v">v: <a name="com.nicta.scoobi.lib.DVector" class="extype" href="lib/DVector.html">DVector</a>[Elem, V]</span>)</span><span class="result">: DList[(Elem, V)]</span>
       </span>
       </h4>
       
@@ -1092,6 +1201,30 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#inMemDenseVectorToDObject" data-isabs="false">
+      <a id="inMemDenseVectorToDObject[T](InMemDenseVector[T]):DObject[IndexedSeq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inMemDenseVectorToDObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="lib/InMemDenseVector.html">InMemDenseVector</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DObject" class="extype" href="DObject.html">DObject</a>[IndexedSeq[T]]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#inMemVectorToDObject" data-isabs="false">
+      <a id="inMemVectorToDObject[Elem, T](InMemVector[Elem, T]):DObject[Map[Elem, T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inMemVectorToDObject</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="lib/InMemVector.html">InMemVector</a>[Elem, T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DObject" class="extype" href="DObject.html">DObject</a>[Map[Elem, T]]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -1473,6 +1606,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       <span class="symbol">
         <span class="name">relationalToDList</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.lib.Relational" class="extype" href="lib/Relational.html">Relational</a>[K, A]</span>)</span><span class="result">: DList[(K, A)]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#rowWiseToDList" data-isabs="false">
+      <a id="rowWiseToDList[Elem, T](DRowWiseMatrix[Elem, T])(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[T],WireFormat[T]):DList[(Elem, Iterable[(Elem, T)])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rowWiseToDList</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="lib/DRowWiseMatrix.html">DRowWiseMatrix</a>[Elem, T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span><span class="result">: DList[(Elem, Iterable[(Elem, T)])]</span>
       </span>
       </h4>
       

@@ -1115,14 +1115,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyBeHaveMatchers</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.MatchersImplicits#atLeastOnce" data-isabs="false">
-      <a id="atLeastOnce[T, U](GenTraversable[T])((T) ⇒ MatchResult[U]):MatchResult[Seq[T]]"></a>
+      <a id="atLeastOnce[T, U](GenTraversableOnce[T])((T) ⇒ MatchResult[U]):MatchResult[Seq[T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">atLeastOnce</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="values">values: <span name="scala.collection.GenTraversable" class="extype">GenTraversable</span>[T]</span>)</span><span class="params">(<span name="f">f: (T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[U]</span>)</span><span class="result">: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.Seq" class="extype">Seq</span>[T]]</span>
+        <span class="name">atLeastOnce</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="values">values: <span name="scala.collection.GenTraversableOnce" class="extype">GenTraversableOnce</span>[T]</span>)</span><span class="params">(<span name="f">f: (T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[U]</span>)</span><span class="result">: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.Seq" class="extype">Seq</span>[T]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>MatchersImplicits</dd></dl></div>
@@ -1894,7 +1894,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>NumericBaseMatchers</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.AutoExamplesLowImplicits#booleanExample" data-isabs="false">
+    </li><li visbl="pub" name="org.specs2.mutable.AutoExamples#booleanExample" data-isabs="false">
       <a id="booleanExample(⇒ Boolean):Example"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1905,7 +1905,7 @@
         <span class="name">booleanExample</span><span class="params">(<span name="expression">expression: ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="org.specs2.specification.Example" class="extype">Example</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoExamplesLowImplicits</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoExamples → AutoExamplesLowImplicits</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.specification.AutoExamplesLowImplicits#booleanFragments" data-isabs="false">
       <a id="booleanFragments(⇒ Boolean):Fragments"></a>
       <h4 class="signature">
@@ -3167,14 +3167,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FragmentsBuilder</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.MatchersImplicits#forall" data-isabs="false">
-      <a id="forall[T, U](GenTraversable[T])((T) ⇒ MatchResult[U]):MatchResult[Seq[T]]"></a>
+      <a id="forall[T, U](GenTraversableOnce[T])((T) ⇒ MatchResult[U]):MatchResult[Seq[T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">forall</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="values">values: <span name="scala.collection.GenTraversable" class="extype">GenTraversable</span>[T]</span>)</span><span class="params">(<span name="f">f: (T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[U]</span>)</span><span class="result">: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.Seq" class="extype">Seq</span>[T]]</span>
+        <span class="name">forall</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="values">values: <span name="scala.collection.GenTraversableOnce" class="extype">GenTraversableOnce</span>[T]</span>)</span><span class="params">(<span name="f">f: (T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[U]</span>)</span><span class="result">: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.Seq" class="extype">Seq</span>[T]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>MatchersImplicits</dd></dl></div>
@@ -3191,14 +3191,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>MatchersImplicits</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.MatchersImplicits#foreach" data-isabs="false">
-      <a id="foreach[T, U](GenTraversable[T])((T) ⇒ MatchResult[U]):MatchResult[Seq[T]]"></a>
+      <a id="foreach[T, U](GenTraversableOnce[T])((T) ⇒ MatchResult[U]):MatchResult[Seq[T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">foreach</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="values">values: <span name="scala.collection.GenTraversable" class="extype">GenTraversable</span>[T]</span>)</span><span class="params">(<span name="f">f: (T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[U]</span>)</span><span class="result">: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.Seq" class="extype">Seq</span>[T]]</span>
+        <span class="name">foreach</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span name="values">values: <span name="scala.collection.GenTraversableOnce" class="extype">GenTraversableOnce</span>[T]</span>)</span><span class="params">(<span name="f">f: (T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[U]</span>)</span><span class="result">: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.Seq" class="extype">Seq</span>[T]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>MatchersImplicits</dd></dl></div>
@@ -3587,14 +3587,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>BeHaveMatchers</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.TraversableBaseMatchers#have" data-isabs="false">
-      <a id="have[T]((T) ⇒ Boolean):Matcher[GenTraversable[T]]"></a>
+      <a id="have[T]((T) ⇒ Boolean):Matcher[GenTraversableOnce[T]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">have</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="function">function: (T) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="org.specs2.matcher.Matcher" class="extype">Matcher</span>[<span name="scala.collection.GenTraversable" class="extype">GenTraversable</span>[T]]</span>
+        <span class="name">have</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="function">function: (T) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="org.specs2.matcher.Matcher" class="extype">Matcher</span>[<span name="scala.collection.GenTraversableOnce" class="extype">GenTraversableOnce</span>[T]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableBaseMatchers</dd></dl></div>
@@ -4647,7 +4647,7 @@
       <p class="shortcomment cmt">add a first step to upload the library jars before doing anything else
 </p><div class="fullcomment"><div class="comment cmt"><p>add a first step to upload the library jars before doing anything else
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.HadoopSpecificationStructure" class="extype" href="../HadoopSpecificationStructure.html">HadoopSpecificationStructure</a> → <a name="com.nicta.scoobi.testing.UploadedLibJars" class="extype" href="../UploadedLibJars.html">UploadedLibJars</a> → SpecificationStructure</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.AutoExamplesLowImplicits#matchExample" data-isabs="false">
+    </li><li visbl="pub" name="org.specs2.mutable.AutoExamples#matchExample" data-isabs="false">
       <a id="matchExample(⇒ org.specs2.matcher.MatchResult[_]):Example"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -4658,7 +4658,7 @@
         <span class="name">matchExample</span><span class="params">(<span name="expression">expression: ⇒ org.specs2.matcher.MatchResult[_]</span>)</span><span class="result">: <span name="org.specs2.specification.Example" class="extype">Example</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoExamplesLowImplicits</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoExamples → AutoExamplesLowImplicits</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.specification.AutoExamplesLowImplicits#matchFragments" data-isabs="false">
       <a id="matchFragments(⇒ org.specs2.matcher.MatchResult[_]):Fragments"></a>
       <h4 class="signature">
@@ -4972,14 +4972,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableBeHaveMatchers</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.mutable.SpecificationFeatures#outsideFunctionToResult" data-isabs="false">
-      <a id="outsideFunctionToResult[T, S](Outside[T]):((T) ⇒ MatchResult[S]) ⇒ Result"></a>
+      <a id="outsideFunctionToResult[T, R](Outside[T],(R) ⇒ Result):((T) ⇒ R) ⇒ Result"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outsideFunctionToResult</span><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="o">o: <span name="org.specs2.specification.Outside" class="extype">Outside</span>[T]</span>)</span><span class="result">: ((T) ⇒ <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[S]) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>
+        <span class="name">outsideFunctionToResult</span><span class="tparams">[<span name="T">T</span>, <span name="R">R</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="outside">outside: <span name="org.specs2.specification.Outside" class="extype">Outside</span>[T]</span>, <span name="conv">conv: (R) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>)</span><span class="result">: ((T) ⇒ R) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SpecificationFeatures</dd></dl></div>
@@ -5199,7 +5199,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FileSystem</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.AutoExamplesLowImplicits#resultExample" data-isabs="false">
+    </li><li visbl="pub" name="org.specs2.mutable.AutoExamples#resultExample" data-isabs="false">
       <a id="resultExample(⇒ Result):Example"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -5210,7 +5210,7 @@
         <span class="name">resultExample</span><span class="params">(<span name="expression">expression: ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>)</span><span class="result">: <span name="org.specs2.specification.Example" class="extype">Example</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoExamplesLowImplicits</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoExamples → AutoExamplesLowImplicits</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.specification.AutoExamplesLowImplicits#resultFragments" data-isabs="false">
       <a id="resultFragments(⇒ Result):Fragments"></a>
       <h4 class="signature">
@@ -5322,14 +5322,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableBaseMatchers</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.TraversableBaseMatchers#scalaTraversableIsSized" data-isabs="false">
-      <a id="scalaTraversableIsSized[I&lt;:scala.collection.GenTraversableOnce[_]]:Sized[I]"></a>
+      <a id="scalaTraversableIsSized[I&lt;:scala.collection.GenTraversable[_]]:Sized[I]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">scalaTraversableIsSized</span><span class="tparams">[<span name="I">I &lt;: scala.collection.GenTraversableOnce[_]</span>]</span><span class="result">: <span name="org.specs2.data.Sized" class="extype">Sized</span>[I]</span>
+        <span class="name">scalaTraversableIsSized</span><span class="tparams">[<span name="I">I &lt;: scala.collection.GenTraversable[_]</span>]</span><span class="result">: <span name="org.specs2.data.Sized" class="extype">Sized</span>[I]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableBaseMatchers</dd></dl></div>
@@ -6442,14 +6442,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>StandardResults</dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.TraversableBeHaveMatchers#traversable" data-isabs="false">
-      <a id="traversable[T](MatchResult[GenTraversable[T]]):TraversableBeHaveMatchers[T]"></a>
+      <a id="traversable[T](MatchResult[GenTraversableOnce[T]]):TraversableBeHaveMatchers[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">traversable</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.GenTraversable" class="extype">GenTraversable</span>[T]]</span>)</span><span class="result">: <span name="org.specs2.matcher.TraversableBeHaveMatchers.TraversableBeHaveMatchers" class="extype">TraversableBeHaveMatchers</span>[T]</span>
+        <span class="name">traversable</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: <span name="org.specs2.matcher.MatchResult" class="extype">MatchResult</span>[<span name="scala.collection.GenTraversableOnce" class="extype">GenTraversableOnce</span>[T]]</span>)</span><span class="result">: <span name="org.specs2.matcher.TraversableBeHaveMatchers.TraversableBeHaveMatchers" class="extype">TraversableBeHaveMatchers</span>[T]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableBeHaveMatchers</dd></dl></div>
