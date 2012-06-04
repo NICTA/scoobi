@@ -4,16 +4,13 @@ Scoobi
 [Hadoop MapReduce](http://hadoop.apache.org/) is awesome, but it seems a little bit crazy when you have to write [this](http://wiki.apache.org/hadoop/WordCount) to count words. Wouldn't it be nicer if you could simply write what you want to do:
 
 ```scala
-object WordCount extends ScoobiApp {
-  val lines = fromTextFile(args(0))
-
-  val counts = lines.flatMap(_.split(" "))
+  val counts = fromTextFile("input.txt")
+                    .flatMap(_.split(" "))
                     .map(word => (word, 1))
                     .groupByKey
                     .combine(_+_)
 
-  persist(toTextFile(counts, args(1)))
-}
+  persist(toTextFile(counts, "word-counts", overwrite=true))
 ```
 
 This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write **what** you want rather than **how** to do it.
