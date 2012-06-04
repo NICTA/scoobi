@@ -2,43 +2,37 @@ package com.nicta.scoobi.guide
 
 class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
                                                                                                                         """
-### Overview
+
+### Introduction
 
 Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterized by a type and they provide methods that can be used to produce new `DList` objects, often parameterized by higher-order functions. For example:
 
-    // Converting a List[Int] to a List[String] keeping only evens
-    val stringList = intList filter { _ % 2 == 0 } map { _.toString }
+```scala
+  // Converting a List[Int] to a List[String] keeping only evens
+  val stringList = intList filter { _ % 2 == 0 } map { _.toString }
 
-    // Converting a DList[Int] to a DList[String] keeping only evens
-    val stringDList = intDList filter { _ % 2 == 0 } map { _.toString }
+  // Converting a DList[Int] to a DList[String] keeping only evens
+  val stringDList = intDList filter { _ % 2 == 0 } map { _.toString }
+```
 
-However, unlike a Scala `List` object, the contents of `DList` objects are not stored on the JVM heap but stored in HDFS. Secondly, calling `DList` methods will not immediately result in data being generated in HDFS. This is because, behind the scenes, Scoobi implements a *staging compiler*. The purpose of `DList` methods are to construct a *graph* of data transformations. Then, the act of *persisting* a `DList` triggers the compilation of the graph into one or more MapReduce jobs and their execution.
-
-So, `DList` objects essentially provide two abstractions:
-
- 1. The contents of a `DList` object abstracts the storage of data and files in HDFS
- 2. Calling methods on `DList` objects to transform and manipulate them abstracts the *mapper*, *combiner*, *reducer* and *sort-and-shuffle* phases of MapReduce
+However, unlike a Scala `List` object, the contents of `DList` objects are not stored on the JVM heap but stored elsewhere, typically HDFS. Secondly, calling `DList` methods will not immediately result in data being generated in HDFS. This is because, behind the scenes, Scoobi implements a *staging compiler*. The purpose of `DList` methods are to construct a *graph* of data transformations. Then, the act of *persisting* a `DList` triggers the compilation of the graph into one or more MapReduce jobs and their execution.
 
 
-So, what are some of the advantages of using Scoobi?
+In summary, `DList` objects essentially provide two abstractions:
 
- * **The collections abstraction implemented by `DList` is a familiar one**: The methods for the `DList` class have been designed to be the same or as similar to those implemented in the standard Scala collections. There aren't as many methods, but if you grok the semantics of Scala collections, you shouldn't have too much trouble getting up to speed with Scoobi
+1. The contents of a `DList` object abstracts the storage of data and files in HDFS;
+2. Calling methods on `DList` objects to transform and manipulate them abstracts the *mapper*, *combiner*, *reducer* and *sort-and-shuffle* phases of MapReduce.
 
- * **The `DList` class is strongly typed**: Like the Scala collections, the `DList` interface is strongly typed so that more errors are caught at compile time. This is a major improvement over standard Hadoop MapReduce where type-based run-time errors often occur
-
- * **The `DList` class can be easily parameterized on rich data types**: Unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterized by normal Scala types. This includes the primitive types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting, e.g. `(String, (Int, Char), Double)`) as well as **case classes**. This is all implemented without sacrificing performance in serialization and deserialization
-
- * **Scoobi applications are optimized across library boundaries**: Over time it makes sense to partition Scoobi code into separate logical entities - into separate classes and libraries. The advantage of Scoobi is that its staging compiler works across library boundaries. Therefore you'll get the same Hadoop performance as if you had everything in the one file but with the productivity gains of having modular software
-
- * **It's Scala**: Of course, with Scala you don't lose access to those precious Java libraries, but you also get functional programming and concise syntax which makes writing Hadoop applications with Scoobi very productive ... and fun!
 
 ### Word count decomposed
 
 Let's take a step-by-step look at the simple word count example from above. The complete application for word count looks like this:
 
-    import com.nicta.scoobi.Scoobi._
+```scala
+  import com.nicta.scoobi.Scoobi._
 
-    object WordCount extends ScoobiApp {
+  object WordCount extends ScoobiApp {
+    def run() {
       val lines: DList[String] = fromTextFile(args(0))
 
       val counts: DList[(String, Int)] = lines.flatMap(_.split(" "))
@@ -48,63 +42,132 @@ Let's take a step-by-step look at the simple word count example from above. The 
 
       persist(toTextFile(counts, args(1)))
     }
+  }
+```
 
-Our word count example is implemented by the object `WordCount`, wich extends a `ScoobiApp`. This is a convenience in Scoobi to avoid having to write a `main` function, as well as automatically handling arguments intended for hadoop. The remaining arguments are available as `args`.
+Our word count example is implemented by the object `WordCount`, wich extends a `ScoobiApp`. This is a convience in Scoobi to avoid having to create configuration objects, as well as automatically handling arguments intended for hadoop. The remaining arguments are available as `args`
 
 Within the implementation guts, the first task is to construct a `DList` representing the data located at the input directory. In this situation, because the input data are simple text files, we can use the `fromTextFile` method that takes our input directory as an argument and returns a `DList[String]` object. Here our `DList` object is a distributed collection where each collection element is a line from the input data and is assigned to `lines`.
 
 The second task is to compute a `DList` of word counts given all the lines of text from our input data. This is implemented in four steps:
 
- 1. A `flatMap` is performed  on `lines`. Like `List`'s `flatMap`, a parameterizing function is supplied which will take as its input a given line (a `String`) and will return 0 or more `String`s as its result. In this case, that function is the method `split` which will split the input string (a line) into a collection of words based on the occurrence of whitespace. The result of the `flatMap` then is another `DList[String]` representing a distributed collection of words.
+1. A `flatMap` is performed  on `lines`. Like `List`'s `flatMap`, a parameterizing function is supplied which will take as its input a given line (a `String`) and will return 0 or more `String`s as its result. In this case, that function is the method `split` which will split the input string (a line) into a collection of words based on the occurrence of whitespace. The result of the `flatMap` then is another `DList[String]` representing a distributed collection of words.
 
- 2. A `map` is performed on the distributed collection of words. Like `List`'s `map`, a parameterizing function is supplied which takes as its input a given word (a `String`) and will return another value. In this case the supplied function takes the input word and returns a pair: the word and the value 1. The resulting object is a new distributed collection of type `DList[(String, Int)]`.
+2. A `map` is performed on the distributed collection of words. Like `List`'s `map`, a parameterizing function is supplied which takes as its input a given word (a `String`) and will return another value.  In this case the supplied function takes the input word and returns a pair: the word and the value 1.  The resulting object is a new distributed collection of type `DList[(String, Int)]`.
 
- 3. A `groupByKey` is performed on the `(String, Int)` distributed collection. `groupByKey` has no direct counterpart in `List` (although there is a `groupBy` defined on `DList`s). `groupByKey` must be called on a key-value `DList` object else the program will not type check. The effect of `groupByKey` is to collect all distributed collection values with the same key. In this case the `DList` object is of type `(String, Int)` so a new `DList` object will be returned of type `(String, Iterable[Int])`. That is, the counts for the same words will be grouped together.
+3. A `groupByKey` is performed on the `(String, Int)` distributed collection. `groupByKey` has no direct counterpart in `List` (although there is a `groupBy` defined on `DList`s). `groupByKey` must be called on a key-value `DList` object else the program will not type check. The effect of `groupByKey` is to collect all distributed collection values with the same key. In this case the `DList` object is of type `(String, Int)` so a new `DList` object will be returned of type `(String, Iterable[Int])`. That is, the counts for the same words will be grouped together.
 
- 4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterized by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
+4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterized by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
 
-The final task is to take the `counts` object, which represents counts for each word, and *persist* it. In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`. Note that `toTextFile` is used within `persist`. Although not demonstrated in this example, `persist` takes a variable number of arguments, each of which specifies what `DList` is being persisted and how.
+The final task is to take the `counts` object, which represents counts for each word, and *persist* it.  In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`. Note that `toTextFile` is used within `persist`. Although not demonstrated in this example, `persist` takes a variable number of arguments, each of which specifies what `DList` is being persisted and how.
 
 Until `persist` is called, our application will only be running on the local client. The act of calling `persist`, along with the `DList`(s) to be persisted, will trigger Scoobi's staging compiler to take the sequence of `DList` transformations and turn them into one or more Hadoop MapReduce jobs. In this example Scoobi will generate a single MapReduce job that would be executed:
 
- * The functionality associated with the `flatMap` and `map` will become part of a *mapper* tasks
- * The transformation associated with `groupByKey` will be occur as a consequence of the *sort-and-shuffle* phase
- * The functionality of the `combine` will become part of both a *combiner* and *reducer* task
+* The functionality associated with the `flatMap` and `map` will become part of a *mapper* tasks;
+* The transformation associated with `groupByKey` will be occur as a consequence of the *sort-and-shuffle* phase;
+* The functionality of the `combine` will become part of both a *combiner* and *reducer* task.
 
-The word count example is one of a number of examples included with Scoobi. The top level directory [examples](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples) contains a number of self-contained tutorial-like examples, as well as a [guide](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples/README.md) to building and deploying them. This is an additional starting point for learning and using scoobi.
+The word count example is one of a number of examples included with Scoobi. The top level directory [examples](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples) contains a number of self-contained tutorial-like examples, as well as a [guide](https://github.com/NICTA/scoobi/blob/${SCOOBI_BRANCH}/examples/README.md) to building and deploying them. This is an additional starting point for learning and using scoobi.
 
-### Creating a new DList
+### Parallel operations
 
-`DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with `fromTextFile(...)` and `persist(toTextFile(...))`. The former is an example of *loading* data and the latter is an example of *persisting* data.
+We have already seen a number of `DList` methods - `map`, `flatMap`. These methods are parallel operations in that they are performed in parallel by Hadoop across the disributed data set. The `DList` trait implements parallel operations for many of the methods that you would find in the standard Scala collections:
 
-***Loading***
+* `map`
+* `flatMap`
+* `filter`
+* `filterNot`
+* `collect`
+* `partition`
+* `flatten`
+* `distinct`
+* `++`
 
-Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$).
+All of these methods are built upon the primitive parallel operation `parallelDo`.  Unlike the other `DList` methods, `parallelDo` provides a less *functional* interface and requires the user to implement a [`DoFn`](http://nicta.github.com/scoobi/${SCOOBI_BRANCH}/index.html#com.nicta.scoobi.DoFn) object:
 
-### Persisting a DList
+```scala
+  def parallelDo[B](dofn: DoFn[A, B]): DList[B]
 
-*Persisting* is the mechanism Scoobi uses for specifying that the result of executing the computational graph associated with a `DList` object is to be associated with a particular data file on HDFS. There are two parts to persisting:
+  trait DoFn[A, B] {
+    def setup(): Unit
+    def process(input: A, emitter: Emitter[B]): Unit
+    def cleanup(emitter: Emitter[B]): Unit
+  }
+```
 
- 1. Calling `persist`, which bundles all `DList` objects being persisted
- 2. Specifying how each `DList` object is to be persisted
+Because the `DoFn` object has an interface that is closely aligned to the Hadoop mapper and reducer task APIs it allows greater flexibility and control beyond what the collections-style APIs provide. For example, a `DoFn` object can maintain state where the other APIs can not:
 
-Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
+```scala
+  // Fuzzy top 10 - each mapper task will only emit the top 10 integers it processes
+  val ints: DList[Int] = ...
+  val top10ints: DList[Int] = ints.parallelDo(new DoFn[Int, Int] {
+    val top = scala.collection.mutable.Set[Int].empty
+    def setup() {}
+    def process(input: Int, emitter: Emitter[Int]) {
+      if (top.size < 10) {
+        top += input
+      }
+      else if (input > top.min) {
+        top -= top.min
+        top += input
+      }
+    }
+    def cleanup(emitter: Emitter[Int]) { top foreach { emitter.emit(_) } }
+  })
 
-    val rankings: DList[(String, Int)] = ...
+```
 
-    persist(toTextFile(rankings, "hdfs://path/to/output"))
+Whilst the `parallelDo` and `DoFn` APIs provide greater flexibility, it is best practcie to use the collections-style APIs where possible.
 
-`persist` can of course bundle together more than one `DList`. For example:
 
-      val rankings: DList[(String, Int)] = ...
-      val rankings_reverse: DList[(Int, String)] = rankings map { swap }
-      val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) => (ranking, items.head) }
+### Grouping
 
-      persist(toTextFile(rankings,         "hdfs://path/to/output"),
-              toTextFile(rankings_reverse, "hdfs://path/to/output-reverse"),
-              toTextFile(rankings_example, "hdfs://path/to/output-example"))
+We have already seen the `groupByKey` method. `DList` also has a `groupBy` method that allows you to specicfy how the key is determined:
 
-As mentioned previously, `persist` is the trigger for executing the computational graph associated with its `DList` objects. By bundling `DList` objects together, `persist` is able to determine computations that are shared by those outputs and ensure that they are only performed once.
+```scala
+  case class Person(name: String, age: Int)
+  val people: DList[Person] = ...
+  val peoplebyAge: DList[(Int, Person)] = people.groupBy(_.age)
+```
+
+The grouping methods abstract Hadoop's sort-and-shuffle phase. As such it is possible to have more control over this phase using the `Grouping` type class. This allows functionality such as secondary sorting to be implemented. Refer to the Grouping section for a more detailed explanation.
+
+
+### Combining
+
+The `combine` method is Scoobi's abstraction of Hadoop's *combiner* functionality. For best results, `combine` should be
+called immediately after a `groupBy` or `groupByKey` method, as in the Word Count example.
+
+
+### Creating and persisting DLists
+
+`DList` objects are merely nodes in a graph describing a series of data transformations we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with `fromTextFile(...)` and `persist(toTextFile(...))`. The former is an example of *loading* data and the latter is an example of *persisting* data.
+
+There are many ways of creating a new `DList` by *loading* data. Data can be loaded from files or various formats (e.g. text, sequence files, Avro files). Similarly, there are many ways in which a `DList` can be persisted. The Input and Output section provides a complete listing of all loading and persisting mechanisms.
+
+There are two parts to persisting:
+
+1. Specifying how the `DList` object is to be persisted;
+2. Calling `persist`, which triggers the evaluation of the `DList` objects computation.
+
+For example, to persist a `DList` to a text file we could write:
+
+```scala
+  val rankings: DList[(String, Int)] = ...
+  persist(toTextFile(rankings, "hdfs://path/to/output"))
+```
+
+It is important to note that a call to `persist` is the mechansim for triggering the computation of a `DList` and all its dependencies. Until `persist` is called, a `DList` is simply a specification for some distributed computation. `persist` can of course bundle together multiple `DLists` allowing it to be aware of any shared computations:
+
+```scala
+  val rankings: DList[(String, Int)] = ...
+  val rankings_reverse: DList[(Int, String)] = rankings.map(_.swap)
+  val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) => (ranking, items.head) }
+
+  persist(toTextFile(rankings,         "hdfs://path/to/output"),
+          toTextFile(rankings_reverse, "hdfs://path/to/output-reverse"),
+          toTextFile(rankings_example, "hdfs://path/to/output-example"))
+```
 
                                                                                                                         """
 }
