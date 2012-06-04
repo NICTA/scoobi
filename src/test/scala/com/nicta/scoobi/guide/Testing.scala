@@ -12,16 +12,16 @@ Scoobi provides testing support to make your coding experience as productive as 
 
 The abstract class `com.nicta.scoobi.testing.mutable.HadoopSpecification` is the base class for testing Hadoop jobs. Here's an example showing how to use it:
 
-      import com.nicta.scoobi.testing.mutable._
-      import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
+    import com.nicta.scoobi.testing.mutable._
+    import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
 
-      class WordCountSpec extends HadoopSpecification {
+    class WordCountSpec extends HadoopSpecification {
 
-        "Counting words frequencies must return the frequency for each word" >> { conf: ScoobiConfiguration =>
-          // your Scoobi code goes here
-        }
-
+      "Counting words frequencies must return the frequency for each word" >> { conf: ScoobiConfiguration =>
+        // your Scoobi code goes here
       }
+
+    }
 
 This specification does several things for you:
 
@@ -49,22 +49,22 @@ You can change every step in the process above and create your own Specification
 By default, all the examples of a specification are executed concurrently, which is why each example needs to be passed its own `ScoobiConfiguration` instance. If you prefer having a sequential execution (with the `sequential` specs2 argument) you can omit the explicit passing of the `ScoobiConfiguration` object:
 
 
-      class WordCountSpec extends HadoopSpecification {
-        sequential
-        "Counting words frequencies must return the frequency for each word" >> {
-          // your Scoobi code goes here
-        }
+    class WordCountSpec extends HadoopSpecification {
+      sequential
+      "Counting words frequencies must return the frequency for each word" >> {
+        // your Scoobi code goes here
       }
+    }
 
 ##### Cluster properties
 
 If you only have one cluster for your testing you can hardcode the `fs` and `jobTracker` properties by overriding the corresponding methods:
 
-      class WordCountSpec extends HadoopSpecification {
-        override def fs         = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
-        override def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
-        ...
-      }
+    class WordCountSpec extends HadoopSpecification {
+      override def fs         = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
+      override def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
+      ...
+    }
 
 This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.
 
@@ -96,13 +96,13 @@ Those tags can be called from the sbt command-line to control the execution of t
 
 Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:
 
-      class WordCountSpec extends HadoopSpecification {
-        type SC = ScoobiConfiguration
+    class WordCountSpec extends HadoopSpecification {
+      type SC = ScoobiConfiguration
 
-        "Counting words frequencies must return the frequency for each word" >> { conf: SC =>
-          // your Scoobi code goes here
-        }
+      "Counting words frequencies must return the frequency for each word" >> { conf: SC =>
+        // your Scoobi code goes here
       }
+    }
 
 #### Simple jobs
 
@@ -112,25 +112,25 @@ The `HadoopSpecification` class allows to create any kind of job and execute the
  * execute some transformations based on the `DList` API
  * get the results as a `Seq[String]` from an temporary output file
 
-      "getting the size of words" >> { implicit c: SC =>
-        fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
-      }
+        "getting the size of words" >> { implicit c: SC =>
+          fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+        }
 
 `fromInput` creates a temporary file and a new `DList` from a `TextInput`. Then the `run` method executes transformations on the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the `keepFiles` parameter is set:
 
-      "getting the size of words" >> { implicit c: SC =>
-        fromInput("hello", "world").keep.run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
-      }
+    "getting the size of words" >> { implicit c: SC =>
+      fromInput("hello", "world").keep.run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+    }
 
  Other jobs might be slightly more complex and require inputs coming from several files:
 
-     "Numbers can be partitioned into even and odd numbers" >> { implicit sc: SC =>
-       val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
-       val (evens, odds) = run(numbers.partition(_ % 2 == 0))
+    "Numbers can be partitioned into even and odd numbers" >> { implicit sc: SC =>
+      val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
+      val (evens, odds) = run(numbers.partition(_ % 2 == 0))
 
-       forall(evens.map(_.toInt))(i => i must beEven)
-       forall(odds.map(_.toInt))(i => i must beOdd)
-     }
+      forall(evens.map(_.toInt))(i => i must beEven)
+      forall(odds.map(_.toInt))(i => i must beOdd)
+    }
 
 ### Using your own
 

@@ -1,3 +1,16 @@
 #breadcrumbs {
   display: block;
 }
+
+pre {
+  background-color: #F5F5F5;
+  margin: 2px;
+  padding: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+code {
+  background-color: #F5F5F5;
+  padding-right: 2px;
+  padding-left: 2px;
+}
