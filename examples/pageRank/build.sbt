@@ -8,4 +8,6 @@ scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 libraryDependencies += "com.nicta" %% "scoobi" % "0.4.0-SNAPSHOT" % "provided"
 
-resolvers += "snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
+resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
+                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
+                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")

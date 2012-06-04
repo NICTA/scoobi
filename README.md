@@ -40,7 +40,10 @@ And, we can add a `build.sbt` that has a dependency on Scoobi:
 
     scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
     
-    resolvers += "snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
+    
+    resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
+                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
+                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 ```
 
 The `provided` is added to the `scoobi` dependency to let sbt know that Scoobi
