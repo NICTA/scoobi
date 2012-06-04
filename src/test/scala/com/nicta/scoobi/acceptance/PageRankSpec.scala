@@ -5,6 +5,7 @@ import com.nicta.scoobi.Scoobi._
 import com.nicta.scoobi.ScoobiConfiguration
 import com.nicta.scoobi.testing.{TempFiles, NictaSimpleJobs, TestFiles}
 import java.io.File
+import com.nicta.scoobi.lib.Relational._
 
 class PageRankSpec extends NictaSimpleJobs {
 
@@ -35,7 +36,7 @@ object PageRank {
   def update[K : Manifest : WireFormat : Grouping](prev: DList[(K, (Float, Float, Seq[K]))], d: Float) = {
     val outbound = prev flatMap { case (url, (pr, _, links)) => links.map((_, pr / links.size)) }
 
-    coGroup(prev, outbound) map { case (url, (prev_data, outbound_mass)) =>
+    (prev coGroup outbound) map { case (url, (prev_data, outbound_mass)) =>
       val new_pr = (1 - d) + d * outbound_mass.sum
       prev_data.toList match {
         case (old_pr, _, links) :: _ => (url, (new_pr, old_pr, links))

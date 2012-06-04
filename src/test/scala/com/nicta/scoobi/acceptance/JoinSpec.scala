@@ -25,7 +25,7 @@ class JoinSpec extends NictaSimpleJobs {
   def departmentsById(implicit sc: SC)         = departments.by(_.id)
 
   "Inner join" >> { implicit sc: SC =>
-    run(join(employeesByDepartmentId, departmentsById)) === Seq(
+    run(employeesByDepartmentId join departmentsById) === Seq(
       "(31,(Rafferty,Sales))",
       "(33,(Jones,Engineering))",
       "(33,(Steinberg,Engineering))",
@@ -34,7 +34,7 @@ class JoinSpec extends NictaSimpleJobs {
   }
 
   "Left join" >> { implicit sc: SC =>
-    run(joinLeft(employeesByDepartmentId, departmentsById,
+    run(employeesByDepartmentId joinLeft(departmentsById,
                 (departmentId: Long, employee: Employee) => Department(departmentId, "Unknown"))) === Seq(
       "(-1,(John,Unknown))",
       "(31,(Rafferty,Sales))",
@@ -45,7 +45,7 @@ class JoinSpec extends NictaSimpleJobs {
   }
 
   "Right join" >> { implicit sc: SC =>
-    run(joinRight(employeesByDepartmentId, departmentsById,
+    run(employeesByDepartmentId joinRight(departmentsById,
                  (id: Long, department: Department) => Employee("Unknown", id))) === Seq(
       "(31,(Rafferty,Sales))",
       "(33,(Jones,Engineering))",

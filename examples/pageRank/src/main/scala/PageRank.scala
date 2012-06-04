@@ -37,7 +37,7 @@ object PageRank extends ScoobiApp {
 
     val outbound = prev flatMap { case (url, (pr, _, links)) => links.map((_, pr / links.size)) }
 
-    coGroup(prev, outbound) map { case (url, (prev_data, outbound_mass)) =>
+    (prev coGroup outbound) map { case (url, (prev_data, outbound_mass)) =>
       val new_pr = (1 - d) + d * outbound_mass.sum
       prev_data.toList match {
         case (old_pr, _, links) :: _ => (url, (new_pr, old_pr, links))
@@ -73,6 +73,6 @@ object PageRank extends ScoobiApp {
     /* Write out final results to text file */
     val pageranks = latestRankings(i).map { case (id, (pr, _, _)) => (id, pr) }
     val urls = fromDelimitedTextFile(names) { case AnInt(id) :: url :: _ => (id, url) }
-    persist(toDelimitedTextFile(join(urls, pageranks).values, output + "result"))
+    persist(toDelimitedTextFile((urls join pageranks).values, output + "result"))
   }
 }

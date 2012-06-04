@@ -89,48 +89,10 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]) = AvroInput.fromAvroFile(paths)
   def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
+  
+  /* lib stuff */
+  
+  implicit def dlistToRelational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat](dl: DList[(K, A)]): com.nicta.scoobi.lib.Relational[K,A] = com.nicta.scoobi.lib.Relational(dl)
+  implicit def relationalToDList[K, A](r: com.nicta.scoobi.lib.Relational[K, A]): DList[(K,A)] = r.left
 
-
-  /* join and coGroup */
-  val Join = com.nicta.scoobi.lib.Join
-
-  def join[K : Manifest : WireFormat : Grouping,
-           A : Manifest : WireFormat,
-           B : Manifest : WireFormat]
-      (d1: DList[(K, A)], d2: DList[(K, B)])
-      = Join.join(d1, d2)
-
-
-  def joinRight[K : Manifest : WireFormat : Grouping,
-                A : Manifest : WireFormat,
-                B : Manifest : WireFormat]
-      (d1: DList[(K, A)], d2: DList[(K, B)], default: (K, B) => A)
-      = Join.joinRight(d1, d2, default)
-
-
-  def joinRight[K : Manifest : WireFormat : Grouping,
-                A : Manifest : WireFormat,
-                B : Manifest : WireFormat]
-      (d1: DList[(K, A)], d2: DList[(K, B)])
-      = Join.joinRight(d1, d2)
-
-
-  def joinLeft[K : Manifest : WireFormat : Grouping,
-               A : Manifest : WireFormat,
-               B : Manifest : WireFormat]
-      (d1: DList[(K, A)], d2: DList[(K, B)], default: (K, A) => B)
-      = Join.joinLeft(d1, d2, default)
-
-
-  def joinLeft[K : Manifest : WireFormat : Grouping,
-               A : Manifest : WireFormat,
-               B : Manifest : WireFormat]
-      (d1: DList[(K, A)], d2: DList[(K, B)])
-      = Join.joinLeft(d1, d2)
-
-  def coGroup[K  : Manifest : WireFormat : Grouping,
-              A : Manifest : WireFormat,
-              B : Manifest : WireFormat]
-      (d1: DList[(K, A)], d2: DList[(K, B)])
-      = Join.coGroup(d1, d2)
 }
