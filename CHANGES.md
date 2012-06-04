@@ -13,6 +13,10 @@ master relase notes (will become 0.4.0)
 
 * DList reduction methods (e.g. DList.reduce, product, min, etc.)
 
+* Initial [matrix and vector](http://nicta.github.com/scoobi/guide/Extensions.html) extensions
+
+* [Distributed Objects](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Distributed Objects.html)
+
 ### Changes
 
 * All methods of Scoobi object are now in Conf object
@@ -20,6 +24,8 @@ master relase notes (will become 0.4.0)
 * `DList.use(x: DObject)` has been removed, use `DObject.use` instead
 
 * To avoid hiding the scala types, the TextInput pattern matcher helpers have been renamed: Int to AnInt, Float to AFloat, Double to ADouble, Long to ALong.
+
+* `join` and `coGroup` functions are now pimped methods on `DList`
 
 ### Improvements
 
