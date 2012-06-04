@@ -1,76 +1,50 @@
+Scoobi
+------
 
-Creating a Scoobi project with sbt
-----------------------------------
-
-Scoobi projects are generally developed with [sbt](https://github.com/harrah/xsbt/wiki), and to simplify
-the task of building and packaging a project for running on Hadoop, it's really handy to use the sbt plugin
-[sbt-scoobi](https://github.com/NICTA/sbt-scoobi). Here are a few steps for creating a new project:
-
-Create a new Scoobi application and add some code:
-
-```
-    $ mkdir my-app
-    $ cd my-app
-    $ mkdir -p src/main/scala
-    $ vi src/main/scala/MyApp.scala
-```
-
-To use the sbt-scoobi plugin we need to include a `project/project/scoobi.scala` file with the following contents:
+[Hadoop MapReduce](http://hadoop.apache.org/) is awesome, but it seems a little bit crazy when you have to write [this](http://wiki.apache.org/hadoop/WordCount) to count words. Wouldn't it be nicer if you could simply write what you want to do:
 
 ```scala
-    import sbt._
+object WordCount extends ScoobiApp {
+  val lines = fromTextFile(args(0))
 
-    object Plugins extends Build {
-      lazy val root = Project("root", file(".")) dependsOn(
-        uri("git://github.com/NICTA/sbt-scoobi.git#master")
-      )
-    }
+  val counts = lines.flatMap(_.split(" "))
+                    .map(word => (word, 1))
+                    .groupByKey
+                    .combine(_+_)
+
+  persist(toTextFile(counts, args(1)))
+}
 ```
 
-And, we can add a `build.sbt` that has a dependency on Scoobi:
+This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write **what** you want rather than **how** to do it.
 
-```scala
-    name := "MyApp"
+Scoobi is a library that leverages the Scala programming language to provide a programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid development of analytics and machine-learning algorithms.
 
-    version := "0.1"
+### Features
 
-    scalaVersion := "2.9.2"
+ * Familiar APIs - the `DList` API is very similar to the standard Scala `List` API
 
-    libraryDependencies += "com.nicta" %% "scoobi" % "0.4.0-SNAPSHOT" % "provided"
+ * Strong typing - the APIs are strongly typed so as to catch more errors at compile time, a
+ major improvement over standard Hadoop MapReduce where type-based run-time errors often occur
 
-    scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
-    
-    
-    resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
-                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
-                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
-```
+ * Ability to parameterize with rich [data types](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Data%20Types.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterized by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
-The `provided` is added to the `scoobi` dependency to let sbt know that Scoobi
-is provided by the sbt-plugin when it packages everything in a jar. If you
-don't included this `provided` nothing bad will happen, but the jar will contain
-some Scoobi dependencies that are not strictly required.
+ * Support for multiple types of I/O - currently built-in support for [text](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Input%20and%20Output.html#Text+files), [Sequence](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Input%20and%20Output.html#Sequence+files) and [Avro](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Input%20and%20Output.html#Avro+files) files with the ability to implement support for [custom sources/sinks](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Input%20and%20Output.html#Custom+sources+and+sinks)
 
-We can now use sbt to easily build and package our application into a self-contained executable
-jar to feed directly into Hadoop:
+ * Optimization across library boundaries - the optimizer and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 
-```
-    $ sbt package-hadoop
-    $ hadoop jar ./target/MyApp-app-hadoop-0.1.jar <args>
-```
+ * It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and consise syntax that makes developing Hadoop applications very productive
 
-Note that there appears to be an OSX-specific [issue](https://github.com/NICTA/scoobi/issues/1)
-associated with calling `hadoop` in this manner requiring the jar to be added to `HADOOP_CLASSPATH`
-and then `hadoop` being given the correct object to run. e.g.:
+ * Apache V2 licence - just like the rest of Hadoop
 
-```
-    $ export HADOOP_CLASSPATH=$PWD/target/Scoobi_Word_Count-hadoop-0.1.jar
-    $ hadoop WordCount inputFile/to/wordcount nonexistent/outputdir
-```
+### Getting Started
+
+To get started, read the [getting started steps](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Quick%20Start.html) and the section on [distributed lists](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Distributed%20Lists.html). The remaining sections in the [User Guide](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/User%20Guide.html) provide further detail on various aspects of Scoobi's functionality.
+
+The user mailing list is at <http://groups.google.com/group/scoobi-users>. Please use it for questions and comments!
 
 
-Issues, questions and contributions
------------------------------------
+### Issues, questions and contributions
 
 Scoobi is released under the Apache license v2. We welcome contributions of bug fixes and/or new
 features via GitHib pull requests. In addition, it is important to us to build a friendly user
@@ -88,9 +62,16 @@ over to the [scoobi-dev](http://groups.google.com/group/scoobi-dev) mailing list
 We will try our best to respond to all issues and questions quickly.
 
 
-Release notes
--------------------
-[Changes in 0.3.0](https://github.com/nicta/scoobi/blob/master/CHANGES.md)
+### Links
+
+[User Guide](http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/User%20Guide.html)
+
+[API Documentation](http://nicta.github.com/scoobi/api/master/index.html)
+
+[Examples](https://github.com/NICTA/scoobi/tree/master/examples)
+
+[Change history](https://github.com/NICTA/scoobi/blob/master/CHANGES.md)
+
 
 ### Next Milestone
 [0.4.0 Open issues](https://github.com/NICTA/scoobi/issues?milestone=2)
