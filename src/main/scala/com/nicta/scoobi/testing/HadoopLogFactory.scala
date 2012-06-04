@@ -2,8 +2,7 @@ package com.nicta.scoobi.testing
 
 import java.lang.Class
 import org.apache.commons.logging.impl.{SimpleLog, NoOpLog, LogFactoryImpl}
-import WithHadoopLogFactory._
-import java.util.logging.Level
+import HadoopLogFactory._
 import org.apache.commons.logging.{Log, LogFactory}
 
 /**
@@ -13,11 +12,11 @@ import org.apache.commons.logging.{Log, LogFactory}
  *
  * It can display SCOOBI_TIMES messages if the SHOW_TIMES attributes is true
  */
-class WithHadoopLogFactory() extends LogFactory {
+class HadoopLogFactory() extends LogFactory {
 
   def quiet      = Option(getAttribute(QUIET)).map(_.asInstanceOf[Boolean]).getOrElse(true)
   def showTimes  = Option(getAttribute(SHOW_TIMES)).map(_.asInstanceOf[Boolean]).getOrElse(false)
-  def logLevel   = Option(getAttribute(LOG_LEVEL)).map(_.asInstanceOf[Level]).getOrElse(Level.INFO)
+  def logLevel   = Option(getAttribute(LOG_LEVEL)).map(_.asInstanceOf[Level]).getOrElse(INFO)
   def categories = Option(getAttribute(LOG_CATEGORIES)).map(c => ".*"+c+".*").getOrElse(".*")
 
   private val impl   = new LogFactoryImpl
@@ -45,23 +44,23 @@ class WithHadoopLogFactory() extends LogFactory {
   private def quietFor(name: String) = quiet || !name.matches(categories)
 
   /**
-   * @return the translation between a java.util.logging.Level and a apache commons level
+   * @return the translation between a string giving the level name and a apache commons level
    */
   private def commonsLevel(level: Level) = levelsMappings.getOrElse(level, SimpleLog.LOG_LEVEL_INFO)
 
 }
 
-object WithHadoopLogFactory {
+object HadoopLogFactory {
   val SCOOBI_TIMES   = "SCOOBI_TIMES"
   val QUIET          = "QUIET"
   val SHOW_TIMES     = "SHOW_TIMES"
   val LOG_LEVEL      = "LOG_LEVEL"
   val LOG_CATEGORIES = "LOG_CATEGORIES"
 
-  def setLogFactory(name: String = classOf[WithHadoopLogFactory].getName,
+  def setLogFactory(name: String = classOf[HadoopLogFactory].getName,
                     quiet: Boolean = true,
                     showTimes: Boolean = false,
-                    level: Level = Level.INFO,
+                    level: String = INFO,
                     categories: String = ".*") {
     // release any previously set LogFactory for this class loader
     LogFactory.release(Thread.currentThread.getContextClassLoader)
@@ -69,7 +68,7 @@ object WithHadoopLogFactory {
     setAttributes(quiet, showTimes, level, categories)
   }
 
-  def setAttributes(quiet: Boolean, showTimes: Boolean, level: Level, categories: String) {
+  def setAttributes(quiet: Boolean, showTimes: Boolean, level: String, categories: String) {
     setQuiet(quiet)
     setShowTimes(showTimes)
     setLogLevel(level)
@@ -86,25 +85,29 @@ object WithHadoopLogFactory {
   def setShowTimes(showTimes: Boolean = false) {
     LogFactory.getFactory.setAttribute(SHOW_TIMES, showTimes)
   }
-  def setLogLevel(level: Level = Level.INFO) {
+  def setLogLevel(level: String = INFO) {
     LogFactory.getFactory.setAttribute(LOG_LEVEL, level)
   }
   def setLogCategories(categories: String = ".*") {
     LogFactory.getFactory.setAttribute(LOG_CATEGORIES, categories)
   }
 
-  val levelsMappings =
-    Map(Level.INFO    -> SimpleLog.LOG_LEVEL_INFO,
-        Level.ALL     -> SimpleLog.LOG_LEVEL_ALL,
-        Level.CONFIG  -> SimpleLog.LOG_LEVEL_INFO,
-        Level.FINE    -> SimpleLog.LOG_LEVEL_TRACE,
-        Level.FINER   -> SimpleLog.LOG_LEVEL_TRACE,
-        Level.FINEST  -> SimpleLog.LOG_LEVEL_TRACE,
-        Level.INFO    -> SimpleLog.LOG_LEVEL_INFO,
-        Level.OFF     -> SimpleLog.LOG_LEVEL_OFF,
-        Level.SEVERE  -> SimpleLog.LOG_LEVEL_FATAL,
-        Level.WARNING -> SimpleLog.LOG_LEVEL_WARN)
+  lazy val levelsMappings =
+    Map(INFO    -> SimpleLog.LOG_LEVEL_INFO,
+        ALL     -> SimpleLog.LOG_LEVEL_ALL,
+        TRACE   -> SimpleLog.LOG_LEVEL_TRACE,
+        OFF     -> SimpleLog.LOG_LEVEL_OFF,
+        FATAL   -> SimpleLog.LOG_LEVEL_FATAL,
+        WARN    -> SimpleLog.LOG_LEVEL_WARN)
 
-  val allLevels = levelsMappings.keys.map(_.getName).toSet
+  lazy val allLevels = levelsMappings.keys.map(_.toString).toSet
+
+
+  lazy val INFO : Level = level("INFO" )
+  lazy val ALL  : Level = level("ALL"  )
+  lazy val TRACE: Level = level("TRACE")
+  lazy val OFF  : Level = level("OFF"  )
+  lazy val FATAL: Level = level("FATAL")
+  lazy val WARN : Level = level("WARN" )
 
 }

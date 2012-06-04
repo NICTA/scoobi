@@ -6,9 +6,7 @@ import com.nicta.scoobi.ScoobiConfiguration
 import org.specs2.specification._
 import org.specs2.Specification
 import org.specs2.main.CommandLineArguments
-import java.util.logging.Level
-import Level._
-import WithHadoopLogFactory._
+import HadoopLogFactory._
 import com.nicta.scoobi.impl.control.Exceptions._
 
 
@@ -110,20 +108,27 @@ trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with C
     def isRemote = true
   }
 
-  override def showTimes  = arguments.commandLine.arguments.exists(_.matches("scoobi.*.times.*"))  || super.showTimes
+  override def showTimes  = scoobiArguments.map(_.matches(".*.times.*")).getOrElse(false)  || super.showTimes
   override def quiet      = !verboseArg.isDefined && super.quiet
   override def level      = extractLevel(verboseArg.getOrElse(""))
   override def categories = extractCategories(verboseArg.getOrElse(""))
 
+  /** convenience shortcut */
   private[testing]
-  def verboseArg = arguments.commandLine.arguments.find { _.matches("scoobi.*verbose.*") }
+  lazy val argumentsValues: Seq[String] = arguments.commandLine.arguments
 
   private[testing]
-  def verboseDetails(args: String) = args.replaceFirst("scoobi\\.", "").split("\\.").toSeq.filterNot(Seq("verbose", "times").contains)
+  def scoobiArguments = argumentsValues.zip(argumentsValues.drop(1)).find(_._1.toLowerCase.equals("scoobi")).map(_._2)
+
+  private[testing]
+  def verboseArg = scoobiArguments.find(_.matches(".*verbose.*"))
+
+  private[testing]
+  def verboseDetails(args: String) = args.split("\\.").toSeq.filterNot(Seq("verbose", "times").contains)
 
   private[testing]
   def extractLevel(args: String) =
-    verboseDetails(args).flatMap(l => tryo(Level.parse(l.toUpperCase))).headOption.getOrElse(INFO)
+    verboseDetails(args).map(l => l.toUpperCase.asInstanceOf[Level]).headOption.getOrElse(INFO)
 
   /**
    * extract the categories as a regular expression from the scoobi arguments, once all the other argument names have been

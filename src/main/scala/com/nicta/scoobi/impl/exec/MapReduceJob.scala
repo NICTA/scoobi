@@ -159,7 +159,7 @@ class MapReduceJob(stepId: Int) {
 
     val inputChannels: List[((DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]), Int)] = mappers.toList.zipWithIndex
     val inputs: Map[Int, (InputConverter[_, _, _], Set[(Env[_], TaggedMapper[_,_,_,_])])] =
-      inputChannels map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) } toMap
+      inputChannels.map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) }.toMap
 
     DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
@@ -202,9 +202,9 @@ class MapReduceJob(stepId: Int) {
     }
 
     val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer[_,_,_,_]))] =
-      reducers map { case (sinks, reducer) =>
+      reducers.map { case (sinks, reducer) =>
         (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
-      } toMap
+      }.toMap
 
     DistCache.pushObject(job.getConfiguration, outputs, "scoobi.reducers")
     job.setReducerClass(classOf[MscrReducer[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
@@ -287,7 +287,7 @@ object MapReduceJob {
     /* Tag each output channel with a unique index. */
     mscr.outputChannels.zipWithIndex.foreach { case (oc, tag) =>
 
-      def addTag(n: AST.Node[_, _ <: Shape], tag: Int) = {
+      def addTag(n: AST.Node[_, _ <: Shape], tag: Int) {
         val s = mapperTags.getOrElse(n, Set())
         mapperTags += (n -> (s + tag))
       }

@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory
 import org.specs2.mutable.Specification
 import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
-import java.util.logging.Level
+import HadoopLogFactory._
 
 class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit with ResultMatchers { isolated
 
@@ -58,36 +58,45 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit wi
       context.withVerbose.example1.execute
       LogFactory.getLog("any").getClass.getSimpleName must not(be_==("NoOpLog"))
     }
-    step(WithHadoopLogFactory.setLogFactory())
+    step(HadoopLogFactory.setLogFactory())
   }
   "tags can be used to control the execution of examples" >> {
     "'hadoop' runs locally, then on the cluster" >> runMustBeLocalThenCluster(examples("hadoop"))
-    "'cluster'    runs on the cluster only"          >> runMustBeCluster(examples("cluster"))
-    "'local'      run locally only"                  >> runMustBeLocal(examples("local"))
-    "'unit'       no run, that's for unit tests"     >> noRun(examples("unit"))
+    "'cluster'    runs on the cluster only"      >> runMustBeCluster(examples("cluster"))
+    "'local'      run locally only"              >> runMustBeLocal(examples("local"))
+    "'unit'       no run, that's for unit tests" >> noRun(examples("unit"))
+  }
+  "arguments for scoobi can be passed from the command line" >> {
+    localExamples.scoobiArguments must beEmpty
+    examplesWithArguments(Seq("scoobi", "verbose")).scoobiArguments === Seq("verbose")
   }
   "the log level can be passed from the command line" >> {
-    localExamples.extractLevel("scoobi.verbose")         === Level.INFO
-    localExamples.extractLevel("scoobi.verbose.warning") === Level.WARNING
-    localExamples.extractLevel("scoobi.verbose.all")     === Level.ALL
+    localExamples.extractLevel("verbose")         === INFO
+    localExamples.extractLevel("verbose.warn")    === WARN
+    localExamples.extractLevel("verbose.WARN")    === WARN
+    localExamples.extractLevel("verbose.all")     === ALL
   }
   "the categories to show can be passed from the command line" >> {
-    localExamples.extractCategories("scoobi.verbose")                   === ".*"
-    localExamples.extractCategories("scoobi.verbose.warning")           === ".*"
-    localExamples.extractCategories("scoobi.verbose.all")               === ".*"
-    localExamples.extractCategories("scoobi.verbose.TESTING")           === "TESTING"
-    localExamples.extractCategories("scoobi.verbose.all.TESTING")       === "TESTING"
-    localExamples.extractCategories("scoobi.verbose.all.[scoobi.Step]") === "scoobi.Step"
-    localExamples.extractCategories("scoobi.verbose.all.scoobi")        === "scoobi"
+    localExamples.extractCategories("verbose")                   === ".*"
+    localExamples.extractCategories("verbose.warn")              === ".*"
+    localExamples.extractCategories("verbose.all")               === ".*"
+    localExamples.extractCategories("verbose.TESTING")           === "TESTING"
+    localExamples.extractCategories("verbose.all.TESTING")       === "TESTING"
+    localExamples.extractCategories("verbose.all.[scoobi.Step]") === "scoobi.Step"
+    localExamples.extractCategories("verbose.all.scoobi")        === "scoobi"
   }
 
+  // various Hadoop Examples traits
   def localExamples            = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples          = new HadoopExamplesForTesting { override def context = cluster }
   def localThenClusterExamples = new HadoopExamplesForTesting { override def context = localThenCluster }
-
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)
   }
+  def examplesWithArguments(args: Seq[String]) = new HadoopExamplesForTesting {
+    override lazy val argumentsValues = args
+  }
+
   def runMustBeLocal(implicit context: HadoopExamplesForTesting) = {
     context.example1.execute
     there was one(context.mocked).runOnLocal(any[Result])
