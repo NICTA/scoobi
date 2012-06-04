@@ -525,18 +525,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Join" data-isabs="false">
-      <a id="Join:com.nicta.scoobi.lib.Join.type"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Join</span><span class="result">: com.nicta.scoobi.lib.Join.type</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormatImplicits#LeftFmt" data-isabs="false">
       <a id="LeftFmt[T1, T2](WireFormat[T1]):WireFormat[Left[T1, T2]]"></a>
       <h4 class="signature">
@@ -837,18 +825,6 @@ type class instance. Partitioning and grouping use the default implementation.</
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#coGroup" data-isabs="false">
-      <a id="coGroup[K, A, B](DList[(K, A)],DList[(K, B)])(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):DList[(K, (Iterable[A], Iterable[B]))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">coGroup</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="d1">d1: DList[(K, A)]</span>, <span name="d2">d2: DList[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>, <span name="arg5">arg5: Manifest[B]</span>, <span name="arg6">arg6: WireFormat[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(K, (Iterable[A], Iterable[B]))]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#convertFromSequenceFile" data-isabs="false">
       <a id="convertFromSequenceFile[K, V](List[String])(Manifest[K],WireFormat[K],SeqSchema[K],Manifest[V],WireFormat[V],SeqSchema[V]):DList[(K, V)]"></a>
       <h4 class="signature">
@@ -954,6 +930,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       <span class="symbol">
         <span class="name">convertValueToSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="dl">dl: DList[V]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DListPersister" class="extype" href="DListPersister.html">DListPersister</a>[V]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#dlistToRelational" data-isabs="false">
+      <a id="dlistToRelational[K, A](DList[(K, A)])(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A]):Relational[K, A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dlistToRelational</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="dl">dl: DList[(K, A)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.Relational" class="extype" href="lib/Relational.html">Relational</a>[K, A]</span>
       </span>
       </h4>
       
@@ -1116,66 +1104,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#join" data-isabs="false">
-      <a id="join[K, A, B](DList[(K, A)],DList[(K, B)])(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):DList[(K, (A, B))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">join</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="d1">d1: DList[(K, A)]</span>, <span name="d2">d2: DList[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>, <span name="arg5">arg5: Manifest[B]</span>, <span name="arg6">arg6: WireFormat[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(K, (A, B))]</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#joinLeft" data-isabs="false">
-      <a id="joinLeft[K, A, B](DList[(K, A)],DList[(K, B)])(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):DList[(K, (A, Option[B]))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">joinLeft</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="d1">d1: DList[(K, A)]</span>, <span name="d2">d2: DList[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>, <span name="arg5">arg5: Manifest[B]</span>, <span name="arg6">arg6: WireFormat[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(K, (A, <span name="scala.Option" class="extype">Option</span>[B]))]</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#joinLeft" data-isabs="false">
-      <a id="joinLeft[K, A, B](DList[(K, A)],DList[(K, B)],(K, A) ⇒ B)(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):DList[(K, (A, B))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">joinLeft</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="d1">d1: DList[(K, A)]</span>, <span name="d2">d2: DList[(K, B)]</span>, <span name="default">default: (K, A) ⇒ B</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>, <span name="arg5">arg5: Manifest[B]</span>, <span name="arg6">arg6: WireFormat[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(K, (A, B))]</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#joinRight" data-isabs="false">
-      <a id="joinRight[K, A, B](DList[(K, A)],DList[(K, B)])(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):DList[(K, (Option[A], B))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">joinRight</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="d1">d1: DList[(K, A)]</span>, <span name="d2">d2: DList[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>, <span name="arg5">arg5: Manifest[B]</span>, <span name="arg6">arg6: WireFormat[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(K, (<span name="scala.Option" class="extype">Option</span>[A], B))]</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#joinRight" data-isabs="false">
-      <a id="joinRight[K, A, B](DList[(K, A)],DList[(K, B)],(K, B) ⇒ A)(Manifest[K],WireFormat[K],Grouping[K],Manifest[A],WireFormat[A],Manifest[B],WireFormat[B]):DList[(K, (A, B))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">joinRight</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="d1">d1: DList[(K, A)]</span>, <span name="d2">d2: DList[(K, B)]</span>, <span name="default">default: (K, B) ⇒ A</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: WireFormat[K]</span>, <span name="arg2">arg2: Grouping[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: WireFormat[A]</span>, <span name="arg5">arg5: Manifest[B]</span>, <span name="arg6">arg6: WireFormat[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(K, (A, B))]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.WireFormatImplicits#mkAbstractWireFormat" data-isabs="false">
       <a id="mkAbstractWireFormat[T, A&lt;:T, B&lt;:T, C&lt;:T, D&lt;:T, E&lt;:T, F&lt;:T, G&lt;:T, H&lt;:T]()(Manifest[A],WireFormat[A],Manifest[B],WireFormat[B],Manifest[C],WireFormat[C],Manifest[D],WireFormat[D],Manifest[E],WireFormat[E],Manifest[F],WireFormat[F],Manifest[G],WireFormat[G],Manifest[H],WireFormat[H]):WireFormat[T]"></a>
       <h4 class="signature">
@@ -1533,6 +1461,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       <span class="symbol">
         <span class="name">persist</span><span class="tparams">[<span name="P">P</span>]</span><span class="params">(<span name="p">p: P</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="conf">conf: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="persister">persister: <a name="com.nicta.scoobi.Persister" class="extype" href="Persister.html">Persister</a>[P]</span>)</span><span class="result">: Out</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#relationalToDList" data-isabs="false">
+      <a id="relationalToDList[K, A](Relational[K, A]):DList[(K, A)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">relationalToDList</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.lib.Relational" class="extype" href="lib/Relational.html">Relational</a>[K, A]</span>)</span><span class="result">: DList[(K, A)]</span>
       </span>
       </h4>
       
