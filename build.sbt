@@ -42,7 +42,7 @@ javaOptions += "-Xmx2G"
 
 testOptions := Seq(Tests.Filter(s =>
     s.endsWith("Spec")      ||
-    Seq("Index", "All", "UserGuide").exists(s.contains)))
+    Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
 
 publishArtifact in packageDoc := false
 

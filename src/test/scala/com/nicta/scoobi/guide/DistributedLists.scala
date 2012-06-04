@@ -4,7 +4,7 @@ class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
                                                                                                                         """
 ### Overview
 
-Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](http://nicta.github.com/scoobi/${SCOOBI_BRANCH}/index.html#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterized by a type and they provide methods that can be used to produce new `DList` objects, often parameterized by higher-order functions. For example:
+Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterized by a type and they provide methods that can be used to produce new `DList` objects, often parameterized by higher-order functions. For example:
 
     // Converting a List[Int] to a List[String] keeping only evens
     val stringList = intList filter { _ % 2 == 0 } map { _.toString }
@@ -79,7 +79,7 @@ The word count example is one of a number of examples included with Scoobi. The 
 
 ***Loading***
 
-Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`](http://nicta.github.com/scoobi/${SCOOBI_BRANCH}/index.html#com.nicta.scoobi.io.text.TextInput$).
+Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$).
 
 ### Persisting a DList
 
@@ -88,7 +88,7 @@ Most of the time when we create `DList` objects, it is the result of calling a m
  1. Calling `persist`, which bundles all `DList` objects being persisted
  2. Specifying how each `DList` object is to be persisted
 
-Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](http://nicta.github.com/scoobi/${SCOOBI_BRANCH}/index.html#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
+Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
 
     val rankings: DList[(String, Int)] = ...
 
