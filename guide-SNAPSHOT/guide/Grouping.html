@@ -62,12 +62,12 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Grouping.html">Grouping</a></div><div id="leftcolumn"><div id="tree">
-      <ul><li id="1475668637"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="662452275"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1723774576"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1342889943"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Using+Scoobi">Using Scoobi</a>
             
           </li></ul>
-          </li><li id="606688823"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1852205945"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Overview">Overview</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -77,9 +77,9 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Persisting+a+DList">Persisting a DList</a>
             
           </li></ul>
-          </li><li id="1296764936"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="471723320"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             
-          </li><li id="1721473584"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="32378710"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -109,7 +109,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="694576885"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1551215409"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -119,7 +119,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="153042632"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1252310864"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -127,13 +127,13 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="90893969"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="2125204399"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             
-          </li><li id="1807259356"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1341212847"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt+project">Sbt project</a>
             
           </li></ul>
-          </li><li id="616472041"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1788892159"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
@@ -161,12 +161,12 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1475668637','153042632'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
-    </div></div><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="153042632">Grouping</h2></a><status class="ok"><div class="level0" style="display: show"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The [http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.Grouping|Grouping] type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1723774576','1252310864'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="1252310864">Grouping</h2></a><status class="ok"><div class="level0" style="display: show"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The [http://nicta.github.com/scoobi//api/master/index.html#com.nicta.scoobi.Grouping|Grouping] type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
 <ul>
   <li>Provide a [http://www.scala-lang.org/api/milestone/scala/math/Ordering.html|scala.math.Ordering] for your type.</li>
   <li>Make your type extend [http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html|java.lang.Comparable].</li>
-  <li>Directly provide a [http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.Grouping|scoobi.Grouping].</li>
+  <li>Directly provide a [http://nicta.github.com/scoobi//api/master/index.html#com.nicta.scoobi.Grouping|scoobi.Grouping].</li>
 </ul><p>Since the third option is the only one Scoobi specific, and a little more powerful, we'll focus on that.</p><a name="Basic+grouping"><h3>Basic grouping</h3></a><p>Let's say we have a user-defined type, <code class="prettyprint">case class Point(x: Integer, y: Integer)</code> and are using it in a <code class="prettyprint">DList[(Point, String)]</code>. Now if want to group all the same points together, so as to end up with a: <code class="prettyprint">DList[(Point, Iterable[String])</code> we will need to write a function that defines what makes two points equal. It would not be enough to merely provide a pure equality function, as that would require every point to be check against every point (quadratic time).</p><p>Instead, we need to provide strict total ordering. That is, provide a function that can reliably create an ordering for Points. It doesn't really matter how this ordering is done, as long as it is. The scheme normally used is to break the type down into all its members, and provide ordering based on it. So in the <code class="prettyprint">Point</code> case, we can order by <code class="prettyprint">Point.x</code>, if they're the same, order by <code class="prettyprint">Point.y</code> and finally, if they're the same -- we can say the two points are the same.</p><p>The <code class="prettyprint">Grouping[T]</code> trait has a method called <code class="prettyprint">sortCompare</code> that we will override. It takes two T's, and like Java's <code class="prettyprint">Comparable</code> it returns an Int. A negative number to indicate the first <code class="prettyprint">T</code> is less than the second. Zero if the two <code class="prettyprint">T</code>s are equal. And a positive number if the second <code class="prettyprint">T</code> is after the first <code class="prettyprint">T</code>.</p><p>Sample code for our <code class="prettyprint">Point</code>:</p>
 <pre><code class="prettyprint">  implicit val pointGrouping = new Grouping[Point] {
     override def sortCompare(first: Point, second: Point) {
