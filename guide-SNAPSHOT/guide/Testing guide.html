@@ -62,10 +62,10 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Testing guide.html">Testing</a></div><div id="leftcolumn"><div id="tree">
-      <ul><li id="1167688947"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="547902119"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="111011252"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1508479955"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             
-          </li><li id="1955489169"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="944238501"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -79,7 +79,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1958951184"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="2021414610"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
@@ -93,7 +93,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1546488864"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="707832445"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -123,7 +123,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1132653715"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1412465557"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -133,7 +133,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="587566687"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1724331856"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -141,13 +141,13 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1388561902"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1729597277"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             
-          </li><li id="1129723519"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1597710335"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt+project">Sbt project</a>
             
           </li></ul>
-          </li><li id="677285720"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1675615968"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
@@ -175,18 +175,18 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1167688947','677285720'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
-    </div></div><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="677285720">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with <a href="http://specs2.org">specs2</a> out-of-the-box, but you can reuse the testing traits with your own favorite testing library.</p><a name="Using+specs2"><h3>Using specs2</h3></a><a name="Base+specification"><h4>Base specification</h4></a><p>The abstract class <code class="prettyprint">com.nicta.scoobi.testing.mutable.HadoopSpecification</code> is the base class for testing Hadoop jobs. Here's an example showing how to use it:</p>
-<pre><code class="prettyprint">  import com.nicta.scoobi.testing.mutable._
-  import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['111011252','1675615968'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="1675615968">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with <a href="http://specs2.org">specs2</a> out-of-the-box, but you can reuse the testing traits with your own favorite testing library.</p><a name="Using+specs2"><h3>Using specs2</h3></a><a name="Base+specification"><h4>Base specification</h4></a><p>The abstract class <code class="prettyprint">com.nicta.scoobi.testing.mutable.HadoopSpecification</code> is the base class for testing Hadoop jobs. Here's an example showing how to use it:</p>
+<pre><code class="prettyprint">import com.nicta.scoobi.testing.mutable._
+import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
 
-  class WordCountSpec extends HadoopSpecification {
+class WordCountSpec extends HadoopSpecification {
 
-    &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; { conf: ScoobiConfiguration =&gt;
-      // your Scoobi code goes here
-    }
-
+  &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; { conf: ScoobiConfiguration =&gt;
+    // your Scoobi code goes here
   }
+
+}
 </code></pre><p>This specification does several things for you:</p>
 <ul>
   <li>it creates a new <code class="prettyprint">ScoobiConfiguration</code> for each example so that you should be able to run your examples concurrently</li>
@@ -201,18 +201,18 @@
   <li><p>you can change the execution context of the examples by overriding the <code class="prettyprint">context</code> method and returning <code class="prettyprint">local</code> or <code class="prettyprint">cluster</code> instead of <code class="prettyprint">localThenCluster</code> which is the default <a href="http://etorreborre.github.com/specs2/guide/org.specs2.guide.Structure.html#Contexts">specs2 context</a>. The same thing is achievable on the sbt command line by using the <code class="prettyprint">exclude</code> argument: <code class="prettyprint">test-only *WordCount* -- exclude cluster</code> will only run locally.</p></li>
   <li><p>the directory for loading the jars is defined by the <code class="prettyprint">libjarsDirectory</code> property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the <code class="prettyprint">LibJars</code> trait</p></li>
 </ul><a name="Fine+tuning"><h4>Fine tuning</h4></a><a name="Implicit+configuration"><h5>Implicit configuration</h5></a><p>By default, all the examples of a specification are executed concurrently, which is why each example needs to be passed its own <code class="prettyprint">ScoobiConfiguration</code> instance. If you prefer having a sequential execution (with the <code class="prettyprint">sequential</code> specs2 argument) you can omit the explicit passing of the <code class="prettyprint">ScoobiConfiguration</code> object:</p>
-<pre><code class="prettyprint">  class WordCountSpec extends HadoopSpecification {
-    sequential
-    &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; {
-      // your Scoobi code goes here
-    }
+<pre><code class="prettyprint">class WordCountSpec extends HadoopSpecification {
+  sequential
+  &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; {
+    // your Scoobi code goes here
   }
+}
 </code></pre><a name="Cluster+properties"><h5>Cluster properties</h5></a><p>If you only have one cluster for your testing you can hardcode the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> properties by overriding the corresponding methods:</p>
-<pre><code class="prettyprint">  class WordCountSpec extends HadoopSpecification {
-    override def fs         = &quot;hdfs://svm-hadoop1.ssrg.nicta.com.au&quot;
-    override def jobTracker = &quot;svm-hadoop1.ssrg.nicta.com.au:8021&quot;
-    ...
-  }
+<pre><code class="prettyprint">class WordCountSpec extends HadoopSpecification {
+  override def fs         = &quot;hdfs://svm-hadoop1.ssrg.nicta.com.au&quot;
+  override def jobTracker = &quot;svm-hadoop1.ssrg.nicta.com.au:8021&quot;
+  ...
+}
 </code></pre><p>This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.</p><a name="Logging"><h5>Logging</h5></a><p>By default Hadoop logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:</p>
 <ul>
   <li><p>show all logs: <code class="prettyprint">test-only *WordCount* -- scoobi verbose</code> (you can also override the <code class="prettyprint">quiet</code> method</p></li>
@@ -226,30 +226,34 @@
   <li><code class="prettyprint">sbt&gt;test-only *WordCount* -- include local</code> only runs <code class="prettyprint">WordCountSpec</code> examples locally</li>
   <li><code class="prettyprint">sbt&gt;test-only *WordCount* -- include cluster</code> only runs <code class="prettyprint">WordCountSpec</code> examples on the cluster</li>
 </ul><a name="Type+alias"><h5>Type alias</h5></a><p>Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:</p>
-<pre><code class="prettyprint">  class WordCountSpec extends HadoopSpecification {
-    type SC = ScoobiConfiguration
+<pre><code class="prettyprint">class WordCountSpec extends HadoopSpecification {
+  type SC = ScoobiConfiguration
 
-    &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; { conf: SC =&gt;
-      // your Scoobi code goes here
-    }
+  &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; { conf: SC =&gt;
+    // your Scoobi code goes here
   }
+}
 </code></pre><a name="Simple+jobs"><h4>Simple jobs</h4></a><p>The <code class="prettyprint">HadoopSpecification</code> class allows to create any kind of job and execute them either locally or on the cluster. The <code class="prettyprint">SimpleJobs</code> trait is an additional trait which you can use to:</p>
 <ul>
   <li>write some strings to a temporary input text file and get back a <code class="prettyprint">DList</code> representing this data</li>
   <li>execute some transformations based on the <code class="prettyprint">DList</code> API</li>
-  <li><p>get the results as a <code class="prettyprint">Seq[String]</code> from an temporary output file</p><p>&quot;getting the size of words&quot; &gt;&gt; { implicit c: SC =&gt;<br /> fromInput(&quot;hello&quot;, &quot;world&quot;).run { list: DList[String] =&gt; list.map(<em>.size) } must</em>== Seq(&quot;5&quot;, &quot;5&quot;)<br /> }</p></li>
+  <li><p>get the results as a <code class="prettyprint">Seq[String]</code> from an temporary output file</p>
+  <pre><code class="prettyprint">&quot;getting the size of words&quot; &gt;&gt; { implicit c: SC =&gt;
+  fromInput(&quot;hello&quot;, &quot;world&quot;).run { list: DList[String] =&gt; list.map(_.size) } must_== Seq(&quot;5&quot;, &quot;5&quot;)
+}
+</code></pre></li>
 </ul><p><code class="prettyprint">fromInput</code> creates a temporary file and a new <code class="prettyprint">DList</code> from a <code class="prettyprint">TextInput</code>. Then the <code class="prettyprint">run</code> method executes transformations on the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the <code class="prettyprint">keepFiles</code> parameter is set:</p>
-<pre><code class="prettyprint">  &quot;getting the size of words&quot; &gt;&gt; { implicit c: SC =&gt;
-    fromInput(&quot;hello&quot;, &quot;world&quot;).keep.run { list: DList[String] =&gt; list.map(_.size) } must_== Seq(&quot;5&quot;, &quot;5&quot;)
-  }
+<pre><code class="prettyprint">&quot;getting the size of words&quot; &gt;&gt; { implicit c: SC =&gt;
+  fromInput(&quot;hello&quot;, &quot;world&quot;).keep.run { list: DList[String] =&gt; list.map(_.size) } must_== Seq(&quot;5&quot;, &quot;5&quot;)
+}
 </code></pre><p>Other jobs might be slightly more complex and require inputs coming from several files:</p>
-<pre><code class="prettyprint"> &quot;Numbers can be partitioned into even and odd numbers&quot; &gt;&gt; { implicit sc: SC =&gt;
-   val numbers = fromInput((1 to count).map(i =&gt; r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
-   val (evens, odds) = run(numbers.partition(_ % 2 == 0))
+<pre><code class="prettyprint">&quot;Numbers can be partitioned into even and odd numbers&quot; &gt;&gt; { implicit sc: SC =&gt;
+  val numbers = fromInput((1 to count).map(i =&gt; r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
+  val (evens, odds) = run(numbers.partition(_ % 2 == 0))
 
-   forall(evens.map(_.toInt))(i =&gt; i must beEven)
-   forall(odds.map(_.toInt))(i =&gt; i must beOdd)
- }
+  forall(evens.map(_.toInt))(i =&gt; i must beEven)
+  forall(odds.map(_.toInt))(i =&gt; i must beOdd)
+}
 </code></pre><a name="Using+your+own"><h3>Using your own</h3></a><p>Some of the functionalities described above has been extracted into traits which you can reuse with your own test framework:</p>
 <ul>
   <li><p><code class="prettyprint">HomeDefinedHadoopCluster</code> provides an implementation of the <code class="prettyprint">Cluster</code> trait extracting the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> values from the configuration files</p></li>
