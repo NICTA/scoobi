@@ -9,7 +9,7 @@ import org.specs2.Specification
  */
 class ReadMe extends Specification { def is =
   "Welcome!".title.urlIs("README.md") ^
-  ReadMe.is
+  ReadMe
 }
 
 object ReadMe extends ScoobiPage { def is = args.report(notoc=true) ^
