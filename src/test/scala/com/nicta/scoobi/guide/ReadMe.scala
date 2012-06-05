@@ -61,7 +61,7 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
 ### Community
 
  * [Issues](https://github.com/NICTA/scoobi/issues)
- * [Change history](https://github.com/NICTA/scoobi/blob/${SCOOBI_BRANCH}/CHANGES.md)
+ * [Change history](http://notes.implicit.ly/tagged/scoobi)
  * [Source code (github)](https://github.com/NICTA/scoobi)
  * [API Documentation](${SCOOBI_API_PAGE})
  * [Examples](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples)
