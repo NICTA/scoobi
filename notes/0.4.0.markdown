@@ -4,13 +4,15 @@
  * Single import `import com.nicta.scoobi.Scoobi._`
  * IO support for avro
  * Sequence files automatically convert to/from writable
- * DList reduction methods (e.g. DList.reduce, product, min, etc.)
+ * [Distributed Objects](http://nicta.github.com/scoobi/Distributed Objects.html) and DList reduction methods (e.g. reduce, product, min, etc.)
  * [Testing support](http://nicta.github.com/scoobi/guide/Testing%20guide.html#Testing+guide)
+ * [Matrix and vector](http://nicta.github.com/scoobi/guide/Extensions.html) extensions
+
 
 ### Changes
 
  * All methods of Scoobi object are now in Conf object
- * `DList.use(x: DObject)` has been removed, use `DObject.use` instead
+ * `DList.use(x: DObject)` has been removed as part of a complete redesign of Distributed Objects
  * To avoid hiding the scala types, the TextInput pattern matcher helpers have been renamed: Int to AnInt, Float to AFloat, Double to ADouble, Long to ALong.
 
 ### Improvements
@@ -20,5 +22,7 @@
  * Improvements in optimizer
  * MSCR now imposes less overhead on objects that need no fusion
  * Join/coGroup API cleaned up, and performance improved
+ * Better support for other filesystems such as S3
+ * Refactoring of data input and output APIs making user extensions easier to add
 
 ------ 
