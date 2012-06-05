@@ -44,8 +44,6 @@ testOptions := Seq(Tests.Filter(s =>
     s.endsWith("Spec")      ||
     Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
 
-publishArtifact in packageDoc := false
-
 resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
                   "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
                   "Sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
