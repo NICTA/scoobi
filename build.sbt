@@ -48,7 +48,7 @@ publishArtifact in packageDoc := false
 
 resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
                   "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
-                  "Sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases"
+                  "Sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
                   "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Publishing */
