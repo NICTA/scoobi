@@ -25,39 +25,39 @@ The `Grouping[T]` trait has a method called `sortCompare` that we will override.
 
 Sample code for our `Point`:
 
-      implicit val pointGrouping = new Grouping[Point] {
-        override def sortCompare(first: Point, second: Point) {
-          val xResult = first.x.compareTo(second.x)
-          if (xResult != 0)
-            xResult
-          else {
-            val yResult = first.y.compareTo(second.y)
-            if (yResult != 0) yResult
-            else              0
-          }
+    implicit val pointGrouping = new Grouping[Point] {
+      override def sortCompare(first: Point, second: Point) {
+        val xResult = first.x.compareTo(second.x)
+        if (xResult != 0)
+          xResult
+        else {
+          val yResult = first.y.compareTo(second.y)
+          if (yResult != 0) yResult
+          else              0
         }
       }
+    }
 
 ### Secondary sort
 
 Assuming you have read and understood the previous sections, we will move on to some advanced usage of Grouping by example. Let's start some type alias's to make the code more understandable:
 
-      type FirstName = String
-      type LastName = String
+    type FirstName = String
+    type LastName = String
 
 And let's start with a DList with some easily understandable data:
 
-      val names: DList[(FirstName, LastName)] = DList.apply(
-        ("Michael", "Jackson"),
-        ("Leonardo", "Da Vinci"),
-        ("John", "Kennedy"),
-        ("Mark", "Twain"),
-        ("Bat", "Man"),
-        ("Michael", "Jordan"),
-        ("Mark", "Edison"),
-        ("Michael", "Landon"),
-        ("Leonardo", "De Capro"),
-        ("Michael", "J. Fox"))
+    val names: DList[(FirstName, LastName)] = DList.apply(
+      ("Michael", "Jackson"),
+      ("Leonardo", "Da Vinci"),
+      ("John", "Kennedy"),
+      ("Mark", "Twain"),
+      ("Bat", "Man"),
+      ("Michael", "Jordan"),
+      ("Mark", "Edison"),
+      ("Michael", "Landon"),
+      ("Leonardo", "De Capro"),
+      ("Michael", "J. Fox"))
 
 Based on the previous sections, you should know that we could simply do `names.groupByKey` to obtain a `DList[(FirstName, Iterable[String])]. However, there's no ordering associated with the `Iterable[LastName]` this means, if order is required (e.g. we're processing a time series) or outputting the last names in alphabetical order -- we'd have to use a parallelDo to load the entire reducers collection to memory, then sort it there. This is both slow, and going to likely to use too much memory.
 
@@ -67,53 +67,53 @@ In hadoop (and thus scoobi) sorting only happens on the Key, so what we need to 
 
 Your first instinct might be to *move* the information to the key, e.g. make the type: `DList[((FirstName, LastName), Unit)]` however this will *not* work. We need to instead *duplicate* the information to the key, otherwise while things arrive in the correct order, it will not be possible to get the value!
 
-      val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a => ((a._1, a._2), a._2))
+    val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a => ((a._1, a._2), a._2))
 
 Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need to provide a `Grouping` object for. Our goal is to make sure that two keys with the same FirstName evaluate to being the same, so `groupCompare` and `partition` should only consider the FirstName part. However, `sortCompare` should put everything in the correct order (so it should consider both parts).
 
-      implicit val grouping = new Grouping[(FirstName, LastName)] {
+    implicit val grouping = new Grouping[(FirstName, LastName)] {
 
-        override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {
-          // This function says what reducer this particular 'key' should go to. We must override the
-          // default impl, because it looks at the entire key, and makes sure all the same
-          // keys go to the same reducer. But we want to only 'look' at the 'FirstName' part
-          // so that everything with the same FirstName goes to the same reducer (even if it has a different LastName)
+      override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {
+        // This function says what reducer this particular 'key' should go to. We must override the
+        // default impl, because it looks at the entire key, and makes sure all the same
+        // keys go to the same reducer. But we want to only 'look' at the 'FirstName' part
+        // so that everything with the same FirstName goes to the same reducer (even if it has a different LastName)
 
-          // So we'll just use the default (string) partition, and only on the first name
-          implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)
-        }
-
-
-        override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
-          // Ok, here's where the fun is! Everything that is sent to the same reducer now needs
-          // an ordering. So this function is called. Here we return -1 if 'a' should be before 'b',
-          // and 0 if they're they same, and 1 if they're different.
-
-          // So the first thing we want to do, is look at first names
-
-          val firstNameOrdering = a._1.compareTo(b._1)
-
-          firstNameOrdering match {
-            case 0 => {
-              // Interesting! Here the firstName's are the same. So what we want to do, is order by
-              // the lastNames
-
-              a._2.compareTo(b._2)
-            }
-            case x => x // otherwise, just return the result for which of the FirstName's is first
-          }
-        }
-
-        override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
-          // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)
-          // now hadoop allows us to "collapse" everything that is logically the same. So two keys are logically
-          // the same if the FirstName's are equal
-          a._1.compareTo(b._1)
-        }
-
+        // So we'll just use the default (string) partition, and only on the first name
+        implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)
       }
 
-Now calling `bigKey.groupByKey` will work as intended, with all lastNames arriving in order. All this code is available in a [https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples/secondarySort|runnable example]:
+
+      override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
+        // Ok, here's where the fun is! Everything that is sent to the same reducer now needs
+        // an ordering. So this function is called. Here we return -1 if 'a' should be before 'b',
+        // and 0 if they're they same, and 1 if they're different.
+
+        // So the first thing we want to do, is look at first names
+
+        val firstNameOrdering = a._1.compareTo(b._1)
+
+        firstNameOrdering match {
+          case 0 => {
+            // Interesting! Here the firstName's are the same. So what we want to do, is order by
+            // the lastNames
+
+            a._2.compareTo(b._2)
+          }
+          case x => x // otherwise, just return the result for which of the FirstName's is first
+        }
+      }
+
+      override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
+        // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)
+        // now hadoop allows us to "collapse" everything that is logically the same. So two keys are logically
+        // the same if the FirstName's are equal
+        a._1.compareTo(b._1)
+      }
+
+    }
+
+Now calling `bigKey.groupByKey` will work as intended, with all lastNames arriving in order. All this code is available in a [runnable example](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples/secondarySort):
 
                                                                                                                         """
 }

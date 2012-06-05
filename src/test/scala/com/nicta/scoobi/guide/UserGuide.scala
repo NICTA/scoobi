@@ -6,14 +6,14 @@ class UserGuide extends ScoobiPage { def is = args.report(notoc=false) ^"User Gu
 
 [Hadoop MapReduce](http://hadoop.apache.org/) is awesome, but it seems a little bit crazy when you have to write [this](http://wiki.apache.org/hadoop/WordCount) to count words. Wouldn't it be nicer if you could simply write what you want to do:
 
-      val lines = fromTextFile("hdfs://in/...")
+    val lines = fromTextFile("hdfs://in/...")
 
-      val counts = lines.flatMap(_.split(" "))
-                        .map(word => (word, 1))
-                        .groupByKey
-                        .combine(_+_)
+    val counts = lines.flatMap(_.split(" "))
+                      .map(word => (word, 1))
+                      .groupByKey
+                      .combine(_+_)
 
-      persist(toTextFile(counts, "hdfs://out/..."))
+    persist(toTextFile(counts, "hdfs://out/..."))
 
 This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write **what** you want rather than **how** to do it.
 
