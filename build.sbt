@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
   "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
-  "org.mockito" % "mockito-all" % "1.9.0" % "test",
+  "org.mockito" % "mockito-all" % "1.9.0" % "optional",
   "org.pegdown" % "pegdown" % "1.0.2" % "test",
   "junit" % "junit" % "4.7" % "test",
   "org.scalaz" %% "scalaz-core" % "6.95",

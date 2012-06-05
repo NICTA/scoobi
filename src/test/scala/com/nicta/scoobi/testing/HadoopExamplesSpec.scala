@@ -109,7 +109,7 @@ class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit wi
   }
   def runMustBeLocalThenCluster(implicit context: HadoopExamplesForTesting) = {
     context.example1.execute
-    there was no(context.mocked).runOnLocal(any[Result])
+    there was one(context.mocked).runOnLocal(any[Result])
     there was one(context.mocked).runOnCluster(any[Result])
   }
   def noRun(implicit context: HadoopExamplesForTesting) = {
