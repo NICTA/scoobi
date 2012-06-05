@@ -31,14 +31,12 @@ We first can create a `build.sbt` file that has a dependency on Scoobi:
 
   scalaVersion := "2.9.2"
 
-  libraryDependencies += "com.nicta" %% "scoobi" % "0.4.0-SNAPSHOT" % "provided"
+  libraryDependencies += "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" % "provided"
 
   scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
-
   resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
-                "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
-                "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
+                "Packaged Avro" at "http://nicta.github.com/scoobi/releases/")
 ```
 
 To use the sbt-scoobi plugin we need to create a `project/project/scoobi.scala` file with the following contents:

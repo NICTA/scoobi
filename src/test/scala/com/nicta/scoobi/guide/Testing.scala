@@ -1,12 +1,14 @@
 package com.nicta.scoobi.guide
 
 class Testing extends ScoobiPage { def is = "Testing guide".title^
-                                                                                                                        """
+  """
 ### Introduction
 
 Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with [specs2](http://specs2.org) out-of-the-box, but you can reuse the testing traits with your own favorite testing library.
 
 ### Using specs2
+
+First of all you need to add the specs2 dependency to your build.sbt file (use the same version that [Scoobi is using](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/build.sbt))
 
 #### Base specification
 
@@ -143,6 +145,6 @@ Some of the functionalities described above has been extracted into traits which
  * `WithLocalHadoop` provides the `onLocal` method to execute Hadoop code locally. It also defines the `quiet` and `showTimes` methods to display log statement and/or execution times
 
  * `WithHadoop` extends the `WithLocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
-                                                                                                                        """
+  """
 
 }
