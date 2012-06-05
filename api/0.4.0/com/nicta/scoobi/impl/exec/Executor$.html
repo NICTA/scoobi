@@ -174,19 +174,30 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Executor#executePlan" data-isabs="false">
-      <a id="executePlan(MSCRGraph)(ScoobiConfiguration):Unit"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Executor#executeArrOutput" data-isabs="false">
+      <a id="executeArrOutput(com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape],com.nicta.scoobi.io.DataSink[_, _, _],ExecState):ExecState"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">executePlan</span><span class="params">(<span name="mscrGraph">mscrGraph: <a name="com.nicta.scoobi.impl.plan.MSCRGraph" class="extype" href="../plan/MSCRGraph.html">MSCRGraph</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="../../ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">executeArrOutput</span><span class="params">(<span name="node">node: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>, <span name="sink">sink: com.nicta.scoobi.io.DataSink[_, _, _]</span>, <span name="st">st: <a name="com.nicta.scoobi.impl.exec.ExecState" class="extype" href="ExecState.html">ExecState</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.ExecState" class="extype" href="ExecState.html">ExecState</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">For each output, traverse its MSCR graph and execute MapReduce jobs.</p><div class="fullcomment"><div class="comment cmt"><p>For each output, traverse its MSCR graph and execute MapReduce jobs. Whilst there may
-be multiple outputs, only visit each MSCR once.</p></div></div>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Executor#executeExp" data-isabs="false">
+      <a id="executeExp[E](com.nicta.scoobi.impl.plan.AST.Node[E, _ &lt;: com.nicta.scoobi.impl.plan.Shape],ExecState):(E, ExecState)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">executeExp</span><span class="tparams">[<span name="E">E</span>]</span><span class="params">(<span name="node">node: com.nicta.scoobi.impl.plan.AST.Node[E, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>, <span name="st">st: <a name="com.nicta.scoobi.impl.exec.ExecState" class="extype" href="ExecState.html">ExecState</a></span>)</span><span class="result">: (E, <a name="com.nicta.scoobi.impl.exec.ExecState" class="extype" href="ExecState.html">ExecState</a>)</span>
+      </span>
+      </h4>
+      
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -286,6 +297,18 @@ be multiple outputs, only visit each MSCR once.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Executor#prepare" data-isabs="false">
+      <a id="prepare(MSCRGraph,ScoobiConfiguration):ExecState"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prepare</span><span class="params">(<span name="mscrGraph">mscrGraph: <a name="com.nicta.scoobi.impl.plan.MSCRGraph" class="extype" href="../plan/MSCRGraph.html">MSCRGraph</a></span>, <span name="conf">conf: <a name="com.nicta.scoobi.ScoobiConfiguration" class="extype" href="../../ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.ExecState" class="extype" href="ExecState.html">ExecState</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Prepare for execution of the graph.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

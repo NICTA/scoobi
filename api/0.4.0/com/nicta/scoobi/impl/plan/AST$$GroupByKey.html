@@ -25,13 +25,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">GroupByKey</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, V)]</span>, <span name="evidence$32">evidence$32: Manifest[K]</span>, <span name="evidence$33">evidence$33: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="evidence$34">evidence$34: <a name="com.nicta.scoobi.Grouping" class="extype" href="../../Grouping.html">Grouping</a>[K]</span>, <span name="evidence$35">evidence$35: Manifest[V]</span>, <span name="evidence$36">evidence$36: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, Iterable[V])] with <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[K, V, (K, Iterable[V])] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">GroupByKey</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>, <span name="evidence$40">evidence$40: Manifest[K]</span>, <span name="evidence$41">evidence$41: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="evidence$42">evidence$42: <a name="com.nicta.scoobi.Grouping" class="extype" href="../../Grouping.html">Grouping</a>[K]</span>, <span name="evidence$43">evidence$43: Manifest[V]</span>, <span name="evidence$44">evidence$44: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, Iterable[V]), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>] with <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[K, V, (K, Iterable[V]), <span name="scala.Unit" class="extype">Unit</span>] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Usual GBK node.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[K, V, (K, Iterable[V])], <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, Iterable[V])], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[K, V, (K, Iterable[V]), <span name="scala.Unit" class="extype">Unit</span>], <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, Iterable[V]), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GroupByKey</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, V)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.Grouping" class="extype" href="../../Grouping.html">Grouping</a>[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>)</span>
+        <span class="name">GroupByKey</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.Grouping" class="extype" href="../../Grouping.html">Grouping</a>[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[V]</span>)</span>
       </span>
       </h4>
       
@@ -189,7 +189,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.GroupByKey#equals" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Node#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -200,7 +200,7 @@
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.GroupByKey" class="extype" href="">GroupByKey</a> → Equals → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -253,14 +253,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.GroupByKey#in" data-isabs="false">
-      <a id="in:Node[(K, V)]"></a>
+      <a id="in:Node[(K, V), Arr]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">in</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, V)]</span>
+        <span class="name">in</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>
       </span>
       </h4>
       
@@ -277,26 +277,26 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Node#mkStraightTaggedIdentityMapper" data-isabs="false">
-      <a id="mkStraightTaggedIdentityMapper(Set[Int]):TaggedMapper[(K, Iterable[V]), Int, (K, Iterable[V])]"></a>
+      <a id="mkStraightTaggedIdentityMapper(Set[Int]):TaggedMapper[(K, Iterable[V]), Unit, Int, (K, Iterable[V])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mkStraightTaggedIdentityMapper</span><span class="params">(<span name="tags">tags: Set[<span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedMapper" class="extype" href="../exec/TaggedMapper.html">TaggedMapper</a>[(K, Iterable[V]), <span name="scala.Int" class="extype">Int</span>, (K, Iterable[V])]</span>
+        <span class="name">mkStraightTaggedIdentityMapper</span><span class="params">(<span name="tags">tags: Set[<span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedMapper" class="extype" href="../exec/TaggedMapper.html">TaggedMapper</a>[(K, Iterable[V]), <span name="scala.Unit" class="extype">Unit</span>, <span name="scala.Int" class="extype">Int</span>, (K, Iterable[V])]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.GroupByKey#mkTaggedReducer" data-isabs="false">
-      <a id="mkTaggedReducer(Int):TaggedReducer[K, V, (K, Iterable[V])]"></a>
+      <a id="mkTaggedReducer(Int):TaggedReducer[K, V, (K, Iterable[V]), Unit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mkTaggedReducer</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedReducer" class="extype" href="../exec/TaggedReducer.html">TaggedReducer</a>[K, V, (K, Iterable[V])]</span>
+        <span class="name">mkTaggedReducer</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedReducer" class="extype" href="../exec/TaggedReducer.html">TaggedReducer</a>[K, V, (K, Iterable[V]), <span name="scala.Unit" class="extype">Unit</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.GroupByKey" class="extype" href="">GroupByKey</a> → <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a></dd></dl></div>
@@ -499,9 +499,9 @@
             </div><div name="scala.Equals" class="parent">
               <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
             </div><div name="com.nicta.scoobi.impl.exec.ReducerLike" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[K, V, (K, Iterable[V])]</h3>
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[K, V, (K, Iterable[V]), <span name="scala.Unit" class="extype">Unit</span>]</h3>
             </div><div name="com.nicta.scoobi.impl.plan.AST.Node" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, Iterable[V])]</h3>
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[(K, Iterable[V]), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

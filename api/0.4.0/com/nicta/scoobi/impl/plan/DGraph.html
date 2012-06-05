@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DGraph</span><span class="params">(<span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>)</span>
+        <span class="name">DGraph</span><span class="params">(<span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>)</span>
       </span>
       </h4>
       
@@ -77,7 +77,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DGraph</span><span class="params">(<span name="inputs">inputs: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>, <span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>, <span name="nodes">nodes: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>, <span name="succs">succs: Map[com.nicta.scoobi.impl.plan.Smart.DList[_], Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]]</span>, <span name="preds">preds: Map[com.nicta.scoobi.impl.plan.Smart.DList[_], Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]]</span>)</span>
+        <span class="name">DGraph</span><span class="params">(<span name="inputs">inputs: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>, <span name="outputs">outputs: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>, <span name="nodes">nodes: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>, <span name="succs">succs: Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]]</span>, <span name="preds">preds: Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]]</span>)</span>
       </span>
       </h4>
       
@@ -241,14 +241,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph#inputs" data-isabs="false">
-      <a id="inputs:Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]"></a>
+      <a id="inputs:Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">inputs</span><span class="result">: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>
+        <span class="name">inputs</span><span class="result">: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
       
@@ -277,14 +277,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph#nodes" data-isabs="false">
-      <a id="nodes:Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]"></a>
+      <a id="nodes:Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">nodes</span><span class="result">: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>
+        <span class="name">nodes</span><span class="result">: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
       
@@ -313,38 +313,38 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph#outputs" data-isabs="false">
-      <a id="outputs:Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]"></a>
+      <a id="outputs:Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">outputs</span><span class="result">: Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]</span>
+        <span class="name">outputs</span><span class="result">: Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph#preds" data-isabs="false">
-      <a id="preds:Map[com.nicta.scoobi.impl.plan.Smart.DList[_], Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]]"></a>
+      <a id="preds:Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">preds</span><span class="result">: Map[com.nicta.scoobi.impl.plan.Smart.DList[_], Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]]</span>
+        <span class="name">preds</span><span class="result">: Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DGraph#succs" data-isabs="false">
-      <a id="succs:Map[com.nicta.scoobi.impl.plan.Smart.DList[_], Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]]"></a>
+      <a id="succs:Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">succs</span><span class="result">: Map[com.nicta.scoobi.impl.plan.Smart.DList[_], Set[com.nicta.scoobi.impl.plan.Smart.DList[_]]]</span>
+        <span class="name">succs</span><span class="result">: Map[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape], Set[com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]]</span>
       </span>
       </h4>
       

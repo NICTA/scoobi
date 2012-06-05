@@ -48,7 +48,31 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.testing.Cluster" data-isabs="true">
+              <ol><li visbl="pub" name="com.nicta.scoobi.testing.package#@@" data-isabs="false">
+      <a id="@@:@@[T, U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $at$at">@@</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> = T with Tagged[U]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.package" class="extype" href="package$.html">package</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.package.AsLevel" data-isabs="true">
+      <a id="AsLevel:AsLevel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$AsLevel.html"><span class="name">AsLevel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.Cluster" data-isabs="true">
       <a id="Cluster:Cluster"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -99,6 +123,18 @@
       </h4>
       <p class="comment cmt">Implementation of the Cluster trait taking the configuration from the HADOOP_HOME directory
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopLogFactory" data-isabs="false">
+      <a id="HadoopLogFactory:HadoopLogFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopLogFactory.html"><span class="name">HadoopLogFactory</span></a><span class="result"> extends LogFactory</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Log factory used for testing.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopSpecification" data-isabs="true">
       <a id="HadoopSpecification:HadoopSpecification"></a>
       <h4 class="signature">
@@ -124,18 +160,42 @@
       </span>
       </h4>
       <p class="comment cmt">You can use this abstract class to create your own specification class, specifying:</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.InputTestFile" data-isabs="false">
-      <a id="InputTestFile:InputTestFile[S]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.InputStringTestFile" data-isabs="false">
+      <a id="InputStringTestFile:InputStringTestFile"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputTestFile.html"><span class="name">InputTestFile</span></a><span class="tparams">[<span name="S">S</span>]</span><span class="params">(<span name="ls">ls: Seq[String]</span>, <span name="mapping">mapping: (String) ⇒ S</span>, <span name="keepFile">keepFile: Boolean</span>, <span name="configuration">configuration: ScoobiConfiguration</span>, <span name="m">m: Manifest[S]</span>, <span name="w">w: WireFormat[S]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="InputStringTestFile.html"><span class="name">InputStringTestFile</span></a><span class="params">(<span name="ls">ls: Seq[String]</span>, <span name="keepFile">keepFile: Boolean</span>, <span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result"> extends InputTestFile[String] with Product with Serializable</span>
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.InputTestFile" data-isabs="false">
+      <a id="InputTestFile:InputTestFile[S]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputTestFile.html"><span class="name">InputTestFile</span></a><span class="tparams">[<span name="S">S</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.package#Level" data-isabs="false">
+      <a id="Level:Level"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Level</span><span class="result"> = String with Tagged[<a name="com.nicta.scoobi.testing.package.AsLevel" class="extype" href="package$$AsLevel.html">AsLevel</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.package" class="extype" href="package$.html">package</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.LibJars" data-isabs="true">
       <a id="LibJars:LibJars"></a>
       <h4 class="signature">
@@ -172,6 +232,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.package#Tagged" data-isabs="false">
+      <a id="Tagged:Tagged[U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Tagged</span><span class="tparams">[<span name="U">U</span>]</span><span class="result"> = AnyRef { type Tag = U }</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.package" class="extype" href="package$.html">package</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.TempFiles" data-isabs="true">
       <a id="TempFiles:TempFiles"></a>
       <h4 class="signature">
@@ -224,18 +296,6 @@ The files paths are registered in the configuration so that they can be deleted 
       </span>
       </h4>
       <p class="comment cmt">This trait provides methods to execute map-reduce code, either locally or on the cluster.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.WithHadoopLogFactory" data-isabs="false">
-      <a id="WithHadoopLogFactory:WithHadoopLogFactory"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="WithHadoopLogFactory.html"><span class="name">WithHadoopLogFactory</span></a><span class="result"> extends LogFactory</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Log factory used for testing.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.WithLocalHadoop" data-isabs="true">
       <a id="WithLocalHadoop:WithLocalHadoop"></a>
       <h4 class="signature">
@@ -256,7 +316,19 @@ The files paths are registered in the configuration so that they can be deleted 
 
         <div class="values members" id="values">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.testing.TempFiles" data-isabs="false">
+              <ol><li visbl="pub" name="com.nicta.scoobi.testing.HadoopLogFactory" data-isabs="false">
+      <a id="HadoopLogFactory:HadoopLogFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopLogFactory$.html"><span class="name">HadoopLogFactory</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.TempFiles" data-isabs="false">
       <a id="TempFiles:TempFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -280,18 +352,18 @@ The files paths are registered in the configuration so that they can be deleted 
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.WithHadoopLogFactory" data-isabs="false">
-      <a id="WithHadoopLogFactory:WithHadoopLogFactory"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.package#level" data-isabs="false">
+      <a id="level(String):Level"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <a href="WithHadoopLogFactory$.html"><span class="name">WithHadoopLogFactory</span></a><span class="result"> extends AnyRef</span>
+        <span class="name">level</span><span class="params">(<span name="l">l: String</span>)</span><span class="result">: Level</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.package" class="extype" href="package$.html">package</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable" data-isabs="false">
       <a id="mutable:mutable"></a>
       <h4 class="signature">

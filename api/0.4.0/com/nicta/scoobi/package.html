@@ -48,12 +48,25 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.DList" data-isabs="false">
+              <ol><li visbl="pub" name="com.nicta.scoobi.BasicDoFn" data-isabs="true">
+      <a id="BasicDoFn:BasicDoFn[A, B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="BasicDoFn.html"><span class="name">BasicDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends DoFn[A, B]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
+environment with an do-nothing setup and cleanup phases.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DList" data-isabs="true">
       <a id="DList:DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <a href="DList.html"><span class="name">DList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
@@ -71,19 +84,19 @@
         <a href="DListPersister.html"><span class="name">DListPersister</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dlist">dlist: DList[A]</span>, <span name="sink">sink: com.nicta.scoobi.io.DataSink[_, _, A]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
-      <p class="comment cmt">A class that specifies how to make a distributed list persistent.</p>
+      <p class="comment cmt">The container for persisting a DList.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.DObject" data-isabs="true">
       <a id="DObject:DObject[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <a href="DObject.html"><span class="name">DObject</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">A wrapper around an object that is part of the graph of a distributed computation.</p>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.DoFn" data-isabs="true">
       <a id="DoFn:DoFn[A, B]"></a>
       <h4 class="signature">
@@ -92,10 +105,11 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DoFn.html"><span class="name">DoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="DoFn.html"><span class="name">DoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends EnvDoFn[A, B, Unit]</span>
       </span>
       </h4>
-      <p class="comment cmt">Interface for specifying parallel operation over DLists.</p>
+      <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
+environment.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.Emitter" data-isabs="true">
       <a id="Emitter:Emitter[A]"></a>
       <h4 class="signature">
@@ -108,6 +122,18 @@
       </span>
       </h4>
       <p class="comment cmt">Interface for writing outputs from a DoFn.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.EnvDoFn" data-isabs="true">
+      <a id="EnvDoFn:EnvDoFn[A, B, E]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="EnvDoFn.html"><span class="name">EnvDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Interface for specifying parallel operation over DLists.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.Grouping" data-isabs="true">
       <a id="Grouping:Grouping[K]"></a>
       <h4 class="signature">
@@ -132,18 +158,30 @@
       </span>
       </h4>
       <p class="comment cmt">Implicit definitions of Grouping instances for common types.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.Job" data-isabs="false">
-      <a id="Job:Job"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.PFn" data-isabs="true">
+      <a id="PFn:PFn[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Job.html"><span class="name">Job</span></a><span class="params">()</span><span class="result"> extends Product with Serializable</span>
+        <a href="PFn.html"><span class="name">PFn</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">A job that persists distributed lists and computes distributed objects.</p>
+      <p class="comment cmt">Type class for persisting something.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.Persister" data-isabs="true">
+      <a id="Persister:Persister[In]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Persister.html"><span class="name">Persister</span></a><span class="tparams">[<span name="In">In</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Type class for things that can be persisted.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.ScoobiApp" data-isabs="true">
       <a id="ScoobiApp:ScoobiApp"></a>
       <h4 class="signature">
@@ -152,7 +190,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiApp.html"><span class="name">ScoobiApp</span></a><span class="result"> extends DelayedInit</span>
+        <a href="ScoobiApp.html"><span class="name">ScoobiApp</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
@@ -212,18 +250,18 @@ added to the classpath.</p>
       </span>
       </h4>
       <p class="comment cmt">This object provides a set of operations to create distributed lists.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.DoFn" data-isabs="false">
-      <a id="DoFn:DoFn"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.DObject" data-isabs="false">
+      <a id="DObject:DObject"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="DoFn$.html"><span class="name">DoFn</span></a><span class="result"> extends AnyRef</span>
+        <a href="DObject$.html"><span class="name">DObject</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      
+      <p class="comment cmt">This object provides a set of operations to create distributed objects.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.Grouping" data-isabs="false">
       <a id="Grouping:Grouping"></a>
       <h4 class="signature">
@@ -236,6 +274,42 @@ added to the classpath.</p>
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.PFn" data-isabs="false">
+      <a id="PFn:PFn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PFn$.html"><span class="name">PFn</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">PFn type class instances for DLists (i.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.Persist" data-isabs="false">
+      <a id="Persist:Persist"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Persist$.html"><span class="name">Persist</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Persister" data-isabs="false">
+      <a id="Persister:Persister"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Persister$.html"><span class="name">Persister</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Persister type class instances for tuples.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi" data-isabs="false">
       <a id="Scoobi:Scoobi"></a>
       <h4 class="signature">

@@ -14,24 +14,27 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <img src="../../../lib/class_big.png" />
+        <a title="Go to companion" href="DObject$.html"><img src="../../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a name="com" class="extype" href="../../package.html">com</a>.<a name="com.nicta" class="extype" href="../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="package.html">scoobi</a></p>
-        <h1>DObject</h1>
+        <h1><a title="Go to companion" href="DObject$.html">DObject</a></h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <span class="name">DObject</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A wrapper around an object that is part of the graph of a distributed computation.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="impl/plan/DObjectImpl.html">DObjectImpl</a>, <a name="com.nicta.scoobi.impl.plan.UnitDObject" class="extype" href="impl/plan/UnitDObject$.html">UnitDObject</a></div>
         </div></div>
     
 
@@ -55,48 +58,58 @@
 
       <div id="template">
         <div id="allMembers">
-        <div class="members" id="constructors">
-              <h3>Instance Constructors</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.DObject#this" data-isabs="false">
-      <a id="this:DObject[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">DObject</span><span class="params">()</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.DObject#get" data-isabs="true">
-      <a id="get:A"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.DObject#join" data-isabs="true">
+      <a id="join[B](DList[B])(Manifest[B],WireFormat[B]):DList[(A, B)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">get</span><span class="result">: A</span>
+        <span class="name">join</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DList" class="extype" href="DList.html">DList</a>[(A, B)]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Get the value being wrapped.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.DObject#use" data-isabs="true">
-      <a id="use:com.nicta.scoobi.DListPersister[_]"></a>
+      <p class="shortcomment cmt">Create a new distributed list by replicating the value of this distributed object
+to every element within the provided distributed list.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DObject#m" data-isabs="true">
+      <a id="m:Manifest[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit abstract </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">m</span><span class="result">: Manifest[A]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.DObject#map" data-isabs="true">
+      <a id="map[B]((A) ⇒ B)(Manifest[B],WireFormat[B]):DObject[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">use</span><span class="result">: com.nicta.scoobi.DListPersister[_]</span>
+        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (A) ⇒ B</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.DObject" class="extype" href="">DObject</a>[B]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new distributed object by apply a function to this distributed object.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.DObject#wf" data-isabs="true">
+      <a id="wf:WireFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit abstract </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wf</span><span class="result">: <a name="com.nicta.scoobi.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>
       </span>
       </h4>
       

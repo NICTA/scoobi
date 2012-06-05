@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">BypassOutputChannel</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">BypassOutputChannel</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _, _]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">BypassOutputChannel</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _]</span>)</span>
+        <span class="name">BypassOutputChannel</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="origin">origin: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _, _]</span>)</span>
       </span>
       </h4>
       
@@ -264,6 +264,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassOutputChannel#nodes" data-isabs="false">
+      <a id="nodes:Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodes</span><span class="result">: Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.BypassOutputChannel" class="extype" href="">BypassOutputChannel</a> → <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
       <a id="notify():Unit"></a>
       <h4 class="signature">
@@ -289,26 +301,26 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassOutputChannel#origin" data-isabs="false">
-      <a id="origin:com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _]"></a>
+      <a id="origin:com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _, _]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">origin</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _]</span>
+        <span class="name">origin</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _] with com.nicta.scoobi.impl.exec.ReducerLike[_, _, _, _]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.BypassOutputChannel#outputNode" data-isabs="false">
-      <a id="outputNode:com.nicta.scoobi.impl.plan.AST.Node[_]"></a>
+      <a id="outputNode:com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputNode</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_]</span>
+        <span class="name">outputNode</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.BypassOutputChannel" class="extype" href="">BypassOutputChannel</a> → <a name="com.nicta.scoobi.impl.plan.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a></dd></dl></div>

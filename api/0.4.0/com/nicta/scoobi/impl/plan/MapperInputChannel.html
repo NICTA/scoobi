@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MapperInputChannel</span><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">MapperInputChannel</span><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[(com.nicta.scoobi.impl.exec.Env[_], com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _])]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MapperInputChannel</span><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>)</span>
+        <span class="name">MapperInputChannel</span><span class="params">(<span name="source">source: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="mappers">mappers: Set[(com.nicta.scoobi.impl.exec.Env[_], com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _])]</span>)</span>
       </span>
       </h4>
       
@@ -76,18 +76,42 @@
 
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.InputChannel#inputNode" data-isabs="true">
-      <a id="inputNode:com.nicta.scoobi.impl.plan.AST.Node[_]"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#inputEnvs" data-isabs="true">
+      <a id="inputEnvs:Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputNode</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_]</span>
+        <span class="name">inputEnvs</span><span class="result">: Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#inputNode" data-isabs="true">
+      <a id="inputNode:com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inputNode</span><span class="result">: com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#nodes" data-isabs="true">
+      <a id="nodes:Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodes</span><span class="result">: Set[com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -268,14 +292,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.MapperInputChannel#mappers" data-isabs="false">
-      <a id="mappers:Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]"></a>
+      <a id="mappers:Set[(com.nicta.scoobi.impl.exec.Env[_], com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">mappers</span><span class="result">: Set[com.nicta.scoobi.impl.plan.AST.Node[_] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _]]</span>
+        <span class="name">mappers</span><span class="result">: Set[(com.nicta.scoobi.impl.exec.Env[_], com.nicta.scoobi.impl.plan.AST.Node[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape] with com.nicta.scoobi.impl.exec.MapperLike[_, _, _, _])]</span>
       </span>
       </h4>
       

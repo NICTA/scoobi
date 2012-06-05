@@ -25,13 +25,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Mapper</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B] with <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, <span name="scala.Int" class="extype">Int</span>, B] with <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[<span name="scala.Int" class="extype">Int</span>, B, B] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">Mapper</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>, <span name="env">env: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[E, <a name="com.nicta.scoobi.impl.plan.Exp" class="extype" href="Exp.html">Exp</a>]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="../../EnvDoFn.html">EnvDoFn</a>[A, B, E]</span>, <span name="evidence$3">evidence$3: Manifest[A]</span>, <span name="evidence$4">evidence$4: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="evidence$5">evidence$5: Manifest[B]</span>, <span name="evidence$6">evidence$6: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>, <span name="evidence$7">evidence$7: Manifest[E]</span>, <span name="evidence$8">evidence$8: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[E]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>] with <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, E, <span name="scala.Int" class="extype">Int</span>, B] with <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[<span name="scala.Int" class="extype">Int</span>, B, B, <span name="scala.Unit" class="extype">Unit</span>] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Input channel mapper that is not hooked up to a GBK.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[<span name="scala.Int" class="extype">Int</span>, B, B], <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, <span name="scala.Int" class="extype">Int</span>, B], <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[<span name="scala.Int" class="extype">Int</span>, B, B, <span name="scala.Unit" class="extype">Unit</span>], <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, E, <span name="scala.Int" class="extype">Int</span>, B], <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -58,14 +58,14 @@
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#this" data-isabs="false">
-      <a id="this:Mapper[A, B]"></a>
+      <a id="this:Mapper[A, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Mapper</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>)</span>
+        <span class="name">Mapper</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>, <span name="env">env: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[E, <a name="com.nicta.scoobi.impl.plan.Exp" class="extype" href="Exp.html">Exp</a>]</span>, <span name="dofn">dofn: <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="../../EnvDoFn.html">EnvDoFn</a>[A, B, E]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: Manifest[B]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[B]</span>, <span name="arg4">arg4: Manifest[E]</span>, <span name="arg5">arg5: <a name="com.nicta.scoobi.WireFormat" class="extype" href="../../WireFormat.html">WireFormat</a>[E]</span>)</span>
       </span>
       </h4>
       
@@ -178,14 +178,26 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#dofn" data-isabs="false">
-      <a id="dofn:DoFn[A, B]"></a>
+      <a id="dofn:EnvDoFn[A, B, E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">dofn</span><span class="result">: <a name="com.nicta.scoobi.DoFn" class="extype" href="../../DoFn.html">DoFn</a>[A, B]</span>
+        <span class="name">dofn</span><span class="result">: <a name="com.nicta.scoobi.EnvDoFn" class="extype" href="../../EnvDoFn.html">EnvDoFn</a>[A, B, E]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#env" data-isabs="false">
+      <a id="env:Node[E, Exp]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">env</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[E, <a name="com.nicta.scoobi.impl.plan.Exp" class="extype" href="Exp.html">Exp</a>]</span>
       </span>
       </h4>
       
@@ -201,7 +213,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#equals" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Node#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -212,7 +224,7 @@
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Mapper" class="extype" href="">Mapper</a> → Equals → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -265,14 +277,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#in" data-isabs="false">
-      <a id="in:Node[A]"></a>
+      <a id="in:Node[A, Arr]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">in</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A]</span>
+        <span class="name">in</span><span class="result">: <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[A, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>
       </span>
       </h4>
       
@@ -289,38 +301,38 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Node#mkStraightTaggedIdentityMapper" data-isabs="false">
-      <a id="mkStraightTaggedIdentityMapper(Set[Int]):TaggedMapper[B, Int, B]"></a>
+      <a id="mkStraightTaggedIdentityMapper(Set[Int]):TaggedMapper[B, Unit, Int, B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mkStraightTaggedIdentityMapper</span><span class="params">(<span name="tags">tags: Set[<span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedMapper" class="extype" href="../exec/TaggedMapper.html">TaggedMapper</a>[B, <span name="scala.Int" class="extype">Int</span>, B]</span>
+        <span class="name">mkStraightTaggedIdentityMapper</span><span class="params">(<span name="tags">tags: Set[<span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedMapper" class="extype" href="../exec/TaggedMapper.html">TaggedMapper</a>[B, <span name="scala.Unit" class="extype">Unit</span>, <span name="scala.Int" class="extype">Int</span>, B]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#mkTaggedMapper" data-isabs="false">
-      <a id="mkTaggedMapper(Set[Int]):TaggedMapper[A, Int, B]"></a>
+      <a id="mkTaggedMapper(Set[Int]):TaggedMapper[A, E, Int, B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mkTaggedMapper</span><span class="params">(<span name="tags">tags: Set[<span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedMapper" class="extype" href="../exec/TaggedMapper.html">TaggedMapper</a>[A, <span name="scala.Int" class="extype">Int</span>, B]</span>
+        <span class="name">mkTaggedMapper</span><span class="params">(<span name="tags">tags: Set[<span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedMapper" class="extype" href="../exec/TaggedMapper.html">TaggedMapper</a>[A, E, <span name="scala.Int" class="extype">Int</span>, B]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Mapper" class="extype" href="">Mapper</a> → <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.AST.Mapper#mkTaggedReducer" data-isabs="false">
-      <a id="mkTaggedReducer(Int):TaggedReducer[Int, B, B]"></a>
+      <a id="mkTaggedReducer(Int):TaggedReducer[Int, B, B, Unit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mkTaggedReducer</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedReducer" class="extype" href="../exec/TaggedReducer.html">TaggedReducer</a>[<span name="scala.Int" class="extype">Int</span>, B, B]</span>
+        <span class="name">mkTaggedReducer</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.exec.TaggedReducer" class="extype" href="../exec/TaggedReducer.html">TaggedReducer</a>[<span name="scala.Int" class="extype">Int</span>, B, B, <span name="scala.Unit" class="extype">Unit</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Mapper" class="extype" href="">Mapper</a> → <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a></dd></dl></div>
@@ -523,11 +535,11 @@
             </div><div name="scala.Equals" class="parent">
               <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
             </div><div name="com.nicta.scoobi.impl.exec.ReducerLike" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[<span name="scala.Int" class="extype">Int</span>, B, B]</h3>
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.ReducerLike" class="extype" href="../exec/ReducerLike.html">ReducerLike</a>[<span name="scala.Int" class="extype">Int</span>, B, B, <span name="scala.Unit" class="extype">Unit</span>]</h3>
             </div><div name="com.nicta.scoobi.impl.exec.MapperLike" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, <span name="scala.Int" class="extype">Int</span>, B]</h3>
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.MapperLike" class="extype" href="../exec/MapperLike.html">MapperLike</a>[A, E, <span name="scala.Int" class="extype">Int</span>, B]</h3>
             </div><div name="com.nicta.scoobi.impl.plan.AST.Node" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B]</h3>
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a>[B, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

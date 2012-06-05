@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MapperInputChannel</span><span class="params">(<span name="parDos">parDos: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">MapperInputChannel</span><span class="params">(<span name="parDos">parDos: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MapperInputChannel</span><span class="params">(<span name="parDos">parDos: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>)</span>
+        <span class="name">MapperInputChannel</span><span class="params">(<span name="parDos">parDos: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]]</span>)</span>
       </span>
       </h4>
       
@@ -177,6 +177,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel#containsGbkMapper" data-isabs="false">
+      <a id="containsGbkMapper(com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">containsGbkMapper</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel#convert" data-isabs="false">
       <a id="convert(ConvertInfo):MapperInputChannel"></a>
       <h4 class="signature">
@@ -253,26 +265,38 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel#hasInput" data-isabs="false">
-      <a id="hasInput(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="hasInput(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hasInput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">hasInput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel#hasNode" data-isabs="false">
+      <a id="hasNode(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasNode</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel#hasOutput" data-isabs="false">
-      <a id="hasOutput(com.nicta.scoobi.impl.plan.Smart.DList[_]):Boolean"></a>
+      <a id="hasOutput(com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hasOutput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DList[_]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">hasOutput</span><span class="params">(<span name="d">d: com.nicta.scoobi.impl.plan.Smart.DComp[_, _ &lt;: com.nicta.scoobi.impl.plan.Shape]</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel" class="extype" href="">MapperInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.Intermediate.InputChannel" class="extype" href="Intermediate$$InputChannel.html">InputChannel</a></dd></dl></div>
@@ -337,14 +361,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Intermediate.MapperInputChannel#parDos" data-isabs="false">
-      <a id="parDos:List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]"></a>
+      <a id="parDos:List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">parDos</span><span class="result">: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _]]</span>
+        <span class="name">parDos</span><span class="result">: List[com.nicta.scoobi.impl.plan.Smart.ParallelDo[_, _, _]]</span>
       </span>
       </h4>
       

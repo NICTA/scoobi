@@ -46,21 +46,144 @@
         <div id="allMembers">
         
 
-        
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.lib.DColWiseMatrix" data-isabs="false">
+      <a id="DColWiseMatrix:DColWiseMatrix[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DColWiseMatrix.html"><span class="name">DColWiseMatrix</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DList[(Elem, Iterable[(Elem, T)])]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A col-wise matrix.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.DMatrix" data-isabs="false">
+      <a id="DMatrix:DMatrix[Elem, Value]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DMatrix.html"><span class="name">DMatrix</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="Value">Value</span>]</span><span class="params">(<span name="data">data: DList[((Elem, Elem), Value)]</span>, <span name="evidence$42">evidence$42: Manifest[Elem]</span>, <span name="evidence$43">evidence$43: WireFormat[Elem]</span>, <span name="evidence$44">evidence$44: Ordering[Elem]</span>, <span name="evidence$45">evidence$45: Manifest[Value]</span>, <span name="evidence$46">evidence$46: WireFormat[Value]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A distributed Matrix, stored in coordinate format.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.DRowWiseMatrix" data-isabs="false">
+      <a id="DRowWiseMatrix:DRowWiseMatrix[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DRowWiseMatrix.html"><span class="name">DRowWiseMatrix</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DList[(Elem, Iterable[(Elem, T)])]</span>, <span name="evidence$33">evidence$33: Manifest[Elem]</span>, <span name="evidence$34">evidence$34: WireFormat[Elem]</span>, <span name="evidence$35">evidence$35: Ordering[Elem]</span>, <span name="evidence$36">evidence$36: Manifest[T]</span>, <span name="evidence$37">evidence$37: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A distributed row-wise matrix.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.DVector" data-isabs="false">
+      <a id="DVector:DVector[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DVector.html"><span class="name">DVector</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DList[(Elem, T)]</span>, <span name="evidence$1">evidence$1: Manifest[Elem]</span>, <span name="evidence$2">evidence$2: WireFormat[Elem]</span>, <span name="evidence$3">evidence$3: Ordering[Elem]</span>, <span name="evidence$4">evidence$4: Manifest[T]</span>, <span name="evidence$5">evidence$5: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A distributed vector, stored in coordinate form.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector" data-isabs="false">
+      <a id="InMemDenseVector:InMemDenseVector[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InMemDenseVector.html"><span class="name">InMemDenseVector</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="data">data: DObject[IndexedSeq[T]]</span>, <span name="evidence$27">evidence$27: WireFormat[T]</span>, <span name="evidence$28">evidence$28: Manifest[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An efficient, dense vector that needs to be small enough to fit in memory.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemVector" data-isabs="false">
+      <a id="InMemVector:InMemVector[Elem, T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InMemVector.html"><span class="name">InMemVector</span></a><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DObject[Map[Elem, T]]</span>, <span name="evidence$16">evidence$16: Manifest[Elem]</span>, <span name="evidence$17">evidence$17: WireFormat[Elem]</span>, <span name="evidence$18">evidence$18: Ordering[Elem]</span>, <span name="evidence$19">evidence$19: Manifest[T]</span>, <span name="evidence$20">evidence$20: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A vector that is small enough to send to one mapper (i.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational" data-isabs="false">
+      <a id="Relational:Relational[K, A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Relational.html"><span class="name">Relational</span></a><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="left">left: DList[(K, A)]</span>, <span name="evidence$1">evidence$1: Manifest[K]</span>, <span name="evidence$2">evidence$2: WireFormat[K]</span>, <span name="evidence$3">evidence$3: Grouping[K]</span>, <span name="evidence$4">evidence$4: Manifest[A]</span>, <span name="evidence$5">evidence$5: WireFormat[A]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
         <div class="values members" id="values">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.lib.Join" data-isabs="false">
-      <a id="Join:Join"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector" data-isabs="false">
+      <a id="InMemDenseVector:InMemDenseVector"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Join$.html"><span class="name">Join</span></a><span class="result"> extends AnyRef</span>
+        <a href="InMemDenseVector$.html"><span class="name">InMemDenseVector</span></a><span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemVector" data-isabs="false">
+      <a id="InMemVector:InMemVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="InMemVector$.html"><span class="name">InMemVector</span></a><span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.LinearAlgebra" data-isabs="false">
+      <a id="LinearAlgebra:LinearAlgebra"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LinearAlgebra$.html"><span class="name">LinearAlgebra</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational" data-isabs="false">
+      <a id="Relational:Relational"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Relational$.html"><span class="name">Relational</span></a><span class="result"> extends Serializable</span>
       </span>
       </h4>
       
