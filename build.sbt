@@ -123,7 +123,7 @@ git.remoteRepo := "git@github.com:NICTA/scoobi.git"
 /** Notification */
 seq(lsSettings :_*)
 
-(LsKeys.ghUser in LsKeys.lsync) := Some("scoobi")
+(LsKeys.ghUser in LsKeys.lsync) := Some("nicta")
 
-(LsKeys.ghRepo in LsKeys.lsync) := Some("nicta2012")
+(LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
 

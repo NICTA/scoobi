@@ -1,0 +1,51 @@
+
+{
+ "organization":"com.nicta",
+ "name":"scoobi",
+ "version":"0.4.0",
+ "description":"scoobi",
+ "site":"",
+ "tags":[],
+ "docs":"",
+ "licenses": [],
+ "resolvers": ["https://oss.sonatype.org/content/repositories/releases"],
+ "dependencies": [{
+   "organization":"com.odiago.avro",
+   "name": "odiago-avro",
+   "version": "1.0.5"
+  },{
+   "organization":"javassist",
+   "name": "javassist",
+   "version": "3.12.1.GA"
+  },{
+   "organization":"org.apache.hadoop",
+   "name": "hadoop-core",
+   "version": "0.20.2-cdh3u1"
+  },{
+   "organization":"org.apache.avro",
+   "name": "avro-mapred",
+   "version": "1.6.0"
+  },{
+   "organization":"com.thoughtworks.xstream",
+   "name": "xstream",
+   "version": "1.4.2"
+  },{
+   "organization":"org.specs2",
+   "name": "specs2",
+   "version": "1.11"
+  },{
+   "organization":"org.specs2",
+   "name": "specs2-scalaz-core",
+   "version": "6.0.1"
+  },{
+   "organization":"org.mockito",
+   "name": "mockito-all",
+   "version": "1.9.0"
+  },{
+   "organization":"org.scalaz",
+   "name": "scalaz-core",
+   "version": "6.95"
+  }],
+ "scalas": ["2.9.1","2.9.2"],
+ "sbt": false
+}
