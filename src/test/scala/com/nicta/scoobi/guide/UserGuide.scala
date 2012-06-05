@@ -28,13 +28,12 @@ In this user guide, you will find:                                              
    "how to support your own " + data.markdownLink.fromTop,
    "how to use " + gp.markdownLink.fromTop,
    "extensions ".markdownLink(ext).fromTop + "for db-like programming",
-   "a "+ ts.markdownLink("testing guide").fromTop,
-   "how to " + bpd.markdownLink("build, package and deploy").fromTop).map("* "+_).mkString("\n")                              ^
+   "a "+ ts.markdownLink("testing guide").fromTop).map("* "+_).mkString("\n")                              ^
                                                                                                                         p^
    link(all.map(_.hide))                                                                                                ^
                                                                                                                         end
 
-  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, bpd, ts)
+  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, ts)
 
   val qs    = new QuickStart
   val dl    = new DistributedLists
@@ -43,7 +42,6 @@ In this user guide, you will find:                                              
   val inout = new InputOutput
   val gp    = new Grouping
   val ext   = new Extensions
-  val bpd   = new BuildingPackagingDeploying
   val ts    = new Testing
 
 }
