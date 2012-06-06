@@ -29,7 +29,7 @@ import com.nicta.scoobi.impl.util.UniqueInt
 /** A reference to the storage location of a value that represents the "environment"
   * in which a computation is performed within. "Environment" here refers to the
   * the "side-input" of a "ParallelDo". Computed environments are pushed/pulled to/from
-  * the disributed cache. */
+  * the distributed cache. */
 class Env[E : WireFormat] private (path: Path) {
 
   /** Store the environment value in the distributed cache. */

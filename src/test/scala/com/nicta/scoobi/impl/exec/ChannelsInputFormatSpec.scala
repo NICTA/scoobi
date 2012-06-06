@@ -2,8 +2,7 @@ package com.nicta.scoobi.impl.exec
 
 import org.specs2.mutable.Specification
 import ChannelsInputFormat._
-import org.apache.hadoop.conf.Configuration
-import com.nicta.scoobi.io.ConstantStringDataSource
+import com.nicta.scoobi.io.{DataSource, FailingDataSource, ConstantStringDataSource}
 import com.nicta.scoobi.impl._
 import com.nicta.scoobi.impl.util.JarBuilder
 import org.specs2.mock.Mockito
@@ -13,6 +12,7 @@ import org.apache.hadoop.mapreduce.{JobID, JobContext, Job}
 import com.nicta.scoobi.ScoobiConfiguration
 import ScoobiConfiguration._
 import com.nicta.scoobi.testing.mutable.Unit
+import scala.collection.JavaConversions._
 
 class ChannelsInputFormatSpec extends Specification with Mockito with Unit {
                                                                         """
@@ -48,16 +48,21 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 
   "Getting the splits for a ChannelsInputFormat" >> {
 
-    val job = new Job(new ScoobiConfiguration, "id")
-    val jarBuilder = mock[JarBuilder]
-    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"),
-                                                                    ConstantStringDataSource("two")))
-    val jobContext = new JobContext(configuration, new JobID)
-
     "gets the splits for each channel id" >> {
-      new ChannelsInputFormat[String, Int].getSplits(jobContext) must have size(2)
+      getSplits(ConstantStringDataSource("one"), ConstantStringDataSource("two")) must have size(2)
+    }
+    "return no splits when channeling a format returning no splits" >> {
+      getSplits(FailingDataSource()) must beEmpty
     }
 
+    def getSplits(sources: DataSource[_,_,_]*) = new ChannelsInputFormat[String, Int].getSplits(jobContextFor(sources:_*)).toSeq
+
+    def jobContextFor(sources: DataSource[_,_,_]*) = {
+      val job = new Job(new ScoobiConfiguration, "id")
+      val jarBuilder = mock[JarBuilder]
+      val configuration = configureSources(job, jarBuilder, List(sources:_*))
+      new JobContext(configuration, new JobID)
+    }
   }
 
   lazy val aBridgeStore = {

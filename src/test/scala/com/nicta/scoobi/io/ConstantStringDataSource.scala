@@ -2,10 +2,10 @@ package com.nicta.scoobi.io
 
 import java.util.Arrays._
 import org.apache.hadoop.mapreduce._
+import lib.input.InvalidInputException
 import org.apache.hadoop.filecache.DistributedCache
-import java.util.Arrays
 
-case class ConstantStringDataSource(value: String) extends DataSource[String, String, String] {
+class ConstantStringDataSource(value: String) extends DataSource[String, String, String] {
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
   def inputCheck {}
@@ -25,7 +25,15 @@ case class ConstantStringDataSource(value: String) extends DataSource[String, St
     def fromKeyValue(context: this.type#InputContext, key: String, v: String) = value
   }
 }
-
+object ConstantStringDataSource {
+  def apply(value: String) = new ConstantStringDataSource(value)
+}
+class FailingDataSource extends ConstantStringDataSource("") {
+  override def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[FailingInputFormat]
+}
+object FailingDataSource {
+  def apply() = new FailingDataSource
+}
 case class ConstantStringRecordReader(value: String) extends RecordReader[String, String] {
   def this() = this("")
   def initialize(split: InputSplit, context: TaskAttemptContext) {}
@@ -40,6 +48,11 @@ class ConstantStringInputFormat(value: String) extends InputFormat[String, Strin
   def this() = this("")
   def getSplits(context: JobContext) = asList(ConstantStringInputSplit(value))
   def createRecordReader(split: InputSplit, context: TaskAttemptContext) = ConstantStringRecordReader(value)
+}
+
+class FailingInputFormat extends InputFormat[String, String] {
+  def getSplits(context: JobContext) = { throw new InvalidInputException(asList()); asList() }
+  def createRecordReader(split: InputSplit, context: TaskAttemptContext) = ConstantStringRecordReader("")
 }
 
 case class ConstantStringInputSplit(value: String) extends InputSplit {

@@ -15,10 +15,7 @@
   */
 package com.nicta.scoobi.impl.exec
 
-import java.io.DataInput
-import java.io.DataInputStream;
-import java.io.DataOutput
-import java.io.DataOutputStream;
+import java.io._
 
 import org.apache.hadoop.conf.Configurable
 import org.apache.hadoop.conf.Configuration
@@ -42,23 +39,36 @@ import ChannelsInputFormat._
 import com.nicta.scoobi.impl.Configurations._
 import com.nicta.scoobi.impl.util.JarBuilder
 import scalaz.Scalaz._
-import org.apache.hadoop.filecache.DistributedCache
+import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
+import org.apache.commons.logging.LogFactory
 
 /** An input format that delegates to multiple input formats, one for each
  * input channel. */
 class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
+  private lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
 
     getInputFormats(context).flatMap { case (channel, format) =>
       val conf = extractChannelConfiguration(context, channel)
 
-      /** Wrap each of the splits for this InputFormat, tagged with the channel number. InputSplits
-       * will be queried in the Mapper to determine the channel being processed. */
-      format.getSplits(new Job(conf)).map { (pathSplit: InputSplit) =>
-        new TaggedInputSplit(conf, channel, pathSplit,
-                             format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
-      }
+      /**
+       * Wrap each of the splits for this InputFormat, tagged with the channel number. InputSplits
+       * will be queried in the Mapper to determine the channel being processed.
+       *
+       * We catch InvalidInputException in case of a missing input format file for a bridge store when the previous
+       * MapReduce job didn't produce any file (@see issue #60)
+       */
+       try {
+         format.getSplits(new Job(conf)).map { (pathSplit: InputSplit) =>
+           new TaggedInputSplit(conf, channel, pathSplit, format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
+         }
+       } catch {
+         case e: InvalidInputException => {
+           logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because a previous MapReduce job didn't produce any output. See issue #60", e)
+           Nil
+         }
+       }
     }.toList
   }
 

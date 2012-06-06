@@ -10,7 +10,7 @@ import com.nicta.scoobi.testing._
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
  * All data is written to temporary files and is deleted after usage.
  */
-trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
+trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with WithLocalHadoop =>
 
   implicit def testInputToSimpleJob[T](input: InputTestFile[T])
                                       (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): SimpleJob[T] =
@@ -31,13 +31,13 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
 
   def run[T, S](lists: =>(DList[T], DList[S]))
                (implicit configuration: ScoobiConfiguration, m1: Manifest[T], w1: WireFormat[T], m2: Manifest[S], w2: WireFormat[S]): (Seq[String], Seq[String]) =
-    run(lists, false)
+    run(lists, keepFiles = false)
 
   def run[T, S](lists: =>(DList[T], DList[S]), keepFiles: Boolean)
                (implicit configuration: ScoobiConfiguration, m1: Manifest[T], w1: WireFormat[T], m2: Manifest[S], w2: WireFormat[S]): (Seq[String], Seq[String]) =
     runWithTestFiles {
       OutputTestFiles(lists._1, lists._2).lines match {
-        case Left(m)       => fail(m)
+        case Left(msg)     => { if (!quiet) println(msg); (Seq[String](), Seq[String]()) }
         case Right(result) => result
       }
     }
@@ -46,7 +46,7 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations =>
             (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): Seq[String] =
     runWithTestFiles {
       OutputTestFile(list, keepFiles).lines match {
-        case Left(msg)     => fail(msg)
+        case Left(msg)     => { if (!quiet) println(msg); Seq[String]() }
         case Right(result) => result
       }
     }

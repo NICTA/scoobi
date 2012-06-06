@@ -24,14 +24,14 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
     persist(c)((xs.toDList ++ ys.toDList).materialize).toSeq.sorted must_== (xs ++ ys).toSeq.sorted
   }
 
+  section("issue #60")
   "Persisting an empty list shouldn't fail" >> { implicit c: SC =>
     val list = DList[String]()
     persist(c)(list.materialize).toSeq must beEmpty
   }
-  section("issue #60")
   "Persisting a DList which becomes empty after filtering shouldn't fail" >> { implicit c: SC =>
-    val list = DList((1 -> 2), (2 -> 3)).groupByKey.filter(_ => false).map(k => (k.toString.size, k.toString)).groupByKey
-    persist(c)(list.materialize).toSeq must beEmpty
+    val list = DList(1 -> "one", 2 -> "two", 3 -> "three").filter(_ => false).groupByKey.groupByKey
+    run(list) must beEmpty
   }
   section("issue #60")
 
@@ -46,4 +46,10 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
   // when "test-only -- include unit" is called, those tests won't be executed
   // a single issue can be re-run with "test-only -- include "issue 83,local"
   override def acceptanceSection = section("acceptance")
+
+  //implicit def
+}
+case class MyMap(i: Int, s: String)
+object MyMap {
+  def apply(pair: (Int, String)) = new MyMap(pair._1, pair._2)
 }
