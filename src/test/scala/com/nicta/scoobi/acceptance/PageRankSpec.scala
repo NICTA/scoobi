@@ -1,11 +1,13 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
+
+import java.io.File
+import Scoobi._
+import testing._
+import application.ScoobiConfiguration
 
 import PageRank._
-import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.testing.{TempFiles, NictaSimpleJobs, TestFiles}
-import java.io.File
-import com.nicta.scoobi.lib.Relational._
+import lib.Relational._
 
 class PageRankSpec extends NictaSimpleJobs {
 

@@ -15,16 +15,13 @@
   */
 package com.nicta.scoobi
 
-import com.nicta.scoobi.impl.plan.DObjectImpl
-import com.nicta.scoobi.impl.plan.Exp
-import com.nicta.scoobi.impl.plan.Smart
-
+import impl.plan._
 
 /* A wrapper around an object that is part of the graph of a distributed computation.*/
 trait DObject[A] {
 
-  implicit val m: Manifest[A]
-  implicit val wf: WireFormat[A]
+  implicit def m: Manifest[A]
+  implicit def wf: WireFormat[A]
 
   private[scoobi]
   def getComp: Smart.DComp[A, Exp]

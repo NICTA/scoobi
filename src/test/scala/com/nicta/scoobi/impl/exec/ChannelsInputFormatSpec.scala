@@ -1,20 +1,21 @@
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
-import org.specs2.mutable.Specification
-import ChannelsInputFormat._
-import com.nicta.scoobi.io.{DataSource, FailingDataSource, ConstantStringDataSource}
-import com.nicta.scoobi.impl._
-import com.nicta.scoobi.impl.util.JarBuilder
-import org.specs2.mock.Mockito
-import rtt.RuntimeClass
-import com.nicta.scoobi.impl.Configurations._
 import org.apache.hadoop.mapreduce.{JobID, JobContext, Job}
-import com.nicta.scoobi.ScoobiConfiguration
-import ScoobiConfiguration._
-import com.nicta.scoobi.testing.mutable.Unit
+import ChannelsInputFormat._
+import io._
+import impl.util.JarBuilder
 import scala.collection.JavaConversions._
+import org.specs2.mutable.Specification
+import org.specs2.mock.Mockito
+import rtt._
+import impl.Configurations._
+import application.ScoobiConfiguration
+import testing.mutable.UnitSpecification
+import ScoobiConfiguration._
 
-class ChannelsInputFormatSpec extends Specification with Mockito with Unit {
+class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """
 Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 

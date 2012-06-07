@@ -1,18 +1,17 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package application
 
 import java.net.{URLClassLoader, URL}
 import com.nicta.scoobi.io.FileSystems
 import java.io.File
-import com.nicta.scoobi.ScoobiConfiguration
 import org.apache.hadoop.filecache.DistributedCache
-import com.nicta.scoobi.ScoobiConfiguration._
 import org.apache.hadoop.fs.Path
 
 /**
  * This trait defines:
  *
- *  - the library jars which can be uploaded to the cluster
- *  - a method to upload and reference them on the classpath for cluster jobs
+ * - the library jars which can be uploaded to the cluster
+ * - a method to upload and reference them on the classpath for cluster jobs
  */
 trait LibJars {
 
@@ -22,6 +21,9 @@ trait LibJars {
    */
   def libjarsDirectory = "libjars/"
 
+  /** this variable controls if the upload must be done at all */
+  def upload = true
+
   /**
    * @return the list of library jars to upload, provided by the jars loaded by the current classloader
    */
@@ -30,14 +32,14 @@ trait LibJars {
   }
 
   /**
-   * @return the remote jars
+   * @return the remote jars currently on the cluster
    */
   def uploadedJars(implicit configuration: ScoobiConfiguration): Seq[Path] = FileSystems.listFiles(libjarsDirectory)
 
   /**
    * upload the jars which don't exist yet in the library directory on the cluster
    */
-  def uploadLibJars(implicit configuration: ScoobiConfiguration) = {
+  def uploadLibJars(implicit configuration: ScoobiConfiguration) = if (upload) {
     FileSystems.uploadNewJars(jars.map(url => new File(url.getFile)), libjarsDirectory)
     configureJars
   }
@@ -47,7 +49,7 @@ trait LibJars {
    */
   def configureJars(implicit configuration: ScoobiConfiguration) = {
     uploadedJars.foreach(path => DistributedCache.addFileToClassPath(path, configuration))
-    configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory+(new File(j.getFile).getName)), ":")
+    configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }
 }
 

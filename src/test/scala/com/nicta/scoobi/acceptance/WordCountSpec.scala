@@ -1,7 +1,8 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
-import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.testing.NictaHadoop
+import Scoobi._
+import testing.NictaHadoop
 
 class WordCountSpec extends NictaHadoop {
 

@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import java.io._
 
@@ -32,15 +34,15 @@ import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.TaskAttemptContext
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
-import scala.collection.JavaConversions._
-
-import com.nicta.scoobi.io.DataSource
-import ChannelsInputFormat._
-import com.nicta.scoobi.impl.Configurations._
-import com.nicta.scoobi.impl.util.JarBuilder
-import scalaz.Scalaz._
 import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
 import org.apache.commons.logging.LogFactory
+import scala.collection.JavaConversions._
+
+import Configurations._
+import io.DataSource
+import ChannelsInputFormat._
+import util.JarBuilder
+import scalaz.Scalaz._
 
 /** An input format that delegates to multiple input formats, one for each
  * input channel. */

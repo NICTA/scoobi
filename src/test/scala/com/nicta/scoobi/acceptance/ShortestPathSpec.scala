@@ -1,7 +1,8 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
-import com.nicta.scoobi.testing.NictaSimpleJobs
-import com.nicta.scoobi.Scoobi._
+import Scoobi._
+import testing.NictaSimpleJobs
 import ShortestPath._
 
 class ShortestPathSpec extends NictaSimpleJobs {

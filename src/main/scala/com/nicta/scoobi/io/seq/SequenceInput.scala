@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.seq
+package com.nicta.scoobi
+package io
+package seq
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
@@ -23,13 +25,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Helper
-import org.apache.hadoop.conf.Configuration
-import com.nicta.scoobi.impl.Configured
+import impl.Configured
 
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */
@@ -130,19 +126,22 @@ object SequenceInput {
 
     val inputFormat = classOf[SequenceFileInputFormat[K, V]]
 
-    def inputCheck {}
+    def inputCheck() {}
 
-    def inputConfigure(job: Job) = {
+    def inputConfigure(job: Job) {
       configure(job)
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 
-    protected def checkPaths = inputPaths foreach { p =>
-      if (Helper.pathExists(p))
-        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-      else
-        throw new IOException("Input path " + p + " does not exist.")
+    protected def checkPaths {
+      inputPaths foreach { p =>
+        if (Helper.pathExists(p))
+          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+        else
+          throw new IOException("Input path " + p + " does not exist.")
+      }
     }
+
 
     def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
 

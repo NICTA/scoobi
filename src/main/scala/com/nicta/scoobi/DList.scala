@@ -15,13 +15,12 @@
   */
 package com.nicta.scoobi
 
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.func.FunctionInput
-import com.nicta.scoobi.impl.plan.DListImpl
-import com.nicta.scoobi.impl.plan.UnitDObject
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.Arr
+import io.DataSource
+import io.func.FunctionInput
+import impl.plan.DListImpl
+import impl.plan.UnitDObject
+import impl.plan.Smart
+import impl.plan.Arr
 
 
 /**

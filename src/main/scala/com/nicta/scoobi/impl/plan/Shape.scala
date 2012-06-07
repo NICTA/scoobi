@@ -13,11 +13,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
-
+package com.nicta.scoobi
+package impl
+package plan
 
 /** ADT (sum type) representing Shapes of computation results. They are either
-  * array-like (e.g. DLists) or expressoin (scalar) -like (e.g. DObjs). */
+  * array-like (e.g. DLists) or expression (scalar) -like (e.g. DObjs). */
 sealed abstract class Shape
 case class Arr() extends Shape
 case class Exp() extends Shape

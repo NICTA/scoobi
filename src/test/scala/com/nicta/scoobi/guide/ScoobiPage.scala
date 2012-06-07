@@ -1,8 +1,9 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
 import org.specs2.Specification
-import ScoobiVariables._
 import org.specs2.specification.{SpecStart, Text, Fragments}
+import ScoobiVariables._
 
 /**
  * base class for creating Scoobi user guide pages.

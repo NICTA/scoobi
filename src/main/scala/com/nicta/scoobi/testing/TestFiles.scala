@@ -1,11 +1,11 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import java.io.File
-import org.apache.hadoop.mapred.JobConf
+import scala.io.Source
 import org.apache.hadoop.fs.FileSystem
-import com.nicta.scoobi.{Scoobi, ScoobiConfiguration}
+import application.ScoobiConfiguration
 import Scoobi._
-import io.Source
 
 /**
  * This trait creates input and output files which are temporary

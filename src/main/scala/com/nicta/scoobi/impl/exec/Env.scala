@@ -13,18 +13,15 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.filecache.DistributedCache
 
-import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.Exp
-import com.nicta.scoobi.impl.util.UniqueInt
-
+import application.ScoobiConfiguration
 
 /** A reference to the storage location of a value that represents the "environment"
   * in which a computation is performed within. "Environment" here refers to the

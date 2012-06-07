@@ -13,12 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
-
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.Emitter
-
+package com.nicta.scoobi
+package impl
+package exec
 
 /** A producer of a TaggedReducer. */
 trait ReducerLike[K, V, B, E] {
@@ -28,15 +25,15 @@ trait ReducerLike[K, V, B, E] {
 
 /** A wrapper for a 'reduce' function tagged for a specific output channel. */
 abstract case class TaggedReducer[K, V, B, E]
-    (val tag: Int)
+    (tag: Int)
     (implicit mK: Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
               mV: Manifest[V], wtV: WireFormat[V],
               val mB: Manifest[B], val wtB: WireFormat[B],
               mE: Manifest[E], wtE: WireFormat[E]) {
 
   /** The actual 'reduce' function that will be by Hadoop in the reducer task. */
-  def setup(env: E): Unit
-  def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]): Unit
+  def setup(env: E)
+  def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B])
 }
 
 /** A TaggedReducer that is an identity reducer. */
@@ -47,6 +44,6 @@ class TaggedIdentityReducer[B : Manifest : WireFormat](tag: Int)
                                               implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]]) {
 
   /** Identity reducing - ignore the key. */
-  def setup(env: Unit) = {}
-  def reduce(env: Unit, key: Int, values: Iterable[B], emitter: Emitter[B]) = values.foreach { emitter.emit(_) }
+  def setup(env: Unit) {}
+  def reduce(env: Unit, key: Int, values: Iterable[B], emitter: Emitter[B]) { values.foreach { emitter.emit(_) } }
 }

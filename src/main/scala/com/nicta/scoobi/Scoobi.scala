@@ -15,6 +15,8 @@
   */
 package com.nicta.scoobi
 
+import application._
+
 /** Global Scoobi functions and values. */
 object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi.GroupingImplicits {
 
@@ -34,12 +36,13 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   val Grouping = com.nicta.scoobi.Grouping
   type Grouping[A] = com.nicta.scoobi.Grouping[A]
 
-  type ScoobiApp = com.nicta.scoobi.ScoobiApp
+  type ScoobiApp = com.nicta.scoobi.application.ScoobiApp
 
   /* Persisting */
   def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = Persist.persist(p)(conf, persister)
   def persist[P](conf: ScoobiConfiguration)(p: P)(implicit persister: Persister[P]): persister.Out = Persist.persist(p)(conf, persister)
-  val Persister = com.nicta.scoobi.Persister
+  val Persister = com.nicta.scoobi.application.Persister
+  type DListPersister[K] = com.nicta.scoobi.application.DListPersister[K]
 
 
   /* Text file I/O */

@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.text
+package com.nicta.scoobi
+package io
+package text
 
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
@@ -23,13 +25,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.Configured
-
+import impl.Configured
+import application.DListPersister
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {

@@ -1,6 +1,8 @@
 package com.nicta.scoobi
 package testing
 
+import application._
+
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
  *
@@ -40,7 +42,7 @@ trait WithHadoop extends WithLocalHadoop with ClusterConfiguration with LibJars 
     configuration.setRemote
     configuration.set("fs.default.name", fs)
     configuration.set("mapred.job.tracker", jobTracker)
-    if (includeLibJars) configuration.includeJars(jars)
+    if (includeLibJars) configuration.includeLibJars(jars)
 
     configureJars
     configuration.addUserDirs(classDirs)

@@ -1,6 +1,8 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
-import com.nicta.scoobi.testing.NictaSimpleJobs
+import Scoobi._
+import testing.NictaSimpleJobs
 import org.specs2.matcher.Matcher
 
 class NumberPartitionerSpec extends NictaSimpleJobs {

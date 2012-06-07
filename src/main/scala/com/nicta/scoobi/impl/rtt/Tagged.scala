@@ -13,14 +13,15 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
-
+package com.nicta.scoobi
+package impl
+package rtt
 
 /** A heterogeneous type. */
 abstract class Tagged(private var t: Int) { self =>
   /* Get/set the tag */
   def tag = t
-  def setTag(tag: Int) = { self.t = tag }
+  def setTag(tag: Int) { self.t = tag }
 
   /* Get/set the value for a given tag. */
   def get(tag: Int): Any

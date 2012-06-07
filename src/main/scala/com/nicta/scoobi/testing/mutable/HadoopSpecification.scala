@@ -1,7 +1,7 @@
-package com.nicta.scoobi.testing.mutable
+package com.nicta.scoobi
+package testing
+package mutable
 
-import com.nicta.scoobi.testing.HadoopSpecificationStructure
-import org.specs2.main.Arguments
 import org.specs2.mutable.Specification
 
 /**

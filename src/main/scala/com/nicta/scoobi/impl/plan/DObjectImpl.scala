@@ -13,17 +13,11 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
+package com.nicta.scoobi
+package impl
+package plan
 
-import com.nicta.scoobi.DObject
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.EnvDoFn
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.WireFormat
-
-
-/* A wrapper around an object that is part of the graph of a distributed computation.*/
-/** */
+/** A wrapper around an object that is part of the graph of a distributed computation.*/
 class DObjectImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A, Exp]) extends DObject[A] {
 
   val m = implicitly[Manifest[A]]
@@ -40,11 +34,11 @@ class DObjectImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[
 
   def join[B : Manifest : WireFormat](list: DList[B]): DList[(A, B)] = {
     val dofn = new EnvDoFn[B, (A, B), A] {
-      def setup(env: A) = {}
-      def process(env: A, input: B, emitter: Emitter[(A, B)]) = emitter.emit((env, input))
-      def cleanup(env: A, emitter: Emitter[(A, B)]) = {}
+      def setup(env: A) {}
+      def process(env: A, input: B, emitter: Emitter[(A, B)]) { emitter.emit((env, input)) }
+      def cleanup(env: A, emitter: Emitter[(A, B)]) {}
     }
-    new DListImpl(Smart.ParallelDo(list.getComp, comp, dofn, false, false))
+    new DListImpl(Smart.ParallelDo(list.getComp, comp, dofn))
   }
 }
 

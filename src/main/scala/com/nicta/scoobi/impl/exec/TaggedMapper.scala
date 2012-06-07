@@ -13,12 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
-
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.Emitter
-
+package com.nicta.scoobi
+package impl
+package exec
 
 /** A producer of a TaggedMapper. */
 trait MapperLike[A, E, K, V] {
@@ -35,9 +32,9 @@ abstract case class TaggedMapper[A, E, K, V]
               val mV: Manifest[V], val wtV: WireFormat[V]) {
 
   /** The actual 'map' function that will be used by Hadoop in the mapper task. */
-  def setup(env: E): Unit
-  def map(env: E, input: A, emitter: Emitter[(K, V)]): Unit
-  def cleanup(env: E, emitter: Emitter[(K, V)]): Unit
+  def setup(env: E)
+  def map(env: E, input: A, emitter: Emitter[(K, V)])
+  def cleanup(env: E, emitter: Emitter[(K, V)])
 }
 
 
@@ -50,7 +47,7 @@ class TaggedIdentityMapper[K, V]
   extends TaggedMapper[(K, V), Unit, K, V](tags)(mKV, wtKV, implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]], mK, wtK, grpK, mV, wtV) {
 
   /** Identity mapping */
-  def setup(env: Unit) = {}
-  def map(env: Unit, input: (K, V), emitter: Emitter[(K, V)]) = emitter.emit(input)
-  def cleanup(env: Unit, emitter: Emitter[(K, V)]) = {}
+  def setup(env: Unit) {}
+  def map(env: Unit, input: (K, V), emitter: Emitter[(K, V)]) { emitter.emit(input) }
+  def cleanup(env: Unit, emitter: Emitter[(K, V)]) {}
 }

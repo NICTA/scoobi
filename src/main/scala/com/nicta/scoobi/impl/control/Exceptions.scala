@@ -1,4 +1,6 @@
-package com.nicta.scoobi.impl.control
+package com.nicta.scoobi
+package impl
+package control
 
 /**
  * This trait provides methods to catch exceptions and transform them into values which can be passed to
@@ -13,7 +15,7 @@ trait Exceptions {
   /**
    * this implicit avoids having to pass a function when no effect is desired on the Exception being thrown (on the tryo method for example)
    */
-  implicit def implicitUnit[T](t: T): Unit = ()
+  implicit def implicitUnit[T](t: T) {}
 
   /**
    * try to evaluate an expression, returning an Option

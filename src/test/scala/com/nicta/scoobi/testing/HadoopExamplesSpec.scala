@@ -1,14 +1,15 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
-import org.specs2.mock.Mockito
-import com.nicta.scoobi.ScoobiConfiguration
 import org.apache.commons.logging.LogFactory
-import org.specs2.mutable.Specification
+import application.ScoobiConfiguration
+import org.specs2.mock.Mockito
 import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
 import HadoopLogFactory._
+import testing.mutable.{UnitSpecification => UnitSpec}
 
-class HadoopExamplesSpec extends Specification with Mockito with mutable.Unit with ResultMatchers { isolated
+class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 
   "the local context runs the examples locally only" >> {
     implicit val context = localExamples

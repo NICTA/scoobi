@@ -13,14 +13,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
+package com.nicta.scoobi
+package impl
+package rtt
 
 import org.apache.hadoop.mapreduce.Partitioner
 import javassist._
-
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-
 
 /** Custom partitioner for tagged key-values. */
 abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
@@ -46,7 +44,7 @@ class TaggedPartitionerClassBuilder
 
   def extendClass: Class[_] = classOf[TaggedPartitioner]
 
-  def build = {
+  def build {
 
     tags.foreach { case (t, (_, _, grp)) =>
       /* 'grouperN' - Grouping type class field for each tagged-type. */

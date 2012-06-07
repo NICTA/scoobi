@@ -13,10 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
-
+package com.nicta.scoobi
+package impl
+package rtt
 
 /** A class representing a class that has been generated at run-time. */
-class RuntimeClass(val name: String,
-                   val clazz: Class[_],
-                   val bytecode: Array[Byte])
+final case class RuntimeClass(name: String, clazz: Class[_], bytecode: Array[Byte])

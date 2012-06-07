@@ -2,18 +2,16 @@ package com.nicta.scoobi
 
 import io.NullDataOutput
 import java.io._
-import org.specs2.mutable.Specification
 import org.specs2.ScalaCheck
-import org.scalacheck.{Prop, Arbitrary, Gen}
+import org.scalacheck.{Prop, Arbitrary}
 import Arbitrary._
-import Gen._
 import Prop.forAll
+import testing.mutable.UnitSpecification
 import WireFormat._
 import data._
-import com.nicta.scoobi.testing.mutable.Unit
 
 @SuppressWarnings(Array("slow"))
-class WireFormatSpec extends Specification with ScalaCheck with CaseClassData with Unit {
+class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassData {
 
   "**Basic types**".p
 

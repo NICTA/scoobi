@@ -1,9 +1,10 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
-import com.nicta.scoobi.testing.NictaSimpleJobs
+import Scoobi._
+import testing.NictaSimpleJobs
 import AverageAge._
-import com.nicta.scoobi.Scoobi._
-import com.nicta.scoobi.io.text.TextInput.{ALong, AnInt}
+import io.text.TextInput.{ALong, AnInt}
 
 class AverageAgeSpec extends NictaSimpleJobs {
   "The average age of a list of persons can be computed as a distributed job" >> { implicit sc: SC =>

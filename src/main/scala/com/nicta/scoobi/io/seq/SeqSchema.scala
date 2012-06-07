@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.seq
+package com.nicta.scoobi
+package io
+package seq
 
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.BooleanWritable
@@ -21,7 +23,6 @@ import org.apache.hadoop.io.IntWritable
 import org.apache.hadoop.io.FloatWritable
 import org.apache.hadoop.io.LongWritable
 import org.apache.hadoop.io.DoubleWritable
-import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.ByteWritable
 import org.apache.hadoop.io.BytesWritable

@@ -1,4 +1,5 @@
-package com.nicta.scoobi.impl
+package com.nicta.scoobi
+package impl
 
 import annotation.target._
 

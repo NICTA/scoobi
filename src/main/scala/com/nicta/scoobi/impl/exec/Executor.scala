@@ -13,27 +13,18 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
-import scala.collection.mutable.{Set => MSet, Map => MMap}
+import scala.collection.mutable.{Set => MSet}
 
-import com.nicta.scoobi.Scoobi
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.plan.Shape
-import com.nicta.scoobi.impl.plan.Exp
-import com.nicta.scoobi.impl.plan.Arr
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.plan.MapperInputChannel
-import com.nicta.scoobi.impl.plan.StraightInputChannel
-import com.nicta.scoobi.impl.plan.BypassInputChannel
-import com.nicta.scoobi.impl.plan.MSCR
-import com.nicta.scoobi.impl.plan.MSCRGraph
-import com.nicta.scoobi.{ScoobiConfiguration, Scoobi}
-import com.nicta.scoobi.impl.plan.AST.Load
-
+import io.DataSink
+import plan._
+import application.ScoobiConfiguration
 
 /** The only state required to be passed around during execution of the
   * Scoobi compute graph.

@@ -1,10 +1,10 @@
-package com.nicta.scoobi.testing.mutable
+package com.nicta.scoobi
+package testing
+package mutable
 
 import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
-import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.Scoobi._
-import java.io.DataInput
-import com.nicta.scoobi.testing._
+import application.ScoobiConfiguration
+import Scoobi._
 
 /**
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.

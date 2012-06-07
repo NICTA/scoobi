@@ -1,9 +1,10 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import org.apache.commons.logging.LogFactory
 import org.specs2.time.SimpleTimer
 import HadoopLogFactory._
-import com.nicta.scoobi.ScoobiConfiguration
+import application.ScoobiConfiguration
 
 /**
  * Execute Hadoop code locally

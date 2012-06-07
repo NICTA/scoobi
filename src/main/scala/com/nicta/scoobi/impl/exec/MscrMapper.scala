@@ -13,15 +13,14 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.hadoop.mapreduce.{Mapper => HMapper}
 
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.impl.rtt.TaggedKey
-import com.nicta.scoobi.impl.rtt.TaggedValue
-
+import io.InputConverter
+import rtt._
 
 /** Hadoop Mapper class for an MSCR. */
 class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {

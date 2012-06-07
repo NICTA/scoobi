@@ -13,28 +13,28 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
+package com.nicta.scoobi
+package impl
+package plan
 
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.plan.Smart._
-import com.nicta.scoobi.impl.util.Pretty
-import com.nicta.scoobi.impl.exec.Env
-import com.nicta.scoobi.impl.exec.MapperLike
+import io._
+import exec._
+import plan.Smart._
+import util.Pretty
 
 /*
  * Import renamings. (TODO: Perhaps wrap the final MSCR data structures in a namespace?)
  *
  * The C suffix on CGbkOutputChannel, etc, is for converted.
  */
-import com.nicta.scoobi.impl.plan.{GbkOutputChannel    => CGbkOutputChannel,
-                                   BypassOutputChannel => CBypassOutputChannel,
-                                   MapperInputChannel  => CMapperInputChannel,
-                                   StraightInputChannel => CStraightInputChannel,
-                                   FlattenOutputChannel => CFlattenOutputChannel,
-                                   InputChannel        => CInputChannel,
-                                   OutputChannel       => COutputChannel,
-                                   MSCR                => CMSCR }
+import impl.plan.{GbkOutputChannel     => CGbkOutputChannel,
+                  BypassOutputChannel  => CBypassOutputChannel,
+                  MapperInputChannel   => CMapperInputChannel,
+                  StraightInputChannel => CStraightInputChannel,
+                  FlattenOutputChannel => CFlattenOutputChannel,
+                  InputChannel         => CInputChannel,
+                  OutputChannel        => COutputChannel,
+                  MSCR                 => CMSCR }
 
 
 /*
@@ -329,7 +329,7 @@ object Intermediate {
            throw new RuntimeException("Flatten can't have no parents in GbkOutputChannel"))
          case None => g.preds.getOrElse(this.groupByKey,
            throw new RuntimeException("GroupByKey can't have no parents in GbkOutputChannel"))
-       }) toList
+       }).toList
      }
 
     override def toString = {

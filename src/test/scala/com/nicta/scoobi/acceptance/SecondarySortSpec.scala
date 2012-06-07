@@ -1,9 +1,11 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
-import com.nicta.scoobi.{Scoobi, ScoobiConfiguration}
 import Scoobi._
+import testing.NictaSimpleJobs
+import application.ScoobiConfiguration
+
 import SecondarySort._
-import com.nicta.scoobi.testing.NictaSimpleJobs
 
 class SecondarySortSpec extends NictaSimpleJobs {
   "We can do a secondary sort by using a Grouping on the key" >> { implicit sc: ScoobiConfiguration =>

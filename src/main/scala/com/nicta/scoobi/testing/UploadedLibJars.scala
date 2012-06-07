@@ -1,6 +1,8 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import org.specs2.specification._
+import application.LibJars
 
 /**
  * This trait can be mixed in a Specification to automatically add a setup step uploading the library jars to the cluster

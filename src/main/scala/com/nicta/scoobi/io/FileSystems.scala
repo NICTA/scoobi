@@ -1,11 +1,11 @@
-package com.nicta.scoobi.io
+package com.nicta.scoobi
+package io
 
 import java.io.File
 import org.apache.hadoop.fs.{Path, FileSystem}
 import org.apache.hadoop.filecache.DistributedCache
-import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.ScoobiConfiguration._
-
+import application._
+import ScoobiConfiguration._
 /**
  *
  */

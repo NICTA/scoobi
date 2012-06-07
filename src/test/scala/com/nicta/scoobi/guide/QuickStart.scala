@@ -1,4 +1,5 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
 class QuickStart extends ScoobiPage { def is = "Quick Start".title^
                                                                                                                         """

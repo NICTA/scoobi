@@ -1,18 +1,18 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
 import org.specs2.ScalaCheck
-import com.nicta.scoobi.testing.NictaSimpleJobs
-import com.nicta.scoobi.{ Scoobi, ScoobiConfiguration }
-import com.nicta.scoobi.lib.DMatrix
+import testing.NictaSimpleJobs
+import application.ScoobiConfiguration
+import lib.DMatrix
 import org.scalacheck.Gen
-import org.scalacheck.{ Arbitrary, Gen, Prop }
-import com.nicta.scoobi.Scoobi._
+import org.scalacheck.Prop
+import Scoobi._
 import org.apache.commons.math.linear.FieldMatrixPreservingVisitor
 import org.apache.commons.math.linear.FieldMatrix
 import org.apache.commons.math.linear.SparseFieldMatrix
 import org.apache.commons.math.util.BigReal
 import org.apache.commons.math.util.BigRealField
-import org.scalacheck.Prop
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
 

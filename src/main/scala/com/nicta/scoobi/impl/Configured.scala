@@ -1,4 +1,5 @@
-package com.nicta.scoobi.impl
+package com.nicta.scoobi
+package impl
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.Job
@@ -20,5 +21,5 @@ trait Configured {
    * Otherwise, if this code is executed inside the 'inputCheck/outputCheck' methods, the configuration object would not be
    * referencing the adequate remote file system
    */
-  protected def checkPaths: Unit
+  protected def checkPaths()
 }

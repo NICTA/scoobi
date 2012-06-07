@@ -13,13 +13,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
+package com.nicta.scoobi
+package impl
+package rtt
 
 import org.apache.hadoop.io.Writable
 import javassist._
-
-import com.nicta.scoobi.WireFormat
-
 
 /** A tagged value for Hadoop values. Specifically this will be a V2 type so must
   * implement the Writable interface. */
@@ -47,7 +46,7 @@ class TaggedValueClassBuilder
 
   def extendClass: Class[_] = classOf[TaggedValue]
 
-  def build = {
+  def build {
 
     tags.foreach { case (tag, (m, wt)) =>
       /* 'valueN' - fields for each tagged-type. */

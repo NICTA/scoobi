@@ -14,23 +14,15 @@
   * limitations under the License.
   */
 package com.nicta.scoobi
+package application
 
 import org.apache.commons.logging.LogFactory
 import scala.collection.immutable.DefaultMap
-import scala.collection.mutable.{MutableList => MList}
-import scalaz._
-import Scalaz._
 
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.plan.Shape
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.Smart.ConvertInfo
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.plan.MSCRGraph
-import com.nicta.scoobi.impl.exec.Executor
-import com.nicta.scoobi.impl.exec.ExecState
-
-
+import io.DataSink
+import impl.plan._
+import impl.exec._
+import Smart._
 
 object Persist {
   /** Evaluate and persist a distributed computation. This can be a combination of one or more
@@ -301,6 +293,8 @@ object Persister {
 /** The container for persisting a DList. */
 case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A])
 
+import scalaz.State
+import scalaz.State._
 
 /** Type class for persisting something. */
 sealed trait PFn[A] {

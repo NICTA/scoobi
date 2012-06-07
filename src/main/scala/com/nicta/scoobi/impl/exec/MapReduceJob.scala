@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import java.io.File
 import org.apache.commons.logging.LogFactory
@@ -29,34 +31,12 @@ import scala.collection.mutable.{Map => MMap}
 import scala.collection.mutable.{MutableList=> MList}
 import Option.{apply => ?}
 
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.impl.plan.Shape
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.plan.MapperInputChannel
-import com.nicta.scoobi.impl.plan.BypassInputChannel
-import com.nicta.scoobi.impl.plan.StraightInputChannel
-import com.nicta.scoobi.impl.plan.GbkOutputChannel
-import com.nicta.scoobi.impl.plan.BypassOutputChannel
-import com.nicta.scoobi.impl.plan.FlattenOutputChannel
-import com.nicta.scoobi.impl.plan.MSCR
-import com.nicta.scoobi.impl.plan.Empty
-import com.nicta.scoobi.impl.plan.JustCombiner
-import com.nicta.scoobi.impl.plan.JustReducer
-import com.nicta.scoobi.impl.plan.CombinerReducer
-import com.nicta.scoobi.impl.rtt.TaggedKey
-import com.nicta.scoobi.impl.rtt.TaggedValue
-import com.nicta.scoobi.impl.rtt.TaggedPartitioner
-import com.nicta.scoobi.impl.rtt.TaggedGroupingComparator
-import com.nicta.scoobi.impl.rtt.ScoobiWritable
-import com.nicta.scoobi.impl.util.UniqueInt
-import com.nicta.scoobi.impl.util.JarBuilder
-import com.nicta.scoobi.{ScoobiConfiguration, Scoobi, WireFormat, Grouping}
+import io._
+import plan._
+import rtt._
+import util._
+import application.ScoobiConfiguration
 import ScoobiConfiguration._
-import com.nicta.scoobi.impl.plan._
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int) {

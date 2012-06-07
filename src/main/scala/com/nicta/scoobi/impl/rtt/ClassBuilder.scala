@@ -13,13 +13,15 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
+package com.nicta.scoobi
+package impl
+package rtt
 
 import java.lang.reflect.{Modifier => RModifier, Array => RArray, Field => RField, Constructor => RConstructor}
 import java.io.DataOutputStream
 import java.io.ByteArrayOutputStream
-import com.nicta.scoobi.impl.util.UniqueInt
 import javassist._
+import impl.util.UniqueInt
 
 
 /** A class for building a class at run-time. */
@@ -32,7 +34,7 @@ trait ClassBuilder {
   def extendClass: Class[_]
 
   /** Implemented by sub-classes. Used for adding methods, fields, etc to the class. */
-  def build: Unit
+  def build()
 
   val pool: ClassPool = {
     val p = new ClassPool
@@ -44,8 +46,8 @@ trait ClassBuilder {
   val ctClass: CtClass = pool.makeClass(className, pool.get(extendClass.getName))
 
   /** Compile the definition and code for the class. */
-  def toRuntimeClass(): RuntimeClass = {
-    build
+  def toRuntimeClass: RuntimeClass = {
+    build()
     val bytecodeStream = new ByteArrayOutputStream
     ctClass.toBytecode(new DataOutputStream(bytecodeStream))
     new RuntimeClass(className, ctClass.toClass, bytecodeStream.toByteArray)

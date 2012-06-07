@@ -13,14 +13,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
+package com.nicta.scoobi
+package impl
+package rtt
 
 import org.apache.hadoop.io.WritableComparable
 import javassist._
-
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-
 
 /** A tagged value for Hadoop keys. Specifically this will be a K2 type so must
   * implement the WritableComparable interface. */

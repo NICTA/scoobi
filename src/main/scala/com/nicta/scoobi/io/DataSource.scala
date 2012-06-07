@@ -13,7 +13,8 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io
+package com.nicta.scoobi
+package io
 
 import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.MapContext
@@ -29,7 +30,7 @@ trait DataSource[K, V, A] {
   def inputCheck()
 
   /** Configure the DataSource. */
-  def inputConfigure(job: Job): Unit
+  def inputConfigure(job: Job)
 
   /** Size in bytes of the data being input by this source. */
   def inputSize(): Long

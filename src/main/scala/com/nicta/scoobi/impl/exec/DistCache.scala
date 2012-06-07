@@ -13,15 +13,15 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._
-import com.thoughtworks.xstream.XStream
-import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.impl.Configurations
-import Configurations._
 import org.apache.hadoop.conf.Configuration
+import com.thoughtworks.xstream.XStream
+import Configurations._
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialize objects to XML strings and then send out via Hadoop's

@@ -1,6 +1,6 @@
 package com.nicta.scoobij.impl;
 
-import com.nicta.scoobi.ScoobiConfiguration;
+import com.nicta.scoobi.application.ScoobiConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import scala.collection.immutable.Set$;
 

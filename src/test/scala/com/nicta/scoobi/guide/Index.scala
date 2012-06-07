@@ -1,4 +1,5 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
 /**
  * This class generates the index.html page used for landing users on http://NICTA.github.com/scoobi

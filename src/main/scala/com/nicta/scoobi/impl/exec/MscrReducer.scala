@@ -13,15 +13,15 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.hadoop.mapreduce.{Reducer => HReducer}
 import scala.collection.JavaConversions._
 
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.impl.rtt.TaggedKey
-import com.nicta.scoobi.impl.rtt.TaggedValue
+import io.OutputConverter
+import rtt._
 
 
 /** Hadoop Reducer class for an MSCR. */

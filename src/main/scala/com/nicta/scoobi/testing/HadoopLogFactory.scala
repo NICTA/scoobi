@@ -1,9 +1,10 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import java.lang.Class
+import org.apache.commons.logging.{Log, LogFactory}
 import org.apache.commons.logging.impl.{SimpleLog, NoOpLog, LogFactoryImpl}
 import HadoopLogFactory._
-import org.apache.commons.logging.{Log, LogFactory}
 
 /**
  * Log factory used for testing.

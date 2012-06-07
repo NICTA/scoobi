@@ -13,7 +13,8 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io
+package com.nicta.scoobi
+package io
 
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.Job
@@ -34,7 +35,7 @@ trait DataSink[K, V, B] {
   def outputCheck()
 
   /** Configure the DataSink. */
-  def outputConfigure(job: Job): Unit
+  def outputConfigure(job: Job)
 
   /** Maps the type consumed by this DataSink to the key-values of its OutputFormat. */
   def outputConverter: OutputConverter[K, V, B]

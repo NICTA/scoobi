@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.func
+package com.nicta.scoobi
+package io
+package func
 
 import java.io.DataInput
 import java.io.DataOutput
@@ -32,15 +34,8 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.JobContext
 import scala.collection.JavaConversions._
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.exec.DistCache
-import com.nicta.scoobi.impl.util.UniqueInt
-import com.nicta.scoobi.impl.Configurations
+import impl.exec.DistCache
+import impl.Configurations
 import Configurations._
 
 /** Smart function for creating a distributed lists from a Scala function. */

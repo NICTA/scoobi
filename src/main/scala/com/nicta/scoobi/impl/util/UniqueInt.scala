@@ -13,8 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.util
-
+package com.nicta.scoobi
+package impl
+package util
 
 /** Trait that is sub-classed by objects to provide sets of unique identifiers. */
 trait UniqueInt {

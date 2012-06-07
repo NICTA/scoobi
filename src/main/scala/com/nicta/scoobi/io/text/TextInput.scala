@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.text
+package com.nicta.scoobi
+package io
+package text
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
@@ -25,14 +27,8 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.exec.TaggedInputSplit
-import org.apache.hadoop.conf.Configuration
-import com.nicta.scoobi.impl.Configured
+import impl.exec.TaggedInputSplit
+import impl.Configured
 
 
 /** Smart functions for materializing distributed lists by loading text files. */

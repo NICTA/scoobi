@@ -13,15 +13,13 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
+package com.nicta.scoobi
+package impl
+package plan
 
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.impl.exec.Env
-import com.nicta.scoobi.impl.exec.MapperLike
-import com.nicta.scoobi.impl.exec.ReducerLike
-import com.nicta.scoobi.impl.exec.BridgeStore
-
+import io.DataSink
+import io.DataSource
+import exec._
 
 object MSCRGraph {
 

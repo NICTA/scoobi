@@ -1,4 +1,5 @@
-package com.nicta.scoobi.io
+package com.nicta.scoobi
+package io
 
 import java.util.Arrays._
 import org.apache.hadoop.mapreduce._
@@ -8,7 +9,7 @@ import org.apache.hadoop.filecache.DistributedCache
 class ConstantStringDataSource(value: String) extends DataSource[String, String, String] {
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
-  def inputCheck {}
+  def inputCheck() {}
   def inputConfigure(job: Job) {
     job.getConfiguration.set("mapred.constant.string", "value")
     DistributedCache.addCacheFile(new java.net.URI("string"), job.getConfiguration)

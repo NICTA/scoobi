@@ -13,18 +13,11 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
+package com.nicta.scoobi
+package impl
+package plan
 
-
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.DObject
-import com.nicta.scoobi.EnvDoFn
-import com.nicta.scoobi.DoFn
-import com.nicta.scoobi.BasicDoFn
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.io.DataSource
+import io.DataSource
 
 
 /** An implemenentation of the DList trait that builds up a DAG of computation nodes. */
@@ -38,16 +31,14 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
     this(Smart.ParallelDo(
       Smart.Load(source),
       UnitDObject.getComp,
-      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
-      false,
-      false))
+      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } }))
   }
 
   private[scoobi]
   def getComp: Smart.DComp[A, Arr] = comp
 
   def parallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(Smart.ParallelDo(comp, env.getComp, dofn, false, false))
+    new DListImpl(Smart.ParallelDo(comp, env.getComp, dofn))
 
   def ++(ins: DList[A]*): DList[A] = new DListImpl(Smart.Flatten(List(comp) ::: ins.map(_.getComp).toList))
 
@@ -76,6 +67,6 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
       def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
       def cleanup(emitter: Emitter[A]) {}
     }
-    new DListImpl(Smart.ParallelDo(comp, UnitDObject.getComp, dofn, true, false))
+    new DListImpl(Smart.ParallelDo(comp, UnitDObject.getComp, dofn, groupBarrier = true))
   }
 }

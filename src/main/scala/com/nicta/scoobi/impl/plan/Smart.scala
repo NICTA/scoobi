@@ -13,21 +13,19 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
+package com.nicta.scoobi
+package impl
+package plan
 
 import scala.collection.mutable.{Map => MMap}
 
-import com.nicta.scoobi.ScoobiConfiguration
-import com.nicta.scoobi.EnvDoFn
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.exec.Env
-import com.nicta.scoobi.impl.exec.BridgeStore
-import com.nicta.scoobi.impl.exec.TaggedIdentityMapper
-import com.nicta.scoobi.impl.util.UniqueInt
+import application.ScoobiConfiguration
+import io.DataSource
+import io.DataSink
+import exec.Env
+import exec.BridgeStore
+import exec.TaggedIdentityMapper
+import util.UniqueInt
 
 
 /** Abstract syntax of tree of primitive "language". */

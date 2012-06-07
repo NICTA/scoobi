@@ -1,4 +1,5 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
 class UserGuide extends ScoobiPage { def is = args.report(notoc=false) ^"User Guide".title                                                        ^
                                                                                                                         """

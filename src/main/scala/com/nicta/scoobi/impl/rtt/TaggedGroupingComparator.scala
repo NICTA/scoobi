@@ -13,14 +13,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
+package com.nicta.scoobi
+package impl
+package rtt
 
 import org.apache.hadoop.io.RawComparator
 import javassist._
-
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-
 
 /** Custom GroupingComparator for tagged keys. */
 abstract class TaggedGroupingComparator extends RawComparator[TaggedKey]
@@ -46,7 +44,7 @@ class TaggedGroupingComparatorClassBuilder
 
   def extendClass: Class[_] = classOf[TaggedGroupingComparator]
 
-  def build = {
+  def build {
 
     tags.foreach { case (t, (_, wt, grp)) =>
       /* 'writerN' - WireFormat type class field for each tagged-type. */

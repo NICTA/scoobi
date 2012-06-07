@@ -1,11 +1,12 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
-import org.specs2.mutable.Specification
 import org.specs2.matcher.DataTables
 import TempFiles._
 import java.io.File
+import mutable.{UnitSpecification => UnitSpec}
 
-class TempFilesSpec extends Specification with DataTables with mutable.Unit {
+class TempFilesSpec extends UnitSpec with DataTables {
 
   "A path can be calculated relatively to an existing directory" >> {
     "directory"     || "path"                            || "relative"                 |>

@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.io.avro
+package com.nicta.scoobi
+package io
+package avro
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
@@ -24,13 +26,7 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyInputFormat
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Helper
-import org.apache.hadoop.conf.Configuration
-import com.nicta.scoobi.impl.Configured
+import impl.Configured
 
 
 /** Smart functions for materializing distributed lists by loading Avro files. */

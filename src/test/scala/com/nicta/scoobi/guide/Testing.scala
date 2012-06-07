@@ -1,4 +1,5 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
 class Testing extends ScoobiPage { def is = "Testing guide".title^
   """

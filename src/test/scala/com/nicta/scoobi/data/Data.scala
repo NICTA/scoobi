@@ -1,4 +1,5 @@
-package com.nicta.scoobi.data
+package com.nicta.scoobi
+package data
 
 import scalaz.Apply
 import org.scalacheck.Gen

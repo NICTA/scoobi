@@ -1,12 +1,12 @@
-package com.nicta.scoobi.impl
+package com.nicta.scoobi
+package impl
 
-import org.specs2.mutable.Specification
-import com.nicta.scoobi.impl.Configurations._
-import com.nicta.scoobi.testing.mutable.Unit
 import org.apache.hadoop.conf.Configuration
+import testing.mutable.UnitSpecification
+import Configurations._
 import org.specs2.matcher.Matcher
 
-class ConfigurationsSpec extends Specification with Unit {
+class ConfigurationsSpec extends UnitSpecification{
 
   "A configuration can be updated with the keys existing in another configuration" >> {
     val updated = configuration("a" -> "1", "b" -> "2").updateWith(configuration("c" -> "3", "d" -> "4")) {

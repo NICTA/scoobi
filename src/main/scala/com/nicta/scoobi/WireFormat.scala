@@ -19,8 +19,8 @@ import java.io._
 import org.apache.hadoop.io._
 import annotation.implicitNotFound
 import scala.collection.generic.CanBuildFrom
-import impl.slow
 import collection.mutable.{ArrayBuilder, Builder}
+import impl.slow
 
 
 /** Type-class for sending types across the Hadoop wire. */

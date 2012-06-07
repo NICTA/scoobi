@@ -1,4 +1,5 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
 class Extensions extends ScoobiPage { def is = "Extensions".title ^
                                                                                                                         """

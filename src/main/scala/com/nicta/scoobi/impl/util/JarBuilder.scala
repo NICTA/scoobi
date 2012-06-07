@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.util
+package com.nicta.scoobi
+package impl
+package util
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.{Set => MSet}
@@ -22,12 +24,12 @@ import Option.{apply => ?}
 import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
 import java.util.jar.JarEntry
-
-
-import com.nicta.scoobi.impl.rtt.RuntimeClass
 import java.io._
-import java.net.{URLClassLoader, URL, URLDecoder}
-import com.nicta.scoobi.ScoobiConfiguration
+import java.net.{URLClassLoader, URLDecoder}
+
+
+import impl.rtt.RuntimeClass
+import application.ScoobiConfiguration
 
 
 /** Class to manage the creation of a new JAR file. */

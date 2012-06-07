@@ -1,4 +1,5 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import java.io.File
 import org.apache.hadoop.fs.{FileSystem, Path}

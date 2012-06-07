@@ -1,8 +1,7 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
-import org.specs2.Specification
-
-class LoadAndPersist extends Specification { def is = "Loading and persisting data".title^
+class LoadAndPersist extends ScoobiPage { def is = "Loading and persisting data".title^
                                                                                                                         """
 `DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with `fromTextFile(...)` and `persist(toTextFile(...))`. The former is an example of *loading* data and the latter is an example of *persisting* data.
 

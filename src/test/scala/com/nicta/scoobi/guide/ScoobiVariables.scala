@@ -1,7 +1,8 @@
-package com.nicta.scoobi.guide
+package com.nicta.scoobi
+package guide
 
-import io.Source
-import com.nicta.scoobi.impl.control.Exceptions._
+import scala.io.Source
+import impl.control.Exceptions._
 
 trait ScoobiVariables {
 

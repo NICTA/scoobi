@@ -1,4 +1,6 @@
-package com.nicta.scoobi.testing.mutable
+package com.nicta.scoobi
+package testing
+package mutable
 
 import org.specs2.mutable.Tags
 

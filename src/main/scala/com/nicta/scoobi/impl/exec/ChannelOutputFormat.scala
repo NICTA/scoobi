@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.OutputFormat
@@ -24,8 +26,8 @@ import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import scala.collection.mutable.{Map => MMap}
 
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.Configurations._
+import io.DataSink
+import Configurations._
 
 
 /** A class that simplifies writing output to different paths and with different types

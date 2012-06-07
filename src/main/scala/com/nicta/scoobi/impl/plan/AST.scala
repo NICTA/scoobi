@@ -13,21 +13,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.plan
+package com.nicta.scoobi
+package impl
+package plan
 
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.EnvDoFn
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.impl.exec.TaggedMapper
-import com.nicta.scoobi.impl.exec.TaggedCombiner
-import com.nicta.scoobi.impl.exec.TaggedReducer
-import com.nicta.scoobi.impl.exec.MapperLike
-import com.nicta.scoobi.impl.exec.CombinerLike
-import com.nicta.scoobi.impl.exec.ReducerLike
-import com.nicta.scoobi.impl.exec.TaggedIdentityReducer
-import com.nicta.scoobi.impl.util.UniqueInt
-
+import exec._
+import util.UniqueInt
 
 /* Execution plan intermediate representation. */
 object AST {

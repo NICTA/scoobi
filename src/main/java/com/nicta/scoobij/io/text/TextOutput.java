@@ -22,14 +22,14 @@ import com.nicta.scoobij.WireFormatType;
 public class TextOutput {
 
 	// The return type of this should be used with Scoobi.Persist
-	public static <T> com.nicta.scoobi.DListPersister<T> toTextFile(
+	public static <T> com.nicta.scoobi.application.DListPersister<T> toTextFile(
 			DList<T> dl, String path, boolean overwrite, WireFormatType<T> bundle) {
 
 		return com.nicta.scoobi.io.text.TextOutput.toTextFile(dl.getImpl(),
 				path, overwrite, bundle.typeInfo());
 	}
 
-	public static <K, V> com.nicta.scoobi.DListPersister<scala.Tuple2<K, V>> toTextFile(
+	public static <K, V> com.nicta.scoobi.application.DListPersister<scala.Tuple2<K, V>> toTextFile(
 			DTable<K, V> dt, String path, boolean overwrite, WireFormatType<K> bundleK,
 			WireFormatType<V> bundleV) {
 

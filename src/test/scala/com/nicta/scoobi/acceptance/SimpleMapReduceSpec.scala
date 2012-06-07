@@ -1,8 +1,8 @@
-package com.nicta.scoobi.acceptance
+package com.nicta.scoobi
+package acceptance
 
-import com.nicta.scoobi.{Scoobi, DList}
 import Scoobi._
-import com.nicta.scoobi.testing.NictaSimpleJobs
+import testing.NictaSimpleJobs
 
 class SimpleMapReduceSpec extends NictaSimpleJobs {
 

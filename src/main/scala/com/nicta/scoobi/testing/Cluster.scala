@@ -1,7 +1,8 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import org.apache.hadoop.fs.FileSystem
-import com.nicta.scoobi.ScoobiConfiguration
+import application.ScoobiConfiguration
 
 /**
  * Definition of the Cluster addresses

@@ -13,20 +13,19 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.rtt
+package com.nicta.scoobi
+package impl
+package rtt
 
 import org.apache.hadoop.io._
-import scala.collection.mutable.{Map => MMap}
 import javassist._
-
-import com.nicta.scoobi.WireFormat
-
+import scala.collection.mutable.{Map => MMap}
 
 /** The super-class of all "value" types used in Hadoop jobs. */
 abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>
   def this() = this(null.asInstanceOf[A])
   def get: A = x
-  def set(x: A) = { self.x = x }
+  def set(x: A) { self.x = x }
 }
 
 
@@ -38,7 +37,7 @@ object ScoobiWritable {
   def apply(name: String, m: Manifest[_], wt: WireFormat[_]): RuntimeClass = {
     if (!builtClasses.contains(name)) {
       val builder = new ScoobiWritableClassBuilder(name, m, wt)
-      builtClasses += (name -> builder.toRuntimeClass())
+      builtClasses += (name -> builder.toRuntimeClass)
     }
 
     builtClasses(name)

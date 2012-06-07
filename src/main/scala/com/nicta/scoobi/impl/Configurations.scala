@@ -1,16 +1,16 @@
-package com.nicta.scoobi.impl
+package com.nicta.scoobi
+package impl
 
 import control.Exceptions
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.Job
 import Exceptions._
+import scala.collection.JavaConversions._
+import collection.Maps._
 
 /**
  * This trait adds functionalities to Hadoop's Configuration object
  */
 trait Configurations {
-  import scala.collection.JavaConversions._
-  import com.nicta.scoobi.impl.collection.Maps._
 
   /**
    * This conversion transforms a Configuration, seen as an Iterable[Map.Entry[String, String]]

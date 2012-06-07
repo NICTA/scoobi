@@ -1,6 +1,9 @@
-package com.nicta.scoobi.impl.collection
+package com.nicta.scoobi
+package impl
+package collection
 
 import scala.collection._
+
 /**
  * This trait provides utility methods on maps, especially mutable maps
  */

@@ -13,7 +13,9 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package com.nicta.scoobi.impl.exec
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
@@ -27,18 +29,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import com.nicta.scoobi.Scoobi
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.util.UniqueInt
-import com.nicta.scoobi.impl.rtt.ScoobiWritable
-import com.nicta.scoobi.impl.rtt.RuntimeClass
-import org.apache.hadoop.conf.Configuration
-import com.nicta.scoobi.impl.{Configurations, Configured}
+import io._
+import rtt._
 import Configurations._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but

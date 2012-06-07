@@ -1,6 +1,7 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
-import com.nicta.scoobi.ScoobiConfiguration
+import application.ScoobiConfiguration
 import mutable.{SimpleJobs, HadoopTags}
 import org.specs2.specification.Fragments
 

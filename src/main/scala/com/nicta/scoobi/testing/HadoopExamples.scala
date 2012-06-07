@@ -1,14 +1,13 @@
-package com.nicta.scoobi.testing
+package com.nicta.scoobi
+package testing
 
 import org.specs2.execute._
 import org.specs2.time.SimpleTimer
-import com.nicta.scoobi.ScoobiConfiguration
 import org.specs2.specification._
 import org.specs2.Specification
 import org.specs2.main.CommandLineArguments
+import application.ScoobiConfiguration
 import HadoopLogFactory._
-import com.nicta.scoobi.impl.control.Exceptions._
-
 
 /**
  * This trait provides an Around context to be used in a Specification
