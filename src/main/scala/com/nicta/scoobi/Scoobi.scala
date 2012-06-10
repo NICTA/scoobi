@@ -27,7 +27,7 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   val DObject = com.nicta.scoobi.DObject
   type DObject[A] = com.nicta.scoobi.DObject[A]
 
-  type DoFn[A, B, E] = com.nicta.scoobi.DoFn[A, B]
+  type DoFn[A, B] = com.nicta.scoobi.DoFn[A, B]
   type BasicDoFn[A, B] = com.nicta.scoobi.BasicDoFn[A, B]
   type EnvDoFn[A, B, E] = com.nicta.scoobi.EnvDoFn[A, B, E]
 
