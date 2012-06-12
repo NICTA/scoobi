@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
   "org.apache.avro" % "avro-mapred" % "1.6.0",
   "com.thoughtworks.xstream" % "xstream" % "1.4.2",
-  "org.specs2" %% "specs2" % "1.11",
+  "org.specs2" %% "specs2" % "1.11" % "optional",
   "org.specs2" %% "specs2-scalaz-core" % "6.0.1",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
@@ -124,9 +124,8 @@ synchLocal <<= (privateMappings, updatedRepository, GitKeys.gitRunner, streams) 
 git.remoteRepo := "git@github.com:NICTA/scoobi.git"
 
 /** Notification */
-/** commented out until there is a proper release for sbt 0.12.0 */
-/** seq(lsSettings :_*) */
-/** (LsKeys.ghUser in LsKeys.lsync) := Some("nicta") */
-/** (LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi") */
-/** this line is just for the file to compile */
-site.settings
+seq(lsSettings :_*)
+
+(LsKeys.ghUser in LsKeys.lsync) := Some("nicta")
+
+(LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
