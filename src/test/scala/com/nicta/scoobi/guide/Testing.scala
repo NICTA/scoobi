@@ -145,7 +145,7 @@ Some of the functionalities described above has been extracted into traits which
 
  * `WithLocalHadoop` provides the `onLocal` method to execute Hadoop code locally. It also defines the `quiet` and `showTimes` methods to display log statement and/or execution times
 
- * `WithHadoop` extends the `WithLocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
+ * `Hadoop` extends the `LocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
   """
 
 }

@@ -21,7 +21,7 @@ import HadoopLogFactory._
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
  */
-trait HadoopExamples extends WithHadoop with AroundContextExample[Around] with CommandLineArguments {
+trait HadoopExamples extends Hadoop with AroundContextExample[Around] with CommandLineArguments {
 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context

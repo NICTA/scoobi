@@ -10,7 +10,7 @@ import core._
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
  * All data is written to temporary files and is deleted after usage.
  */
-trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with WithLocalHadoop =>
+trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with LocalHadoop =>
 
   implicit def testInputToSimpleJob[T](input: InputTestFile[T])
                                       (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): SimpleJob[T] =

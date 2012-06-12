@@ -14,7 +14,7 @@ import application._
  *  - the job tracker address: def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
  */
 
-trait WithHadoop extends WithLocalHadoop with ClusterConfiguration with LibJars {
+trait Hadoop extends LocalHadoop with ClusterConfiguration with LibJars {
 
   /** @return true if you want to include the library jars in the jar that is sent to the cluster for each job */
   def includeLibJars = false

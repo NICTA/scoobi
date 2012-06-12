@@ -9,7 +9,7 @@ import application.ScoobiConfiguration
 /**
  * Execute Hadoop code locally
  */
-trait WithLocalHadoop {
+trait LocalHadoop {
 
   def hadoopArgs = Array[String]()
 
