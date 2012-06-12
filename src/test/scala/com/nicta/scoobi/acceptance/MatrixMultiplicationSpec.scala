@@ -16,13 +16,9 @@ import org.apache.commons.math.util.BigRealField
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
 
-  skipAllIf(true)
-
   "Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
-    run()
+    Prop.forAll(genMatrixData, genMatrixData)(runTest).set('minTestsOk -> 1)
   }
-
-  def run()(implicit sc: ScoobiConfiguration) = Prop.forAll(genMatrixData, genMatrixData)(runTest).set('minTestsOk -> 1)
 
   def runTest(matrix1: Iterable[MatrixEntry], matrix2: Iterable[MatrixEntry])(implicit sc: ScoobiConfiguration): Boolean = {
 
