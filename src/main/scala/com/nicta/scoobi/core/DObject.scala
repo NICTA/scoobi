@@ -22,12 +22,14 @@ trait DObject[A] {
 }
 
 /** This object provides a set of operations to create distributed objects. */
-object DObject {
+object DObject extends DObjects {
 
   /** Create a new distributed list object from an "ordinary" value. */
   def apply[A : Manifest : WireFormat](x: A): DObject[A] = new DObjectImpl(x)
+}
 
-
+/** Implicit conversions for DObjects */
+trait DObjects {
   /* Implicit conversions from tuples of DObjects to DObject tuples. */
   implicit def tupled2[T1 : Manifest : WireFormat,
   T2 : Manifest : WireFormat]

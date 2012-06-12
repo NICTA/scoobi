@@ -19,7 +19,7 @@ import application._
 import core._
 
 /** Global Scoobi functions and values. */
-object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib {
+object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib with DObjects {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
