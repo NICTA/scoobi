@@ -19,6 +19,7 @@ package rtt
 
 import org.apache.hadoop.io.RawComparator
 import javassist._
+import core._
 
 /** Custom GroupingComparator for tagged keys. */
 abstract class TaggedGroupingComparator extends RawComparator[TaggedKey]

@@ -22,6 +22,7 @@ import scala.collection.JavaConversions._
 
 import io.OutputConverter
 import rtt._
+import core._
 
 
 /** Hadoop Reducer class for an MSCR. */

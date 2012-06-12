@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package plan
 
+import core._
 import io.DataSource
 
 

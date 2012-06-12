@@ -21,7 +21,7 @@ package com.nicta.scoobij;
  * like a "trait"
  *
  */
-public abstract class Ordering<T> implements com.nicta.scoobi.Grouping<T> {
+public abstract class Ordering<T> implements com.nicta.scoobi.core.Grouping<T> {
 
 	public abstract int sortCompare(T a, T b);
 

@@ -19,6 +19,7 @@ package exec
 
 import org.apache.hadoop.mapreduce.{Mapper => HMapper}
 
+import core._
 import io.InputConverter
 import rtt._
 

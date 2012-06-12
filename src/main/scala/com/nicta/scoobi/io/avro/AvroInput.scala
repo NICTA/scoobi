@@ -27,6 +27,7 @@ import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyInputFormat
 
 import impl.Configured
+import core._
 
 
 /** Smart functions for materializing distributed lists by loading Avro files. */

@@ -25,6 +25,7 @@ import org.apache.avro.util.Utf8
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
+import core._
 
 
 /** Defines the Avro schema for a given Scala type. */

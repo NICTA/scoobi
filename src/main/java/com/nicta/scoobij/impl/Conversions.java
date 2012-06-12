@@ -73,17 +73,17 @@ public class Conversions {
 				toScalaSeq(typeArgs));
 	}
 
-	public static <K, V> com.nicta.scoobi.EnvDoFn<K, V, scala.runtime.BoxedUnit> toScalaDoFn(final Mapper<K, V> mapper) {
-		return new com.nicta.scoobi.EnvDoFn<K, V, scala.runtime.BoxedUnit>() {
+	public static <K, V> com.nicta.scoobi.core.EnvDoFn<K, V, scala.runtime.BoxedUnit> toScalaDoFn(final Mapper<K, V> mapper) {
+		return new com.nicta.scoobi.core.EnvDoFn<K, V, scala.runtime.BoxedUnit>() {
 			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void cleanup(scala.runtime.BoxedUnit env, com.nicta.scoobi.Emitter<V> arg0) {
+			public void cleanup(scala.runtime.BoxedUnit env, com.nicta.scoobi.core.Emitter<V> arg0) {
 			}
 
 			@Override
-			public void process(scala.runtime.BoxedUnit env, K input, com.nicta.scoobi.Emitter<V> arg1) {
+			public void process(scala.runtime.BoxedUnit env, K input, com.nicta.scoobi.core.Emitter<V> arg1) {
 				arg1.emit(mapper.apply(input));
 			}
 
@@ -145,18 +145,18 @@ public class Conversions {
 		};
 	}
 
-	public static <T, V> com.nicta.scoobi.EnvDoFn<T, V, scala.runtime.BoxedUnit> toScala(final com.nicta.scoobij.DoFn<T, V> fun) {
-		return new com.nicta.scoobi.EnvDoFn<T, V, scala.runtime.BoxedUnit>() {
+	public static <T, V> com.nicta.scoobi.core.EnvDoFn<T, V, scala.runtime.BoxedUnit> toScala(final com.nicta.scoobij.DoFn<T, V> fun) {
+		return new com.nicta.scoobi.core.EnvDoFn<T, V, scala.runtime.BoxedUnit>() {
 			@SuppressWarnings("unused")
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void cleanup(scala.runtime.BoxedUnit env, com.nicta.scoobi.Emitter<V> emitter) {
+			public void cleanup(scala.runtime.BoxedUnit env, com.nicta.scoobi.core.Emitter<V> emitter) {
 				fun.cleanup(toJava(emitter));
 			}
 
 			@Override
-			public void process(scala.runtime.BoxedUnit env, T input, com.nicta.scoobi.Emitter<V> emitter) {
+			public void process(scala.runtime.BoxedUnit env, T input, com.nicta.scoobi.core.Emitter<V> emitter) {
 				fun.process(input, toJava(emitter));
 			}
 
@@ -168,7 +168,7 @@ public class Conversions {
 	}
 
 	public static <T> com.nicta.scoobij.Emitter<T> toJava(
-			final com.nicta.scoobi.Emitter<T> emitter) {
+			final com.nicta.scoobi.core.Emitter<T> emitter) {
 		return new com.nicta.scoobij.Emitter<T>() {
 
 			@Override

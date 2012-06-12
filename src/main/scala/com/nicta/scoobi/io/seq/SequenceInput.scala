@@ -26,6 +26,7 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.Job
 
 import impl.Configured
+import core._
 
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */

@@ -20,6 +20,7 @@ package rtt
 import org.apache.hadoop.io._
 import javassist._
 import scala.collection.mutable.{Map => MMap}
+import core._
 
 /** The super-class of all "value" types used in Hadoop jobs. */
 abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>

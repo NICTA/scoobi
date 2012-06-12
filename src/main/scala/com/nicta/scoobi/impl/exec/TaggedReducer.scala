@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package impl
 package exec
 
+import core._
+
 /** A producer of a TaggedReducer. */
 trait ReducerLike[K, V, B, E] {
   def mkTaggedReducer(tag: Int): TaggedReducer[K, V, B, E]

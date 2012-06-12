@@ -19,17 +19,12 @@ package application
 import org.apache.commons.logging.LogFactory
 import scala.collection.immutable.DefaultMap
 
+import core._
 import io.DataSink
 import impl.plan._
 import impl.exec._
 import Smart._
-
-object Persist {
-  /** Evaluate and persist a distributed computation. This can be a combination of one or more
-    * DLists (i.e. DListPersisters) and DObjects. */
-  def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = persister(p, conf)
-}
-
+import scalaz.State
 
 /** Type class for things that can be persisted. Mechanism to allow tuples of DLists and
   * DObjects to be persited. */
@@ -42,6 +37,10 @@ trait Persister[In] {
 /** Persister type class instances for tuples. */
 object Persister {
   lazy val logger = LogFactory.getLog("scoobi.Persister")
+
+  /** Evaluate and persist a distributed computation. This can be a combination of one or more
+   * DLists (i.e. DListPersisters) and DObjects. */
+  def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = persister(p, conf)
 
   implicit def tuple1persister[T1](implicit pfn1: PFn[T1]) = new Persister[T1] {
 
@@ -294,7 +293,6 @@ object Persister {
 case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A])
 
 import scalaz.State
-import scalaz.State._
 
 /** Type class for persisting something. */
 sealed trait PFn[A] {

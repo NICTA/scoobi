@@ -1,13 +1,9 @@
-package com.nicta.scoobi.lib
+package com.nicta.scoobi
+package lib
 
-import com.nicta.scoobi.Scoobi._
+import Scoobi._
 import scala.collection.mutable.ArrayBuffer
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.DObject
-import com.nicta.scoobi.DObject._
-import java.util.SortedMap
 import LinearAlgebra._
-
 
 /**
  * A distributed vector, stored in coordinate form.

@@ -6,7 +6,7 @@ import java.io.DataOutput;
 import scala.Tuple2;
 import scala.reflect.Manifest;
 
-import com.nicta.scoobi.WireFormat;
+import com.nicta.scoobi.core.WireFormat;
 import com.nicta.scoobij.impl.Conversions;
 
 public class WireFormats {
@@ -15,13 +15,13 @@ public class WireFormats {
 
 		return new com.nicta.scoobij.impl.WireFormatImpl<Integer>(
 				Integer.class,
-				com.nicta.scoobi.WireFormat$.MODULE$.IntegerFmt(),
+				com.nicta.scoobi.core.WireFormat$.MODULE$.IntegerFmt(),
 				integerOrdering());
 	}
 
 	public static OrderedWireFormatType<String> string() {
 		return new com.nicta.scoobij.impl.WireFormatImpl<String>(String.class,
-				com.nicta.scoobi.WireFormat$.MODULE$.StringFmt(),
+				com.nicta.scoobi.core.WireFormat$.MODULE$.StringFmt(),
 				stringOrdering());
 	}
 
@@ -55,7 +55,7 @@ public class WireFormats {
 		return new WireFormatType<scala.Tuple2<T, V>>() {
 
 			@Override
-			public com.nicta.scoobi.WireFormat<scala.Tuple2<T,V>> wireFormat() {
+			public com.nicta.scoobi.core.WireFormat<scala.Tuple2<T,V>> wireFormat() {
 				return new WireFormat<scala.Tuple2<T, V>>() {
 					@SuppressWarnings("unused")
 					private static final long serialVersionUID = 1L;
@@ -93,8 +93,8 @@ public class WireFormats {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public com.nicta.scoobi.WireFormat<scala.runtime.BoxedUnit> wireFormat() {
-				return com.nicta.scoobi.WireFormat$.MODULE$.UnitFmt();
+			public com.nicta.scoobi.core.WireFormat<scala.runtime.BoxedUnit> wireFormat() {
+				return com.nicta.scoobi.core.WireFormat$.MODULE$.UnitFmt();
 			}
 
 			@Override

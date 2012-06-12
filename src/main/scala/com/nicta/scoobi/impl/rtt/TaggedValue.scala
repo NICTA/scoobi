@@ -19,6 +19,7 @@ package rtt
 
 import org.apache.hadoop.io.Writable
 import javassist._
+import core._
 
 /** A tagged value for Hadoop values. Specifically this will be a V2 type so must
   * implement the Writable interface. */

@@ -17,6 +17,7 @@ package com.nicta.scoobij;
 
 import com.nicta.scoobi.application.PFn;
 import com.nicta.scoobi.application.Persister;
+import com.nicta.scoobi.application.Persister$;
 import com.nicta.scoobi.application.ScoobiConfiguration$;
 import com.nicta.scoobij.impl.WithHadoopArgExtractor;
 
@@ -29,7 +30,7 @@ public class Scoobi {
 		com.nicta.scoobi.application.Persister<com.nicta.scoobi.application.DListPersister<T>> per = (Persister<com.nicta.scoobi.application.DListPersister<T>>) com.nicta.scoobi.application.Persister$.MODULE$
 				.tuple1persister(pfn);
 
-		com.nicta.scoobi.application.Persist.persist(persister, ScoobiConfiguration$.MODULE$.apply(new String[] {}), per);
+		Persister$.MODULE$.persist(persister, ScoobiConfiguration$.MODULE$.apply(new String[]{}), per);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -49,7 +50,7 @@ public class Scoobi {
 		scala.Tuple2<com.nicta.scoobi.application.DListPersister<T>, com.nicta.scoobi.application.DListPersister<V>> persisters = scala.Tuple2$.MODULE$.apply(persister1,
 				persister2);
 
-		com.nicta.scoobi.application.Persist.persist(persisters, ScoobiConfiguration$.MODULE$.apply(new String[] {}), per);
+		Persister$.MODULE$.persist(persisters, ScoobiConfiguration$.MODULE$.apply(new String[] {}), per);
 	}
 
 	// Helper method that parsers the command line arguments, it filters out

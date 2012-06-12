@@ -26,5 +26,5 @@ import scala.reflect.Manifest;
 public interface WireFormatType<T> {
 	public Manifest<T> typeInfo();
 
-	public com.nicta.scoobi.WireFormat<T> wireFormat();
+	public com.nicta.scoobi.core.WireFormat<T> wireFormat();
 }

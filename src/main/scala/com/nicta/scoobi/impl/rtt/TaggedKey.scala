@@ -19,6 +19,7 @@ package rtt
 
 import org.apache.hadoop.io.WritableComparable
 import javassist._
+import core._
 
 /** A tagged value for Hadoop keys. Specifically this will be a K2 type so must
   * implement the WritableComparable interface. */

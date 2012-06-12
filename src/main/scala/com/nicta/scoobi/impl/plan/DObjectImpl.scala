@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package impl
 package plan
 
+import core._
+
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 class DObjectImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A, Exp]) extends DObject[A] {
 

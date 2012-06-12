@@ -30,7 +30,7 @@ public class DGroupedTableImpl<K, V> extends
 		DGroupedTable<K, V> {
 
 	DGroupedTableImpl(
-			com.nicta.scoobi.DList<Tuple2<K, scala.collection.Iterable<V>>> impl) {
+			com.nicta.scoobi.core.DList<Tuple2<K, scala.collection.Iterable<V>>> impl) {
 		super(impl);
 	}
 

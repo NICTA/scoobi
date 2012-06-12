@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package impl
 package exec
 
+import core._
+
 /** A producer of a TaggedMapper. */
 trait MapperLike[A, E, K, V] {
   def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, E, K, V]

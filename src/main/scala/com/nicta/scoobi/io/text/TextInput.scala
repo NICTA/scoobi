@@ -29,6 +29,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
 import impl.exec.TaggedInputSplit
 import impl.Configured
+import core._
 
 
 /** Smart functions for materializing distributed lists by loading text files. */

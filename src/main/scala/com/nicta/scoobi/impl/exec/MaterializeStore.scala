@@ -27,7 +27,7 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 
 import rtt.ScoobiWritable
 import io._
-
+import core._
 
 /** A MaterializeStore is a DataSink for eventual consumption by a Scala program. It is used
   * in conjunction with 'materialize'. */

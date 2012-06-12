@@ -16,35 +16,46 @@
 package com.nicta.scoobi
 
 import application._
+import core._
 
 /** Global Scoobi functions and values. */
-object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi.GroupingImplicits {
+object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib {
 
   /* Primary types */
-  type WireFormat[A] = com.nicta.scoobi.WireFormat[A]
-  val DList = com.nicta.scoobi.DList
-  type DList[A] = com.nicta.scoobi.DList[A]
+  type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
+  val DList = com.nicta.scoobi.core.DList
+  type DList[A] = com.nicta.scoobi.core.DList[A]
   implicit def travPimp[A : Manifest : WireFormat](trav: Traversable[A]) = DList.travPimp(trav)
 
-  val DObject = com.nicta.scoobi.DObject
-  type DObject[A] = com.nicta.scoobi.DObject[A]
+  val DObject = com.nicta.scoobi.core.DObject
+  type DObject[A] = com.nicta.scoobi.core.DObject[A]
 
-  type DoFn[A, B] = com.nicta.scoobi.DoFn[A, B]
-  type BasicDoFn[A, B] = com.nicta.scoobi.BasicDoFn[A, B]
-  type EnvDoFn[A, B, E] = com.nicta.scoobi.EnvDoFn[A, B, E]
+  type DoFn[A, B] = com.nicta.scoobi.core.DoFn[A, B]
+  type BasicDoFn[A, B] = com.nicta.scoobi.core.BasicDoFn[A, B]
+  type EnvDoFn[A, B, E] = com.nicta.scoobi.core.EnvDoFn[A, B, E]
 
-  val Grouping = com.nicta.scoobi.Grouping
-  type Grouping[A] = com.nicta.scoobi.Grouping[A]
+  val Grouping = com.nicta.scoobi.core.Grouping
+  type Grouping[A] = com.nicta.scoobi.core.Grouping[A]
 
+  type Emitter[A] = com.nicta.scoobi.core.Emitter[A]
+}
+
+trait Application {
   type ScoobiApp = com.nicta.scoobi.application.ScoobiApp
+  type ScoobiConfiguration = com.nicta.scoobi.application.ScoobiConfiguration
+}
+object Application extends Application
 
+trait Persist {
   /* Persisting */
-  def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = Persist.persist(p)(conf, persister)
-  def persist[P](conf: ScoobiConfiguration)(p: P)(implicit persister: Persister[P]): persister.Out = Persist.persist(p)(conf, persister)
+  def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = Persister.persist(p)(conf, persister)
+  def persist[P](conf: ScoobiConfiguration)(p: P)(implicit persister: Persister[P]): persister.Out = Persister.persist(p)(conf, persister)
   val Persister = com.nicta.scoobi.application.Persister
   type DListPersister[K] = com.nicta.scoobi.application.DListPersister[K]
+}
+object Persist extends Persist
 
-
+trait InputsOutputs {
   /* Text file I/O */
   val TextOutput = com.nicta.scoobi.io.text.TextOutput
   val TextInput = com.nicta.scoobi.io.text.TextInput
@@ -92,13 +103,15 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]) = AvroInput.fromAvroFile(paths)
   def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
-  
+}
+object InputsOutputs extends InputsOutputs
+
+trait Lib {
   /* lib stuff */
   
   implicit def dlistToRelational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat](dl: DList[(K, A)]): com.nicta.scoobi.lib.Relational[K,A] = com.nicta.scoobi.lib.Relational(dl)
   implicit def relationalToDList[K, A](r: com.nicta.scoobi.lib.Relational[K, A]): DList[(K,A)] = r.left
   
-  import com.nicta.scoobi.lib.LinearAlgebra._
   import com.nicta.scoobi.lib.DVector
   import com.nicta.scoobi.lib.InMemDenseVector
   import com.nicta.scoobi.lib.DRowWiseMatrix
@@ -142,7 +155,6 @@ object Scoobi extends com.nicta.scoobi.WireFormatImplicits with com.nicta.scoobi
   
   
   implicit def inMemVectorToDObject[Elem, T](in: InMemVector[Elem, T]) = in.data
-
-
-
 }
+
+object Lib extends Lib

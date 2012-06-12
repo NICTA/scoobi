@@ -31,6 +31,7 @@ import scala.collection.mutable.{Map => MMap}
 import scala.collection.mutable.{MutableList=> MList}
 import Option.{apply => ?}
 
+import core._
 import io._
 import plan._
 import rtt._

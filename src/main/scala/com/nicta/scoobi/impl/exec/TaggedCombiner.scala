@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package impl
 package exec
 
+import core._
+
 /** A producer of a TaggedCombiner. */
 trait CombinerLike[V] {
   def mkTaggedCombiner(tag: Int): TaggedCombiner[V]

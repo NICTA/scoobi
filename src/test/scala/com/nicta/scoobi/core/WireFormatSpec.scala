@@ -1,4 +1,5 @@
 package com.nicta.scoobi
+package core
 
 import io.NullDataOutput
 import java.io._
@@ -9,6 +10,12 @@ import Prop.forAll
 import testing.mutable.UnitSpecification
 import WireFormat._
 import data._
+import com.nicta.scoobi.testing.mutable.UnitSpecification
+import com.nicta.scoobi.data._
+import com.nicta.scoobi.io.NullDataOutput
+import com.nicta.scoobi.data.DefaultStringNested
+import com.nicta.scoobi.data.DefaultDoubleStringInt
+import com.nicta.scoobi.data.IntHolder
 
 @SuppressWarnings(Array("slow"))
 class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassData {
@@ -65,52 +72,57 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
       implicit val DoubleStringIntWireFormat = mkCaseWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
       serializationIsOkFor[WritableDoubleStringInt]
 
-      "this method is (much) more efficient than the default one" >> check { x: WritableDoubleStringInt =>
-        serialize(x).length must be_<(serialize(x.toDefault).length)
+      "this method is (much) more efficient than the default one" >> check {
+        x: WritableDoubleStringInt =>
+          serialize(x).length must be_<(serialize(x.toDefault).length)
       }
     }
     "for a nested case class" >> {
       implicit val WritableStringNestedWireFormat = mkCaseWireFormat(WritableStringNested, WritableStringNested.unapply _)
       serializationIsOkFor[WritableStringNested]
 
-      "this method is (much) more efficient than the default one" >> check { x: WritableStringNested =>
-        serialize(x).length must be_<(serialize(x.toDefault).length)
+      "this method is (much) more efficient than the default one" >> check {
+        x: WritableStringNested =>
+          serialize(x).length must be_<(serialize(x.toDefault).length)
       }
     }
 
-    "for case classes of an ADT, by making WireFormats for each node type,\n "+
-    "including the base type, up to 8 different types" >> {
-      implicit val BaseIntWritable    = mkCaseWireFormat(BaseInt, BaseInt.unapply _)
+    "for case classes of an ADT, by making WireFormats for each node type,\n " +
+      "including the base type, up to 8 different types" >> {
+      implicit val BaseIntWritable = mkCaseWireFormat(BaseInt, BaseInt.unapply _)
       implicit val BaseStringWritable = mkCaseWireFormat(BaseString, BaseString.unapply _)
       implicit val BaseObjectWritable = mkObjectWireFormat(BaseObject)
-      implicit val BaseWritable       = mkAbstractWireFormat[Base, BaseInt, BaseString, BaseObject.type]
+      implicit val BaseWritable = mkAbstractWireFormat[Base, BaseInt, BaseString, BaseObject.type]
 
-      "for one node type" >> check { (s: String) =>
-        serializationIsOkWith(BaseString(s))
+      "for one node type" >> check {
+        (s: String) =>
+          serializationIsOkWith(BaseString(s))
       }
-      "for another node type" >> check { (i: Int) =>
-        serializationIsOkWith(BaseInt(i))
+      "for another node type" >> check {
+        (i: Int) =>
+          serializationIsOkWith(BaseInt(i))
       }
-      "for an object of the base type" >> check { (i: Int) =>
-        serializationIsOkWith(BaseObject)
+      "for an object of the base type" >> check {
+        (i: Int) =>
+          serializationIsOkWith(BaseObject)
       }
     }
 
   }
 
-  def serializationIsOkFor[T : WireFormat : Arbitrary : Manifest] =
-    implicitly[Manifest[T]].erasure.getSimpleName+" serializes correctly" >>
+  def serializationIsOkFor[T: WireFormat : Arbitrary : Manifest] =
+    implicitly[Manifest[T]].erasure.getSimpleName + " serializes correctly" >>
       forAll(implicitly[Arbitrary[T]].arbitrary)((t: T) => serializationIsOkWith[T](t))
 
-  def serializationIsOkWith[T : WireFormat](x: T) : Boolean = deserialize[T](serialize(x)) must_== x
+  def serializationIsOkWith[T: WireFormat](x: T): Boolean = deserialize[T](serialize(x)) must_== x
 
-  def serialize[T : WireFormat](obj: T): Array[Byte] = {
+  def serialize[T: WireFormat](obj: T): Array[Byte] = {
     val bs = new ByteArrayOutputStream
     implicitly[WireFormat[T]].toWire(obj, new DataOutputStream(bs))
     bs.toByteArray
   }
 
-  def deserialize[T : WireFormat](raw: Array[Byte]) : T = {
+  def deserialize[T: WireFormat](raw: Array[Byte]): T = {
     val bais = new ByteArrayInputStream(raw)
     implicitly[WireFormat[T]].fromWire(new DataInputStream(bais))
   }

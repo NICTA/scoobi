@@ -28,7 +28,7 @@ import com.nicta.scoobij.WireFormatType;
 public class DTableImpl<K, V> extends DListImpl<scala.Tuple2<K, V>> implements
 		DTable<K, V> {
 
-	DTableImpl(com.nicta.scoobi.DList<scala.Tuple2<K, V>> impl) {
+	DTableImpl(com.nicta.scoobi.core.DList<scala.Tuple2<K, V>> impl) {
 		super(impl);
 	}
 

@@ -1,34 +1,21 @@
-/**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
 package com.nicta.scoobi
+package core
 
-import java.io._
-import org.apache.hadoop.io._
 import annotation.implicitNotFound
-import scala.collection.generic.CanBuildFrom
-import collection.mutable.{ArrayBuilder, Builder}
+import java.io._
 import impl.slow
+import org.apache.hadoop.io.Writable
+import collection.generic.CanBuildFrom
+import collection.mutable.{ArrayBuilder, Builder}
 
-
-/** Type-class for sending types across the Hadoop wire. */
+/**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
 trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
+
   def fromWire(in: DataInput): A
 }
+
 
 object WireFormat extends WireFormatImplicits
 
@@ -492,8 +479,8 @@ trait WireFormatImplicits {
   }
 
   implicit def IntegerFmt: WireFormat[java.lang.Integer] = new WireFormat[java.lang.Integer] {
-      def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
-      def fromWire(in: DataInput): java.lang.Integer = in.readInt()
+    def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
+    def fromWire(in: DataInput): java.lang.Integer = in.readInt()
   }
 
   implicit def BooleanFmt = new WireFormat[Boolean] {
@@ -555,10 +542,10 @@ trait WireFormatImplicits {
         val b = wt2.fromWire(in)
         (a, b)
       }
-  }
+    }
 
   implicit def Tuple3Fmt[T1, T2, T3]
-      (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3]) =
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3]) =
     new WireFormat[(T1, T2, T3)] {
       def toWire(x: (T1, T2, T3), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -571,10 +558,10 @@ trait WireFormatImplicits {
         val c = wt3.fromWire(in)
         (a, b, c)
       }
-  }
+    }
 
   implicit def Tuple4Fmt[T1, T2, T3, T4]
-      (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4]) =
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4]) =
     new WireFormat[Tuple4[T1, T2, T3, T4]] {
       def toWire(x: (T1, T2, T3, T4), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -589,11 +576,11 @@ trait WireFormatImplicits {
         val d = wt4.fromWire(in)
         (a, b, c, d)
       }
-  }
+    }
 
   implicit def Tuple5Fmt[T1, T2, T3, T4, T5]
-      (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
-                wt5: WireFormat[T5]) =
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
+   wt5: WireFormat[T5]) =
     new WireFormat[(T1, T2, T3, T4, T5)] {
       def toWire(x: (T1, T2, T3, T4, T5), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -610,11 +597,11 @@ trait WireFormatImplicits {
         val e = wt5.fromWire(in)
         (a, b, c, d, e)
       }
-  }
+    }
 
-    implicit def Tuple6Fmt[T1, T2, T3, T4, T5, T6]
-      (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
-                wt5: WireFormat[T5], wt6: WireFormat[T6]) =
+  implicit def Tuple6Fmt[T1, T2, T3, T4, T5, T6]
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
+   wt5: WireFormat[T5], wt6: WireFormat[T6]) =
     new WireFormat[(T1, T2, T3, T4, T5, T6)] {
       def toWire(x: (T1, T2, T3, T4, T5, T6), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -633,11 +620,11 @@ trait WireFormatImplicits {
         val f = wt6.fromWire(in)
         (a, b, c, d, e, f)
       }
-  }
+    }
 
   implicit def Tuple7Fmt[T1, T2, T3, T4, T5, T6, T7]
-      (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
-                wt5: WireFormat[T5], wt6: WireFormat[T6], wt7: WireFormat[T7]) =
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
+   wt5: WireFormat[T5], wt6: WireFormat[T6], wt7: WireFormat[T7]) =
     new WireFormat[(T1, T2, T3, T4, T5, T6, T7)] {
       def toWire(x: (T1, T2, T3, T4, T5, T6, T7), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -658,11 +645,11 @@ trait WireFormatImplicits {
         val g = wt7.fromWire(in)
         (a, b, c, d, e, f, g)
       }
-  }
+    }
 
   implicit def Tuple8Fmt[T1, T2, T3, T4, T5, T6, T7, T8]
-      (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
-                wt5: WireFormat[T5], wt6: WireFormat[T6], wt7: WireFormat[T7], wt8: WireFormat[T8]) =
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3], wt4: WireFormat[T4],
+   wt5: WireFormat[T5], wt6: WireFormat[T6], wt7: WireFormat[T7], wt8: WireFormat[T8]) =
     new WireFormat[(T1, T2, T3, T4, T5, T6, T7, T8)] {
       def toWire(x: (T1, T2, T3, T4, T5, T6, T7, T8), out: DataOutput) = {
         wt1.toWire(x._1, out)
@@ -685,7 +672,7 @@ trait WireFormatImplicits {
         val h = wt8.fromWire(in)
         (a, b, c, d, e, f, g, h)
       }
-  }
+    }
 
   /**
    * Traversable structures

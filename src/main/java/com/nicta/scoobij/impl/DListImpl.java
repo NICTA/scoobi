@@ -33,7 +33,7 @@ import com.nicta.scoobij.WireFormats;
 
 public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 
-	public DListImpl(com.nicta.scoobi.DList<A> dl) {
+	public DListImpl(com.nicta.scoobi.core.DList<A> dl) {
 		impl = dl;
 	}
 
@@ -73,10 +73,10 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 		return new DListImpl<A>(impl.$plus$plus(toImplArray(dLists)));
 	}
 
-	private static <T> scala.collection.Seq<com.nicta.scoobi.DList<T>> toImplArray(
+	private static <T> scala.collection.Seq<com.nicta.scoobi.core.DList<T>> toImplArray(
 			DList<T>[] v) {
 
-		Vector<com.nicta.scoobi.DList<T>> vecta = new Vector<com.nicta.scoobi.DList<T>>(
+		Vector<com.nicta.scoobi.core.DList<T>> vecta = new Vector<com.nicta.scoobi.core.DList<T>>(
 				v.length);
 
 		for (int i = 0; i < v.length; ++i) {
@@ -123,10 +123,10 @@ public class DListImpl<A> implements com.nicta.scoobij.DList<A> {
 		return tableMap(Conversions.toByMap(mapper), bundleK, bundleA);
 	}
 
-	public com.nicta.scoobi.DList<A> getImpl() {
+	public com.nicta.scoobi.core.DList<A> getImpl() {
 		return impl;
 	}
 
-	private com.nicta.scoobi.DList<A> impl;
+	private com.nicta.scoobi.core.DList<A> impl;
 
 }

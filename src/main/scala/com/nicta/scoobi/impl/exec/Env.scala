@@ -22,6 +22,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.filecache.DistributedCache
 
 import application.ScoobiConfiguration
+import core._
 
 /** A reference to the storage location of a value that represents the "environment"
   * in which a computation is performed within. "Environment" here refers to the

@@ -3,8 +3,8 @@ package testing
 package mutable
 
 import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
-import application.ScoobiConfiguration
-import Scoobi._
+import application._
+import core._
 
 /**
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.

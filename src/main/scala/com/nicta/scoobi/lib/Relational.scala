@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi.lib
+package com.nicta.scoobi
+package lib
 
 import scala.collection.immutable.VectorBuilder
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.DObject
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-import com.nicta.scoobi.BasicDoFn
-import com.nicta.scoobi.Emitter
 import scala.collection.mutable.ArrayBuffer
+import scala.Right
+import scala.Left
+import core._
 
 case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat](
   left: DList[(K, A)]) {

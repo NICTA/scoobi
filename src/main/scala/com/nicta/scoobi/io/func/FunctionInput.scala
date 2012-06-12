@@ -37,6 +37,7 @@ import scala.collection.JavaConversions._
 import impl.exec.DistCache
 import impl.Configurations
 import Configurations._
+import core._
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {

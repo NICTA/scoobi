@@ -19,6 +19,7 @@ package rtt
 
 import org.apache.hadoop.mapreduce.Partitioner
 import javassist._
+import core._
 
 /** Custom partitioner for tagged key-values. */
 abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]

@@ -124,5 +124,5 @@ public interface DList<A> {
 	 * Returns the underlying scala implementation object. Hopefully not
 	 * required for end users.
 	 */
-	public com.nicta.scoobi.DList<A> getImpl();
+	public com.nicta.scoobi.core.DList<A> getImpl();
 }

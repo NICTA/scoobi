@@ -4,7 +4,6 @@ package testing
 import java.io.File
 import scala.io.Source
 import org.apache.hadoop.fs.FileSystem
-import application.ScoobiConfiguration
 import Scoobi._
 
 /**

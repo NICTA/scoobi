@@ -19,6 +19,7 @@ package plan
 
 import scala.collection.mutable.{Map => MMap}
 
+import core._
 import application.ScoobiConfiguration
 import io.DataSource
 import io.DataSink

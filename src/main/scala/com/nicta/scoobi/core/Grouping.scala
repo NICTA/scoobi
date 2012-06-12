@@ -14,24 +14,25 @@
   * limitations under the License.
   */
 package com.nicta.scoobi
+package core
 
 import java.lang.Comparable
 import annotation.implicitNotFound
 
 
 /** Specify the way in which key-values are "shuffled". Used by 'groupByKey' in
-  * 'DList'. */
+ * 'DList'. */
 @implicitNotFound(msg = "Cannot find Grouping type class for ${K}")
 trait Grouping[K] {
   /** Specifies how key-values are partitioned among Reducer tasks. */
   def partition(key: K, num: Int): Int = (key.hashCode & Int.MaxValue) % num
 
   /** Specifies the order in which grouped values are presented to a Reducer
-    * task, for a given partition. */
+   * task, for a given partition. */
   def sortCompare(x: K, y: K): Int = groupCompare(x, y)
 
   /** Specifies how values, for a given partition, are grouped together in
-    * a given partition. */
+   * a given partition. */
   def groupCompare(x: K, y: K): Int
 }
 
@@ -41,13 +42,13 @@ object Grouping extends GroupingImplicits
 trait GroupingImplicits {
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
-    * type class instance. Partitioning and grouping use the default implementation. */
+   * type class instance. Partitioning and grouping use the default implementation. */
   implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
     def groupCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
   }
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
-    * type class instance. Partitioning and grouping use the default implementation. */
+   * type class instance. Partitioning and grouping use the default implementation. */
   implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
     def groupCompare(x: T, y: T): Int = x.compareTo(y)
   }
@@ -56,7 +57,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first, second)
       if (c1 != 0) return c1
       0
@@ -67,7 +68,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
@@ -80,7 +81,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
@@ -95,7 +96,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
@@ -112,7 +113,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
@@ -131,7 +132,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
@@ -152,7 +153,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
@@ -175,7 +176,7 @@ trait GroupingImplicits {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
       val second = unapply(y).get
- 
+
       val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
       if (c1 != 0) return c1
       val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)

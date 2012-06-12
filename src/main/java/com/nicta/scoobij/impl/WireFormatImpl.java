@@ -17,12 +17,12 @@ package com.nicta.scoobij.impl;
 
 import scala.reflect.Manifest;
 
-import com.nicta.scoobi.WireFormat;
+import com.nicta.scoobi.core.WireFormat;
 import com.nicta.scoobij.OrderedWireFormatType;
 import com.nicta.scoobij.Ordering;
 
 public class WireFormatImpl<T> implements OrderedWireFormatType<T> {
-	public WireFormatImpl(Class<T> c, com.nicta.scoobi.WireFormat<T> wf,
+	public WireFormatImpl(Class<T> c, WireFormat<T> wf,
 			Ordering<T> o) {
 		clazz = c;
 		wireformat = wf;
@@ -45,6 +45,6 @@ public class WireFormatImpl<T> implements OrderedWireFormatType<T> {
 	}
 
 	Class<T> clazz;
-	com.nicta.scoobi.WireFormat<T> wireformat;
+	WireFormat<T> wireformat;
 	Ordering<T> order;
 }

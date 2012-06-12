@@ -28,6 +28,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import impl.Configured
 import application.DListPersister
+import core._
 
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
