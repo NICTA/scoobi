@@ -3,6 +3,7 @@ import com.jsuereth.git.{GitKeys,GitRunner}
 import GitKeys.{gitBranch, gitRemoteRepo}
 import com.jsuereth.ghpages.GhPages.ghpages._
 
+/** Definition */
 name := "scoobi"
 
 organization := "com.nicta"
@@ -32,6 +33,12 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math" % "2.2" % "test"
 )
 
+resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
+                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
+                  "Sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
+                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
+
+/** Compilation */
 compileOrder := CompileOrder.ScalaThenJava
 
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
@@ -40,14 +47,12 @@ javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 
 javaOptions += "-Xmx2G"
 
+/** Testing */
 testOptions := Seq(Tests.Filter(s =>
     s.endsWith("Spec")      ||
     Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
 
-resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
-                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/",
-                  "Sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
-                  "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
+fork in Test := true
 
 /** Publishing */
 publishTo <<= version { v: String =>
@@ -119,9 +124,9 @@ synchLocal <<= (privateMappings, updatedRepository, GitKeys.gitRunner, streams) 
 git.remoteRepo := "git@github.com:NICTA/scoobi.git"
 
 /** Notification */
-seq(lsSettings :_*)
-
-(LsKeys.ghUser in LsKeys.lsync) := Some("nicta")
-
-(LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
-
+/** commented out until there is a proper release for sbt 0.12.0 */
+/** seq(lsSettings :_*) */
+/** (LsKeys.ghUser in LsKeys.lsync) := Some("nicta") */
+/** (LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi") */
+/** this line is just for the file to compile */
+site.settings
