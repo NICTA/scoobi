@@ -39,8 +39,6 @@ resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.co
                   "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Compilation */
-compileOrder := CompileOrder.ScalaThenJava
-
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
