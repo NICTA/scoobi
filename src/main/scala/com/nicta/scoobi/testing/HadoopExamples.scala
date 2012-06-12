@@ -107,17 +107,18 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Comma
     def isRemote = true
   }
 
-  override def showTimes  = scoobiArguments.map(_.matches(".*.times.*")).getOrElse(false)  || super.showTimes
-  override def quiet      = !verboseArg.isDefined && super.quiet
-  override def level      = extractLevel(verboseArg.getOrElse(""))
-  override def categories = extractCategories(verboseArg.getOrElse(""))
+  override def showTimes     = scoobiArguments.map(_.matches(".*.times.*")).getOrElse(false)  || super.showTimes
+  override def quiet         = !verboseArg.isDefined && super.quiet
+  override def level         = extractLevel(verboseArg.getOrElse(""))
+  override def categories    = extractCategories(verboseArg.getOrElse(""))
+  override def deleteLibJars = scoobiArguments.map(_.contains("deletelibjars")).getOrElse(false)
 
   /** convenience shortcut */
   private[testing]
   lazy val argumentsValues: Seq[String] = arguments.commandLine.arguments
 
   private[testing]
-  def scoobiArguments = argumentsValues.zip(argumentsValues.drop(1)).find(_._1.toLowerCase.equals("scoobi")).map(_._2)
+  def scoobiArguments = argumentsValues.zip(argumentsValues.drop(1)).find(_._1.toLowerCase.equals("scoobi")).map(_._2.toLowerCase)
 
   private[testing]
   def verboseArg = scoobiArguments.find(_.matches(".*verbose.*"))

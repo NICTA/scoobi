@@ -50,6 +50,13 @@ trait FileSystems {
   }
 
   /**
+   * delete all the files in a given directory on the file system
+   */
+  def deleteFiles(dest: String)(implicit configuration: ScoobiConfiguration) {
+    if (!fileSystem.exists(new Path(dest))) fileSystem.delete(new Path(dest), true)
+  }
+
+  /**
    * @return the file system for a given configuration
    */
   def fileSystem(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)

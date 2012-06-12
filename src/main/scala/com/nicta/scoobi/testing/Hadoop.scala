@@ -19,6 +19,9 @@ trait Hadoop extends LocalHadoop with ClusterConfiguration with LibJars {
   /** @return true if you want to include the library jars in the jar that is sent to the cluster for each job */
   def includeLibJars = false
 
+  /** @return true if you want to delete the library jars before starting the job */
+  def deleteLibJars = false
+
   /** @return the classes directories to include on a job classpath */
   def classDirs: Seq[String] = Seq("classes", "test-classes").map("target/scala-"+util.Properties.releaseVersion.getOrElse("2.9.1")+"/"+_)
 
@@ -42,6 +45,7 @@ trait Hadoop extends LocalHadoop with ClusterConfiguration with LibJars {
     configuration.setRemote
     configuration.set("fs.default.name", fs)
     configuration.set("mapred.job.tracker", jobTracker)
+    if (deleteLibJars) deleteJars
     if (includeLibJars) configuration.includeLibJars(jars)
 
     configureJars

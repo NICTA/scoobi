@@ -37,6 +37,11 @@ trait LibJars {
   def uploadedJars(implicit configuration: ScoobiConfiguration): Seq[Path] = FileSystems.listFiles(libjarsDirectory)
 
   /**
+   * @return delete the remote jars currently on the cluster
+   */
+  def deleteJars(implicit configuration: ScoobiConfiguration) { FileSystems.deleteFiles(libjarsDirectory) }
+
+  /**
    * upload the jars which don't exist yet in the library directory on the cluster
    */
   def uploadLibJars(implicit configuration: ScoobiConfiguration) = if (upload) {
