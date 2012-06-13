@@ -16,33 +16,19 @@
 package com.nicta.scoobi.examples
 
 import com.nicta.scoobi.Scoobi._
-import java.io._
 
 object WordCount extends ScoobiApp {
   def run() {
-    val (inputPath, outputPath) =
-      if (args.length == 0) {
-        if (!new File("output-dir").mkdir) {
-          sys.error("Could not make output-dir for results. Perhaps it already exists (and you should delete/rename the old one)")
-        }
-
-        val fileName = "output-dir/all-words.txt"
-
-        // generate 5000 random words (with high collisions) and save at fileName
-        generateWords(fileName, 5000)
-
-        (fileName, "output-dir")
-
-      } else if (args.length == 2) {
-        (args(0), args(1))
-      } else {
-        sys.error("Expecting input and output path, or no arguments at all.")
-      }
-
     // Firstly we load up all the (new-line-separated) words into a DList
-    val lines: DList[String] = fromTextFile(inputPath)
+    val lines: DList[String] =
+      if (args.length == 0)
+        DList(generateWords(5000): _*)
+      else if (args.length == 2)
+        fromTextFile(args(0))
+      else
+        sys.error("Expecting input and output path, or no arguments at all.")
 
-    // What we want to do, is record the frequency of words. So we'll convert it to a key-value
+    // Now what we want to do, is record the frequency of words. So we'll convert it to a key-value
     // pairs where the key is the word, and the value the frequency (which to start with is 1)
     val keyValuePair: DList[(String, Int)] = lines flatMap { _.split(" ") } map { w => (w, 1) }
 
@@ -52,39 +38,34 @@ object WordCount extends ScoobiApp {
 
     // So what we want to do, is combine all the numbers into a single value (the frequency)
     val combined: DList[(String, Int)] = grouped.combine((_+_))
+    
+    val outputDirectory: String = if (args.length == 0) "word-count-results" else args(1) 
 
     // We can evaluate this, and write it to a text file
-    persist(toTextFile(combined, outputPath + "/word-results"));
+    persist(toTextFile(combined, outputDirectory))
   }
 
-  /* Write 'count' random words to the file 'filename', with a high amount of collisions */
-  private def generateWords(filename: String, count: Int) {
-    val fstream = new FileWriter(filename)
+  /* Generate 'count' random words with a high amount of collisions */
+  private def generateWords(count: Int) = {
     val r = new scala.util.Random()
-
-    // we will start off by generating count/10 different "words"
-    val words = new Array[String](count / 10)
-
-    (1 to words.length) foreach {
-      v => words.update(v-1, randomWord())
-    }
-
-    // and now we will pick 'count' of them to write to file
-    (1 to count) foreach {
-      _ => fstream write ( words(r.nextInt(words.length)) )
-    }
-
-    fstream.close()
-
+    
     // function to make a 5 letter random "word"
     def randomWord() : String = {
-      val wordLength = 5;
-      val sb = new StringBuilder(wordLength + 1)
+      val wordLength = 5
+      val sb = new StringBuilder(wordLength)
       (1 to wordLength) foreach {
         _ => sb.append(('A' + r.nextInt('Z' - 'A')).asInstanceOf[Char])
       }
-      sb append('\n')
       sb toString
     }
+
+    // we start off by generating count/10 different "words"
+    var words: IndexedSeq[String] =
+    	for (i <- 1 to count/10)
+    		yield randomWord()
+
+    // and now we will pick 'count' of them to output
+    for (i <- 1 to count)
+    	yield words(r.nextInt(words.length))	
   }
 }

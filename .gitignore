@@ -12,5 +12,5 @@ pgp.sbt
 .project
 .classpath
 .settings
-examples/wordCount/output-dir/
+examples/wordCount/word-count-results/
 .DS_Store
