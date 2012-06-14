@@ -1,7 +1,6 @@
 import com.jsuereth.sbtsite.SiteKeys._
 import com.jsuereth.git.{GitKeys,GitRunner}
 import GitKeys.{gitBranch, gitRemoteRepo}
-import com.jsuereth.ghpages.GhPages.ghpages._
 
 /** Definition */
 name := "scoobi"
@@ -104,17 +103,6 @@ siteMappings <++= (mappings in packageDoc in Compile, version) map { (m, v) =>
   for((f, d) <- m) yield (f, if (v.trim.endsWith("SNAPSHOT")) ("api/master/" + d) else ("api/"+v+"/"+d))
 }
 
-/** Site publication */
-seq(ghpages.settings:_*)
-
-// override the synchLocal task to avoid removing the existing files
-synchLocal <<= (privateMappings, updatedRepository, GitKeys.gitRunner, streams) map { (mappings, repo, git, s) =>
-  val betterMappings = mappings map { case (file, target) => (file, repo / target) }
-  IO.copy(betterMappings)
-  repo
-}
-
-git.remoteRepo := "git@github.com:NICTA/scoobi.git"
 
 /** Notification */
 seq(lsSettings :_*)
