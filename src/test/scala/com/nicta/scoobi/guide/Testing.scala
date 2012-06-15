@@ -104,8 +104,10 @@ The `HadoopSpecification` class allows to create any kind of job and execute the
  * execute some transformations based on the `DList` API
  * get the results as a `Seq[String]` from an temporary output file
 
-        "getting the size of words" >> { implicit c: SC =>
-          fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+        class WordCountSpec extends HadoopSpecification with SimpleJobs {
+          "getting the size of words" >> { implicit c: SC =>
+            fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+          }
         }
 
 `fromInput` creates a temporary file and a new `DList` from a `TextInput`. Then the `run` method executes transformations on the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the `keepFiles` parameter is set:
