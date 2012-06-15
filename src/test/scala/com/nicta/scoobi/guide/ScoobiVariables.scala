@@ -16,7 +16,7 @@ trait ScoobiVariables {
 
   lazy val isSnapshot = version endsWith "SNAPSHOT"
 
-  lazy val branch = if (isSnapshot) "master" else version
+  lazy val branch = if (isSnapshot) "master" else previousVersionIfSnapshot
 
   lazy val landingPage = "http://nicta.github.com/scoobi/"
 
@@ -48,6 +48,7 @@ trait ScoobiVariables {
           "API_PAGE"            -> apiPage,
           "API_OFFICIAL_PAGE"   -> apiOfficialPage,
           "API_SNAPSHOT_PAGE"   -> apiSnapshotPage,
+          "BRANCH"              -> branch,
           "OFFICIAL_TAG"        -> previousVersionIfSnapshot,
           "GUIDE"               -> guideDir,
           "GUIDE_OFFICIAL"      -> guideOfficialDir,
