@@ -15,10 +15,10 @@ scalaVersion := "2.9.2"
 crossScalaVersions := Seq("2.9.1", "2.9.2")
 
 libraryDependencies ++= Seq(
-  "com.odiago.avro" % "odiago-avro" % "1.0.5",
   "javassist" % "javassist" % "3.12.1.GA",
+  "org.apache.avro" % "avro-mapred" % "1.7.0",
+  "org.apache.avro" % "avro" % "1.7.0",
   "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
-  "org.apache.avro" % "avro-mapred" % "1.6.0",
   "com.thoughtworks.xstream" % "xstream" % "1.4.2",
   "org.specs2" %% "specs2" % "1.11" % "optional",
   "org.specs2" %% "specs2-scalaz-core" % "6.0.1",
@@ -33,8 +33,9 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math" % "2.2" % "test"
 )
 
-resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
-                  "Packaged Avro" at "http://nicta.github.com/scoobi/releases/")
+resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
+                  "apache"   at "https://repository.apache.org/content/repositories/releases",
+                  "scoobi"   at "http://nicta.github.com/scoobi/releases")
 
 /** Compilation */
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
