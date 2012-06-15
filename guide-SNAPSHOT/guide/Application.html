@@ -1,0 +1,302 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../../css/maven-base.css');
+        @import url('./../../css/maven-theme.css');
+      </style>
+      <link type="text/css" rel="stylesheet" href="./../../css/prettify.css" />
+      <script type="text/javascript" src="./../../css/prettify.js"></script>
+      <link type="text/css" media="print" rel="stylesheet" href="./../../css/print.css" />
+      <link type="text/css" rel="stylesheet" href="./../../css/tooltip.css" />
+      <link type="text/css" rel="stylesheet" href="./../../css/specs2-user.css" />
+
+      <script type="text/javascript" src="./../../css/jquery.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = 'images/collapsed.gif';
+        else 
+          image.src = 'images/expanded.gif';
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../../css/tabber.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
+    </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Application.html">Application</a></div><div id="leftcolumn"><div id="tree">
+      <ul><li id="1137852360"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="880134034"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Write+your+code">Write your code</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Packaging">Packaging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
+            
+          </li></ul>
+          </li><li id="1660022518"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Parallel+operations">Parallel operations</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Combining">Combining</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
+            
+          </li></ul>
+          </li><li id="1641587898"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Reduction+operations">Reduction operations</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Working+with+Distributed+Objects">Working with Distributed Objects</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Example">Example</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
+            
+          </li></ul>
+          </li><li id="319083295"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Avro+file+output">Avro file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="614000521"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#For+case+classes">For case classes</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="1684330015"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="807445080"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Joins">Joins</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Cogroup">Cogroup</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#DMatrix">DMatrix</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#DVector">DVector</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
+            
+          </li></ul>
+          </li><li id="996139033"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Dependencies">Dependencies</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Configuration">Configuration</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Summary">Summary</a>
+            
+          </li></ul>
+          </li><li id="85977645"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+specs2">Using specs2</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Tags">Tags</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Simple+jobs">Simple jobs</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Using+your+own">Using your own</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1137852360','996139033'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Application</title><a name="Application"><h2 specId="996139033">Application</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Creation"><h3>Creation</h3></a><p>Scoobi provides several traits to help building applications. <code class="prettyprint">ScoobiApp</code> brings them all together:</p>
+<pre><code class="prettyprint">object WordCount extends ScoobiApp {
+  def run {
+    val lines = DList(repeat(&quot;hello&quot; -&gt; 3, &quot;world&quot; -&gt; 4):_*)
+
+    val frequencies = lines.flatMap(_.split(&quot; &quot;))
+      .map(word =&gt; (word, 1))
+      .groupByKey
+      .combine((a: Int, b: Int) =&gt; a + b).materialize
+
+    println(persist(frequencies).toList.sorted)
+  }
+
+  /** @return a Seq of strings where each key has been duplicated a number of times indicated by the value */
+  def repeat(m: (String, Int)*): Seq[String] = m.flatMap { case (k, v) =&gt; Seq.fill(v)(k) }
+}
+</code></pre><p>When you extend the <code class="prettyprint">ScoobiApp</code> trait:</p>
+<ul>
+  <li><p>you need to implement the <code class="prettyprint">run</code> method with your Scoobi logic</p></li>
+  <li><p>if you create an object, you get a <code class="prettyprint">main(arguments: Array[String])</code> method to run your code from the command-line: <code class="prettyprint">run examples.WordCount</code></p></li>
+  <li><p>you inherit the command-line arguments in a variable named <code class="prettyprint">args</code></p></li>
+  <li><p>you inherit an implicit <code class="prettyprint">ScoobiConfiguration</code> object, for persisting <code class="prettyprint">DLists</code>. The <code class="prettyprint">ScoobiConfiguration</code> object encapsulates a Hadoop <code class="prettyprint">Configuration</code> object setup with the hadoop command-line arguments</p></li>
+</ul><a name="Dependencies"><h3>Dependencies</h3></a><p>The <code class="prettyprint">ScoobiApp</code> trait extends the <code class="prettyprint">LibJars</code> trait which provides functionalities to manage dependent jars. More specifically it helps you load all the dependent jars on the cluster before executing your Scoobi job:</p>
+<ol>
+  <li><p>the dependent jars are taken from the context classloader and are only loaded if they come from a <code class="prettyprint">.ivy2</code> or <code class="prettyprint">.m2</code> directory (the Scala jars are <em>not</em> included). This behavior can be redefined by overriding the <code class="prettyprint">jars</code> method</p></li>
+  <li><p><code class="prettyprint">uploadLibJars</code> uploads all the new jars to a directory on the cluster. By default this directory is named <code class="prettyprint">libjars</code> (this is declared in the <code class="prettyprint">libJarsDirectory</code> method). When you upload the jars, <em>all</em> the dependencies will be added to the <code class="prettyprint">mapred.classpath</code> Hadoop configuration variable)</p></li>
+  <li><p><code class="prettyprint">deleteJars</code> can be used to remove all existing jars in the <code class="prettyprint">libjars</code> directory if one of your dependencies has changed (but kept the same name)</p></li>
+</ol><p>Here is an example on how to use these methods:</p>
+<pre><code class="prettyprint">object WordCount extends ScoobiApp {
+  def run {
+    // remove the existing jars on the cluster
+    deleteJars
+    // upload the dependencies to the cluster
+    uploadLibJars
+
+    // define and execute a Scoobi job
+    val lines = ...
+  }
+}
+</code></pre><p>If you don't want to use this facility at all, you can override the <code class="prettyprint">upload</code> method and set it to <code class="prettyprint">false</code>.</p><a name="Configuration"><h3>Configuration</h3></a><p>The <code class="prettyprint">ScoobiApp</code> trait uses the configuration files found in the <code class="prettyprint">HADOOP_HOME</code> directory to determine the location of the cluster file system and job tracker. You can however modify this by:</p>
+<ul>
+  <li>passing the <code class="prettyprint">scoobi local</code> argument on the command line</li>
+  <li>overriding the <code class="prettyprint">locally</code> method inherited from the <code class="prettyprint">ScoobiArgs</code> trait</li>
+  <li><p>passing other addresses via the <code class="prettyprint">fs</code> and <code class="prettyprint">jt</code> Hadoop arguments</p></li>
+  <li>overriding the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> methods inherited from the <code class="prettyprint">Cluster</code> trait</li>
+</ul><a name="Logging"><h3>Logging</h3></a><p>By default, when extending the <code class="prettyprint">Hadoop</code> trait, Hadoop and Scoobi logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:</p>
+<ul>
+  <li><p>show all logs: <code class="prettyprint">run WordCount -- scoobi verbose</code> (you can also override the <code class="prettyprint">quiet</code> method)</p></li>
+  <li><p>show some log levels: <code class="prettyprint">run WordCount -- scoobi verbose.warning</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones from the Apache commons logging library: <code class="prettyprint">ALL</code>, <code class="prettyprint">FATAL</code>, <code class="prettyprint">INFO</code>, <code class="prettyprint">WARN</code>, <code class="prettyprint">TRACE</code></p></li>
+  <li><p>show some log categories: <code class="prettyprint">run WordCount -- scoobi verbose.warning.(hadoop|scoobi)</code> will only display the log lines where the category matches <code class="prettyprint">.*(hadoop|scoobi).*</code>. Note that you can visually separate this regular expression for log categories with brackets to help the reading: <code class="prettyprint">run WordCount -- scoobi.verbose.warning.[(hadoop|scoobi)].times</code></p></li>
+  <li><p>you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">run WordCount -- scoobi verbose.times</code> (or override the <code class="prettyprint">showTimes</code> method)</p></li>
+  <li><p>finally you can combine those flags: <code class="prettyprint">run WordCount -- scoobi verbose.warning.times</code></p></li>
+</ul><a name="Summary"><h3>Summary</h3></a><p>The Scoobi command line arguments must be passed as dot separated values after the <code class="prettyprint">scoobi</code> argument name:</p><p><code class="prettyprint">run WordCount -- scoobi value1.value2.value3</code></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name </th>
+      <th>Default value </th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>verbose </td>
+      <td>false </td>
+      <td>if defined, log statements are displayed</td>
+    </tr>
+    <tr>
+      <td>times </td>
+      <td>false </td>
+      <td>if defined the total execution time is logged</td>
+    </tr>
+    <tr>
+      <td>level </td>
+      <td>info </td>
+      <td>minimum level of statements to log</td>
+    </tr>
+    <tr>
+      <td>category </td>
+      <td>.* </td>
+      <td>regular expression. By default everything is logged. Use <code class="prettyprint">scoobi</code> to display only Scoobi logs</td>
+    </tr>
+    <tr>
+      <td>local </td>
+      <td>false </td>
+      <td>if defined, run the Scoobi job locally</td>
+    </tr>
+    <tr>
+      <td>deletelibjars </td>
+      <td>false </td>
+      <td>if defined, remove jars from the <code class="prettyprint">libjars</code> directory before uploading them again</td>
+    </tr>
+  </tbody>
+</table></div></status></div><div id="rightcolumn"></div></body></html>
