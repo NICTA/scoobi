@@ -558,8 +558,8 @@ object Smart {
   }
 
 
-  /** The Flatten node type spcecifies the building of a DComp that contains all the elements from
-    * one or more exsiting DLists of the same type. */
+  /** The Flatten node type specifies the building of a DComp that contains all the elements from
+    * one or more existing DLists of the same type. */
   case class Flatten[A : Manifest : WireFormat](ins: List[DComp[A, Arr]]) extends DComp[A, Arr] {
 
     override val toString = "Flatten" + id

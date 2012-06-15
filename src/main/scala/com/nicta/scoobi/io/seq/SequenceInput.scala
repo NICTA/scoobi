@@ -79,8 +79,8 @@ object SequenceInput {
   /** Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
     * are the "converted" Scala types for the Writable key-value types that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: String*): DList[(K, V)] =
-    convertFromSequenceFile(List(paths: _*))
+  def convertFromSequenceFile[K, V](paths: String*)(implicit mk: Manifest[K], wk: WireFormat[K], sk: SeqSchema[K], mv: Manifest[V], wv: WireFormat[V], sv: SeqSchema[V]): DList[(K, V)] =
+    convertFromSequenceFile(List(paths: _*))(mk, wk, sk, mv, wv, sv)
 
 
   /** Create a new DList from the contents of a list of one or more Sequence Files. Note that the type parameters
@@ -102,8 +102,8 @@ object SequenceInput {
   /** Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
     * must match the type key-value type of the Sequence Files. In the case of a directory being specified,
     * the input forms all the files in that directory. */
-  def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: String*): DList[(K, V)] =
-    fromSequenceFile(List(paths: _*))
+  def fromSequenceFile[K <: Writable, V <: Writable](paths: String*)(implicit mk: Manifest[K], wk: WireFormat[K], mv: Manifest[V], wv: WireFormat[V]): DList[(K, V)] =
+    fromSequenceFile(List(paths: _*))(mk, wk, mv, wv)
 
 
   /** Create a new DList from the contents of a list of one or more Sequence Files. Note

@@ -83,10 +83,14 @@ trait InputsOutputs {
   def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[K] = SequenceInput.convertKeyFromSequenceFile(paths)
   def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: String*): DList[V] = SequenceInput.convertValueFromSequenceFile(paths: _*)
   def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[V] = SequenceInput.convertValueFromSequenceFile(paths)
-  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: String*): DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths: _*)
-  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths)
-  def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: String*): DList[(K, V)] = SequenceInput.fromSequenceFile(paths: _*)
-  def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: List[String]): DList[(K, V)] = SequenceInput.fromSequenceFile(paths)
+  def convertFromSequenceFile[K, V](paths: String*)(implicit mk: Manifest[K], wk: WireFormat[K], sk: SeqSchema[K], mv: Manifest[V], wv: WireFormat[V], sv: SeqSchema[V]): DList[(K, V)] =
+    SequenceInput.convertFromSequenceFile(paths: _*)(mk, wk, sk, mv, wv, sv)
+  def convertFromSequenceFile[K, V](paths: List[String])(implicit mk: Manifest[K], wk: WireFormat[K], sk: SeqSchema[K], mv: Manifest[V], wv: WireFormat[V], sv: SeqSchema[V]): DList[(K, V)] =
+    SequenceInput.convertFromSequenceFile(paths)(mk, wk, sk, mv, wv, sv)
+  def fromSequenceFile[K <: Writable, V <: Writable](paths: String*)(implicit mk: Manifest[K], wk: WireFormat[K], mv: Manifest[V], wv: WireFormat[V]): DList[(K, V)] =
+    SequenceInput.fromSequenceFile(paths: _*)(mk, wk, mv, wv)
+  def fromSequenceFile[K <: Writable, V <: Writable](paths: List[String])(implicit mk: Manifest[K], wk: WireFormat[K], mv: Manifest[V], wv: WireFormat[V]): DList[(K, V)] =
+    SequenceInput.fromSequenceFile(paths)(mk, wk, mv, wv)
 
   def convertKeyToSequenceFile[K : SeqSchema](dl: DList[K], path: String, overwrite: Boolean = false): DListPersister[K] = SequenceOutput.convertKeyToSequenceFile(dl, path, overwrite)
   def convertValueToSequenceFile[V : SeqSchema](dl: DList[V], path: String, overwrite: Boolean = false): DListPersister[V] = SequenceOutput.convertValueToSequenceFile(dl, path, overwrite)
