@@ -102,7 +102,7 @@ siteSourceDirectory <<= target (_ / "specs2-reports")
 
 // depending on the version, copy the api files to a different directory
 siteMappings <++= (mappings in packageDoc in Compile, version) map { (m, v) =>
-  for((f, d) <- m) yield (f, if (v.trim.endsWith("SNAPSHOT")) ("api/master/" + d) else ("api/"+v+"/"+d))
+  for((f, d) <- m) yield (f, if (v.trim.endsWith("SNAPSHOT")) ("api/master/" + d) else ("api/SCOOBI-"+v+"/"+d))
 }
 
 /** Site publication */
