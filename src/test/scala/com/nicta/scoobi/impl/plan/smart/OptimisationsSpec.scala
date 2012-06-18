@@ -17,10 +17,10 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
   "1. Nodes must be flattened" >> {
     "1.1 A Flatten Node which is an input to 2 other nodes must be copied to each node" >> {
       optimise(flattenSplit, parallelDo(f1), parallelDo(f1)) must beLike {
-        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_) :: _  => ff1.id !=== ff2.id
+        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_) :: _  => nodesAreDistinct(ff1, ff2)
       }
       optimise(flattenSplit, parallelDo(f1), parallelDo(f1), parallelDo(f1)) must beLike {
-        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_)  :: ParallelDo(ff3,_,_,_,_) :: _  => Seq(ff1.id, ff2.id, ff3.id).distinct.size === 3
+        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_)  :: ParallelDo(ff3,_,_,_,_) :: _  => nodesAreDistinct(ff1, ff2, ff3)
       }
     }
     "1.2 A Flatten Node which is an input to a ParallelDo then replicate the ParallelDo on each of the Flatten inputs" >> {
@@ -81,20 +81,26 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
       val gbks = collectGroupByKey(optimised).map(_.id)
       original.size aka show(node) must be_>=(gbks.size)
       gbks.size aka show(optimised) must_== gbks.toSet.size
-    }
+    }.set(minTestsOk -> 1000)
+
     "4.2 if the input of a GroupByKey is a Flatten, the Flatten is also replicated" >> check { (node: AstNode) =>
       val optimised = optimise(groupByKeySplit, node).head
 
       // collects the flattens, they must form a set and not a bag
       val flattens = collectFlatten(optimised).map(_.id)
       flattens.size aka show(optimised) must_== flattens.toSet.size
-    }
+    }.set(minTestsOk -> 1000)
+
     "4.3 examples" >> {
-      optimise(flattenSplit, parallelDo(f1), parallelDo(f1)) must beLike {
-        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_) :: _  => ff1.id !=== ff2.id
+      optimise(groupByKeySplit, parallelDo(gbk1), parallelDo(gbk1)) must beLike {
+        case ParallelDo(ggbk1,_,_,_,_) :: ParallelDo(ggbk2,_,_,_,_) :: _  => nodesAreDistinct(ggbk1, ggbk2)
       }
-      optimise(flattenSplit, parallelDo(f1), parallelDo(f1), parallelDo(f1)) must beLike {
-        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_)  :: ParallelDo(ff3,_,_,_,_) :: _  => Seq(ff1.id, ff2.id, ff3.id).distinct.size === 3
+      optimise(groupByKeySplit, parallelDo(gbk1), parallelDo(gbk1), parallelDo(gbk1)) must beLike {
+        case ParallelDo(ggbk1,_,_,_,_) :: ParallelDo(ggbk2,_,_,_,_)  :: ParallelDo(ggbk3,_,_,_,_) :: _  => nodesAreDistinct(ggbk1, ggbk2, ggbk3)
+      }
+      optimise(groupByKeySplit, flatten(gbkf1), flatten(gbkf1), flatten(gbkf1)) must beLike {
+        case Flatten((ggbk1 @ GroupByKey(ff1))::Nil) :: Flatten((ggbk2 @ GroupByKey(ff2))::Nil)  :: Flatten((ggbk3 @ GroupByKey(ff3))::Nil) :: _  =>
+          nodesAreDistinct(ggbk1, ggbk2, ggbk3) and nodesAreDistinct(ff1, ff2, ff3)
       }
     }
   }
@@ -102,10 +108,14 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
   val (l1, l2) = (load, load)
   val f1       = flatten(l1)
   val flattens = flatten(l1, l2)
+  val gbk1     = gbk(l1)
+  val gbkf1    = gbk(f1)
 
   def collectNestedFlatten = collectl {
     case f @ Flatten(ins) if ins exists isFlatten => f
   }
+
+  def nodesAreDistinct(nodes: AstNode*) = nodes.map(_.id).distinct.size === nodes.size
 
   def collectFlatten          = collectl { case f @ Flatten(_) => f }
   def collectCombine          = collectl { case c @ Combine(_,_) => c }
@@ -141,10 +151,10 @@ trait Optimiser {
     case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_),_,_,_,false) => p2 fuse p1
   }))
 
-  def groupByKeySplit = everywhere(fail
-  //  case g @ GroupByKey(f @ Flatten(ins)) => g.copy(in = f.copy())
-  //  case g @ GroupByKey(_)                => g.clone
-  )
+  def groupByKeySplit = everywhere(rule {
+    case g @ GroupByKey(f @ Flatten(ins)) => g.copy(in = f.copy())
+    case g @ GroupByKey(_)                => g.clone
+  })
 
   def optimise(strategy: Strategy, nodes: AstNode*): List[AstNode] = {
     rewrite(strategy)(nodes).toList
@@ -169,16 +179,25 @@ trait DCompData {
 
   implicit def arbitraryDComp: Arbitrary[AstNode] = Arbitrary(genDComp)
 
-  def genDComp: Gen[AstNode] = Gen.lzy(Gen.frequency((3, genLoad),
-                                                     (1, genParallelDo),
-                                                     (1, genFlatten),
-                                                     (1, genGroupByKey),
-                                                     (1, genCombine)))
+  import Gen._
+  def genDComp: Gen[AstNode] = lzy(Gen.frequency((3, genLoad),
+                                                 (1, genParallelDo),
+                                                 (1, genFlatten),
+                                                 (1, genGroupByKey),
+                                                 (1, genCombine),
+                                                 (10, shared)))
 
-  def genLoad       = Gen.oneOf(load, load)
-  def genParallelDo = genDComp map parallelDo
-  def genFlatten    = Gen.listOfN(3, genDComp).map(l => flatten(l:_*))
-  def genCombine    = genDComp map cb
-  def genGroupByKey = genDComp map gbk
+  def genDCompNoSharedValues: Gen[AstNode] = lzy(Gen.frequency((3, genLoad),
+                                                               (1, genParallelDo),
+                                                               (1, genFlatten),
+                                                               (1, genGroupByKey),
+                                                               (1, genCombine)))
+  def genLoad        = oneOf(load, load)
+  def genParallelDo  = resultOf(parallelDo _)
+  def genFlatten     = listOfN(3, genDComp).map(l => flatten(l:_*))
+  def genCombine     = resultOf(cb _)
+  def genGroupByKey  = resultOf(gbk _)
+  lazy val someNodes = lzy(listOfN(10, genDCompNoSharedValues.apply(Params()).get)).apply(Params()).get
+  def shared         = oneOf(someNodes)
 
 }
