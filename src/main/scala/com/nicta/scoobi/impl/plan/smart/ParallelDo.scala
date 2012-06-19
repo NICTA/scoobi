@@ -9,7 +9,7 @@ import core.{Emitter, EnvDoFn}
  * all elements of an existing DComp and concatenating the results. */
 case class ParallelDo[A, B, E](in: DComp[A, Arr], env: DComp[E, Exp], dofn: EnvDoFn[A, B, E], groupBarrier: Boolean = false, fuseBarrier: Boolean = false) extends DComp[B, Arr] {
 
-  override val toString = "ParallelDo" + id + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
+  override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
   val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
 
   def fuse[Z, G](p2: ParallelDo[B, Z, G]) =

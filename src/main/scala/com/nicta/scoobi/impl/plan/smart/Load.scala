@@ -12,7 +12,7 @@ import plan.Smart.ConvertInfo
  * A DataSource object specifies how the loading is performed. */
 case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
 
-  override val toString = "Load" + id
+  override val toString = "Load ("+id+")"
   val toVerboseString = toString
 }
 

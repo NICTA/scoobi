@@ -12,7 +12,7 @@ import org.kiama.attribution.Attributable
  * key-value DComp by key. */
 case class GroupByKey[K, V](in: DComp[(K, V), Arr]) extends DComp[(K, Iterable[V]), Arr] {
 
-  override val toString = "GroupByKey" + id
+  override val toString = "GroupByKey ("+id+")"
   val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
   override def clone: Attributable = copy()

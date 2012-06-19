@@ -11,7 +11,7 @@ import exec.Env
  * of two other Exp DComp nodes. */
 case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C) extends DComp[C, Exp] {
 
-  override val toString = "Op" + id
+  override val toString = "Op ("+id+")"
   val toVerboseString = toString + "[" + in1.toVerboseString + "," + in2.toVerboseString + "]"
 }
 
