@@ -4,18 +4,14 @@ package plan
 package comp
 
 import testing.mutable.UnitSpecification
-import io.ConstantStringDataSource
 import org.kiama.rewriting._
-import core.{Emitter, BasicDoFn}
+import Rewriter._
 import org.specs2.matcher.DataTables
 import org.specs2.ScalaCheck
-import org.scalacheck.{Prop, Arbitrary, Gen}
-import Rewriter._
-import org.kiama.output.PrettyPrinter
-import data.Data
+import org.scalacheck.Prop
 
-class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables with DCompData with ScalaCheck {
-  // here 'size' is the depth of the graph
+class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with DCompData with ScalaCheck {
+  // here 'size' is the depth of the generated graph
   override def defaultValues = Map(minTestsOk->1000, maxDiscarded ->500, minSize->1, maxSize->8, workers->1)
 
   "1. Nodes must be flattened" >> {
@@ -163,82 +159,3 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
   def collectGBKFlatten       = collectl { case GroupByKey(f @ Flatten(_)) => f }
 }
 
-trait DCompData extends Data {
-
-  def load = Load(ConstantStringDataSource("start"))
-  def flatten[A](nodes: CompNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
-  def parallelDo(in: CompNode) = pd(in)
-  def rt = Return("")
-  def pd(in: CompNode) = ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn)
-  def cb(in: CompNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
-  def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
-  def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
-  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
-
-  lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
-
-  lazy val showNode = (_:CompNode).toString
-  lazy val showStructure = (n: CompNode) => show(n).replaceAll("\\d", "")
-  def optimisation(node: CompNode, optimised: CompNode) =
-    if (show(node) != show(optimised)) "INITIAL: \n"+show(node)+"\nOPTIMISED:\n"+show(optimised) else "no optimisation"
-
-  lazy val show = CompNodePrettyPrinter.pretty(_:CompNode): String
-
-  object CompNodePrettyPrinter extends PrettyPrinter {
-    def pretty(node : CompNode) = super.pretty(show(node))
-
-    def show(node : CompNode): Doc =
-      node match {
-        case Load(_)                => value(showNode(node))
-        case Flatten(ins)           => showNode(node) <> braces (nest (line <> "+" <> ssep (ins map show, line <> "+")) <> line)
-        case ParallelDo(in,_,_,_,_) => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case Return(_)              => value(showNode(node))
-        case Combine(in,_)          => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case GroupByKey(in)         => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case Materialize(in)        => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case Op(in1, in2, _)        => showNode(node) <> braces (nest (line <> "1." <> show(in1) <> line <> "2." <> show(in2)))
-      }
-  }
-
-
-  import Gen._
-
-  def memo[T](g: Gen[T], ratio: Int = 30): Gen[T] = {
-    lazy val previousValues = new scala.collection.mutable.HashSet[T]
-    def memoizeValue(v: T) = { previousValues.add(v); v }
-    for {
-      v           <- g
-      usePrevious <- choose(0, 100)
-      n           <- choose(0, previousValues.size)
-    } yield {
-      if (usePrevious <= ratio && previousValues.nonEmpty)
-        if (n == previousValues.size) previousValues.toList(n - 1) else previousValues.toList(n)
-      else memoizeValue(v)
-    }
-  }
-
-  import scalaz.Scalaz._
-
-  implicit lazy val arbitraryDComp: Arbitrary[CompNode] = Arbitrary(sized(depth => genDComp(depth)))
-
-  import Gen._
-  def genDComp(depth: Int = 1): Gen[CompNode] = lzy(Gen.frequency((3, genLoad(depth)),
-                                                                  (4, genParallelDo(depth)),
-                                                                  (4, genGroupByKey(depth)),
-                                                                  (3, genMaterialize(depth)),
-                                                                  (3, genCombine(depth)),
-                                                                  (5, genFlatten(depth)),
-                                                                  (2, genOp(depth)),
-                                                                  (2, genReturn(depth))))
-
-
-  def genLoad       (depth: Int = 1) = oneOf(load, load)
-  def genReturn     (depth: Int = 1) = oneOf(rt, rt)
-  def genParallelDo (depth: Int = 1) = if (depth <= 1) value(parallelDo(load)) else memo(genDComp(depth - 1) map (parallelDo _))
-  def genFlatten    (depth: Int = 1) = if (depth <= 1) value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
-  def genCombine    (depth: Int = 1) = if (depth <= 1) value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
-  def genOp         (depth: Int = 1) = if (depth <= 1) value(op(load, load)  ) else memo((genDComp(depth - 1) |@| genDComp(depth - 1))((op _)))
-  def genMaterialize(depth: Int = 1) = if (depth <= 1) value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
-  def genGroupByKey (depth: Int = 1) = if (depth <= 1) value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
-
-}

@@ -4,6 +4,7 @@ package data
 import scalaz.Apply
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary._
+import Gen._
 
 /**
  * Generic data functions
@@ -29,6 +30,24 @@ trait Data {
   }
 
   lazy val nonNullString = arbitrary[String] suchThat (_ != null)
+
+  /**
+   * @return a new generator memoizing the previous values and returning old ones x % of the time
+   *         this allows to share existing generated data between other generators
+   */
+  def memo[T](g: Gen[T], ratio: Int = 30): Gen[T] = {
+    lazy val previousValues = new scala.collection.mutable.HashSet[T]
+    def memoizeValue(v: T) = { previousValues.add(v); v }
+    for {
+      v           <- g
+      usePrevious <- choose(0, 100)
+      n           <- choose(0, previousValues.size)
+    } yield {
+      if (usePrevious <= ratio && previousValues.nonEmpty)
+        if (n == previousValues.size) previousValues.toList(n - 1) else previousValues.toList(n)
+      else memoizeValue(v)
+    }
+  }
 
 }
 

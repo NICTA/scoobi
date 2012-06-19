@@ -7,9 +7,14 @@ import org.kiama.attribution.Attributable
 import core.{EnvDoFn, Emitter, BasicDoFn}
 import io.DataSource
 
-/** GADT for distributed list computation graph. */
+/**
+ * GADT for distributed list computation graph.
+ */
 sealed trait DComp[+A, +Sh <: Shape] extends CompNode
 
+/**
+ * Base trait for "computation nodes" with no generic type information for easier rewriting
+ */
 trait CompNode extends Attributable {
   lazy val id = Id.get
 }
@@ -19,6 +24,7 @@ case class ParallelDo[A, B, E](in: DComp[A, Arr], env: DComp[E, Exp], dofn: EnvD
   override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
   def fuse[Z, G](p2: ParallelDo[B, Z, G]) = ParallelDo.fuse(this, p2)
 }
+
 /** The Flatten node type spcecifies the building of a DComp that contains all the elements from
  * one or more exsiting DLists of the same type. */
 case class Flatten[A](ins: List[DComp[A, Arr]]) extends DComp[A, Arr] {
