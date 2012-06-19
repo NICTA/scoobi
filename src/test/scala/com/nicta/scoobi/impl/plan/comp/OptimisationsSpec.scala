@@ -1,7 +1,7 @@
 package com.nicta.scoobi
 package impl
 package plan
-package smart
+package comp
 
 import testing.mutable.UnitSpecification
 import io.ConstantStringDataSource
@@ -45,7 +45,7 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
         showStructure(optimise(flattenFuse, input).head) === showStructure(output)
       }
 
-      check(Prop.forAll { (node: AstNode) =>
+      check(Prop.forAll { (node: CompNode) =>
         collectNestedFlatten(optimise(flattenFuse, node).head) aka show(node) must beEmpty
       })
     }
@@ -59,35 +59,35 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
          showStructure(optimise(combineToParDo, input).head) === showStructure(output)
        }
     }
-    "Any optimised Combine in the graph can only have GroupByKey as an input" >> check { (node: AstNode) =>
+    "Any optimised Combine in the graph can only have GroupByKey as an input" >> check { (node: CompNode) =>
       forall(collectCombine(optimise(combineToParDo, node).head)) { n =>
         n aka show(node) must beLike { case Combine(GroupByKey(_), _) => ok }
       }
     }
-    "After optimisation, all the transformed Combines must be ParallelDo" >> check { (node: AstNode) =>
+    "After optimisation, all the transformed Combines must be ParallelDo" >> check { (node: CompNode) =>
       val optimised = optimise(combineToParDo, node).head
       (collectCombine(node).size + collectParallelDo(node).size) ===
       (collectCombineGbk(optimised).size + collectParallelDo(optimised).size)
     }
   }
 
-  "3. Successive ParallelDos must be fused" >> check { (node: AstNode) =>
+  "3. Successive ParallelDos must be fused" >> check { (node: CompNode) =>
     val optimised = optimise(parDoFuse, node).head
     collectSuccessiveParDos(optimised) must beEmpty
   };p
 
   "4. GroupByKeys" >> {
-    "4.1 the GroupByKey is replicated so that it can not be the input of different nodes  " >> check { (node: AstNode) =>
+    "4.1 the GroupByKey is replicated so that it can not be the input of different nodes  " >> check { (node: CompNode) =>
       val optimised = optimise(groupByKeySplit, node).head
 
       // collects the gbks, they must form a set and not a bag
-      val original = collectGroupByKey(node).map(_.id)
-      val gbks = collectGroupByKey(optimised).map(_.id)
-      original.size aka show(node) must be_>=(gbks.size)
-      gbks.size aka optimisation(node, optimised) must_== gbks.toSet.size
+      val before = collectGroupByKey(node).map(_.id)
+      val after  = collectGroupByKey(optimised).map(_.id)
+      before.size aka show(node) must be_>=(after.size)
+      after.size aka optimisation(node, optimised) must_== after.toSet.size
     }
 
-    "4.2 if the input of a GroupByKey is a Flatten, the Flatten is also replicated" >> check { (node: AstNode) =>
+    "4.2 if the input of a GroupByKey is a Flatten, the Flatten is also replicated" >> check { (node: CompNode) =>
       val optimised = optimise(groupByKeySplit, node).head
 
       // collects the flattens inside GroupByKey, they must form a set and not a bag
@@ -109,17 +109,50 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
     }
   }
 
+  "5. Remaining Combine nodes (without GroupByKey inputs)" >> {
+    "5.1 the remaining Combine nodes must be replicated so that one Combine can not be the input of different nodes" >> check { (node: CompNode) =>
+      val optimised = optimise(combineSplit, node).head
+
+      // collects the combine nodes, they must form a set and not a bag
+      val before = collectCombine(node).map(_.id)
+      val after = collectCombine(optimised).map(_.id)
+      before.size aka show(node) must be_>=(after.size)
+      before.size aka optimisation(node, optimised) must_== after.toSet.size
+    }
+
+    "5.2 examples" >> {
+      optimise(combineSplit, parallelDo(combine1), parallelDo(combine1)) must beLike {
+        case ParallelDo(c1,_,_,_,_) :: ParallelDo(c2,_,_,_,_) :: _  => nodesAreDistinct(c1, c2)
+      }
+      optimise(combineSplit, parallelDo(combine1), parallelDo(combine1), parallelDo(combine1)) must beLike {
+        case ParallelDo(c1,_,_,_,_) :: ParallelDo(c2,_,_,_,_)  :: ParallelDo(c3,_,_,_,_) :: _  => nodesAreDistinct(c1, c2, c3)
+      }
+    }
+  }
+
+  "6. ParallelDos which are outputs of the graph must be marked with a fuseBarrier" >> {
+    "6.1 with a random graph" >> check { (node: CompNode, outputs: Set[CompNode]) =>
+      val optimised = optimise(parDoFuseBarrier(outputs), node).head
+      // collects the flatten nodes which are leaves. If they are in the outputs set
+      // their fuseBarrier must be true
+      val inOutputs = collectParallelDo(optimised).filter(outputs.contains)
+      forall(inOutputs){ pd => pd must beTrue ^^ ((pd: ParallelDo[_,_,_]) => pd.fuseBarrier) }
+    }
+  }
+
   val (l1, l2) = (load, load)
   val f1       = flatten(l1)
   val flattens = flatten(l1, l2)
   val gbk1     = gbk(l1)
   val gbkf1    = gbk(f1)
+  val combine1 = cb(l1)
+  val combine2 = cb(l2)
 
   def collectNestedFlatten = collectl {
     case f @ Flatten(ins) if ins exists isFlatten => f
   }
 
-  def nodesAreDistinct(nodes: AstNode*) = nodes.map(_.id).distinct.size === nodes.size
+  def nodesAreDistinct(nodes: CompNode*) = nodes.map(_.id).distinct.size === nodes.size
 
   def collectFlatten          = collectl { case f @ Flatten(_) => f }
   def collectCombine          = collectl { case c @ Combine(_,_) => c }
@@ -130,70 +163,31 @@ class OptimisationsSpec extends UnitSpecification with Optimiser with DataTables
   def collectGBKFlatten       = collectl { case GroupByKey(f @ Flatten(_)) => f }
 }
 
-trait Optimiser {
-  type Term = AstNode
-
-  def flattenSplit = everywhere(rule {
-    case f @ Flatten(_) => f.clone
-  })
-
-  def flattenSink = everywhere(rule {
-    case p @ ParallelDo(Flatten(ins),_,_,_,_) => Flatten(ins.map(in => p.copy(in)))
-  })
-
-  val isFlatten: DComp[_,_] => Boolean = { case Flatten(_) => true; case other => false }
-
-  def flattenFuse = repeat(sometd(rule {
-    case Flatten(ins) if ins exists isFlatten => Flatten(ins.flatMap { case Flatten(nodes) => nodes; case other => List(other) })
-  }))
-
-  def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey(_), _) => c
-    case c @ Combine(other, f)         => c.toParallelDo
-  })
-
-  def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_),_,_,_,false) => p2 fuse p1
-  }))
-
-  def groupByKeySplit = everywhere(rule {
-    case g @ GroupByKey(f @ Flatten(ins)) => g.copy(in = f.copy())
-    case g @ GroupByKey(_)                => g.clone
-  })
-
-  def optimise(strategy: Strategy, nodes: AstNode*): List[AstNode] = {
-    rewrite(strategy)(nodes).toList
-  }
-
-}
-
 trait DCompData extends Data {
 
   def load = Load(ConstantStringDataSource("start"))
-  def flatten[A](nodes: AstNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
-  def parallelDo(in: AstNode) = pd(in)
+  def flatten[A](nodes: CompNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
+  def parallelDo(in: CompNode) = pd(in)
   def rt = Return("")
-  def pd(in: AstNode) = ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn)
-  def cb(in: AstNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
-  def gbk(in: AstNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
-  def mt(in: AstNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
-  def op[A, B](in1: AstNode, in2: AstNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
+  def pd(in: CompNode) = ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn)
+  def cb(in: CompNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
+  def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
+  def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
+  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
 
-  lazy val showNode = (_:AstNode).toString
-  lazy val showStructure = (n: AstNode) => show(n).replaceAll("\\d", "")
-  def optimisation(node: AstNode, optimised: AstNode) =
+  lazy val showNode = (_:CompNode).toString
+  lazy val showStructure = (n: CompNode) => show(n).replaceAll("\\d", "")
+  def optimisation(node: CompNode, optimised: CompNode) =
     if (show(node) != show(optimised)) "INITIAL: \n"+show(node)+"\nOPTIMISED:\n"+show(optimised) else "no optimisation"
 
-  lazy val show = {
-    AstNodePrettyPrinter.pretty(_:AstNode): String
-  }
+  lazy val show = CompNodePrettyPrinter.pretty(_:CompNode): String
 
-  object AstNodePrettyPrinter extends PrettyPrinter {
-    def pretty(node : AstNode) = super.pretty(show(node))
+  object CompNodePrettyPrinter extends PrettyPrinter {
+    def pretty(node : CompNode) = super.pretty(show(node))
 
-    def show(node : AstNode): Doc =
+    def show(node : CompNode): Doc =
       node match {
         case Load(_)                => value(showNode(node))
         case Flatten(ins)           => showNode(node) <> braces (nest (line <> "+" <> ssep (ins map show, line <> "+")) <> line)
@@ -225,17 +219,17 @@ trait DCompData extends Data {
 
   import scalaz.Scalaz._
 
-  implicit lazy val arbitraryDComp: Arbitrary[AstNode] = Arbitrary(sized(depth => genDComp(depth)))
+  implicit lazy val arbitraryDComp: Arbitrary[CompNode] = Arbitrary(sized(depth => genDComp(depth)))
 
   import Gen._
-  def genDComp(depth: Int = 1): Gen[AstNode] = lzy(Gen.frequency((3, genLoad(depth)),
-                                                                 (4, genParallelDo(depth)),
-                                                                 (4, genGroupByKey(depth)),
-                                                                 (3, genMaterialize(depth)),
-                                                                 (3, genCombine(depth)),
-                                                                 (5, genFlatten(depth)),
-                                                                 (2, genOp(depth)),
-                                                                 (2, genReturn(depth))))
+  def genDComp(depth: Int = 1): Gen[CompNode] = lzy(Gen.frequency((3, genLoad(depth)),
+                                                                  (4, genParallelDo(depth)),
+                                                                  (4, genGroupByKey(depth)),
+                                                                  (3, genMaterialize(depth)),
+                                                                  (3, genCombine(depth)),
+                                                                  (5, genFlatten(depth)),
+                                                                  (2, genOp(depth)),
+                                                                  (2, genReturn(depth))))
 
 
   def genLoad       (depth: Int = 1) = oneOf(load, load)
