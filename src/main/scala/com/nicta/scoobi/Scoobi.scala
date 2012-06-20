@@ -17,6 +17,7 @@ package com.nicta.scoobi
 
 import application._
 import core._
+import org.apache.hadoop.io._
 
 /** Global Scoobi functions and values. */
 object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib with DObjects {
@@ -155,6 +156,25 @@ trait Lib {
   
   
   implicit def inMemVectorToDObject[Elem, T](in: InMemVector[Elem, T]) = in.data
+
+  /**
+   * implicit conversions to Writables
+   */
+  implicit def toBooleanWritable(bool: Boolean): BooleanWritable = new BooleanWritable(bool)
+
+  implicit def toIntWritable(int: Int): IntWritable = new IntWritable(int)
+
+  implicit def toFloatWritable(float: Float): FloatWritable = new FloatWritable(float)
+
+  implicit def toLongWritable(long: Long): LongWritable = new LongWritable(long)
+
+  implicit def toDoubleWritable(double: Double): DoubleWritable = new DoubleWritable(double)
+
+  implicit def toText(str: String): Text = new Text(str)
+
+  implicit def toByteWritable(byte: Byte): ByteWritable = new ByteWritable(byte)
+
+  implicit def toBytesWritable(byteArr: Array[Byte]): BytesWritable = new BytesWritable(byteArr)
 }
 
 object Lib extends Lib
