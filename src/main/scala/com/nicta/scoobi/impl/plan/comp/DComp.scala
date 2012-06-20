@@ -79,8 +79,6 @@ case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C) e
   override val toString = "Op ("+id+")"
 }
 
-
-
 object ParallelDo {
   def fuse[X, Y, Z, F, G](pd1: ParallelDo[X, Y, F], pd2: ParallelDo[Y, Z, G]): ParallelDo[X, Z, (F, G)] = {
     val ParallelDo(in1, env1, dofn1, gb1, _)   = pd1

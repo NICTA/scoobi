@@ -50,6 +50,14 @@ trait Optimiser {
 
   /** return true if an CompNode is a Flatten */
   lazy val isFlatten: DComp[_,_] => Boolean = { case Flatten(_) => true; case other => false }
+  /** return true if an CompNode is a ParallelDo */
+  lazy val isParallelDo: DComp[_,_] => Boolean = { case ParallelDo(_,_,_,_,_) => true; case other => false }
+  /** return true if an CompNode is a Flatten */
+  lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f @ Flatten(_) => f }
+  /** return true if an CompNode is a ParallelDo */
+  lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p @ ParallelDo(_,_,_,_,_) => p }
+  /** return true if an CompNode is a GroupByKey */
+  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk @ GroupByKey(_) => gbk }
 
   /**
    * Nested Flattens must be fused
@@ -151,10 +159,22 @@ trait Optimiser {
   def optimise(outputs: Set[CompNode]): Set[CompNode] =
     rewrite(allStrategies(outputs))(outputs)
 
+  /** duplicate the whole graph by copying all nodes */
+  lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
+    case n @ Op(in1, in2, _)        => n.copy()
+    case n @ Flatten(ins)           => n.copy()
+    case n @ Materialize(in)        => n.copy()
+    case n @ GroupByKey(in)         => n.copy()
+    case n @ Combine(in, _)         => n.copy()
+    case n @ ParallelDo(in,_,_,_,_) => n.copy()
+    case n @ Load(_)                => n.copy()
+    case n @ Return(_)              => n.copy()
+  }))(node)
+
   /** apply one strategy to a list of Nodes. Used for testing */
   private[scoobi] def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
     rewrite(strategy)(nodes).toList
   }
 
 }
-
+object Optimiser extends Optimiser

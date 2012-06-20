@@ -688,15 +688,12 @@ object Intermediate {
     private def outputChannelForGbk(gbk: DComp[_, _ <: Shape], g: DGraph): GbkOutputChannel = {
 
       def getSingleSucc(d: DComp[_, _ <: Shape]): Option[DComp[_, _ <: Shape]] =
-        g.succs.get(d) match {
-          case Some(s) => Some(s.toList.head)
-          case None    => None
-        }
+        g.succs.get(d).flatMap(_.headOption)
 
       def addFlatten(oc: GbkOutputChannel): GbkOutputChannel = {
         val maybeOC =
           for { s       <- g.preds.get(oc.groupByKey)
-                p       <- Some(s.toList.head) // Assumes GBK has predecessor - it must; TODO - is this a fair assumption?
+                p       <- s.toList.headOption
                 flatten <- getFlatten(p)
           } yield oc.addFlatten(flatten)
         maybeOC.getOrElse(oc)
@@ -708,11 +705,11 @@ object Intermediate {
             for { d_                      <- getSingleSucc(d)
                   reducer                 <- getParallelDo(d_)
                   hasNoSuccessors         <- Some(!g.succs.get(reducer).isDefined)
-                  hasMaterializeSucessor  <- Some(g.succs.get(reducer).map(_.exists(isMaterialize(_))).getOrElse(false))
+                  hasMaterializeSuccessor <- Some(g.succs.get(reducer).map(_.exists(isMaterialize(_))).getOrElse(false))
                   hasGroupBarrier         <- Some(reducer.groupBarrier)
                   hasFuseBarrier          <- Some(reducer.fuseBarrier)
 
-            } yield (if (hasNoSuccessors || hasMaterializeSucessor || hasGroupBarrier || hasFuseBarrier) { oc.addReducer(reducer)} else { oc })
+            } yield (if (hasNoSuccessors || hasMaterializeSuccessor || hasGroupBarrier || hasFuseBarrier) { oc.addReducer(reducer)} else { oc })
           maybeOC.getOrElse(oc)
         }
 

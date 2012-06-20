@@ -10,7 +10,7 @@ import org.specs2.matcher.DataTables
 import org.specs2.ScalaCheck
 import org.scalacheck.Prop
 
-class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with DCompData with ScalaCheck {
+class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData with ScalaCheck {
   // here 'size' is the depth of the generated graph
   override def defaultValues = Map(minTestsOk->1000, maxDiscarded ->500, minSize->1, maxSize->8, workers->1)
 

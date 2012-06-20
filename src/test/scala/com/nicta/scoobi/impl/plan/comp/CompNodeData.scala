@@ -7,9 +7,9 @@ import data.Data
 import io.ConstantStringDataSource
 import core.{Emitter, BasicDoFn}
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
+import Optimiser._
 
-trait DCompData extends Data {
+trait CompNodeData extends Data {
   /**
    * Creation functions
    */
@@ -17,11 +17,12 @@ trait DCompData extends Data {
   def flatten[A](nodes: CompNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
   def parallelDo(in: CompNode) = pd(in)
   def rt = Return("")
-  def pd(in: CompNode) = ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn)
   def cb(in: CompNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
   def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
   def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
   def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
+  def pd(in: CompNode, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
+    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn, groupBarrier, fuseBarrier)
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
 

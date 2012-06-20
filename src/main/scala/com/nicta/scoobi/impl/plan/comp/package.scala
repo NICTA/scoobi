@@ -42,22 +42,23 @@ package object comp {
   /**
    * Pretty printer for a CompNode
    */
-  lazy val showNode = (_:CompNode).toString
+  def showNode[T](n: CompNode, attribute: Option[CompNode => T]) = n.toString + attribute.map(a => " -> "+ a(n).toString + " ").getOrElse("")
   lazy val show = CompNodePrettyPrinter.pretty(_:CompNode): String
 
   object CompNodePrettyPrinter extends PrettyPrinter {
     def pretty(node : CompNode) = super.pretty(show(node))
+    def pretty[T](node : CompNode, attribute: CompNode => T) = super.pretty(show(node, Some(attribute)))
 
-    def show(node : CompNode): Doc =
+    def show[T](node : CompNode, attribute: Option[CompNode => T] = None): Doc =
       node match {
-        case Load(_)                => value(showNode(node))
-        case Flatten(ins)           => showNode(node) <> braces (nest (line <> "+" <> ssep (ins map show, line <> "+")) <> line)
-        case ParallelDo(in,_,_,_,_) => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case Return(_)              => value(showNode(node))
-        case Combine(in,_)          => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case GroupByKey(in)         => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case Materialize(in)        => showNode(node) <> braces (nest (line <> show(in) <> line))
-        case Op(in1, in2, _)        => showNode(node) <> braces (nest (line <> "1." <> show(in1) <> line <> "2." <> show(in2)))
+        case Load(_)                => value(showNode(node, attribute))
+        case Flatten(ins)           => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
+        case ParallelDo(in,_,_,_,_) => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+        case Return(_)              => value(showNode(node, attribute))
+        case Combine(in,_)          => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+        case GroupByKey(in)         => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+        case Materialize(in)        => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+        case Op(in1, in2, _)        => showNode(node, attribute) <> braces (nest (line <> "1." <> show(in1, attribute) <> line <> "2." <> show(in2, attribute)))
       }
   }
 }
