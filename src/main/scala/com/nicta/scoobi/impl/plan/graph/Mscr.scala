@@ -15,7 +15,10 @@ case class Mscr(id: Int = UniqueId.get, var inputChannels: Set[InputChannel] = S
 
   "Mscr ("+id+")"+inputChannels.mkString("\n(", ",", ")")+outputChannels.mkString("\n(", ",", ")")
 
-  def mappers     = inputChannels.collect { case MapperInputChannel(pds) => pds }.flatten
+  def mapperChannels = inputChannels.collect { case c @ MapperInputChannel(_) => c }
+  def mappers        = mapperChannels.flatMap(_.parDos)
+  def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
+
   def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_) => gbk }
   def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer)) => reducer }
 

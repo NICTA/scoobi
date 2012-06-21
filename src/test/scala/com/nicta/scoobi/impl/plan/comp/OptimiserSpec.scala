@@ -11,8 +11,6 @@ import org.specs2.ScalaCheck
 import org.scalacheck.Prop
 
 class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData with ScalaCheck {
-  // here 'size' is the depth of the generated graph
-  override def defaultValues = Map(minTestsOk->1000, maxDiscarded ->500, minSize->1, maxSize->8, workers->1)
 
   "1. Nodes must be flattened" >> {
     "1.1 A Flatten Node which is an input to 2 other nodes must be copied to each node" >> {

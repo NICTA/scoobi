@@ -7,9 +7,11 @@ import data.Data
 import io.ConstantStringDataSource
 import core.{Emitter, BasicDoFn}
 import org.scalacheck.{Arbitrary, Gen}
-import Optimiser._
+import org.specs2.ScalaCheck
+import org.specs2.main.CommandLineArguments
+import org.specs2.mutable.Specification
 
-trait CompNodeData extends Data {
+trait CompNodeData extends Data with ScalaCheck with CommandLineArguments { this: Specification =>
   /**
    * Creation functions
    */
@@ -37,9 +39,15 @@ trait CompNodeData extends Data {
    * Arbitrary instance for a CompNode
    */
   import scalaz.Scalaz._
-  import Gen._
 
-  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(sized(depth => genDComp(depth)))
+  override def defaultValues = Map(minTestsOk   -> arguments.commandLine.int("mintestsok").getOrElse(10000),
+                                   maxSize      -> arguments.commandLine.int("maxsize").getOrElse(8),
+                                   minSize      -> arguments.commandLine.int("minize").getOrElse(1),
+                                   maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(500),
+                                   workers      -> arguments.commandLine.int("workers").getOrElse(2))
+
+  import Gen._
+  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(Gen.sized(depth => genDComp(depth)))
 
   def genDComp(depth: Int = 1): Gen[CompNode] = lzy(frequency((3, genLoad(depth)),
                                                               (4, genParallelDo(depth)),
@@ -50,13 +58,13 @@ trait CompNodeData extends Data {
                                                               (2, genOp(depth)),
                                                               (2, genReturn(depth))))
 
-  def genLoad       (depth: Int = 1) = oneOf(load, load)
-  def genReturn     (depth: Int = 1) = oneOf(rt, rt)
-  def genParallelDo (depth: Int = 1) = if (depth <= 1) value(parallelDo(load)) else memo(genDComp(depth - 1) map (parallelDo _))
-  def genFlatten    (depth: Int = 1) = if (depth <= 1) value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
-  def genCombine    (depth: Int = 1) = if (depth <= 1) value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
-  def genOp         (depth: Int = 1) = if (depth <= 1) value(op(load, load)  ) else memo((genDComp(depth - 1) |@| genDComp(depth - 1))((op _)))
-  def genMaterialize(depth: Int = 1) = if (depth <= 1) value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
-  def genGroupByKey (depth: Int = 1) = if (depth <= 1) value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
+  def genLoad       (depth: Int = 1) = Gen.oneOf(load, load)
+  def genReturn     (depth: Int = 1) = Gen.oneOf(rt, rt)
+  def genParallelDo (depth: Int = 1) = if (depth <= 1) Gen.value(parallelDo(load)) else memo(genDComp(depth - 1) map (parallelDo _))
+  def genFlatten    (depth: Int = 1) = if (depth <= 1) Gen.value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
+  def genCombine    (depth: Int = 1) = if (depth <= 1) Gen.value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
+  def genOp         (depth: Int = 1) = if (depth <= 1) Gen.value(op(load, load)  ) else memo((genDComp(depth - 1) |@| genDComp(depth - 1))((op _)))
+  def genMaterialize(depth: Int = 1) = if (depth <= 1) Gen.value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
+  def genGroupByKey (depth: Int = 1) = if (depth <= 1) Gen.value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
 
 }

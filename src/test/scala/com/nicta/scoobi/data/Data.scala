@@ -5,6 +5,7 @@ import scalaz.Apply
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary._
 import Gen._
+import scalaz.Scalaz._
 
 /**
  * Generic data functions
@@ -48,6 +49,9 @@ trait Data {
       else memoizeValue(v)
     }
   }
+
+  def distinctPairs[T1 <: AnyRef](seq1: Seq[T1]): Seq[(T1, T1)]                    = distinctPairs(seq1, seq1)
+  def distinctPairs[T1 <: AnyRef, T2  <: AnyRef](seq1: Seq[T1], seq2: Seq[T2]): Seq[(T1, T2)] = (seq1.toList |@| seq2.toList)((_,_)).filterNot(p => p._1 eq p._2).distinct.toSeq
 
 }
 

@@ -9,52 +9,42 @@ import org.specs2.ScalaCheck
 import org.specs2.matcher.{Expectable, Matcher}
 import CompNodePrettyPrinter._
 import Optimiser._
+import org.specs2.main.CommandLineArguments
 
 class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags {
   // set the specification as sequential for now
   // otherwise there are cyclic attribute evaluations
   sequential
 
-  override implicit def defaultParameters = set(minTestsOk -> 10000, maxSize -> 8)
-
   "1. We should build MSCRs around related GroupByKey nodes" >> {
-    "1.1 if two GroupByKey nodes share the same input, they belong to the same Mscr" >> {
+    "if two GroupByKey nodes share the same input, they belong to the same Mscr" >> {
       val l1 = load
       val gbk1 = gbk(flatten(l1))
       val gbk2 = gbk(flatten(l1))
       mscrsFor(gbk1, gbk2)
       gbk1 -> mscr ==== gbk2 -> mscr
     }
-    "1.2 if two GroupByKey nodes don't share the same input, they belong to 2 different Mscrs" >> {
+    "if two GroupByKey nodes don't share the same input, they belong to 2 different Mscrs" >> {
       gbk(flatten(load)) -> mscr !== gbk(flatten(load)) -> mscr
     }
-    "1.3 two Gbks in the same Mscr cannot be ancestor of each other" >> check { node: CompNode =>
-      mscrsFor(node) foreach { m =>
+    "two Gbks in the same Mscr cannot be ancestor of each other" >> check { graph: CompNode =>
+      mscrsFor(graph) foreach { m =>
         val gbks = m.groupByKeys
         gbks foreach { gbk =>
-          gbks.filterNot(_ eq gbk) foreach { other => (other:CompNode) aka (pretty(node, mscr)) must not(beAnAncestorOf(gbk)) }
+          gbks.filterNot(_ eq gbk) foreach { other => (other:CompNode) aka show(gbk) must not(beAnAncestorOf(gbk)) }
         }
       }
       ok
     }
-    "1.3.1 a Gbk must have the exact same Mscr that references it" >> check { node: CompNode =>
-      mscrsFor(node) foreach { m =>
-        m.groupByKeys foreach { gbk => (gbk -> mscr) aka (pretty(node, mscr)) must be(m) }
+    "a Gbk must have the exact same Mscr that references it" >> check { graph: CompNode =>
+      mscrsFor(graph) foreach { m =>
+        m.groupByKeys foreach { gbk => (gbk -> mscr) aka show(gbk) must be(m) }
       }
       ok
-    }
-    "1.4 if two Gbks have the same ParallelDo input, then this ParallelDo must belong to another Mscr" >> check { node: CompNode =>
-      mscrsFor(node) foreach { m =>
-        m.groupByKeys foreach { gbk =>
-          descendents(gbk) collect {
-            case p @ ParallelDo(_,_,_,_,_) => ((p -> mscr) aka "the mscr of "+p+" in "+pretty(node)+"\n") must be_!== (m)
-          }
-        }
-      };  ok
-    }
+    } lt;
   }
   "2. We need to create, for each GroupByKey, a GbkOutputChannel" >> {
-    "There should be a GbkOutputChannel for a GroupByKey" >> {
+    "There should be 1 GbkOutputChannel for 1 GroupByKey" >> {
       val gbk1 = gbk(cb(load))
       mscrFor(gbk1).outputChannels must_== Set(GbkOutputChannel(gbk1))
     }
@@ -93,7 +83,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         val pd1  = pd(cb1)
         mscrFor(pd1).outputChannels must_== Set(GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1)))
       }
-      "if it a Materialize successor" >> {
+      "if it has a Materialize successor" >> {
         val gbk1 = gbk(rt)
         val cb1  = cb(gbk1)
         val pd1  = pd(cb1)
@@ -104,26 +94,66 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         val gbk1 = gbk(rt)
         val cb1  = cb(gbk1)
         val fl1  = flatten(pd(cb1, groupBarrier = false, fuseBarrier = false))
-        mscrFor(fl1).outputChannels must_== Set(GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = None))
+        mscrsFor(fl1)
+        mscrFor(gbk1).outputChannels aka(pretty(gbk1, mscr)) must_== Set(GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = None))
       }
     }
   }
   "3. We need to create InputChannels for each Mscr" >> {
-    "3.1 We create a MapperInputChannel for all ParallelDos sharing the same input as the Mscr GroupByKey" >> check { node: CompNode =>
-      mscrsFor(node)
+    "we create MapperInputChannels for ParallelDos which are not reducers of the GroupByKey" >> check { graph: CompNode =>
+      mscrsFor(graph)
       // collect the parallel does of the current mscr which are not reducers
-      descendents(node).collect(isAParallelDo).filterNot(p => (p -> mscr).reducers.contains(p)) foreach { p =>
-        (p -> mscr).mappers aka ("for node:\n"+pretty(node, mscr)+"\nand mscr\n"+(p -> mscr)) must contain(p)
+      descendents(graph).collect(isAParallelDo).filterNot(p => (p -> mscr).reducers.contains(p)) foreach { p =>
+        (p -> mscr).mappers aka show(p) must contain(p)
       }; ok
     }
-    "3.1.1 a ParallelDo can not be a mapper and a reducer at the same time" >> check { node: CompNode =>
-      mscrsFor(node)
-      // collect the parallel does of the current mscr which are not reducers
-      descendents(node).collect(isAParallelDo) foreach { p =>
-        ((p -> mscr).mappers intersect (p -> mscr).reducers) aka ("for node:\n"+pretty(node, mscr)+"\nand mscr\n"+(p -> mscr)) must beEmpty
+    "Mappers" >> {
+      "two mappers in 2 different input channels must not share the same input" >> check { graph: CompNode =>
+        mscrsFor(graph).filter(_.inputChannels.size > 1) foreach { m =>
+          val independentPdos = m.mapperChannels.flatMap(_.parDos.headOption).toSeq
+          val (pdo1, pdo2) = (independentPdos(0), independentPdos(1))
+          pdo1.in !== pdo2.in
+        }; ok
+      }
+      "two mappers in the same input channel must share the same input" >> check { graph: CompNode =>
+        mscrsFor(graph).flatMap(_.mapperChannels).filter(_.parDos.size > 1) foreach { input =>
+          val (pdo1, pdo2) = (input.parDos(0), input.parDos(1))
+          pdo1.in === pdo2.in
+        }; ok
+      }
+      "two parallelDos sharing the same input must be in the same inputChannel" >> check { graph: CompNode =>
+        mscrsFor(graph)
+        distinctPairs(descendents(graph).collect(isAParallelDo)).foreach  { case (p1, p2) =>
+          if (p1.in == p2.in) {
+            (p1 -> mscr).inputChannelFor(p1) === (p2 -> mscr).inputChannelFor(p2)
+          }
+        }; ok
+      }
+      "if a ParallelDo is an input shared by 2 others ParallelDos, then it must belong to another Mscr" >> check { graph: CompNode =>
+        mscrsFor(graph).filter(_.mappers.size > 1) foreach { m =>
+          m.mappers foreach { pd =>
+            reachableInputs(pd) collect {
+              case p @ ParallelDo(_,_,_,_,_) => (p -> mscr) aka show(p) must be_!== (m)
+            }
+          }
+        }; ok
+      }
+    }
+    "a ParallelDo can not be a mapper and a reducer at the same time" >> check { graph: CompNode =>
+      mscrsFor(graph)
+      descendents(graph).collect(isAParallelDo) foreach { p =>
+        ((p -> mscr).mappers intersect (p -> mscr).reducers) aka show(p) must beEmpty
+      }; ok
+    }
+    "all the ParallelDos must be in a mapper or a reducer" >> check { graph: CompNode =>
+      mscrsFor(graph)
+      descendents(graph).collect(isAParallelDo) foreach { p =>
+        (p -> mscr).mappers.contains(p) || (p -> mscr).reducers.contains(p)
       }; ok
     }
   }
+
+  def show(node: CompNode): String = "SHOWING NODE: "+showNode(node, None)+"\n"+pretty(ancestors(node).headOption.getOrElse(node).asInstanceOf[CompNode], mscr)
 
   def beAnAncestorOf(node: CompNode): Matcher[CompNode] = new Matcher[CompNode] {
     def apply[S <: CompNode](other: Expectable[S]) =

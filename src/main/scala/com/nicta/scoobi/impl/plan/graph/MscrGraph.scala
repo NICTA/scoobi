@@ -28,14 +28,14 @@ trait MscrGraph {
        * - it has a fuse barrier
        * - it has no successor
        * - it is followed by a Materialize
-       *
-       * add a MapperInputChannel grouping all the ParallelDos sharing the same input
        */
       case pd @ ParallelDo(cb @ Combine(gbk @ GroupByKey(_),_),_,_,true,_)                                  => (cb -> mscr).addReducerOnGbkOutputChannel(gbk, pd)
       case pd @ ParallelDo(cb @ Combine(gbk @ GroupByKey(_),_),_,_,_,true)                                  => (cb -> mscr).addReducerOnGbkOutputChannel(gbk, pd)
       case pd @ ParallelDo(cb @ Combine(gbk @ GroupByKey(_),_),_,_,false,false) if !hasParent(pd)           => (cb -> mscr).addReducerOnGbkOutputChannel(gbk, pd)
       case pd @ ParallelDo(cb @ Combine(gbk @ GroupByKey(_),_),_,_,false,false) if isMaterialize(pd.parent) => (cb -> mscr).addReducerOnGbkOutputChannel(gbk, pd)
-      case pd @ ParallelDo(in,_,_,_,_)                                                                      => (in -> mscr).addParallelDoOnMapperInputChannel(pd)
+      case pd @ ParallelDo(cb @ Combine(gbk @ GroupByKey(_),_),_,_,false,false)                             => Mscr().addParallelDoOnMapperInputChannel(pd)
+      /**  add a MapperInputChannel grouping all the ParallelDos sharing the same input  */
+      case pd @ ParallelDo(in,_,_,_,_)                                                                      => Mscr().addParallelDoOnMapperInputChannel(pd)
 
       case Flatten(ins)    => ins.map(_ -> mscr).headOption.getOrElse(Mscr())
       case Op(in1, in2, _) => in1 -> mscr
@@ -51,9 +51,19 @@ trait MscrGraph {
   def hasDescendentParallelDo(node: CompNode) = descendents(node).collect(isAParallelDo).nonEmpty
   def hasDescendentGbk(node: CompNode) = descendents(node).collect(isAGroupByKey).nonEmpty
 
+
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))
   def ancestors(n: Attributable): Seq[Attributable] = if (n.parent == null) Seq() else (n.parent +: ancestors(n.parent))
-  def descendents(n: Attributable): Seq[Attributable] = n.children.toSeq ++ n.children.flatMap(descendents)
+  /**
+   * In the context of a CompNode graph there can be several outputs reachable from a given node
+   */
+  def reachableOutputs(n: Attributable): Seq[Attributable] = ancestors(n).filter(a => reachableInputs(a).contains(n))
+
+  def descendents(n: Attributable): Seq[Attributable] =
+    (n.children.toSeq ++ n.children.flatMap(descendents)).map(c => (c.asInstanceOf[CompNode].id, c)).toMap.values.toList.toSeq
+
+  /** alias for descendents in the context of a CompNode graph */
+  def reachableInputs(n: Attributable) = descendents(n)
   def hasParent(node: CompNode) = Option(node.parent).isDefined
 
 
