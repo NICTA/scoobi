@@ -11,6 +11,8 @@ import lib.Relational._
 
 class PageRankSpec extends NictaSimpleJobs {
 
+  skipAll
+
   "Web pages can be ranked according to their number of incoming and outcoming links" >> { implicit sc: SC =>
     val graph =
       fromInput("1: 2 3 4",

@@ -9,9 +9,14 @@ import org.specs2.mutable.{Specification, After}
 import org.specs2.runner._
 
 import testing.mutable.UnitSpecification
+import impl.control.Exceptions._
 
 class HelperSpec extends UnitSpecification {
 "IO Helper methods.".endp
+
+  "Getting FileStatus on non-existent Path returns an empty Seq." in new CommonFS {
+    Helper.getFileStatus(new Path("non-existent-path"))(conf) must_== Seq.empty
+  }
 
   "Getting FileStatus on Path which points to a single file." in new CommonFS {
     val path = createSpecBasePath("singleFile")
@@ -97,7 +102,9 @@ trait CommonFS extends After {
 
   def createEmptyFiles(paths: Path*) = paths foreach { fs.createNewFile(_) }
 
-  def pathExists(path: Path) = FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*")).length > 0
+  def pathExists(path: Path) = tryOrElse {
+    FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*")).length > 0
+  }(false)
 
   def createSpecBasePath(child: String): Path = {
     specPath = Option(new Path(basePath, child))
