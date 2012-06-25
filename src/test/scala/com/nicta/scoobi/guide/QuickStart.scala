@@ -37,7 +37,7 @@ libraryDependencies += "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" % "provided
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 resolvers ++= Seq("Cloudera Maven Repository" at "https://repository.cloudera.com/content/repositories/releases/",
-                   "Packaged Avro" at "http://nicta.github.com/scoobi/releases/")
+              "Packaged Avro" at "http://nicta.github.com/scoobi/releases/")
 ```
 
 To use the sbt-scoobi plugin we need to create a `project/project/scoobi.scala` file with the following contents:
@@ -64,7 +64,7 @@ package mypackage.myapp
 import com.nicta.scoobi.Scoobi._
 
 object WordCount extends ScoobiApp {
-  def run {
+  def run() {
     val lines = fromTextFile(args(0))
 
     val counts = lines.flatMap(_.split(" "))

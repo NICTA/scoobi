@@ -1,5 +1,5 @@
 package com.nicta.scoobi
-package object application {
+package object testing {
 
   // see the use of tagged types: http://etorreborre.blogspot.com.au/2011/11/practical-uses-for-unboxed-tagged-types.html
   // this will be replaced with similar functionalities in scalaz 7 when released

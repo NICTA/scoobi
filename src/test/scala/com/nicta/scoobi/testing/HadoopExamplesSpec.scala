@@ -2,7 +2,7 @@ package com.nicta.scoobi
 package testing
 
 import org.apache.commons.logging.LogFactory
-import application._
+import application.ScoobiConfiguration
 import org.specs2.mock.Mockito
 import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
@@ -68,8 +68,8 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     "'unit'       no run, that's for unit tests" >> noRun(examples("unit"))
   }
   "arguments for scoobi can be passed from the command line" >> {
-    localExamples.userArguments must beEmpty
-    examplesWithArguments(Seq("scoobi", "verbose")).userArguments === Seq("verbose")
+    localExamples.scoobiArguments must beEmpty
+    examplesWithArguments(Seq("scoobi", "verbose")).scoobiArguments === Seq("verbose")
   }
   "the log level can be passed from the command line" >> {
     localExamples.extractLevel("verbose")         === INFO
@@ -95,7 +95,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     override lazy val arguments = include(includeTag)
   }
   def examplesWithArguments(args: Seq[String]) = new HadoopExamplesForTesting {
-    override lazy val userArguments = args
+    override lazy val argumentsValues = args
   }
 
   def runMustBeLocal(implicit context: HadoopExamplesForTesting) = {
@@ -121,8 +121,8 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
 
   trait HadoopExamplesForTesting extends HadoopExamples { outer =>
     val mocked = mock[HadoopExamples]
-    override val fs = "fs"
-    override val jobTracker = "jobtracker"
+    val fs = "fs"
+    val jobTracker = "jobtracker"
     var timing = false
     var verbose = false
 

@@ -12,18 +12,16 @@ package application
  *
  * This behavior can be switched off by overriding the `upload` method: `override def upload = false`
  */
-trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
+trait ScoobiApp extends LibJars {
 
-  /**
-   * this provides the user arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...
-   * @see ScoobiUserArgs
-   */
-  lazy val userArguments = commandLineArguments
-  /** shortcut name for command-line arguments */
-  lazy val args = userArguments
+  /** command-line arguments */
+  protected var args: Array[String] = Array()
+
+  /** default configuration */
+  protected implicit val configuration: ScoobiConfiguration = ScoobiConfiguration()
 
   /** this method needs to be overridden and define the code to be executed */
-  def run
+  def run()
 
   /**
    * parse the command-line argument and:
@@ -33,20 +31,11 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
    *  - execute the user code
    */
   def main(arguments: Array[String]) {
-    parseHadoopArguments(arguments)
-    onHadoop {
-      if (!locally) uploadLibJars
-      run
+    configuration.withHadoopArgs(arguments) { remainingArgs =>
+      args = remainingArgs
+      uploadLibJars
+      run()
     }
   }
 
-  def parseHadoopArguments(arguments: Array[String]) = {
-    // arguments need to be stored before the configuration is even created
-    // so that we know if configurations must be read or not
-    set(arguments)
-    configuration.withHadoopArgs(arguments) { remainingArgs => set(remainingArgs) }
-  }
 }
-
-
-

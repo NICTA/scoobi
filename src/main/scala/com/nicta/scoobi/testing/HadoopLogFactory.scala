@@ -1,5 +1,5 @@
 package com.nicta.scoobi
-package application
+package testing
 
 import java.lang.Class
 import org.apache.commons.logging.{Log, LogFactory}
@@ -35,9 +35,9 @@ class HadoopLogFactory() extends LogFactory {
   def setAttribute(name: String, value: AnyRef) { impl.setAttribute(name, value) }
 
   def getInstance(name: String): Log      =
-    if (name == SCOOBI_TIMES) if (showTimes) simple(name) else noOps
-    else if (quietFor(name))                 noOps
-    else                                     simple(name)
+    if (name == SCOOBI_TIMES) simple(name)
+    else if (quietFor(name))  noOps
+    else                      simple(name)
 
   def getInstance(klass: Class[_]): Log = getInstance(klass.getName)
 

@@ -115,7 +115,7 @@ synchLocal <<= (privateMappings, updatedRepository, GitKeys.gitRunner, streams) 
   repo
 }
 
-git.remoteRepo := "git@github.com:etorreborre/specs2.git"
+git.remoteRepo := "git@github.com:NICTA/scoobi.git"
 
 /** Notification */
 seq(lsSettings :_*)

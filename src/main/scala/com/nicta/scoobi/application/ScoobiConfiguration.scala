@@ -30,15 +30,13 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   private def callWithHadoopArgs(args: Array[String], f: Array[String] => Unit): ScoobiConfiguration = {
     /* Parse options then update current configuration. Because the filesystem
      * property may have changed, also update working directory property. */
-    val parser = new GenericOptionsParser(configuration, args)
+    val parser = new GenericOptionsParser(args)
+    parser.getConfiguration.foreach {
+      entry => configuration.set(entry.getKey, entry.getValue)
+    }
+
     /* Run the user's code */
     f(parser.getRemainingArgs)
-    this
-  }
-
-  /** get the default values from the configuration files */
-  def loadDefaults = {
-    new GenericOptionsParser(configuration, Array[String]())
     this
   }
 
