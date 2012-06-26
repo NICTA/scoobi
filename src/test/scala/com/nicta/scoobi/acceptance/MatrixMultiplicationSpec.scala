@@ -16,6 +16,8 @@ import org.apache.commons.math.util.BigRealField
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
 
+  skipAllIf(true)
+
   "Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
     Prop.forAll(genMatrixData, genMatrixData)(runTest).set('minTestsOk -> 1)
   }
