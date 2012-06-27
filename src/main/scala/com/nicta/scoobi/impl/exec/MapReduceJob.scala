@@ -233,14 +233,14 @@ class MapReduceJob(stepId: Int) {
     reducers.foreach { case (sinks, (_, reducer)) =>
 
       sinks.zipWithIndex.foreach { case (sink, ix) =>
-        outputFiles filter (forOutput) foreach { srcPath =>
-          val outputPath = {
-            val jobCopy = new Job(job.getConfiguration)
-            sink.outputConfigure(jobCopy)
-            FileOutputFormat.getOutputPath(jobCopy)
-          }
-          ?(outputPath) foreach { p =>
-            fs.mkdirs(p)
+        val outputPath = {
+          val jobCopy = new Job(job.getConfiguration)
+          sink.outputConfigure(jobCopy)
+          FileOutputFormat.getOutputPath(jobCopy)
+        }
+        ?(outputPath) foreach { p =>
+          fs.mkdirs(p)
+          outputFiles filter (forOutput) foreach { srcPath =>
             fs.rename(srcPath, new Path(p, srcPath.getName))
           }
         }
