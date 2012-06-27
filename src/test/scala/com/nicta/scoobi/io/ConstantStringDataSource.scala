@@ -6,10 +6,12 @@ import org.apache.hadoop.mapreduce._
 import lib.input.InvalidInputException
 import org.apache.hadoop.filecache.DistributedCache
 
+import application.ScoobiConfiguration
+
 class ConstantStringDataSource(value: String) extends DataSource[String, String, String] {
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
-  def inputCheck() {}
+  def inputCheck(sc: ScoobiConfiguration) {}
   def inputConfigure(job: Job) {
     job.getConfiguration.set("mapred.constant.string", "value")
     DistributedCache.addCacheFile(new java.net.URI("string"), job.getConfiguration)

@@ -19,6 +19,7 @@ package avro
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
@@ -26,8 +27,8 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyInputFormat
 
-import impl.Configured
 import core._
+import application.ScoobiConfiguration
 
 
 /** Smart functions for materializing distributed lists by loading Avro files. */
@@ -50,29 +51,32 @@ object AvroInput {
     val converter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
       def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
     }
-    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] with Configured {
+    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
+
+      // default config until its set through inputConfigure or outputConfigure
+      private var config: Configuration = new Configuration
 
       private val inputPaths = paths.map(p => new Path(p))
       val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 
-      def inputCheck {}
+      def inputCheck(sc: ScoobiConfiguration) {
+        inputPaths foreach { p =>
+          if (Helper.pathExists(p)(sc)) {
+            logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
+            logger.debug("Input schema: " + sch.schema)
+          } else {
+            throw new IOException("Input path " + p + " does not exist.")
+          }
+        }
+      }
 
       def inputConfigure(job: Job) = {
-        configure(job)
+        config = job.getConfiguration
         inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
         job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
       }
 
-      protected def checkPaths = inputPaths foreach { p =>
-        if (Helper.pathExists(p)) {
-          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-          logger.debug("Input schema: " + sch.schema)
-        } else {
-          throw new IOException("Input path " + p + " does not exist.")
-        }
-      }
-
-      def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+      def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
 
       lazy val inputConverter = converter
     }

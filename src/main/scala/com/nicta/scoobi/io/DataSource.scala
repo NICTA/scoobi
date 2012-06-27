@@ -20,6 +20,8 @@ import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job
 
+import application.ScoobiConfiguration
+
 
 /** An input data store to a MapReduce job. */
 trait DataSource[K, V, A] {
@@ -27,13 +29,13 @@ trait DataSource[K, V, A] {
   def inputFormat: Class[_ <: InputFormat[K, V]]
 
   /** Check the validity of the DataSource specification. */
-  def inputCheck()
+  def inputCheck(sc: ScoobiConfiguration)
 
   /** Configure the DataSource. */
   def inputConfigure(job: Job)
 
   /** Size in bytes of the data being input by this source. */
-  def inputSize(): Long
+  def inputSize: Long
 
   /** Maps the key-values of a DataSource's InputFormat to the final type produced by it. */
   def inputConverter: InputConverter[K, V, A]

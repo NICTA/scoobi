@@ -25,8 +25,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import impl.Configured
 import application.DListPersister
+import application.ScoobiConfiguration
 import core._
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
@@ -35,7 +35,7 @@ object TextOutput {
 
   /** Persist a distributed list as a text file. */
   def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false): DListPersister[A] = {
-    val sink = new DataSink[NullWritable, A, A] with Configured {
+    val sink = new DataSink[NullWritable, A, A] {
       private val outputPath = new Path(path)
 
       val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
@@ -52,23 +52,20 @@ object TextOutput {
         case mf               => mf.erasure.asInstanceOf[Class[A]]
       }
 
-      def outputCheck() {}
-
-      def outputConfigure(job: Job) {
-        configure(job)
-        FileOutputFormat.setOutputPath(job, outputPath)
-      }
-
-      protected def checkPaths {
-        if (Helper.pathExists(outputPath))
+      def outputCheck(sc: ScoobiConfiguration) {
+        if (Helper.pathExists(outputPath)(sc))
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)
+            Helper.deletePath(outputPath)(sc)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }
         else
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
+      }
+
+      def outputConfigure(job: Job) {
+        FileOutputFormat.setOutputPath(job, outputPath)
       }
 
       lazy val outputConverter = new OutputConverter[NullWritable, A, A] {

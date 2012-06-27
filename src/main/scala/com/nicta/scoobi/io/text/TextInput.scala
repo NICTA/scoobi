@@ -19,6 +19,7 @@ package text
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
@@ -28,8 +29,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
 import impl.exec.TaggedInputSplit
-import impl.Configured
 import core._
+import application.ScoobiConfiguration
 
 
 /** Smart functions for materializing distributed lists by loading text files. */
@@ -122,27 +123,30 @@ object TextInput {
 
   /* Class that abstracts all the common functionality of reading from text files. */
   class TextSource[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
-    extends DataSource[LongWritable, Text, A] with Configured {
+    extends DataSource[LongWritable, Text, A] {
+
+    // default config until its set through inputConfigure or outputConfigure
+    var config: Configuration = new Configuration
 
     private val inputPaths = paths.map(p => new Path(p))
 
     val inputFormat = classOf[TextInputFormat]
 
-    def inputCheck() {}
+    def inputCheck(sc: ScoobiConfiguration) {
+      inputPaths foreach { p =>
+        if (Helper.pathExists(p)(sc))
+          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
+        else
+          throw new IOException("Input path " + p + " does not exist.")
+      }
+    }
 
     def inputConfigure(job: Job) = {
-      configure(job)
+      config = job.getConfiguration
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 
-    protected def checkPaths = inputPaths foreach { p =>
-      if (Helper.pathExists(p))
-        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-      else
-        throw new IOException("Input path " + p + " does not exist.")
-    }
-
-    def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+    def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
 
     lazy val inputConverter = converter
   }

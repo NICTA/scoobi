@@ -84,11 +84,11 @@ object Executor {
     } filter {
       case BridgeStore() => false
       case _             => true
-    } foreach { _.inputCheck() }
+    } foreach { _.inputCheck(conf) }
 
 
     /* Check all output targets. */
-    outputs.flatMap(_.sinks.toList) foreach { _.outputCheck() }
+    outputs.flatMap(_.sinks.toList) foreach { _.outputCheck(conf) }
 
     /* Initialize compute table with all input (Load) nodes. */
     val computeTable: MSet[(AST.Node[_, _ <: Shape], Option[_])] = MSet.empty

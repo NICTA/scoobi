@@ -19,14 +19,15 @@ package seq
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import impl.Configured
 import core._
+import application.ScoobiConfiguration
 
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */
@@ -121,30 +122,30 @@ object SequenceInput {
 
   /* Class that abstracts all the common functionality of reading from sequence files. */
   private class SeqSource[K, V, A : Manifest : WireFormat](paths: List[String], converter: InputConverter[K, V, A])
-    extends DataSource[K, V, A] with Configured {
+    extends DataSource[K, V, A] {
+
+    // default config until its set through inputConfigure or outputConfigure
+    var config: Configuration = new Configuration
 
     private val inputPaths = paths.map(p => new Path(p))
 
     val inputFormat = classOf[SequenceFileInputFormat[K, V]]
 
-    def inputCheck() {}
-
-    def inputConfigure(job: Job) {
-      configure(job)
-      inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-    }
-
-    protected def checkPaths {
+    def inputCheck(sc: ScoobiConfiguration) {
       inputPaths foreach { p =>
-        if (Helper.pathExists(p))
-          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
+        if (Helper.pathExists(p)(sc))
+          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
         else
           throw new IOException("Input path " + p + " does not exist.")
       }
     }
 
+    def inputConfigure(job: Job) {
+      config = job.getConfiguration
+      inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    }
 
-    def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+    def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
 
     lazy val inputConverter = converter
   }

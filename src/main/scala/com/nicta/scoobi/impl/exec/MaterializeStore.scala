@@ -28,11 +28,12 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 import rtt.ScoobiWritable
 import io._
 import core._
+import application.ScoobiConfiguration
 
 /** A MaterializeStore is a DataSink for eventual consumption by a Scala program. It is used
   * in conjunction with 'materialize'. */
 final case class MaterializeStore[A : Manifest : WireFormat](id: String, path: Path)
-  extends DataSink[NullWritable, ScoobiWritable[A], A] with Configured {
+  extends DataSink[NullWritable, ScoobiWritable[A], A] {
 
   lazy val logger = LogFactory.getLog("scoobi.Materialize")
   private val typeName = "MS" + id
@@ -42,17 +43,14 @@ final case class MaterializeStore[A : Manifest : WireFormat](id: String, path: P
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck() {}
-  def outputConfigure(job: Job) {
-    configure(job)
-    FileOutputFormat.setOutputPath(job, path)
-  }
-
-  override def checkPaths {
-    if (Helper.pathExists(path))
+  def outputCheck(sc: ScoobiConfiguration) {
+    if (Helper.pathExists(path)(sc))
       throw new FileAlreadyExistsException("Output path already exists: " + path)
     else
       logger.info("Materialize path: " + path.toUri.toASCIIString)
+  }
+  def outputConfigure(job: Job) {
+    FileOutputFormat.setOutputPath(job, path)
   }
 
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)

@@ -26,10 +26,9 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import impl.Configured
 import application.DListPersister
 import core._
-
+import application.ScoobiConfiguration
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 object SequenceOutput {
@@ -101,7 +100,7 @@ object SequenceOutput {
       valueClass: Class[V],
       converter: OutputConverter[K, V, B],
       overwrite: Boolean)
-    extends DataSink[K, V, B] with Configured {
+    extends DataSink[K, V, B] {
 
     protected val outputPath = new Path(path)
 
@@ -109,23 +108,20 @@ object SequenceOutput {
     val outputKeyClass = keyClass
     val outputValueClass = valueClass
 
-    def outputCheck() {}
-
-    def outputConfigure(job: Job) {
-      configure(job)
-      FileOutputFormat.setOutputPath(job, outputPath)
-    }
-
-    protected def checkPaths {
-      if (Helper.pathExists(outputPath))
+    def outputCheck(sc: ScoobiConfiguration) {
+      if (Helper.pathExists(outputPath)(sc))
         if (overwrite) {
           logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-          Helper.deletePath(outputPath)
+          Helper.deletePath(outputPath)(sc)
         } else {
           throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
         }
       else
         logger.info("Output path: " + outputPath.toUri.toASCIIString)
+    }
+
+    def outputConfigure(job: Job) {
+      FileOutputFormat.setOutputPath(job, outputPath)
     }
 
     lazy val outputConverter = converter
