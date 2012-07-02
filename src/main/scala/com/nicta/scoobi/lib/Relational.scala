@@ -28,23 +28,11 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
   def join[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] = Relational.join(left, right)
 
   /**
-   * Perform a right outer-join with another distributed lists. The default function
-   * says how to create a value, for when this dlist has none.
-   */
-  def joinRight[B: Manifest: WireFormat](right: DList[(K, B)], default: (K, B) => A): DList[(K, (A, B))] = Relational.joinRight(left, right, default)
-
-  /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in this dlist for a value on the right dlist, it will
    * return none.
    */
   def joinRight[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (Option[A], B))] = Relational.joinRight(left, right)
-
-  /**
-   * Perform a left outer-join with another distributed lists. The default function
-   * says how to create a value, for when this dlist has none.
-   */
-  def joinLeft[B: Manifest: WireFormat](right: DList[(K, B)], default: (K, A) => B): DList[(K, (A, B))] = Relational.joinLeft(left, right, default)
 
   /**
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[A]
@@ -78,32 +66,28 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
 object Relational {
 
   /** Perform an equijoin of two (2) distributed lists. */
-  def join[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, B))] = joinWith(d1, d2)(innerJoin)
-
-  /**
-   * Perform a right outer-join of two (2) distributed lists. The default function
-   * says how to create a value A when there was none.
-   */
-  def joinRight[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)], default: (K, B) => A): DList[(K, (A, B))] = joinWith(d1, d2)(rightOuterJoin((_, x, _) => x, default))
+  def join[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](
+      left: DList[(K, A)],
+      right: DList[(K, B)]): DList[(K, (A, B))] = joinWith(left, right)(innerJoin)
 
   /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in the left dlist (d1) for a value on the right dlist (d2), it will
    * return none.
    */
-  def joinRight[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (Option[A], B))] = joinWith(d1, d2)(rightOuterJoin((_, a, _) => Option(a), (_, _) => None))
-
-  /**
-   * Perform a left outer-join of two (2) distributed lists. The default function specifies how
-   * to construct a B, given a K and B, when there is none.
-   */
-  def joinLeft[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)], default: (K, A) => B): DList[(K, (A, B))] = joinRight(d2, d1, default).map(v => (v._1, v._2.swap))
+  def joinRight[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](
+      left: DList[(K, A)],
+      right: DList[(K, B)]): DList[(K, (Option[A], B))] = joinWith(left, right)(rightOuterJoin)
 
   /**
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[B]
    * for when there is no value in the right dlist (d1).
    */
-  def joinLeft[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, Option[B]))] = joinRight(d2, d1).map(v => (v._1, v._2.swap))
+  def joinLeft[K: Manifest: WireFormat: Grouping,
+    A: Manifest: WireFormat,
+    B: Manifest: WireFormat](
+        left: DList[(K, A)],
+        right: DList[(K, B)]): DList[(K, (A, Option[B]))] = joinRight(right, left).map(v => (v._1, v._2.swap))
 
   /**
    * Perform a full outer-join of two distributed lists. The default function specifies how
@@ -166,8 +150,8 @@ object Relational {
     }
   }
 
-  private def rightOuterJoin[T, A, B, A2](has: (T, A, B) => A2, notHas: (T, B) => A2) = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A2, B))] {
-    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A2, B))]) {
+  private def rightOuterJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (Option[A], B))] {
+    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (Option[A], B))]) {
       var alist = new ArrayBuffer[A]
 
       for (v <- input._2) {
@@ -175,9 +159,9 @@ object Relational {
           case Left(a) => alist += a
           case Right(b) => {
             if (alist.isEmpty)
-              emitter.emit((input._1._1, (notHas(input._1._1, b), b)))
+              emitter.emit((input._1._1, (None, b)))
             else
-              for (a <- alist) emitter.emit((input._1._1, (has(input._1._1, a, b), b)))
+              for (a <- alist) emitter.emit((input._1._1, (Some(a), b)))
           }
         }
       }

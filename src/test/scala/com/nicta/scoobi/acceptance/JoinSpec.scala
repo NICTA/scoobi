@@ -34,25 +34,23 @@ class JoinSpec extends NictaSimpleJobs {
   }
 
   "Left join" >> { implicit sc: SC =>
-    run(employeesByDepartmentId joinLeft (departmentsById,
-      (departmentId: Long, employee: Employee) => Department(departmentId, "Unknown"))) === Seq(
-      "(-1,(John,Unknown))",
-      "(31,(Rafferty,Sales))",
-      "(33,(Jones,Engineering))",
-      "(33,(Steinberg,Engineering))",
-      "(34,(Robinson,Clerical))",
-      "(34,(Smith,Clerical))")
+    run(employeesByDepartmentId joinLeft departmentsById) === Seq(
+      "(-1,(John,None))",
+      "(31,(Rafferty,Some(Sales)))",
+      "(33,(Jones,Some(Engineering)))",
+      "(33,(Steinberg,Some(Engineering)))",
+      "(34,(Robinson,Some(Clerical)))",
+      "(34,(Smith,Some(Clerical)))")
   }
 
   "Right join" >> { implicit sc: SC =>
-    run(employeesByDepartmentId joinRight (departmentsById,
-      (id: Long, department: Department) => Employee("Unknown", id))) === Seq(
-      "(31,(Rafferty,Sales))",
-      "(33,(Jones,Engineering))",
-      "(33,(Steinberg,Engineering))",
-      "(34,(Robinson,Clerical))",
-      "(34,(Smith,Clerical))",
-      "(35,(Unknown,Marketing))")
+    run(employeesByDepartmentId joinRight departmentsById) === Seq(
+      "(31,(Some(Rafferty),Sales))",
+      "(33,(Some(Jones),Engineering))",
+      "(33,(Some(Steinberg),Engineering))",
+      "(34,(Some(Robinson),Clerical))",
+      "(34,(Some(Smith),Clerical))",
+      "(35,(None,Marketing))")
   }
 
   "Full outer join" >> { implicit sc: SC =>
