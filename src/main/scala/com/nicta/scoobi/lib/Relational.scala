@@ -219,13 +219,13 @@ object Relational {
         implicitly[Grouping[K]].groupCompare(a._1, b._1)
 
       override def sortCompare(a: (K, Boolean), b: (K, Boolean)): Int = {
-        val n = groupCompare(a, b)
+        val n = implicitly[Grouping[K]].sortCompare(a._1, b._1)
         if (n != 0)
           n
         else (a._2, b._2) match {
           case (true, false) => -1
           case (false, true) => 1
-          case _ => 0
+          case _ => n
         }
       }
     }
