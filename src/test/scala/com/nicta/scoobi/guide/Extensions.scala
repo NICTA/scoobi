@@ -6,7 +6,13 @@ class Extensions extends ScoobiPage { def is = "Extensions".title ^
 
 ### Introduction
   
-Scoobi includes a growing set of reusable components, ready for use in your application. They are located `com.nicta.scoobi.lib`, take a look at the API documentation to get a real sense on how to use them. 
+Scoobi includes a growing set of reusable components, ready for use in your application. They are located `com.nicta.scoobi.lib`, take a look at the API documentation to get a real sense on how to use them.
+
+### Grouping
+
+Understanding how `Grouping` works is important before moving on to use the Scoobi libraries. This is because the libraries use the grouping in order to determain how values are grouped. While normally the defaults are very sane, in some case they may not be what you want. For instance, if you're doing a full outer join, where you're grouping based on an `Option[T]` it is quite likely you would not `None`s to be grouped (and cartesian product expanded) together. So to do this, you would specify a Grouping implicit that will make two `None`'s not group together.
+
+In the future, this will be more explicit and some convience ones will be provided for you out of the box.
   
 ### Joins
   

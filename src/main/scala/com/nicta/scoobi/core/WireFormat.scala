@@ -515,16 +515,23 @@ trait WireFormatImplicits {
 
   implicit def StringFmt: WireFormat[String] = new WireFormat[String] {
     def toWire(x: String, out: DataOutput) {
-      require(x != null, "Error, trying to serialize a null String. Consider using an empty string or Option[String]")
-      val b = x.getBytes("utf-8")
-      out.writeInt(b.length)
-      out.write(b)
+      if (x == null)
+        out.writeInt(-1)
+      else {
+        val b = x.getBytes("utf-8")
+        out.writeInt(b.length)
+        out.write(b)
+      }
     }
     def fromWire(in: DataInput): String = {
       val l = in.readInt()
-      val b = new Array[Byte](l)
-      in.readFully(b, 0, l)
-      new String(b, "utf-8")
+      if (l == -1)
+        null
+      else {
+        val b = new Array[Byte](l)
+        in.readFully(b, 0, l)
+        new String(b, "utf-8")
+      }
     }
   }
 
