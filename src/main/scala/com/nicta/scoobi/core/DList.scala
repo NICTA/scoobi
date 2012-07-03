@@ -205,7 +205,7 @@ trait DList[A] {
       }
 
       def cleanup(emitter: Emitter[A]) {
-        emitter.emit(acc)
+        if (!first) emitter.emit(acc)
       }
     })
 

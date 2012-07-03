@@ -66,6 +66,19 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {
+    /* Cleanup for all output channels. */
+    outputs foreach { case (channel, (converters, (_, reducer: TaggedReducer[_,_,_,_]))) =>
+
+      val emitter = new Emitter[B] {
+        def emit(x: B) = converters foreach { case (ix, converter: OutputConverter[_,_,_]) =>
+          channelOutput.write(channel, ix, converter.toKeyValue(x))
+        }
+      }
+
+      val env = envs(channel).asInstanceOf[E]
+      reducer.cleanup(env, emitter)
+    }
+
     channelOutput.close()
   }
 }

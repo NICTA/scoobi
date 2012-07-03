@@ -99,8 +99,11 @@ object AST {
                              implicitly[Manifest[V]], implicitly[WireFormat[V]],
                              implicitly[Manifest[(K,V)]], implicitly[WireFormat[(K,V)]],
                              implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]]) {
-        def setup(env: Unit) = {}
-        def reduce(env: Unit, key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = values.foreach { (v: V) => emitter.emit((key, v)) }
+        def setup(env: Unit) {}
+        def reduce(env: Unit, key: K, values: Iterable[V], emitter: Emitter[(K, V)]) {
+          values.foreach { (v: V) => emitter.emit((key, v)) }
+        }
+        def cleanup(env: Unit, emitter: Emitter[(K, V)]) {}
     }
 
     override def toString = "GbkMapper" + id
@@ -127,6 +130,7 @@ object AST {
       def reduce(env: Unit, key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = {
         emitter.emit((key, values.reduce(f)))
       }
+      def cleanup(env: Unit, emitter: Emitter[(K, V)]) {}
     }
 
     /** Produce a TaggedReducer using this combiner function and an additional reducer function. */
@@ -138,8 +142,8 @@ object AST {
         def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]) = {
           dofn.setup(env)
           dofn.process(env, (key, values.reduce(f)), emitter)
-          dofn.cleanup(env, emitter)
         }
+        def cleanup(env: E, emitter: Emitter[B]) = dofn.cleanup(env, emitter)
       }
 
     override def toString = "Combiner" + id
@@ -163,8 +167,8 @@ object AST {
       def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]) = {
         dofn.setup(env)
         dofn.process(env, (key, values), emitter)
-        dofn.cleanup(env, emitter)
       }
+      def cleanup(env: E, emitter: Emitter[B]) = dofn.cleanup(env, emitter)
     }
 
     override def toString = "GbkReducer" + id
@@ -227,6 +231,7 @@ object AST {
         values foreach { b += _ }
         emitter.emit((key, b.result().toIterable))
       }
+      def cleanup(env: Unit, emitter: Emitter[(K, Iterable[V])]) {}
     }
 
     override def toString = "GroupByKey" + id
