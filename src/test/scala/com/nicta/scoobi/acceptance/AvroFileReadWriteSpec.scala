@@ -23,7 +23,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
       // load test data from the avro file
       val loadedTestData = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])](tmpAvroFile)
-      persist(loadedTestData.materialize).toSeq must_== testData
+      persist(loadedTestData.materialize).toSeq must haveTheSameElementsAs(testData, equality)
     }
   }
 
