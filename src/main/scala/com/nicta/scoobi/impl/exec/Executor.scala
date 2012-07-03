@@ -155,7 +155,7 @@ object Executor {
     logger.info("Running step: " + state.step + " of " + state.mscrs.size)
     logger.info("Number of input channels: " + mscr.inputChannels.size)
     logger.info("Number of output channels: " + mscr.outputChannels.size)
-    mscr.outputNodes.zipWithIndex.foreach { case (o, ix) => logger.info(ix + ": " + o.toVerboseString) }
+    mscr.outputNodes.zipWithIndex.foreach { case (o, ix) => logger.debug(ix + ": " + o.toVerboseString) }
 
     MapReduceJob(state.step, mscr).run(state.conf)
 
