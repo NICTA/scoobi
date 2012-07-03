@@ -56,7 +56,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="BridgeStore.html"><span class="name">BridgeStore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">()</span><span class="result"> extends DataSource[NullWritable, ScoobiWritable[A], A] with DataSink[NullWritable, ScoobiWritable[A], A] with Configured with Product with Serializable</span>
+        <a href="BridgeStore.html"><span class="name">BridgeStore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">()</span><span class="result"> extends DataSource[NullWritable, ScoobiWritable[A], A] with DataSink[NullWritable, ScoobiWritable[A], A] with Product with Serializable</span>
       </span>
       </h4>
       <p class="comment cmt">A bridge store is any data that moves between MSCRs.</p>
@@ -161,18 +161,6 @@ Scoobi compute graph.</p>
       </span>
       </h4>
       <p class="comment cmt">A producer of a TaggedMapper.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MaterializeStore" data-isabs="false">
-      <a id="MaterializeStore:MaterializeStore[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="MaterializeStore.html"><span class="name">MaterializeStore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="id">id: String</span>, <span name="path">path: Path</span>, <span name="evidence$1">evidence$1: Manifest[A]</span>, <span name="evidence$2">evidence$2: WireFormat[A]</span>)</span><span class="result"> extends DataSink[NullWritable, ScoobiWritable[A], A] with Configured with Product with Serializable</span>
-      </span>
-      </h4>
-      <p class="comment cmt">A MaterializeStore is a DataSink for eventual consumption by a Scala program.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MscrCombiner" data-isabs="false">
       <a id="MscrCombiner:MscrCombiner[V2]"></a>
       <h4 class="signature">

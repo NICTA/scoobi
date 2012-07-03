@@ -276,6 +276,34 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Perform an equijoin with another distributed lists.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinFullOuter" data-isabs="false">
+      <a id="joinFullOuter[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (Option[A], Option[B]))]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">joinFullOuter</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (<span name="scala.Option" class="extype">Option</span>[A], <span name="scala.Option" class="extype">Option</span>[B]))]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Perform a full outer-join of two distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a full outer-join of two distributed lists. Note how it returns an Option[A] and Option[B], but it
+shouldn't be possible for both to be None.
+</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinFullOuter" data-isabs="false">
+      <a id="joinFullOuter[B, V](DList[(K, B)],(K, A) ⇒ V,(K, B) ⇒ V,(K, A, B) ⇒ V)(Manifest[B],WireFormat[B],Manifest[V],WireFormat[V]):DList[(K, V)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">joinFullOuter</span><span class="tparams">[<span name="B">B</span>, <span name="V">V</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>, <span name="hasLeft">hasLeft: (K, A) ⇒ V</span>, <span name="hasRight">hasRight: (K, B) ⇒ V</span>, <span name="hasBoth">hasBoth: (K, A, B) ⇒ V</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>, <span name="arg2">arg2: Manifest[V]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Perform a full outer-join of two distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a full outer-join of two distributed lists. The default function specifies how
+to construct a A or B when there is none. Note at least one of the A or B should exist
+</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinLeft" data-isabs="false">
       <a id="joinLeft[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (A, Option[B]))]"></a>
       <h4 class="signature">
@@ -291,20 +319,6 @@
 as when there is no value in this dlist for a value on the right dlist, it will
 return none.
 </p></div></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinLeft" data-isabs="false">
-      <a id="joinLeft[B](DList[(K, B)],(K, A) ⇒ B)(Manifest[B],WireFormat[B]):DList[(K, (A, B))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">joinLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>, <span name="default">default: (K, A) ⇒ B</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, B))]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Perform a left outer-join with another distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a left outer-join with another distributed lists. The default function
-says how to create a value, for when this dlist has none.
-</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinRight" data-isabs="false">
       <a id="joinRight[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (Option[A], B))]"></a>
       <h4 class="signature">
@@ -319,20 +333,6 @@ says how to create a value, for when this dlist has none.
       <p class="shortcomment cmt">Perform a right outer-join of two (2) distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
 as when there is no value in this dlist for a value on the right dlist, it will
 return none.
-</p></div></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinRight" data-isabs="false">
-      <a id="joinRight[B](DList[(K, B)],(K, B) ⇒ A)(Manifest[B],WireFormat[B]):DList[(K, (A, B))]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">joinRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>, <span name="default">default: (K, B) ⇒ A</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, B))]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Perform a right outer-join with another distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a right outer-join with another distributed lists. The default function
-says how to create a value, for when this dlist has none.
 </p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#left" data-isabs="false">
       <a id="left:DList[(K, A)]"></a>
