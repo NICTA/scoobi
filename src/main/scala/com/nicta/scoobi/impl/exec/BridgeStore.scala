@@ -114,6 +114,8 @@ final case class BridgeStore[A]()
 
 
   override def toString = typeName
+
+  override def hashCode = id.hashCode
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
