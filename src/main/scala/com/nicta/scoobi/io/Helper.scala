@@ -16,8 +16,7 @@
 package com.nicta.scoobi
 package io
 
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.{Path, FileSystem, FileStatus}
 import Option.{apply => ?}
 
 import org.apache.hadoop.conf.Configuration
@@ -28,13 +27,26 @@ object Helper {
 
   /** Determine whether a path exists or not. */
   def pathExists(p: Path)(implicit conf: Configuration): Boolean = tryOrElse {
-    ?(FileSystem.get(p.toUri, conf).globStatus(new Path(p, "*"))) match {
-      case None                     => false
-      case Some(s) if s.length == 0 => false
-      case Some(_)                  => true
-    }
+    getFileStatus(p).size > 0
   }(false)
 
+  /** Get a Set of FileStatus objects for a given Path. */
+  def getFileStatus(path: Path)(implicit conf: Configuration): Seq[FileStatus] = {
+    ?(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"))) match {
+      case None => Seq()
+      case Some(s) => s.toSeq
+    }
+  }
+
+  /** Only get one file per dir. This helps when checking correctness of input data by reducing
+   *  the number of files to check. We don't want to check every file as its expensive */
+  def getSingleFilePerDir(path: Path)(implicit conf: Configuration): Set[Path] = {
+    getSingleFilePerDir(getFileStatus(path))
+  }
+
+  def getSingleFilePerDir(stats: Seq[FileStatus])(implicit conf: Configuration): Set[Path] = {
+    stats.groupBy(_.getPath.getParent).flatMap(_._2.filterNot(_.isDir).headOption.map(_.getPath)).toSet
+  }
 
   def deletePath(p: Path)(implicit conf: Configuration) = FileSystem.get(conf).delete(p, true)
 
