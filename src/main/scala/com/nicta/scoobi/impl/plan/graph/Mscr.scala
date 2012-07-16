@@ -6,12 +6,13 @@ package graph
 import exec.UniqueId
 import comp._
 
-case class Mscr(id: Int = UniqueId.get, var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) {
+case class Mscr(var inputChannels: Seq[InputChannel] = Seq(), var outputChannels: Seq[OutputChannel] = Seq()) {
+  val id: Int = UniqueId.get
 
   override def toString =
-    Seq(Seq(id),
-      inputChannels .toList.map(n => "inputs  = "+n.toString),
-      outputChannels.toList.map(n => "outputs = "+n.toString)).flatten.mkString("Mscr(", ", ", ")")
+    Seq(id.toString,
+        if (inputChannels.isEmpty) "" else inputChannels.mkString("inputs: ", ", ", ""),
+        if (outputChannels.isEmpty) "" else outputChannels.mkString("outputs: ",  ",", "")).filterNot(_.isEmpty).mkString("Mscr(", ", ", ")")
 
   "Mscr ("+id+")"+inputChannels.mkString("\n(", ",", ")")+outputChannels.mkString("\n(", ",", ")")
 
@@ -19,33 +20,34 @@ case class Mscr(id: Int = UniqueId.get, var inputChannels: Set[InputChannel] = S
   def mappers        = mapperChannels.flatMap(_.parDos)
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
-  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_) => gbk }
-  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer)) => reducer }
+  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_)            => gbk }
+  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer))  => reducer }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
 
   def addParallelDoOnMapperInputChannel(p: ParallelDo[_,_,_]) = {
-    val (found, ic) = inputChannels.foldLeft((false, Set[InputChannel]())) { (res, cur) =>
+    val (found, ic) = inputChannels.foldLeft((false, Seq[InputChannel]())) { (res, cur) =>
       val (f, channels) = res
       cur match {
-        case MapperInputChannel(pdos) => (true, channels + MapperInputChannel(pdos :+ p))
-        case other                    => (f,    channels + other)
+        case MapperInputChannel(pdos) => (true, channels :+ MapperInputChannel(pdos :+ p))
+        case other                    => (f,    channels :+ other)
       }
     }
-    inputChannels = if (found) ic else (ic + MapperInputChannel(Seq(p)))
+    inputChannels = if (found) ic else (ic :+ MapperInputChannel(Seq(p)))
     this
   }
 
   def addGbkOutputChannel(gbk: GroupByKey[_,_]) = {
-    outputChannels = outputChannels + GbkOutputChannel(gbk)
+    outputChannels = outputChannels :+ GbkOutputChannel(gbk)
     this
   }
 
   def addGbkOutputChannel(gbk: GroupByKey[_,_], flatten: Flatten[_]) ={
-    outputChannels = outputChannels + GbkOutputChannel(gbk, Some(flatten))
+    outputChannels = outputChannels :+ GbkOutputChannel(gbk, Some(flatten))
     this
   }
 
   def addCombinerOnGbkOutputChannel(gbk: GroupByKey[_,_], cb: Combine[_,_]) =
-    updateOutputChannel(gbk) { o: GbkOutputChannel =>  o.copy(combiner = Some(cb))}
+    updateOutputChannel(gbk) { o: GbkOutputChannel => o.copy(combiner = Some(cb))}
 
   def addReducerOnGbkOutputChannel(gbk: GroupByKey[_,_], pd: ParallelDo[_,_,_]) =
     updateOutputChannel(gbk) { o: GbkOutputChannel =>  o.copy(reducer = Some(pd))}

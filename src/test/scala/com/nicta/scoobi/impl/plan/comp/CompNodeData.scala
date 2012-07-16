@@ -42,9 +42,9 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments { this
 
   override def defaultValues = Map(minTestsOk   -> arguments.commandLine.int("mintestsok").getOrElse(10000),
                                    maxSize      -> arguments.commandLine.int("maxsize").getOrElse(8),
-                                   minSize      -> arguments.commandLine.int("minize").getOrElse(1),
+                                   minSize      -> arguments.commandLine.int("minsize").getOrElse(1),
                                    maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(500),
-                                   workers      -> arguments.commandLine.int("workers").getOrElse(2))
+                                   workers      -> arguments.commandLine.int("workers").getOrElse(1))
 
   import Gen._
   implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(Gen.sized(depth => genDComp(depth)))

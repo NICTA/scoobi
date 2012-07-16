@@ -9,9 +9,14 @@ import comp._
 sealed trait OutputChannel
 
 case class GbkOutputChannel(groupByKey: GroupByKey[_,_],
-                            flatten:    Option[Flatten[_]]        = None,
-                            combiner:   Option[Combine[_,_]]      = None,
-                            reducer:    Option[ParallelDo[_,_,_]] = None) extends OutputChannel {
+                            var flatten:    Option[Flatten[_]]        = None,
+                            var combiner:   Option[Combine[_,_]]      = None,
+                            var reducer:    Option[ParallelDo[_,_,_]] = None) extends OutputChannel {
+
+  def set(n: Flatten[_])        = { flatten  = Some(n); this }
+  def set(n: Combine[_,_])      = { combiner = Some(n); this }
+  def set(n: ParallelDo[_,_,_]) = { reducer  = Some(n); this }
+
   override def toString =
     Seq(Some(groupByKey),
         flatten .map(n => "flatten  = "+n.toString),

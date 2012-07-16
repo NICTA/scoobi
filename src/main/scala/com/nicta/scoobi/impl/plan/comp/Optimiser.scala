@@ -49,9 +49,9 @@ trait Optimiser {
   })
 
   /** return true if an CompNode is a Flatten */
-  lazy val isFlatten: DComp[_,_] => Boolean = { case Flatten(_) => true; case other => false }
+  lazy val isFlatten: CompNode => Boolean = { case Flatten(_) => true; case other => false }
   /** return true if an CompNode is a ParallelDo */
-  lazy val isParallelDo: DComp[_,_] => Boolean = { case ParallelDo(_,_,_,_,_) => true; case other => false }
+  lazy val isParallelDo: CompNode => Boolean = { case ParallelDo(_,_,_,_,_) => true; case other => false }
   /** return true if an CompNode is a Flatten */
   lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f @ Flatten(_) => f }
   /** return true if an CompNode is a ParallelDo */
