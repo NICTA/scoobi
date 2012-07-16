@@ -39,11 +39,11 @@ trait MscrGraph {
 
   lazy val gbkOutputChannels: CompNode => Seq[GbkOutputChannel] = (n: CompNode) => (n -> gbkOutputChannels1).map(out => (out.groupByKey.id, out)).toMap.values.toSeq
   lazy val gbkOutputChannels1: CompNode => Seq[GbkOutputChannel] =
-    circular(Seq[GbkOutputChannel]()) {
+    attr {
       case g @ GroupByKey(in @ Flatten(_))                        => Seq(GbkOutputChannel(g, flatten = Some(in)))
       case g @ GroupByKey(in)                                     => Seq(GbkOutputChannel(g))
       case cb @ Combine(in,_) if (cb -> isGbkOutput)              => (in -> gbkOutputChannels1).map(_.set(cb))
-      case pd @ ParallelDo(in,_,_,_,_) if parallelDoIsReducer(pd) => (pd -> gbkOutputChannels1).map(_.set(pd))
+      case pd @ ParallelDo(in,_,_,_,_) if parallelDoIsReducer(pd) => (in -> gbkOutputChannels1).map(_.set(pd))
       case Flatten(ins)                                           => ins.flatMap(in => in -> gbkOutputChannels1)
       case Op(in1, in2, _)                                        => (in1 -> gbkOutputChannels1) ++ (in2 -> gbkOutputChannels1)
       case Materialize(in)                                        => in -> gbkOutputChannels1
@@ -159,7 +159,7 @@ trait MscrGraph {
 
   def mscrFor(node: CompNode) = {
     Attribution.initTree(node)
-    node -> mscr
+    Optimiser.optimise(node) -> mscr
   }
 
   def mscrsFor(nodes: CompNode*) = nodes map mscrFor

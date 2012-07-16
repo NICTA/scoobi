@@ -175,6 +175,7 @@ trait Optimiser {
   private[scoobi] def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
     rewrite(strategy)(nodes).toList
   }
-
+  /** optimise just one node which is the output of a graph. Used for testing */
+  private[scoobi] def optimise(node: CompNode): CompNode = optimise(Set(node)).headOption.getOrElse(node)
 }
 object Optimiser extends Optimiser

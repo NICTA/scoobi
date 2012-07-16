@@ -9,12 +9,12 @@ import org.specs2.ScalaCheck
 import org.specs2.matcher.{Expectable, Matcher}
 import CompNodePrettyPrinter._
 import Optimiser._
+import org.specs2.specification.AfterExample
+import org.kiama.attribution.Attribution
 
-class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags {
+class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags with AfterExample {
   override def defaultValues = super.defaultValues + (minTestsOk -> arguments.commandLine.int("mintestsok").getOrElse(10))
 
-  // set the specification as sequential for now
-  // otherwise there are cyclic attribute evaluations
   "1. We should build MSCRs around related GroupByKey nodes" >> {
     "if two GroupByKey nodes share the same input, they belong to the same Mscr" >> {
       val pd0 = load
@@ -136,20 +136,20 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         mscrsFor(graph).filter(_.inputChannels.size > 1) foreach { m =>
           val independentPdos = m.mapperChannels.flatMap(_.parDos.headOption).toSeq
           val (pdo1, pdo2) = (independentPdos(0), independentPdos(1))
-          pdo1.in aka show(pdo1) must be_!==(pdo2.in)
+          pdo1.in aka show(pdo1) must not beTheSameAs (pdo2.in)
         }; ok
       }
       "two mappers in the same input channel must share the same input" >> check { graph: CompNode =>
         mscrsFor(graph).flatMap(_.mapperChannels).filter(_.parDos.size > 1) foreach { input =>
           val (pdo1, pdo2) = (input.parDos(0), input.parDos(1))
-          pdo1.in === pdo2.in
+          pdo1.in aka show(pdo1) must beTheSameAs(pdo2.in)
         }; ok
       }
       "two parallelDos sharing the same input must be in the same inputChannel" >> check { graph: CompNode =>
         mscrsFor(graph)
         distinctPairs(descendents(graph).collect(isAParallelDo)).foreach  { case (p1, p2) =>
-          if (p1.in == p2.in) {
-            (p1 -> mscr).inputChannelFor(p1) === (p2 -> mscr).inputChannelFor(p2)
+          if (p1.in eq p2.in) {
+            (p1 -> mscr).inputChannelFor(p1) aka show(p1) must beTheSameAs((p2 -> mscr).inputChannelFor(p2))
           }
         }; ok
       }
@@ -178,7 +178,6 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
       }; ok
     }
     "all the ParallelDos must be in a mapper or a reducer" >> check { graph: CompNode =>
-      mscrsFor(graph)
       descendents(graph).collect(isAParallelDo) foreach { p =>
         val m = p -> mscr
         if ((p -> descendents).collect(isAGroupByKey).nonEmpty) {
@@ -198,5 +197,10 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
              other.description+" is an ancestor of "+node+": "+(Seq(node) ++ ancestors(node)).mkString(" -> "),
              other.description+" is not an ancestor of "+node, other)
   }
+
+  // we set this specification as sequential to avoid attributes being evaluated twice concurrently since some nodes are shared
+  // otherwise this triggers "java.lang.IllegalStateException: Cycle detected in attribute evaluation"
+  sequential
+  def after = Attribution.resetMemo
 }
 
