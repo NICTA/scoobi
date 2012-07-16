@@ -229,11 +229,6 @@ trait MscrGraph {
   /** @return true if a node is the ancestor of another */
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))
 
-  /**
-   * In the context of a CompNode graph there can be several outputs reachable from a given node
-   */
-  def reachableOutputs(n: CompNode): Seq[Attributable] = ancestors(n).filter(a => reachableInputs(a).contains(n))
-
   /** alias for descendents in the context of a CompNode graph */
   def reachableInputs(n: CompNode) = n -> descendents
   /** @return true if a node has a parent */
