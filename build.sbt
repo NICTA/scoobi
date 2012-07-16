@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   "org.apache.avro" % "avro" % "1.7.0",
   "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
   "com.thoughtworks.xstream" % "xstream" % "1.4.2",
-  "com.googlecode.kiama" %% "kiama" % "1.2.0",
+  "com.googlecode.kiama" %% "kiama" % "1.3.0",
   "org.specs2" %% "specs2" % "1.12-SNAPSHOT" % "optional",
   "org.specs2" %% "specs2-scalaz-core" % "6.0.1",
   "org.specs2" % "classycle" % "1.4.1"% "test",
