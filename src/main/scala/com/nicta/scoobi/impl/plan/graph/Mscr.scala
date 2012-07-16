@@ -6,6 +6,11 @@ package graph
 import exec.UniqueId
 import comp._
 
+/**
+ * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
+ * It is a mutable class which is constructed incrementally by using Kiama grammar attributes
+ * @see MscrGraph
+ */
 case class Mscr(var inputChannels: Seq[InputChannel] = Seq(), var outputChannels: Seq[OutputChannel] = Seq()) {
   val id: Int = UniqueId.get
 
@@ -14,14 +19,18 @@ case class Mscr(var inputChannels: Seq[InputChannel] = Seq(), var outputChannels
         if (inputChannels.isEmpty) "" else inputChannels.mkString("inputs: ", ", ", ""),
         if (outputChannels.isEmpty) "" else outputChannels.mkString("outputs: ",  ",", "")).filterNot(_.isEmpty).mkString("Mscr(", ", ", ")")
 
-  "Mscr ("+id+")"+inputChannels.mkString("\n(", ",", ")")+outputChannels.mkString("\n(", ",", ")")
-
+  /** @return all the channels containing mappers, i.e. parallel dos */
   def mapperChannels = inputChannels.collect { case c @ MapperInputChannel(_) => c }
+  /** @return all the input parallel dos of this mscr */
   def mappers        = mapperChannels.flatMap(_.parDos)
+  /** @return an input channel containing a specific parallelDo */
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
+  /** @return all the GroupByKeys of this mscr */
   def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_)            => gbk }
+  /** @return all the reducers of this mscr */
   def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer))  => reducer }
+  /** @return all the combiners of this mscr */
   def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
 
   def addParallelDoOnMapperInputChannel(p: ParallelDo[_,_,_]) = {

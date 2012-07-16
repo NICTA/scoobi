@@ -13,7 +13,6 @@ import org.specs2.specification.AfterExample
 import org.kiama.attribution.Attribution
 
 class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags with AfterExample {
-  override def defaultValues = super.defaultValues + (minTestsOk -> arguments.commandLine.int("mintestsok").getOrElse(10))
 
   "1. We should build MSCRs around related GroupByKey nodes" >> {
     "if two GroupByKey nodes share the same input, they belong to the same Mscr" >> {
