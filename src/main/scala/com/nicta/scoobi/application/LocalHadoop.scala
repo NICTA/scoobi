@@ -1,26 +1,16 @@
 package com.nicta.scoobi
-package testing
+package application
 
 import org.apache.commons.logging.LogFactory
-import org.specs2.time.SimpleTimer
+import impl.time.SimpleTimer
 import HadoopLogFactory._
-import application.ScoobiConfiguration
 
 /**
  * Execute Hadoop code locally
  */
-trait LocalHadoop {
+trait LocalHadoop extends ScoobiUserArgs {
 
   def hadoopArgs = Array[String]()
-
-  /** @return true to suppress log messages */
-  def quiet = true
-  /** @return true to display execution times for each job */
-  def showTimes = false
-  /** @return the log level to use when logging */
-  def level = INFO
-  /** @return the categories to show when logging, as a regular expression */
-  def categories = ".*"
 
   /**
    * Static setup to use a testing log factory
@@ -30,7 +20,8 @@ trait LocalHadoop {
   }
 
   /** execute some code locally, possibly showing execution times */
-  def onLocal[T](t: =>T) = showTime(executeOnLocal(t))(displayTime("Local execution time"))
+  def onLocal[T](t: =>T) =
+    showTime(executeOnLocal(t))(displayTime("Local execution time"))
 
   /** execute some code locally */
   def executeOnLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration = ScoobiConfiguration()) = {
