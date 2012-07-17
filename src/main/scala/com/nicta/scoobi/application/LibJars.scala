@@ -28,7 +28,8 @@ trait LibJars {
    * @return the list of library jars to upload, provided by the jars loaded by the current classloader
    */
   def jars: Seq[URL] = Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader].getURLs.filter { url =>
-    Seq(".ivy2", ".m2").exists(url.getFile.contains) || url.getFile.contains("scala-library")
+    !url.getFile.contains("hadoop-core") &&
+    (Seq(".ivy2", ".m2").exists(url.getFile.contains) || url.getFile.contains("scala-library"))
   }
 
   /**

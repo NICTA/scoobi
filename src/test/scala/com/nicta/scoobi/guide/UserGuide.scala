@@ -1,7 +1,7 @@
 package com.nicta.scoobi
 package guide
 
-class UserGuide extends ScoobiPage { def is = args.report(notoc=false) ^"User Guide".title                                                        ^
+class UserGuide extends ScoobiPage { def is = args.report(notoc=false) ^"User Guide".title^
                                                                                                                         """
 <notoc><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></notoc>
 
@@ -29,14 +29,17 @@ In this user guide, you will find:                                              
    "how to support your own " + data.markdownLink.fromTop,
    "how to use " + gp.markdownLink.fromTop,
    "extensions ".markdownLink(ext).fromTop + "for db-like programming",
-   "a "+ ts.markdownLink("testing guide").fromTop).map("* "+_).mkString("\n")                              ^
+   "how to create " + app.markdownLink("Scoobi applications").fromTop,
+   "a "+ ts.markdownLink("testing guide").fromTop
+    ).map("* "+_).mkString("\n")                                                                                        ^
                                                                                                                         p^
    link(all.map(_.hide))                                                                                                ^
                                                                                                                         end
 
-  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, ts)
+  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts)
 
   val qs    = new QuickStart
+  val app   = new Application
   val dl    = new DistributedLists
   val dobj  = new DistributedObjects
   val data  = new DataTypes

@@ -104,8 +104,7 @@ class MapReduceJob(stepId: Int) {
     var jar = new JarBuilder(tmpFile.getAbsolutePath)
     job.getConfiguration.set("mapred.jar", tmpFile.getAbsolutePath)
 
-    jar.addContainingJar(this.getClass)                          //  Scoobi
-    configuration.userJars.foreach { jar.addJar(_) }             //  User JARs
+    configuration.userJars.foreach { jar.addJar(_) }
     configuration.userDirs.foreach { jar.addClassDirectory(_) }
 
     /** Sort-and-shuffle:

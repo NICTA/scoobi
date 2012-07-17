@@ -21,7 +21,6 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
   "com.thoughtworks.xstream" % "xstream" % "1.4.2",
   "org.specs2" %% "specs2" % "1.11" % "optional",
-  "org.specs2" %% "specs2-scalaz-core" % "6.0.1",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",

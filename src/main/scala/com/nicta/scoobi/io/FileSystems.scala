@@ -53,7 +53,8 @@ trait FileSystems {
    * delete all the files in a given directory on the file system
    */
   def deleteFiles(dest: String)(implicit configuration: ScoobiConfiguration) {
-    if (!fileSystem.exists(new Path(dest))) fileSystem.delete(new Path(dest), true)
+    val destPath = new Path(dest)
+    if (fileSystem.exists(destPath)) fileSystem.delete(destPath, true)
   }
 
   /**

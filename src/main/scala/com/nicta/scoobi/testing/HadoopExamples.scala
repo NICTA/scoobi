@@ -5,9 +5,8 @@ import org.specs2.execute._
 import org.specs2.time.SimpleTimer
 import org.specs2.specification._
 import org.specs2.Specification
-import org.specs2.main.CommandLineArguments
-import application.ScoobiConfiguration
-import HadoopLogFactory._
+import org.specs2.main.{CommandLineArguments, Arguments}
+import application._
 
 /**
  * This trait provides an Around context to be used in a Specification
@@ -21,7 +20,10 @@ import HadoopLogFactory._
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
  */
-trait HadoopExamples extends Hadoop with AroundContextExample[Around] with CommandLineArguments {
+trait HadoopExamples extends Hadoop with AroundContextExample[Around] with ScoobiUserArgs with CommandLineArguments with Cluster {
+
+  /** the test arguments passed on the command line */
+  lazy val userArguments = arguments.commandLine.arguments
 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context
@@ -107,42 +109,6 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Comma
     def isRemote = true
   }
 
-  override def showTimes     = scoobiArguments.map(_.matches(".*.times.*")).getOrElse(false)  || super.showTimes
-  override def quiet         = !verboseArg.isDefined && super.quiet
-  override def level         = extractLevel(verboseArg.getOrElse(""))
-  override def categories    = extractCategories(verboseArg.getOrElse(""))
-  override def deleteLibJars = scoobiArguments.map(_.contains("deletelibjars")).getOrElse(false)
-
-  /** convenience shortcut */
-  private[testing]
-  lazy val argumentsValues: Seq[String] = arguments.commandLine.arguments
-
-  private[testing]
-  def scoobiArguments = argumentsValues.zip(argumentsValues.drop(1)).find(_._1.toLowerCase.equals("scoobi")).map(_._2.toLowerCase)
-
-  private[testing]
-  def verboseArg = scoobiArguments.find(_.matches(".*verbose.*"))
-
-  private[testing]
-  def verboseDetails(args: String) = args.split("\\.").toSeq.filterNot(Seq("verbose", "times").contains)
-
-  private[testing]
-  def extractLevel(args: String) =
-    verboseDetails(args).map(l => l.toUpperCase.asInstanceOf[Level]).headOption.getOrElse(INFO)
-
-  /**
-   * extract the categories as a regular expression from the scoobi arguments, once all the other argument names have been
-   * removed.
-   *
-   * While this not strictly necessary right now the categories regular expression can be enclosed in `[]` to facilitate
-   * reading the options
-   */
-  private[testing]
-  def extractCategories(args: String) = {
-    val extracted = verboseDetails(args).filterNot(a => allLevels contains a.toUpperCase).mkString(".").replace("[", "").replace("]", "")
-    if (extracted.isEmpty) ".*" else extracted
-  }
-
   /**
    * @return an executed Result updated with its execution time
    */
@@ -152,7 +118,6 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Comma
       result.updateExpected(prefix+": "+timer.time)
     } else t
   }
-
 
 }
 
@@ -168,7 +133,7 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Comma
  *        mutable.Specification
  */
 trait HadoopSpecificationStructure extends
-  HadoopHomeDefinedCluster with
+  Cluster with
   HadoopExamples with
   UploadedLibJars with
   SpecificationStructure {

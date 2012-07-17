@@ -19,8 +19,8 @@ import org.apache.hadoop.mapred.JobConf
  * added to the classpath.
  */
 case class ScoobiConfiguration(configuration: Configuration = new Configuration,
-                               userJars: Set[String] = Set(),
-                               userDirs: Set[String] = Set()) {
+                               var userJars: Set[String] = Set(),
+                               var userDirs: Set[String] = Set()) {
 
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
@@ -30,13 +30,15 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   private def callWithHadoopArgs(args: Array[String], f: Array[String] => Unit): ScoobiConfiguration = {
     /* Parse options then update current configuration. Because the filesystem
      * property may have changed, also update working directory property. */
-    val parser = new GenericOptionsParser(args)
-    parser.getConfiguration.foreach {
-      entry => configuration.set(entry.getKey, entry.getValue)
-    }
-
+    val parser = new GenericOptionsParser(configuration, args)
     /* Run the user's code */
     f(parser.getRemainingArgs)
+    this
+  }
+
+  /** get the default values from the configuration files */
+  def loadDefaults = {
+    new GenericOptionsParser(configuration, Array[String]())
     this
   }
 
@@ -55,7 +57,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * add a new jar url (as a String) to the current configuration
    */
-  def addJar(jar: String) = copy(userJars = userJars + jar)
+  def addJar(jar: String) = { userJars = userJars + jar; this }
 
   /**
    * add several user jars to the classpath of this configuration
@@ -72,7 +74,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * add a user directory to the classpath of this configuration
    */
-  def addUserDir(dir: String) = copy(userDirs = userDirs + withTrailingSlash(dir))
+  def addUserDir(dir: String) = { userDirs = userDirs + withTrailingSlash(dir); this }
 
   /**
    * add several user directories to the classpath of this configuration
