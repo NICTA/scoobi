@@ -18,6 +18,8 @@ trait ScoobiArgs {
   def locally = false
   /** @return true if the libjars must be deleted before the Scoobi job runs */
   def deleteLibJars = false
+  /** @return false if temporary files and working directory must be cleaned-up after job execution */
+  def keepFiles = false
 }
 
 /**
@@ -33,6 +35,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
   override def categories    = extractCategories(verboseArg.getOrElse(""))
   override def locally       = is("local")
   override def deleteLibJars = is("deletelibjars")
+  override def keepFiles     = is("keepfiles")
 
   private def is(argName: String)      = argumentsValues.map(_.contains(argName)).getOrElse(false)
   private def matches(argName: String) = argumentsValues.map(_.matches(argName)).getOrElse(false)

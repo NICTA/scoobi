@@ -31,7 +31,7 @@ trait TestFiles {
     getFiles(new File(dir))
 
   def deleteFiles(implicit configuration: ScoobiConfiguration) {
-    deleteFiles(configuration.get("scoobi.test.files").split(",").toSeq.map(new File(_)))
+    deleteFiles(configuration.get("scoobi.test.files", "").split(",").toSeq.filterNot(_.isEmpty).map(new File(_)))
   }
 
   def path(path: String)(implicit configuration: ScoobiConfiguration): String = TempFiles.path(new File(path), isRemote)
