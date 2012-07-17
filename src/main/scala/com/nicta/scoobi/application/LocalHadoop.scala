@@ -2,7 +2,7 @@ package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
-import org.specs2.time.SimpleTimer
+import impl.time.SimpleTimer
 import HadoopLogFactory._
 
 /**
