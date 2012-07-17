@@ -16,7 +16,6 @@ First of all you need to add the specs2 dependency to your build.sbt file (use t
 The abstract class `com.nicta.scoobi.testing.mutable.HadoopSpecification` is the base class for testing Hadoop jobs. Here's an example showing how to use it:
 
     import com.nicta.scoobi.testing.mutable._
-    import com.nicta.scoobi.testing.HadoopHomeDefinedCluster
 
     class WordCountSpec extends HadoopSpecification {
 
@@ -39,11 +38,11 @@ This specification does several things for you:
 
 You can change every step in the process above and create your own Specification trait with a different behavior:
 
-  * the `fs` and `jobTracker` properties comes from the `Cluster` trait and you can override them with hardcoded values so that you don't depend on what's on your build server
+  * the `fs` and `jobTracker` properties comes from the `application.Cluster` trait and you can override them with hardcoded values so that you don't depend on what's on your build server
 
   * you can change the execution context of the examples by overriding the `context` method and returning `local` or `cluster` instead of `localThenCluster` which is the default [specs2 context](http://etorreborre.github.com/specs2/guide/org.specs2.guide.Structure.html#Contexts). The same thing is achievable on the sbt command line by using the `exclude` argument: `test-only *WordCount* -- exclude cluster` will only run locally.
 
-  * the directory for loading the jars is defined by the `libjarsDirectory` property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the `LibJars` trait
+  * the directory for loading the jars is defined by the `libjarsDirectory` property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the `application.LibJars` trait
 
 #### Fine tuning
 
@@ -73,17 +72,7 @@ This will be especially useful if you execute your specifications on a build ser
 
 ##### Logging
 
-By default Hadoop logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:
-
- * show all logs: `test-only *WordCount* -- scoobi verbose` (you can also override the `quiet` method
-
- * show some log levels: `test-only *WordCount* -- scoobi verbose.warning` (you can also override the `level` method). The log levels are the ones from the Apache commons logging library: `ALL`, `FATAL`, `INFO`, `WARN`, `TRACE`
-
- * show some log categories: `test-only *WordCount* -- scoobi verbose.warning.(hadoop|scoobi)` will only display the log lines where the category matches `.*(hadoop|scoobi).*`. Note that you can visually separate this regular expression for log categories with brackets to help the reading: `test-only *WordCount* -- scoobi.verbose.warning.[(hadoop|scoobi)].times`
-
- * you can additionally show the execution times, locally and on the cluster: `test-only *WordCount* -- scoobi verbose.times` (or override the `showTimes` method)
-
- * finally you can combine those flags: `test-only *WordCount* -- scoobi verbose.warning.times`
+The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. See the [Application](${SCOOBI_GUIDE_PAGE}Application.html#Logging) in this User Guide.
 
 ##### Tags
 
@@ -139,15 +128,18 @@ The `HadoopSpecification` class allows to create any kind of job and execute the
 
 ### Using your own
 
-Some of the functionalities described above has been extracted into traits which you can reuse with your own test framework:
+Some of the functionalities described above has been extracted into traits in the `application` package which you can reuse with your own test framework:
 
- * `HomeDefinedHadoopCluster` provides an implementation of the `Cluster` trait extracting the `fs` and `jobTracker` values from the configuration files
+ * `ScoobiAppConfiguration` provides a `ScoobiConfiguration` configured from the `HADOOP_HOME/conf` files
+
+ * `LocalHadoop` provides the `onLocal` method to execute Hadoop code locally. It also defines the `quiet` and `showTimes` methods to display log statement and/or execution times
+
+ * `Hadoop` extends the `LocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
+
+ * `ScoobiUserArgs` parses command line arguments to extract meaningful values (`quiet`, `showTimes`,...) for the `Hadoop` trait
 
  * `LibJars` distributes the dependent jars to the cluster
 
- * `WithLocalHadoop` provides the `onLocal` method to execute Hadoop code locally. It also defines the `quiet` and `showTimes` methods to display log statement and/or execution times
-
- * `Hadoop` extends the `LocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
   """
 
 }
