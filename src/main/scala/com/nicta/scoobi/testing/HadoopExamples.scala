@@ -2,11 +2,11 @@ package com.nicta.scoobi
 package testing
 
 import org.specs2.execute._
-import org.specs2.time.SimpleTimer
 import org.specs2.specification._
 import org.specs2.Specification
-import org.specs2.main.{CommandLineArguments, Arguments}
+import org.specs2.main.CommandLineArguments
 import application._
+import impl.time.SimpleTimer
 
 /**
  * This trait provides an Around context to be used in a Specification
@@ -57,9 +57,22 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Scoob
 
     def around[R <% Result](a: =>R) = remotely(a)
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("cluster")) super.apply(a(outside))
+      if (arguments.keep("hadoop") || arguments.keep("cluster")) super.apply(cleanup(a).apply(outside))
       else                                                       Skipped("excluded", "No cluster execution time")
     }
+  }
+
+  /** @return a composed function cleaning up after the job execution */
+  def cleanup[R <% Result](a: ScoobiConfiguration => R): ScoobiConfiguration => R = {
+    if (keepFiles) (c: ScoobiConfiguration) => try { a(c) } finally { cleanup(c) }
+    else a
+  }
+
+  /** cleanup temporary files after job execution */
+  def cleanup(c: ScoobiConfiguration) {
+    // the 2 actions are isolated. In case the first one fails, the second one has a chance to succeed.
+    try { c.deleteWorkingDirectory }
+    finally { TestFiles.deleteFiles(c) }
   }
 
   /**
@@ -71,7 +84,7 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Scoob
     def around[R <% Result](a: =>R) = locally(a)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("local")) super.apply(a(outside))
+      if (arguments.keep("hadoop") || arguments.keep("local")) super.apply(cleanup(a).apply(outside))
       else                                                     Skipped("excluded", "No local execution time")
     }
 
@@ -145,6 +158,3 @@ trait HadoopSpecificationStructure extends
  * Hadoop specification with an acceptance specification
  */
 trait HadoopSpecification extends Specification with HadoopSpecificationStructure
-
-
-

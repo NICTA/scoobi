@@ -36,7 +36,8 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     parseHadoopArguments(arguments)
     onHadoop {
       if (!locally) uploadLibJars
-      run
+      try { run }
+      finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
     }
   }
 

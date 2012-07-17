@@ -101,6 +101,7 @@ The Scoobi command line arguments must be passed as dot separated values after t
  category       | .*                               | regular expression. By default everything is logged. Use `scoobi` to display only Scoobi logs
  local          | false                            | if defined, run the Scoobi job locally
  deletelibjars  | false                            | if defined, remove jars from the `libjars` directory before uploading them again
+ keepfiles      | false                            | if defined, temp files and working directory files are not deleted after the job execution (only for testing)
 
   """
 }
