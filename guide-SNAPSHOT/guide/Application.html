@@ -70,9 +70,9 @@
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Write+your+code">Write your code</a>
             
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Packaging">Packaging</a>
-            
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Packaging">Packaging</a>
             
           </li></ul>
           </li><li id="1634857389"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
@@ -227,7 +227,7 @@
 </code></pre><p>When you extend the <code class="prettyprint">ScoobiApp</code> trait:</p>
 <ul>
   <li><p>you need to implement the <code class="prettyprint">run</code> method with your Scoobi logic</p></li>
-  <li><p>if you create an object, you get a <code class="prettyprint">main(arguments: Array[String])</code> method to run your code from the command-line: <code class="prettyprint">run examples.WordCount</code></p></li>
+  <li><p>if you create an object, you get a <code class="prettyprint">main(arguments: Array[String])</code> method to run your code from the command-line: <code class="prettyprint">run-main examples.WordCount</code></p></li>
   <li><p>you inherit the command-line arguments in a variable named <code class="prettyprint">args</code></p></li>
   <li><p>you inherit an implicit <code class="prettyprint">ScoobiConfiguration</code> object, for persisting <code class="prettyprint">DLists</code>. The <code class="prettyprint">ScoobiConfiguration</code> object encapsulates a Hadoop <code class="prettyprint">Configuration</code> object setup with the hadoop command-line arguments</p></li>
 </ul><a name="Dependencies"><h3>Dependencies</h3></a><p>The <code class="prettyprint">ScoobiApp</code> trait extends the <code class="prettyprint">LibJars</code> trait which provides functionalities to manage dependent jars. More specifically it helps you load all the dependent jars on the cluster before executing your Scoobi job:</p>
@@ -255,12 +255,12 @@
   <li>overriding the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> methods inherited from the <code class="prettyprint">Cluster</code> trait</li>
 </ul><a name="Logging"><h3>Logging</h3></a><p>By default, when extending the <code class="prettyprint">Hadoop</code> trait, Hadoop and Scoobi logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:</p>
 <ul>
-  <li><p>show all logs: <code class="prettyprint">run WordCount -- scoobi verbose</code> (you can also override the <code class="prettyprint">quiet</code> method)</p></li>
-  <li><p>show some log levels: <code class="prettyprint">run WordCount -- scoobi verbose.warning</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones from the Apache commons logging library: <code class="prettyprint">ALL</code>, <code class="prettyprint">FATAL</code>, <code class="prettyprint">INFO</code>, <code class="prettyprint">WARN</code>, <code class="prettyprint">TRACE</code></p></li>
-  <li><p>show some log categories: <code class="prettyprint">run WordCount -- scoobi verbose.warning.(hadoop|scoobi)</code> will only display the log lines where the category matches <code class="prettyprint">.*(hadoop|scoobi).*</code>. Note that you can visually separate this regular expression for log categories with brackets to help the reading: <code class="prettyprint">run WordCount -- scoobi.verbose.warning.[(hadoop|scoobi)].times</code></p></li>
-  <li><p>you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">run WordCount -- scoobi verbose.times</code> (or override the <code class="prettyprint">showTimes</code> method)</p></li>
-  <li><p>finally you can combine those flags: <code class="prettyprint">run WordCount -- scoobi verbose.warning.times</code></p></li>
-</ul><a name="Summary"><h3>Summary</h3></a><p>The Scoobi command line arguments must be passed as dot separated values after the <code class="prettyprint">scoobi</code> argument name:</p><p><code class="prettyprint">run WordCount -- scoobi value1.value2.value3</code></p>
+  <li><p>show all logs: <code class="prettyprint">run-main WordCount -- scoobi verbose</code> (you can also override the <code class="prettyprint">quiet</code> method)</p></li>
+  <li><p>show some log levels: <code class="prettyprint">run-main WordCount -- scoobi verbose.warning</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones from the Apache commons logging library: <code class="prettyprint">ALL</code>, <code class="prettyprint">FATAL</code>, <code class="prettyprint">INFO</code>, <code class="prettyprint">WARN</code>, <code class="prettyprint">TRACE</code></p></li>
+  <li><p>show some log categories: <code class="prettyprint">run-main WordCount -- scoobi verbose.warning.(hadoop|scoobi)</code> will only display the log lines where the category matches <code class="prettyprint">.*(hadoop|scoobi).*</code>. Note that you can visually separate this regular expression for log categories with brackets to help the reading: <code class="prettyprint">run WordCount -- scoobi.verbose.warning.[(hadoop|scoobi)].times</code></p></li>
+  <li><p>you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">run-main WordCount -- scoobi verbose.times</code> (or override the <code class="prettyprint">showTimes</code> method)</p></li>
+  <li><p>finally you can combine those flags: <code class="prettyprint">run-main WordCount -- scoobi verbose.warning.times</code></p></li>
+</ul><a name="Summary"><h3>Summary</h3></a><p>The Scoobi command line arguments must be passed as dot separated values after the <code class="prettyprint">scoobi</code> argument name:</p><p><code class="prettyprint">run-main WordCount -- scoobi value1.value2.value3</code></p>
 <table>
   <thead>
     <tr>
