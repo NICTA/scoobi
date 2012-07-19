@@ -20,6 +20,7 @@ package avro
 import java.util.UUID
 import java.util.{Map => JMap}
 import org.apache.avro.Schema
+import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.generic.GenericData
 import org.apache.avro.util.Utf8
 import scala.collection.generic.CanBuildFrom
@@ -359,5 +360,27 @@ object AvroSchema {
       Schema.createRecord("tup" + UUID.randomUUID().toString.replace('-', 'x'), "", "scoobi", false)
     record.setFields(fields)
     record
+  }
+}
+
+trait AvroParsingImplicits {
+  implicit def pimpSymbol(sym: Symbol): EnhancedSymbol = new EnhancedSymbol(sym)
+}
+
+class EnhancedSymbol(sym: Symbol) extends AvroParsingImplicits {
+
+  /** Pull out any ErrorAction Symbols.
+    *
+    * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
+    *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
+    *       in union branches that may never be followed because the data isn't in that format.
+    */
+  def getErrors: List[Symbol.ErrorAction] = {
+    sym match {
+      case errSym: Symbol.ErrorAction => List(errSym)
+      case otherSym: Symbol => Option(sym.production).map {
+            _.filterNot(_ == sym).toList.flatMap(_.getErrors)
+          }.getOrElse(Nil)
+    }
   }
 }

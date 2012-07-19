@@ -95,6 +95,22 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
     set("scoobi.remote", "true")
   }
 
+  /** Set an upper bound for the number of reducers to be used in M/R jobs */
+  def setMaxReducers(maxReducers: Int) {
+    configuration.setInt("scoobi.mapreduce.reducers.max", maxReducers)
+  }
+
+  /** Get the max number of reducers to use in M/R jobs */
+  def getMaxReducers = configuration.getInt("scoobi.mapreduce.reducers.max", Int.MaxValue)
+
+  /** Set a lower bound for the number of reducers to be used in M/R jobs */
+  def setMinReducers(minReducers: Int) {
+    configuration.setInt("scoobi.mapreduce.reducers.min", minReducers)
+  }
+
+  /** Get the min number of reducers to use in M/R jobs */
+  def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
+
   /**
    * set a new job name to help recognize the job better
    */

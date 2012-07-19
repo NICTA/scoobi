@@ -3,6 +3,7 @@ package acceptance
 
 import Scoobi._
 import testing.NictaSimpleJobs
+import impl.exec.JobExecException
 
 class SimpleMapReduceSpec extends NictaSimpleJobs {
 
@@ -39,6 +40,13 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
   "Concatenating to an empty list shouldn't fail" >> { implicit c: SC =>
     val list = DList[String]() ++ fromInput("hello", "world").lines
     persist(c)(list.materialize).toSeq must_== Seq("hello", "world")
+  }
+
+  tag("issue #105")
+  "Fail M/R job when task fails" >> { implicit sc: SC =>
+    fromInput("hello", "world").run { list: DList[String] =>
+      list.map[String](_ => throw new RuntimeException("forcing a failure in the mapper"))
+    } must throwA[JobExecException]
   }
 
   // tag all the example as "acceptance"
