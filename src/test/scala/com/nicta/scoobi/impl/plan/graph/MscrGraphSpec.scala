@@ -3,7 +3,7 @@ package impl
 package plan
 package graph
 
-import org.kiama.attribution.Attribution
+import org.kiama.attribution.{Attributable, Attribution}
 import org.specs2.mutable.{Tags, Specification}
 import org.specs2.ScalaCheck
 import org.specs2.matcher.{Expectable, Matcher}
@@ -12,8 +12,10 @@ import CompNodePrettyPrinter._
 import Optimiser._
 import CompNode._
 import Mscr._
+import com.github.mdr.ascii.{Box, Diagram, ConnectMode}
+import com.github.mdr.ascii.ConnectMode.{In, Out}
 
-class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags {
+class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags with GraphBuilder {
 
   "1. We must build MSCRs around related GroupByKey nodes" >> {
     "if two GroupByKey nodes share the same input, they belong to the same Mscr" >> {
@@ -230,7 +232,38 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
       }
     }
   }
-
+  "5. Examples" >> {
+    "example 1 - 2 related gbks" >> {
+      val graph =
+        """
+        |  +-------+
+        |  | op1   |
+        |  +-------+
+        |    |  |
+        |    |  ---------
+        |    --         |
+        |     |         |
+        |     v         v
+        |  +-----+   +-----+
+        |  |gbk1 |   |gbk2 |
+        |  +-----+   +-----+
+        |    |          |
+        |    v          v
+        |  +---+     +----+
+        |  |pd1|     |pd2 |
+        |  +---+     +----+
+        |     |        |
+        |     |        |
+        |     v        v
+        |  +--------------+
+        |  |ld1           |
+        |  +--------------+
+      """.stripMargin('|')
+      diagramRoot(graph)
+      //mscrsFor(graph) ==== Set(graph)
+      ko
+    }.pendingUntilFixed("this relies on fixing https://github.com/mdr/ascii-graphs/issues/1")
+  }
   "Support functions" >> {
     "the inputs of a node are its children" >> {
       val load0 = load
@@ -316,4 +349,59 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
 
   // we set this specification as isolated to avoid interferences with the memoization of attributes on shared nodes
   isolated
+}
+
+import org.kiama.attribution.Attribution._
+import ConnectMode._
+
+/**
+ * This trait builds a CompNode graph from a textual representation
+ */
+trait GraphBuilder extends CompNodeFactory {
+  /** @return the CompNode that is the root of this diagram */
+  def diagramRoot(diagram: String): Option[CompNode] = try {
+    val all = Diagram(diagram).allBoxes.map(toABox)
+    val start = all.find(_.box.connections(In).isEmpty).get
+    Attribution.initTree(start)
+    Option(start -> toCompNode)
+  } catch {
+    case e => e.printStackTrace(); None
+  }
+
+  /** transform a Box object to a Box with it's outgoing connexions which are the inputs of the CompNode */
+  lazy val toABox: Box => ABox = { attr { case box => ABox(box, box.connections(Out).map(_._2)) } }
+
+  /** create a CompNode from a Box and its inputs */
+  lazy val toCompNode: ABox => CompNode = {
+    val nodesMap = new scala.collection.mutable.HashMap[Int, CompNode]()
+    attr {
+      case ABox(box, ins) => createNode(box, ins.map(i => toABox(i) -> toCompNode), nodesMap)
+    }
+  }
+
+  /** @return a CompNode from a Box and its inputs. Reuses already created nodes */
+  def createNode(box: Box, ins: Seq[CompNode], nodesMap: scala.collection.mutable.HashMap[Int, CompNode]): CompNode = {
+    box match {
+      case ABoxId("ld",  id) => nodesMap.get(id).getOrElse(load)
+      case ABoxId("rt",  id) => nodesMap.get(id).getOrElse(rt)
+      case ABoxId("pd",  id) => nodesMap.get(id).getOrElse(pd(ins.head))
+      case ABoxId("gbk", id) => nodesMap.get(id).getOrElse(gbk(ins.head))
+      case ABoxId("fl",  id) => nodesMap.get(id).getOrElse(flatten(ins:_*))
+      case ABoxId("op",  id) => nodesMap.get(id).getOrElse(op(ins(0), ins(1)))
+      case ABoxId("mt",  id) => nodesMap.get(id).getOrElse(mt(ins.head))
+      case other             => sys.error("no match for "+box)
+    }
+  }
+
+  trait BoxNode extends Attributable
+  case class ABox(box: Box, inputs: Seq[Box]) extends BoxNode
+  object ABoxId {
+    def unapply(box: Box): Option[(String, Int)] = {
+      // regex found with http://www.txt2re.com
+      """((?:[a-z][a-z]+))(\d+)""".r.unapplySeq(box.text.trim).map {
+        case name :: id :: Nil => (name, id.toInt)
+        case other             => sys.error("malformed box name "+box.text+". It should be name+Id")
+      }
+    }
+  }
 }

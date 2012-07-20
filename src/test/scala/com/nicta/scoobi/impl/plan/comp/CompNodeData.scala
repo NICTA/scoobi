@@ -11,22 +11,7 @@ import org.specs2.ScalaCheck
 import org.specs2.main.CommandLineArguments
 import org.specs2.mutable.Specification
 
-trait CompNodeData extends Data with ScalaCheck with CommandLineArguments { this: Specification =>
-  /**
-   * Creation functions
-   */
-  def load = Load(ConstantStringDataSource("start"))
-  def flatten[A](nodes: CompNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
-  def parallelDo(in: CompNode) = pd(in)
-  def rt = Return("")
-  def cb(in: CompNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
-  def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
-  def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
-  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
-  def pd(in: CompNode, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn, groupBarrier, fuseBarrier)
-
-  lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
+trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
 
   /** show the structure without the ids */
   lazy val showStructure = (n: CompNode) => show(n).replaceAll("\\d", "")
@@ -67,4 +52,22 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments { this
   def genMaterialize(depth: Int = 1) = if (depth <= 1) Gen.value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
   def genGroupByKey (depth: Int = 1) = if (depth <= 1) Gen.value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
 
+}
+
+/**
+ * Creation functions
+ */
+trait CompNodeFactory {
+  def load = Load(ConstantStringDataSource("start"))
+  def flatten[A](nodes: CompNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
+  def parallelDo(in: CompNode) = pd(in)
+  def rt = Return("")
+  def cb(in: CompNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
+  def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
+  def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
+  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
+  def pd(in: CompNode, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
+    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn, groupBarrier, fuseBarrier)
+
+  lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
 }
