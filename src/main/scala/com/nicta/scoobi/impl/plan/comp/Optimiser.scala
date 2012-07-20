@@ -57,7 +57,11 @@ trait Optimiser {
   /** return true if an CompNode is a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p @ ParallelDo(_,_,_,_,_) => p }
   /** return true if an CompNode is a GroupByKey */
+  lazy val isGroupByKey: CompNode => Boolean = { case GroupByKey(_) => true; case other => false }
+  /** return true if an CompNode is a GroupByKey */
   lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk @ GroupByKey(_) => gbk }
+  /** return true if an CompNode is a Materialize */
+  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_) => true; case other => false }
 
   /**
    * Nested Flattens must be fused

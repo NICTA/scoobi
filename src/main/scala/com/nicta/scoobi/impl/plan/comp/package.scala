@@ -81,10 +81,10 @@ package object comp {
       def showMscr(n: CompNode) = {
         val m = n -> mscr
         n.toString +
-        (if (m.inputChannels.isEmpty || m.outputChannels.isEmpty) "" else (" -> "+m))
+        (if (m.isEmpty) "" else (" -> "+m))
       }
       val attributedVertices = (node -> vertices).map(v => (v, showMscr(v))).toMap
-      val graph = Graph(attributedVertices.values.toList, (node -> edges).toList.map { case (v1, v2) => attributedVertices(v1) -> attributedVertices(v2) })
+      val graph = Graph(attributedVertices.values.toList, (node -> edges).toList.map { case (v1, v2) => attributedVertices(v1) -> attributedVertices(v2) }.distinct)
       Layouter.renderGraph(graph)
     }
 

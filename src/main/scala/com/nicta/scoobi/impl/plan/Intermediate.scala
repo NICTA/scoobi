@@ -517,7 +517,8 @@ object Intermediate {
        *
        * Find all outputs that are not within a GBK MSCR. There are 2 cases:
        *
-       *   1. The ouput is a ParallelDo node connected directly to a Load node;
+       *   1. The output is a ParallelDo node  connected to the output(s) of an MSCR and/or
+       *      Load node(s).
        *   2. The output is a Flatten node, connected to the output(s) of an MSCR and/or
        *      Load node(s). */
       val floatingNodes = g.nodes filterNot { n => gbkMSCRs.exists(_.hasNode(n)) }

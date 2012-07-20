@@ -50,9 +50,9 @@ trait Data {
     }
   }
 
-  def distinctPairs[T1 <: AnyRef](seq1: Seq[T1]): Seq[(T1, T1)] = distinctPairs(seq1, seq1)
-  def distinctPairs[T1 <: AnyRef, T2  <: AnyRef](seq1: Seq[T1], seq2: Seq[T2]): Seq[(T1, T2)] =
-    (seq1.toList |@| seq2.toList)((_,_)).filterNot(p => p._1 eq p._2).distinct.toSeq
+  def distinctPairs[T1 <: AnyRef](set1: Set[T1]): Set[(T1, T1)] = distinctPairs(set1, set1)
+  def distinctPairs[T1 <: AnyRef, T2  <: AnyRef](set1: Set[T1], set2: Set[T2]): Set[(T1, T2)] =
+    (set1.toList |@| set2.toList)((_,_)).filterNot(p => p._1 eq p._2).toSet
 
 }
 
