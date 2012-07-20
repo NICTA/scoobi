@@ -213,6 +213,43 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.Helper#getFileStatus" data-isabs="false">
+      <a id="getFileStatus(Path)(Configuration):Seq[FileStatus]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getFileStatus</span><span class="params">(<span name="path">path: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: Seq[<span name="org.apache.hadoop.fs.FileStatus" class="extype">FileStatus</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get a Set of FileStatus objects for a given Path.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.Helper#getSingleFilePerDir" data-isabs="false">
+      <a id="getSingleFilePerDir(Seq[FileStatus])(Configuration):Set[Path]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getSingleFilePerDir</span><span class="params">(<span name="stats">stats: Seq[<span name="org.apache.hadoop.fs.FileStatus" class="extype">FileStatus</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: Set[<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.Helper#getSingleFilePerDir" data-isabs="false">
+      <a id="getSingleFilePerDir(Path)(Configuration):Set[Path]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getSingleFilePerDir</span><span class="params">(<span name="path">path: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: Set[<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Only get one file per dir.</p><div class="fullcomment"><div class="comment cmt"><p>Only get one file per dir. This helps when checking correctness of input data by reducing
+ the number of files to check. We don't want to check every file as its expensive</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">

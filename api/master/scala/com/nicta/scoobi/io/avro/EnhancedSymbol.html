@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.exec.MapReduceJob</title>
+          <title>com.nicta.scoobi.io.avro.EnhancedSymbol</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
@@ -14,9 +14,9 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="MapReduceJob$.html"><img src="../../../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.exec" class="extype" href="package.html">exec</a></p>
-        <h1><a title="Go to companion" href="MapReduceJob$.html">MapReduceJob</a></h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.io" class="extype" href="../package.html">io</a>.<a name="com.nicta.scoobi.io.avro" class="extype" href="package.html">avro</a></p>
+        <h1>EnhancedSymbol</h1>
       </div>
 
       <h4 class="signature" id="signature">
@@ -25,13 +25,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">MapReduceJob</span><span class="result"> extends AnyRef</span>
+        <span class="name">EnhancedSymbol</span><span class="result"> extends <a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A class that defines a single Hadoop MapReduce job.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.MapReduceJob" class="in"><span>MapReduceJob</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.io.avro.EnhancedSymbol" class="in"><span>EnhancedSymbol</span></li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="in"><span>AvroParsingImplicits</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -57,15 +57,15 @@
         <div id="allMembers">
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#this" data-isabs="false">
-      <a id="this:MapReduceJob"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.avro.EnhancedSymbol#this" data-isabs="false">
+      <a id="this:EnhancedSymbol"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MapReduceJob</span><span class="params">(<span name="stepId">stepId: <span name="scala.Int" class="extype">Int</span></span>)</span>
+        <span class="name">EnhancedSymbol</span><span class="params">(<span name="sym">sym: <span name="org.apache.avro.io.parsing.Symbol" class="extype">Symbol</span></span>)</span>
       </span>
       </h4>
       
@@ -138,42 +138,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedCombiner" data-isabs="false">
-      <a id="addTaggedCombiner[V](TaggedCombiner[V]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addTaggedCombiner</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="c">c: <a name="com.nicta.scoobi.impl.exec.TaggedCombiner" class="extype" href="TaggedCombiner.html">TaggedCombiner</a>[V]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add a combiner function to this MapReduce job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedMapper" data-isabs="false">
-      <a id="addTaggedMapper(com.nicta.scoobi.io.DataSource[_, _, _],Option[com.nicta.scoobi.impl.exec.Env[_]],com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _, _]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addTaggedMapper</span><span class="params">(<span name="input">input: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="env">env: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="m">m: com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add an input mapping function to thie MapReduce job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedReducer" data-isabs="false">
-      <a id="addTaggedReducer(Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]],Option[com.nicta.scoobi.impl.exec.Env[_]],com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _, _]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addTaggedReducer</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="env">env: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="r">r: com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add an output reducing function to this MapReduce job.</p>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -252,6 +216,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.EnhancedSymbol#getErrors" data-isabs="false">
+      <a id="getErrors:List[ErrorAction]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getErrors</span><span class="result">: List[<span name="org.apache.avro.io.parsing.Symbol.ErrorAction" class="extype">ErrorAction</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Pull out any ErrorAction Symbols.</p><div class="fullcomment"><div class="comment cmt"><p>Pull out any ErrorAction Symbols.</p><p>Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
+      union types in the reader schema. If it did, its possible to have ErrorAction symbols
+      in union branches that may never be followed because the data isn't in that format.
+</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -276,18 +255,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#logger" data-isabs="false">
-      <a id="logger:Log"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span name="org.apache.commons.logging.Log" class="extype">Log</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -324,18 +291,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#run" data-isabs="false">
-      <a id="run(ScoobiConfiguration):Unit"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroParsingImplicits#pimpSymbol" data-isabs="false">
+      <a id="pimpSymbol(Symbol):EnhancedSymbol"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">pimpSymbol</span><span class="params">(<span name="sym">sym: <span name="org.apache.avro.io.parsing.Symbol" class="extype">Symbol</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.avro.EnhancedSymbol" class="extype" href="">EnhancedSymbol</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Take this MapReduce job and run it on Hadoop.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -412,7 +379,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

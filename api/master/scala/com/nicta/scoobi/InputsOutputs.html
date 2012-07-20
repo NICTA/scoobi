@@ -313,14 +313,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#convertFromSequenceFile" data-isabs="false">
-      <a id="convertFromSequenceFile[K, V](List[String])(Manifest[K],WireFormat[K],SeqSchema[K],Manifest[V],WireFormat[V],SeqSchema[V]):DList[(K, V)]"></a>
+      <a id="convertFromSequenceFile[K, V](List[String],Boolean)(Manifest[K],WireFormat[K],SeqSchema[K],Manifest[V],WireFormat[V],SeqSchema[V]):DList[(K, V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertFromSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: SeqSchema[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg5">arg5: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[(K, V)]</span>
+        <span class="name">convertFromSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkKeyValueTypes">checkKeyValueTypes: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: SeqSchema[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg5">arg5: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[(K, V)]</span>
       </span>
       </h4>
       
@@ -337,14 +337,14 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#convertKeyFromSequenceFile" data-isabs="false">
-      <a id="convertKeyFromSequenceFile[K](List[String])(Manifest[K],WireFormat[K],SeqSchema[K]):DList[K]"></a>
+      <a id="convertKeyFromSequenceFile[K](List[String],Boolean)(Manifest[K],WireFormat[K],SeqSchema[K]):DList[K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertKeyFromSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: SeqSchema[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[K]</span>
+        <span class="name">convertKeyFromSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkKeyType">checkKeyType: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: SeqSchema[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[K]</span>
       </span>
       </h4>
       
@@ -385,14 +385,14 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#convertValueFromSequenceFile" data-isabs="false">
-      <a id="convertValueFromSequenceFile[V](List[String])(Manifest[V],WireFormat[V],SeqSchema[V]):DList[V]"></a>
+      <a id="convertValueFromSequenceFile[V](List[String],Boolean)(Manifest[V],WireFormat[V],SeqSchema[V]):DList[V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertValueFromSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg2">arg2: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[V]</span>
+        <span class="name">convertValueFromSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkValueType">checkValueType: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg2">arg2: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[V]</span>
       </span>
       </h4>
       
@@ -460,14 +460,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#fromAvroFile" data-isabs="false">
-      <a id="fromAvroFile[A](List[String])(Manifest[A],WireFormat[A],AvroSchema[A]):DList[A]"></a>
+      <a id="fromAvroFile[A](List[String],Boolean)(Manifest[A],WireFormat[A],AvroSchema[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: AvroSchema[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[A]</span>
+        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkSchemas">checkSchemas: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: AvroSchema[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[A]</span>
       </span>
       </h4>
       
@@ -496,14 +496,14 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#fromSequenceFile" data-isabs="false">
-      <a id="fromSequenceFile[K&lt;:Writable, V&lt;:Writable](List[String])(Manifest[K],WireFormat[K],Manifest[V],WireFormat[V]):DList[(K, V)]"></a>
+      <a id="fromSequenceFile[K&lt;:Writable, V&lt;:Writable](List[String],Boolean)(Manifest[K],WireFormat[K],Manifest[V],WireFormat[V]):DList[(K, V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>, <span name="V">V &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>]</span><span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: Manifest[V]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[(K, V)]</span>
+        <span class="name">fromSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>, <span name="V">V &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkKeyValueTypes">checkKeyValueTypes: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: Manifest[V]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="core/DList.html">DList</a>[(K, V)]</span>
       </span>
       </h4>
       

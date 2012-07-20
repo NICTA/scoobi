@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.exec.MapReduceJob</title>
+          <title>com.nicta.scoobi.impl.exec.JobExecException</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
@@ -14,9 +14,9 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="MapReduceJob$.html"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <img src="../../../../../lib/class_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.exec" class="extype" href="package.html">exec</a></p>
-        <h1><a title="Go to companion" href="MapReduceJob$.html">MapReduceJob</a></h1>
+        <h1>JobExecException</h1>
       </div>
 
       <h4 class="signature" id="signature">
@@ -25,13 +25,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">MapReduceJob</span><span class="result"> extends AnyRef</span>
+        <span class="name">JobExecException</span><span class="result"> extends <span name="java.lang.RuntimeException" class="extype">RuntimeException</span></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A class that defines a single Hadoop MapReduce job.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="java.lang.RuntimeException" class="extype">RuntimeException</span>, <span name="java.lang.Exception" class="extype">Exception</span>, <span name="java.lang.Throwable" class="extype">Throwable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.MapReduceJob" class="in"><span>MapReduceJob</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.JobExecException" class="in"><span>JobExecException</span></li><li name="java.lang.RuntimeException" class="in"><span>RuntimeException</span></li><li name="java.lang.Exception" class="in"><span>Exception</span></li><li name="java.lang.Throwable" class="in"><span>Throwable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -57,15 +57,15 @@
         <div id="allMembers">
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#this" data-isabs="false">
-      <a id="this:MapReduceJob"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.exec.JobExecException#this" data-isabs="false">
+      <a id="this:JobExecException"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MapReduceJob</span><span class="params">(<span name="stepId">stepId: <span name="scala.Int" class="extype">Int</span></span>)</span>
+        <span class="name">JobExecException</span><span class="params">(<span name="msg">msg: String</span>)</span>
       </span>
       </h4>
       
@@ -138,42 +138,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedCombiner" data-isabs="false">
-      <a id="addTaggedCombiner[V](TaggedCombiner[V]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addTaggedCombiner</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="c">c: <a name="com.nicta.scoobi.impl.exec.TaggedCombiner" class="extype" href="TaggedCombiner.html">TaggedCombiner</a>[V]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add a combiner function to this MapReduce job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedMapper" data-isabs="false">
-      <a id="addTaggedMapper(com.nicta.scoobi.io.DataSource[_, _, _],Option[com.nicta.scoobi.impl.exec.Env[_]],com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _, _]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addTaggedMapper</span><span class="params">(<span name="input">input: com.nicta.scoobi.io.DataSource[_, _, _]</span>, <span name="env">env: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="m">m: com.nicta.scoobi.impl.exec.TaggedMapper[_, _, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add an input mapping function to thie MapReduce job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#addTaggedReducer" data-isabs="false">
-      <a id="addTaggedReducer(Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]],Option[com.nicta.scoobi.impl.exec.Env[_]],com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _, _]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addTaggedReducer</span><span class="params">(<span name="outputs">outputs: Set[_ &lt;: com.nicta.scoobi.io.DataSink[_, _, _]]</span>, <span name="env">env: <span name="scala.Option" class="extype">Option</span>[com.nicta.scoobi.impl.exec.Env[_]]</span>, <span name="r">r: com.nicta.scoobi.impl.exec.TaggedReducer[_, _, _, _]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add an output reducing function to this MapReduce job.</p>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -225,6 +189,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#fillInStackTrace" data-isabs="false">
+      <a id="fillInStackTrace():Throwable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fillInStackTrace</span><span class="params">()</span><span class="result">: <span name="java.lang.Throwable" class="extype">Throwable</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -240,6 +216,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#getCause" data-isabs="false">
+      <a id="getCause():Throwable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getCause</span><span class="params">()</span><span class="result">: <span name="java.lang.Throwable" class="extype">Throwable</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -252,6 +240,42 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#getLocalizedMessage" data-isabs="false">
+      <a id="getLocalizedMessage():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getLocalizedMessage</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#getMessage" data-isabs="false">
+      <a id="getMessage():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getMessage</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#getStackTrace" data-isabs="false">
+      <a id="getStackTrace():Array[StackTraceElement]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getStackTrace</span><span class="params">()</span><span class="result">: <span name="scala.Array" class="extype">Array</span>[<span name="java.lang.StackTraceElement" class="extype">StackTraceElement</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -264,6 +288,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#initCause" data-isabs="false">
+      <a id="initCause(Throwable):Throwable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initCause</span><span class="params">(<span name="arg0">arg0: <span name="java.lang.Throwable" class="extype">Throwable</span></span>)</span><span class="result">: <span name="java.lang.Throwable" class="extype">Throwable</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -276,18 +312,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#logger" data-isabs="false">
-      <a id="logger:Log"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span name="org.apache.commons.logging.Log" class="extype">Log</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -324,18 +348,54 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob#run" data-isabs="false">
-      <a id="run(ScoobiConfiguration):Unit"></a>
+    </li><li visbl="pub" name="java.lang.Throwable#printStackTrace" data-isabs="false">
+      <a id="printStackTrace(PrintWriter):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">printStackTrace</span><span class="params">(<span name="arg0">arg0: <span name="java.io.PrintWriter" class="extype">PrintWriter</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Take this MapReduce job and run it on Hadoop.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#printStackTrace" data-isabs="false">
+      <a id="printStackTrace(PrintStream):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">printStackTrace</span><span class="params">(<span name="arg0">arg0: <span name="java.io.PrintStream" class="extype">PrintStream</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#printStackTrace" data-isabs="false">
+      <a id="printStackTrace():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">printStackTrace</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
+    </li><li visbl="pub" name="java.lang.Throwable#setStackTrace" data-isabs="false">
+      <a id="setStackTrace(Array[StackTraceElement]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setStackTrace</span><span class="params">(<span name="arg0">arg0: <span name="scala.Array" class="extype">Array</span>[<span name="java.lang.StackTraceElement" class="extype">StackTraceElement</span>]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -348,7 +408,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
+    </li><li visbl="pub" name="java.lang.Throwable#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -359,7 +419,7 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Throwable → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -412,7 +472,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="java.lang.RuntimeException" class="parent">
+              <h3>Inherited from <span name="java.lang.RuntimeException" class="extype">RuntimeException</span></h3>
+            </div><div name="java.lang.Exception" class="parent">
+              <h3>Inherited from <span name="java.lang.Exception" class="extype">Exception</span></h3>
+            </div><div name="java.lang.Throwable" class="parent">
+              <h3>Inherited from <span name="java.lang.Throwable" class="extype">Throwable</span></h3>
+            </div><div name="java.io.Serializable" class="parent">
+              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

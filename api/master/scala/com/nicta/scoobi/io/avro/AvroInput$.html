@@ -25,13 +25,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">AvroInput</span><span class="result"> extends AnyRef</span>
+        <span class="name">AvroInput</span><span class="result"> extends <a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Smart functions for materializing distributed lists by loading Avro files.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.io.avro.AvroInput" class="in"><span>AvroInput</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.io.avro.AvroInput" class="in"><span>AvroInput</span></li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="in"><span>AvroParsingImplicits</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -190,14 +190,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroInput#fromAvroFile" data-isabs="false">
-      <a id="fromAvroFile[A](List[String])(Manifest[A],WireFormat[A],AvroSchema[A]):DList[A]"></a>
+      <a id="fromAvroFile[A](List[String],Boolean)(Manifest[A],WireFormat[A],AvroSchema[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
+        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkSchemas">checkSchemas: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Avro files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Avro files. The type of the
@@ -302,6 +302,18 @@ being specified, the input forms all the files in that directory.</p></div></div
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroParsingImplicits#pimpSymbol" data-isabs="false">
+      <a id="pimpSymbol(Symbol):EnhancedSymbol"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pimpSymbol</span><span class="params">(<span name="sym">sym: <span name="org.apache.avro.io.parsing.Symbol" class="extype">Symbol</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.avro.EnhancedSymbol" class="extype" href="EnhancedSymbol.html">EnhancedSymbol</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -378,7 +390,9 @@ being specified, the input forms all the files in that directory.</p></div></div
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
