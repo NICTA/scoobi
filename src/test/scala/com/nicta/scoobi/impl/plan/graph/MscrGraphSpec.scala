@@ -6,7 +6,6 @@ package graph
 import org.kiama.attribution.Attribution
 import org.specs2.mutable.{Tags, Specification}
 import org.specs2.ScalaCheck
-import org.specs2.specification.AfterExample
 import org.specs2.matcher.{Expectable, Matcher}
 import comp._
 import CompNodePrettyPrinter._
@@ -14,7 +13,7 @@ import Optimiser._
 import CompNode._
 import Mscr._
 
-class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags with AfterExample {
+class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags {
 
   "1. We must build MSCRs around related GroupByKey nodes" >> {
     "if two GroupByKey nodes share the same input, they belong to the same Mscr" >> {
@@ -41,18 +40,6 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
       val graph = flatten(gbk2)
       val mscrs = makeMscrs(graph)
       mscrs.map(_.groupByKeys).filterNot(_.isEmpty) ==== Set(Set(gbk1), Set(gbk2))
-    }
-    "two Gbks in the same Mscr cannot be ancestor of each other" >> check { graph: CompNode =>
-      mscrsFor(graph) foreach { m =>
-        val gbks = m.groupByKeys
-        gbks foreach { gbk =>
-          gbks.foreach { other =>
-            if (other.id != gbk.id) {
-              (other:CompNode) aka show(gbk) must not(beAnAncestorOf(gbk))
-            }
-          }
-        }
-      }; ok
     }
     "a Gbk must have the same Mscr that references it" >> check { graph: CompNode =>
       mscrsFor(graph).collect(isAGroupByKey) foreach { gbk =>
@@ -81,9 +68,12 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         }; ok
       }
       "two mappers in the same mapper input channel must share the same input" >> check { graph: CompNode =>
-        mscrsFor(graph).filter(isGbkMscr).flatMap(_.mapperChannels).filter(_.parDos.size > 1) foreach { input =>
-          val (pdo1, pdo2) = (input.parDos.toSeq(0), input.parDos.toSeq(1))
-          pdo1.in aka show(pdo1) must beTheSameAs(pdo2.in)
+        mscrsFor(graph).filter(isGbkMscr).filter(_.mapperChannels.exists(_.parDos.size > 1)) foreach { m =>
+          m.mapperChannels.filter(_.parDos.size > 1) foreach { input =>
+            val (pdo1, pdo2) = (input.parDos.toSeq(0), input.parDos.toSeq(1))
+            val display = input+"\n"+mscrsFor(graph).mkString("\n")+m+"\n"+show(graph)
+            (pdo1 -> descendents).intersect(pdo2 -> descendents) aka display must not be empty
+          }
         }; ok
       }
       "two parallelDos sharing the same input must be in the same inputChannel" >> check { graph: CompNode =>
@@ -326,5 +316,4 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
 
   // we set this specification as isolated to avoid interferences with the memoization of attributes on shared nodes
   isolated
-  def after { Attribution.resetMemo }
 }

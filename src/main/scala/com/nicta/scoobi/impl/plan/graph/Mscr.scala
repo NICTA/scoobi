@@ -16,8 +16,8 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
 
   override def toString =
     Seq(id.toString,
-        if (inputChannels.isEmpty) "" else inputChannels.mkString("inputs: ", ", ", ""),
-        if (outputChannels.isEmpty) "" else outputChannels.mkString("outputs: ",  ",", "")).filterNot(_.isEmpty).mkString("Mscr(", ", ", ")")
+        if (inputChannels.isEmpty) "" else inputChannels.mkString("inputs: ", "\n", ""),
+        if (outputChannels.isEmpty) "" else outputChannels.mkString("outputs: ",  "\n", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")")
 
   /** @return true if this mscr has no input or output channels */
   def isEmpty = inputChannels.isEmpty && outputChannels.isEmpty
@@ -41,63 +41,30 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the combiners of this mscr */
   def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
 
-  def addParallelDoOnMapperInputChannel(p: ParallelDo[_,_,_]) = {
-    val (found, ic) = inputChannels.foldLeft((false, Set[InputChannel]())) { (res, cur) =>
-      val (f, channels) = res
-      cur match {
-        case MapperInputChannel(pdos) => (true, channels + MapperInputChannel(pdos + p))
-        case other                    => (f,    channels + other)
-      }
-    }
-    inputChannels = if (found) ic else (ic + MapperInputChannel(Set(p)))
-    this
-  }
-
+  /** simultaneously set the input and output channels of this mscr */
   def addChannels(in: Set[InputChannel], out: Set[OutputChannel]) = {
    inputChannels  = (inputChannels ++ in)
    outputChannels = (outputChannels ++ out)
    this
   }
 
-  def addInputChannels(ins: Seq[CompNode]) = {
-    ins foreach {
-      case pd: ParallelDo[_,_,_] => inputChannels += MapperInputChannel(Set(pd))
-      case other                 => inputChannels += StraightInputChannel(other)
-    }
-    this
-  }
-
-  def addGbkOutputChannel(gbk: GroupByKey[_,_]) = {
-    outputChannels = outputChannels + GbkOutputChannel(gbk)
-    this
-  }
-
-  def addGbkOutputChannel(gbk: GroupByKey[_,_], flatten: Flatten[_]) ={
-    outputChannels = outputChannels + GbkOutputChannel(gbk, Some(flatten))
-    this
-  }
-
-  def addCombinerOnGbkOutputChannel(gbk: GroupByKey[_,_], cb: Combine[_,_]) =
-    updateOutputChannel(gbk) { o: GbkOutputChannel => o.copy(combiner = Some(cb))}
-
-  def addReducerOnGbkOutputChannel(gbk: GroupByKey[_,_], pd: ParallelDo[_,_,_]) =
-    updateOutputChannel(gbk) { o: GbkOutputChannel =>  o.copy(reducer = Some(pd))}
-
-  private def updateOutputChannel(gbk: GroupByKey[_,_])(f: GbkOutputChannel => GbkOutputChannel) = {
-    outputChannels = outputChannels.map {
-      case o @ GbkOutputChannel(g,_,_,_) if g.id == gbk.id => f(o)
-      case other                                           => other
-    }
-    this
-  }
-
 }
 
 object Mscr {
-  def parallelDosMscr(pd: ParallelDo[_,_,_], siblings: Set[ParallelDo[_,_,_]]) = {
+  /** create an Mscr for related "floating" parallelDos */
+  def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Set[ParallelDo[_,_,_]]) = {
     Mscr(inputChannels  = Set(MapperInputChannel(siblings + pd)),
          outputChannels = (siblings + pd).map(BypassOutputChannel(_)))
   }
+  /** create an Mscr for a "floating" Flatten */
+  def floatingFlattenMscr(f: Flatten[_]) = {
+    Mscr(outputChannels = Set(FlattenOutputChannel(f)),
+         inputChannels  = f.ins.map {
+                              case pd: ParallelDo[_,_,_] => MapperInputChannel(Set(pd))
+                              case other                 => StraightInputChannel(other)
+                          }.toSet)
+  }
+  /** @return a new empty Mscr */
   def empty = Mscr()
   /** @return true if a Mscr is created for GroupByKeys */
   def isGbkMscr: Mscr => Boolean = (_:Mscr).groupByKeys.nonEmpty

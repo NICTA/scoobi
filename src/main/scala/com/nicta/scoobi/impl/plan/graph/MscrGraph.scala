@@ -39,13 +39,13 @@ trait MscrGraph {
 
   /** compute the mscr of "floating" parallelDo nodes, sharing the same input */
   lazy val parallelDosMscr: CompNode => Option[Mscr] = attr {
-    case pd @ ParallelDo(in,_,_,_,_) if pd -> isFloating => Some(Mscr.parallelDosMscr(pd, (pd -> siblings).collect(isAParallelDo)))
+    case pd @ ParallelDo(in,_,_,_,_) if pd -> isFloating => Some(Mscr.floatingParallelDosMscr(pd, (pd -> siblings).collect(isAParallelDo)))
     case other                                           => None
   }
 
   /** compute the mscr of a "floating" flatten node */
   lazy val flattenMscr: CompNode => Option[Mscr] = attr {
-    case f @ Flatten(ins) if f -> isFloating => Some(Mscr(outputChannels = Set(FlattenOutputChannel(f))).addInputChannels(ins))
+    case f @ Flatten(ins) if f -> isFloating => Some(Mscr.floatingFlattenMscr(f))
     case other                               => None
   }
 
