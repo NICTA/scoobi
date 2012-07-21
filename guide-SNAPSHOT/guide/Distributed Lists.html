@@ -62,7 +62,7 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html">DistributedLists</a></div><div id="leftcolumn"><div id="tree">
-      <ul><li id="102454326"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+      <ul><li id="1709866640"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
             <ul><li id="22426525"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
@@ -207,7 +207,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['102454326','520413634'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1709866640','520413634'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div><div id="central"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="520413634">Distributed Lists</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parameterized by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterized by higher-order functions. For example:</p>
 <pre><code class="prettyprint">// Converting a List[Int] to a List[String] keeping only evens
 val stringList = intList filter { _ % 2 == 0 } map { _.toString }

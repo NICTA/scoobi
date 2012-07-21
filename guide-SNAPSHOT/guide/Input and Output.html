@@ -62,7 +62,7 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Input and Output.html">InputOutput</a></div><div id="leftcolumn"><div id="tree">
-      <ul><li id="102454326"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+      <ul><li id="1709866640"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
             <ul><li id="22426525"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
@@ -207,7 +207,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['102454326','171490645'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1709866640','171490645'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="171490645">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
 <pre><code class="prettyprint">// load a single text file
 val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/file&quot;)
