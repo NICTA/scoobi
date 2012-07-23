@@ -15,12 +15,12 @@ package application
 trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
 
   /**
-   * this provides the user arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...
+   * this provides the arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...
    * @see ScoobiUserArgs
    */
-  lazy val userArguments = commandLineArguments
-  /** shortcut name for command-line arguments */
-  lazy val args = userArguments
+  def scoobiArgs = scoobiArguments
+  /** shortcut name for command-line arguments, after extraction of the hadoop and scoobi ones */
+  def args = userArguments
 
   /** this method needs to be overridden and define the code to be executed */
   def run
@@ -41,11 +41,13 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     }
   }
 
-  def parseHadoopArguments(arguments: Array[String]) = {
+  private def parseHadoopArguments(arguments: Array[String]) = {
     // arguments need to be stored before the configuration is even created
-    // so that we know if configurations must be read or not
+    // so that we know if configuration files must be read or not
     set(arguments)
-    configuration.withHadoopArgs(arguments) { remainingArgs => set(remainingArgs) }
+    configuration.withHadoopArgs(arguments) { remainingArgs =>
+      setRemainingArgs(remainingArgs)
+    }
   }
 }
 

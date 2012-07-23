@@ -68,8 +68,8 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     "'unit'       no run, that's for unit tests" >> noRun(examples("unit"))
   }
   "arguments for scoobi can be passed from the command line" >> {
-    localExamples.userArguments must beEmpty
-    examplesWithArguments(Seq("scoobi", "verbose")).userArguments === Seq("verbose")
+    localExamples.scoobiArgs must beEmpty
+    examplesWithArguments(Seq("scoobi", "verbose")).scoobiArgs === Seq("verbose")
   }
   "the log level can be passed from the command line" >> {
     localExamples.extractLevel("verbose")         === INFO
@@ -95,7 +95,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     override lazy val arguments = include(includeTag)
   }
   def examplesWithArguments(args: Seq[String]) = new HadoopExamplesForTesting {
-    override lazy val userArguments = args
+    override lazy val scoobiArgs = args
   }
 
   def runMustBeLocal(implicit context: HadoopExamplesForTesting) = {
