@@ -87,6 +87,15 @@ By default, when extending the `Hadoop` trait, Hadoop and Scoobi logs will not b
 
  * finally you can combine those flags: `run-main WordCount -- scoobi verbose.warning.times`
 
+### Arguments
+
+The arguments passed on the command lines are stripped from Hadoop's arguments (used to setup the Hadoop configuration object) and the remaining arguments are accessible with 2 methods:
+
+ - `args`: the user arguments
+ - `scoobiArgs`: the Scoobi-specific arguments (verbose, times,...)
+
+Note that all the command line arguments are still accessible with the `commandLineArguments` method.
+
 ### Summary
 
 The Scoobi command line arguments must be passed as dot separated values after the `scoobi` argument name:

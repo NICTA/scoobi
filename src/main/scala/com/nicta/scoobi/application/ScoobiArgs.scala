@@ -26,8 +26,8 @@ trait ScoobiArgs {
  * Implementation of the ScoobiArgs trait taking the values from the command line arguments
  */
 trait ScoobiUserArgs extends ScoobiArgs {
-  /** arguments passed on the command-line */
-  def userArguments: Seq[String]
+  /** scoobi arguments passed on the command-line, i.e. values after 'scoobi' */
+  def scoobiArgs: Seq[String]
 
   override def showTimes     = matches(".*.times.*")  || super.showTimes
   override def quiet         = !verboseArg.isDefined  && super.quiet
@@ -37,17 +37,17 @@ trait ScoobiUserArgs extends ScoobiArgs {
   override def deleteLibJars = is("deletelibjars")
   override def keepFiles     = is("keepfiles")
 
-  private def is(argName: String)      = argumentsValues.map(_.contains(argName)).getOrElse(false)
-  private def matches(argName: String) = argumentsValues.map(_.matches(argName)).getOrElse(false)
+  private def is(argName: String)      = argumentsValues.exists(_.contains(argName))
+  private def matches(argName: String) = argumentsValues.exists(_.matches(argName))
 
   private[scoobi]
-  lazy val argumentsValues = userArguments.zip(userArguments.drop(1)).find(_._1.toLowerCase.equals("scoobi")).map(_._2.toLowerCase)
+  lazy val argumentsValues = scoobiArgs
 
   private[scoobi]
   lazy val verboseArg = argumentsValues.find(_.matches(".*verbose.*"))
 
   private[scoobi]
-  def verboseDetails(args: String) = args.split("\\.").toSeq.filterNot(Seq("verbose", "times").contains)
+  def verboseDetails(args: String) = args.split("\\.").filterNot(Seq("verbose", "times").contains)
 
   private[scoobi]
   def extractLevel(args: String) =
