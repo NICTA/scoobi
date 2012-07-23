@@ -6,15 +6,24 @@ package application
  */
 trait ScoobiCommandLineArgs extends DelayedInit {
 
-  var commandLineArguments = Seq[String]()
+  protected[scoobi] var commandLineArguments = Seq[String]()
+  protected[scoobi] var scoobiArguments = Seq[String]()
+  protected[scoobi] var userArguments = Seq[String]()
+
   private var body: () => Unit = () => ()
 
   /**
    * set the command line arguments and trigger the body
    */
-  def set(args: Seq[String]) {
+  private[scoobi] def set(args: Seq[String]) {
     commandLineArguments = args
     body()
+  }
+
+  private[scoobi] def setRemainingArgs(args: Seq[String]) {
+    val (before, after) = args.span(!_.toLowerCase.startsWith("scoobi"))
+    userArguments = before ++ after.drop(2)
+    scoobiArguments = after.drop(1).take(1).map(_.toLowerCase).flatMap(_.split("\\."))
   }
 
   def delayedInit(x: =>Unit) { body = () => x }
