@@ -146,13 +146,13 @@ implicit ScoobiConfiguration is also accessible to create DLists.</p><p>Before t
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">args</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[String]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">shortcut name for command-line arguments</p>
+      <p class="shortcomment cmt">shortcut name for command-line arguments, after extraction of the hadoop and scoobi ones</p>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -204,7 +204,7 @@ implicit ScoobiConfiguration is also accessible to create DLists.</p><p>Before t
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiCommandLineArgs#commandLineArguments" data-isabs="false">
+    </li><li visbl="prt" name="com.nicta.scoobi.application.ScoobiCommandLineArgs#commandLineArguments" data-isabs="false">
       <a id="commandLineArguments:Seq[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -215,7 +215,7 @@ implicit ScoobiConfiguration is also accessible to create DLists.</p><p>Before t
         <span class="name">commandLineArguments</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[String]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiAppConfiguration#configuration" data-isabs="false">
       <a id="configuration:ScoobiConfiguration"></a>
       <h4 class="signature">
@@ -625,18 +625,6 @@ implicit ScoobiConfiguration is also accessible to create DLists.</p><p>Before t
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code locally, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiApp#parseHadoopArguments" data-isabs="false">
-      <a id="parseHadoopArguments(Array[String]):ScoobiConfiguration"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">parseHadoopArguments</span><span class="params">(<span name="arguments">arguments: <span name="scala.Array" class="extype">Array</span>[String]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#quiet" data-isabs="false">
       <a id="quiet:Boolean"></a>
       <h4 class="signature">
@@ -675,20 +663,31 @@ implicit ScoobiConfiguration is also accessible to create DLists.</p><p>Before t
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the local run
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiCommandLineArgs#set" data-isabs="false">
-      <a id="set(Seq[String]):Unit"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiApp#scoobiArgs" data-isabs="false">
+      <a id="scoobiArgs:Seq[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">set</span><span class="params">(<span name="args">args: Seq[String]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">scoobiArgs</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[String]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">set the command line arguments and trigger the body
-</p><div class="fullcomment"><div class="comment cmt"><p>set the command line arguments and trigger the body
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a></dd></dl></div>
+      <p class="shortcomment cmt">this provides the arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,.</p><div class="fullcomment"><div class="comment cmt"><p>this provides the arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="">ScoobiApp</a> → <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd><dt>See also</dt><dd><span class="cmt"><p>ScoobiUserArgs
+</p></span></dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.application.ScoobiCommandLineArgs#scoobiArguments" data-isabs="false">
+      <a id="scoobiArguments:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiArguments</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[String]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#setLogFactory" data-isabs="false">
       <a id="setLogFactory(String):Unit"></a>
       <h4 class="signature">
@@ -792,19 +791,18 @@ implicit ScoobiConfiguration is also accessible to create DLists.</p><p>Before t
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the remote jars currently on the cluster
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiApp#userArguments" data-isabs="false">
+    </li><li visbl="prt" name="com.nicta.scoobi.application.ScoobiCommandLineArgs#userArguments" data-isabs="false">
       <a id="userArguments:Seq[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
         <span class="name">userArguments</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[String]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">this provides the user arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,.</p><div class="fullcomment"><div class="comment cmt"><p>this provides the user arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="">ScoobiApp</a> → <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd><dt>See also</dt><dd><span class="cmt"><p>ScoobiUserArgs
-</p></span></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
