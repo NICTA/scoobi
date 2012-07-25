@@ -9,7 +9,7 @@ Scoobi provides several traits to help building applications. `ScoobiApp` brings
 
 ```scala
 object WordCount extends ScoobiApp {
-  def run {
+  def run() {
     val lines = DList(repeat("hello" -> 3, "world" -> 4):_*)
 
     val frequencies = lines.flatMap(_.split(" "))
@@ -49,7 +49,7 @@ Here is an example on how to use these methods:
 
 ```scala
 object WordCount extends ScoobiApp {
-  def run {
+  def run() {
     // remove the existing jars on the cluster
     deleteJars
     // upload the dependencies to the cluster
@@ -75,17 +75,18 @@ The `ScoobiApp` trait uses the configuration files found in the `HADOOP_HOME` di
 
 ### Logging
 
-By default, when extending the `Hadoop` trait, Hadoop and Scoobi logs will not be shown in the console. However they are essential to debugging failed jobs. Here's how to display them:
+By default, when extending the `Hadoop` trait, Hadoop and Scoobi logs will be shown in the console at the "INFO" level. However for debugging failed jobs you may want to change the log level or the log categories:
 
- * show all logs: `run-main WordCount -- scoobi verbose` (you can also override the `quiet` method)
+ * show some log levels: `run-main WordCount -- scoobi warning` (you can also override the `level` method). The log levels are the ones from the Apache commons logging library: `ALL`, `FATAL`, `INFO`, `WARN`, `TRACE`
 
- * show some log levels: `run-main WordCount -- scoobi verbose.warning` (you can also override the `level` method). The log levels are the ones from the Apache commons logging library: `ALL`, `FATAL`, `INFO`, `WARN`, `TRACE`
+ * show some log categories: `run-main WordCount -- scoobi warning.(hadoop|scoobi)` will only display the log lines where the category matches `.*(hadoop|scoobi).*`. Note that you can visually separate this regular expression for log categories with brackets to help the reading: `run WordCount -- scoobi.warning.[(hadoop|scoobi)].times`
 
- * show some log categories: `run-main WordCount -- scoobi verbose.warning.(hadoop|scoobi)` will only display the log lines where the category matches `.*(hadoop|scoobi).*`. Note that you can visually separate this regular expression for log categories with brackets to help the reading: `run WordCount -- scoobi.verbose.warning.[(hadoop|scoobi)].times`
+ * you can additionally show the execution times, locally and on the cluster: `run-main WordCount -- scoobi times` (or override the `showTimes` method)
 
- * you can additionally show the execution times, locally and on the cluster: `run-main WordCount -- scoobi verbose.times` (or override the `showTimes` method)
+ * finally you can combine those flags: `run-main WordCount -- scoobi warning.times`
 
- * finally you can combine those flags: `run-main WordCount -- scoobi verbose.warning.times`
+Note that logs can be turned off by using the 'quiet' argument:  `run-main WordCount -- scoobi quiet` (you can also override the `quiet` method to return `true`)
+
 
 ### Arguments
 
@@ -104,7 +105,8 @@ The Scoobi command line arguments must be passed as dot separated values after t
 
  Name           | Default value                    | Description
  ---------------|----------------------------------|--------------------------------------------------------------------
- verbose        | false                            | if defined, log statements are displayed
+ verbose        | true                             | if defined, log statements are displayed
+ quiet          | false                            | if defined, log statements are not displayed
  times          | false                            | if defined the total execution time is logged
  level          | info                             | minimum level of statements to log
  category       | .*                               | regular expression. By default everything is logged. Use `scoobi` to display only Scoobi logs

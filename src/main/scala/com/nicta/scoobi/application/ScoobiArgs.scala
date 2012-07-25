@@ -7,7 +7,7 @@ import HadoopLogFactory._
  */
 trait ScoobiArgs {
   /** @return true to suppress log messages */
-  def quiet = true
+  def quiet = false
   /** @return true to display execution times for each job */
   def showTimes = false
   /** @return the log level to use when logging */
@@ -29,10 +29,10 @@ trait ScoobiUserArgs extends ScoobiArgs {
   /** scoobi arguments passed on the command-line, i.e. values after 'scoobi' */
   def scoobiArgs: Seq[String]
 
-  override def showTimes     = matches(".*.times.*")  || super.showTimes
-  override def quiet         = !verboseArg.isDefined  && super.quiet
-  override def level         = extractLevel(verboseArg.getOrElse(""))
-  override def categories    = extractCategories(verboseArg.getOrElse(""))
+  override def showTimes     = matches(".*.times.*")
+  override def quiet         = isQuiet
+  override def level         = extractLevel(argumentsValues)
+  override def categories    = extractCategories(argumentsValues)
   override def locally       = is("local")
   override def deleteLibJars = is("deletelibjars")
   override def keepFiles     = is("keepfiles")
@@ -44,14 +44,17 @@ trait ScoobiUserArgs extends ScoobiArgs {
   lazy val argumentsValues = scoobiArgs
 
   private[scoobi]
-  lazy val verboseArg = argumentsValues.find(_.matches(".*verbose.*"))
+  lazy val argumentsNames = Seq("times", "local", "deletelibjars", "keepfiles", "quiet", "verbose", "cluster")
 
   private[scoobi]
-  def verboseDetails(args: String) = args.split("\\.").filterNot(Seq("verbose", "times").contains)
+  lazy val isVerbose = argumentsValues.exists(_ == "verbose")
 
   private[scoobi]
-  def extractLevel(args: String) =
-    verboseDetails(args).map(l => l.toUpperCase.asInstanceOf[Level]).headOption.getOrElse(INFO)
+  lazy val isQuiet = argumentsValues.exists(_ == "quiet")
+
+  private[scoobi]
+  def extractLevel(args: Seq[String]): Level =
+    args.filter(a => allLevels contains a.toUpperCase).map(l => l.toUpperCase.asInstanceOf[Level]).headOption.getOrElse(INFO)
 
   /**
    * extract the categories as a regular expression from the scoobi arguments, once all the other argument names have been
@@ -61,8 +64,15 @@ trait ScoobiUserArgs extends ScoobiArgs {
    * reading the options
    */
   private[scoobi]
-  def extractCategories(args: String) = {
-    val extracted = verboseDetails(args).filterNot(a => allLevels contains a.toUpperCase).mkString(".").replace("[", "").replace("]", "")
+  def extractCategories(args: Seq[String]): String = {
+    val extracted = args.filterNot(argumentsNames.contains).filterNot(a => allLevels contains a.toUpperCase).mkString(".").replace("[", "").replace("]", "")
     if (extracted.isEmpty) ".*" else extracted
   }
+  /** testing method */
+  private[scoobi]
+  def extractCategories(args: String): String = extractCategories(args.split("\\."))
+
+  /** testing method */
+  private[scoobi]
+  def extractLevel(args: String): Level = extractLevel(args.split("\\."))
 }

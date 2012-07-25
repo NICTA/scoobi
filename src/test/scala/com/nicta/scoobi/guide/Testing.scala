@@ -72,7 +72,7 @@ This will be especially useful if you execute your specifications on a build ser
 
 ##### Logging
 
-The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. See the [Application](${SCOOBI_GUIDE_PAGE}Application.html#Logging) in this User Guide.
+The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a `ScoobiApp`) but they can be turned on by using the `verbose` arguments. See the [Application](${SCOOBI_GUIDE_PAGE}Application.html#Logging) in this User Guide to learn how to set log levels and log categories.
 
 ##### Tags
 

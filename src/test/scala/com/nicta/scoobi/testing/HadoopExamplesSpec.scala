@@ -71,6 +71,12 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     localExamples.scoobiArgs must beEmpty
     examplesWithArguments(Seq("scoobi", "verbose")).scoobiArgs === Seq("verbose")
   }
+  "examples must be quiet by default" >> {
+    localExamples.quiet must beTrue
+  }
+  "examples must be verbose if 'verbose' is passed on the command line" >> {
+    hadoopSpec("verbose").quiet must beFalse
+  }
   "the log level can be passed from the command line" >> {
     localExamples.extractLevel("verbose")         === INFO
     localExamples.extractLevel("verbose.warn")    === WARN
@@ -117,6 +123,12 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     context.example1.execute
     there was no(context.mocked).runOnLocal(any[Result])
     there was no(context.mocked).runOnCluster(any[Result])
+  }
+
+  def hadoopSpec(args: String*) = new HadoopExamples {
+    override lazy val scoobiArgs = args
+    val fs = "fs"
+    val jobTracker = "jobtracker"
   }
 
   trait HadoopExamplesForTesting extends HadoopExamples { outer =>

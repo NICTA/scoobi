@@ -48,7 +48,7 @@ package mypackage.myapp
 import com.nicta.scoobi.Scoobi._
 
 object WordCount extends ScoobiApp {
-  def run {
+  def run() {
     val lines = fromTextFile(args(0))
 
     val counts = lines.flatMap(_.split(" "))

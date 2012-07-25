@@ -23,7 +23,10 @@ import impl.time.SimpleTimer
 trait HadoopExamples extends Hadoop with AroundContextExample[Around] with ScoobiUserArgs with CommandLineArguments with Cluster {
 
   /** the scoobi arguments passed on the command line */
-  lazy val scoobiArgs = arguments.commandLine.arguments
+  lazy val scoobiArgs = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1)
+
+  /** for testing, the output must be quiet by default, unless verbose is specified */
+  override def quiet = !isVerbose
 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context
