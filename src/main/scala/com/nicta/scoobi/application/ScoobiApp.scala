@@ -23,7 +23,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
   def args = userArguments
 
   /** this method needs to be overridden and define the code to be executed */
-  def run
+  def run()
 
   /**
    * parse the command-line argument and:
