@@ -76,6 +76,14 @@ class HelperSpec extends UnitSpecification {
                      createFileStatus("/base/c"))
     Helper.getSingleFilePerDir(input) must_== Set(new Path("/base/a/file1"), new Path("/base/b/file1"))
   }
+
+  "Get non hidden files" in new CommonFS {
+    val path = createSpecBasePath("hidden_files")
+    val partFilePath = new Path(path, "part-m-00000")
+    createEmptyFiles(new Path(path, "_SUCCESS"), new Path(path, ".hidden"), partFilePath)
+
+    Helper.getSingleFilePerDir(path) must_== Set(partFilePath.getPath)
+  }
 }
 
 trait CommonFS extends After {
@@ -96,7 +104,7 @@ trait CommonFS extends After {
     specPath.get
   }
 
-  def createFileStatus(path: String, isDir: Boolean = true): FileStatus = new FileStatus(0,isDir,0,0,0,new Path(path))
+  def createFileStatus(path: String, isDir: Boolean = true): FileStatus = new FileStatus(1,isDir,0,0,0,new Path(path))
 
   // delete the paths after the test has finished
   def after = specPath match {
