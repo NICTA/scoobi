@@ -22,7 +22,7 @@ trait ScoobiVariables {
 
   lazy val apiDir           = landingPage+"api/"
   lazy val apiOfficialPage  = apiDir+previousVersionIfSnapshot+"/index.html"
-  lazy val apiSnapshotPage  = apiDir+"master/index.html"
+  lazy val apiSnapshotPage  = apiDir+"master/scala/index.html"
   lazy val apiPage          = (if (isSnapshot) apiSnapshotPage else apiOfficialPage)
 
   lazy val guideOfficialDir = "guide"
