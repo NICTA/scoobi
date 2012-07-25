@@ -16,23 +16,27 @@
 package com.nicta.scoobi
 package io
 
-import org.apache.hadoop.fs.{Path, FileSystem, FileStatus}
-import Option.{apply => ?}
-
 import org.apache.hadoop.conf.Configuration
-import com.nicta.scoobi.impl.control.Exceptions._
+import org.apache.hadoop.fs.{Path, PathFilter, FileSystem, FileStatus}
+
+import Option.{apply => ?}
+import impl.control.Exceptions._
 
 /** A set of helper functions for implementing DataSources and DataSinks. */
 object Helper {
 
+  private val hiddenFilePathFilter = new PathFilter {
+    def accept(p: Path): Boolean = !p.getName.startsWith("_") && !p.getName.startsWith(".")
+  }
+
   /** Determine whether a path exists or not. */
-  def pathExists(p: Path)(implicit conf: Configuration): Boolean = tryOrElse {
-    getFileStatus(p).size > 0
+  def pathExists(p: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Boolean = tryOrElse {
+    getFileStatus(p, pathFilter).size > 0
   }(false)
 
   /** Get a Set of FileStatus objects for a given Path. */
-  def getFileStatus(path: Path)(implicit conf: Configuration): Seq[FileStatus] = {
-    ?(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"))) match {
+  def getFileStatus(path: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Seq[FileStatus] = {
+    ?(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)) match {
       case None => Seq()
       case Some(s) => s.toSeq
     }
