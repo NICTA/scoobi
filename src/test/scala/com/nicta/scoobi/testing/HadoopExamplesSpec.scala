@@ -8,6 +8,7 @@ import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
 import HadoopLogFactory._
 import testing.mutable.{UnitSpecification => UnitSpec}
+import org.specs2.main.Arguments
 
 class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 
@@ -76,15 +77,19 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   }
   "examples must be verbose if 'verbose' is passed on the command line" >> {
     hadoopSpec("verbose").quiet must beFalse
+    hadoopSpec("verbose").level === INFO
+    hadoopSpec("verbose").categories === ".*"
   }
   "the log level can be passed from the command line" >> {
     localExamples.extractLevel("verbose")         === INFO
+    localExamples.extractLevel("verbose.info")    === INFO
     localExamples.extractLevel("verbose.warn")    === WARN
     localExamples.extractLevel("verbose.WARN")    === WARN
     localExamples.extractLevel("verbose.all")     === ALL
   }
   "the categories to show can be passed from the command line" >> {
     localExamples.extractCategories("verbose")                   === ".*"
+    localExamples.extractCategories("verbose.info")              === ".*"
     localExamples.extractCategories("verbose.warn")              === ".*"
     localExamples.extractCategories("verbose.all")               === ".*"
     localExamples.extractCategories("verbose.TESTING")           === "TESTING"
@@ -126,7 +131,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   }
 
   def hadoopSpec(args: String*) = new HadoopExamples {
-    override lazy val scoobiArgs = args
+    override lazy val arguments = Arguments(("scoobi" +: args).mkString(" "))
     val fs = "fs"
     val jobTracker = "jobtracker"
   }
