@@ -47,7 +47,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
       mscrsFor(graph).collect(isAGroupByKey) foreach { gbk =>
         val m = (gbk -> mscr)
         m.groupByKeys.map(_.id) aka show(gbk) must contain(gbk.id)
-      }; ok
+      }
     } lt;
   }
   "2. We must create InputChannels for each Mscr" >> {
@@ -60,14 +60,14 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
             val mappers = (p -> mscr).mappers
             mappers aka show(graph) must contain(p)
           }
-        }; ok
+        }
       }
       "two mappers in 2 different mapper input channels must not share the same input" >> check { graph: CompNode =>
         mscrsFor(graph).filter(isGbkMscr).filter(_.mapperChannels.size > 1) foreach { m =>
           val independentPdos = m.mapperChannels.flatMap(_.parDos.headOption).toSeq
           val (pdo1, pdo2) = (independentPdos(0), independentPdos(1))
           pdo1.in aka show(pdo1) must not beTheSameAs (pdo2.in)
-        }; ok
+        }
       }
       "two mappers in the same mapper input channel must share the same input" >> check { graph: CompNode =>
         mscrsFor(graph).filter(isGbkMscr).filter(_.mapperChannels.exists(_.parDos.size > 1)) foreach { m =>
@@ -76,7 +76,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
             val display = input+"\n"+mscrsFor(graph).mkString("\n")+m+"\n"+show(graph)
             (pdo1 -> descendents).intersect(pdo2 -> descendents) aka display must not be empty
           }
-        }; ok
+        }
       }
       "two parallelDos sharing the same input must be in the same inputChannel" >> check { graph: CompNode =>
         mscrsFor(graph)
@@ -84,7 +84,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
           if (p1.in eq p2.in) {
             (p1 -> mscr).inputChannelFor(p1) aka show(p1) must beTheSameAs((p2 -> mscr).inputChannelFor(p2))
           }
-        }; ok
+        }
       }
       "if a ParallelDo is an input shared by 2 others ParallelDos, then it must belong to another Mscr" >> check { graph: CompNode =>
         mscrsFor(graph).filter(_.mappers.size > 1) foreach { m =>
@@ -93,7 +93,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
               case p @ ParallelDo(_,_,_,_,_) => (p -> mscr) aka show(p) must be_!== (m)
             }
           }
-        }; ok
+        }
       }
       "example of parallel dos sharing the same input" >> {
         val pd0 = pd(load)
@@ -108,7 +108,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         mscrsFor(graph)
         descendents(graph).collect(isAParallelDo) foreach { p =>
           ((p -> mscr).mappers intersect (p -> mscr).reducers) aka show(p) must beEmpty
-        }; ok
+        }
       }
       "all the ParallelDos must be in a mapper or a reducer" >> check { graph: CompNode =>
         descendents(graph).collect(isAParallelDo) foreach { p =>
@@ -118,7 +118,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
               m.mappers.contains(p) ||
               m.reducers.contains(p) aka "for "+p+"\n"+pretty(graph, mscr)+"\n"+(m.mappers, m.reducers) must beTrue
           }
-        }; ok
+        }
       }
     }
     "IdInputChannels" >> {
@@ -129,7 +129,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
             (input -> siblings) aka show(input) must beEmpty
             m.mappers.toSeq.asNodes aka mscrsGraph(graph) must not contain(input)
           }
-        }; ok
+        }
       }
     }
 
