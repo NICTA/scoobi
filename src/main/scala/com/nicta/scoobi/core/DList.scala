@@ -4,6 +4,7 @@ package core
 import impl.plan._
 import io.func.FunctionInput
 import io.DataSource
+import io.seq.SeqInput
 
 /**
  * A list that is distributed across multiple machines.
@@ -250,13 +251,10 @@ trait DList[A] {
 object DList {
 
   /** Creates a distributed list with given elements. */
-  def apply[A : Manifest : WireFormat](elems: A*): DList[A] = {
-    val vec = Vector(elems: _*)
-    FunctionInput.fromFunction(vec.size)(ix => vec(ix))
-  }
+  def apply[A : Manifest : WireFormat](elems: A*): DList[A] = SeqInput.fromSeq(elems)
 
   /** Create a distributed list of Ints from a Range. */
-  def apply(range: Range): DList[Int] = tabulate(range.length)(ix => range(ix))
+  def apply(range: Range): DList[Int] = SeqInput.fromSeq(range)
 
   /** Creates a distributed list from a data source. */
   def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A] =
@@ -277,9 +275,9 @@ object DList {
   def tabulate[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] =
     FunctionInput.fromFunction(n)(f)
 
-  /* Pimping from generic collection types (i.e. Seq) to a Distributed List */
-  trait PimpWrapper[A] { def toDList: DList[A] }
-  implicit def travPimp[A : Manifest : WireFormat](trav: Traversable[A]) = new PimpWrapper[A] {
-    def toDList: DList[A] = FunctionInput.fromFunction(trav.size)(trav.toSeq)
+  /** Pimping from generic collection types (i.e. Seq) to a Distributed List */
+  implicit def traversableToDList[A : Manifest : WireFormat](traversable: Traversable[A]) = new TraversableToDList[A](traversable)
+  class TraversableToDList[A : Manifest : WireFormat](traversable: Traversable[A]) {
+    def toDList: DList[A] = DList.apply(traversable.toSeq:_*)
   }
 }

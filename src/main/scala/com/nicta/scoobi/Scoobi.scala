@@ -26,7 +26,7 @@ object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with 
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
   val DList = com.nicta.scoobi.core.DList
   type DList[A] = com.nicta.scoobi.core.DList[A]
-  implicit def travPimp[A : Manifest : WireFormat](trav: Traversable[A]) = DList.travPimp(trav)
+  implicit def traversableToDList[A : Manifest : WireFormat](trav: Traversable[A]) = DList.traversableToDList(trav)
 
   val DObject = com.nicta.scoobi.core.DObject
   type DObject[A] = com.nicta.scoobi.core.DObject[A]
@@ -75,9 +75,9 @@ trait InputsOutputs {
 
 
   /* Sequence File I/O */
-  val SequenceInput = com.nicta.scoobi.io.seq.SequenceInput
-  val SequenceOutput = com.nicta.scoobi.io.seq.SequenceOutput
-  type SeqSchema[A] = com.nicta.scoobi.io.seq.SeqSchema[A]
+  val SequenceInput = com.nicta.scoobi.io.sequence.SequenceInput
+  val SequenceOutput = com.nicta.scoobi.io.sequence.SequenceOutput
+  type SeqSchema[A] = com.nicta.scoobi.io.sequence.SeqSchema[A]
 
   import org.apache.hadoop.io.Writable
   def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: String*): DList[K] = SequenceInput.convertKeyFromSequenceFile(paths: _*)

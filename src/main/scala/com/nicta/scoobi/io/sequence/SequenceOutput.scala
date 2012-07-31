@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi
 package io
-package seq
+package sequence
 
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path

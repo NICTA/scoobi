@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi
 package io
-package seq
+package sequence
 
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.BooleanWritable

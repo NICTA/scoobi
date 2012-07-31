@@ -15,7 +15,7 @@
   */
 package com.nicta.scoobi
 package io
-package seq
+package sequence
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
