@@ -62,7 +62,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
        * MapReduce job didn't produce any file (@see issue #60)
        */
        try {
-         format.getSplits(new Job(conf)).map { (pathSplit: InputSplit) =>
+         format.getSplits(new Job(new Configuration(conf))).map { (pathSplit: InputSplit) =>
            new TaggedInputSplit(conf, channel, pathSplit, format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
          }
        } catch {
@@ -148,8 +148,9 @@ object ChannelsInputFormat {
    * Also include the properties which might have been modified by the source (like the DistributedCache files)
    */
   private def configureSource(source: DataSource[_,_,_], channel: Int) = (conf: Configuration) => {
-    val job = new Job(conf)
+    val job = new Job(new Configuration(conf))
     source.inputConfigure(job)
+
     Option(job.getConfiguration.get(CACHE_FILES)).foreach { files =>
       conf.set(ChannelPrefix.prefix(channel, CACHE_FILES), files)
       conf.addValues(CACHE_FILES, files)

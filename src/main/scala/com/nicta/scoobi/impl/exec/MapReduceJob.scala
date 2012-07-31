@@ -19,6 +19,7 @@ package exec
 
 import java.io.File
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.TaskCompletionEvent
@@ -244,7 +245,7 @@ class MapReduceJob(stepId: Int) {
 
       sinks.zipWithIndex.foreach { case (sink, ix) =>
         val outputPath = {
-          val jobCopy = new Job(job.getConfiguration)
+          val jobCopy = new Job(new Configuration(job.getConfiguration))
           sink.outputConfigure(jobCopy)
           FileOutputFormat.getOutputPath(jobCopy)
         }

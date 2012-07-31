@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package exec
 
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
@@ -53,7 +54,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
      * the job thus supporting arbitrary output formats. */
     def mkTaskContext = {
       val conf = context.getConfiguration
-      val job = new Job(conf)
+      val job = new Job(new Configuration(conf))
 
       /* Set standard properties. */
       val format = conf.getClass(ChannelOutputFormat.formatProperty(channel, output), null)
@@ -104,7 +105,7 @@ object ChannelOutputFormat {
     conf.set(keyClassProperty(channel, output), sink.outputKeyClass.getName)
     conf.set(valueClassProperty(channel, output), sink.outputValueClass.getName)
 
-    val jobCopy = new Job(conf)
+    val jobCopy = new Job(new Configuration(conf))
     sink.outputConfigure(jobCopy)
     Option(jobCopy.getConfiguration.get(CACHE_FILES)).foreach { files =>
       conf.set(otherProperty(channel, output) + CACHE_FILES, files)
