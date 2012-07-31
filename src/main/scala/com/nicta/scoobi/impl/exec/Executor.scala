@@ -68,14 +68,6 @@ object Executor {
     val matTable = mscrGraph.matTable
     val environments = mscrGraph.environments
 
-    /* Check that all output dirs don't already exist. */
-    def pathExists(p: Path) = {
-      val s = FileSystem.get(p.toUri, conf).globStatus(p)
-      if (s == null)          false
-      else if (s.length == 0) false
-      else                    true
-    }
-
     /* Check all input sources. */
     mscrs flatMap { _.inputChannels } map {
       case BypassInputChannel(source, _)   => source
