@@ -213,7 +213,10 @@ trait DList[A] {
     /* Group all elements together (so they go to the same reducer task) and then
      * combine them. */
     val x: DObject[Iterable[A]] = imc.groupBy(_ => 0).combine(op).map(_._2).materialize
-    x.map(_.head)
+    x map {
+      case it if it.isEmpty => sys.error("the reduce operation is called on an empty list")
+      case it               => it.head
+    }
   }
 
   /**Multiply up the elements of this distribute list. */
