@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.io.seq</title>
+          <title>com.nicta.scoobi.io.sequence</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
@@ -16,7 +16,7 @@
       <div id="definition">
         <img src="../../../../../lib/package_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.io" class="extype" href="../package.html">io</a></p>
-        <h1>seq</h1>
+        <h1>sequence</h1>
       </div>
 
       <h4 class="signature" id="signature">
@@ -25,7 +25,7 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <span class="name">seq</span>
+        <span class="name">sequence</span>
       </span>
       </h4>
       
@@ -46,24 +46,63 @@
         <div id="allMembers">
         
 
-        
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.sequence.SeqSchema" data-isabs="true">
+      <a id="SeqSchema:SeqSchema[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqSchema.html"><span class="name">SeqSchema</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Type class for conversions between basic Scala types and Hadoop Writable types.</p>
+    </li></ol>
+            </div>
 
         
 
         <div class="values members" id="values">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.io.seq.SeqInput" data-isabs="false">
-      <a id="SeqInput:SeqInput"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.io.sequence.SeqSchema" data-isabs="false">
+      <a id="SeqSchema:SeqSchema"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="SeqInput$.html"><span class="name">SeqInput</span></a><span class="result"> extends AnyRef</span>
+        <a href="SeqSchema$.html"><span class="name">SeqSchema</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">Function for creating a distributed lists from a scala.</p>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.sequence.SequenceInput" data-isabs="false">
+      <a id="SequenceInput:SequenceInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SequenceInput$.html"><span class="name">SequenceInput</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Smart functions for materializing distributed lists by loading Sequence files.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.sequence.SequenceOutput" data-isabs="false">
+      <a id="SequenceOutput:SequenceOutput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SequenceOutput$.html"><span class="name">SequenceOutput</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Smart functions for persisting distributed lists by storing them as Sequence files.</p>
     </li></ol>
             </div>
 

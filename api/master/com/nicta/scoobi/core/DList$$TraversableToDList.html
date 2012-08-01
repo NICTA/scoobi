@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.core.DList</title>
+          <title>com.nicta.scoobi.core.DList.TraversableToDList</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -12,24 +12,24 @@
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="DList.html"><img src="../../../../lib/object_to_trait_big.png" /></a>
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a></p>
-        <h1><a title="Go to companion" href="DList.html">DList</a></h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a>.<a name="com.nicta.scoobi.core.DList" class="extype" href="DList$.html">DList</a></p>
+        <h1>TraversableToDList</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">DList</span><span class="result"> extends AnyRef</span>
+        <span class="name">TraversableToDList</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>This object provides a set of operations to create distributed lists.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.DList" class="in"><span>DList</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.DList.TraversableToDList" class="in"><span>TraversableToDList</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -55,24 +55,24 @@
 
       <div id="template">
         <div id="allMembers">
-        
-
-        <div class="types members" id="types">
-              <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.core.DList.TraversableToDList" data-isabs="false">
-      <a id="TraversableToDList:TraversableToDList[A]"></a>
+        <div class="members" id="constructors">
+              <h3>Instance Constructors</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.DList.TraversableToDList#this" data-isabs="false">
+      <a id="this:TraversableToDList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <a href="DList$$TraversableToDList.html"><span class="name">TraversableToDList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <span class="name">TraversableToDList</span><span class="params">(<span name="traversable">traversable: Traversable[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span>
       </span>
       </h4>
       
     </li></ol>
             </div>
+
+        
 
         
 
@@ -138,30 +138,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#apply" data-isabs="false">
-      <a id="apply(Range):DList[Int]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="range">range: Range</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[<span name="scala.Int" class="extype">Int</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a distributed list of Ints from a Range.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#apply" data-isabs="false">
-      <a id="apply[A](A*)(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="elems">elems: A*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a distributed list with given elements.</p>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -189,30 +165,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#concat" data-isabs="false">
-      <a id="concat[A](DList[A]*)(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">concat</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="xss">xss: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Concatenates all arguement distributed lists into a single distributed list.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#concat" data-isabs="false">
-      <a id="concat[A](List[DList[A]])(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">concat</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="xss">xss: List[<a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Concatenates all arguement distributed lists into a single distributed list.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -252,18 +204,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#fromSource" data-isabs="false">
-      <a id="fromSource[K, V, A](DataSource[K, V, A])(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromSource</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="params">(<span name="source">source: <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../io/DataSource.html">DataSource</a>[K, V, A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a distributed list from a data source.</p>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -348,19 +288,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#tabulate" data-isabs="false">
-      <a id="tabulate[A](Int)((Int) ⇒ A)(Manifest[A],WireFormat[A]):DList[A]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DList.TraversableToDList#toDList" data-isabs="false">
+      <a id="toDList:DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tabulate</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="n">n: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="params">(<span name="f">f: (<span name="scala.Int" class="extype">Int</span>) ⇒ A</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
+        <span class="name">toDList</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a distributed list containing values of a given function over a range of
-integer values starting from 0.</p>
+      
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -373,18 +312,6 @@ integer values starting from 0.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#traversableToDList" data-isabs="false">
-      <a id="traversableToDList[A](Traversable[A])(Manifest[A],WireFormat[A]):TraversableToDList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">traversableToDList</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="traversable">traversable: Traversable[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList.TraversableToDList" class="extype" href="DList$$TraversableToDList.html">TraversableToDList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Pimping from generic collection types (i.</p><div class="fullcomment"><div class="comment cmt"><p>Pimping from generic collection types (i.e. Seq) to a Distributed List</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
