@@ -25,7 +25,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">HadoopContext</span><span class="result"> extends <span name="org.specs2.specification.AroundOutside" class="extype">AroundOutside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>]</span>
+        <span class="name">HadoopContext</span><span class="result"> extends <span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>]</span>
       </span>
       </h4>
       
@@ -33,7 +33,7 @@
 is local)
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="org.specs2.specification.AroundOutside" class="extype">AroundOutside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>], <span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>], <span name="org.specs2.specification.Around" class="extype">Around</span>, <span name="org.specs2.specification.Context" class="extype">Context</span>, <span name="org.specs2.specification.Scope" class="extype">Scope</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext" class="extype" href="HadoopExamples$ClusterHadoopContext.html">ClusterHadoopContext</a>, <a name="com.nicta.scoobi.testing.HadoopExamples.LocalHadoopContext" class="extype" href="HadoopExamples$LocalHadoopContext.html">LocalHadoopContext</a>, <a name="com.nicta.scoobi.testing.HadoopExamples.LocalThenClusterHadoopContext" class="extype" href="HadoopExamples$LocalThenClusterHadoopContext.html">LocalThenClusterHadoopContext</a></div>
@@ -50,7 +50,7 @@ is local)
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" class="in"><span>HadoopContext</span></li><li name="org.specs2.specification.AroundOutside" class="in"><span>AroundOutside</span></li><li name="org.specs2.specification.Outside" class="in"><span>Outside</span></li><li name="org.specs2.specification.Around" class="in"><span>Around</span></li><li name="org.specs2.specification.Context" class="in"><span>Context</span></li><li name="org.specs2.specification.Scope" class="in"><span>Scope</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" class="in"><span>HadoopContext</span></li><li name="org.specs2.specification.Outside" class="in"><span>Outside</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -66,19 +66,7 @@ is local)
 
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="org.specs2.specification.AroundOutside#around" data-isabs="true">
-      <a id="around[R](⇒ R)((R) ⇒ Result):Result"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">around</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: (R) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>)</span><span class="result">: <span name="org.specs2.execute.Result" class="extype">Result</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AroundOutside → Around</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.Outside#outside" data-isabs="true">
+              <ol><li visbl="pub" name="org.specs2.specification.Outside#outside" data-isabs="true">
       <a id="outside:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -155,7 +143,7 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.AroundOutside#apply" data-isabs="false">
+    </li><li visbl="pub" name="org.specs2.specification.Outside#apply" data-isabs="false">
       <a id="apply[R]((ScoobiConfiguration) ⇒ R)((R) ⇒ Result):Result"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -166,19 +154,7 @@ is local)
         <span class="name">apply</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: (<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: (R) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>)</span><span class="result">: <span name="org.specs2.execute.Result" class="extype">Result</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AroundOutside → Outside</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.Around#apply" data-isabs="false">
-      <a id="apply[T](⇒ T)((T) ⇒ Result):Result"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="a">a: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: (T) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>)</span><span class="result">: <span name="org.specs2.execute.Result" class="extype">Result</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Around → Context</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Outside</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -206,18 +182,6 @@ is local)
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.Around#compose" data-isabs="false">
-      <a id="compose(Around):Around"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">compose</span><span class="params">(<span name="a">a: <span name="org.specs2.specification.Around" class="extype">Around</span></span>)</span><span class="result">: <span name="org.specs2.specification.Around" class="extype">Around</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Around</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -353,18 +317,6 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.Around#then" data-isabs="false">
-      <a id="then(Around):Around"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">then</span><span class="params">(<span name="a">a: <span name="org.specs2.specification.Around" class="extype">Around</span></span>)</span><span class="result">: <span name="org.specs2.specification.Around" class="extype">Around</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Around</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -429,16 +381,8 @@ is local)
         </div>
 
         <div id="inheritedMembers">
-        <div name="org.specs2.specification.AroundOutside" class="parent">
-              <h3>Inherited from <span name="org.specs2.specification.AroundOutside" class="extype">AroundOutside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>]</h3>
-            </div><div name="org.specs2.specification.Outside" class="parent">
+        <div name="org.specs2.specification.Outside" class="parent">
               <h3>Inherited from <span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>]</h3>
-            </div><div name="org.specs2.specification.Around" class="parent">
-              <h3>Inherited from <span name="org.specs2.specification.Around" class="extype">Around</span></h3>
-            </div><div name="org.specs2.specification.Context" class="parent">
-              <h3>Inherited from <span name="org.specs2.specification.Context" class="extype">Context</span></h3>
-            </div><div name="org.specs2.specification.Scope" class="parent">
-              <h3>Inherited from <span name="org.specs2.specification.Scope" class="extype">Scope</span></h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
