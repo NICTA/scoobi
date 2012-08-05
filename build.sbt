@@ -27,6 +27,8 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-compress" % "1.0" % "test"
 )
 
+(sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen
+
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "apache"   at "https://repository.apache.org/content/repositories/releases",
                   "scoobi"   at "http://nicta.github.com/scoobi/releases",
