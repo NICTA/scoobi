@@ -59,8 +59,8 @@ trait HadoopExamples extends Hadoop with ScoobiUserArgs with CommandLineArgument
     def outside = configureForCluster(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("cluster")) remotely(cleanup(a).apply(outside))
-      else                                                       Skipped("excluded", "No cluster execution time")
+      if (arguments.contain("hadoop") || arguments.contain("cluster")) remotely(cleanup(a).apply(outside))
+      else                                                             Skipped("excluded", "No cluster execution time")
     }
   }
 
@@ -84,8 +84,8 @@ trait HadoopExamples extends Hadoop with ScoobiUserArgs with CommandLineArgument
     def outside = configureForLocal(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("local")) locally(cleanup(a).apply(outside))
-      else                                                     Skipped("excluded", "No local execution time")
+      if (arguments.contain("hadoop") || arguments.contain("local")) locally(cleanup(a).apply(outside))
+      else                                                            Skipped("excluded", "No local execution time")
     }
     override def isRemote = false
   }
