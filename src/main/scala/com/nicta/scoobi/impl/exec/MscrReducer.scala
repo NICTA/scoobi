@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package exec
 
+import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.mapreduce.{Reducer => HReducer}
 import scala.collection.JavaConversions._
 
@@ -28,6 +29,8 @@ import core._
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3, V3] {
 
+  lazy val logger = LogFactory.getLog("scoobi.Task")
+
   private type Reducers = Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer[_,_,_,_]))]
   private var outputs: Reducers = _
   private var envs: Map[Int, _] = _
@@ -36,6 +39,9 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
   override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {
     outputs = DistCache.pullObject[Reducers](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
     channelOutput = new ChannelOutputFormat(context)
+
+    val attemptid = context.getTaskAttemptID
+    logger.info("MapReduce reduce task '" + attemptid + "' starting on " + java.net.InetAddress.getLocalHost.getHostName)
 
     envs = outputs map { case (ix, (_, (env, _))) => (ix, env.pull(context.getConfiguration)) }
 
