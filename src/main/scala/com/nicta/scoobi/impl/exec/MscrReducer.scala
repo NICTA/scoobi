@@ -60,7 +60,9 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
 
     /* Do the reduction. */
     val emitter = new Emitter[B] {
-      def emit(x: B) = converters foreach { case (ix, converter) => channelOutput.write(channel, ix, converter.toKeyValue(x)) }
+      def emit(x: B) = converters foreach { case (ix, converter) =>
+        channelOutput.write(channel, ix, converter.toKeyValue(x))
+      }
     }
     reducer.reduce(env, key.get(channel).asInstanceOf[K2], untaggedValues, emitter)
   }

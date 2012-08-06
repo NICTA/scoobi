@@ -14,7 +14,14 @@ class DListSpec extends NictaSimpleJobs {
   }
 
   tag("issue 104")
-  "Summing up an empty list should do something graceful" >> { implicit c: SC =>
+  "Summing up an empty list should do something graceful" >> { implicit sc: SC =>
     persist(DList[Int]().sum) must throwAn[Exception](message = "the reduce operation is called on an empty list")
   }
+
+  tag("issue 117")
+  "A groupByKey with barrier followed by a groupByKey must be ok" >> { implicit sc: SC =>
+    val list = DList.tabulate(15000)((n: Int) => ("hello" -> "world")).groupByKey.groupBarrier.groupByKey
+    run(list).head.split(", ").collect { case w => w == "world" } must have size(15000)
+  }
+
 }
