@@ -54,8 +54,7 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with LocalHa
   private def runWithTestFiles[T](t: =>T)(implicit configuration: ScoobiConfiguration) = try {
     t
   } finally {
-    TestFiles.deleteFiles
-    configuration.deleteWorkingDirectory
+    if (!keepFiles) TestFiles.deleteFiles
   }
 
   /**
