@@ -2,6 +2,8 @@ package com.nicta.scoobi
 package application
 
 import HadoopLogFactory._
+import org.specs2.main.CommandLineArguments
+
 /**
  * This trait defines all the options which can be used to modify the behavior of a Scoobi application
  */
@@ -75,4 +77,10 @@ trait ScoobiUserArgs extends ScoobiArgs {
   /** testing method */
   private[scoobi]
   def extractLevel(args: String): Level = extractLevel(args.split("\\."))
+}
+
+trait CommandLineScoobiUserArgs extends ScoobiArgs with CommandLineArguments {
+  /** the scoobi arguments passed on the command line */
+  lazy val scoobiArgs = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1).flatMap(_.split("\\."))
+
 }
