@@ -153,13 +153,11 @@ trait HadoopExamplesForTesting extends Specification with HadoopExamples with Mo
   def withVerbose = { verbose = true; this }
 
   lazy val example1 = "ex1" >> { conf: ScoobiConfiguration =>
-    conf.getConfResourceAsInputStream("") // trigger some logs
     ok
   }
   lazy val example2 = "ex2" >> { conf: ScoobiConfiguration =>
-      conf.getConfResourceAsInputStream("") // trigger some logs
-      ko
-    }
+    ko
+  }
 
   override def runOnLocal[T](t: =>T)   = {
     mocked.runOnLocal(t)
