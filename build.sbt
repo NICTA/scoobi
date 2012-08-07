@@ -21,15 +21,15 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0",
   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0",
   "com.thoughtworks.xstream" % "xstream" % "1.4.2",
+  "org.scalaz" %% "scalaz-core" % "6.95",
   "org.specs2" %% "specs2" % "1.12" % "optional",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
   "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
-  "org.mockito" % "mockito-all" % "1.9.0" % "optional",
+  "org.mockito" % "mockito-all" % "1.9.0" % "test",
   "org.pegdown" % "pegdown" % "1.0.2" % "test",
   "junit" % "junit" % "4.7" % "test",
-  "org.scalaz" %% "scalaz-core" % "6.95",
   "org.apache.commons" % "commons-math" % "2.2" % "test"
 )
 

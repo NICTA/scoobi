@@ -72,6 +72,11 @@ case class MSCR(inputChannels: Set[InputChannel], outputChannels: Set[OutputChan
   /** All nodes captured by this MSCR. */
   val nodes: Set[AST.Node[_, _ <: Shape]] = inputChannels.flatMap(_.nodes) ++ outputChannels.flatMap(_.nodes)
 
+  /** all the BridgeStores for this MSCR */
+  lazy val bridgeStores = inputChannels.collect {
+    case BypassInputChannel(bs @ BridgeStore(), _) => bs
+    case MapperInputChannel(bs @ BridgeStore(), _) => bs
+  }
 }
 
 

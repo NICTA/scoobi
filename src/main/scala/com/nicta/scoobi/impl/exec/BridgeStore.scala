@@ -37,7 +37,7 @@ import application.ScoobiConfiguration
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-final case class BridgeStore[A]()
+case class BridgeStore[A]()
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] {
 
@@ -114,6 +114,13 @@ final case class BridgeStore[A]()
 
 
   override def toString = typeName
+
+  override def equals(other: Any) = {
+    other match {
+      case bs: BridgeStore[_] => bs.id == this.id
+      case _                  => false
+    }
+  }
 
   override def hashCode = id.hashCode
 }
