@@ -24,4 +24,25 @@ class DListSpec extends NictaSimpleJobs {
     run(list).head.split(", ").collect { case w => w == "world" } must have size(15000)
   }
 
+  tag("issue 117")
+  "A complex graph example must not throw an exception" >> { implicit sc: SC =>
+
+
+    def simpleJoin[T: Manifest: WireFormat, V: Manifest: WireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
+      (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey.groupBarrier
+
+    val data = List((12 -> 13), (14 -> 15), (13 -> 55))
+
+    val a = data.toDList
+    val b = data.toDList
+    val c = data.toDList
+    val d = data.toDList
+    val e = data.toDList
+
+    val q = simpleJoin(simpleJoin(a, b), simpleJoin(c, d))
+    val res = simpleJoin(q, simpleJoin(q, e).groupByKey)
+
+    run(res) must not(throwAn[Exception])
+  }
+
 }
