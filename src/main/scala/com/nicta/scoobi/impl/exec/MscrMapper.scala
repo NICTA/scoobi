@@ -22,6 +22,7 @@ import org.apache.hadoop.mapreduce.{Mapper => HMapper}
 import core._
 import io.InputConverter
 import rtt._
+import application.ScoobiEnvironment
 
 /** Hadoop Mapper class for an MSCR. */
 class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
@@ -35,6 +36,7 @@ class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, Tagged
 
   override def setup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
 
+    ScoobiEnvironment.setTaskContext(context)
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 
