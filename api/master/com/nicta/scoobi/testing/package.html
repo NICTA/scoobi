@@ -48,7 +48,19 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.testing.HadoopExamples" data-isabs="true">
+              <ol><li visbl="pub" name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" data-isabs="true">
+      <a id="CommandLineHadoopLogFactory:CommandLineHadoopLogFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CommandLineHadoopLogFactory.html"><span class="name">CommandLineHadoopLogFactory</span></a><span class="result"> extends HadoopLogFactorySetup with CommandLineScoobiUserArgs</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopExamples" data-isabs="true">
       <a id="HadoopExamples:HadoopExamples"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -56,10 +68,22 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopExamples.html"><span class="name">HadoopExamples</span></a><span class="result"> extends Hadoop with ScoobiUserArgs with CommandLineArguments with Cluster</span>
+        <a href="HadoopExamples.html"><span class="name">HadoopExamples</span></a><span class="result"> extends Hadoop with CommandLineScoobiUserArgs with Cluster</span>
       </span>
       </h4>
       <p class="comment cmt">This trait provides an Around context to be used in a Specification</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopLogFactorySetup" data-isabs="true">
+      <a id="HadoopLogFactorySetup:HadoopLogFactorySetup"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopLogFactorySetup.html"><span class="name">HadoopLogFactorySetup</span></a><span class="result"> extends LocalHadoop with SpecificationStructure</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopSpecification" data-isabs="true">
       <a id="HadoopSpecification:HadoopSpecification"></a>
       <h4 class="signature">
@@ -81,7 +105,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopSpecificationStructure.html"><span class="name">HadoopSpecificationStructure</span></a><span class="result"> extends Cluster with HadoopExamples with UploadedLibJars with SpecificationStructure</span>
+        <a href="HadoopSpecificationStructure.html"><span class="name">HadoopSpecificationStructure</span></a><span class="result"> extends Cluster with HadoopExamples with UploadedLibJars with HadoopLogFactorySetup</span>
       </span>
       </h4>
       <p class="comment cmt">You can use this abstract class to create your own specification class, specifying:</p>

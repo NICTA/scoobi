@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.application.ScoobiArgs</title>
+          <title>com.nicta.scoobi.application.CommandLineScoobiUserArgs</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -16,7 +16,7 @@
       <div id="definition">
         <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.application" class="extype" href="package.html">application</a></p>
-        <h1>ScoobiArgs</h1>
+        <h1>CommandLineScoobiUserArgs</h1>
       </div>
 
       <h4 class="signature" id="signature">
@@ -25,17 +25,16 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiArgs</span><span class="result"> extends AnyRef</span>
+        <span class="name">CommandLineScoobiUserArgs</span><span class="result"> extends <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a> with <span name="org.specs2.main.CommandLineArguments" class="extype">CommandLineArguments</span></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>This trait defines all the options which can be used to modify the behavior of a Scoobi application
-</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="org.specs2.main.CommandLineArguments" class="extype">CommandLineArguments</span>, <span name="scala.DelayedInit" class="extype">DelayedInit</span>, <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" class="extype" href="../testing/CommandLineHadoopLogFactory.html">CommandLineHadoopLogFactory</a>, <a name="com.nicta.scoobi.application.CommandLineScoobiUserArgs" class="extype" href="CommandLineScoobiUserArgs.html">CommandLineScoobiUserArgs</a>, <a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a>, <a name="com.nicta.scoobi.testing.HadoopExamples" class="extype" href="../testing/HadoopExamples.html">HadoopExamples</a>, <a name="com.nicta.scoobi.testing.HadoopLogFactorySetup" class="extype" href="../testing/HadoopLogFactorySetup.html">HadoopLogFactorySetup</a>, <a name="com.nicta.scoobi.testing.mutable.HadoopSpecification" class="extype" href="../testing/mutable/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecification" class="extype" href="../testing/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecificationStructure" class="extype" href="../testing/HadoopSpecificationStructure.html">HadoopSpecificationStructure</a>, <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a>, <a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="ScoobiApp.html">ScoobiApp</a>, <a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="ScoobiAppConfiguration.html">ScoobiAppConfiguration</a>, <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a>, <a name="com.nicta.scoobi.testing.UploadedLibJars" class="extype" href="../testing/UploadedLibJars.html">UploadedLibJars</a></div>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" class="extype" href="../testing/CommandLineHadoopLogFactory.html">CommandLineHadoopLogFactory</a>, <a name="com.nicta.scoobi.testing.HadoopExamples" class="extype" href="../testing/HadoopExamples.html">HadoopExamples</a>, <a name="com.nicta.scoobi.testing.mutable.HadoopSpecification" class="extype" href="../testing/mutable/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecification" class="extype" href="../testing/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecificationStructure" class="extype" href="../testing/HadoopSpecificationStructure.html">HadoopSpecificationStructure</a>, <a name="com.nicta.scoobi.testing.UploadedLibJars" class="extype" href="../testing/UploadedLibJars.html">UploadedLibJars</a></div>
         </div></div>
     
 
@@ -49,7 +48,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.application.ScoobiArgs" class="in"><span>ScoobiArgs</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.application.CommandLineScoobiUserArgs" class="in"><span>CommandLineScoobiUserArgs</span></li><li name="org.specs2.main.CommandLineArguments" class="in"><span>CommandLineArguments</span></li><li name="scala.DelayedInit" class="in"><span>DelayedInit</span></li><li name="com.nicta.scoobi.application.ScoobiArgs" class="in"><span>ScoobiArgs</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -127,6 +126,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="org.specs2.main.CommandLineArguments#arguments" data-isabs="false">
+      <a id="arguments:Arguments"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">arguments</span><span class="result">: <span name="org.specs2.main.Arguments" class="extype">Arguments</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -150,7 +161,7 @@
         <span class="name">categories</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the categories to show when logging, as a regular expression</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the categories to show when logging, as a regular expression</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -166,6 +177,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="org.specs2.main.CommandLineArguments#delayedInit" data-isabs="false">
+      <a id="delayedInit(⇒ Unit):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">delayedInit</span><span class="params">(<span name="x">x: ⇒ <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments → DelayedInit</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiArgs#deleteLibJars" data-isabs="false">
       <a id="deleteLibJars:Boolean"></a>
       <h4 class="signature">
@@ -177,7 +200,7 @@
         <span class="name">deleteLibJars</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the libjars must be deleted before the Scoobi job runs</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the libjars must be deleted before the Scoobi job runs</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -264,7 +287,7 @@
         <span class="name">keepFiles</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if temporary files and working directory must be cleaned-up after job execution</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if temporary files and working directory must be cleaned-up after job execution</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiArgs#level" data-isabs="false">
       <a id="level:Level"></a>
       <h4 class="signature">
@@ -276,7 +299,7 @@
         <span class="name">level</span><span class="result">: Level</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the log level to use when logging</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the log level to use when logging</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiArgs#locally" data-isabs="false">
       <a id="locally:Boolean"></a>
       <h4 class="signature">
@@ -288,7 +311,7 @@
         <span class="name">locally</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the Scoobi job must be run locally</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the Scoobi job must be run locally</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -336,7 +359,31 @@
         <span class="name">quiet</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to suppress log messages</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to suppress log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs#scoobiArgs" data-isabs="false">
+      <a id="scoobiArgs:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiArgs</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[<span name="java.lang.String" class="extype">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">the scoobi arguments passed on the command line</p>
+    </li><li visbl="pub" name="org.specs2.main.CommandLineArguments#set" data-isabs="false">
+      <a id="set(Arguments):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">set</span><span class="params">(<span name="args">args: <span name="org.specs2.main.Arguments" class="extype">Arguments</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiArgs#showTimes" data-isabs="false">
       <a id="showTimes:Boolean"></a>
       <h4 class="signature">
@@ -348,7 +395,7 @@
         <span class="name">showTimes</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to display execution times for each job</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to display execution times for each job</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -425,7 +472,13 @@
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="org.specs2.main.CommandLineArguments" class="parent">
+              <h3>Inherited from <span name="org.specs2.main.CommandLineArguments" class="extype">CommandLineArguments</span></h3>
+            </div><div name="scala.DelayedInit" class="parent">
+              <h3>Inherited from <span name="scala.DelayedInit" class="extype">DelayedInit</span></h3>
+            </div><div name="com.nicta.scoobi.application.ScoobiArgs" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
