@@ -29,7 +29,7 @@ import core._
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3, V3] {
 
-  lazy val logger = LogFactory.getLog("scoobi.Task")
+  lazy val logger = LogFactory.getLog("scoobi.ReduceTask")
 
   private type Reducers = Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer[_,_,_,_]))]
   private var outputs: Reducers = _
@@ -40,8 +40,7 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
     outputs = DistCache.pullObject[Reducers](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
     channelOutput = new ChannelOutputFormat(context)
 
-    val attemptid = context.getTaskAttemptID
-    logger.info("MapReduce reduce task '" + attemptid + "' starting on " + java.net.InetAddress.getLocalHost.getHostName)
+    logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
 
     envs = outputs map { case (ix, (_, (env, _))) => (ix, env.pull(context.getConfiguration)) }
 

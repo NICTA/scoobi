@@ -27,7 +27,7 @@ import rtt._
 /** Hadoop Mapper class for an MSCR. */
 class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
 
-  lazy val logger = LogFactory.getLog("scoobi.Task")
+  lazy val logger = LogFactory.getLog("scoobi.MapTask")
 
   private type Mappers = Map[Int, (InputConverter[K1, V1, A], Set[(Env[_], TaggedMapper[A, _, _, _])])]
   private var inputs: Mappers = _
@@ -46,9 +46,8 @@ class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, Tagged
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
     val input: (InputConverter[K1, V1, A], Set[(Env[_], TaggedMapper[A, _, _, _])]) = inputs(inputSplit.channel)
 
-    val attemptid = context.getTaskAttemptID
-    logger.info("MapReduce map task '" + attemptid + "' starting on " + java.net.InetAddress.getLocalHost.getHostName)
-    logger.info("MapReduce map task '" + attemptid + "' input is " + inputSplit.inputSplit)
+    logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
+    logger.info("Input is " + inputSplit.inputSplit)
 
     converter = input._1.asInstanceOf[InputConverter[K1, V1, A]]
 
