@@ -20,13 +20,7 @@ import impl.time.SimpleTimer
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
  */
-trait HadoopExamples extends Hadoop with ScoobiUserArgs with CommandLineArguments with Cluster {
-
-  /** the scoobi arguments passed on the command line */
-  lazy val scoobiArgs = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1).flatMap(_.split("\\."))
-
-  /** for testing, the output must be quiet by default, unless verbose is specified */
-  override def quiet = !isVerbose
+trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster {
 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context
@@ -59,8 +53,8 @@ trait HadoopExamples extends Hadoop with ScoobiUserArgs with CommandLineArgument
     def outside = configureForCluster(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("cluster")) remotely(cleanup(a).apply(outside))
-      else                                                       Skipped("excluded", "No cluster execution time")
+      if (arguments.contain("hadoop") || arguments.contain("cluster")) remotely(cleanup(a).apply(outside))
+      else                                                             Skipped("excluded", "No cluster execution time")
     }
   }
 
@@ -84,8 +78,8 @@ trait HadoopExamples extends Hadoop with ScoobiUserArgs with CommandLineArgument
     def outside = configureForLocal(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("local")) locally(cleanup(a).apply(outside))
-      else                                                     Skipped("excluded", "No local execution time")
+      if (arguments.contain("hadoop") || arguments.contain("local")) locally(cleanup(a).apply(outside))
+      else                                                            Skipped("excluded", "No local execution time")
     }
     override def isRemote = false
   }
@@ -146,9 +140,15 @@ trait HadoopSpecificationStructure extends
   Cluster with
   HadoopExamples with
   UploadedLibJars with
-  SpecificationStructure {
+  HadoopLogFactorySetup
 
+trait HadoopLogFactorySetup extends LocalHadoop with SpecificationStructure {
   override def map(fs: =>Fragments) = super.map(fs).insert(Step(setLogFactory()))
+}
+
+trait CommandLineHadoopLogFactory extends HadoopLogFactorySetup with CommandLineScoobiUserArgs {
+  /** for testing, the output must be quiet by default, unless verbose is specified */
+  override def quiet = !isVerbose
 }
 
 /**
