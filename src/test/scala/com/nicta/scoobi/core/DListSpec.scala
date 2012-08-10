@@ -39,4 +39,17 @@ class DListSpec extends NictaSimpleJobs {
     run(res) must not(throwAn[Exception])
   }
 
+  tag("issue 127")
+  "There must be no cyclic execution" >> { implicit sc: SC =>
+    val input = fromKeyValues("k1,1", "k2,2")
+
+    val inputGrouped = input.groupBy(_._1)
+    val inputGroupedDifferently = input.groupBy(_._2)
+    val inputGroupedAsDObject = inputGrouped.materialize
+
+    val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
+
+    run(dObjectJoinedToInputGroupedDiff).toString === "Something"
+  }.pendingUntilFixed("fix the Mscr creation")
+
 }
