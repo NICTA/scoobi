@@ -1,4 +1,5 @@
 package com.nicta.scoobi
+package impl
 package text
 
 import scalaz.Show

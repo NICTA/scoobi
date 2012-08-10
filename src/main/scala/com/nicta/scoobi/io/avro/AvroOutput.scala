@@ -26,10 +26,9 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
-import impl.Configured
 import application.DListPersister
 import core._
-
+import application.ScoobiConfiguration
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -44,26 +43,18 @@ object AvroOutput {
       def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
-    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] with Configured {
+    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
       protected val outputPath = new Path(path)
 
       val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
       val outputKeyClass = classOf[AvroKey[sch.AvroType]]
       val outputValueClass = classOf[NullWritable]
 
-      def outputCheck {}
-
-      def outputConfigure(job: Job) {
-        configure(job)
-        FileOutputFormat.setOutputPath(job, outputPath)
-        job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
-      }
-
-      protected def checkPaths = {
-        if (Helper.pathExists(outputPath)) {
+      def outputCheck(sc: ScoobiConfiguration) {
+        if (Helper.pathExists(outputPath)(sc)) {
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)
+            Helper.deletePath(outputPath)(sc)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }
@@ -71,6 +62,11 @@ object AvroOutput {
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)
         }
+      }
+
+      def outputConfigure(job: Job) {
+        FileOutputFormat.setOutputPath(job, outputPath)
+        job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
 
       lazy val outputConverter = converter

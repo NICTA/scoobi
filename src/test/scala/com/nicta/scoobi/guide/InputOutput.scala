@@ -133,7 +133,7 @@ The second option is for cases when the desired output is a delimited text file,
 
 ### Sequence files
 
-Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.seq.SeqInput$) and [output](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.seq.SeqOutput$).
+Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqInput$) and [output](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqOutput$).
 
 #### Sequence file input
 
@@ -426,7 +426,7 @@ is called prior to running the specific MapReduce job this `DataSoure` provides 
 The following Scala objects provided great working examples of `DataSource` implementations in Scoobi:
 
  * [TextInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$)
- * [SeqInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.seq.SeqInput$)
+ * [SeqInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqInput$)
  * [AvroInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroInput$)
  * [FunctionInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.func.FunctionInput$)
 
@@ -470,7 +470,7 @@ Again, we can follow the types through to get a sense of how it works:
 The following Scala objects provided great working examples of `DataSink` implementations in Scoobi:
 
  * [TextOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$)
- * [SeqOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.seq.SeqOutput$)
+ * [SeqOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqOutput$)
  * [AvroOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroOutput$)
 
 

@@ -2,6 +2,7 @@ package com.nicta.scoobi
 package impl
 package plan
 
+import text.Showx._
 import graph.MscrGraph
 import scalaz.Show
 import org.kiama.output.PrettyPrinter
@@ -16,7 +17,6 @@ package object comp {
   type CopyTable = Map[DComp[_, _ <: Shape], DComp[_, _ <: Shape]]
 
 
-  import text.Showx._
 
   /**
    * Show instance for a CompNode

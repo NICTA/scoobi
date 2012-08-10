@@ -8,6 +8,8 @@ import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
 import HadoopLogFactory._
 import testing.mutable.{UnitSpecification => UnitSpec}
+import org.specs2.main.Arguments
+import org.specs2.mutable.Specification
 
 class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 
@@ -46,7 +48,8 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     "only locally if there is a failure" >> {
       "normal execution" >> {
         context.example2.execute
-        runMustBeLocal
+        there was one(context.mocked).runOnLocal(any[Result])
+        there was no(context.mocked).runOnCluster(any[Result])
       }
       "with timing" >> {
         val result = context.withTiming.example2.execute.expected.split("\n").toSeq
@@ -68,17 +71,27 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     "'unit'       no run, that's for unit tests" >> noRun(examples("unit"))
   }
   "arguments for scoobi can be passed from the command line" >> {
-    localExamples.userArguments must beEmpty
-    examplesWithArguments(Seq("scoobi", "verbose")).userArguments === Seq("verbose")
+    localExamples.scoobiArgs must beEmpty
+    examplesWithArguments("scoobi verbose").scoobiArgs === Seq("verbose")
+  }
+  "examples must be quiet by default" >> {
+    localExamples.quiet must beTrue
+  }
+  "examples must be verbose if 'verbose' is passed on the command line" >> {
+    hadoopSpec("verbose").quiet must beFalse
+    hadoopSpec("verbose").level === INFO
+    hadoopSpec("verbose").categories === ".*"
   }
   "the log level can be passed from the command line" >> {
     localExamples.extractLevel("verbose")         === INFO
+    localExamples.extractLevel("verbose.info")    === INFO
     localExamples.extractLevel("verbose.warn")    === WARN
     localExamples.extractLevel("verbose.WARN")    === WARN
     localExamples.extractLevel("verbose.all")     === ALL
   }
   "the categories to show can be passed from the command line" >> {
     localExamples.extractCategories("verbose")                   === ".*"
+    localExamples.extractCategories("verbose.info")              === ".*"
     localExamples.extractCategories("verbose.warn")              === ".*"
     localExamples.extractCategories("verbose.all")               === ".*"
     localExamples.extractCategories("verbose.TESTING")           === "TESTING"
@@ -94,8 +107,8 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)
   }
-  def examplesWithArguments(args: Seq[String]) = new HadoopExamplesForTesting {
-    override lazy val userArguments = args
+  def examplesWithArguments(commandline: String) = new HadoopExamplesForTesting {
+    override lazy val arguments = Arguments(commandline)
   }
 
   def runMustBeLocal(implicit context: HadoopExamplesForTesting) = {
@@ -119,47 +132,51 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     there was no(context.mocked).runOnCluster(any[Result])
   }
 
-  trait HadoopExamplesForTesting extends HadoopExamples { outer =>
-    val mocked = mock[HadoopExamples]
-    override val fs = "fs"
-    override val jobTracker = "jobtracker"
-    var timing = false
-    var verbose = false
+  def hadoopSpec(args: String*) = new HadoopExamples {
+    override lazy val arguments = Arguments(("scoobi" +: args).mkString(" "))
+    val fs = "fs"
+    val jobTracker = "jobtracker"
+  }
+}
 
-    override def showTimes = timing
-    override def quiet = !verbose
+trait HadoopExamplesForTesting extends Specification with HadoopExamples with Mockito { outer =>
+  val mocked = mock[HadoopExamples]
+  override val fs = "fs"
+  override val jobTracker = "jobtracker"
+  var timing = false
+  var verbose = false
 
-    def withTiming  = { timing = true; this }
-    def withVerbose = { verbose = true; this }
+  override def showTimes = timing
+  override def quiet = !verbose
 
-    def example1 = "ex1" >> { conf: ScoobiConfiguration =>
-      conf.getConfResourceAsInputStream("") // trigger some logs
-      ok
-    }
-    def example2 = "ex2" >> { conf: ScoobiConfiguration =>
-      conf.getConfResourceAsInputStream("") // trigger some logs
-      ko
-    }
+  def withTiming  = { timing = true; this }
+  def withVerbose = { verbose = true; this }
 
-    override def runOnLocal[T](t: =>T)   = {
-      mocked.runOnLocal(t)
-      t
-    }
-    override def runOnCluster[T](t: =>T) = {
-      mocked.runOnCluster(t)
-      t
-    }
-
-    override def configureForLocal(implicit conf: ScoobiConfiguration) = {
-      setLogFactory()
-      mocked.configureForLocal(conf)
-      conf
-    }
-    override def configureForCluster(implicit conf: ScoobiConfiguration) = {
-      setLogFactory()
-      mocked.configureForCluster(conf)
-      conf
-    }
+  lazy val example1 = "ex1" >> { conf: ScoobiConfiguration =>
+    ok
+  }
+  lazy val example2 = "ex2" >> { conf: ScoobiConfiguration =>
+    ko
   }
 
+  override def runOnLocal[T](t: =>T)   = {
+    mocked.runOnLocal(t)
+    t
+  }
+  override def runOnCluster[T](t: =>T) = {
+    mocked.runOnCluster(t)
+    t
+  }
+
+  override def configureForLocal(implicit conf: ScoobiConfiguration) = {
+    setLogFactory()
+    mocked.configureForLocal(conf)
+    conf
+  }
+  override def configureForCluster(implicit conf: ScoobiConfiguration) = {
+    setLogFactory()
+    mocked.configureForCluster(conf)
+    conf
+  }
 }
+

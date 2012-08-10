@@ -38,6 +38,7 @@ import impl.exec.DistCache
 import impl.Configurations
 import Configurations._
 import core._
+import application.ScoobiConfiguration
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {
@@ -48,7 +49,7 @@ object FunctionInput {
   def fromFunction[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
       val inputFormat = classOf[FunctionInputFormat[A]]
-      def inputCheck() {}
+      def inputCheck(sc: ScoobiConfiguration) {}
 
       def inputConfigure(job: Job) {
         val conf = job.getConfiguration
@@ -62,7 +63,7 @@ object FunctionInput {
         DistCache.pushObject(conf, f, functionProperty(conf.incrementRegex(IdProperty, ".*"+IdProperty)))
       }
 
-      def inputSize(): Long = n.toLong
+      def inputSize: Long = n.toLong
 
       lazy val inputConverter = new InputConverter[NullWritable, A, A] {
         def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v

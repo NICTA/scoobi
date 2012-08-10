@@ -36,10 +36,6 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     serializationIsOkFor[java.util.Date]
     serializationIsOkFor[(Int, String)]
     serializationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
-    serializationIsOkFor[String]
-    "but a null string cannot be serialized" >> {
-      implicitly[WireFormat[String]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
-    } lt;
     serializationIsOkFor[Seq[Int]]
     "but a null traversable cannot be serialized" >> {
       implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]

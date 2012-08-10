@@ -17,6 +17,7 @@ package com.nicta.scoobi
 
 import application._
 import core._
+import org.apache.hadoop.io._
 
 /** Global Scoobi functions and values. */
 object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib with DObjects {
@@ -25,7 +26,7 @@ object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with 
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
   val DList = com.nicta.scoobi.core.DList
   type DList[A] = com.nicta.scoobi.core.DList[A]
-  implicit def travPimp[A : Manifest : WireFormat](trav: Traversable[A]) = DList.travPimp(trav)
+  implicit def traversableToDList[A : Manifest : WireFormat](trav: Traversable[A]) = DList.traversableToDList(trav)
 
   val DObject = com.nicta.scoobi.core.DObject
   type DObject[A] = com.nicta.scoobi.core.DObject[A]
@@ -74,23 +75,19 @@ trait InputsOutputs {
 
 
   /* Sequence File I/O */
-  val SequenceInput = com.nicta.scoobi.io.seq.SequenceInput
-  val SequenceOutput = com.nicta.scoobi.io.seq.SequenceOutput
-  type SeqSchema[A] = com.nicta.scoobi.io.seq.SeqSchema[A]
+  val SequenceInput = com.nicta.scoobi.io.sequence.SequenceInput
+  val SequenceOutput = com.nicta.scoobi.io.sequence.SequenceOutput
+  type SeqSchema[A] = com.nicta.scoobi.io.sequence.SeqSchema[A]
 
   import org.apache.hadoop.io.Writable
   def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: String*): DList[K] = SequenceInput.convertKeyFromSequenceFile(paths: _*)
-  def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[K] = SequenceInput.convertKeyFromSequenceFile(paths)
+  def convertKeyFromSequenceFile[K : Manifest : WireFormat : SeqSchema](paths: List[String], checkKeyType: Boolean = true): DList[K] = SequenceInput.convertKeyFromSequenceFile(paths, checkKeyType)
   def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: String*): DList[V] = SequenceInput.convertValueFromSequenceFile(paths: _*)
-  def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: List[String]): DList[V] = SequenceInput.convertValueFromSequenceFile(paths)
-  def convertFromSequenceFile[K, V](paths: String*)(implicit mk: Manifest[K], wk: WireFormat[K], sk: SeqSchema[K], mv: Manifest[V], wv: WireFormat[V], sv: SeqSchema[V]): DList[(K, V)] =
-    SequenceInput.convertFromSequenceFile(paths: _*)(mk, wk, sk, mv, wv, sv)
-  def convertFromSequenceFile[K, V](paths: List[String])(implicit mk: Manifest[K], wk: WireFormat[K], sk: SeqSchema[K], mv: Manifest[V], wv: WireFormat[V], sv: SeqSchema[V]): DList[(K, V)] =
-    SequenceInput.convertFromSequenceFile(paths)(mk, wk, sk, mv, wv, sv)
-  def fromSequenceFile[K <: Writable, V <: Writable](paths: String*)(implicit mk: Manifest[K], wk: WireFormat[K], mv: Manifest[V], wv: WireFormat[V]): DList[(K, V)] =
-    SequenceInput.fromSequenceFile(paths: _*)(mk, wk, mv, wv)
-  def fromSequenceFile[K <: Writable, V <: Writable](paths: List[String])(implicit mk: Manifest[K], wk: WireFormat[K], mv: Manifest[V], wv: WireFormat[V]): DList[(K, V)] =
-    SequenceInput.fromSequenceFile(paths)(mk, wk, mv, wv)
+  def convertValueFromSequenceFile[V : Manifest : WireFormat : SeqSchema](paths: List[String], checkValueType: Boolean = true): DList[V] = SequenceInput.convertValueFromSequenceFile(paths, checkValueType)
+  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: String*): DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths: _*)
+  def convertFromSequenceFile[K : Manifest : WireFormat : SeqSchema, V : Manifest : WireFormat : SeqSchema](paths: List[String], checkKeyValueTypes: Boolean = true): DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths, checkKeyValueTypes)
+  def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: String*): DList[(K, V)] = SequenceInput.fromSequenceFile(paths: _*)
+  def fromSequenceFile[K <: Writable : Manifest : WireFormat, V <: Writable : Manifest : WireFormat](paths: List[String], checkKeyValueTypes: Boolean = true): DList[(K, V)] = SequenceInput.fromSequenceFile(paths, checkKeyValueTypes)
 
   def convertKeyToSequenceFile[K : SeqSchema](dl: DList[K], path: String, overwrite: Boolean = false): DListPersister[K] = SequenceOutput.convertKeyToSequenceFile(dl, path, overwrite)
   def convertValueToSequenceFile[V : SeqSchema](dl: DList[V], path: String, overwrite: Boolean = false): DListPersister[V] = SequenceOutput.convertValueToSequenceFile(dl, path, overwrite)
@@ -105,7 +102,7 @@ trait InputsOutputs {
   type AvroSchema[A] = com.nicta.scoobi.io.avro.AvroSchema[A]
 
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
-  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String]) = AvroInput.fromAvroFile(paths)
+  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)
   def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
 }
 object InputsOutputs extends InputsOutputs
@@ -159,6 +156,25 @@ trait Lib {
   
   
   implicit def inMemVectorToDObject[Elem, T](in: InMemVector[Elem, T]) = in.data
+
+  /**
+   * implicit conversions to Writables
+   */
+  implicit def toBooleanWritable(bool: Boolean): BooleanWritable = new BooleanWritable(bool)
+
+  implicit def toIntWritable(int: Int): IntWritable = new IntWritable(int)
+
+  implicit def toFloatWritable(float: Float): FloatWritable = new FloatWritable(float)
+
+  implicit def toLongWritable(long: Long): LongWritable = new LongWritable(long)
+
+  implicit def toDoubleWritable(double: Double): DoubleWritable = new DoubleWritable(double)
+
+  implicit def toText(str: String): Text = new Text(str)
+
+  implicit def toByteWritable(byte: Byte): ByteWritable = new ByteWritable(byte)
+
+  implicit def toBytesWritable(byteArr: Array[Byte]): BytesWritable = new BytesWritable(byteArr)
 }
 
 object Lib extends Lib

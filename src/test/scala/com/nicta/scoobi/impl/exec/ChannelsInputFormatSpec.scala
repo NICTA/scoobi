@@ -2,7 +2,8 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.apache.hadoop.mapreduce.{JobID, JobContext, Job}
+import org.apache.hadoop.mapreduce.{JobID, Job}
+import org.apache.hadoop.mapreduce.task.JobContextImpl
 import ChannelsInputFormat._
 import io._
 import impl.util.JarBuilder
@@ -62,7 +63,7 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
       val job = new Job(new ScoobiConfiguration, "id")
       val jarBuilder = mock[JarBuilder]
       val configuration = configureSources(job, jarBuilder, List(sources:_*))
-      new JobContext(configuration, new JobID)
+      new JobContextImpl(configuration, new JobID)
     }
   }
 

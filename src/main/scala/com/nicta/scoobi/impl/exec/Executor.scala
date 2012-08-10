@@ -52,6 +52,8 @@ case class ExecState(
 
   def addComputedExp[E](node: AST.Node[_, _ <: Shape], exp: E): ExecState =
     ExecState(conf, computeTable + (node -> Some(exp)), refcnts, step, environments, mscrEnvs, mscrs, matTable)
+
+  def isReferenced(store: BridgeStore[_]) = refcnts(store) != 0
 }
 
 
@@ -68,14 +70,6 @@ object Executor {
     val matTable = mscrGraph.matTable
     val environments = mscrGraph.environments
 
-    /* Check that all output dirs don't already exist. */
-    def pathExists(p: Path) = {
-      val s = FileSystem.get(p.toUri, conf).globStatus(p)
-      if (s == null)          false
-      else if (s.length == 0) false
-      else                    true
-    }
-
     /* Check all input sources. */
     mscrs flatMap { _.inputChannels } map {
       case BypassInputChannel(source, _)   => source
@@ -84,11 +78,11 @@ object Executor {
     } filter {
       case BridgeStore() => false
       case _             => true
-    } foreach { _.inputCheck() }
+    } foreach { _.inputCheck(conf) }
 
 
     /* Check all output targets. */
-    outputs.flatMap(_.sinks.toList) foreach { _.outputCheck() }
+    outputs.flatMap(_.sinks.toList) foreach { _.outputCheck(conf) }
 
     /* Initialize compute table with all input (Load) nodes. */
     val computeTable: MSet[(AST.Node[_, _ <: Shape], Option[_])] = MSet.empty
@@ -155,31 +149,28 @@ object Executor {
     logger.info("Running step: " + state.step + " of " + state.mscrs.size)
     logger.info("Number of input channels: " + mscr.inputChannels.size)
     logger.info("Number of output channels: " + mscr.outputChannels.size)
-    mscr.outputNodes.zipWithIndex.foreach { case (o, ix) => logger.info(ix + ": " + o.toVerboseString) }
+    mscr.outputNodes.zipWithIndex.foreach { case (o, ix) => logger.debug(ix + ": " + o.toVerboseString) }
 
     MapReduceJob(state.step, mscr).run(state.conf)
 
     /* Update compute table - all nodes captured by this MSCR have now been "executed". */
     mscr.nodes.foreach { n => state = state.addComputedArr(n) }
-
-    /* Update reference counts - decrement counts for all intermediates then
-     * garbage collect any intermediates that have a zero reference count. */
-    mscr.inputChannels.foreach { ic =>
-      def updateRefcnt(store: BridgeStore[_]) = {
-        state = state.decRefcnt(store)
-        if (state.refcnts(store) == 0) { store.freePath }
-      }
-
-      ic match {
-        case BypassInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
-        case MapperInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
-        case _                                       => Unit
-      }
-    }
-
+    /* Remove intermediate data if possible or decrement the BridgeStores reference count */
+    state = freeIntermediateOutputs(mscr, state)
     state.incStep
   }
 
+  /* Update reference counts - decrement counts for all intermediates then
+   * garbage collect any intermediates that have a zero reference count. */
+  private[exec]
+  def freeIntermediateOutputs(mscr: MSCR, state: ExecState): ExecState = {
+    var resultingState = state
+    mscr.bridgeStores.foreach { store =>
+      resultingState = resultingState.decRefcnt(store)
+      if (!resultingState.isReferenced(store)) { store.freePath }
+    }
+    resultingState
+  }
 
   def executeExp[E](node: AST.Node[E, _ <: Shape], st: ExecState): (E, ExecState) = {
 

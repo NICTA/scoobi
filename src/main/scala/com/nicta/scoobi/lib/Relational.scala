@@ -28,12 +28,6 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
   def join[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] = Relational.join(left, right)
 
   /**
-   * Perform a right outer-join with another distributed lists. The default function
-   * says how to create a value, for when this dlist has none.
-   */
-  def joinRight[B: Manifest: WireFormat](right: DList[(K, B)], default: (K, B) => A): DList[(K, (A, B))] = Relational.joinRight(left, right, default)
-
-  /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in this dlist for a value on the right dlist, it will
    * return none.
@@ -41,17 +35,28 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
   def joinRight[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (Option[A], B))] = Relational.joinRight(left, right)
 
   /**
-   * Perform a left outer-join with another distributed lists. The default function
-   * says how to create a value, for when this dlist has none.
-   */
-  def joinLeft[B: Manifest: WireFormat](right: DList[(K, B)], default: (K, A) => B): DList[(K, (A, B))] = Relational.joinLeft(left, right, default)
-
-  /**
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in this dlist for a value on the right dlist, it will
    * return none.
    */
   def joinLeft[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (A, Option[B]))] = Relational.joinLeft(left, right)
+
+  /**
+   * Perform a full outer-join of two distributed lists. The default function specifies how
+   * to construct a A or B when there is none. Note at least one of the A or B should exist
+   */
+  def joinFullOuter[B: Manifest: WireFormat, V: Manifest: WireFormat](
+    right: DList[(K, B)],
+    hasLeft: (K, A) => V,
+    hasRight: (K, B) => V,
+    hasBoth: (K, A, B) => V): DList[(K, V)] = Relational.joinFullOuter(left, right, hasLeft, hasRight, hasBoth)
+
+  /**
+   * Perform a full outer-join of two distributed lists. Note how it returns an Option[A] and Option[B], but it
+   * shouldn't be possible for both to be None.
+   */
+  def joinFullOuter[B: Manifest: WireFormat](
+    right: DList[(K, B)]): DList[(K, (Option[A], Option[B]))] = Relational.joinFullOuter(left, right)
 
   /** Perform a co-group with another distributed lists */
   def coGroup[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = Relational.coGroup(left, right)
@@ -61,32 +66,56 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
 object Relational {
 
   /** Perform an equijoin of two (2) distributed lists. */
-  def join[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, B))] = joinWith(d1, d2)(innerJoin)
-
-  /**
-   * Perform a right outer-join of two (2) distributed lists. The default function
-   * says how to create a value A when there was none.
-   */
-  def joinRight[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)], default: (K, B) => A): DList[(K, (A, B))] = joinWith(d1, d2)(rightOuterJoin((_, x, _) => x, default))
+  def join[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](
+      left: DList[(K, A)],
+      right: DList[(K, B)]): DList[(K, (A, B))] = joinWith(left, right)(innerJoin)
 
   /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in the left dlist (d1) for a value on the right dlist (d2), it will
    * return none.
    */
-  def joinRight[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (Option[A], B))] = joinWith(d1, d2)(rightOuterJoin((_, a, _) => Option(a), (_, _) => None))
-
-  /**
-   * Perform a left outer-join of two (2) distributed lists. The default function specifies how
-   * to construct a B, given a K and B, when there is none.
-   */
-  def joinLeft[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)], default: (K, A) => B): DList[(K, (A, B))] = joinRight(d2, d1, default).map(v => (v._1, v._2.swap))
+  def joinRight[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](
+      left: DList[(K, A)],
+      right: DList[(K, B)]): DList[(K, (Option[A], B))] = joinWith(left, right)(rightOuterJoin)
 
   /**
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[B]
    * for when there is no value in the right dlist (d1).
    */
-  def joinLeft[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, Option[B]))] = joinRight(d2, d1).map(v => (v._1, v._2.swap))
+  def joinLeft[K: Manifest: WireFormat: Grouping,
+    A: Manifest: WireFormat,
+    B: Manifest: WireFormat](
+        left: DList[(K, A)],
+        right: DList[(K, B)]): DList[(K, (A, Option[B]))] = joinRight(right, left).map(v => (v._1, v._2.swap))
+
+  /**
+   * Perform a full outer-join of two distributed lists. The default function specifies how
+   * to construct a A or B when there is none
+   */
+  def joinFullOuter[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat, V: Manifest: WireFormat](
+    l: DList[(K, A)],
+    r: DList[(K, B)],
+    hasLeft: (K, A) => V,
+    hasRight: (K, B) => V,
+    hasBoth: (K, A, B) => V): DList[(K, V)] = joinWith(l, r)(fullOuterJoin[K, A, B, V](hasLeft, hasRight, hasBoth))
+
+  /**
+   * Perform a full outer-join of two distributed lists. The default function specifies how
+   * to construct a A or B when there is none
+   */
+  def joinFullOuter[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](
+    l: DList[(K, A)],
+    r: DList[(K, B)]): DList[(K, (Option[A], Option[B]))] = joinFullOuter(l, r,
+    (k: K, a: A) => (Some(a), None),
+    (k: K, b: B) => (None, Some(b)),
+    (k: K, a: A, b: B) => (Some(a), Some(b)))
+
+  /**
+   * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[B]
+   * for when there is no value in the right dlist (d1).
+   */
+  def outerJoin[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, Option[B]))] = joinRight(d2, d1).map(v => (v._1, v._2.swap))
 
   /** Perform a co-group of two (2) distributed lists */
   def coGroup[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = {
@@ -121,8 +150,8 @@ object Relational {
     }
   }
 
-  private def rightOuterJoin[T, A, B, A2](has: (T, A, B) => A2, notHas: (T, B) => A2) = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A2, B))] {
-    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A2, B))]) {
+  private def rightOuterJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (Option[A], B))] {
+    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (Option[A], B))]) {
       var alist = new ArrayBuffer[A]
 
       for (v <- input._2) {
@@ -130,24 +159,57 @@ object Relational {
           case Left(a) => alist += a
           case Right(b) => {
             if (alist.isEmpty)
-              emitter.emit((input._1._1, (notHas(input._1._1, b), b)))
+              emitter.emit((input._1._1, (None, b)))
             else
-              for (a <- alist) emitter.emit((input._1._1, (has(input._1._1, a, b), b)))
+              for (a <- alist) emitter.emit((input._1._1, (Some(a), b)))
           }
         }
       }
     }
   }
 
+  private def fullOuterJoin[T, A, B, V](
+    hasLeft: (T, A) => V,
+    hasRight: (T, B) => V,
+    hasBoth: (T, A, B) => V): BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] {
+    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, V)]) {
+      val alist = new ArrayBuffer[A]
+      var bseen = false
+      val key = input._1._1
+
+      for (v <- input._2) {
+        v match {
+          case Left(a) => alist += a
+          case Right(b) => {
+            bseen = true
+            if (alist.isEmpty)
+              emitter.emit((key, hasRight(key, b)))
+            else
+              for (a <- alist) {
+                emitter.emit((key, hasBoth(key, a, b)))
+              }
+          }
+        }
+      }
+
+      if (!bseen)
+        for (a <- alist) {
+          emitter.emit((key, hasLeft(key, a)))
+        }
+    }
+  }
+
   /** Perform a join of two distributed lists using a specified join-predicate, and a type. */
-  private def joinWith[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat, A2: Manifest: WireFormat, B2: Manifest: WireFormat](d1: DList[(K, A)], d2: DList[(K, B)])(dofn: BasicDoFn[((K, Boolean), Iterable[Either[A, B]]), (K, (A2, B2))]): DList[(K, (A2, B2))] = {
+  private def joinWith[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat, B: Manifest: WireFormat, V: Manifest: WireFormat](
+    d1: DList[(K, A)],
+    d2: DList[(K, B)])(dofn: BasicDoFn[((K, Boolean), Iterable[Either[A, B]]), (K, V)]): DList[(K, V)] = {
 
     /* Map left and right DLists to be of the same type. Label the left as 'true' and the
      * right as 'false'. Note the hack cause DList doesn't yet have the co/contravariance. */
     val left = d1.map(v => { val e: Either[A, B] = Left[A, B](v._2); ((v._1, true), e) })
     val right = d2.map(v => { val e: Either[A, B] = Right[A, B](v._2); ((v._1, false), e) })
 
-    /* Gropuing type class instance that implements a secondary sort to ensure left
+    /* Grouping type class instance that implements a secondary sort to ensure left
      * values come before right values. */
     implicit val grouping = new Grouping[(K, Boolean)] {
       override def partition(key: (K, Boolean), num: Int): Int =
@@ -157,13 +219,13 @@ object Relational {
         implicitly[Grouping[K]].groupCompare(a._1, b._1)
 
       override def sortCompare(a: (K, Boolean), b: (K, Boolean)): Int = {
-        val n = groupCompare(a, b)
+        val n = implicitly[Grouping[K]].sortCompare(a._1, b._1)
         if (n != 0)
           n
         else (a._2, b._2) match {
           case (true, false) => -1
           case (false, true) => 1
-          case _ => 0
+          case _ => n
         }
       }
     }

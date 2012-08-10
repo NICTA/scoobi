@@ -10,7 +10,7 @@ import SecondarySort._
 class SecondarySortSpec extends NictaSimpleJobs {
   "We can do a secondary sort by using a Grouping on the key" >> { implicit sc: ScoobiConfiguration =>
 
-    val names: DList[(FirstName, LastName)] = DList.apply(
+    val names: DList[(FirstName, LastName)] = DList(
       ("Michael", "Jackson"),
       ("Leonardo", "Da Vinci"),
       ("John", "Kennedy"),
@@ -24,12 +24,12 @@ class SecondarySortSpec extends NictaSimpleJobs {
 
     val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a => ((a._1, a._2), a._2))
 
-    run(bigKey.groupByKey) === Seq(
-      "((Bat,Man),Vector(Man))",
-      "((John,Kennedy),Vector(Kennedy))",
-      "((Leonardo,Da Vinci),Vector(Da Vinci, De Capro))",
-      "((Mark,Edison),Vector(Edison, Twain))",
-      "((Michael,J. Fox),Vector(J. Fox, Jackson, Jordan, Landon))")
+    bigKey.groupByKey.map { case ((first, last), values) => ((first, last), values.mkString(", ")) }.run.mkString === Seq(
+      "((Bat,Man),Man)",
+      "((John,Kennedy),Kennedy)",
+      "((Leonardo,Da Vinci),Da Vinci, De Capro)",
+      "((Mark,Edison),Edison, Twain)",
+      "((Michael,J. Fox),J. Fox, Jackson, Jordan, Landon)").mkString
   }
 }
 

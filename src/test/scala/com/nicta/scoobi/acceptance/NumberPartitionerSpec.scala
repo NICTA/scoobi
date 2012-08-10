@@ -8,8 +8,8 @@ import org.specs2.matcher.Matcher
 class NumberPartitionerSpec extends NictaSimpleJobs {
 
   "Numbers can be partitioned into even and odd numbers" >> { implicit sc: SC =>
-    val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
-    val (evens, odds) = run(numbers.partition(_ % 2 == 0))
+    val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).map((_:String).toInt)
+    val (evens, odds) = numbers.partition(_ % 2 == 0).run
 
     forall(evens.map(_.toInt))(i => i must beEven)
     forall(odds.map(_.toInt))(i => i must beOdd)

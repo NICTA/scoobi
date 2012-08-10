@@ -114,7 +114,8 @@ object Graph {
         def reduce(env: Unit, key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = values.foreach {
           (v: V) => emitter.emit((key, v))
         }
-      }
+        def cleanup(env: Unit, emitter: Emitter[(K, V)]) {}
+    }
 
     override def toString = "GbkMapper" + id
 
@@ -141,6 +142,7 @@ object Graph {
       def reduce(env: Unit, key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = {
         emitter.emit((key, values.reduce(f)))
       }
+      def cleanup(env: Unit, emitter: Emitter[(K, V)]) {}
     }
 
     /**Produce a TaggedReducer using this combiner function and an additional reducer function. */
@@ -155,6 +157,7 @@ object Graph {
           dofn.process(env, (key, values.reduce(f)), emitter)
           dofn.cleanup(env, emitter)
         }
+        def cleanup(env: E, emitter: Emitter[B]) {}
       }
 
     override def toString = "Combiner" + id
@@ -181,6 +184,7 @@ object Graph {
         dofn.process(env, (key, values), emitter)
         dofn.cleanup(env, emitter)
       }
+      def cleanup(env: E, emitter: Emitter[B]) {}
     }
 
     override def toString = "GbkReducer" + id
@@ -247,6 +251,7 @@ object Graph {
         }
         emitter.emit((key, b.result().toIterable))
       }
+      def cleanup(env: Unit, emitter: Emitter[(K, Iterable[V])]) {}
     }
 
     override def toString = "GroupByKey" + id

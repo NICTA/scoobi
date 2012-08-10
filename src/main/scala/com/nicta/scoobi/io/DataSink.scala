@@ -19,6 +19,8 @@ package io
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.Job
 
+import application.ScoobiConfiguration
+
 
 /* An output store from a MapReduce job. */
 trait DataSink[K, V, B] {
@@ -32,7 +34,7 @@ trait DataSink[K, V, B] {
   def outputValueClass: Class[V]
 
   /** Check the validity of the DataSink specification. */
-  def outputCheck()
+  def outputCheck(sc: ScoobiConfiguration)
 
   /** Configure the DataSink. */
   def outputConfigure(job: Job)

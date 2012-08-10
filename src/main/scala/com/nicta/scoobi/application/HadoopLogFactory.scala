@@ -59,7 +59,7 @@ object HadoopLogFactory {
   val LOG_CATEGORIES = "LOG_CATEGORIES"
 
   def setLogFactory(name: String = classOf[HadoopLogFactory].getName,
-                    quiet: Boolean = true,
+                    quiet: Boolean = false,
                     showTimes: Boolean = false,
                     level: String = INFO,
                     categories: String = ".*") {

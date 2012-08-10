@@ -19,8 +19,10 @@ package exec
 
 import java.io.File
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.mapred.TaskCompletionEvent
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.mapreduce.Reducer
@@ -104,8 +106,7 @@ class MapReduceJob(stepId: Int) {
     var jar = new JarBuilder(tmpFile.getAbsolutePath)
     job.getConfiguration.set("mapred.jar", tmpFile.getAbsolutePath)
 
-    jar.addContainingJar(this.getClass)                          //  Scoobi
-    configuration.userJars.foreach { jar.addJar(_) }             //  User JARs
+    configuration.userJars.foreach { jar.addJar(_) }
     configuration.userDirs.foreach { jar.addClassDirectory(_) }
 
     /** Sort-and-shuffle:
@@ -136,11 +137,12 @@ class MapReduceJob(stepId: Int) {
       *     - use ChannelInputs to specify multiple mappers through job
       *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
       *       mapper for a given input channel can be used as they all have the same input type */
-    ChannelsInputFormat.configureSources(job, jar, mappers.keys.toList)
+    val mappersList = mappers.toList
+    ChannelsInputFormat.configureSources(job, jar, mappersList.map(_._1))
 
-    val inputChannels: List[((DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]), Int)] = mappers.toList.zipWithIndex
+    val inputChannels: List[((DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]), Int)] = mappersList.zipWithIndex
     val inputs: Map[Int, (InputConverter[_, _, _], Set[(Env[_], TaggedMapper[_,_,_,_])])] =
-      inputChannels.map { case((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) }.toMap
+      inputChannels.map { case ((source, ms), ix) => (ix, (source.inputConverter, ms.toSet)) }.toMap
 
     DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
@@ -159,13 +161,13 @@ class MapReduceJob(stepId: Int) {
 
     /** Reducers:
       *     - generate runtime class (ScoobiWritable) for each output values being written to
-      *       a BridgeStore or MaterializeStore and add to JAR
+      *       a BridgeStore and add to JAR
       *     - add a named output for each output channel */
     FileOutputFormat.setOutputPath(job, tmpOutputPath)
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks foreach {
         case bs@BridgeStore() => {
-          // TODO - really want to be doing this inside the BridgeStore class (like MaterializeStore)
+          // TODO - really want to be doing this inside the BridgeStore class
           bs.rtClass match {
             case Some(rtc) => jar.addRuntimeClass(rtc)
             case None      => {
@@ -176,7 +178,6 @@ class MapReduceJob(stepId: Int) {
             }
           }
         }
-        case ms@MaterializeStore(_, _) => jar.addRuntimeClass(ms.rtClass)
         case _ => {}
       }
       sinks.zipWithIndex.foreach { case (sink, ix) => ChannelOutputFormat.addOutputChannel(job, reducer.tag, ix, sink) }
@@ -196,15 +197,17 @@ class MapReduceJob(stepId: Int) {
      * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mappers.keys.map(_.inputSize()).sum
+    val inputBytes: Long = mappers.keys.map(_.inputSize).sum
     val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
-    val numReducers: Int = inputGigabytes.toInt
+    val numReducers: Int = inputGigabytes.toInt.max(configuration.getMinReducers).min(configuration.getMaxReducers)
     job.setNumReduceTasks(numReducers)
 
 
     /* Log stats on this MR job. */
     logger.info("Total input size: " +  Helper.sizeString(inputBytes))
     logger.info("Number of reducers: " + numReducers)
+
+    val taskDetailsLogger = new TaskDetailsLogger(job)
 
     try {
 
@@ -215,16 +218,24 @@ class MapReduceJob(stepId: Int) {
       val map = new Progress(job.mapProgress())
       val reduce = new Progress(job.reduceProgress())
 
+      logger.info("MapReduce job '" + job.getJobID + "' submitted. Please see " + job.getTrackingURL + " for more info.")
+
       while (!job.isComplete) {
         Thread.sleep(configuration.getInt("scoobi.progress.time", 5000))
         if (map.hasProgressed || reduce.hasProgressed)
           logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
                       "Reduce " + reduce.getProgress.formatted("%3d") + "%")
+
+        // Log task details
+        taskDetailsLogger.logTaskCompletionDetails()
       }
     } finally {
       /* Tidy-up */
       tmpFile.delete
     }
+
+    // Log any left over task details
+    taskDetailsLogger.logTaskCompletionDetails()
 
     /* Move named file-based sinks to their correct output paths. */
     val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
@@ -233,14 +244,14 @@ class MapReduceJob(stepId: Int) {
     reducers.foreach { case (sinks, (_, reducer)) =>
 
       sinks.zipWithIndex.foreach { case (sink, ix) =>
-        outputFiles filter (forOutput) foreach { srcPath =>
-          val outputPath = {
-            val jobCopy = new Job(job.getConfiguration)
-            sink.outputConfigure(jobCopy)
-            FileOutputFormat.getOutputPath(jobCopy)
-          }
-          ?(outputPath) foreach { p =>
-            fs.mkdirs(p)
+        val outputPath = {
+          val jobCopy = new Job(new Configuration(job.getConfiguration))
+          sink.outputConfigure(jobCopy)
+          FileOutputFormat.getOutputPath(jobCopy)
+        }
+        ?(outputPath) foreach { p =>
+          fs.mkdirs(p)
+          outputFiles filter (forOutput) foreach { srcPath =>
             fs.rename(srcPath, new Path(p, srcPath.getName))
           }
         }
@@ -254,6 +265,11 @@ class MapReduceJob(stepId: Int) {
     }
 
     fs.delete(tmpOutputPath, true)
+
+    // if job failed, throw an exception
+    if(!job.isSuccessful) {
+      throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
+    }
   }
 }
 
@@ -338,3 +354,38 @@ class Progress(updateFn: => Float) {
     progress
   }
 }
+
+class TaskDetailsLogger(job: Job) {
+
+  import TaskCompletionEvent.Status._
+
+  private lazy val logger = LogFactory.getLog("scoobi.Step")
+
+  private var startIdx = 0
+
+  /** Paginate through the TaskCompletionEvent's, logging details about completed tasks */
+  def logTaskCompletionDetails(): Unit = {
+    Iterator.continually(job.getTaskCompletionEvents(startIdx)).takeWhile(!_.isEmpty).foreach { taskCompEvents =>
+      taskCompEvents foreach { taskCompEvent =>
+        val taskAttemptId = taskCompEvent.getTaskAttemptId
+        val logUrl = createTaskLogUrl(taskCompEvent.getTaskTrackerHttp, taskAttemptId.toString)
+        val taskAttempt = "Task attempt '"+taskAttemptId+"'"
+        val moreInfo = " Please see "+logUrl+" for task attempt logs"
+        taskCompEvent.getTaskStatus match {
+          case OBSOLETE  => logger.debug(taskAttempt + " was made obsolete." + moreInfo)
+          case FAILED    => logger.info(taskAttempt + " failed! " + "Trying again." + moreInfo)
+          case KILLED    => logger.info(taskAttempt + " was killed!" + moreInfo)
+          case TIPFAILED => logger.error("Task '" + taskAttemptId.getTaskID + "' failed!" + moreInfo)
+          case _ =>
+        }
+      }
+      startIdx += taskCompEvents.length
+    }
+  }
+
+  private def createTaskLogUrl(trackerUrl: String, taskAttemptId: String): String = {
+    trackerUrl + "/tasklog?attemptid=" + taskAttemptId + "&all=true"
+  }
+}
+
+class JobExecException(msg: String) extends RuntimeException(msg)

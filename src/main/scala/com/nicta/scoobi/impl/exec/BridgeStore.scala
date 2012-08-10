@@ -18,6 +18,7 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
@@ -32,12 +33,13 @@ import org.apache.hadoop.mapreduce.Job
 import io._
 import rtt._
 import Configurations._
+import application.ScoobiConfiguration
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-final case class BridgeStore[A]()
+case class BridgeStore[A]()
   extends DataSource[NullWritable, ScoobiWritable[A], A]
-  with DataSink[NullWritable, ScoobiWritable[A], A] with Configured {
+  with DataSink[NullWritable, ScoobiWritable[A], A] {
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
@@ -49,15 +51,18 @@ final case class BridgeStore[A]()
    */
   lazy val id = java.util.UUID.randomUUID.toString
   lazy val typeName = "BS" + id
-  lazy val path = new Path(conf.workingDirectory, "bridges/" + id)
+  lazy val path = new Path(config.workingDirectory, "bridges/" + id)
+
+  // default config until its set through inputConfigure or outputConfigure
+  var config: Configuration = new Configuration
 
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck {}
+  def outputCheck(sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job) {
-    configure(job)
+    config = job.getConfiguration
     FileOutputFormat.setOutputPath(job, path)
   }
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
@@ -65,14 +70,13 @@ final case class BridgeStore[A]()
 
   /* Input (i.e. output of bridge) */
   val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
-  def inputCheck() {}
+  def inputCheck(sc: ScoobiConfiguration) {}
   def inputConfigure(job: Job) {
-    configure(job)
+    config = job.getConfiguration
     FileInputFormat.addInputPath(job, new Path(path, "ch*"))
   }
-  protected def checkPaths {}
 
-  def inputSize(): Long = Helper.pathSize(new Path(path, "ch*"))
+  def inputSize: Long = Helper.pathSize(new Path(path, "ch*"))(config)
   lazy val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get
   }
@@ -80,7 +84,7 @@ final case class BridgeStore[A]()
 
   /* Free up the disk space being taken up by this intermediate data. */
   def freePath {
-    val fs = path.getFileSystem(conf)
+    val fs = path.getFileSystem(config)
     fs.delete(path, true)
   }
 
@@ -88,9 +92,9 @@ final case class BridgeStore[A]()
   /* Read the contents of this bridge store sequence files as an Iterable collection. */
   def readAsIterable: Iterable[A] = new Iterable[A] {
     def iterator = {
-      val fs = FileSystem.get(path.toUri, conf)
+      val fs = FileSystem.get(path.toUri, config)
       val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(fs, stat.getPath, conf)
+        new SequenceFile.Reader(config, SequenceFile.Reader.file(stat.getPath))
       }
 
       val iterators = readers.toIterable map { reader =>
@@ -110,6 +114,15 @@ final case class BridgeStore[A]()
 
 
   override def toString = typeName
+
+  override def equals(other: Any) = {
+    other match {
+      case bs: BridgeStore[_] => bs.id == this.id
+      case _                  => false
+    }
+  }
+
+  override def hashCode = id.hashCode
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,

@@ -19,8 +19,8 @@ import org.apache.hadoop.mapred.JobConf
  * added to the classpath.
  */
 case class ScoobiConfiguration(configuration: Configuration = new Configuration,
-                               userJars: Set[String] = Set(),
-                               userDirs: Set[String] = Set()) {
+                               var userJars: Set[String] = Set(),
+                               var userDirs: Set[String] = Set()) {
 
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
@@ -57,7 +57,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * add a new jar url (as a String) to the current configuration
    */
-  def addJar(jar: String) = copy(userJars = userJars + jar)
+  def addJar(jar: String) = { userJars = userJars + jar; this }
 
   /**
    * add several user jars to the classpath of this configuration
@@ -74,7 +74,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * add a user directory to the classpath of this configuration
    */
-  def addUserDir(dir: String) = copy(userDirs = userDirs + withTrailingSlash(dir))
+  def addUserDir(dir: String) = { userDirs = userDirs + withTrailingSlash(dir); this }
 
   /**
    * add several user directories to the classpath of this configuration
@@ -94,6 +94,22 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   def setRemote {
     set("scoobi.remote", "true")
   }
+
+  /** Set an upper bound for the number of reducers to be used in M/R jobs */
+  def setMaxReducers(maxReducers: Int) {
+    configuration.setInt("scoobi.mapreduce.reducers.max", maxReducers)
+  }
+
+  /** Get the max number of reducers to use in M/R jobs */
+  def getMaxReducers = configuration.getInt("scoobi.mapreduce.reducers.max", Int.MaxValue)
+
+  /** Set a lower bound for the number of reducers to be used in M/R jobs */
+  def setMinReducers(minReducers: Int) {
+    configuration.setInt("scoobi.mapreduce.reducers.min", minReducers)
+  }
+
+  /** Get the min number of reducers to use in M/R jobs */
+  def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
 
   /**
    * set a new job name to help recognize the job better

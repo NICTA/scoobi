@@ -32,6 +32,7 @@ import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.InputSplit
 import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
@@ -62,7 +63,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
        * MapReduce job didn't produce any file (@see issue #60)
        */
        try {
-         format.getSplits(new Job(conf)).map { (pathSplit: InputSplit) =>
+         format.getSplits(new Job(new Configuration(conf))).map { (pathSplit: InputSplit) =>
            new TaggedInputSplit(conf, channel, pathSplit, format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
          }
        } catch {
@@ -76,9 +77,11 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
 
   def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[K, V] = {
     val taggedInputSplit = split.asInstanceOf[TaggedInputSplit]
-    new ChannelRecordReader(taggedInputSplit,
-                            new TaskAttemptContext(extractChannelConfiguration(context, taggedInputSplit.channel),
-                                                   context.getTaskAttemptID))
+    new ChannelRecordReader(
+      taggedInputSplit,
+      new TaskAttemptContextImpl(
+        extractChannelConfiguration(context, taggedInputSplit.channel),
+        context.getTaskAttemptID))
   }
 
 }
@@ -148,8 +151,9 @@ object ChannelsInputFormat {
    * Also include the properties which might have been modified by the source (like the DistributedCache files)
    */
   private def configureSource(source: DataSource[_,_,_], channel: Int) = (conf: Configuration) => {
-    val job = new Job(conf)
+    val job = new Job(new Configuration(conf))
     source.inputConfigure(job)
+
     Option(job.getConfiguration.get(CACHE_FILES)).foreach { files =>
       conf.set(ChannelPrefix.prefix(channel, CACHE_FILES), files)
       conf.addValues(CACHE_FILES, files)

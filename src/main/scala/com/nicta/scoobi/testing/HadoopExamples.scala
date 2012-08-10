@@ -2,11 +2,11 @@ package com.nicta.scoobi
 package testing
 
 import org.specs2.execute._
-import org.specs2.time.SimpleTimer
 import org.specs2.specification._
 import org.specs2.Specification
-import org.specs2.main.{CommandLineArguments, Arguments}
+import org.specs2.main.CommandLineArguments
 import application._
+import impl.time.SimpleTimer
 
 /**
  * This trait provides an Around context to be used in a Specification
@@ -20,10 +20,7 @@ import application._
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
  */
-trait HadoopExamples extends Hadoop with AroundContextExample[Around] with ScoobiUserArgs with CommandLineArguments with Cluster {
-
-  /** the test arguments passed on the command line */
-  lazy val userArguments = arguments.commandLine.arguments
+trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster {
 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context
@@ -55,11 +52,23 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Scoob
   class ClusterHadoopContext extends HadoopContext {
     def outside = configureForCluster(new ScoobiConfiguration)
 
-    def around[R <% Result](a: =>R) = remotely(a)
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("cluster")) super.apply(a(outside))
-      else                                                       Skipped("excluded", "No cluster execution time")
+      if (arguments.contain("hadoop") || arguments.contain("cluster")) remotely(cleanup(a).apply(outside))
+      else                                                             Skipped("excluded", "No cluster execution time")
     }
+  }
+
+  /** @return a composed function cleaning up after the job execution */
+  def cleanup[R <% Result](a: ScoobiConfiguration => R): ScoobiConfiguration => R = {
+    if (!keepFiles) (c: ScoobiConfiguration) => try { a(c) } finally { cleanup(c) }
+    else            a
+  }
+
+  /** cleanup temporary files after job execution */
+  def cleanup(c: ScoobiConfiguration) {
+    // the 2 actions are isolated. In case the first one fails, the second one has a chance to succeed.
+    try { c.deleteWorkingDirectory }
+    finally { TestFiles.deleteFiles(c) }
   }
 
   /**
@@ -68,13 +77,10 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Scoob
   class LocalHadoopContext extends HadoopContext {
     def outside = configureForLocal(new ScoobiConfiguration)
 
-    def around[R <% Result](a: =>R) = locally(a)
-
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.keep("hadoop") || arguments.keep("local")) super.apply(a(outside))
-      else                                                     Skipped("excluded", "No local execution time")
+      if (arguments.contain("hadoop") || arguments.contain("local")) locally(cleanup(a).apply(outside))
+      else                                                            Skipped("excluded", "No local execution time")
     }
-
     override def isRemote = false
   }
 
@@ -82,8 +88,6 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Scoob
    * Context for running examples locally, then on the cluster if it succeeds locally
    */
   case class LocalThenClusterHadoopContext() extends ClusterHadoopContext {
-    /** simply return a */
-    override def around[R <% Result](a: =>R) = a
     /**
      * delegate the apply method to the LocalContext, then the Cluster context in case of a Success
      */
@@ -105,7 +109,7 @@ trait HadoopExamples extends Hadoop with AroundContextExample[Around] with Scoob
    * the isLocalOnly method provides a hint to speed-up the execution (because there's no need to upload jars if a run
    * is local)
    */
-  trait HadoopContext extends AroundOutside[ScoobiConfiguration] {
+  trait HadoopContext extends Outside[ScoobiConfiguration] {
     def isRemote = true
   }
 
@@ -136,15 +140,19 @@ trait HadoopSpecificationStructure extends
   Cluster with
   HadoopExamples with
   UploadedLibJars with
-  SpecificationStructure {
+  HadoopLogFactorySetup with
+  CommandLineHadoopLogFactory
 
+trait HadoopLogFactorySetup extends LocalHadoop with SpecificationStructure {
   override def map(fs: =>Fragments) = super.map(fs).insert(Step(setLogFactory()))
+}
+
+trait CommandLineHadoopLogFactory extends HadoopLogFactorySetup with CommandLineScoobiUserArgs {
+  /** for testing, the output must be quiet by default, unless verbose is specified */
+  override def quiet = !isVerbose
 }
 
 /**
  * Hadoop specification with an acceptance specification
  */
 trait HadoopSpecification extends Specification with HadoopSpecificationStructure
-
-
-

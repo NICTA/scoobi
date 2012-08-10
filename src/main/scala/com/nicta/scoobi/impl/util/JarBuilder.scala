@@ -56,7 +56,7 @@ class JarBuilder(val name: String) {
   /** Add the class files found in a given directory */
   def addClassDirectory(path: String) {
     def addSubDirectory(p: String, baseDirectory: String) {
-      new File(p).listFiles.foreach { f =>
+      Option(new File(p).listFiles: Seq[File]).getOrElse(Nil).foreach { f =>
         if (f.isDirectory) addSubDirectory(f.getPath, baseDirectory)
         else {
           val stream = new FileInputStream(f)
