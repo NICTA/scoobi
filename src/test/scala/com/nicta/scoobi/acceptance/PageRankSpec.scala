@@ -17,14 +17,14 @@ class PageRankSpec extends NictaSimpleJobs {
     val graph =
       fromInput("1: 2 3 4",
                 "2: 3 4",
-                "3: 4").collect { case Node(n, rest) => (n.toInt, rest.split(" ").map(_.toInt).toSeq) }.lines
+                "3: 4").collect { case Node(n, rest) => (n.toInt, rest.split(" ").map(_.toInt).toSeq) }
 
     val urls =
       fromDelimitedInput("1, www.google.com",
                          "2, www.specs2.org",
-                         "3, www.notfound.org").collect { case AnInt(id) :: url :: _ => (id, url.trim) }.lines
+                         "3, www.notfound.org").collect { case AnInt(id) :: url :: _ => (id, url.trim) }
 
-    run(getPageRanks(urls, graph)) === Seq(
+    getPageRanks(urls, graph).run === Seq(
       "(www.google.com,0.5)",
       "(www.specs2.org,0.5833333)",
       "(www.notfound.org,0.75)")

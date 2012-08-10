@@ -2,12 +2,12 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.NictaHadoop
+import testing.{NictaSimpleJobs, NictaHadoop}
 
-class BoundedFilterSpec extends NictaHadoop {
+class BoundedFilterSpec extends NictaSimpleJobs {
 
   "Filtering with DObjects" >> {
-    "Filtering with lower and upper bounds removes all values outside a range" >> { c: SC =>
+    "Filtering with lower and upper bounds removes all values outside a range" >> { implicit c: SC =>
 
       val xs = DList(1, 2, 3, 4)
 
@@ -17,11 +17,11 @@ class BoundedFilterSpec extends NictaHadoop {
       val ys = ((lower, upper) join xs) filter {case ((l, u), x) => x > l && x < u}
       val total = ys.values.sum
 
-      persist(c)(total) must_== 5
+      total.run must_== 5
 
     }
 
-    "Filtering by average removes all values less than the average" >> { c: SC =>
+    "Filtering by average removes all values less than the average" >> { implicit c: SC =>
 
       val ints = Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
@@ -29,7 +29,7 @@ class BoundedFilterSpec extends NictaHadoop {
       val average = (xs.sum, xs.size) map { case (t, s) => t / s }
       val bigger = (average join xs) filter { case (a, x) => x > a }
 
-      persist(c)(bigger.values.materialize).toSeq.sorted must_== ints.filter(_ > (ints.sum / ints.size))
+      bigger.values.run.sorted must_== ints.filter(_ > (ints.sum / ints.size))
 
     }
   }

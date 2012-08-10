@@ -18,9 +18,6 @@ trait TestFiles {
   def createTempFile(prefix: String)(implicit configuration: ScoobiConfiguration) =
     registerFile(TempFiles.createTempFile(prefix+configuration.jobId))
 
-  def createTempDir(prefix: String, keep: Boolean)(implicit configuration: ScoobiConfiguration) =
-    registerFile(TempFiles.createTempDir(prefix+configuration.jobId), keep)
-
   def createTempDir(prefix: String)(implicit configuration: ScoobiConfiguration) =
     registerFile(TempFiles.createTempDir(prefix+configuration.jobId))
 
@@ -56,32 +53,29 @@ object TestFiles extends TestFiles
 
 import TestFiles._
 
-class InputTestFile[S](ls: Seq[String], mapping: String => S, val keepFile: Boolean = false)
+class InputTestFile[S](ls: Seq[String], mapping: String => S)
                       (implicit configuration: ScoobiConfiguration, m: Manifest[S], w: WireFormat[S]) {
 
-  lazy val file = createTempFile("test.input", keep = keepFile)
+  lazy val file = createTempFile("test.input")
 
-  def keep = new InputTestFile(ls, mapping, keepFile = true)
   def inputLines = fromTextFile(TempFiles.writeLines(file, ls, isRemote))
   def map[T : Manifest : WireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
   def collect[T : Manifest : WireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
   def lines: DList[S] = inputLines.map(mapping)
 }
 
-case class InputStringTestFile(ls: Seq[String], override val keepFile: Boolean = false)
-                              (implicit configuration: ScoobiConfiguration) extends InputTestFile[String](ls, identity, keepFile) {
+case class InputStringTestFile(ls: Seq[String])
+                              (implicit configuration: ScoobiConfiguration) extends InputTestFile[String](ls, identity) {
   /** Optimisation: in this case no mapping is necessary (see issue 25)*/
   override def lines: DList[String] = inputLines
 }
 
-case class OutputTestFile[T](list: DList[T], keepDir: Boolean = false)
+case class OutputTestFile[T](list: DList[T])
                             (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]) {
 
-  lazy val outputDir  = TestFiles.createTempDir("test.output", keep = keepDir)
+  lazy val outputDir  = TestFiles.createTempDir("test.output")
   lazy val outputPath = TempFiles.path(outputDir, isRemote)
   def outputFiles     = getFiles(outputDir)
-
-  def keep = copy(keepDir = true)
 
   lazy val lines: Either[String, Seq[String]] = {
     persist(configuration)(toTextFile(list, outputPath, overwrite = true))
@@ -90,32 +84,3 @@ case class OutputTestFile[T](list: DList[T], keepDir: Boolean = false)
   }
 }
 
-case class OutputTestFiles[T1, T2](list1: DList[T1],
-                                   list2: DList[T2], keepDir: Boolean = false)
-                                  (implicit configuration: ScoobiConfiguration,
-                                   m1: Manifest[T1], w1: WireFormat[T1],
-                                   m2: Manifest[T2], w2: WireFormat[T2]) {
-
-  lazy val outputDir  = TestFiles.createTempDir("test.output", keep = keepDir)
-  lazy val outputPath = TempFiles.path(outputDir, isRemote)
-  def outputFiles     = getFiles(outputDir)
-
-  def keep = copy(keepDir = true)
-
-  lazy val lines: Either[String, (Seq[String], Seq[String])] = {
-
-    persist(configuration)(toTextFile(list1, outputPath+"/1", overwrite = true),
-                           toTextFile(list2, outputPath+"/2", overwrite = true))
-
-    val files = outputFiles
-    if (files.isEmpty)        Left("There are no output files in "+outputDir.getName)
-    else if (files.size == 1) Left("There is only one output file in "+outputDir.getName+" instead of 2")
-    else                            {
-      val (f1, f2) = (getFiles(outputDir+"/1").head, getFiles(outputDir+"/2").head)
-      Right((getLines(f1), getLines(f2)))
-    }
-  }
-
-  private def getFile(i: Int) = getLines(outputFiles(i))
-  private def getLines(file: File) = Source.fromFile(file).getLines.toSeq
-}
