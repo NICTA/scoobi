@@ -6,7 +6,6 @@ import testing.NictaSimpleJobs
 import testing.TestFiles
 import org.apache.hadoop.io._
 import application._
-
 import java.io.IOException
 
 class SeqFileReadWriteSpec extends NictaSimpleJobs {
@@ -23,7 +22,6 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   "Writing Text -> Text Sequence file" >> { implicit sc: SC =>
     val filePath = createTempFile()
 
-    // can not create a new DList containing Text because of issue # 99
     val testDList: DList[(String, String)] = DList(("a", "b"), ("c", "d"))
     persist(toSequenceFile(testDList.map((kv: (String, String)) => (new Text(kv._1), new Text(kv._2))), filePath, overwrite =true))
 
@@ -50,26 +48,24 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   "Expecting exception when Writing FloatWritable -> BooleanWritable, Reading Text -> BooleanWritable" >> { implicit sc: SC =>
     val filePath = createTempFile()
 
-    // can not create a new DList containing Text because of issue # 99
     val testDList: DList[(Float, Boolean)] = DList((1.2f, false), (2.5f, true))
     persist(toSequenceFile(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))), filePath, overwrite = true))
 
     // load test data from the sequence file, then persist to force execution and expect an IOException
     val loadedTestData = fromSequenceFile[Text, BooleanWritable](filePath)
-    loadedTestData.run must throwA[IOException]
+    loadedTestData.run must throwAn[IOException]
   }
 
   "Not checking sequence file types, and catching the exception in the mapper" >> { implicit sc: SC =>
     val filePath = createTempFile()
 
-    // can not create a new DList containing Text because of issue # 99
     val testDList: DList[(Float, Boolean)] = DList((1.2f, false), (2.5f, true))
     persist(toSequenceFile(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))), filePath, overwrite = true))
 
     // load test data from the sequence file, then persist to force execution and expect a ClassCastException in the mapper
     val loadedTestData = fromSequenceFile[Text, BooleanWritable](List(filePath), checkKeyValueTypes = false)
-    val mapResult = loadedTestData.map(d => try { Right(d._1.charAt(0)) } catch { case e => Left(e.getClass) })
-    mapResult.run.toSeq must_== Seq(Left(classOf[ClassCastException]), Left(classOf[ClassCastException]))
+    val mapResult = loadedTestData.map(d => try { Right(d._1.charAt(0)): Either[String, Int] } catch { case e => Left(e.getClass.getSimpleName) })
+    mapResult.run.toSeq must_== Seq(Left("ClassCastException"), Left("ClassCastException"))
   }
 
   /**

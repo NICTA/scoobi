@@ -441,10 +441,13 @@ trait WireFormatImplicits {
   }
 
   /**
-   * Catch-all
+   * Catch-all implementation of a WireFormat for a type T, using Java serialization.
+   * It is however very inefficient, so for production use, consider creating your own WireFormat instance.
+   *
+   * Note that this WireFormat instance definition is *not* implicit, meaning that you will need to explicitely
+   * import it when you need it.
    */
-  @slow("You are using inefficient serialization, try creating an explicit WireFormat instance instead", "since 0.1")
-  implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
+  def AnythingFmt[T <: Serializable] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) {
       val bytesOut = new ByteArrayOutputStream
       val bOut =  new ObjectOutputStream(bytesOut)

@@ -1,8 +1,10 @@
 package com.nicta.scoobi
 package guide
 
+import application.ScoobiApp
+
 class DataTypes extends ScoobiPage { def is = "Data Types".title^
-                                                                                                                        """
+  """
 ### Standard types
 
 We've seen in many of the examples that it's possible for `DList` objects to be parameterized by normal Scala primitive (*value*) types. Not surprisingly, Scoobi supports `DList` objects that are parameterized by any of the Scala primitive types:
@@ -91,30 +93,44 @@ Notice that by using the custom type `Tick` it's obvious what fields we are usin
 
 Being able to have `DList` objects of custom types is a huge productivity boost. However, there is still the boiler-plate, mechanical work associated with the `WireFormat` implementation. To overcome this, the `WireFormat` object also provides a utility function called `mkCaseWireFormat` that automatically constructs a `WireFormat` for **case classes**:
 
-    case class Tick(val date: Int, val symbol: String, val price: Double)
+    case class Tick(date: Int, symbol: String, price: Double)
     implicit val tickFmt = mkCaseWireFormat(Tick, Tick.unapply _)
 
     val ticks: DList[Tick] = ...  /* Still OK */
 
 `mkCaseWireFormat` takes as arguments the case class's automatically generated `apply` and `unapply` methods. The only requirement on case classes when using `mkCaseWireFormat` is that all its fields have `WireFormat` implementations. If not, your `DList` objects won't type check. The upside to this is that all of the types above that do have `WireFormat` implementations can be fields in a case class when used in conjunction with `mkCaseWireFormat`:
 
-    case class Tick(val date: Int, val symbol: String, val price: Double, val high_low: (Double, Double))
+    case class Tick(date: Int, symbol: String, price: Double, high_low: (Double, Double))
     implicit val tickFmt = mkCaseWireFormat(Tick, Tick.unapply _)
 
     val ticks: DList[Tick] = ...  /* Amazingly, still OK */
 
 Of course, this will also extend to other case classes as long as they have `WireFormat` implementations. Thus, it's possible to have nested case classes that can parameterize `DList` objects:
 
-    case class PriceAttr(val: price: Double, val high_low: (Double, Double))
+    case class PriceAttr(price: Double, high_low: (Double, Double))
     implicit val priceAttrFmt = mkCaseWireFormat(PriceAttr, PriceAttr.unapply _)
 
-    case class Tick(val date: Int, val symbol: String, val attr: PriceAttr)
+    case class Tick(date: Int, symbol: String, attr: PriceAttr)
     implicit val tickFmt = mkCaseWireFormat(Tick, Tick.unapply _)
 
     val ticks: DList[Tick] = ...  /* That's right, amazingly, still OK */
 
 In summary, the way data types work in Scoobi is definitely one of its killer features, basically because they don't get in the way!
-                                                                                                                        """^
-                                                                                                                        end
 
+
+#### Default WireFormat
+
+Temporarily, during your development, you can import a default WireFormat instance which should work with most Java types:
+
+     import com.nicta.scoobi.core.WireFormat.AnythingFmt
+
+     class Timestamp(val date: Date)
+
+     implicit val timestampFormat = AnythingFmt[Timestamp]
+
+     val timestamps: DList[Timestamps] = ...  /* Compiles OK */
+
+The `AnythingFmt` is a `WireFormat` using Java serialization to serialize/deserialize the objects. It is however very ineffecient so it is not provided as an implicit conversion, you need to explicitely import it to be able to use it.
+
+  """
 }

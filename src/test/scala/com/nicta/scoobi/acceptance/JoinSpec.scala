@@ -73,7 +73,7 @@ object JoinExample {
     override def toString = name
   }
 
-  implicit val EmployeeFmt = mkCaseWireFormat(Employee, Employee.unapply _)
-  implicit val DepartmentFmt = mkCaseWireFormat(Department, Department.unapply _)
+  implicit val EmployeeFmt: WireFormat[Employee]     = mkCaseWireFormat(Employee, Employee.unapply _)
+  implicit val DepartmentFmt: WireFormat[Department] = mkCaseWireFormat(Department, Department.unapply _)
 }
 
