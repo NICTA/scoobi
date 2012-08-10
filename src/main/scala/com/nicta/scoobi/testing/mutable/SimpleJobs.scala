@@ -47,4 +47,7 @@ trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with LocalHa
    */
   def fromDelimitedInput(ts: String*)(implicit c: ScoobiConfiguration) =
     new InputTestFile[List[String]](ts, mapping = (_:String).split(",").toList).lines
+
+  def fromKeyValues(ts: String*)(implicit c: ScoobiConfiguration): DList[(String, String)] =
+    fromDelimitedInput(ts:_*).map { case k :: v :: _ => (k, v); case line => ("error", "could not split line "+line) }
 }
