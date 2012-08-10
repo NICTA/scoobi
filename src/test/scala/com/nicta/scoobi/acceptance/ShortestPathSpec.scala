@@ -48,13 +48,13 @@ object ShortestPath {
 
   implicit val NodeOrderImp = NodeComparator
 
-  implicit val unprocessedFormat            = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _)
-  implicit val frontierFormat               = mkCaseWireFormat(Frontier, Frontier.unapply _)
-  implicit val doneFormat                   = mkCaseWireFormat(Done, Done.unapply _)
-  implicit val progressFormat               = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]()
+  implicit val unprocessedFormat           : WireFormat[Unprocessed] = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _)
+  implicit val frontierFormat              : WireFormat[Frontier]    = mkCaseWireFormat(Frontier, Frontier.unapply _)
+  implicit val doneFormat                  : WireFormat[Done]        = mkCaseWireFormat(Done, Done.unapply _)
+  implicit val progressFormat              : WireFormat[Progress]    = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]()
+  implicit val nodeFormat                  : WireFormat[Node]        = mkCaseWireFormat(Node, Node.unapply _)
+  implicit val nodeInfoFormat              : WireFormat[NodeInfo]    = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
 
-  implicit val nodeFormat                   = mkCaseWireFormat(Node, Node.unapply _)
-  implicit val nodeInfoFormat               = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
   implicit val nodeGrouping: Grouping[Node] = OrderingGrouping[Node]
 
   case class Node(data: String)
