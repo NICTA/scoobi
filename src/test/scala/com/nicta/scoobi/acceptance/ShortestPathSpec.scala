@@ -8,9 +8,10 @@ import ShortestPath._
 class ShortestPathSpec extends NictaSimpleJobs {
 
   "The shortest path in a graph can be computed using Hadoop" >> { implicit sc: SC =>
-    val paths =
-      fromInput("A B", "A C", "C D", "C E", "D E", "F G", "E F", "G E").run { nodes: DList[String] =>
+    val nodes =
+      fromInput("A B", "A C", "C D", "C E", "D E", "F G", "E F", "G E")
 
+    val paths = {
       val edges = nodes.map { n => val a :: b :: _ = n.split(" ").toList; (Node(a), Node(b)) }
       val adjacencies = edges.flatMap { case (first, second) => List((first, second), (second, first)) }
       val grouped = adjacencies.groupByKey[Node, Node]
@@ -31,13 +32,14 @@ class ShortestPathSpec extends NictaSimpleJobs {
         }
       }
     }
-    paths must_== Seq("Shortest path from A to A is 0 steps",
-                      "Shortest path from A to B is 1 steps",
-                      "Shortest path from A to C is 1 steps",
-                      "Shortest path from A to D is 2 steps",
-                      "Shortest path from A to E is 2 steps",
-                      "Shortest path from A to F is 3 steps",
-                      "Shortest path from A to G is 3 steps")
+
+    paths.run must_== Seq("Shortest path from A to A is 0 steps",
+                          "Shortest path from A to B is 1 steps",
+                          "Shortest path from A to C is 1 steps",
+                          "Shortest path from A to D is 2 steps",
+                          "Shortest path from A to E is 2 steps",
+                          "Shortest path from A to F is 3 steps",
+                          "Shortest path from A to G is 3 steps")
   }
 }
 

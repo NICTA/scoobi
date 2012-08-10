@@ -20,11 +20,6 @@ trait NictaHadoop extends
 }
 
 /**
- * a mutable specification for the Nicta cluster
- */
-trait NictaHadoopSpecification extends NictaHadoop with org.specs2.mutable.Specification
-
-/**
  * Addresses for the filesystem and jobtracker for the Nicta cluster. They override the search for those values in the local configuration files
  */
 trait NictaCluster extends Cluster {

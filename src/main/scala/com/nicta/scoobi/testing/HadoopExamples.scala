@@ -140,7 +140,8 @@ trait HadoopSpecificationStructure extends
   Cluster with
   HadoopExamples with
   UploadedLibJars with
-  HadoopLogFactorySetup
+  HadoopLogFactorySetup with
+  CommandLineHadoopLogFactory
 
 trait HadoopLogFactorySetup extends LocalHadoop with SpecificationStructure {
   override def map(fs: =>Fragments) = super.map(fs).insert(Step(setLogFactory()))
