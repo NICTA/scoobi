@@ -13,7 +13,6 @@ import Optimiser._
 import CompNode._
 import Mscr._
 import com.github.mdr.ascii.{Box, Diagram, ConnectMode}
-import com.github.mdr.ascii.ConnectMode.{In, Out}
 
 class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with MscrGraph with Tags with GraphBuilder {
 
@@ -43,16 +42,27 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
       val mscrs = makeMscrs(graph)
       mscrs.map(_.groupByKeys).filterNot(_.isEmpty) ==== Set(Set(gbk1), Set(gbk2))
     }
-    "a Gbk must have the same Mscr that references it" >> check { graph: CompNode =>
-      mscrsFor(graph).collect(isAGroupByKey) foreach { gbk =>
+    "a Gbk must have the same Mscr that references it" >> prop { graph: CompNode =>
+      mscrsFor(graph).flatMap(_.groupByKeys) foreach { gbk =>
         val m = (gbk -> mscr)
         m.groupByKeys.map(_.id) aka show(gbk) must contain(gbk.id)
       }
-    } lt;
+    }
+    "a ParallelDo must not have the same Mscr as its Materialize environment. See issue #127" in {
+      val ld1 = load
+      val (pd1, pd2) = (pd(ld1), pd(ld1))
+      val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
+      val mt1 = mt(gbk1)
+      val pd3 = pd(gbk2, env = mt1)
+      val graph = mt(pd3)
+      Attribution.initTree(graph)
+
+      (pd3 -> mscr) aka show(graph) must not be_== (pd3.env -> mscr)
+    }
   }
   "2. We must create InputChannels for each Mscr" >> {
     "MapperInputChannels" >> {
-      "we create MapperInputChannels for ParallelDos which are not reducers of the GroupByKey" >> check { graph: CompNode =>
+      "we create MapperInputChannels for ParallelDos which are not reducers of the GroupByKey" >> prop { graph: CompNode =>
         mscrsFor(graph)
         // collect the parallel does of the current mscr which are not reducers
         descendents(graph).collect(isAParallelDo).filterNot(p => (p -> mscr).reducers.contains(p)) foreach { p =>
@@ -62,14 +72,14 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
           }
         }
       }
-      "two mappers in 2 different mapper input channels must not share the same input" >> check { graph: CompNode =>
+      "two mappers in 2 different mapper input channels must not share the same input" >> prop { graph: CompNode =>
         mscrsFor(graph).filter(isGbkMscr).filter(_.mapperChannels.size > 1) foreach { m =>
           val independentPdos = m.mapperChannels.flatMap(_.parDos.headOption).toSeq
           val (pdo1, pdo2) = (independentPdos(0), independentPdos(1))
           pdo1.in aka show(pdo1) must not beTheSameAs (pdo2.in)
         }
       }
-      "two mappers in the same mapper input channel must share the same input" >> check { graph: CompNode =>
+      "two mappers in the same mapper input channel must share the same input" >> prop { graph: CompNode =>
         mscrsFor(graph).filter(isGbkMscr).filter(_.mapperChannels.exists(_.parDos.size > 1)) foreach { m =>
           m.mapperChannels.filter(_.parDos.size > 1) foreach { input =>
             val (pdo1, pdo2) = (input.parDos.toSeq(0), input.parDos.toSeq(1))
@@ -78,7 +88,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
           }
         }
       }
-      "two parallelDos sharing the same input must be in the same inputChannel" >> check { graph: CompNode =>
+      "two parallelDos sharing the same input must be in the same inputChannel" >> prop { graph: CompNode =>
         mscrsFor(graph)
         distinctPairs(descendents(graph).collect(isAParallelDo)).foreach  { case (p1, p2) =>
           if (p1.in eq p2.in) {
@@ -86,7 +96,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
           }
         }
       }
-      "if a ParallelDo is an input shared by 2 others ParallelDos, then it must belong to another Mscr" >> check { graph: CompNode =>
+      "if a ParallelDo is an input shared by 2 others ParallelDos, then it must belong to another Mscr" >> prop { graph: CompNode =>
         mscrsFor(graph).filter(_.mappers.size > 1) foreach { m =>
           m.mappers foreach { pd =>
             (pd -> descendents) collect {
@@ -104,13 +114,13 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         makeMscrs(graph).filter(isGbkMscr).toSeq(0) ==== Mscr(inputChannels  = Set(MapperInputChannel(Set(pd2, pd1))),
                                                               outputChannels = Set(GbkOutputChannel(gbk2), GbkOutputChannel(gbk1)))
       }
-      "a ParallelDo can not be a mapper and a reducer at the same time" >> check { graph: CompNode =>
+      "a ParallelDo can not be a mapper and a reducer at the same time" >> prop { graph: CompNode =>
         mscrsFor(graph)
         descendents(graph).collect(isAParallelDo) foreach { p =>
           ((p -> mscr).mappers intersect (p -> mscr).reducers) aka show(p) must beEmpty
         }
       }
-      "all the ParallelDos must be in a mapper or a reducer" >> check { graph: CompNode =>
+      "all the ParallelDos must be in a mapper or a reducer" >> prop { graph: CompNode =>
         descendents(graph).collect(isAParallelDo) foreach { p =>
           val m = p -> mscr
           if ((p -> descendents).collect(isAGroupByKey).nonEmpty) {
@@ -122,7 +132,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
       }
     }
     "IdInputChannels" >> {
-      "we create an IdInputChannel for each GroupByKey input which has no siblings" >> check { graph: CompNode =>
+      "we create an IdInputChannel for each GroupByKey input which has no siblings" >> prop { graph: CompNode =>
         mscrsFor(graph).filter(_.idChannels.size > 1) foreach { m =>
           m.idChannels foreach { channel =>
             val input = channel.input
@@ -259,7 +269,7 @@ class MscrGraphSpec extends Specification with CompNodeData with ScalaCheck with
         |  |ld1           |
         |  +--------------+
       """.stripMargin('|')
-      diagramRoot(graph)
+      // diagramRoot(graph)
       //mscrsFor(graph) ==== Set(graph)
       ko
     }.pendingUntilFixed("this relies on fixing https://github.com/mdr/ascii-graphs/issues/1")

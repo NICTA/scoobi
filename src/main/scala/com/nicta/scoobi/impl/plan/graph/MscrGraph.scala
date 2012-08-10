@@ -110,11 +110,20 @@ trait MscrGraph {
    */
   lazy val isReducer: CompNode => Boolean =
     attr {
-      case pd @ ParallelDo(cb @ Combine(_,_),_,_,true,_) => true
-      case pd @ ParallelDo(cb @ Combine(_,_),_,_,_,true) => true
-      case pd @ ParallelDo(_,_,_,_,_)                    => (pd -> ancestors).isEmpty || (pd -> ancestors).exists(isMaterialize)
-      case other                                         => false
+      case pd @ ParallelDo(_, mt @ Materialize(_),_,_,_) if envInSameMscr(pd) => false
+      case pd @ ParallelDo(cb @ Combine(_,_),_,_,true,_)                      => true
+      case pd @ ParallelDo(cb @ Combine(_,_),_,_,_,true)                      => true
+      case pd @ ParallelDo(_,_,_,_,_)                                         => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case other                                                              => false
     }
+
+  /**
+   * @return true if a parallel do and its environment are computed by the same mscr
+   */
+  def envInSameMscr(pd: ParallelDo[_,_,_]) =
+    (pd.env -> descendents).collect(isAGroupByKey).headOption.map { g =>
+      (g -> relatedGbks).flatMap(_ -> outputs).contains(pd)
+    }.getOrElse(false)
 
   /** compute if a node is a mapper of a GroupByKey, i.e. a ParallelDo which is not a reducer */
   lazy val isMapper: CompNode => Boolean =
@@ -152,14 +161,18 @@ trait MscrGraph {
   /** compute if a ParallelDo or a Flatten is 'floating', i.e. it doesn't have a Gbk in it outputs */
   lazy val isFloating: CompNode => Boolean =
     attr {
-      case pd: ParallelDo[_,_,_] => !((pd -> isReducer) || (pd -> ancestors).exists(isGroupByKey))
+      case pd: ParallelDo[_,_,_] => !(pd -> isReducer) && !(pd -> outputs).exists(isGroupByKey)
       case f: Flatten[_]         => !(f -> outputs).exists(isGroupByKey)
     }
 
   /** compute if a node is the input of a Gbk */
   lazy val isGbkInput: CompNode => Boolean = attr { case node => (node -> outputs).exists(isGroupByKey) }
 
-  /** compute the Gbks related to a given Gbk (through some shared input) */
+  /**
+   * compute the Gbks related to a given Gbk (through some shared input)
+   *
+   * This set does not contain the original gbk
+   */
   lazy val relatedGbks: GroupByKey[_,_] => Set[GroupByKey[_,_]] =
     attr {
       case g @ GroupByKey(Flatten(ins))               => (g -> siblings).collect(isAGroupByKey) ++

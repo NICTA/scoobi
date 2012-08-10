@@ -66,8 +66,8 @@ trait CompNodeFactory {
   def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
   def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
   def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
-  def pd(in: CompNode, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], Return(()), fn, groupBarrier, fuseBarrier)
+  def pd(in: CompNode, env: CompNode = Return(()), groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
+    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier)
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
 }

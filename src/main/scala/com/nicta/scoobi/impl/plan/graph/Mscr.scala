@@ -40,6 +40,8 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer))  => reducer }
   /** @return all the combiners of this mscr */
   def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
+  /** @return all the parallelDos of this mscr */
+  def parallelDos = mappers ++ reducers
 
   /** simultaneously set the input and output channels of this mscr */
   def addChannels(in: Set[InputChannel], out: Set[OutputChannel]) = {
@@ -47,7 +49,6 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
    outputChannels = (outputChannels ++ out)
    this
   }
-
 }
 
 object Mscr {
