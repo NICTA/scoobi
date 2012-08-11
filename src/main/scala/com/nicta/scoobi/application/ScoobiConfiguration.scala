@@ -127,6 +127,19 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
 
   /**
+   * Set the number of input bytes per reducer. This is used to control the number of
+   * reducers based off the size of the input data to the M/R job.
+   */
+  def setBytesPerReducer(sizeInBytes: Long) {
+    configuration.setLong("scoobi.mapreduce.reducers.bytesperreducer", sizeInBytes)
+  }
+
+  /**
+   * Get the number of input bytes per reducer. Default is 1GiB.
+   */
+  def getBytesPerReducer = configuration.getLong("scoobi.mapreduce.reducers.bytesperreducer", 1024 * 1024 * 1024)
+
+  /**
    * set a new job name to help recognize the job better
    */
   def jobNameIs(name: String) {

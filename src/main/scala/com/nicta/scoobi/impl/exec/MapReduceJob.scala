@@ -198,7 +198,7 @@ class MapReduceJob(stepId: Int) {
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
     val inputBytes: Long = mappers.keys.map(_.inputSize).sum
-    val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
+    val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
     val numReducers: Int = inputGigabytes.toInt.max(configuration.getMinReducers).min(configuration.getMaxReducers)
     job.setNumReduceTasks(numReducers)
 
