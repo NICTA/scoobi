@@ -126,6 +126,14 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /** Get the min number of reducers to use in M/R jobs */
   def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
 
+  /** Set the input size threshold in GB for each reducer */
+  def setReducerInputSizeThreshold(sizeInGB: Float) {
+    configuration.setFloat("scoobi.mapreduce.reducers.inputsize.threshold", sizeInGB)
+  }
+
+  /** Get the input size threshold in GB for each reducer */
+  def getReducerInputSizeThreshold = configuration.getFloat("scoobi.mapreduce.reducers.inputsize.threshold", 1.0f)
+
   /**
    * set a new job name to help recognize the job better
    */
