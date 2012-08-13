@@ -1,18 +1,18 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package application
 
@@ -24,10 +24,9 @@ import io.DataSink
 import impl.plan._
 import impl.exec._
 import Smart._
-import scalaz.State
 
 /** Type class for things that can be persisted. Mechanism to allow tuples of DLists and
-  * DObjects to be persited. */
+  * DObjects to be persisted. */
 trait Persister[In] {
   type Out
   def apply(in: In, conf: ScoobiConfiguration): Out
@@ -221,10 +220,10 @@ object Persister {
     rawOutMap foreach { case (c, s) => logger.debug("(" + c.toVerboseString + ", " + s + ")") }
 
 
-    /* Optimise the plan associated with the outpus. */
-    val optOuts: List[(Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]])] = {
+    /* Optimise the plan associated with the outputs. */
+    val optOuts = {
       val opt: List[Smart.DComp[_, _ <: Shape]] = Smart.optimisePlan(rawOutMap.map(_._1))
-      (rawOutMap zip opt) map { case ((_, s), o) => (o, s) }
+      (rawOutMap zip opt) map { case ((o1, s), o2) => (o2, (o1, s)) }
     }
 
     logger.debug("Optimised graph")
@@ -235,10 +234,10 @@ object Persister {
      *  This is a side-effecting expression. The @m@ field of the @ci@ parameter is updated.
      */
     import com.nicta.scoobi.impl.plan.{Intermediate => I}
-    val outMap = optOuts.toMap
+    val outMap = optOuts.map { case (o2, (o1, s)) => (o2, s) }.toMap[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]]
     val ds = outMap.keys
     val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
-    val ci = ConvertInfo(conf, outMap, iMSCRGraph.mscrs, iMSCRGraph.g)
+    val ci = ConvertInfo(conf, outMap , iMSCRGraph.mscrs, iMSCRGraph.g)
 
     logger.debug("Intermediate MSCRs")
     iMSCRGraph.mscrs foreach { mscr => logger.debug(mscr.toString) }
@@ -264,7 +263,7 @@ object Persister {
         for {
           rawOutput <- rawOutMap.find(_._1 == d)
           dataSinks <- Some(rawOutput._2)
-          optOutput <- optOuts.find(_._2 == dataSinks)
+          optOutput <- optOuts.find(_._2 == rawOutput)
           optNode   <- Some(optOutput._1)
         } yield (ci.astMap(optNode))
       }
@@ -303,7 +302,7 @@ sealed trait PFn[A] {
 
 
 /** PFn type class instances for DLists (i.e. DListPersister) and DObjects. */
-object PFn{
+object PFn {
 
   implicit def DListPersister[A] = new PFn[DListPersister[A]] {
     type Ret = Unit
