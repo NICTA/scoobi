@@ -22,7 +22,7 @@ class PageRankSpec extends NictaSimpleJobs {
                          "2, www.specs2.org",
                          "3, www.notfound.org").collect { case AnInt(id) :: url :: _ => (id, url.trim) }
 
-    getPageRanks(urls, graph).run === Seq(
+    getPageRanks(urls, graph).run.toList === Seq(
       "(www.google.com,0.5)",
       "(www.specs2.org,0.5833333)",
       "(www.notfound.org,0.75)")
