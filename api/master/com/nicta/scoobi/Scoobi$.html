@@ -334,25 +334,17 @@
       <a id="AnythingFmt[T&lt;:Serializable]:WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
+        <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">AnythingFmt</span><span class="tparams">[<span name="T">T &lt;: <span name="java.io.Serializable" class="extype">Serializable</span></span>]</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[T]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Catch-all
-</p><div class="fullcomment"><div class="comment cmt"><p>Catch-all
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd><dt>Annotations</dt><dd>
-                <span class="name">@<a name="com.nicta.scoobi.impl.slow" class="extype" href="impl/slow.html">slow</a></span><span class="args">(<span>
-      message = 
-      <span name="&quot;You are using inefficient serialization, try creating an explicit WireFormat instance instead&quot;" class="defval">...</span>
-    </span>, <span>
-      since = 
-      <span class="symbol">&quot;since 0.1&quot;</span>
-    </span>)</span>
-              
-        </dd></dl></div>
+      <p class="shortcomment cmt">Catch-all implementation of a WireFormat for a type T, using Java serialization.</p><div class="fullcomment"><div class="comment cmt"><p>Catch-all implementation of a WireFormat for a type T, using Java serialization.
+It is however very inefficient, so for production use, consider creating your own WireFormat instance.</p><p>Note that this WireFormat instance definition is *not* implicit, meaning that you will need to explicitely
+import it when you need it.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#ArrayFmt" data-isabs="false">
       <a id="ArrayFmt[T](Manifest[T],WireFormat[T]):WireFormat[Array[T]]"></a>
       <h4 class="signature">

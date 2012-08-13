@@ -61,15 +61,39 @@ All data is written to temporary files and is deleted after usage.
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs.SimpleJob" data-isabs="false">
-      <a id="SimpleJob:SimpleJob[T]"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDList" data-isabs="false">
+      <a id="RunnableDList:RunnableDList[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="SimpleJobs$SimpleJob.html"><span class="name">SimpleJob</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>, <span name="keepFiles">keepFiles: Boolean</span>, <span name="configuration">configuration: ScoobiConfiguration</span>, <span name="m">m: Manifest[T]</span>, <span name="w">w: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="SimpleJobs$RunnableDList.html"><span class="name">RunnableDList</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDListPair" data-isabs="false">
+      <a id="RunnableDListPair:RunnableDListPair[T, S]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SimpleJobs$RunnableDListPair.html"><span class="name">RunnableDListPair</span></a><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="lists">lists: (DList[T], DList[S])</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDObject" data-isabs="false">
+      <a id="RunnableDObject:RunnableDObject[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SimpleJobs$RunnableDObject.html"><span class="name">RunnableDObject</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="o">o: DObject[T]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
@@ -152,6 +176,42 @@ All data is written to temporary files and is deleted after usage.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#asRunnableDList" data-isabs="false">
+      <a id="asRunnableDList[T](DList[T]):RunnableDList[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRunnableDList</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDList" class="extype" href="SimpleJobs$RunnableDList.html">RunnableDList</a>[T]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#asRunnableDListPair" data-isabs="false">
+      <a id="asRunnableDListPair[T, S]((DList[T], DList[S])):RunnableDListPair[T, S]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRunnableDListPair</span><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="lists">lists: (<a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T], <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[S])</span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDListPair" class="extype" href="SimpleJobs$RunnableDListPair.html">RunnableDListPair</a>[T, S]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#asRunnableDObject" data-isabs="false">
+      <a id="asRunnableDObject[T](DObject[T]):RunnableDObject[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRunnableDObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="o">o: <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDObject" class="extype" href="SimpleJobs$RunnableDObject.html">RunnableDObject</a>[T]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -219,31 +279,43 @@ All data is written to temporary files and is deleted after usage.
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#fromDelimitedInput" data-isabs="false">
-      <a id="fromDelimitedInput(String*)(ScoobiConfiguration):InputTestFile[List[String]]"></a>
+      <a id="fromDelimitedInput(String*)(ScoobiConfiguration):DList[List[String]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromDelimitedInput</span><span class="params">(<span name="ts">ts: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="c">c: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.InputTestFile" class="extype" href="../InputTestFile.html">InputTestFile</a>[List[String]]</span>
+        <span class="name">fromDelimitedInput</span><span class="params">(<span name="ts">ts: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="c">c: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: DList[List[String]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a DList input keeping track of its temporary input file
 </p></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#fromInput" data-isabs="false">
-      <a id="fromInput(String*)(ScoobiConfiguration):InputStringTestFile"></a>
+      <a id="fromInput(String*)(ScoobiConfiguration):DList[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromInput</span><span class="params">(<span name="ts">ts: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="c">c: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.InputStringTestFile" class="extype" href="../InputStringTestFile.html">InputStringTestFile</a></span>
+        <span class="name">fromInput</span><span class="params">(<span name="ts">ts: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="c">c: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: DList[String]</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a simple job from a list of strings (for the input file) and the current configuration
 </p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#fromKeyValues" data-isabs="false">
+      <a id="fromKeyValues(String*)(ScoobiConfiguration):DList[(String, String)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromKeyValues</span><span class="params">(<span name="ts">ts: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="c">c: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[(String, String)]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -317,38 +389,38 @@ All data is written to temporary files and is deleted after usage.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#run" data-isabs="false">
-      <a id="run[T](⇒ DList[T],Boolean)(ScoobiConfiguration,Manifest[T],WireFormat[T]):Seq[String]"></a>
+      <a id="run[T](DObject[T])(ScoobiConfiguration):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: ⇒ <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T]</span>, <span name="keepFiles">keepFiles: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="m">m: Manifest[T]</span>, <span name="w">w: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result">: Seq[String]</span>
+        <span class="name">run</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="o">o: <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a>[T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#run" data-isabs="false">
-      <a id="run[T, S](⇒ (DList[T], DList[S]),Boolean)(ScoobiConfiguration,Manifest[T],WireFormat[T],Manifest[S],WireFormat[S]):(Seq[String], Seq[String])"></a>
+      <a id="run[T, S](DList[T],DList[S])(ScoobiConfiguration):(Seq[T], Seq[S])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="lists">lists: ⇒ (<a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T], <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[S])</span>, <span name="keepFiles">keepFiles: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="m1">m1: Manifest[T]</span>, <span name="w1">w1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[T]</span>, <span name="m2">m2: Manifest[S]</span>, <span name="w2">w2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[S]</span>)</span><span class="result">: (Seq[String], Seq[String])</span>
+        <span class="name">run</span><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="list1">list1: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T]</span>, <span name="list2">list2: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[S]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: (Seq[T], Seq[S])</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#run" data-isabs="false">
-      <a id="run[T, S](⇒ (DList[T], DList[S]))(ScoobiConfiguration,Manifest[T],WireFormat[T],Manifest[S],WireFormat[S]):(Seq[String], Seq[String])"></a>
+      <a id="run[T](⇒ DList[T])(ScoobiConfiguration):Seq[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="lists">lists: ⇒ (<a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T], <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[S])</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="m1">m1: Manifest[T]</span>, <span name="w1">w1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[T]</span>, <span name="m2">m2: Manifest[S]</span>, <span name="w2">w2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[S]</span>)</span><span class="result">: (Seq[String], Seq[String])</span>
+        <span class="name">run</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: ⇒ <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Seq[T]</span>
       </span>
       </h4>
       
@@ -376,18 +448,6 @@ All data is written to temporary files and is deleted after usage.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#testInputToSimpleJob" data-isabs="false">
-      <a id="testInputToSimpleJob[T](InputTestFile[T])(ScoobiConfiguration,Manifest[T],WireFormat[T]):SimpleJob[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">testInputToSimpleJob</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="input">input: <a name="com.nicta.scoobi.testing.InputTestFile" class="extype" href="../InputTestFile.html">InputTestFile</a>[T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="m">m: Manifest[T]</span>, <span name="w">w: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.mutable.SimpleJobs.SimpleJob" class="extype" href="SimpleJobs$SimpleJob.html">SimpleJob</a>[T]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">

@@ -105,7 +105,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopSpecificationStructure.html"><span class="name">HadoopSpecificationStructure</span></a><span class="result"> extends Cluster with HadoopExamples with UploadedLibJars with HadoopLogFactorySetup</span>
+        <a href="HadoopSpecificationStructure.html"><span class="name">HadoopSpecificationStructure</span></a><span class="result"> extends Cluster with HadoopExamples with UploadedLibJars with HadoopLogFactorySetup with CommandLineHadoopLogFactory</span>
       </span>
       </h4>
       <p class="comment cmt">You can use this abstract class to create your own specification class, specifying:</p>
@@ -117,7 +117,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputStringTestFile.html"><span class="name">InputStringTestFile</span></a><span class="params">(<span name="ls">ls: Seq[String]</span>, <span name="keepFile">keepFile: Boolean</span>, <span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result"> extends InputTestFile[String] with Product with Serializable</span>
+        <a href="InputStringTestFile.html"><span class="name">InputStringTestFile</span></a><span class="params">(<span name="ls">ls: Seq[String]</span>, <span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result"> extends InputTestFile[String] with Product with Serializable</span>
       </span>
       </h4>
       
@@ -141,19 +141,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="OutputTestFile.html"><span class="name">OutputTestFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>, <span name="keepDir">keepDir: Boolean</span>, <span name="configuration">configuration: ScoobiConfiguration</span>, <span name="m">m: Manifest[T]</span>, <span name="w">w: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.OutputTestFiles" data-isabs="false">
-      <a id="OutputTestFiles:OutputTestFiles[T1, T2]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="OutputTestFiles.html"><span class="name">OutputTestFiles</span></a><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="params">(<span name="list1">list1: DList[T1]</span>, <span name="list2">list2: DList[T2]</span>, <span name="keepDir">keepDir: Boolean</span>, <span name="configuration">configuration: ScoobiConfiguration</span>, <span name="m1">m1: Manifest[T1]</span>, <span name="w1">w1: WireFormat[T1]</span>, <span name="m2">m2: Manifest[T2]</span>, <span name="w2">w2: WireFormat[T2]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="OutputTestFile.html"><span class="name">OutputTestFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>, <span name="configuration">configuration: ScoobiConfiguration</span>, <span name="m">m: Manifest[T]</span>, <span name="w">w: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       

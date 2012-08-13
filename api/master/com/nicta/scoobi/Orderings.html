@@ -2,36 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.testing.TestFiles</title>
+          <title>com.nicta.scoobi.Orderings</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../lib/template.css" />
+      <script type="text/javascript" src="../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="TestFiles.html"><img src="../../../../lib/object_to_trait_big.png" /></a>
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.testing" class="extype" href="package.html">testing</a></p>
-        <h1><a title="Go to companion" href="TestFiles.html">TestFiles</a></h1>
+        <img src="../../../lib/trait_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../package.html">com</a>.<a name="com.nicta" class="extype" href="../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="package.html">scoobi</a></p>
+        <h1>Orderings</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">TestFiles</span><span class="result"> extends <a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></span>
+        <span class="name">Orderings</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.application.package" class="extype" href="application/package$.html">package</a></div>
         </div></div>
     
 
@@ -45,7 +48,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.testing.TestFiles" class="in"><span>TestFiles</span></li><li name="com.nicta.scoobi.testing.TestFiles" class="in"><span>TestFiles</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.Orderings" class="in"><span>Orderings</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -123,6 +126,42 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#BytesOrdering" data-isabs="false">
+      <a id="BytesOrdering:Ordering[BytesWritable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BytesOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.BytesWritable" class="extype">BytesWritable</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#DoubleOrdering" data-isabs="false">
+      <a id="DoubleOrdering:Ordering[DoubleWritable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">DoubleOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.DoubleWritable" class="extype">DoubleWritable</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#TextOrdering" data-isabs="false">
+      <a id="TextOrdering:Ordering[Text]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">TextOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.Text" class="extype">Text</span>]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -146,58 +185,10 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: AnyRef</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#createTempDir" data-isabs="false">
-      <a id="createTempDir(String)(ScoobiConfiguration):File"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">createTempDir</span><span class="params">(<span name="prefix">prefix: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#createTempFile" data-isabs="false">
-      <a id="createTempFile(String)(ScoobiConfiguration):File"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">createTempFile</span><span class="params">(<span name="prefix">prefix: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#createTempFile" data-isabs="false">
-      <a id="createTempFile(String,Boolean)(ScoobiConfiguration):File"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">createTempFile</span><span class="params">(<span name="prefix">prefix: String</span>, <span name="keep">keep: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#deleteFiles" data-isabs="false">
-      <a id="deleteFiles(ScoobiConfiguration):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deleteFiles</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -233,22 +224,10 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#fs" data-isabs="false">
-      <a id="fs(ScoobiConfiguration):FileSystem"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fs</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.FileSystem" class="extype">FileSystem</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -261,30 +240,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#getFiles" data-isabs="false">
-      <a id="getFiles(String)(ScoobiConfiguration):Seq[File]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getFiles</span><span class="params">(<span name="dir">dir: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: Seq[<span name="java.io.File" class="extype">File</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#getFiles" data-isabs="false">
-      <a id="getFiles(File)(ScoobiConfiguration):Seq[File]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getFiles</span><span class="params">(<span name="dir">dir: <span name="java.io.File" class="extype">File</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: Seq[<span name="java.io.File" class="extype">File</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -309,18 +264,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#isRemote" data-isabs="false">
-      <a id="isRemote(ScoobiConfiguration):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isRemote</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -357,42 +300,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#path" data-isabs="false">
-      <a id="path(File)(ScoobiConfiguration):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">path</span><span class="params">(<span name="file">file: <span name="java.io.File" class="extype">File</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: String</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#path" data-isabs="false">
-      <a id="path(String)(ScoobiConfiguration):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">path</span><span class="params">(<span name="path">path: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: String</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#registerFile" data-isabs="false">
-      <a id="registerFile(File,Boolean)(ScoobiConfiguration):File"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">registerFile</span><span class="params">(<span name="file">file: <span name="java.io.File" class="extype">File</span></span>, <span name="keep">keep: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -469,9 +376,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div name="com.nicta.scoobi.testing.TestFiles" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.testing.TestFiles" class="extype" href="TestFiles.html">TestFiles</a></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
