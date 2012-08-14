@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package core
 
@@ -6,18 +21,32 @@ import java.io._
 import impl.slow
 import org.apache.hadoop.io.Writable
 import collection.generic.CanBuildFrom
-import collection.mutable.{ArrayBuilder, Builder}
+import collection.mutable.{ListBuffer, Builder}
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
 trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
-
   def fromWire(in: DataInput): A
 }
 
 
-object WireFormat extends WireFormatImplicits
+object WireFormat extends WireFormatImplicits {
+
+  // extend WireFormat with useful methods
+  implicit def wireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
+
+  case class WireFormatX[A](wf: WireFormat[A]) {
+    /**
+     * transform a WireFormat[A] to a WireFormat[B] by providing a bijection A <=> B
+     */
+    def adapt[B](f: B => A, g: A => B): WireFormat[B] = new WireFormat[B] {
+      def fromWire(in: DataInput) = g(wf.fromWire(in))
+      def toWire(x: B, out: DataOutput) { wf.toWire(f(x), out) }
+    }
+
+  }
+}
 
 /** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits {
@@ -2092,10 +2121,13 @@ trait WireFormatImplicits {
   /* ------------- END AUTO-GENERATED SECTION 1 ------------- */
 
   /**
-   * Catch-all
+   * Catch-all implementation of a WireFormat for a type T, using Java serialization.
+   * It is however very inefficient, so for production use, consider creating your own WireFormat instance.
+   *
+   * Note that this WireFormat instance definition is *not* implicit, meaning that you will need to explicitely
+   * import it when you need it.
    */
-  @slow("You are using inefficient serialization, try creating an explicit WireFormat instance instead", "since 0.1")
-  implicit def AnythingFmt[T <: Serializable] = new WireFormat[T] {
+  def AnythingFmt[T <: Serializable] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) {
       val bytesOut = new ByteArrayOutputStream
       val bOut =  new ObjectOutputStream(bytesOut)
@@ -2927,62 +2959,47 @@ trait WireFormatImplicits {
   /**
    * Traversable structures
    */
-  implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]) = {
-    val builder: Builder[T, CC[T]] = bf()
-    new WireFormat[CC[T]] {
-      private val b: Builder[T, CC[T]] = builder
-      def toWire(x: CC[T], out: DataOutput) = {
-        require(x != null, "Cannot serialize a null Traversable. Consider using an empty collection, or a Option[Traversable]")
-        out.writeInt(x.size)
-        x.foreach { wt.toWire(_, out) }
-      }
-      def fromWire(in: DataInput): CC[T] = {
-        val size = in.readInt()
-        builder.clear()
-        builder.sizeHint(size)
-        for (_ <- 0 to (size - 1)) { b += wt.fromWire(in) }
-        b.result()
-      }
-    }
-  }
+  implicit def TraversableFmt[CC[X] <: Traversable[X], T](implicit wt: WireFormat[T], bf: CanBuildFrom[_, T, CC[T]]): WireFormat[CC[T]] =
+    new TraversableWireFormat(bf())
 
   /**
    * Map structures
    */
-  implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]) = {
-    val builder: Builder[(K, V), CC[K, V]] = bf()
-    new WireFormat[CC[K, V]] {
-      private val b: Builder[(K, V), CC[K, V]] = builder
-      def toWire(x: CC[K, V], out: DataOutput) = {
-        require(x != null, "Cannot serialize a null Map. Consider using an empty collection, or a Option[Map]")
-        out.writeInt(x.size)
-        x.foreach { case (k, v) => wtK.toWire(k, out); wtV.toWire(v, out) }
-      }
-      def fromWire(in: DataInput): CC[K, V] = {
-        val size = in.readInt()
-        builder.clear()
-        builder.sizeHint(size)
-        for (_ <- 0 to (size - 1)) {
-          val k: K = wtK.fromWire(in)
-          val v: V = wtV.fromWire(in)
-          b += (k -> v)
-        }
-        b.result()
-      }
-    }
-  }
+  implicit def MapFmt[CC[X, Y] <: Map[X, Y], K, V](implicit wtK: WireFormat[K], wtV: WireFormat[V], bf: CanBuildFrom[_, (K, V), CC[K, V]]): WireFormat[CC[K, V]] =
+    new TraversableWireFormat(bf())
 
   /* Arrays */
-  implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]) = new WireFormat[Array[T]] {
-    val builder = ArrayBuilder.make()(m)
-    def toWire(xs: Array[T], out: DataOutput) = {
-      out.writeInt(xs.length)
-      xs.foreach { wt.toWire(_, out) }
+  implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
+    new TraversableWireFormat(new ListBuffer[T]) adapt ((a: Array[T]) => a.toList, (s: List[T]) => s.toArray)
+
+  /**
+   * This class is used to create a WireFormat for Traversables, Maps and Arrays
+   */
+  private[scoobi]
+  case class TraversableWireFormat[T : WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
+    def toWire(x: CC, out: DataOutput) = {
+      require(x != null, "Cannot serialize a null Traversable. Consider using an empty collection, or an Option[Traversable]")
+      // The "naive" approach for persisting a Traversable would be to persist the number of elements, then the
+      // elements themselves. However, if this Traversable is an Iterator, taking the size will consume the whole iterator
+      // and the elements will not be serialized.
+      //
+      // So the strategy here is to only persist 1000 elements at the time, bringing them into memory to know their size
+      // and iterate on them. We signal the end of all the "chunks" by persisting an empty iterator which will have a size
+      // of 0
+      (x.view.toSeq.sliding(1000, 1000).toSeq :+ Iterator.empty) foreach { chunk =>
+        val elements = chunk.toSeq
+        out.writeInt(elements.size)
+        elements.foreach { implicitly[WireFormat[T]].toWire(_, out) }
+      }
     }
-    def fromWire(in: DataInput): Array[T] = {
+    def fromWire(in: DataInput): CC = {
+      var size = in.readInt()
       builder.clear()
-      val length = in.readInt()
-      (0 to (length - 1)).foreach { _ => builder += wt.fromWire(in) }
+      // when the size is 0, it means that we've reached the last "chunk" of elements
+      while (size != 0) {
+        (0 until size) foreach  { _ => builder += implicitly[WireFormat[T]].fromWire(in) }
+        size = in.readInt()
+      }
       builder.result()
     }
   }

@@ -1,20 +1,35 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.NictaHadoop
+import testing.NictaSimpleJobs
 
-class WordCountSpec extends NictaHadoop {
+class WordCountSpec extends NictaSimpleJobs {
 
-  "Counting words frequencies must return the frequency for each word" >> { c: SC =>
+  "Counting words frequencies must return the frequency for each word" >> { implicit sc: SC =>
 
     val frequencies =
       DList(repeat("hello" -> 3, "world" -> 4):_*).
       flatMap(_.split(" ")).map((_, 1)).
       groupByKey.
-      combine((i: Int, j: Int) => i + j).materialize
+      combine((i: Int, j: Int) => i + j)
 
-    persist(c)(frequencies).toSeq.sorted must_== Seq(("hello", 3), ("world", 4))
+    frequencies.run.sorted must_== Seq(("hello", 3), ("world", 4))
 
   }
 

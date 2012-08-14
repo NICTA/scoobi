@@ -1,1 +1,5 @@
-This product includes software developed by National ICT Australia Limited.
+(c) Copyright National ICT Australia Limited (NICTA), 2011, 2012
+
+Some files contain other unattributed Contributions to the Work; All Contributions
+received from Contributors under the terms of the Apache License Agreement v 2.0 and
+re-distributed in accordance with that license.

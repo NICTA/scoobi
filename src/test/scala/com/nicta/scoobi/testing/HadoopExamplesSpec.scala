@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package testing
 
@@ -153,13 +168,11 @@ trait HadoopExamplesForTesting extends Specification with HadoopExamples with Mo
   def withVerbose = { verbose = true; this }
 
   lazy val example1 = "ex1" >> { conf: ScoobiConfiguration =>
-    conf.getConfResourceAsInputStream("") // trigger some logs
     ok
   }
   lazy val example2 = "ex2" >> { conf: ScoobiConfiguration =>
-      conf.getConfResourceAsInputStream("") // trigger some logs
-      ko
-    }
+    ko
+  }
 
   override def runOnLocal[T](t: =>T)   = {
     mocked.runOnLocal(t)

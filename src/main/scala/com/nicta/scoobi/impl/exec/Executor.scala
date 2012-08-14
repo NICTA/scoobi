@@ -1,18 +1,18 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package impl
 package exec
@@ -52,6 +52,8 @@ case class ExecState(
 
   def addComputedExp[E](node: AST.Node[_, _ <: Shape], exp: E): ExecState =
     ExecState(conf, computeTable + (node -> Some(exp)), refcnts, step, environments, mscrEnvs, mscrs, matTable)
+
+  def isReferenced(store: BridgeStore[_]) = refcnts(store) != 0
 }
 
 
@@ -153,25 +155,22 @@ object Executor {
 
     /* Update compute table - all nodes captured by this MSCR have now been "executed". */
     mscr.nodes.foreach { n => state = state.addComputedArr(n) }
-
-    /* Update reference counts - decrement counts for all intermediates then
-     * garbage collect any intermediates that have a zero reference count. */
-    mscr.inputChannels.foreach { ic =>
-      def updateRefcnt(store: BridgeStore[_]) = {
-        state = state.decRefcnt(store)
-        if (state.refcnts(store) == 0) { store.freePath }
-      }
-
-      ic match {
-        case BypassInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
-        case MapperInputChannel(bs@BridgeStore(), _) => updateRefcnt(bs)
-        case _                                       => Unit
-      }
-    }
-
+    /* Remove intermediate data if possible or decrement the BridgeStores reference count */
+    state = freeIntermediateOutputs(mscr, state)
     state.incStep
   }
 
+  /* Update reference counts - decrement counts for all intermediates then
+   * garbage collect any intermediates that have a zero reference count. */
+  private[exec]
+  def freeIntermediateOutputs(mscr: MSCR, state: ExecState): ExecState = {
+    var resultingState = state
+    mscr.bridgeStores.foreach { store =>
+      resultingState = resultingState.decRefcnt(store)
+      if (!resultingState.isReferenced(store)) { store.freePath }
+    }
+    resultingState
+  }
 
   def executeExp[E](node: AST.Node[E, _ <: Shape], st: ExecState): (E, ExecState) = {
 

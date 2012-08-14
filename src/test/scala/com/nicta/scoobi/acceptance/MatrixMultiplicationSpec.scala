@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package acceptance
 
@@ -32,7 +47,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
   def add(x: Int, y: Int) = x + y
 
   def toDMatrix(m: Iterable[MatrixEntry])(implicit sc: ScoobiConfiguration): DMatrix[Int, Int] =
-    fromDelimitedInput(m.map(entry => entry.row + "," + entry.col + "," + entry.value).toSeq: _*).lines.collect { case AnInt(r) :: AnInt(c) :: AnInt(v) :: _ => ((r, c), v) }
+    fromDelimitedInput(m.map(entry => entry.row + "," + entry.col + "," + entry.value).toSeq: _*).collect { case AnInt(r) :: AnInt(c) :: AnInt(v) :: _ => ((r, c), v) }
 
   def toEntrySet(m: DMatrix[Int, Int])(implicit conf: ScoobiConfiguration) =
     Set[MatrixEntry]() ++ Scoobi.persist(m.materialize).collect { case ((r, c), v) if v != 0 => MatrixEntry(r, c, v) }
@@ -65,8 +80,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
 
   val valueInt = Gen.choose(0, 50) // I want this to be pretty small, so as to not have to worry about overflow differences
 
-  // TODO: this should just be listOf when scoobi supports empty DLists (issue #60)
-  private def genMatrixDataMap: Gen[Map[(Int, Int), Int]] = Gen.listOfN(500, for {
+  private def genMatrixDataMap: Gen[Map[(Int, Int), Int]] = Gen.listOf(for {
     row <- dimensionsInt
     col <- dimensionsInt
     value <- valueInt
