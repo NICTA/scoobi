@@ -33,8 +33,6 @@ resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/reposit
 /** Compilation */
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 
-javaOptions += "-Xmx2G"
-
 /** Testing */
 testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
                                      Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
