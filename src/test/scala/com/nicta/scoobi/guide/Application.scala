@@ -33,7 +33,57 @@ When you extend the `ScoobiApp` trait:
 
   * you inherit the command-line arguments in a variable named `args`
 
-  * you inherit an implicit `ScoobiConfiguration` object, for persisting `DLists`. The `ScoobiConfiguration` object encapsulates a Hadoop `Configuration` object setup with the hadoop command-line arguments
+  * you inherit an implicit `ScoobiConfiguration` object, for persisting `DLists`. The `ScoobiConfiguration` object encapsulates a Hadoop `Configuration` object setup with the Hadoop command-line arguments, and is accessible through the variable `configuration`.
+
+### Arguments
+
+ScoobiApp provides support for passing in Hadoop-configuration and Scoobi-configuration arguments, which are stripped from the command line prior to being made available in the `args` variable.
+
+The format of the command line is as follows:
+
+  `COMMAND-TO-INVOKE-PROGRAM [HADOOP-ARGS ...] [APPLICATION-ARGS ...] [-- scoobi VALUE1.VALUE2.VALUE3]`
+
+where `COMMAND-TO-INVOKE-PROGRAM` is the invocation needed to run the program, `HADOOP-ARGS` are optional arguments to configure Hadoop, `APPLICATION-ARGS` are the arguments to the application itself, and everything else specifies arguments to configure Scoobi.  Note that both the Hadoop-configuration and Scoobi-configuration arguments are optional.
+
+A simple example that runs an application `mypackage.MyApp` using `sbt run-main` with application arguments `input-dir output-dir` and without any configuration-level arguments is:
+
+  `sbt run-main mypackage.MyApp input-dir output-dir`
+
+A more complicated example is as follows:
+
+  `sbt run-main mypackage.MyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 --by-time input-dir output-dir -- scoobi warn.times`
+
+This command contains the following sets of arguments:
+
+1. The arguments `-Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20` are handled by Hadoop. (They allow for 20% of the map or reduce tasks to fail and the job as a whole to still succeed.)
+2. The arguments `--by-time input-dir output-dir` are passed to the application itself.
+3. The arguments `warn.times` are handled by Scoobi. (They set the log level to WARN and cause logging of execution time.)
+
+The various sets of arguments are accessible from the `ScoobiApp` with the following variables:
+
+1. `args`: The application arguments.
+2. `scoobiArgs`: The Scoobi-configuration arguments, split on ".".
+3. `commandLineArguments`: The entire set of command-line arguments.
+
+### Scoobi Configuration Arguments
+
+The following are the possible configuration arguments for Scoobi:
+
+
+ Name           | Default value                    | Description
+ ---------------|----------------------------------|--------------------------------------------------------------------
+ verbose        | true                             | if defined, log statements are displayed
+ quiet          | false                            | if defined, log statements are not displayed
+ times          | false                            | if defined the total execution time is logged
+ level          | info                             | minimum level of statements to log
+ category       | .*                               | regular expression. By default everything is logged. Use `scoobi` to display only Scoobi logs
+ local          | false                            | if defined, run the Scoobi job locally
+ deletelibjars  | false                            | if defined, remove jars from the `libjars` directory before uploading them again
+ keepfiles      | false                            | if defined, temp files and working directory files are not deleted after the job execution (only for testing)
+
+The list of possible log levels is `all`, `fatal`, `info`, `warn`, `trace`, `off`.
+
+It is also possible to change configuration values by overriding methods in `ScoobiApp`.
 
 ### Dependencies
 
@@ -48,7 +98,9 @@ The `ScoobiApp` trait extends the `LibJars` trait which provides functionalities
 Here is an example on how to use these methods:
 
 ```scala
-object WordCount extends ScoobiApp {
+package mypackage
+
+object MyApp extends ScoobiApp {
   def run() {
     // remove the existing jars on the cluster
     deleteJars
@@ -77,42 +129,16 @@ The `ScoobiApp` trait uses the configuration files found in the `HADOOP_HOME` di
 
 By default, when extending the `Hadoop` trait, Hadoop and Scoobi logs will be shown in the console at the "INFO" level. However for debugging failed jobs you may want to change the log level or the log categories:
 
- * show some log levels: `run-main WordCount -- scoobi warning` (you can also override the `level` method). The log levels are the ones from the Apache commons logging library: `ALL`, `FATAL`, `INFO`, `WARN`, `TRACE`
+ * show some log levels: `run-main mypackage.MyApp [ARGS] -- scoobi warn` (you can also override the `level` method). The log levels are the ones from the Apache commons logging library: `ALL`, `FATAL`, `INFO`, `WARN`, `TRACE`
 
- * show some log categories: `run-main WordCount -- scoobi warning.(hadoop|scoobi)` will only display the log lines where the category matches `.*(hadoop|scoobi).*`. Note that you can visually separate this regular expression for log categories with brackets to help the reading: `run WordCount -- scoobi.warning.[(hadoop|scoobi)].times`
+ * show some log categories: `run-main mypackage.MyApp [ARGS] -- scoobi warn.(hadoop|scoobi)` will only display the log lines where the category matches `.*(hadoop|scoobi).*`. Note that you can visually separate this regular expression for log categories with brackets to help the reading: `run mypackage.MyApp -- scoobi.warn.[(hadoop|scoobi)].times`
 
- * you can additionally show the execution times, locally and on the cluster: `run-main WordCount -- scoobi times` (or override the `showTimes` method)
+ * you can additionally show the execution times, locally and on the cluster: `run-main mypackage.MyApp -- scoobi times` (or override the `showTimes` method)
 
- * finally you can combine those flags: `run-main WordCount -- scoobi warning.times`
+ * finally you can combine those flags: `run-main mypackage.MyApp [ARGS] -- scoobi warn.times`
 
-Note that logs can be turned off by using the 'quiet' argument:  `run-main WordCount -- scoobi quiet` (you can also override the `quiet` method to return `true`)
+Note that logs can be turned off by using the 'quiet' argument:  `run-main mypackage.MyApp [ARGS] -- scoobi quiet` (you can also override the `quiet` method to return `true`)
 
-
-### Arguments
-
-The arguments passed on the command lines are stripped from Hadoop's arguments (used to setup the Hadoop configuration object) and the remaining arguments are accessible with 2 methods:
-
- - `args`: the user arguments
- - `scoobiArgs`: the Scoobi-specific arguments (verbose, times,...)
-
-Note that all the command line arguments are still accessible with the `commandLineArguments` method.
-
-### Summary
-
-The Scoobi command line arguments must be passed as dot separated values after the `scoobi` argument name:
-
-  `run-main WordCount -- scoobi value1.value2.value3`
-
- Name           | Default value                    | Description
- ---------------|----------------------------------|--------------------------------------------------------------------
- verbose        | true                             | if defined, log statements are displayed
- quiet          | false                            | if defined, log statements are not displayed
- times          | false                            | if defined the total execution time is logged
- level          | info                             | minimum level of statements to log
- category       | .*                               | regular expression. By default everything is logged. Use `scoobi` to display only Scoobi logs
- local          | false                            | if defined, run the Scoobi job locally
- deletelibjars  | false                            | if defined, remove jars from the `libjars` directory before uploading them again
- keepfiles      | false                            | if defined, temp files and working directory files are not deleted after the job execution (only for testing)
 
   """
 }
