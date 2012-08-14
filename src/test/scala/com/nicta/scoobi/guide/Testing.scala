@@ -16,13 +16,78 @@
 package com.nicta.scoobi
 package guide
 
-class Testing extends ScoobiPage { def is = "Testing guide".title^
+class Testing extends ScoobiPage { def is = "Testing and debugging".title^
   """
-### Introduction
+### Running locally
 
-Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with [specs2](http://specs2.org) out-of-the-box, but you can reuse the testing traits with your own favorite testing library.
+The first thing to do is to run your code locally (in non-distributed mode).  This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine.  The way to do that is simply to run your application normally under the JVM.  You can do that directly using `java`, but specifying the right class path is tricky; as a result, it's often easier to run using `sbt run-main`.  For example, if your main class is called `mypackage.myapp.RunMyApp`, run something like the following command from the top-level directory of your SBT project:
+
+    sbt run-main mypackage.myapp.RunMyApp input-files output
+
+### Running using Hadoop
+
+Only when your application runs and works locally should you try running on a Hadoop cluster.  In order to to do you will probably need to build an assembly, i.e. a self-contained JAR file containing all of the libraries needed.  This can be done using the `sbt-scoobi` or `sbt-assembly` add-ons to SBT.  See the [Quick Start](${SCOOBI_GUIDE_PAGE}Quick%20Start.html) page in this User Guide for more information.
+
+Once you have built the assembly, you can run it by logging into the job tracker and running it using `hadoop`, e.g. as follows:
+
+    hadoop jar ./target/MyApp-assembly-0.1.jar mypackage.myapp.RunMyApp input-files output
+
+### About input and output files
+
+If your input files are text files, they can be compressed using GZIP (`.gz` or `.gzip` extension) or BZIP2 (`.bz2` or `.bzip2` extension), and Hadoop will automatically decompress them as it reads them.  However, GZIP files cannot be split by Hadoop (i.e. the entire file will need to be processed in a single map task), and BZIP2 files can only be split by Hadoop 2.x or later (or Hadoop 0.21 or later, in the beta series).
+
+When running locally (in non-distributed mode), relative input and output files refer to the local file system.  When running on a Hadoop cluster, input and output files normally refer to HDFS.  However, you can refer to the local file system even in cluster mode by using the `file:///...` prefix, e.g. the following command
+
+    hadoop jar ./target/MyApp-assembly-0.1.jar mypackage.myapp.RunMyApp file:///home/jdoe/data/input-files output
+
+will read from the path `/home/jdoe/data/input-files` on the local file system, but write to the path `output` on HDFS.  Note that this will *only* work if your local files are mounted in the same place on all of the task tracker nodes and on the client.
+
+### Objects are not shared across JVM's (and how to work around this)
+
+When running locally, all of the code in a Scoobi application ends up running in the same JVM (Java virtual machine).  This is not the case when running under on a Hadoop cluster, where multiple processes running on multiple machines may be involved.  As a result, some care needs to be taken to ensure that data created in one function can be accessed in another.
+ 
+The machine you run your Scoobi app on is termed the *client*.  Under Hadoop, this is typically (although not necessarily) the Hadoop *job tracker* -- the master machine that controls all the *task tracker* machines that implement the actual map and reduce jobs.  Your code continues to run on the client until you call `persist`.  The function calls that create `DList`s (e.g. `fromTextFile`) and operate on them (e.g. `map` or `filter`) occur on the client.  However, the operations implied by these function calls aren't actually performed at this time.  Rather a graph of operations (the *computational graph*) is constructed, and executed only when `persist` is called.  This graph consists of operations to perform, along with the *transformer* functions to implement these operations -- i.e. the functions that you specify as parameters to `map`, `filter` and other `DList` operations.
+
+Once `persist` is called, Scoobi constructs and submits one or more MapReduce jobs, assigning each operation to either the map, shuffle or reduce component of a MapReduce job.  The map and reduce components of a given job are typically divided into a number of map and reduce *tasks*, each of which handles a portion of the input and is executed in its own JVM on one of the task trackers.  Scoobi arranges for the computational graph and related objects to be serialized to disk and shipped over to the various task trackers.
+
+Each invocation of a transformer function is executed on one of the task trackers, and different invocations of a mapping or filtering function may run on different task trackers.  Thus, transformers will not have access to objects that were created in the client unless they were specifically shipped over as part of the serialization process, and will not have access to objects created in a different task tracker. (Although different invocations of a transformer *may* run on the same task tracker, there is no guarantee of this, and the particular invocations that are grouped together is likely to vary from run to run.)
+
+The typical symptom of attempting to access an object created in a different JVM is a null pointer error, although in some cases more subtle problems can occur.
+
+The ways to avoid this problem are:
+
+1. Avoid using "global variables" in your code, i.e. variables stored as fields in a Scoobi `object`.  You can often work around this problem by declaring such variables as `lazy`, meaning that they won't be initialized until the first time they are accessed.  However, this will only work if the first access occurs inside a transformer (and only if the object is immutable).
+
+2. To pass information from the client to a transformer, pass the information explicitly.  Either pass it as a parameter of the transformer function, or make the transformer a method and include the information in the object on which the transformer method is called.
+
+3. Don't attempt to use shared mutable state to pass information between transformers (including between different invocations of the same transformer).  This is almost guaranteed to fail.
+
+4. Be careful using external libraries.  Some libraries may violate the above rules under the hood, which is likely to cause problems.  You may need to rewrite the library (if you have access to the source code), or use a different library.
+
+
+### Debugging large applications
+
+Running and debugging large applications can be tricky.  Log files may be scattered across multiple task nodes, and errors that make a task fail, and in turn cause the entire job and application to fail, may occur after several hours after starting the application.  The following are some useful tips:
+
+1. To allow some tasks to fail without the entire job failing, use the settings `mapred.max.map.failures.percent` and `mapred.max.reduce.failures.percent`.  For example, the following command
+
+    hadoop jar ./target/MyApp-assembly-0.1.jar mypackage.myapp.RunMyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 input-files output
+
+will allow up to 20% of map and reduce tasks to fail while still allowing the operation as a whole to proceed.  This is particularly important if your Scoobi application consists of multiple MapReduce jobs, because failure of one job will cause the entire application to stop running and fail, and by default a single failed task will trigger job failure. (Tasks are normally attempted 4 times before they are considered failed; however, this won't help if the failure is due to unexpected input, a bug in rarely encountered code, or some other problem that happens consistently, rather than a transient condition).
+
+2. Scoobi logs additional debugging information at the `DEBUG` logging level.  Unfortunately, Apache Commons Logging provides no means of programmatically changing the logging level.  To do this you have to reach down directly into `log4j`, the underlying logging implementation used in Hadoop, as follows:
+
+    import org.apache.log4j.{Level=>JLevel,_}
+
+    {
+      ...
+      LogManager.getRootLogger().setLevel(JLevel.DEBUG.asInstanceOf[JLevel])
+      ...
+    }
 
 ### Using specs2
+
+Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with [specs2](http://specs2.org) out-of-the-box, but you can reuse the testing traits with your own favorite testing library.
 
 First of all you need to add the specs2 dependency to your build.sbt file (use the same version that [Scoobi is using](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/build.sbt))
 
