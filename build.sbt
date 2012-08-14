@@ -3,7 +3,7 @@ name := "scoobi"
 
 organization := "com.nicta"
 
-version := "0.5.0-SNAPSHOT"
+version := "0.5.0-cdh4-SNAPSHOT"
 
 scalaVersion := "2.9.2"
 
@@ -42,4 +42,17 @@ testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
 fork in Test := true
 
 publishArtifact in packageDoc := false // disable building docs, as it takes so much time
+
+pomExtra :=
+    <build>
+        <plugins>
+             <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>notes/header.txt</header>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 

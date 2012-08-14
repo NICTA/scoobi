@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package guide
 
@@ -167,25 +182,22 @@ The `HadoopSpecification` class allows to create any kind of job and execute the
 
  * write some strings to a temporary input text file and get back a `DList` representing this data
  * execute some transformations based on the `DList` API
- * get the results as a `Seq[String]` from an temporary output file
+ * "run" the `DList` and get the results as a `Seq[T]`
 
         class WordCountSpec extends HadoopSpecification with SimpleJobs {
           "getting the size of words" >> { implicit c: SC =>
-            fromInput("hello", "world").run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
+            val list: List[String] = fromInput("hello", "world")
+            list.map(_.size).run must_== Seq("5", "5")
           }
         }
 
-`fromInput` creates a temporary file and a new `DList` from a `TextInput`. Then the `run` method executes transformations on the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the `keepFiles` parameter is set:
-
-    "getting the size of words" >> { implicit c: SC =>
-      fromInput("hello", "world").keep.run { list: DList[String] => list.map(_.size) } must_== Seq("5", "5")
-    }
+`fromInput` creates a temporary file and a new `DList` from a `TextInput`. Then the `run` method persists the DList and retrieves the results. At the end of the tests the temporary files are deleted unless the `keepFiles` argument is set on the command line
 
  Other jobs might be slightly more complex and require inputs coming from several files:
 
     "Numbers can be partitioned into even and odd numbers" >> { implicit sc: SC =>
-      val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).lines.map((_:String).toInt)
-      val (evens, odds) = run(numbers.partition(_ % 2 == 0))
+      val numbers = fromInput((1 to count).map(i => r.nextInt(count * 2).toString):_*).map((_:String).toInt)
+      val (evens, odds) = numbers.partition(_ % 2 == 0).run
 
       forall(evens.map(_.toInt))(i => i must beEven)
       forall(odds.map(_.toInt))(i => i must beOdd)
@@ -197,7 +209,7 @@ Some of the functionalities described above has been extracted into traits in th
 
  * `ScoobiAppConfiguration` provides a `ScoobiConfiguration` configured from the `HADOOP_HOME/conf` files
 
- * `LocalHadoop` provides the `onLocal` method to execute Hadoop code locally. It also defines the `quiet` and `showTimes` methods to display log statement and/or execution times
+ * `LocalHadoop` provides the `onLocal` method to execute Hadoop code locally
 
  * `Hadoop` extends the `LocalHadoop` with the `onCluster` method to execute a Hadoop job on the cluster
 

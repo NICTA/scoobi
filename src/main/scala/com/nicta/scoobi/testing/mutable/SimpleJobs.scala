@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package testing
 package mutable
@@ -5,65 +20,49 @@ package mutable
 import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
 import application._
 import core._
-
+import scalaz.Scalaz._
 /**
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
  * All data is written to temporary files and is deleted after usage.
  */
 trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with LocalHadoop =>
 
-  implicit def testInputToSimpleJob[T](input: InputTestFile[T])
-                                      (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): SimpleJob[T] =
-    SimpleJob(input.lines, input.keepFile)
-
-  case class SimpleJob[T](list: DList[T], keepFiles: Boolean = false)
-                         (implicit val configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]) {
-    /**
-     * simply persist the list to an output file and return the lines
-     */
-    def run: Seq[String] = outer.run(list, keepFiles)
-
-    /**
-     * transform the input list, persist it to an output file and return a list of lines
-     */
-    def run[S : Manifest : WireFormat](transform: DList[T] => DList[S]): Seq[String] = outer.run(transform(list), keepFiles)
+  implicit def asRunnableDList[T](list: DList[T]) = new RunnableDList(list)
+  case class RunnableDList[T](list: DList[T]) {
+    def run(implicit configuration: ScoobiConfiguration) = outer.run(list)
   }
 
-  def run[T, S](lists: =>(DList[T], DList[S]))
-               (implicit configuration: ScoobiConfiguration, m1: Manifest[T], w1: WireFormat[T], m2: Manifest[S], w2: WireFormat[S]): (Seq[String], Seq[String]) =
-    run(lists, keepFiles = false)
-
-  def run[T, S](lists: =>(DList[T], DList[S]), keepFiles: Boolean)
-               (implicit configuration: ScoobiConfiguration, m1: Manifest[T], w1: WireFormat[T], m2: Manifest[S], w2: WireFormat[S]): (Seq[String], Seq[String]) =
-    runWithTestFiles {
-      OutputTestFiles(lists._1, lists._2).lines match {
-        case Left(msg)     => { if (!quiet) println(msg); (Seq[String](), Seq[String]()) }
-        case Right(result) => result
-      }
-    }
-
-  def run[T](list: =>DList[T], keepFiles: Boolean = false)
-            (implicit configuration: ScoobiConfiguration, m: Manifest[T], w: WireFormat[T]): Seq[String] =
-    runWithTestFiles {
-      OutputTestFile(list, keepFiles).lines match {
-        case Left(msg)     => { if (!quiet) println(msg); Seq[String]() }
-        case Right(result) => result
-      }
-    }
-
-  private def runWithTestFiles[T](t: =>T)(implicit configuration: ScoobiConfiguration) = try {
-    t
-  } finally {
-    if (!keepFiles) TestFiles.deleteFiles
+  implicit def asRunnableDListPair[T, S](lists: (DList[T], DList[S])) = new RunnableDListPair(lists)
+  case class RunnableDListPair[T, S](lists: (DList[T], DList[S])) {
+    def run(implicit configuration: ScoobiConfiguration) = outer.run(lists._1, lists._2)
   }
+
+  implicit def asRunnableDObject[T](o: DObject[T]) = new RunnableDObject(o)
+  case class RunnableDObject[T](o: DObject[T]) {
+    def run(implicit configuration: ScoobiConfiguration) = outer.run(o)
+  }
+
+  def run[T](list: =>DList[T])(implicit configuration: ScoobiConfiguration): Seq[T] =
+    Persister.persist(list.materialize).toSeq
+
+  def run[T, S](list1: DList[T], list2: DList[S])(implicit configuration: ScoobiConfiguration): (Seq[T], Seq[S]) =
+    Persister.persist((list1.materialize, list2.materialize)).bimap((_.toSeq), (_.toSeq))
+
+  def run[T](o: DObject[T])(implicit configuration: ScoobiConfiguration): T =
+    Persister.persist(o)
 
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration
    */
-  def fromInput(ts: String*)(implicit c: ScoobiConfiguration) = InputStringTestFile(ts)
+  def fromInput(ts: String*)(implicit c: ScoobiConfiguration) =
+    InputStringTestFile(ts).lines
+
   /**
    * @return a DList input keeping track of its temporary input file
    */
-  def fromDelimitedInput(ts: String*)(implicit c: ScoobiConfiguration) = new InputTestFile[List[String]](ts, mapping = (_:String).split(",").toList)
+  def fromDelimitedInput(ts: String*)(implicit c: ScoobiConfiguration) =
+    new InputTestFile[List[String]](ts, mapping = (_:String).split(",").toList).lines
 
+  def fromKeyValues(ts: String*)(implicit c: ScoobiConfiguration): DList[(String, String)] =
+    fromDelimitedInput(ts:_*).map { case k :: v :: _ => (k, v); case line => ("error", "could not split line "+line) }
 }

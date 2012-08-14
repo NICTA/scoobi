@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 National ICT Australia Limited
+ * Copyright 2011,2012 National ICT Australia Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
