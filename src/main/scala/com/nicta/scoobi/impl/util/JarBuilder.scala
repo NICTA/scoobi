@@ -30,14 +30,13 @@ import java.net.{URLClassLoader, URLDecoder}
 
 import impl.rtt.RuntimeClass
 import application.ScoobiConfiguration
+import JarBuilder._
 
 
 /** Class to manage the creation of a new JAR file. */
-class JarBuilder(val name: String) {
+class JarBuilder(implicit configuration: ScoobiConfiguration) {
 
-  import JarBuilder._
-
-  private val jos = new JarOutputStream(new FileOutputStream(name))
+  private val jos = new JarOutputStream(new FileOutputStream(configuration.temporaryJarFile.getAbsolutePath))
   private val entries: MSet[String] = MSet.empty
 
   /** Merge in the contents of an entire JAR. */
@@ -84,7 +83,7 @@ class JarBuilder(val name: String) {
     jos.close()
     if (configuration.getClassLoader.isInstanceOf[URLClassLoader]) {
       val loader = configuration.getClassLoader.asInstanceOf[URLClassLoader]
-       invoke(loader, "addURL", Array(new File(name).toURI.toURL))
+       invoke(loader, "addURL", Array(new File(configuration.temporaryJarFile.getName).toURI.toURL))
        // load the classes right away so that they're always available
        // otherwise the job jar will be removed when the MapReduce job
        // has finished running and the classes won't be available for further use

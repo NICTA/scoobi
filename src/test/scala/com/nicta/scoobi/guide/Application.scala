@@ -56,7 +56,7 @@ The `ScoobiApp` trait extends the `LibJars` trait which provides functionalities
 
  1. the dependent jars are taken from the context classloader and are only loaded if they come from a `.ivy2` or `.m2` directory (the Scala jars are *not* included). This behavior can be redefined by overriding the `jars` method
 
- 2. `uploadLibJars` uploads all the new jars to a directory on the cluster. By default this directory is named `libjars` (this is declared in the `libJarsDirectory` method). When you upload the jars, *all* the dependencies will be added to the `mapred.classpath` Hadoop configuration variable)
+ 2. `uploadLibJarFiles` uploads all the new jars to a directory on the cluster. By default this directory is named `libjars` (this is declared in the `libJarsDirectory` method). When you upload the jars, *all* the dependencies will be added to the `mapred.classpath` Hadoop configuration variable)
 
  3. `deleteJars` can be used to remove all existing jars in the `libjars` directory if one of your dependencies has changed (but kept the same name)
 
@@ -68,7 +68,7 @@ object WordCount extends ScoobiApp {
     // remove the existing jars on the cluster
     deleteJars
     // upload the dependencies to the cluster
-    uploadLibJars
+    uploadLibJarFiles
 
     // define and execute a Scoobi job
     val lines = ...
@@ -76,7 +76,7 @@ object WordCount extends ScoobiApp {
 }
 ```
 
-If you don't want to use this facility at all, you can override the `upload` method and set it to `false`.
+If you don't want to use this facility at all, you can override the `upload` method and set it to `false` or pass `scoobi nolibjars` on the command line.
 
 ### Configuration
 
@@ -127,6 +127,8 @@ The Scoobi command line arguments must be passed as dot separated values after t
  category       | .*                               | regular expression. By default everything is logged. Use `scoobi` to display only Scoobi logs
  local          | false                            | if defined, run the Scoobi job locally
  deletelibjars  | false                            | if defined, remove jars from the `libjars` directory before uploading them again
+ nolibjars      | false                            | if defined, do not upload dependent jars to the `libjars` directory and include the Scoobi jar in the job jar
+ useconfdir     | false                            | if defined, use the configuration files in `$HADOOP_HOME/conf` (useful when running apps from inside sbt)
  keepfiles      | false                            | if defined, temp files and working directory files are not deleted after the job execution (only for testing)
 
   """
