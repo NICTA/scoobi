@@ -16,6 +16,8 @@
 package com.nicta.scoobi
 package application
 
+import org.apache.hadoop.fs.FileSystem
+
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
  *
@@ -26,7 +28,7 @@ package application
  *  - the file system address: def fs = "hdfs://svm-hadoop1.ssrg.nicta.com.au"
  *  - the job tracker address: def jobTracker = "svm-hadoop1.ssrg.nicta.com.au:8021"
  */
-trait Hadoop extends LocalHadoop with Cluster with LibJars {
+trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
 
   /** @return true if you want to include the library jars in the jar that is sent to the cluster for each job */
   def includeLibJars = false
@@ -56,8 +58,9 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars {
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     setLogFactory()
     configuration.jobNameIs(getClass.getSimpleName)
-    configuration.setRemote
-    configuration.set("fs.default.name", fs)
+    configuration.setRemote(remote = true)
+    configuration.setUploadedLibJars(uploaded = outer.upload)
+    configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, fs)
     configuration.set("mapred.job.tracker", jobTracker)
     // delete libjars on the cluster
     if (deleteLibJars) deleteJars
@@ -66,6 +69,7 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars {
 
     configureJars
     configuration.addUserDirs(classDirs)
+    configuration.setDirectories
   }
 
   /**

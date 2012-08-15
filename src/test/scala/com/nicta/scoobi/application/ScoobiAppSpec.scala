@@ -16,9 +16,9 @@
 package com.nicta.scoobi
 package application
 
-import org.specs2.mutable.Specification
+import testing.mutable.UnitSpecification
 
-class ScoobiAppSpec extends Specification {
+class ScoobiAppSpec extends UnitSpecification {
 
   "Arguments from the command line must be parsed" >> {
     val app = new ScoobiApp { def run {} }

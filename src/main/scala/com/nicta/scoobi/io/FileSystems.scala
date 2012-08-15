@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package io
 
 import java.io.File
-import org.apache.hadoop.fs.{Path, FileSystem}
+import org.apache.hadoop.fs.{LocalFileSystem, Path, FileSystem}
 import org.apache.hadoop.filecache.DistributedCache
 import application._
 import ScoobiConfiguration._
@@ -60,9 +60,18 @@ trait FileSystems {
    * @return the list of files in a given directory on the file system
    */
   def listFiles(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
-    if (!fileSystem.exists(new Path(dest))) fileSystem.mkdirs(new Path(dest))
-    fileSystem.listStatus(new Path(dest)).map(_.getPath)
+    if (!fileSystem.exists(new Path(dest))) Seq()
+    else                                    fileSystem.listStatus(new Path(dest)).map(_.getPath)
   }
+
+  /**
+   * create a directory if it doesn't exist already
+   */
+  def mkdir(dest: String)(implicit configuration: ScoobiConfiguration) {
+    if (!fileSystem.exists(new Path(dest)))
+      fileSystem.mkdirs(new Path(dest))
+  }
+
 
   /**
    * delete all the files in a given directory on the file system
@@ -76,6 +85,11 @@ trait FileSystems {
    * @return the file system for a given configuration
    */
   def fileSystem(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)
+
+  /**
+   * @return true if the file system is loacl
+   */
+  def isLocal(implicit configuration: ScoobiConfiguration) = fileSystem.isInstanceOf[LocalFileSystem]
 
 }
 
