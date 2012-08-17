@@ -26,7 +26,7 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import rtt._
 import impl.Configurations._
-import application.ScoobiConfiguration
+import application.{LocalHadoop, ScoobiConfiguration}
 import testing.mutable.UnitSpecification
 import ScoobiConfiguration._
 
@@ -35,8 +35,9 @@ class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
 Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 
   "Each input format can be configured as an input channel on a job's configuration" >> {
-    val job = new Job(new ScoobiConfiguration, "id")
+    val job = new Job((new ScoobiConfiguration).setAsLocal, "id")
     val jarBuilder = mock[JarBuilder]
+
     val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore))
                                     .toMap.showAs(_.toList.sorted.mkString("\n")).evaluate
 
@@ -87,4 +88,5 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     bs
   }
 
+  def scoobiArgs = Seq[String]()
 }

@@ -17,7 +17,6 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import java.io.File
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
@@ -32,7 +31,7 @@ import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable.{Map => MMap}
 import scala.collection.mutable.{MutableList=> MList}
 import Option.{apply => ?}
-
+import scalaz.Scalaz._
 import core._
 import io._
 import plan._
@@ -40,12 +39,11 @@ import rtt._
 import util._
 import application.ScoobiConfiguration
 import ScoobiConfiguration._
+import scala.collection.mutable.{Set => MSet, Map => MMap}
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int) {
-  lazy val logger = LogFactory.getLog("scoobi.Step")
-
-  import scala.collection.mutable.{Set => MSet, Map => MMap}
+  private lazy val logger = LogFactory.getLog("scoobi.Step")
 
   /* Keep track of all the mappers for each input channel. */
   private val mappers: MMap[DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]] = MMap.empty
@@ -57,17 +55,12 @@ class MapReduceJob(stepId: Int) {
   private val valueTypes: MMap[Int, (Manifest[_], WireFormat[_])] = MMap.empty
 
 
-  /** Add an input mapping function to thie MapReduce job. */
+  /** Add an input mapping function to this MapReduce job. */
   def addTaggedMapper(input: DataSource[_,_,_], env: Option[Env[_]], m: TaggedMapper[_,_,_,_]) {
-    val tm = env match {
-      case Some(e) => (e, m)
-      case None    => (Env.empty, m)
-    }
+    val tm = (env.getOrElse(Env.empty), m)
 
-    if (!mappers.contains(input))
-      mappers += (input -> MSet(tm))
-    else
-      mappers(input) += tm : Unit   // This annotation is required due to a bug in Scala
+    if (!mappers.contains(input)) mappers += (input -> MSet(tm))
+    else                          mappers(input) += tm : Unit   // This annotation is required due to a bug in Scala
 
     m.tags.foreach { tag =>
       keyTypes   += (tag -> (m.mK, m.wtK, m.grpK))
@@ -82,38 +75,56 @@ class MapReduceJob(stepId: Int) {
 
   /** Add an output reducing function to this MapReduce job. */
   def addTaggedReducer(outputs: Set[_ <: DataSink[_,_,_]], env: Option[Env[_]], r: TaggedReducer[_,_,_,_]) {
-    val tr = env match {
-      case Some(e) => (e, r)
-      case None    => (Env.empty, r)
-    }
-
-    reducers += (outputs.toList -> tr)
+    reducers += (outputs.toList -> (env.getOrElse(Env.empty), r))
   }
 
   /** Take this MapReduce job and run it on Hadoop. */
-  def run(implicit configuration: ScoobiConfiguration) = {
+  def run(implicit configuration: ScoobiConfiguration) {
 
-    val job = new Job(configuration, configuration.jobId + "(Step-" + stepId + ")")
-    val fs = FileSystem.get(job.getConfiguration)
+    val job =
+      new Job(configuration, configuration.jobStep(stepId)) |>
+      configureJob |>
+      executeJob   |>
+      collectOutputs
 
-    /* Job output always goes to temporary dir from which files are subsequently moved from
-     * once the job is finished. */
-    val tmpOutputPath = new Path(configuration.workingDirectory, "tmp-out")
+    // if job failed, throw an exception
+    if(!job.isSuccessful) {
+      throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
+    }
+  }
 
-    /** Make temporary JAR file for this job. At a minimum need the Scala runtime
-      * JAR, the Scoobi JAR, and the user's application code JAR(s). */
-    val tmpFile = File.createTempFile("scoobi-job-"+configuration.jobId, ".jar")
-    var jar = new JarBuilder(tmpFile.getAbsolutePath)
-    job.getConfiguration.set("mapred.jar", tmpFile.getAbsolutePath)
+  private def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory)
 
+    val jar = new JarBuilder
+    job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
+    configureJar(jar)
+    configureKeysAndValues(jar, job)
+    configureMappers(jar, job)
+    configureCombiners(jar, job)
+    configureReducers(jar, job)
+    jar.close(configuration)
+
+    job
+  }
+
+  /** Make temporary JAR file for this job. At a minimum need the Scala runtime
+   * JAR, the Scoobi JAR, and the user's application code JAR(s). */
+  private[scoobi] def configureJar(jar: JarBuilder)(implicit configuration: ScoobiConfiguration) {
+    // if the dependent jars have not been already uploaded, make sure that the Scoobi jar
+    // i.e. the jar containing this.getClass, is included in the job jar.
+    if (!configuration.uploadedLibJars)
+      jar.addContainingJar(getClass)
     configuration.userJars.foreach { jar.addJar(_) }
     configuration.userDirs.foreach { jar.addClassDirectory(_) }
+  }
 
-    /** Sort-and-shuffle:
-      *   - (K2, V2) are (TaggedKey, TaggedValue), the wrappers for all K-V types
-      *   - Partitioner is generated and of type TaggedPartitioner
-      *   - GroupingComparator is generated and of type TaggedGroupingComparator
-      *   - SortComparator is handled by TaggedKey which is WritableComparable */
+  /** Sort-and-shuffle:
+   *   - (K2, V2) are (TaggedKey, TaggedValue), the wrappers for all K-V types
+   *   - Partitioner is generated and of type TaggedPartitioner
+   *   - GroupingComparator is generated and of type TaggedGroupingComparator
+   *   - SortComparator is handled by TaggedKey which is WritableComparable */
+  private def configureKeysAndValues(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     val id = UniqueId.get
 
     val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
@@ -131,12 +142,13 @@ class MapReduceJob(stepId: Int) {
     val tgRtClass = TaggedGroupingComparator("TG" + id, keyTypes.toMap)
     jar.addRuntimeClass(tgRtClass)
     job.setGroupingComparatorClass(tgRtClass.clazz.asInstanceOf[Class[_ <: RawComparator[_]]])
+  }
 
-
-    /** Mappers:
-      *     - use ChannelInputs to specify multiple mappers through job
-      *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
-      *       mapper for a given input channel can be used as they all have the same input type */
+  /** Mappers:
+   *     - use ChannelInputs to specify multiple mappers through job
+   *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
+   *       mapper for a given input channel can be used as they all have the same input type */
+  private def configureMappers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     val mappersList = mappers.toList
     ChannelsInputFormat.configureSources(job, jar, mappersList.map(_._1))
 
@@ -146,24 +158,25 @@ class MapReduceJob(stepId: Int) {
 
     DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
+  }
 
-
-    /** Combiners:
-      *   - only need to make use of Hadoop's combiner facility if actual combiner
-      *   functions have been added
-      *   - use distributed cache to push all combine code out */
+  /** Combiners:
+   *   - only need to make use of Hadoop's combiner facility if actual combiner
+   *   functions have been added
+   *   - use distributed cache to push all combine code out */
+  private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     if (!combiners.isEmpty) {
       val combinerMap: Map[Int, TaggedCombiner[_]] = combiners.map(tc => (tc.tag, tc)).toMap
       DistCache.pushObject(job.getConfiguration, combinerMap, "scoobi.combiners")
       job.setCombinerClass(classOf[MscrCombiner[_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
+  }
 
-
-    /** Reducers:
-      *     - generate runtime class (ScoobiWritable) for each output values being written to
-      *       a BridgeStore and add to JAR
-      *     - add a named output for each output channel */
-    FileOutputFormat.setOutputPath(job, tmpOutputPath)
+  /** Reducers:
+   *     - generate runtime class (ScoobiWritable) for each output values being written to
+   *       a BridgeStore and add to JAR
+   *     - add a named output for each output channel */
+  private def configureReducers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks foreach {
         case bs@BridgeStore() => {
@@ -198,24 +211,24 @@ class MapReduceJob(stepId: Int) {
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
     val inputBytes: Long = mappers.keys.map(_.inputSize).sum
-    val inputGigabytes: Int = (inputBytes / (1000 * 1000 * 1000)).toInt + 1
+    val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
     val numReducers: Int = inputGigabytes.toInt.max(configuration.getMinReducers).min(configuration.getMaxReducers)
     job.setNumReduceTasks(numReducers)
-
 
     /* Log stats on this MR job. */
     logger.info("Total input size: " +  Helper.sizeString(inputBytes))
     logger.info("Number of reducers: " + numReducers)
+  }
+
+  private def executeJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
 
     val taskDetailsLogger = new TaskDetailsLogger(job)
 
     try {
-
       /* Run job */
-      jar.close(configuration)
       job.submit()
 
-      val map = new Progress(job.mapProgress())
+      val map    = new Progress(job.mapProgress())
       val reduce = new Progress(job.reduceProgress())
 
       logger.info("MapReduce job '" + job.getJobID + "' submitted. Please see " + job.getTrackingURL + " for more info.")
@@ -224,21 +237,24 @@ class MapReduceJob(stepId: Int) {
         Thread.sleep(configuration.getInt("scoobi.progress.time", 5000))
         if (map.hasProgressed || reduce.hasProgressed)
           logger.info("Map " + map.getProgress.formatted("%3d") + "%    " +
-                      "Reduce " + reduce.getProgress.formatted("%3d") + "%")
+            "Reduce " + reduce.getProgress.formatted("%3d") + "%")
 
         // Log task details
         taskDetailsLogger.logTaskCompletionDetails()
       }
     } finally {
-      /* Tidy-up */
-      tmpFile.delete
+      configuration.temporaryJarFile.delete
     }
-
     // Log any left over task details
     taskDetailsLogger.logTaskCompletionDetails()
+    job
+  }
+
+  private def collectOutputs(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+    val fs = FileSystem.get(job.getConfiguration)
 
     /* Move named file-based sinks to their correct output paths. */
-    val outputFiles = fs.listStatus(tmpOutputPath) map { _.getPath }
+    val outputFiles = fs.listStatus(configuration.temporaryOutputDirectory) map { _.getPath }
     val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
 
     reducers.foreach { case (sinks, (_, reducer)) =>
@@ -263,13 +279,8 @@ class MapReduceJob(stepId: Int) {
 
       }
     }
-
-    fs.delete(tmpOutputPath, true)
-
-    // if job failed, throw an exception
-    if(!job.isSuccessful) {
-      throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
-    }
+    fs.delete(configuration.temporaryOutputDirectory, true)
+    job
   }
 }
 

@@ -481,7 +481,7 @@ object Intermediate {
       val gbkMSCRs = relatedNodes(g) map { related =>
 
         /* Create a GbkOutputChannel for each GroupByKey and the related group. */
-        val gbkOCs = related.gbks map { outputChannelForGbk(_, g) }
+        val gbkOCs = related.gbks map { outputChannelForGbk(_, g, related) }
 
         /* Create a MapperInputChannel for each group of ParallelDo nodes, "belonging" to this
          * set of related GBKs, that share the same input. */
@@ -685,7 +685,7 @@ object Intermediate {
      *    another MSCR (in a MapperInputChannel)
      *
      * (Note: Perhaps this condition is too restrictive!) */
-    private def outputChannelForGbk(gbk: DComp[_, _ <: Shape], g: DGraph): GbkOutputChannel = {
+    private def outputChannelForGbk(gbk: DComp[_, _ <: Shape], g: DGraph, related: MSCRGraph.Relation): GbkOutputChannel = {
 
       def getSingleSucc(d: DComp[_, _ <: Shape]): Option[DComp[_, _ <: Shape]] =
         g.succs.get(d) match {
@@ -702,17 +702,28 @@ object Intermediate {
         maybeOC.getOrElse(oc)
       }
 
+      /** Follow predecessors up the graph finding any related GroupByKey nodes after any Materialize nodes */
+      def hasMaterializedPredWithRelatedPreds(node: DComp[_, _ <: Shape], foundMaterialize: Boolean = false): Boolean = {
+        g.preds.get(node).map(_.exists(_ match {
+          case a if(isGroupByKey(a))  => (foundMaterialize && (related.gbks.contains(a) ||
+                                          hasMaterializedPredWithRelatedPreds(a, foundMaterialize)))
+          case a if(isMaterialize(a)) => hasMaterializedPredWithRelatedPreds(a, true)
+          case a                      => hasMaterializedPredWithRelatedPreds(a, foundMaterialize)
+        })).getOrElse(false)
+      }
+
       def addCombinerAndOrReducer(oc: GbkOutputChannel): GbkOutputChannel = {
         def addTheReducer(d: DComp[_, _ <: Shape], oc: GbkOutputChannel): GbkOutputChannel = {
           val maybeOC =
             for { d_                      <- getSingleSucc(d)
                   reducer                 <- getParallelDo(d_)
                   hasNoSuccessors         <- Some(!g.succs.get(reducer).isDefined)
+                  hasDepPredecssors       <- Some(hasMaterializedPredWithRelatedPreds(reducer))
                   hasMaterializeSucessor  <- Some(g.succs.get(reducer).map(_.exists(isMaterialize(_))).getOrElse(false))
                   hasGroupBarrier         <- Some(reducer.groupBarrier)
                   hasFuseBarrier          <- Some(reducer.fuseBarrier)
 
-            } yield (if (hasNoSuccessors || hasMaterializeSucessor || hasGroupBarrier || hasFuseBarrier) { oc.addReducer(reducer)} else { oc })
+            } yield (if ((hasNoSuccessors || hasMaterializeSucessor || hasGroupBarrier || hasFuseBarrier) && !hasDepPredecssors) { oc.addReducer(reducer) } else { oc })
           maybeOC.getOrElse(oc)
         }
 
