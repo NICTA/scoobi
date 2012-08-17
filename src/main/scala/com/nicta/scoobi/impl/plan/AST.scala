@@ -42,6 +42,7 @@ object AST {
 
     /* We don't want structural equality */
     override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
+    override def hashCode = id
   }
 
 

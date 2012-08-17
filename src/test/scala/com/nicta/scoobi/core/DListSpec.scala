@@ -54,4 +54,15 @@ class DListSpec extends NictaSimpleJobs {
     run(res) must not(throwAn[Exception])
   }
 
+  tag("issue 119")
+  "random" >> { implicit sc: SC =>
+    val r = new scala.util.Random
+
+    val s = (1 to 10).map(i => (i, r.nextInt(i))).
+                      groupBy(_._2).
+                      mapValues(r.shuffle(_))
+
+    (DObject(s) join DList(1, 2, 3)).run must not(throwAn[Exception])
+  }
+
 }
