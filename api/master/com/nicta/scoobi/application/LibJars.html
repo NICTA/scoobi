@@ -156,14 +156,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#configureJars" data-isabs="false">
-      <a id="configureJars(ScoobiConfiguration):Configuration"></a>
+      <a id="configureJars(ScoobiConfiguration):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
@@ -355,15 +355,15 @@
       </span>
       </h4>
       <p class="shortcomment cmt">this variable controls if the upload must be done at all</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#uploadLibJars" data-isabs="false">
-      <a id="uploadLibJars(ScoobiConfiguration):Any"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" data-isabs="false">
+      <a id="uploadLibJarsFiles(ScoobiConfiguration):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uploadLibJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
+        <span class="name">uploadLibJarsFiles</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">upload the jars which don't exist yet in the library directory on the cluster

@@ -30,7 +30,7 @@
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>This trait provides methods to execute map-reduce code, either locally or on the cluster.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>LocalHadoop</p><p>To use this trait, you need to provide:</p><ul><li>the file system address: def fs = &quot;hdfs://svm-hadoop1.ssrg.nicta.com.au&quot;</li><li>the job tracker address: def jobTracker = &quot;svm-hadoop1.ssrg.nicta.com.au:8021&quot;
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a name="com.nicta.scoobi.application.Hadoop" class="extype" href="">Hadoop</a></dd><dt>See also</dt><dd><span class="cmt"><p>LocalHadoop</p><p>To use this trait, you need to provide:</p><ul><li>the file system address: def fs = &quot;hdfs://svm-hadoop1.ssrg.nicta.com.au&quot;</li><li>the job tracker address: def jobTracker = &quot;svm-hadoop1.ssrg.nicta.com.au:8021&quot;
 </li></ul></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a>, <a name="com.nicta.scoobi.application.Cluster" class="extype" href="Cluster.html">Cluster</a>, <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a>, <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a>, <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
@@ -245,14 +245,14 @@
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with local setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#configureJars" data-isabs="false">
-      <a id="configureJars(ScoobiConfiguration):Configuration"></a>
+      <a id="configureJars(ScoobiConfiguration):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
@@ -339,7 +339,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">executeOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a> = <span class="symbol"><span class="name"><a href="ScoobiConfiguration$.html">ScoobiConfiguration()</a></span></span></span>)</span><span class="result">: T</span>
+        <span class="name">executeOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
@@ -493,6 +493,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#noLibJars" data-isabs="false">
+      <a id="noLibJars:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">noLibJars</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>false if libjars are used</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a> → <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
       <a id="notify():Unit"></a>
       <h4 class="signature">
@@ -542,14 +554,14 @@
       </h4>
       <p class="shortcomment cmt">execute some code, either locally or on the cluster, depending on the local argument being passed on the commandline</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#onLocal" data-isabs="false">
-      <a id="onLocal[T](⇒ T):T"></a>
+      <a id="onLocal[T](⇒ T)(ScoobiConfiguration):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">onLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="result">: T</span>
+        <span class="name">onLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code locally, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
@@ -667,15 +679,15 @@
       </span>
       </h4>
       <p class="shortcomment cmt">this variable controls if the upload must be done at all</p><div class="fullcomment"><div class="comment cmt"><p>this variable controls if the upload must be done at all</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#uploadLibJars" data-isabs="false">
-      <a id="uploadLibJars(ScoobiConfiguration):Any"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" data-isabs="false">
+      <a id="uploadLibJarsFiles(ScoobiConfiguration):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uploadLibJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
+        <span class="name">uploadLibJarsFiles</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">upload the jars which don't exist yet in the library directory on the cluster
@@ -694,6 +706,18 @@
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the remote jars currently on the cluster
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#useHadoopConfDir" data-isabs="false">
+      <a id="useHadoopConfDir:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">useHadoopConfDir</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if cluster configuration must be loaded from Hadoop's configuration directory</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a> → <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">

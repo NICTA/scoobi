@@ -344,6 +344,19 @@ added to the classpath.
       </h4>
       <p class="shortcomment cmt">the file system for this configuration
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#getBytesPerReducer" data-isabs="false">
+      <a id="getBytesPerReducer:Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getBytesPerReducer</span><span class="result">: <span name="scala.Long" class="extype">Long</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get the number of input bytes per reducer.</p><div class="fullcomment"><div class="comment cmt"><p>Get the number of input bytes per reducer. Default is 1GiB.
+</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -467,6 +480,18 @@ added to the classpath.
       </h4>
       <p class="shortcomment cmt">set a new job name to help recognize the job better
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#jobStep" data-isabs="false">
+      <a id="jobStep(Int):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jobStep</span><span class="params">(<span name="stepId">stepId: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The job name for a step in the current Scoobi, i.</p><div class="fullcomment"><div class="comment cmt"><p>The job name for a step in the current Scoobi, i.e. a single MapReduce job</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#loadDefaults" data-isabs="false">
       <a id="loadDefaults:ScoobiConfiguration"></a>
       <h4 class="signature">
@@ -588,6 +613,47 @@ The command line argument doesn't have to start with a dash.</p>
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setAsLocal" data-isabs="false">
+      <a id="setAsLocal:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setAsLocal</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">force a configuration to be a local one
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setBytesPerReducer" data-isabs="false">
+      <a id="setBytesPerReducer(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setBytesPerReducer</span><span class="params">(<span name="sizeInBytes">sizeInBytes: <span name="scala.Long" class="extype">Long</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Set the number of input bytes per reducer.</p><div class="fullcomment"><div class="comment cmt"><p>Set the number of input bytes per reducer. This is used to control the number of
+reducers based off the size of the input data to the M/R job.
+</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setDirectories" data-isabs="false">
+      <a id="setDirectories:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setDirectories</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">this setup needs to be done only after the internal conf object has been set to a local configuration or a cluster one *
+because all the paths will depend on that
+</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setMaxReducers" data-isabs="false">
       <a id="setMaxReducers(Int):Unit"></a>
       <h4 class="signature">
@@ -613,17 +679,30 @@ The command line argument doesn't have to start with a dash.</p>
       </h4>
       <p class="shortcomment cmt">Set a lower bound for the number of reducers to be used in M/R jobs</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setRemote" data-isabs="false">
-      <a id="setRemote:Unit"></a>
+      <a id="setRemote(Boolean):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRemote</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setRemote</span><span class="params">(<span name="remote">remote: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">set a flag in order to know that this configuration is for a remote execution
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setUploadedLibJars" data-isabs="false">
+      <a id="setUploadedLibJars(Boolean):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setUploadedLibJars</span><span class="params">(<span name="uploaded">uploaded: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">set a flag in order to know if jars have been uploaded before jobs are defined
 </p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
@@ -637,6 +716,30 @@ The command line argument doesn't have to start with a dash.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#temporaryJarFile" data-isabs="false">
+      <a id="temporaryJarFile:File"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">temporaryJarFile</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#temporaryOutputDirectory" data-isabs="false">
+      <a id="temporaryOutputDirectory:Path"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">temporaryOutputDirectory</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -649,6 +752,19 @@ The command line argument doesn't have to start with a dash.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a> → AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#uploadedLibJars" data-isabs="false">
+      <a id="uploadedLibJars:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uploadedLibJars</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the dependent jars have been uploaded
+</p></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#userDirs" data-isabs="false">
       <a id="userDirs:Set[String]"></a>
       <h4 class="signature">
