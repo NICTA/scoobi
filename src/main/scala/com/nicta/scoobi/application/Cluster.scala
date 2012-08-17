@@ -36,7 +36,7 @@ trait ClusterConfiguration extends Cluster {
 
   def configuration: ScoobiConfiguration
 
-  def fs         = configuration.get(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+  def fs         = configuration.get(FS_DEFAULT_NAME_KEY, "file:///")
   def jobTracker = configuration.get("mapred.job.tracker", "local")
 }
 

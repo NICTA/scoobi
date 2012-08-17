@@ -197,7 +197,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
    */
   def setAsLocal: ScoobiConfiguration = {
     jobNameIs(getClass.getSimpleName)
-    set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+    set(FS_DEFAULT_NAME_KEY, "file:///")
     set("mapred.job.tracker", "local")
     setDirectories
   }
