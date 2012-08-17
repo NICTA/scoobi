@@ -36,11 +36,23 @@ trait ScoobiCommandLineArgs extends DelayedInit {
     body()
   }
 
+  /**
+   * scoobi arguments are the ones which are dot-separated after 'scoobi'
+   *
+   * hadoop jar job.jar file.txt scoobi verbose.all file2.txt
+   * => scoobiArguments = Seq(verbose, all)
+   */
   private[scoobi] def setScoobiArgs(args: Seq[String]) {
     val after = args.dropWhile(!_.toLowerCase.startsWith("scoobi"))
     scoobiArguments = after.drop(1).take(1).map(_.toLowerCase).flatMap(_.split("\\."))
   }
 
+  /**
+   * the users arguments are the ones which are before and after the scoobi arguments:
+   *
+   * hadoop jar job.jar file.txt scoobi verbose.all file2.txt
+   * => userArguments = Seq(file.txt, file2.txt)
+   */
   private[scoobi] def setRemainingArgs(args: Seq[String]) {
     val (before, after) = args.span(!_.toLowerCase.startsWith("scoobi"))
     userArguments = before ++ after.drop(2)

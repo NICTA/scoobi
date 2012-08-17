@@ -29,7 +29,7 @@ trait UploadedLibJars extends SpecificationStructure with HadoopExamples {
   override def map(fs: =>Fragments) = fs.insert(uploadStep)
 
   /** create a Step to upload the jars on the cluster */
-  def uploadStep = Step(if (executeRemotely && context.isRemote) uploadLibJars(context.outside))
+  def uploadStep = Step(if (executeRemotely && context.isRemote) uploadLibJarsFiles(context.outside))
 
   /** @return true if the examples need to be executed remotely */
   private def executeRemotely = arguments.keep("cluster") ||  arguments.keep("hadoop")

@@ -60,7 +60,8 @@ trait LibJars {
   /**
    * upload the jars which don't exist yet in the library directory on the cluster
    */
-  def uploadLibJars(implicit configuration: ScoobiConfiguration) = if (upload) {
+  def uploadLibJarsFiles(implicit configuration: ScoobiConfiguration) = if (upload) {
+    FileSystems.mkdir(libjarsDirectory)
     FileSystems.uploadNewJars(jars.map(url => new File(url.getFile)), libjarsDirectory)
     configureJars
   }
@@ -68,7 +69,7 @@ trait LibJars {
   /**
    * @return a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
    */
-  def configureJars(implicit configuration: ScoobiConfiguration) = {
+  def configureJars(implicit configuration: ScoobiConfiguration) = if (upload) {
     uploadedJars.foreach(path => DistributedCache.addFileToClassPath(path, configuration))
     configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }

@@ -27,7 +27,7 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
     fromInput("first", "example").run must_== Seq("first", "example")
   }
   "persisting a file with a simple map must not crash" >> { implicit c: SC =>
-    fromInput("second", "example").map(_.size).run must_== Seq("6", "7")
+    fromInput("second", "example").map(_.size).run must_== Seq(6, 7)
   }
   section("issue #25")
 
