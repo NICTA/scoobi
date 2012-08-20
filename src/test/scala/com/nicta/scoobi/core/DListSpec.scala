@@ -65,4 +65,11 @@ class DListSpec extends NictaSimpleJobs {
     (DObject(s) join DList(1, 2, 3)).run must not(throwAn[Exception])
   }
 
+  tag("issue 137")
+  "DList.concat will concatenate multiple DLists." >> { implicit sc: SC =>
+    val aa = DList(1 to 5)
+    val bb = DList(6 to 10)
+
+    DList.concat(aa, bb).run.sorted must_== (1 to 10).toSeq
+  }
 }
