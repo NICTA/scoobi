@@ -39,6 +39,8 @@ import impl.Configurations
 import Configurations._
 import core._
 import application.ScoobiConfiguration
+import impl.collection.Seqs._
+import impl.collection.{BoundedLinearSeq, FunctionBoundedLinearSeq}
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {
@@ -100,13 +102,7 @@ object FunctionInput {
       logger.debug("numSplitsHint=" + numSplitsHint)
       logger.debug("splitSize=" + splitSize)
 
-      // if the list is empty, don't try to group by splitSize because in this case splitSize is 0
-      // and grouped will fail at runtime (see issue #60, issue #75)
-      if (n == 0) new java.util.ArrayList[InputSplit]
-      else        (0 to (n - 1)).toSeq.grouped(splitSize)
-                      .map { r => (r.head, r.size) }
-                      .map { case (s, l) => new FunctionInputSplit[A](s, l, f) }
-                      .toList
+      split(f, splitSize, (offset: Int, length: Int, fs: Int => A) => new FunctionInputSplit(offset, length, fs))(FunctionBoundedLinearSeq(_, n))
     }
   }
 

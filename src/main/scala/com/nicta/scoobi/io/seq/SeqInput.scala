@@ -35,6 +35,7 @@ import Configurations._
 import core._
 import application.ScoobiConfiguration
 import impl.collection.Seqs._
+import impl.collection.BoundedLinearSeq
 
 /**
  * Function for creating a distributed lists from a scala.collection.Seq
