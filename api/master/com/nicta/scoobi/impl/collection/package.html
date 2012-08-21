@@ -48,7 +48,31 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.collection.Maps" data-isabs="true">
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.collection.BoundedLinearSeq" data-isabs="true">
+      <a id="BoundedLinearSeq:BoundedLinearSeq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="BoundedLinearSeq.html"><span class="name">BoundedLinearSeq</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.collection.FunctionBoundedLinearSeq" data-isabs="false">
+      <a id="FunctionBoundedLinearSeq:FunctionBoundedLinearSeq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="FunctionBoundedLinearSeq.html"><span class="name">FunctionBoundedLinearSeq</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (Int) ⇒ A</span>, <span name="fsize">fsize: Int</span>)</span><span class="result"> extends BoundedLinearSeq[A] with Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.collection.Maps" data-isabs="true">
       <a id="Maps:Maps"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -61,6 +85,18 @@
       </h4>
       <p class="comment cmt">This trait provides utility methods on maps, especially mutable maps
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.collection.SeqBoundedLinearSeq" data-isabs="false">
+      <a id="SeqBoundedLinearSeq:SeqBoundedLinearSeq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqBoundedLinearSeq.html"><span class="name">SeqBoundedLinearSeq</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="seq">seq: Seq[A]</span>)</span><span class="result"> extends BoundedLinearSeq[A] with Product with Serializable</span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 
