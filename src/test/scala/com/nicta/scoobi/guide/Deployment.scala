@@ -10,7 +10,7 @@ If using `sbt run` to launch the job is not acceptable, it's possible to make se
 
 ### Disable Upload Jar
 
-TODO: Document when it's done...
+Since we're packaging this as a self-contained jar, we want to disable the convience scoobi machinery that uploads the dependencies, to your cluster for you. To do this, add "-- scoobi nolibjars" to the end of your command line arguments. Or alternatively, hardcode it in via `override def upload = false` inside your scoobi app.
 
 ### Sbt-assembly
 
@@ -64,8 +64,8 @@ However, we do need some of Scoobi's dependencies -- so we have to add them in m
 
 ```
 "javassist" % "javassist" % "3.12.1.GA"
-"org.apache.avro" % "avro-mapred" % "1.7.0" # Note: you only need this if you use it 
-"org.apache.avro" % "avro" % "1.7.0"        # Note: you only need this if you use it
+"org.apache.avro" % "avro-mapred" % "1.7.0" // Note: you only need this if you use it
+"org.apache.avro" % "avro" % "1.7.0"        // Note: you only need this if you use it
 "org.scalaz" %% "scalaz-core" % "6.95"
 "com.thoughtworks.xstream" % "xstream" % "1.4.3"
 ```
@@ -81,6 +81,11 @@ and manually adding xstream's required dependency:
 ```
 "xpp3" % "xpp3" % "1.1.4c"
 ```
+
+And lastly, we want `sbt compile` to work. So we will add hadoop as a "provided" dependency:
+
+"org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0" % "provided"
+"org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0" % "provided"
 
 
 When you put this all together, here's is what an example `build.sbt` should look like:
@@ -100,16 +105,20 @@ scalaVersion := "2.9.2"
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 libraryDependencies ++= Seq(
-	"com.nicta" %% "scoobi" % "0.5.0-SNAPSHOT" intransitive(),
-	"javassist" % "javassist" % "3.12.1.GA",
-	"org.apache.avro" % "avro-mapred" % "1.7.0",  # Note: you only need this if you use it
-	"org.apache.avro" % "avro" % "1.7.0",         # Note: you only need this if you use it
-	"org.scalaz" %% "scalaz-core" % "6.95",
-	"com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
-	"xpp3" % "xpp3" % "1.1.4c"
-	)
+   "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" intransitive(),
+   "javassist" % "javassist" % "3.12.1.GA",
+   "org.apache.avro" % "avro-mapred" % "1.7.0",  // Note: you only need this if you use it
+   "org.apache.avro" % "avro" % "1.7.0",         // Note: you only need this if you use it
+   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0" % "provided",
+   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0" % "provided",
+   "org.scalaz" %% "scalaz-core" % "6.95",
+   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
+   "xpp3" % "xpp3" % "1.1.4c"
+   )
 
-resolvers += "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
+resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
+                  "apache"   at "https://repository.apache.org/content/repositories/releases",
+                  "scoobi"   at "http://nicta.github.com/scoobi/releases") // for scalaz 6.95
 ```
 
 ### Running
@@ -134,5 +143,5 @@ $ export HADOOP_CLASSPATH=$PWD/target/appname-assembly-version.jar
 $ hadoop WordCount <args>
 ```
 
-TODO: Document command line argument to disable upload jar when its done"""
+If you have any issues with ClassNotFound exception, make sure you've disabled upload jars (see above)"""
 }
