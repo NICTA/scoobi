@@ -8,9 +8,9 @@ class Deployment extends ScoobiPage { def is = "Deployment".title^
 If using `sbt run` to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment. Previously we had a plugin `sbt-scoobi` but since deprecated in favor of using existing tools. [Sbt-assembly](https://github.com/sbt/sbt-assembly/) does the trick, but unfortunately isn't too particularly easy/nice to use.
 
 
-### Disable Upload Jar
+### Disable jars uploading
 
-Since we're packaging this as a self-contained jar, we want to disable the convience scoobi machinery that uploads the dependencies, to your cluster for you. To do this, add "-- scoobi nolibjars" to the end of your command line arguments. Or alternatively, hardcode it in via `override def upload = false` inside your scoobi app.
+By default an application using th `ScoobiApp` trait, will upload all the dependent jars to the cluster in a `libjars` directory (see the [Application](Application.html#Dependencies) page). If you package your own fat jar with all the dependent classes, you will want to deactivate this functionality by adding the following arguments to the command line: `scoobi nolibjars`. Or alternatively, hardcode it in via `override def upload = false` inside your scoobi app.
 
 ### Sbt-assembly
 
@@ -132,7 +132,7 @@ $ sbt assembly
 Running the jar:
 
 ```
-$ hadoop jar target/appname-assembly-version.jar
+$ hadoop jar target/appname-assembly-version.jar scoobi nolibjars
 ```
 
 
@@ -143,5 +143,6 @@ $ export HADOOP_CLASSPATH=$PWD/target/appname-assembly-version.jar
 $ hadoop WordCount <args>
 ```
 
-If you have any issues with ClassNotFound exception, make sure you've disabled upload jars (see above)"""
+If you have any `ClassNotFoundException` with a Scoobi class missing, make sure you've disabled jars uploading (see above).
+"""
 }
