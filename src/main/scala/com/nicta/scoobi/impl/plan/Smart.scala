@@ -586,7 +586,7 @@ object Smart {
     /** If this Flatten node has any inputs that are also Flatten nodes, make all the inputs of the input Flatten
       * node inputs of this Flatten node. */
     override def optFuseFlattens(copied: CopyTable): (DComp[A, Arr], CopyTable, Boolean) = copyOnce(copied) {
-      val (insUpd, copiedUpd, b) = justCopyInputs(ins, copied, _.optSplitFlattens(_))
+      val (insUpd, copiedUpd, b) = justCopyInputs(ins, copied, _.optFuseFlattens(_))
       val insUpdMerged = insUpd flatMap {
         case Flatten(otherIns) => otherIns
         case x                 => List(x)

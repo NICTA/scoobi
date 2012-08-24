@@ -268,30 +268,34 @@ trait DList[A] {
 /** This object provides a set of operations to create distributed lists. */
 object DList {
 
-  /** Creates a distributed list with given elements. */
+  /** Create a distributed list with given elements. */
   def apply[A : Manifest : WireFormat](elems: A*): DList[A] = SeqInput.fromSeq(elems)
 
   /** Create a distributed list of Ints from a Range. */
   def apply(range: Range): DList[Int] = SeqInput.fromSeq(range)
 
-  /** Creates a distributed list from a data source. */
+  /** Create a distributed list from a data source. */
   def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A] =
     new DListImpl(source)
 
-  /** Concatenates all distributed lists into a single distributed list. */
+  /** Concatenate all distributed lists into a single distributed list. */
   def concat[A : Manifest : WireFormat](xss: List[DList[A]]): DList[A] = xss match {
     case Nil      => sys.error("'concat' must take a non-empty list.")
     case x :: Nil => x
     case x :: xs  => x ++ (xs: _*)
   }
 
-  /** Concatenates all distributed lists into a single distributed list. */
+  /** Concatenate all distributed lists into a single distributed list. */
   def concat[A : Manifest : WireFormat](xss: DList[A]*): DList[A] = concat(xss.toList)
 
-  /** Creates a distributed list containing values of a given function over a range of
+  /** Create a distributed list containing values of a given function over a range of
    * integer values starting from 0. */
   def tabulate[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] =
     FunctionInput.fromFunction(n)(f)
+
+  /** Create a DList with the same element repeated n times. */
+  def fill[A : Manifest : WireFormat](n: Int)(a: =>A): DList[A] =
+    DList(Seq.fill(n)(a):_*)
 
   /** Pimping from generic collection types (i.e. Seq) to a Distributed List */
   implicit def traversableToDList[A : Manifest : WireFormat](traversable: Traversable[A]) = new TraversableToDList[A](traversable)
