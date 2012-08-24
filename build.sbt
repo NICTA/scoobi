@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.9.0" % "optional",
   "org.pegdown" % "pegdown" % "1.0.2" % "test",
   "junit" % "junit" % "4.7" % "test",
-  "org.apache.commons" % "commons-math" % "2.2" % "test"
+  "org.apache.commons" % "commons-math" % "2.2" % "test",
+  "org.apache.commons" % "commons-compress" % "1.0" % "test"
 )
 
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
