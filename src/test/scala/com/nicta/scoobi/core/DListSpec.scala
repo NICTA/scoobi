@@ -72,4 +72,27 @@ class DListSpec extends NictaSimpleJobs {
 
     DList.concat(aa, bb).run.sorted must_== (1 to 10).toSeq
   }
+  
+  
+  "DList reductions should not crash" >> { implicit sc: SC =>
+    val dl = DList(1 -> 1)
+    val n = 5
+  
+    val lists = Seq.fill(n)(dl)
+
+    lists.reduce(_++_).groupByKey.run.toString must_== Seq(1 -> Seq.fill(5)(1)).toString
+  }.pendingUntilFixed
+  
+  "DList should concat via reduce" >> { implicit sc: SC =>
+    val dl = DList(1 -> 1)
+    val n = 5
+  
+    val lists = Seq.fill(n)(dl)
+
+    lists.reduce(_++_).run must_== Seq.fill(n)(1 -> 1)
+    
+  }.pendingUntilFixed
+  
+  
+  
 }
