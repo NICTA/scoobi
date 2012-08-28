@@ -219,8 +219,9 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**@return a pseudo-random unique id */
   private def uniqueId = java.util.UUID.randomUUID
 
-  def set(key: String, value: String) {
-    configuration.set(key, value)
+  /** set a value on the configuration */
+  def set(key: String, value: Any) {
+    configuration.set(key, if (value == null) "null" else value.toString)
   }
 
   private lazy val scoobiTmpDir = FileSystem.get(configuration).getHomeDirectory.toUri.getPath + "/.scoobi-tmp/"

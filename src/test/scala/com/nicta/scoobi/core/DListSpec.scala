@@ -18,6 +18,7 @@ package core
 
 import org.apache.hadoop.io.Text
 import testing.NictaSimpleJobs
+import Scoobi._
 
 class DListSpec extends NictaSimpleJobs {
 
