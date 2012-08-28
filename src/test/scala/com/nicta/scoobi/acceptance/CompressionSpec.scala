@@ -1,7 +1,7 @@
 package com.nicta.scoobi
 package acceptance
 
-import testing.{TempFiles, NictaSimpleJobs}
+import testing.{TestFiles, TempFiles, NictaSimpleJobs}
 import Scoobi._
 import java.io.{OutputStream, FileInputStream, FileOutputStream, File}
 import java.util.zip.{DeflaterOutputStream, GZIPOutputStream}
@@ -9,9 +9,13 @@ import impl.control.Exceptions._
 import io.FileSystems
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.compress.GzipCodec
+import scala.io.Source
+import org.specs2.matcher.Matcher
 
 class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
 
+  "INPUTS".txt
   "gzipped files can be used as an input to a Scoobi job, just using fromTextFile" >> { implicit sc: SC =>
     val lines: DList[String] = writeToTempFile("text", Seq.fill(5)("hello"))(".gz")
     lines.run must have size(5)
@@ -20,6 +24,45 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
   "bzip2 files can be used as an input to a Scoobi job, just using fromTextFile" >> { implicit sc: SC =>
     val lines: DList[String] = writeToTempFile("text", Seq.fill(5)("hello"))(".bz2")
     lines.run must have size(5)
+  }
+
+  "OUTPUTS".txt
+  "gzipped files can be used as an output to a Scoobi job, just using toTextFile and specifying a codec" >> { implicit sc: SC =>
+    val list = DList.fill(5)(1)
+    val resultDir = TestFiles.createTempDir("result")
+    persist(toTextFile(list, resultDir.getPath).compressWith(new GzipCodec))
+
+    copyResults(resultDir) must containFiles(".gz")
+  }
+
+  "it is possible to compress outputs independently" >> { implicit sc: SC =>
+    val (list1, list2) = (DList.fill(5)(1), DList.fill(5)(2))
+
+    val (resultDir1, resultDir2) = (TestFiles.createTempDir("result1"), TestFiles.createTempDir("result2"))
+
+    persist(toTextFile(list1, resultDir1.getPath).compress, toTextFile(list2, resultDir2.getPath))
+
+    copyResults(resultDir1) must containFiles(".gz")
+    copyResults(resultDir2) must notContainFiles(".gz")
+  }
+
+  def containFiles(extension: String): Matcher[File] = (resultDir: File) =>  {
+    resultDir.list must not (beEmpty)
+    resultDir.listFiles.toSeq.filter(_.getName.matches("ch.*"+extension)) must not (beEmpty)
+  }
+  def notContainFiles(extension: String): Matcher[File] = (resultDir: File) =>  {
+    resultDir.list must not (beEmpty)
+    resultDir.listFiles.toSeq.filter(_.getName.matches("ch.*"+extension)) must beEmpty
+  }
+  def containFilesWithNoExtension: Matcher[File] = (resultDir: File) =>  {
+    resultDir.list must not (beEmpty)
+    resultDir.listFiles.toSeq.filter(_.getName.matches("ch[^\\.]*")) must not(beEmpty)
+  }
+  def copyResults(resultDir: File)(implicit sc: SC) = {
+    if (sc.isRemote) {
+      sc.fileSystem.copyToLocalFile(new Path(resultDir.getPath), new Path(resultDir.getPath))
+    }
+    resultDir
   }
 
 }

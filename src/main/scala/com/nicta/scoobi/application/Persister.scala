@@ -24,6 +24,8 @@ import io.DataSink
 import impl.plan._
 import impl.exec._
 import Smart._
+import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
+import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** Type class for things that can be persisted. Mechanism to allow tuples of DLists and
   * DObjects to be persisted. */
@@ -289,7 +291,10 @@ object Persister {
 
 
 /** The container for persisting a DList. */
-case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A])
+case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A]) {
+  def compress = compressWith(new GzipCodec)
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(sink = sink.outputCompression(codec))
+}
 
 import scalaz.State
 
