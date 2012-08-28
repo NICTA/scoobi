@@ -18,6 +18,7 @@ package core
 
 import org.apache.hadoop.io.Text
 import testing.NictaSimpleJobs
+import Scoobi._
 
 class DListSpec extends NictaSimpleJobs {
 
@@ -55,7 +56,7 @@ class DListSpec extends NictaSimpleJobs {
   }
 
   tag("issue 119")
-  "random" >> { implicit sc: SC =>
+  "joining an object created from random elements and a DList must not crash" >> { implicit sc: SC =>
     val r = new scala.util.Random
 
     val s = (1 to 10).map(i => (i, r.nextInt(i))).
@@ -74,25 +75,16 @@ class DListSpec extends NictaSimpleJobs {
   }
   
   
-  "DList reductions should not crash" >> { implicit sc: SC =>
-    val dl = DList(1 -> 1)
-    val n = 5
-  
-    val lists = Seq.fill(n)(dl)
+  "DLists can be concatenated via reduce" >> {
+    val lists = Seq.fill(5)(DList(1 -> 2))
 
-    lists.reduce(_++_).groupByKey.run.toString must_== Seq(1 -> Seq.fill(5)(1)).toString
-  }.pendingUntilFixed
-  
-  "DList should concat via reduce" >> { implicit sc: SC =>
-    val dl = DList(1 -> 1)
-    val n = 5
-  
-    val lists = Seq.fill(n)(dl)
+    "without group by key" >> { implicit sc: SC =>
+      lists.reduce(_++_).run === Seq.fill(5)(1 -> 2)
+    }
+    "with a group by key" >> { implicit sc: SC =>
+      lists.reduce(_++_).groupByKey.run.toList.toString === Seq(1 -> Vector.fill(5)(2)).toString
+    }
+  }
 
-    lists.reduce(_++_).run must_== Seq.fill(n)(1 -> 1)
-    
-  }.pendingUntilFixed
-  
-  
-  
+
 }
