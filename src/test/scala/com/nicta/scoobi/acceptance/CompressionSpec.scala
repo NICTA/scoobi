@@ -12,6 +12,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.compress.GzipCodec
 import scala.io.Source
 import org.specs2.matcher.Matcher
+import org.specs2.mutable.Specification
 
 class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
 
@@ -26,7 +27,7 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
     lines.run must have size(5)
   }
 
-  "OUTPUTS".txt
+  "OUTPUTS".newp
   "gzipped files can be used as an output to a Scoobi job, just using toTextFile and specifying a codec" >> { implicit sc: SC =>
     val list = DList.fill(5)(1)
     val resultDir = TestFiles.createTempDir("result")
@@ -45,6 +46,11 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
     copyResults(resultDir1) must containFiles(".gz")
     copyResults(resultDir2) must notContainFiles(".gz")
   }
+
+  "INTERMEDIATE".newp
+  "Mapper outputs can also be compressed" in pending
+  "Reducer outputs can also be compressed" in pending
+
 
   def containFiles(extension: String): Matcher[File] = (resultDir: File) =>  {
     resultDir.list must not (beEmpty)
@@ -116,5 +122,12 @@ trait CompressedFiles {
         path
       } else outputFile.getPath
     }((e:Exception) => println("error compressing a "+suffix+" file: "+e.getMessage)).getOrElse(file.getPath)
+  }
+}
+
+class TestSpec extends Specification {
+  "this " should {
+    "be ok" in ok
+    "be ok2" in ok
   }
 }

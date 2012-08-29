@@ -45,7 +45,7 @@ trait DataSink[K, V, B] { outer =>
   /** Maps the type consumed by this DataSink to the key-values of its OutputFormat. */
   def outputConverter: OutputConverter[K, V, B]
 
-  /** compress the output */
+  /** Set the compression configuration */
   def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = new DataSink[K, V, B] {
     def outputFormat: Class[_ <: OutputFormat[K, V]] = outer.outputFormat
     def outputKeyClass: Class[K]                     = outer.outputKeyClass
@@ -62,6 +62,7 @@ trait DataSink[K, V, B] { outer =>
     }
   }
 
+  /** configure the compression for a given job */
   def configureCompression(job: Job) = job
 }
 
