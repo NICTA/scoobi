@@ -31,10 +31,12 @@ import java.net.{URLClassLoader, URLDecoder}
 import impl.rtt.RuntimeClass
 import application.ScoobiConfiguration
 import JarBuilder._
+import org.apache.commons.logging.LogFactory
 
 
 /** Class to manage the creation of a new JAR file. */
 class JarBuilder(implicit configuration: ScoobiConfiguration) {
+  private lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
 
   private val jos = new JarOutputStream(new FileOutputStream(configuration.temporaryJarFile.getAbsolutePath))
   private val entries: MSet[String] = MSet.empty
@@ -82,16 +84,21 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   def close(implicit configuration: ScoobiConfiguration) {
     jos.close()
     if (configuration.getClassLoader.isInstanceOf[URLClassLoader]) {
+      logger.debug("adding the temporary jar entries to the current classloader")
+
       val loader = configuration.getClassLoader.asInstanceOf[URLClassLoader]
        invoke(loader, "addURL", Array(new File(configuration.temporaryJarFile.getName).toURI.toURL))
        // load the classes right away so that they're always available
        // otherwise the job jar will be removed when the MapReduce job
        // has finished running and the classes won't be available for further use
        // like acceptance tests where we need to read the results from a SequenceFile
-       try { entries.foreach(e => loader.loadClass(e)) }
-       // this might fail for some entries like scala/util/continuations/ControlContext*
-       catch { case e => () }
-    }
+      entries.foreach { e =>
+        try { loader.loadClass(e) }
+        // this might fail for some entries like scala/util/continuations/ControlContext*
+        catch { case ex: Throwable => () }
+
+      }
+    } else logger.debug("cannot add the temporary jar to the current classloader because this is not a URLClassLoader")
   }
 
   private def invoke[T](t: T, method: String, params: Array[AnyRef]) {
