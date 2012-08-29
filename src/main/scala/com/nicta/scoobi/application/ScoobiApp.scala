@@ -64,8 +64,9 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
    */
   def main(arguments: Array[String]) {
     parseHadoopArguments(arguments)
-    if (!locally) uploadLibJarsFiles
     onHadoop {
+      // uploading the jars must only be done when the configuration is fully setup with "onHadoop"
+      if (!locally) uploadLibJarsFiles
       try { run }
       finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
     }
@@ -91,7 +92,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
    *
    * if locally returns true then we might attempt to upload the dependent jars to the cluster and to add them to the classpath
    */
-  override def locally = FileSystems.isLocal || useHadoopConfDir && super.locally
+  override def locally = (FileSystems.isLocal || useHadoopConfDir && super.locally) && !super.isCluster
 }
 
 
