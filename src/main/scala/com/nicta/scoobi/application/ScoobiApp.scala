@@ -87,12 +87,11 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
 
   /**
    * the execution is local if the file system is local, as determined by the configuration files loaded by the hadoop script
-   * Otherwise, if running from inside sbt and if the Hadoop configuration directory is used to find the files, the execution
-   * can still be local if "local" is passed on the command line.
+   * or if "local" is passed on the command line.
    *
    * if locally returns true then we might attempt to upload the dependent jars to the cluster and to add them to the classpath
    */
-  override def locally = (FileSystems.isLocal || useHadoopConfDir && super.locally) && !super.isCluster
+  override def locally = FileSystems.isLocal || super.locally
 }
 
 
