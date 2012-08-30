@@ -21,6 +21,7 @@ import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._
 import org.apache.hadoop.conf.Configuration
 import com.thoughtworks.xstream.XStream
+import com.thoughtworks.xstream.io.xml.StaxDriver
 import Configurations._
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
@@ -28,7 +29,7 @@ import Configurations._
   * distributed cache. Two APIs are provided for pushing and pulling objects. */
 object DistCache {
 
-  private val xstream = new XStream()
+  private val xstream = new XStream(new StaxDriver())
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */
