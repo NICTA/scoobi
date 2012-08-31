@@ -54,7 +54,7 @@ The big advantage to this approach, is that `sbt run` still works
 
 We can also fake the `libraryDependencies` to build a proper jar. Please note, the way we change this, will make it incompatible with a normal `sbt run`. So you might want to have two versions of your `build.sbt`
 
-First of all, we want to not get all of scoobi's dependencies (as we don't want Hadoop itself, and because sbt-assembly can't handle some of merge conflicts). So what can use is a little trick:
+First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:
 
 ```
 "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" intransitive()
@@ -67,29 +67,15 @@ However, we do need some of Scoobi's dependencies -- so we have to add them in m
 "org.apache.avro" % "avro-mapred" % "1.7.0" // Note: you only need this if you use it
 "org.apache.avro" % "avro" % "1.7.0"        // Note: you only need this if you use it
 "org.scalaz" %% "scalaz-core" % "6.95"
-"com.thoughtworks.xstream" % "xstream" % "1.4.3"
-```
-
-but unfortunately `sbt-assembly` (currently) can't handle xstream very well. So we can manually force it to work with the same trick:
-
-```
 "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
 ```
 
-and manually adding xstream's required dependency:
-
-```
-"xpp3" % "xpp3" % "1.1.4c"
-```
-
-And lastly, we want `sbt compile` to work. So we will add hadoop as a "provided" dependency:
+And lastly, we probably want `sbt compile` to work -- so we add in we add in all the dependencies we excluded, but as a provided". e.g.
 
 "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0" % "provided"
 "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0" % "provided"
 
-
 When you put this all together, here's is what an example `build.sbt` should look like:
-
 
 ```
 import AssemblyKeys._
@@ -107,13 +93,12 @@ scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 libraryDependencies ++= Seq(
    "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" intransitive(),
    "javassist" % "javassist" % "3.12.1.GA",
-   "org.apache.avro" % "avro-mapred" % "1.7.0",  // Note: you only need this if you use it
-   "org.apache.avro" % "avro" % "1.7.0",         // Note: you only need this if you use it
+   "org.apache.avro" % "avro-mapred" % "1.7.0", // Note: add ' % "provided"'  if you don't need it 
+   "org.apache.avro" % "avro" % "1.7.0",        // Note: add ' % "provided"'  if you don't need it 
    "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0" % "provided",
    "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0" % "provided",
    "org.scalaz" %% "scalaz-core" % "6.95",
-   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
-   "xpp3" % "xpp3" % "1.1.4c"
+   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
    )
 
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
