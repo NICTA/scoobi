@@ -19,7 +19,6 @@ package testing
 import org.specs2.execute._
 import org.specs2.specification._
 import org.specs2.Specification
-import org.specs2.main.CommandLineArguments
 import application._
 import impl.time.SimpleTimer
 
@@ -35,7 +34,7 @@ import impl.time.SimpleTimer
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
  */
-trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster {
+trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster { outer =>
 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context
@@ -68,8 +67,8 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     def outside = configureForCluster(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.contain("hadoop") || arguments.contain("cluster")) remotely(cleanup(a).apply(outside))
-      else                                                             Skipped("excluded", "No cluster execution time")
+      if (!outer.isLocalOnly) remotely(cleanup(a).apply(outside))
+      else                    Skipped("excluded", "No cluster execution time")
     }
   }
 
@@ -93,8 +92,8 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     def outside = configureForLocal(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (arguments.contain("hadoop") || arguments.contain("local")) locally(cleanup(a).apply(outside))
-      else                                                            Skipped("excluded", "No local execution time")
+      if (!outer.isClusterOnly) locally(cleanup(a).apply(outside))
+      else                      Skipped("excluded", "No local execution time")
     }
     override def isRemote = false
   }
@@ -171,4 +170,4 @@ trait CommandLineHadoopLogFactory extends HadoopLogFactorySetup with CommandLine
 /**
  * Hadoop specification with an acceptance specification
  */
-trait HadoopSpecification extends Specification with HadoopSpecificationStructure
+trait HadoopSpecification extends Specification with HadoopSpecificationStructure with ScoobiAppConfiguration

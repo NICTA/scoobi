@@ -79,11 +79,9 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     }
     step(HadoopLogFactory.setLogFactory())
   }
-  "tags can be used to control the execution of examples" >> {
-    "'hadoop' runs locally, then on the cluster" >> runMustBeLocalThenCluster(examples("hadoop"))
-    "'cluster'    runs on the cluster only"      >> runMustBeCluster(examples("cluster"))
-    "'local'      run locally only"              >> runMustBeLocal(examples("local"))
-    "'unit'       no run, that's for unit tests" >> noRun(examples("unit"))
+  "arguments can be used to control the execution of examples locally or on the cluster" >> {
+    "'cluster'    runs on the cluster only"      >> runMustBeCluster(examplesWithArguments("scoobi cluster"))
+    "'local'      run locally only"              >> runMustBeLocal(examplesWithArguments("scoobi local"))
   }
   "arguments for scoobi can be passed from the command line" >> {
     localExamples.scoobiArgs must beEmpty
