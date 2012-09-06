@@ -31,7 +31,7 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
   "gzipped files can be used as an output to a Scoobi job, just using toTextFile and specifying a codec" >> { implicit sc: SC =>
     val list = DList.fill(5)(1)
     val resultDir = TestFiles.createTempDir("result")
-    persist(toTextFile(list, resultDir.getPath).compressWith(new GzipCodec))
+    persist(toTextFile(list, outputPath(resultDir)).compressWith(new GzipCodec))
 
     copyResults(resultDir) must containFiles(".gz")
   }
@@ -41,7 +41,7 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
 
     val (resultDir1, resultDir2) = (TestFiles.createTempDir("result1"), TestFiles.createTempDir("result2"))
 
-    persist(toTextFile(list1, resultDir1.getPath).compress, toTextFile(list2, resultDir2.getPath))
+    persist((toTextFile(list1, outputPath(resultDir1)).compress, toTextFile(list2, outputPath(resultDir2))))
 
     copyResults(resultDir1) must containFiles(".gz")
     copyResults(resultDir2) must notContainFiles(".gz")
@@ -66,11 +66,16 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
   }
   def copyResults(resultDir: File)(implicit sc: SC) = {
     if (sc.isRemote) {
-      sc.fileSystem.copyToLocalFile(new Path(resultDir.getPath), new Path(resultDir.getPath))
+      sc.fileSystem.listStatus(new Path(resultDir.getName)).foreach { f =>
+        sc.fileSystem.copyToLocalFile(f.getPath, new Path(resultDir.getPath))
+      }
     }
     resultDir
   }
 
+  private def outputPath(resultDir: File)(implicit sc: ScoobiConfiguration): String =
+    if (sc.isRemote) resultDir.getName
+    else             resultDir.getPath
 }
 
 trait CompressedFiles {
