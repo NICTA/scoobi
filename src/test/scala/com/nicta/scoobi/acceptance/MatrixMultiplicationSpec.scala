@@ -28,9 +28,11 @@ import org.apache.commons.math.linear.FieldMatrix
 import org.apache.commons.math.linear.SparseFieldMatrix
 import org.apache.commons.math.util.BigReal
 import org.apache.commons.math.util.BigRealField
+import org.specs2.mutable.Tags
 
-class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
-
+class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck with Tags {
+  
+  tag("MatrixMultiplication")
   "Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
     Prop.forAll(genMatrixData, genMatrixData)(runTest).set('minTestsOk -> 1)
   }

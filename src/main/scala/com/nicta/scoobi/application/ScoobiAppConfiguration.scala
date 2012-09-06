@@ -34,7 +34,7 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
   lazy val HADOOP_CONF_DIR = HADOOP_HOME.map(_+"/conf/")
 
   /** default configuration */
-  implicit lazy val configuration: ScoobiConfiguration = {
+  implicit def configuration: ScoobiConfiguration = {
     if (useHadoopConfDir) ScoobiConfiguration(configurationFromConfigurationDirectory)
     else                  ScoobiConfiguration()
   }

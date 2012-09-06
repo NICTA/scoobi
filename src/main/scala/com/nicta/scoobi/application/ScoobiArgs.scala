@@ -50,17 +50,19 @@ trait ScoobiUserArgs extends ScoobiArgs {
   /** scoobi arguments passed on the command-line, i.e. values after 'scoobi' */
   def scoobiArgs: Seq[String]
 
-  override def showTimes        = matches(".*.times.*")
+  override def showTimes        = is("times")
   override def quiet            = isQuiet
   override def level            = extractLevel(argumentsValues)
   override def categories       = extractCategories(argumentsValues)
-  override def locally          = is("local") && !isCluster
+  override def locally          = is("local") && !is("cluster")
   override def useHadoopConfDir = is("useconfdir")
   override def deleteLibJars    = is("deletelibjars")
   override def noLibJars        = is("nolibjars")
   override def keepFiles        = is("keepfiles")
   /** @return true if the cluster argument is specified */
-  def isCluster                 = is("cluster")
+  def isClusterOnly             = is("cluster") && !is("local")
+  /** alias for locally */
+  def isLocalOnly               = locally
 
   private def is(argName: String)      = argumentsValues.exists(_.contains(argName))
   private def matches(argName: String) = argumentsValues.exists(_.matches(argName))
@@ -102,7 +104,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
   def extractLevel(args: String): Level = extractLevel(args.split("\\."))
 }
 
-trait CommandLineScoobiUserArgs extends ScoobiArgs with CommandLineArguments {
+trait CommandLineScoobiUserArgs extends ScoobiUserArgs with CommandLineArguments {
   /** the scoobi arguments passed on the command line */
   lazy val scoobiArgs = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1).flatMap(_.split("\\."))
 

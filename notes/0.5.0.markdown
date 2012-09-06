@@ -1,0 +1,36 @@
+### New Features
+
+ * added a full outer join to the relational library
+ * refactored the ScoobiApp trait with several [command-line options](http://nicta.github.com/scoobi/guide/Application.html#Application)
+ * added a `keepfiles` argument for testing to be able to inspect temporary files
+ * [issue 85](https://github.com/NICTA/scoobi/issues/85) set the minimum and maximum number of reducers
+ * now a Scoobi job fails when an intermediate Hadoop job fails
+ * added more logging and a url to the job on the job tracker when there is a failure
+ * added type/schema checking in Sequence and Avro datasources
+ * a `DList` can now be created with `Text` elements (or any `Writable`)
+ * [issue 129](https://github.com/NICTA/scoobi/issues/129): added the ability to set the input size threshold per reducer
+
+### Changes
+
+ * restructured the code so that "core" classes like DList, DObject go to a `com.nicta.scoobi.core` package while application-level classes like `ScoobiApp` or `ScoobiConfiguration` go to `com.nicta.scoobi.application`
+ * using sbt 0.12.0
+ * there are now 2 main builds for Scoobi: the master branch builds a Scoobi version for cdh4 and there is a separate cdh3 branch using the cdh3 jars
+ * [issue 97](https://github.com/NICTA/scoobi/issues/97): upgraded to avro 1.7.0 on the cdh3 branch
+ * Avro can't be used with cdh4 yet because of an Avro bug
+ * [issue 122](https://github.com/NICTA/scoobi/issues/122): disabled the implicit definition creating a default `WireFormat` based on Java serialisation
+ * removed the sbt-scoobi plugin in favor of the use of the [sbt-assembly plugin](http://nicta.github.com/scoobi/guide/Deployment.html#Deployment)
+ * removed the Java bindings
+
+### Fixes
+
+ * fixed the computation of splits when creating a ChannelInputFormat
+ * [issue 113](https://github.com/NICTA/scoobi/issues/113): taking the minimum and the maximum of a list
+ * [issue 117](https://github.com/NICTA/scoobi/issues/117): exception in a complex graph
+ * [issue 119](https://github.com/NICTA/scoobi/issues/119): value-dependent object graph bug
+ * [issue 127](https://github.com/NICTA/scoobi/issues/127): StackOverflowError with a groupBy and DObject
+ * [issue 137](https://github.com/NICTA/scoobi/issues/137): infinite loop on DList.concat
+ * [issue 139](https://github.com/NICTA/scoobi/issues/139): suppress redundant
+ * null strings can now be serialized
+ * and numerous other important fixes, not necessarily created as issues on Github
+
+------ 

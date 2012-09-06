@@ -44,6 +44,9 @@ import io.FileSystems
  */
 trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
 
+  /** store the value of the configuration in a lazy val, so that it can be updated and still be referenced */
+  override implicit lazy val configuration = super.configuration
+
   /**
    * this provides the arguments which are parsed to change the behavior of the Scoobi app: logging, local/cluster,...
    * @see ScoobiUserArgs

@@ -101,16 +101,6 @@ This will be especially useful if you execute your specifications on a build ser
 
 The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a `ScoobiApp`) but they can be turned on by using the `verbose` arguments. See the [Application](${SCOOBI_GUIDE_PAGE}Application.html#Logging) in this User Guide to learn how to set log levels and log categories.
 
-##### Tags
-
-You can use tags to run only locally or only on the cluster, with the mixed-in the `HadoopTags` trait. This trait automatically tags all your examples with `acceptance, local, cluster`.
-
-Those tags can be called from the sbt command-line to control the execution of the specification:
-
- * `sbt>test-only -- include hadoop` only runs the `HadoopSpecification`s
- * `sbt>test-only *WordCount* -- include local` only runs `WordCountSpec` examples locally
- * `sbt>test-only *WordCount* -- include cluster` only runs `WordCountSpec` examples on the cluster
-
 ##### Type alias
 
 Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:

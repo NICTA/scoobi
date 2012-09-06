@@ -40,11 +40,8 @@ object AST {
 
     def toVerboseString: String
 
-    /** We an equality based on the id unicity */
-    override def equals(a: Any): Boolean = a match {
-      case other: Node[_,_] => id == other.id
-      case _                => false
-    }
+    /* We don't want structural equality */
+    override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
     override def hashCode = id
   }
 
