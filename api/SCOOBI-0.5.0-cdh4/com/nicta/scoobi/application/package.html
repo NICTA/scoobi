@@ -1,0 +1,420 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.application</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a></p>
+        <h1>application</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">application</span>
+      </span>
+      </h4>
+      
+      <div class="fullcommenttop" id="comment"></div>
+    
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.application.package#@@" data-isabs="false">
+      <a id="@@:@@[T, U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $at$at">@@</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> = T with Tagged[U]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.package.AsLevel" data-isabs="true">
+      <a id="AsLevel:AsLevel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$AsLevel.html"><span class="name">AsLevel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Cluster" data-isabs="true">
+      <a id="Cluster:Cluster"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Cluster.html"><span class="name">Cluster</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Definition of the Cluster addresses: FileSystem + JobTracker
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ClusterConfiguration" data-isabs="true">
+      <a id="ClusterConfiguration:ClusterConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ClusterConfiguration.html"><span class="name">ClusterConfiguration</span></a><span class="result"> extends Cluster</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Implementation of the Cluster trait taking the configuration from a ScoobiConfiguration object
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs" data-isabs="true">
+      <a id="CommandLineScoobiUserArgs:CommandLineScoobiUserArgs"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CommandLineScoobiUserArgs.html"><span class="name">CommandLineScoobiUserArgs</span></a><span class="result"> extends ScoobiUserArgs with CommandLineArguments</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.DListPersister" data-isabs="false">
+      <a id="DListPersister:DListPersister[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DListPersister.html"><span class="name">DListPersister</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dlist">dlist: DList[A]</span>, <span name="sink">sink: com.nicta.scoobi.io.DataSink[_, _, A]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">The container for persisting a DList.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Hadoop" data-isabs="true">
+      <a id="Hadoop:Hadoop"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Hadoop.html"><span class="name">Hadoop</span></a><span class="result"> extends LocalHadoop with Cluster with LibJars</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait provides methods to execute map-reduce code, either locally or on the cluster.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.HadoopLogFactory" data-isabs="false">
+      <a id="HadoopLogFactory:HadoopLogFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopLogFactory.html"><span class="name">HadoopLogFactory</span></a><span class="result"> extends LogFactory</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Log factory used for testing.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.package#Level" data-isabs="false">
+      <a id="Level:Level"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Level</span><span class="result"> = String with Tagged[<a name="com.nicta.scoobi.application.package.AsLevel" class="extype" href="package$$AsLevel.html">AsLevel</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars" data-isabs="true">
+      <a id="LibJars:LibJars"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LibJars.html"><span class="name">LibJars</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait defines:</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop" data-isabs="true">
+      <a id="LocalHadoop:LocalHadoop"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LocalHadoop.html"><span class="name">LocalHadoop</span></a><span class="result"> extends ScoobiUserArgs</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Execute Hadoop code locally
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.PFn" data-isabs="true">
+      <a id="PFn:PFn[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="PFn.html"><span class="name">PFn</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Type class for persisting something.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister" data-isabs="true">
+      <a id="Persister:Persister[In]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Persister.html"><span class="name">Persister</span></a><span class="tparams">[<span name="In">In</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Type class for things that can be persisted.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiApp" data-isabs="true">
+      <a id="ScoobiApp:ScoobiApp"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiApp.html"><span class="name">ScoobiApp</span></a><span class="result"> extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait can be extended to create an application running Scoobi code.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiAppConfiguration" data-isabs="true">
+      <a id="ScoobiAppConfiguration:ScoobiAppConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiAppConfiguration.html"><span class="name">ScoobiAppConfiguration</span></a><span class="result"> extends ClusterConfiguration with ScoobiArgs</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
+$HADOOP_HOME/conf directory.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiArgs" data-isabs="true">
+      <a id="ScoobiArgs:ScoobiArgs"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiArgs.html"><span class="name">ScoobiArgs</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait defines all the options which can be used to modify the behavior of a Scoobi application
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiCommandLineArgs" data-isabs="true">
+      <a id="ScoobiCommandLineArgs:ScoobiCommandLineArgs"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiCommandLineArgs.html"><span class="name">ScoobiCommandLineArgs</span></a><span class="result"> extends DelayedInit</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait can be mixed in an Application trait in order to store command-line arguments before any code is executed
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration" data-isabs="false">
+      <a id="ScoobiConfiguration:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiConfiguration.html"><span class="name">ScoobiConfiguration</span></a><span class="params">(<span name="configuration">configuration: Configuration</span>, <span name="userJars">userJars: Set[String]</span>, <span name="userDirs">userDirs: Set[String]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
+added to the classpath.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs" data-isabs="true">
+      <a id="ScoobiUserArgs:ScoobiUserArgs"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiUserArgs.html"><span class="name">ScoobiUserArgs</span></a><span class="result"> extends ScoobiArgs</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Implementation of the ScoobiArgs trait taking the values from the command line arguments
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.package#Tagged" data-isabs="false">
+      <a id="Tagged:Tagged[U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Tagged</span><span class="tparams">[<span name="U">U</span>]</span><span class="result"> = AnyRef { type Tag = U }</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div class="values members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.Orderings#BytesOrdering" data-isabs="false">
+      <a id="BytesOrdering:Ordering[BytesWritable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BytesOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.BytesWritable" class="extype">BytesWritable</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#DoubleOrdering" data-isabs="false">
+      <a id="DoubleOrdering:Ordering[DoubleWritable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">DoubleOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.DoubleWritable" class="extype">DoubleWritable</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.HadoopLogFactory" data-isabs="false">
+      <a id="HadoopLogFactory:HadoopLogFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopLogFactory$.html"><span class="name">HadoopLogFactory</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.PFn" data-isabs="false">
+      <a id="PFn:PFn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PFn$.html"><span class="name">PFn</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">PFn type class instances for DLists (i.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister" data-isabs="false">
+      <a id="Persister:Persister"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Persister$.html"><span class="name">Persister</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Persister type class instances for tuples.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration" data-isabs="false">
+      <a id="ScoobiConfiguration:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiConfiguration$.html"><span class="name">ScoobiConfiguration</span></a><span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#TextOrdering" data-isabs="false">
+      <a id="TextOrdering:Ordering[Text]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">TextOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.Text" class="extype">Text</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.package#level" data-isabs="false">
+      <a id="level(String):Level"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">level</span><span class="params">(<span name="l">l: String</span>)</span><span class="result">: Level</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
