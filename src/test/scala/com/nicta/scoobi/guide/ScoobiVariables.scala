@@ -40,8 +40,8 @@ trait ScoobiVariables {
   lazy val apiSnapshotPage  = apiDir+"master/scala/index.html"
   lazy val apiPage          = (if (isSnapshot) apiSnapshotPage else apiOfficialPage)
 
-  lazy val guideOfficialDir = "guide"
-  lazy val guideSnapshotDir = guideOfficialDir + "-SNAPSHOT/guide"
+  lazy val guideOfficialDir = "guide/"
+  lazy val guideSnapshotDir = "guide-SNAPSHOT/guide/"
   lazy val guideDir         = (if (isSnapshot) guideSnapshotDir else guideOfficialDir)
 
   lazy val guideOfficialPage = landingPage + guideOfficialDir

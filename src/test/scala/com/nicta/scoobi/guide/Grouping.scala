@@ -129,7 +129,7 @@ Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need 
 
     }
 
-Now calling `bigKey.groupByKey` will work as intended, with all lastNames arriving in order. All this code is available in a [runnable example](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples/secondarySort):
+Now calling `bigKey.groupByKey` will work as intended, with all lastNames arriving in order.
 
                                                                                                                         """
 }
