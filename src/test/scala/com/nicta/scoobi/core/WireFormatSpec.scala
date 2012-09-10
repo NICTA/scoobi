@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package core
 
@@ -51,9 +66,13 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
 
   "A WireFormat instance can be created, using the Serializable interface" >> {
     "for a case class with a Double, a String, an Int" >> {
+      // we need to explicitly import the wireformat
+      implicit val wf = AnythingFmt[DefaultDoubleStringInt]
       serializationIsOkFor[DefaultDoubleStringInt]
     }
     "for a nested case class" >> {
+      // we need to explicitly import the wireformat
+      implicit val wf = AnythingFmt[DefaultStringNested]
       serializationIsOkFor[DefaultStringNested]
     }
   }
@@ -68,37 +87,37 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
       implicit val DoubleStringIntWireFormat = mkCaseWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
       serializationIsOkFor[WritableDoubleStringInt]
 
-      "this method is (much) more efficient than the default one" >> check {
-        x: WritableDoubleStringInt =>
-          serialize(x).length must be_<(serialize(x.toDefault).length)
+      "this method is (much) more efficient than the default one" >> prop {x: WritableDoubleStringInt =>
+        serialize(x).length must be_<(serialize(x.toDefault)(AnythingFmt[DefaultDoubleStringInt]).length)
       }
     }
     "for a nested case class" >> {
+      implicit val DoubleStringIntWireFormat      = mkCaseWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
       implicit val WritableStringNestedWireFormat = mkCaseWireFormat(WritableStringNested, WritableStringNested.unapply _)
+
       serializationIsOkFor[WritableStringNested]
 
-      "this method is (much) more efficient than the default one" >> check {
-        x: WritableStringNested =>
-          serialize(x).length must be_<(serialize(x.toDefault).length)
+      "this method is (much) more efficient than the default one" >> prop { x: WritableStringNested =>
+          serialize(x).length must be_<(serialize(x.toDefault)(AnythingFmt[DefaultStringNested]).length)
       }
     }
 
     "for case classes of an ADT, by making WireFormats for each node type,\n " +
       "including the base type, up to 8 different types" >> {
-      implicit val BaseIntWritable = mkCaseWireFormat(BaseInt, BaseInt.unapply _)
+      implicit val BaseIntWritable    = mkCaseWireFormat(BaseInt, BaseInt.unapply _)
       implicit val BaseStringWritable = mkCaseWireFormat(BaseString, BaseString.unapply _)
       implicit val BaseObjectWritable = mkObjectWireFormat(BaseObject)
-      implicit val BaseWritable = mkAbstractWireFormat[Base, BaseInt, BaseString, BaseObject.type]
+      implicit val BaseWritable       = mkAbstractWireFormat[Base, BaseInt, BaseString, BaseObject.type]
 
-      "for one node type" >> check {
+      "for one node type" >> prop {
         (s: String) =>
           serializationIsOkWith(BaseString(s))
       }
-      "for another node type" >> check {
+      "for another node type" >> prop {
         (i: Int) =>
           serializationIsOkWith(BaseInt(i))
       }
-      "for an object of the base type" >> check {
+      "for an object of the base type" >> prop {
         (i: Int) =>
           serializationIsOkWith(BaseObject)
       }

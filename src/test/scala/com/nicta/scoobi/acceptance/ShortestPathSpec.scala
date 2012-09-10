@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package acceptance
 
@@ -48,13 +63,13 @@ object ShortestPath {
 
   implicit val NodeOrderImp = NodeComparator
 
-  implicit val unprocessedFormat            = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _)
-  implicit val frontierFormat               = mkCaseWireFormat(Frontier, Frontier.unapply _)
-  implicit val doneFormat                   = mkCaseWireFormat(Done, Done.unapply _)
-  implicit val progressFormat               = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]()
+  implicit val unprocessedFormat           : WireFormat[Unprocessed] = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _)
+  implicit val frontierFormat              : WireFormat[Frontier]    = mkCaseWireFormat(Frontier, Frontier.unapply _)
+  implicit val doneFormat                  : WireFormat[Done]        = mkCaseWireFormat(Done, Done.unapply _)
+  implicit val progressFormat              : WireFormat[Progress]    = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]()
+  implicit val nodeFormat                  : WireFormat[Node]        = mkCaseWireFormat(Node, Node.unapply _)
+  implicit val nodeInfoFormat              : WireFormat[NodeInfo]    = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
 
-  implicit val nodeFormat                   = mkCaseWireFormat(Node, Node.unapply _)
-  implicit val nodeInfoFormat               = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
   implicit val nodeGrouping: Grouping[Node] = OrderingGrouping[Node]
 
   case class Node(data: String)

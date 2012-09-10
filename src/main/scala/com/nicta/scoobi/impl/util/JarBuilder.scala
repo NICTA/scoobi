@@ -1,18 +1,18 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package impl
 package util
@@ -30,14 +30,15 @@ import java.net.{URLClassLoader, URLDecoder}
 
 import impl.rtt.RuntimeClass
 import application.ScoobiConfiguration
+import JarBuilder._
+import org.apache.commons.logging.LogFactory
 
 
 /** Class to manage the creation of a new JAR file. */
-class JarBuilder(val name: String) {
+class JarBuilder(implicit configuration: ScoobiConfiguration) {
+  private lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
 
-  import JarBuilder._
-
-  private val jos = new JarOutputStream(new FileOutputStream(name))
+  private val jos = new JarOutputStream(new FileOutputStream(configuration.temporaryJarFile.getAbsolutePath))
   private val entries: MSet[String] = MSet.empty
 
   /** Merge in the contents of an entire JAR. */
@@ -83,16 +84,21 @@ class JarBuilder(val name: String) {
   def close(implicit configuration: ScoobiConfiguration) {
     jos.close()
     if (configuration.getClassLoader.isInstanceOf[URLClassLoader]) {
+      logger.debug("adding the temporary jar entries to the current classloader")
+
       val loader = configuration.getClassLoader.asInstanceOf[URLClassLoader]
-       invoke(loader, "addURL", Array(new File(name).toURI.toURL))
+       invoke(loader, "addURL", Array(new File(configuration.temporaryJarFile.getName).toURI.toURL))
        // load the classes right away so that they're always available
        // otherwise the job jar will be removed when the MapReduce job
        // has finished running and the classes won't be available for further use
        // like acceptance tests where we need to read the results from a SequenceFile
-       try { entries.foreach(e => loader.loadClass(e)) }
-       // this might fail for some entries like scala/util/continuations/ControlContext*
-       catch { case e => () }
-    }
+      entries.foreach { e =>
+        try { loader.loadClass(e) }
+        // this might fail for some entries like scala/util/continuations/ControlContext*
+        catch { case ex: Throwable => () }
+
+      }
+    } else logger.debug("cannot add the temporary jar to the current classloader because this is not a URLClassLoader")
   }
 
   private def invoke[T](t: T, method: String, params: Array[AnyRef]) {

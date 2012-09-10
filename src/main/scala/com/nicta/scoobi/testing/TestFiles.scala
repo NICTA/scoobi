@@ -1,10 +1,26 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package testing
 
 import java.io.File
 import scala.io.Source
-import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.{Path, FileSystem}
 import Scoobi._
+import io.FileSystems
 
 /**
  * This trait creates input and output files which are temporary
@@ -13,10 +29,16 @@ import Scoobi._
 trait TestFiles {
 
   def createTempFile(prefix: String, keep: Boolean)(implicit configuration: ScoobiConfiguration) =
-    registerFile(TempFiles.createTempFile(prefix+configuration.jobId), keep)
+    registerFile(moveToRemote(TempFiles.createTempFile(prefix+configuration.jobId), keep), keep)
 
   def createTempFile(prefix: String)(implicit configuration: ScoobiConfiguration) =
-    registerFile(TempFiles.createTempFile(prefix+configuration.jobId))
+    registerFile(moveToRemote(TempFiles.createTempFile(prefix+configuration.jobId)))
+
+  def createTempFile(prefix: String, suffix: String)(implicit configuration: ScoobiConfiguration) =
+    registerFile(moveToRemote(TempFiles.createTempFile(prefix+configuration.jobId, suffix)))
+
+  def createTempFile(prefix: String, suffix: String, keep: Boolean)(implicit configuration: ScoobiConfiguration) =
+    registerFile(moveToRemote(TempFiles.createTempFile(prefix+configuration.jobId, suffix), keep), keep)
 
   def createTempDir(prefix: String)(implicit configuration: ScoobiConfiguration) =
     registerFile(TempFiles.createTempDir(prefix+configuration.jobId))
@@ -38,6 +60,12 @@ trait TestFiles {
 
   implicit def fs(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)
 
+  def moveToRemote(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
+    if (isRemote) {
+      FileSystems.fileSystem.copyFromLocalFile(!keep, new Path(file.getPath), new Path(configuration.workingDirectory+file.getName))
+      new File(configuration.workingDirectory+file.getName)
+    } else file
+  }
   def registerFile(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
     if (!keep) configuration.addValues("scoobi.test.files", file.getPath)
     file

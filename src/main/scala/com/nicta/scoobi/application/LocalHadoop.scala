@@ -1,9 +1,25 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
 import impl.time.SimpleTimer
 import HadoopLogFactory._
+import org.apache.hadoop.fs.FileSystem._
 
 /**
  * Execute Hadoop code locally
@@ -20,11 +36,12 @@ trait LocalHadoop extends ScoobiUserArgs {
   }
 
   /** execute some code locally, possibly showing execution times */
-  def onLocal[T](t: =>T) =
+  def onLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration) =
     showTime(executeOnLocal(t))(displayTime("Local execution time"))
 
   /** execute some code locally */
-  def executeOnLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration = ScoobiConfiguration()) = {
+  def executeOnLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration) = {
+    setLogFactory()
     configureForLocal
     runOnLocal(t)
   }
@@ -37,12 +54,8 @@ trait LocalHadoop extends ScoobiUserArgs {
   /**
    * @return a configuration with local setup
    */
-  def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
-    setLogFactory()
-    configuration.jobNameIs(getClass.getSimpleName)
-    configuration.setInt("scoobi.progress.time", 500)
-    configuration
-  }
+  def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration =
+    configuration.setAsLocal
 
   /** @return a function to display execution times. The default uses log messages */
   def displayTime(prefix: String) = (timer: SimpleTimer) => {

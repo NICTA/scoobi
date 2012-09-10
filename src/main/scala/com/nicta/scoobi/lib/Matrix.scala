@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package lib
 
@@ -219,6 +234,50 @@ object LinearAlgebra {
     zero: R,
     mult: (V, T) => R,
     add: (R, R) => R): InMemDenseVector[R] = vectorByMatrix(dv, m, zero, mult, add)
+
+  def matrixBySparseFunc[Elem: Manifest: WireFormat: Ordering, V: Manifest: WireFormat, Value: Manifest: WireFormat, Q: Manifest: WireFormat](
+    matrix: DMatrix[Elem, Value],
+    generateRow: () => Map[Elem, V],
+    mult: (Value, V) => Q,
+    add: (Q, Q) => Q): DMatrix[Elem, Q] =
+    {
+      val left = matrix.by(_._1._2)
+
+      left.groupByKey.parallelDo(
+        new BasicDoFn[(Elem, Iterable[((Elem, Elem), Value)]), ((Elem, Elem), Q)] {
+          def process(input: (Elem, Iterable[((Elem, Elem), Value)]), emitter: Emitter[((Elem, Elem), Q)]) = {
+            val bs = generateRow()
+
+            for (a <- input._2) {
+              bs.foreach {
+                b => emitter.emit(((a._1._1, b._1), mult(a._2, b._2)))
+              }
+            }
+          }
+        }).groupByKey.combine((a: Q, b: Q) => add(a, b))
+    }
+
+  def matrixByDenseFunc[V: Manifest: WireFormat, Value: Manifest: WireFormat, Q: Manifest: WireFormat](
+    matrix: DMatrix[Int, Value],
+    generateRow: () => Seq[V],
+    mult: (Value, V) => Q,
+    add: (Q, Q) => Q): DMatrix[Int, Q] =
+    {
+      val left = matrix.map(a => (a._1._2, (a._1._1,a._2)))
+
+      left.groupByKey.parallelDo(
+        new BasicDoFn[(Int, Iterable[(Int, Value)]), ((Int, Int), Q)] {
+          def process(input: (Int, Iterable[(Int, Value)]), emitter: Emitter[((Int, Int), Q)]) = {
+            val bs = generateRow()
+
+            for (a <- input._2) {
+              bs.zipWithIndex.foreach {
+                b => emitter.emit(((a._1, b._2), mult(a._2, b._1)))
+              }
+            }
+          }
+        }).groupByKey.combine((a: Q, b: Q) => add(a, b))
+    }
 
   def matrixByMatrix[Elem: Manifest: WireFormat: Ordering, V: Manifest: WireFormat, Value: Manifest: WireFormat, Q: Manifest: WireFormat](
     l: DMatrix[Elem, Value],

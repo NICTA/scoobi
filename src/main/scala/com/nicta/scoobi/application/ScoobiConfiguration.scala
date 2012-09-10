@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package application
 
@@ -11,8 +26,13 @@ import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
 import Configurations._
 import com.nicta.scoobi.impl.util.JarBuilder
-import java.net.URL
+import java.net.{URLClassLoader, URL}
 import org.apache.hadoop.mapred.JobConf
+import java.io.File
+import ScoobiConfiguration._
+import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.fs.FileSystem._
+import io.FileSystems
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -91,8 +111,19 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * set a flag in order to know that this configuration is for a remote execution
    */
-  def setRemote {
-    set("scoobi.remote", "true")
+  def setRemote(remote: Boolean) {
+    set("scoobi.remote", remote.toString)
+  }
+  /**
+   * @return true if the dependent jars have been uploaded
+   */
+  def uploadedLibJars = configuration.getBoolean("scoobi.uploadedlibjars", false)
+
+  /**
+   * set a flag in order to know if jars have been uploaded before jobs are defined
+   */
+  def setUploadedLibJars(uploaded: Boolean) {
+    set("scoobi.uploadedlibjars", uploaded.toString)
   }
 
   /** Set an upper bound for the number of reducers to be used in M/R jobs */
@@ -110,6 +141,19 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
 
   /** Get the min number of reducers to use in M/R jobs */
   def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
+
+  /**
+   * Set the number of input bytes per reducer. This is used to control the number of
+   * reducers based off the size of the input data to the M/R job.
+   */
+  def setBytesPerReducer(sizeInBytes: Long) {
+    configuration.setLong("scoobi.mapreduce.reducers.bytesperreducer", sizeInBytes)
+  }
+
+  /**
+   * Get the number of input bytes per reducer. Default is 1GiB.
+   */
+  def getBytesPerReducer = configuration.getLong("scoobi.mapreduce.reducers.bytesperreducer", 1024 * 1024 * 1024)
 
   /**
    * set a new job name to help recognize the job better
@@ -135,27 +179,50 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
     sdf.format(now)
   }
 
-  /**The id for the current Scoobi job being (or about to be) executed. */
+  /** The id for the current Scoobi job being (or about to be) executed. */
   lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
+  /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
+  def jobStep(stepId: Int) = jobId + "(Step-" + stepId + ")"
 
   /**Scoobi's configuration. */
   lazy val conf = {
     configuration.set("scoobi.jobid", jobId)
+    configuration.setInt("scoobi.progress.time", 500)
+    // this setting avoids unnecessary warnings
+    configuration.set("mapred.used.genericoptionsparser", "true")
+    configuration
+  }
+
+  /**
+   * force a configuration to be a local one
+   */
+  def setAsLocal: ScoobiConfiguration = {
+    jobNameIs(getClass.getSimpleName)
+    set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+    set("mapred.job.tracker", "local")
+    setDirectories
+  }
+
+  /**
+   * this setup needs to be done only after the internal conf object has been set to a local configuration or a cluster one *
+   * because all the paths will depend on that
+   */
+  def setDirectories = {
     configuration.set("mapreduce.jobtracker.staging.root.dir", defaultWorkDir + "staging/")
     // before the creation of the input we set the mapred local dir.
     // this setting is necessary to avoid xml parsing when several scoobi jobs are executing concurrently and
     // trying to access the job.xml file
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, defaultWorkDir + "localRunner/")
-    // this setting avoids unnecessary warnings
-    configuration.set("mapred.used.genericoptionsparser", "true")
     configuration.update("scoobi.workdir", defaultWorkDir)
+    this
   }
 
   /**@return a pseudo-random unique id */
   private def uniqueId = java.util.UUID.randomUUID
 
-  def set(key: String, value: String) {
-    configuration.set(key, value)
+  /** set a value on the configuration */
+  def set(key: String, value: Any) {
+    configuration.set(key, if (value == null) "null" else value.toString)
   }
 
   private lazy val scoobiTmpDir = FileSystem.get(configuration).getHomeDirectory.toUri.getPath + "/.scoobi-tmp/"
@@ -163,11 +230,15 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
 
   private def withTrailingSlash(s: String) = if (s endsWith "/") s else s + '/'
 
-  lazy val workingDirectory: Path = new Path(defaultWorkDir)
+  lazy val workingDirectory: Path         = new Path(defaultWorkDir)
+  lazy val temporaryOutputDirectory: Path = new Path(workingDirectory, "tmp-out")
+  lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
   def deleteScoobiTmpDirectory = fs.delete(new Path(scoobiTmpDir), true)
-
   def deleteWorkingDirectory = fs.delete(new Path(defaultWorkDir), true)
+
+  /** @return the file system for this configuration, either a local or a remote one */
+  def fileSystem = FileSystems.fileSystem(this)
 }
 
 object ScoobiConfiguration {

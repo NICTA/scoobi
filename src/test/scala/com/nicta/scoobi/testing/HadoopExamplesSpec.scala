@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package testing
 
@@ -64,11 +79,9 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     }
     step(HadoopLogFactory.setLogFactory())
   }
-  "tags can be used to control the execution of examples" >> {
-    "'hadoop' runs locally, then on the cluster" >> runMustBeLocalThenCluster(examples("hadoop"))
-    "'cluster'    runs on the cluster only"      >> runMustBeCluster(examples("cluster"))
-    "'local'      run locally only"              >> runMustBeLocal(examples("local"))
-    "'unit'       no run, that's for unit tests" >> noRun(examples("unit"))
+  "arguments can be used to control the execution of examples locally or on the cluster" >> {
+    "'cluster'    runs on the cluster only"      >> runMustBeCluster(examplesWithArguments("scoobi cluster"))
+    "'local'      run locally only"              >> runMustBeLocal(examplesWithArguments("scoobi local"))
   }
   "arguments for scoobi can be passed from the command line" >> {
     localExamples.scoobiArgs must beEmpty

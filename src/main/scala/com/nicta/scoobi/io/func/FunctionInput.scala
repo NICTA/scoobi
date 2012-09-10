@@ -1,18 +1,18 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package io
 package func
@@ -39,6 +39,8 @@ import impl.Configurations
 import Configurations._
 import core._
 import application.ScoobiConfiguration
+import impl.collection.Seqs._
+import impl.collection.{BoundedLinearSeq, FunctionBoundedLinearSeq}
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {
@@ -100,13 +102,7 @@ object FunctionInput {
       logger.debug("numSplitsHint=" + numSplitsHint)
       logger.debug("splitSize=" + splitSize)
 
-      // if the list is empty, don't try to group by splitSize because in this case splitSize is 0
-      // and grouped will fail at runtime (see issue #60, issue #75)
-      if (n == 0) new java.util.ArrayList[InputSplit]
-      else        (0 to (n - 1)).toSeq.grouped(splitSize)
-                      .map { r => (r.head, r.size) }
-                      .map { case (s, l) => new FunctionInputSplit[A](s, l, f) }
-                      .toList
+      split(f, splitSize, (offset: Int, length: Int, fs: Int => A) => new FunctionInputSplit(offset, length, fs))(FunctionBoundedLinearSeq(_, n))
     }
   }
 

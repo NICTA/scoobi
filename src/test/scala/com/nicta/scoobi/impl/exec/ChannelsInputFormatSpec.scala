@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package impl
 package exec
@@ -12,7 +27,7 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import rtt._
 import impl.Configurations._
-import application.ScoobiConfiguration
+import application.{LocalHadoop, ScoobiConfiguration}
 import testing.mutable.UnitSpecification
 import ScoobiConfiguration._
 
@@ -21,8 +36,9 @@ class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
 Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 
   "Each input format can be configured as an input channel on a job's configuration" >> {
-    val job = new Job(new ScoobiConfiguration, "id")
+    val job = new Job((new ScoobiConfiguration).setAsLocal, "id")
     val jarBuilder = mock[JarBuilder]
+
     val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore))
                                     .toMap.showAs(_.toList.sorted.mkString("\n")).evaluate
 
@@ -73,4 +89,5 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     bs
   }
 
+  def scoobiArgs = Seq[String]()
 }

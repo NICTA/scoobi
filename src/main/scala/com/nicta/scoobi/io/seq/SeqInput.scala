@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 National ICT Australia Limited
+ * Copyright 2011,2012 National ICT Australia Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ import impl.Configurations
 import Configurations._
 import core._
 import application.ScoobiConfiguration
+import impl.collection.Seqs._
+import impl.collection.BoundedLinearSeq
 
 /**
  * Function for creating a distributed lists from a scala.collection.Seq
@@ -104,15 +106,10 @@ object SeqInput {
       logger.debug("numSplitsHint=" + numSplitsHint)
       logger.debug("splitSize=" + splitSize)
 
-      // if the list is empty, don't try to group by splitSize because in this case splitSize is 0
-      // and grouped will fail at runtime (see issue #60, issue #75)
-      if (n == 0) new java.util.ArrayList[InputSplit]
-      else        (0 to (n - 1)).toSeq.grouped(splitSize)
-        .map { r => (r.head, r.size) }
-        .map { case (s, l) => new SeqInputSplit[A](s, l, seq) }
-        .toList
+      split(seq, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss))
     }
   }
+
   /**
    * write an object to a DataOutput, using an ObjectOutputStream
    */
