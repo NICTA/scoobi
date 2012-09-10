@@ -584,9 +584,9 @@ object Intermediate {
 
         def parallelDoInputs(dlist: DComp[_, _ <: Shape]): Set[DComp[_, _ <: Shape]] = {
           dlist match {
-            case Flatten(ds)                => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
-            case ParallelDo(d, e, _, false, _) => Set(d, e)
-            case _                          => Set.empty
+            case Flatten(ds)                   => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
+            case ParallelDo(d, _, _, false, _) => Set(d)
+            case _                             => Set.empty
           }
         }
 
@@ -610,22 +610,36 @@ object Intermediate {
        */
       def merge(p: (Relation, Relation) => Boolean)(rs: List[Relation]): List[Relation] = {
 
-        def oneStepMerge(r: Relation, rs: List[Relation]): (Relation, List[Relation]) = {
-          val (overlapped, disjoint) = rs.partition(p(r, _))
-          val newPair = overlapped.foldLeft(r)(_.union(_))
-          (newPair, disjoint)
+        def mergeOne(r: Relation, rs: List[Relation], merged: List[Relation]): (Relation, List[Relation]) = {
+
+          /* check for indirect dependencies through dependent relation. */
+          val dependentRelations = (s: Relation) => (rs ++ merged).filter(_.gbks.intersect(s.dependentGbks).nonEmpty)
+
+          val isRelated = (q: Relation) => {
+            p(r, q) &&
+            dependentRelations(r).forall(!hasGbkDependency(_, q)) &&
+            dependentRelations(q).forall(!hasGbkDependency(_, r))
+          }
+
+          val (overlapped, disjoint) = rs.partition(isRelated)
+          overlapped match {
+            case x :: xs => mergeOne(x.union(r), xs ++ disjoint, x :: merged)
+            case Nil     => (r, disjoint)
+          }
         }
 
-        rs match {
+        def innerMerge(remaining: List[Relation], merged: List[Relation]): List[Relation] = remaining match {
           case r :: rs => {
-            val (r_, rs_) = oneStepMerge(r, rs)
-            if (r == r_) // Fixed point reached. No more relatedness for r.
-              r_ :: merge(p)(rs_)
+            val (q, qs) = mergeOne(r, rs, merged)
+            if (r == q)
+              q :: innerMerge(qs, q :: merged)
             else
-              merge(p)(r_ :: rs_)
+              innerMerge(q :: qs, merged)
           }
-          case _ => List()
+          case _ => Nil
         }
+
+        innerMerge(rs, Nil)
       }
 
       /* Step 4.

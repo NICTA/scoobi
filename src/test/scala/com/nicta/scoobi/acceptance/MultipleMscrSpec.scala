@@ -21,6 +21,8 @@ import testing.NictaSimpleJobs
 
 class MultipleMscrSpec extends NictaSimpleJobs {
 
+  sequential
+
   "A 'join' followed by a 'reduction' should work" >> { implicit c: SC =>
     val left =
       fromDelimitedInput(
@@ -87,5 +89,47 @@ class MultipleMscrSpec extends NictaSimpleJobs {
     persist(dObjectJoinedToInputGroupedDiff.materialize).toSeq must_== Seq(
         (expectedGBKs, ("v1",Seq(("k1","v1")))),
         (expectedGBKs, ("v2",Seq(("k2","v2")))))
+  }
+
+  "Able to replicate pipelines that share inputs." >> { implicit c: SC =>
+
+    def mkkv(x: DList[Int]) = x map { v => (v, v) }
+
+    val a: DList[Int] = DList(1)
+    val b: DList[Int] = DList(1)
+
+    val s: Seq[DObject[Iterable[(Int, Int)]]] = Seq(0, 1) map { _ =>
+      val w = (mkkv(a) ++ mkkv(b)).groupByKey map { case (k, vs) => (k, vs.head) }
+      val x =                    w.groupByKey map { case (k, vs) => (k, vs.head) }
+      val y = (mkkv(a) ++ x)
+      val z = y.groupByKey map { case (k, vs) => (k, vs.head) }
+      z.materialize
+    }
+
+    val (r0, r1) = persist(s(0), s(1))
+
+    (r0.head must_== (1, 1))
+    (r1.head must_== (1, 1))
+  }
+
+  "Gbks with 'cross-over' dependencies are placed in seperate MSCRs." >> { implicit c: SC =>
+
+    val aa: DList[(Int, Int)] = DList((1, 1))
+    val bb: DList[(Int, Int)] = DList((1, 1))
+    val cc: DList[(Int, Int)] = DList((1, 1))
+    val dd: DList[(Int, Int)] = DList((1, 1))
+
+    val s: Seq[DObject[Iterable[(Int, Int)]]] = Seq(0, 1) map { i =>
+      val w = (aa ++ bb).groupByKey map { case (k, vs) => (k, vs.head) }
+      val x = ((if (i == 0) cc else dd) ++ w).groupByKey map { case (k, vs) => (k, vs.head) }
+      val y = ((if (i == 0) dd else cc) ++ x)
+      val z = y.groupByKey map { case (k, vs) => (k, vs.head) }
+      z.materialize
+    }
+
+    val (r0, r1) = persist(s(0), s(1))
+
+    (r0.head must_== (1, 1))
+    (r1.head must_== (1, 1))
   }
 }
