@@ -48,6 +48,7 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
 
 ### Community
 
+ * [![Build Status](https://secure.travis-ci.org/NICTA/scoobi.png)](http://travis-ci.org/NICTA/scoobi)
  * [Issues](https://github.com/NICTA/scoobi/issues)
  * [Change history](http://notes.implicit.ly/tagged/scoobi)
  * [Source code (github)](https://github.com/NICTA/scoobi)
