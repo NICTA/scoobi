@@ -19,6 +19,8 @@ import application._
 import core._
 import org.apache.hadoop.io._
 
+intentionally breaking commit
+
 /** Global Scoobi functions and values. */
 object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib with DObjects {
 
