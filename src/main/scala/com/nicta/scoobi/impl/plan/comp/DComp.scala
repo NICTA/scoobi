@@ -18,105 +18,13 @@ sealed trait DComp[+A, +Sh <: Shape] extends CompNode
 trait CompNode extends Attributable {
   lazy val id = Id.get
 }
+
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
  * all elements of an existing DComp and concatenating the results. */
 case class ParallelDo[A, B, E](in: DComp[A, Arr], env: DComp[E, Exp], dofn: EnvDoFn[A, B, E], groupBarrier: Boolean = false, fuseBarrier: Boolean = false) extends DComp[B, Arr] {
-  override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
+  override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "") + " env: " + env
   def fuse[Z, G](p2: ParallelDo[B, Z, G]) = ParallelDo.fuse(this, p2)
-
-  override def equals(a: Any) = a match {
-    case n: ParallelDo[_,_,_] => n.id == this.id
-    case other                => false
-  }
 }
-
-/** The Flatten node type spcecifies the building of a DComp that contains all the elements from
- * one or more exsiting DLists of the same type. */
-case class Flatten[A](ins: List[DComp[A, Arr]]) extends DComp[A, Arr] {
-  override val toString = "Flatten ("+id+")"
-
-  override def equals(a: Any) = a match {
-    case n: Flatten[_] => n.id == this.id
-    case other         => false
-  }
-
-}
-
-/** The Combine node type specifies the building of a DComp as a result of applying an associative
- * function to the values of an existing key-values DComp. */
-case class Combine[K, V](in: DComp[(K, Iterable[V]), Arr], f: (V, V) => V) extends DComp[(K, V), Arr] {
-
-  override val toString = "Combine ("+id+")"
-  override def equals(a: Any) = a match {
-    case n: Combine[_,_] => n.id == this.id
-    case other           => false
-  }
-
-  /**
-   * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
-   */
-  def toParallelDo = {
-    val dofn = new BasicDoFn[(K, Iterable[V]), (K, V)] {
-      def process(input: (K, Iterable[V]), emitter: Emitter[(K, V)]) {
-        val (key, values) = input
-        emitter.emit(key, values.reduce(f))
-      }
-    }
-    // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo(in, Return(()), dofn)
-  }
-}
-
-/** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
- * key-value DComp by key. */
-case class GroupByKey[K, V](in: DComp[(K, V), Arr]) extends DComp[(K, Iterable[V]), Arr] {
-  override val toString = "GroupByKey ("+id+")"
-  override def equals(a: Any) = a match {
-    case n: GroupByKey[_,_] => n.id == this.id
-    case other              => false
-  }
-
-}
-
-/** The Load node type specifies the creation of a DComp from some source other than another DComp.
- * A DataSource object specifies how the loading is performed. */
-case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
-  override val toString = "Load ("+id+")"
-  override def equals(a: Any) = a match {
-    case n: Load[_] => n.id == this.id
-    case other      => false
-  }
-
-}
-
-/** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A](x: A) extends DComp[A, Exp] {
-  override val toString = "Return ("+id+")"
-  override def equals(a: Any) = a match {
-    case n: Return[_] => n.id == this.id
-    case other        => false
-  }
-}
-
-/** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A](in: DComp[A, Arr]) extends DComp[Iterable[A], Exp] {
-  override val toString = "Materialize ("+id+")"
-  override def equals(a: Any) = a match {
-    case n: Materialize[_] => n.id == this.id
-    case other             => false
-  }
-}
-
-/** The Op node type specifies the building of Exp DComp by applying a function to the values
- * of two other Exp DComp nodes. */
-case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C) extends DComp[C, Exp] {
-  override val toString = "Op ("+id+")"
-  override def equals(a: Any) = a match {
-    case n: Op[_,_,_] => n.id == this.id
-    case other         => false
-  }
-}
-
 object ParallelDo {
   def fuse[X, Y, Z, F, G](pd1: ParallelDo[X, Y, F], pd2: ParallelDo[Y, Z, G]): ParallelDo[X, Z, (F, G)] = {
     val ParallelDo(in1, env1, dofn1, gb1, _)   = pd1
@@ -141,6 +49,62 @@ object ParallelDo {
   /** Create a new environment by forming a tuple from two separate evironments.*/
   def fuseEnv[F, G](fExp: DComp[F, Exp], gExp: DComp[G, Exp]): DComp[(F, G), Exp] = Op(fExp, gExp, (f: F, g: G) => (f, g))
 
+}
+
+
+/** The Flatten node type specifies the building of a DComp that contains all the elements from
+ * one or more existing DLists of the same type. */
+case class Flatten[A](ins: List[DComp[A, Arr]]) extends DComp[A, Arr] {
+  override val toString = "Flatten ("+id+")"
+}
+
+/** The Combine node type specifies the building of a DComp as a result of applying an associative
+ * function to the values of an existing key-values DComp. */
+case class Combine[K, V](in: DComp[(K, Iterable[V]), Arr], f: (V, V) => V) extends DComp[(K, V), Arr] {
+
+  override val toString = "Combine ("+id+")"
+
+  /**
+   * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
+   */
+  def toParallelDo = {
+    val dofn = new BasicDoFn[(K, Iterable[V]), (K, V)] {
+      def process(input: (K, Iterable[V]), emitter: Emitter[(K, V)]) {
+        val (key, values) = input
+        emitter.emit(key, values.reduce(f))
+      }
+    }
+    // Return(()) is used as the Environment because there's no need for a specific value here
+    ParallelDo(in, Return(()), dofn)
+  }
+}
+
+/** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
+ * key-value DComp by key. */
+case class GroupByKey[K, V](in: DComp[(K, V), Arr]) extends DComp[(K, Iterable[V]), Arr] {
+  override val toString = "GroupByKey ("+id+")"
+}
+
+/** The Load node type specifies the creation of a DComp from some source other than another DComp.
+ * A DataSource object specifies how the loading is performed. */
+case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
+  override val toString = "Load ("+id+")"
+}
+
+/** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
+case class Return[A](x: A) extends DComp[A, Exp] {
+  override val toString = "Return ("+id+")"
+}
+
+/** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
+case class Materialize[A](in: DComp[A, Arr]) extends DComp[Iterable[A], Exp] {
+  override val toString = "Materialize ("+id+")"
+}
+
+/** The Op node type specifies the building of Exp DComp by applying a function to the values
+ * of two other Exp DComp nodes. */
+case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C) extends DComp[C, Exp] {
+  override val toString = "Op ("+id+")"
 }
 
 object CompNode {
@@ -171,4 +135,20 @@ object CompNode {
   case class AsCompNodes(as: Seq[Attributable]) {
     def asNodes = as.map(_.asNode)
   }
+
+  /** return true if an CompNode is a Flatten */
+  lazy val isFlatten: CompNode => Boolean = { case Flatten(_) => true; case other => false }
+  /** return true if an CompNode is a ParallelDo */
+  lazy val isParallelDo: CompNode => Boolean = { case ParallelDo(_,_,_,_,_) => true; case other => false }
+  /** return true if an CompNode is a Flatten */
+  lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f @ Flatten(_) => f }
+  /** return true if an CompNode is a ParallelDo */
+  lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p @ ParallelDo(_,_,_,_,_) => p }
+  /** return true if an CompNode is a GroupByKey */
+  lazy val isGroupByKey: CompNode => Boolean = { case GroupByKey(_) => true; case other => false }
+  /** return true if an CompNode is a GroupByKey */
+  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk @ GroupByKey(_) => gbk }
+  /** return true if an CompNode is a Materialize */
+  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_) => true; case other => false }
+
 }

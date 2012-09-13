@@ -21,6 +21,7 @@ import org.specs2.specification._
 import org.specs2.Specification
 import application._
 import impl.time.SimpleTimer
+import ResultLogicalCombinators._
 
 /**
  * This trait provides an Around context to be used in a Specification

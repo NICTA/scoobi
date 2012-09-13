@@ -8,6 +8,9 @@ import Optimiser._
 import org.kiama.attribution.Attribution
 import org.kiama.attribution.Attribution._
 import CompNode._
+import collection._
+import IdSet._
+import scala.collection.immutable.SortedSet
 
 /**
  * This trait computes the Mscr for a given nodes graph.
@@ -28,11 +31,18 @@ trait MscrGraph {
     case n => (n -> gbkMscr).orElse(n -> parallelDosMscr).orElse(n -> flattenMscr)
   }
 
+  /** A gbk mscr is a mscr for a group by key + input and output channels */
+  lazy val gbkMscr: CompNode => Option[Mscr] = attr {
+    case g @ GroupByKey(in) => {
+      val related = (g -> relatedGbks)
+      (g -> baseGbkMscr).map(m => m.addChannels((g -> inputChannels)  ++ related.flatMap(_ -> inputChannels),
+                                                (g -> outputChannels) ++ related.flatMap(_ -> outputChannels)))
+    }
+    case other              => None
+  }
   /** there must be a new Mscr for each related GroupByKey */
-  lazy val gbkMscr: CompNode => Option[Mscr] = circular(Option(Mscr.empty)) {
-    case g @ GroupByKey(in) => (g -> relatedGbks).map(gbkMscr).flatten.headOption.orElse(Some(Mscr.empty)).map(m =>
-                               m.addChannels((g -> inputChannels)  ++ (g -> relatedGbks).flatMap(_ -> inputChannels),
-                                             (g -> outputChannels) ++ (g -> relatedGbks).flatMap(_ -> outputChannels)))
+  lazy val baseGbkMscr: CompNode => Option[Mscr] = circular(Option(Mscr.empty)) {
+    case g @ GroupByKey(in) => (g -> relatedGbks).flatMap(_ -> baseGbkMscr).headOption.orElse(Option(Mscr.empty))
     case other              => None
   }
 
@@ -54,10 +64,10 @@ trait MscrGraph {
   }
 
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
-  lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
+  lazy val mapperInputChannels: CompNode =>Set[MapperInputChannel] =
     attr {
-      case pd @ ParallelDo(in,_,_,_,_) if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
-      case other                                         => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
+      case pd @ ParallelDo(in,_,_,_,_) if pd -> isMapper && (pd -> hasSiblings) => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
+      case other                                                                => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
     }
 
   /**
@@ -65,8 +75,8 @@ trait MscrGraph {
    * An IdInputChannel is a channel for an input node which has no siblings and is connected to a GroupByKey */
   lazy val idInputChannels: CompNode => Set[IdInputChannel] =
     attr {
-      case n if (n -> isGbkInput) && !(n -> hasSiblings) && (n -> outputs).exists(isGroupByKey) => Set(IdInputChannel(n))
-      case other                                                                                => other.children.asNodes.flatMap(_ -> idInputChannels).toSet
+      case n if (n -> isGbkInput) && !(n -> hasSiblings) => Set(IdInputChannel(n))
+      case other                                         => other.children.asNodes.flatMap(_ -> idInputChannels).toSet
     }
 
   /** compute the output channels of a node */
@@ -82,9 +92,9 @@ trait MscrGraph {
    */
   lazy val gbkOutputChannels: CompNode => Set[GbkOutputChannel] =
     attr {
-      case g @ GroupByKey(in @ Flatten(_))                => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
-      case g @ GroupByKey(in)                             => Set(GbkOutputChannel(g, combiner = g -> combiner, reducer = g -> reducer))
-      case other                                          => Set()
+      case g @ GroupByKey(in @ Flatten(_)) => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
+      case g @ GroupByKey(in)              => Set(GbkOutputChannel(g, combiner = g -> combiner, reducer = g -> reducer))
+      case other                           => Set()
     }
 
   /**
@@ -122,7 +132,7 @@ trait MscrGraph {
    */
   def envInSameMscr(pd: ParallelDo[_,_,_]) =
     (pd.env -> descendents).collect(isAGroupByKey).headOption.map { g =>
-      (g -> relatedGbks).flatMap(_ -> outputs).contains(pd)
+      (g -> relatedGbks + g).flatMap(_ -> outputs).contains(pd)
     }.getOrElse(false)
 
   /** compute if a node is a mapper of a GroupByKey, i.e. a ParallelDo which is not a reducer */
@@ -165,15 +175,18 @@ trait MscrGraph {
       case f: Flatten[_]         => !(f -> outputs).exists(isGroupByKey)
     }
 
-  /** compute if a node is the input of a Gbk */
-  lazy val isGbkInput: CompNode => Boolean = attr { case node => (node -> outputs).exists(isGroupByKey) }
+  /** compute if a node is the input of a Gbk, but not a Gbk */
+  lazy val isGbkInput: CompNode => Boolean = attr {
+    case GroupByKey(_) => false
+    case node          => (node -> outputs).exists(isGroupByKey)
+  }
 
   /**
    * compute the Gbks related to a given Gbk (through some shared input)
    *
    * This set does not contain the original gbk
    */
-  lazy val relatedGbks: GroupByKey[_,_] => Set[GroupByKey[_,_]] =
+  lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] =
     attr {
       case g @ GroupByKey(Flatten(ins))               => (g -> siblings).collect(isAGroupByKey) ++
                                                          ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
@@ -183,61 +196,63 @@ trait MscrGraph {
     }
 
   /** compute the inputs of a given node */
-  lazy val inputs : CompNode => Set[CompNode] = attr { case n  => n.children.asNodes.toSet }
+  lazy val inputs : CompNode => SortedSet[CompNode] = attr {
+    case n  => n.children.asNodes.toIdSet
+  }
 
   /**
    *  compute the outputs of a given node.
    *  They are all the parents of the node where the parent inputs contain this node.
    */
-  lazy val outputs : CompNode => Set[CompNode] =
-    attr {
-      case node: CompNode => (node -> parents).collect { case a if (a -> inputs).exists(_ eq node) => a }
-    }
+  lazy val outputs : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => (node -> parents) collect { case a if (a -> inputs).exists(_ eq node) => a }
+  }
 
   /**
    *  compute the shared input of a given node.
    *  They are all the distinct inputs of a node which are also inputs of another node
    */
-  lazy val sharedInputs : CompNode => Set[CompNode] =
-    attr {
-      case node: CompNode => (node -> inputs).collect { case in if (in -> outputs).filterNot(_ eq node).nonEmpty => in }.toSet
-    }
+  lazy val sharedInputs : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => ((node -> inputs).collect { case in if (in -> outputs).filterNot(_ eq node).nonEmpty => in })
+  }
 
   /**
    *  compute the siblings of a given node.
    *  They are all the nodes which share at least one input with this node
    */
-  lazy val siblings : CompNode => Set[CompNode] =
-    attr { case node: CompNode => (node -> inputs).flatMap(in => (in -> outputs).filterNot(_ eq node)).toSet }
+  lazy val siblings : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => (node -> inputs).flatMap { in => (in -> outputs) }.filterNot(_ eq node)
+  }
 
   /** @return true if a node has siblings */
   lazy val hasSiblings : CompNode => Boolean = attr { case node: CompNode => (node -> siblings).nonEmpty }
   /**
    * compute all the descendents of a node
    * They are all the recursive children reachable from this node */
-  lazy val descendents : CompNode => Set[CompNode] =
-    attr {
-      case node: CompNode => (node.children.asNodes ++ node.children.asNodes.flatMap(_ -> descendents)).toSet
-    }
+  lazy val descendents : CompNode => SortedSet[CompNode] =
+    attr { case node: CompNode => (node -> nonUniqueDescendents).toIdSet }
+
+  private lazy val nonUniqueDescendents : CompNode => Seq[CompNode] =
+    attr { case node: CompNode => (node.children.asNodes ++ node.children.asNodes.flatMap(nonUniqueDescendents)) }
 
   /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
   def canReach(n: CompNode): CompNode => Boolean =
     paramAttr { target: CompNode =>
-      node: CompNode => descendents(node).map(_.id).contains(target.id)
+      node: CompNode => descendents(node).contains(target)
     }(n)
 
   /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
-  lazy val ancestors : CompNode => Set[CompNode] =
-    circular(Set[CompNode]()) {
+  lazy val ancestors : CompNode => SortedSet[CompNode] =
+    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
       case node: CompNode => {
         val p = Option(node.parent).toSeq.asNodes
-        (p ++ p.flatMap { parent => ancestors(parent) }).toSet
+        (p ++ p.flatMap { parent => ancestors(parent) }).toIdSet
       }
     }
 
   /** compute all the parents of a given node. A node A is parent of a node B if B can be reached from A */
-  lazy val parents : CompNode => Set[CompNode] =
-    circular(Set[CompNode]()) {
+  lazy val parents : CompNode => SortedSet[CompNode] =
+    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
       case node: CompNode => {
         (node -> ancestors).flatMap { ancestor =>
           ((ancestor -> descendents) + ancestor).filter(canReach(node))
@@ -251,13 +266,15 @@ trait MscrGraph {
   /** compute the vertices starting from a node */
   lazy val vertices : CompNode => Seq[CompNode] =
     circular(Seq[CompNode]()) {
-      case node: CompNode => (node +: node.children.asNodes.flatMap(n => n -> vertices).toSeq) ++ node.children.asNodes
+      case node: CompNode => ((node +: node.children.asNodes.flatMap(n => n -> vertices).toSeq) ++ node.children.asNodes).
+                              toIdSet.toSeq // make the vertices unique
     }
 
   /** compute all the edges which compose this graph */
   lazy val edges : CompNode => Seq[(CompNode, CompNode)] =
     circular(Seq[(CompNode, CompNode)]()) {
-      case node: CompNode => node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges).toSeq
+      case node: CompNode => (node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges).toSeq).
+                              map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
     }
 
   /** @return the MSCRs accessible from a given node, without optimising the graph first */

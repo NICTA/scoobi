@@ -7,13 +7,14 @@ import testing.mutable.UnitSpecification
 import org.kiama.rewriting._
 import Rewriter._
 import org.specs2.matcher.DataTables
-import org.specs2.ScalaCheck
-import org.scalacheck.Prop
+import org.scalacheck.{Gen, Arbitrary, Prop}
+import graph.factory
+import CompNode._
 
-class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData with ScalaCheck {
+class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData {
 
   "1. Nodes must be flattened" >> {
-    "1.1 A Flatten Node which is an input to 2 other nodes must be copied to each node" >> {
+    "1.1 A Flatten Node which is an input to 2 other nodes must be copied to each node" >> new nodes {
       optimise(flattenSplit, parallelDo(f1), parallelDo(f1)) must beLike {
         case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_) :: _  => nodesAreDistinct(ff1, ff2)
       }
@@ -21,12 +22,12 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
         case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_)  :: ParallelDo(ff3,_,_,_,_) :: _  => nodesAreDistinct(ff1, ff2, ff3)
       }
     }
-    "1.2 A Flatten Node which is an input to a ParallelDo then replicate the ParallelDo on each of the Flatten inputs" >> {
+    "1.2 A Flatten Node which is an input to a ParallelDo then replicate the ParallelDo on each of the Flatten inputs" >> new nodes {
       optimise(flattenSink, parallelDo(flattens)) must beLike {
         case List(Flatten(ParallelDo(ll1,_,_,_,_) :: ParallelDo(ll2,_,_,_,_) :: _))  => (l1 === ll1) and (l2 === ll2)
       }
     }
-    "1.3 A Flatten Node with Flatten inputs must collect all the inner inputs" >> {
+    "1.3 A Flatten Node with Flatten inputs must collect all the inner inputs" >> new nodes {
       "input"                                       | "expected"                                    |>
       flatten(l1)                                   ! flatten(l1)                                   |
       flatten(flatten(l1))                          ! flatten(l1)                                   |
@@ -36,7 +37,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       flatten(l1, flatten(l1), l2)                  ! flatten(l1, l1, l2)                           |
       flatten(l1, l2, flatten(flatten(l1)))         ! flatten(l1, l2, l1)                           |
       flatten(l1, l2, flatten(l1, pd(rt), l1), l2)  ! flatten(l1, l2, l1, pd(rt), l1, l2)           | { (input, output) =>
-        showStructure(optimise(flattenFuse, input).head) === showStructure(output)
+        showStructure(optimise(flattenFuse, input).head) ==== showStructure(output)
       }
 
       check(Prop.forAll { (node: CompNode) =>
@@ -46,32 +47,32 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   "2. Combines must be optimised" >> {
-    "A Combine which doesn't have a GroupByKey as an Input must be transformed to a ParallelDo" >> {
+    "A Combine which doesn't have a GroupByKey as an Input must be transformed to a ParallelDo" >> new nodes {
       "input"                                        | "expected"                                    |
        cb(l1)                                        ! pd(l1)                                        |
        cb(gbk(l1))                                   ! cb(gbk(l1))                                   |> { (input, output) =>
-         showStructure(optimise(combineToParDo, input).head) === showStructure(output)
+         showStructure(optimise(combineToParDo, input).head) ==== showStructure(output)
        }
     }
-    "Any optimised Combine in the graph can only have GroupByKey as an input" >> check { (node: CompNode) =>
+    "Any optimised Combine in the graph can only have GroupByKey as an input" >> prop { (node: CompNode, f: factory) => {}; import f._
       forall(collectCombine(optimise(combineToParDo, node).head)) { n =>
         n aka show(node) must beLike { case Combine(GroupByKey(_), _) => ok }
       }
     }
-    "After optimisation, all the transformed Combines must be ParallelDo" >> check { (node: CompNode) =>
+    "After optimisation, all the transformed Combines must be ParallelDo" >> prop { (node: CompNode) =>
       val optimised = optimise(combineToParDo, node).head
       (collectCombine(node).size + collectParallelDo(node).size) ===
       (collectCombineGbk(optimised).size + collectParallelDo(optimised).size)
     }
   }
 
-  "3. Successive ParallelDos must be fused" >> check { (node: CompNode) =>
+  "3. Successive ParallelDos must be fused" >> prop { (node: CompNode) =>
     val optimised = optimise(parDoFuse, node).head
     collectSuccessiveParDos(optimised) must beEmpty
   };p
 
   "4. GroupByKeys" >> {
-    "4.1 the GroupByKey is replicated so that it can not be the input of different nodes  " >> check { (node: CompNode) =>
+    "4.1 the GroupByKey is replicated so that it can not be the input of different nodes  " >> prop { (node: CompNode, f: factory) => import f._
       val optimised = optimise(groupByKeySplit, node).head
 
       // collects the gbks, they must form a set and not a bag
@@ -81,7 +82,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       after.size aka optimisation(node, optimised) must_== after.toSet.size
     }
 
-    "4.2 if the input of a GroupByKey is a Flatten, the Flatten is also replicated" >> check { (node: CompNode) =>
+    "4.2 if the input of a GroupByKey is a Flatten, the Flatten is also replicated" >> prop { (node: CompNode, f: factory) => import f._
       val optimised = optimise(groupByKeySplit, node).head
 
       // collects the flattens inside GroupByKey, they must form a set and not a bag
@@ -89,7 +90,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       flattens.size aka optimisation(node, optimised) must_== flattens.toSet.size
     }
 
-    "4.3 examples" >> {
+    "4.3 examples" >> new nodes {
       optimise(groupByKeySplit, parallelDo(gbk1), parallelDo(gbk1)) must beLike {
         case ParallelDo(ggbk1,_,_,_,_) :: ParallelDo(ggbk2,_,_,_,_) :: _  => nodesAreDistinct(ggbk1, ggbk2)
       }
@@ -104,7 +105,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   "5. Remaining Combine nodes (without GroupByKey inputs)" >> {
-    "5.1 the remaining Combine nodes must be replicated so that one Combine can not be the input of different nodes" >> check { (node: CompNode) =>
+    "5.1 the remaining Combine nodes must be replicated so that one Combine can not be the input of different nodes" >> prop { (node: CompNode, f: factory) => import f._
       val optimised = optimise(combineSplit, node).head
 
       // collects the combine nodes, they must form a set and not a bag
@@ -114,7 +115,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       before.size aka optimisation(node, optimised) must_== after.toSet.size
     }
 
-    "5.2 examples" >> {
+    "5.2 examples" >> new nodes {
       optimise(combineSplit, parallelDo(combine1), parallelDo(combine1)) must beLike {
         case ParallelDo(c1,_,_,_,_) :: ParallelDo(c2,_,_,_,_) :: _  => nodesAreDistinct(c1, c2)
       }
@@ -125,7 +126,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   "6. ParallelDos which are outputs of the graph must be marked with a fuseBarrier" >> {
-    "6.1 with a random graph" >> check { (node: CompNode, outputs: Set[CompNode]) =>
+    "6.1 with a random graph" >> prop { (node: CompNode, outputs: Set[CompNode]) =>
       val optimised = optimise(parDoFuseBarrier(outputs), node).head
       // collects the flatten nodes which are leaves. If they are in the outputs set
       // their fuseBarrier must be true
@@ -134,13 +135,16 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     }
   }
 
-  val (l1, l2) = (load, load)
-  val f1       = flatten(l1)
-  val flattens = flatten(l1, l2)
-  val gbk1     = gbk(l1)
-  val gbkf1    = gbk(f1)
-  val combine1 = cb(l1)
-  val combine2 = cb(l2)
+  trait nodes extends factory {
+    lazy val (l1, l2) = (load, load)
+    lazy val f1       = flatten(l1)
+    lazy val flattens = flatten(l1, l2)
+    lazy val gbk1     = gbk(l1)
+    lazy val gbkf1    = gbk(f1)
+    lazy val combine1 = cb(l1)
+    lazy val combine2 = cb(l2)
+  }
+  implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
 
   def collectNestedFlatten = collectl {
     case f @ Flatten(ins) if ins exists isFlatten => f

@@ -4,7 +4,7 @@ package plan
 package comp
 
 import org.kiama.rewriting.Rewriter._
-
+import CompNode._
 /**
  * Optimiser for the DComp AST graph
  *
@@ -47,21 +47,6 @@ trait Optimiser {
   def flattenSink = everywhere(rule {
     case p @ ParallelDo(Flatten(ins),_,_,_,_) => Flatten(ins.map(in => p.copy(in)))
   })
-
-  /** return true if an CompNode is a Flatten */
-  lazy val isFlatten: CompNode => Boolean = { case Flatten(_) => true; case other => false }
-  /** return true if an CompNode is a ParallelDo */
-  lazy val isParallelDo: CompNode => Boolean = { case ParallelDo(_,_,_,_,_) => true; case other => false }
-  /** return true if an CompNode is a Flatten */
-  lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f @ Flatten(_) => f }
-  /** return true if an CompNode is a ParallelDo */
-  lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p @ ParallelDo(_,_,_,_,_) => p }
-  /** return true if an CompNode is a GroupByKey */
-  lazy val isGroupByKey: CompNode => Boolean = { case GroupByKey(_) => true; case other => false }
-  /** return true if an CompNode is a GroupByKey */
-  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk @ GroupByKey(_) => gbk }
-  /** return true if an CompNode is a Materialize */
-  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_) => true; case other => false }
 
   /**
    * Nested Flattens must be fused
@@ -148,14 +133,14 @@ trait Optimiser {
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Set[CompNode]) =
-    flattenSplit     <+
-    flattenSink      <+
-    flattenFuse      <+
-    combineToParDo   <+
-    parDoFuse        <+
-    groupByKeySplit  <+
-    combineSplit     <+
-    parDoFuseBarrier(outputs)
+    attempt(flattenSplit     ) <*
+    attempt(flattenSink      ) <*
+    attempt(flattenFuse      ) <*
+    attempt(combineToParDo   ) <*
+    attempt(parDoFuse        ) <*
+    attempt(groupByKeySplit  ) <*
+    attempt(combineSplit     ) <*
+    attempt(parDoFuseBarrier(outputs))
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs

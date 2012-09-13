@@ -23,7 +23,7 @@ import org.apache.hadoop.filecache.DistributedCache
 
 import application.ScoobiConfiguration
 
-class ConstantStringDataSource(value: String) extends DataSource[String, String, String] {
+class ConstantStringDataSource(val value: String) extends DataSource[String, String, String] {
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
   def inputCheck(sc: ScoobiConfiguration) {}
@@ -41,6 +41,11 @@ class ConstantStringDataSource(value: String) extends DataSource[String, String,
 
   case class ConstantStringInputConverter(value: String) extends InputConverter[String, String, String] {
     def fromKeyValue(context: this.type#InputContext, key: String, v: String) = value
+  }
+
+  override def equals(a: Any) = a match {
+    case other: ConstantStringDataSource => value == other.value
+    case _                               => false
   }
 }
 object ConstantStringDataSource {

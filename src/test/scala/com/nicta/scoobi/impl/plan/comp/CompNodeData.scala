@@ -10,29 +10,24 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
 import org.specs2.main.CommandLineArguments
 import org.specs2.mutable.Specification
+import org.kiama.attribution.Attribution
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
-
-  /** show the structure without the ids */
-  lazy val showStructure = (n: CompNode) => show(n).replaceAll("\\d", "")
-
-  /** show before and after the optimisation */
-  def optimisation(node: CompNode, optimised: CompNode) =
-    if (show(node) != show(optimised)) "INITIAL: \n"+show(node)+"\nOPTIMISED:\n"+show(optimised) else "no optimisation"
 
   /**
    * Arbitrary instance for a CompNode
    */
   import scalaz.Scalaz._
 
-  override def defaultValues = Map(minTestsOk   -> arguments.commandLine.int("mintestsok").getOrElse(10000),
+  override def defaultValues = Map(minTestsOk   -> arguments.commandLine.int("mintestsok").getOrElse(1000),
                                    maxSize      -> arguments.commandLine.int("maxsize").getOrElse(8),
                                    minSize      -> arguments.commandLine.int("minsize").getOrElse(1),
-                                   maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(500),
+                                   maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(50),
                                    workers      -> arguments.commandLine.int("workers").getOrElse(1))
 
   import Gen._
-  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(Gen.sized(depth => genDComp(depth)))
+  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(Gen.sized(depth => genDComp(depth).map(init)))
+  implicit lazy val arbitraryParallelDo: Arbitrary[ParallelDo[_,_,_]] = Arbitrary(Gen.sized(depth => genParallelDo(depth).map(init)))
 
   def genDComp(depth: Int = 1): Gen[CompNode] = lzy(frequency((3, genLoad(depth)),
                                                               (4, genParallelDo(depth)),
@@ -58,16 +53,20 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  * Creation functions
  */
 trait CompNodeFactory {
-  def load = Load(ConstantStringDataSource("start"))
-  def flatten[A](nodes: CompNode*) = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
-  def parallelDo(in: CompNode) = pd(in)
-  def rt = Return("")
-  def cb(in: CompNode) = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
-  def gbk(in: CompNode) = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
-  def mt(in: CompNode) = Materialize(in.asInstanceOf[DComp[String,Arr]])
+  def load                                   = Load(ConstantStringDataSource("start"))
+  def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
+  def parallelDo(in: CompNode)               = pd(in)
+  def rt                                     = Return("")
+  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
+  def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
+  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]])
   def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
   def pd(in: CompNode, env: CompNode = Return(()), groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
     ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier)
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
+
+  /** initialize the Kiama attributes of a CompNode */
+  def init[T <: CompNode](t: T): T  = { if (!t.children.hasNext) Attribution.initTree(t); t }
+
 }

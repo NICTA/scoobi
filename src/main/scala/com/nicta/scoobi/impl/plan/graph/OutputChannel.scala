@@ -7,7 +7,9 @@ import comp._
 import exec.UniqueId
 
 /** ADT for MSCR output channels. */
-sealed trait OutputChannel
+sealed trait OutputChannel {
+  lazy val id: Int = UniqueId.get
+}
 
 case class GbkOutputChannel(groupByKey: GroupByKey[_,_],
                             var flatten:    Option[Flatten[_]]        = None,
@@ -20,10 +22,26 @@ case class GbkOutputChannel(groupByKey: GroupByKey[_,_],
         combiner.map(n => "combiner = "+n.toString),
         reducer .map(n => "reducer  = "+n.toString)
     ).flatten.mkString("GbkOutputChannel(", ", ", ")")
+
+  override def equals(a: Any) = a match {
+    case o: GbkOutputChannel => o.groupByKey.id == groupByKey.id
+    case _ => false
+  }
 }
 
-case class BypassOutputChannel(input: ParallelDo[_,_,_]) extends OutputChannel
-case class FlattenOutputChannel(input: Flatten[_]) extends OutputChannel
+case class BypassOutputChannel(input: ParallelDo[_,_,_]) extends OutputChannel {
+  override def equals(a: Any) = a match {
+    case o: BypassOutputChannel => o.input.id == input.id
+    case _ => false
+  }
+}
+
+case class FlattenOutputChannel(input: Flatten[_]) extends OutputChannel {
+  override def equals(a: Any) = a match {
+    case o: FlattenOutputChannel => o.input.id == input.id
+    case _ => false
+  }
+}
 
 object Channels extends control.ImplicitParameters {
   /** @return a sequence of distinct mapper input channels */
