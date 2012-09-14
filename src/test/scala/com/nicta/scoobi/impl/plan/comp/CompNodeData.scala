@@ -5,12 +5,14 @@ package comp
 
 import data.Data
 import io.ConstantStringDataSource
-import core.{Emitter, BasicDoFn}
+import core.{WireFormat, Emitter, BasicDoFn}
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
 import org.specs2.main.CommandLineArguments
 import org.specs2.mutable.Specification
 import org.kiama.attribution.Attribution
+import CompNode._
+import control.Functions._
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
 
@@ -40,7 +42,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
   def genLoad       (depth: Int = 1) = Gen.oneOf(load, load)
   def genReturn     (depth: Int = 1) = Gen.oneOf(rt, rt)
-  def genParallelDo (depth: Int = 1) = if (depth <= 1) Gen.value(parallelDo(load)) else memo(genDComp(depth - 1) map (parallelDo _))
+  def genParallelDo (depth: Int = 1) = if (depth <= 1) Gen.value(parallelDo(load)) else memo(genDComp(depth - 1).filter(!(isMaterialize || isReturn || isOp)).map(parallelDo _))
   def genFlatten    (depth: Int = 1) = if (depth <= 1) Gen.value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
   def genCombine    (depth: Int = 1) = if (depth <= 1) Gen.value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
   def genOp         (depth: Int = 1) = if (depth <= 1) Gen.value(op(load, load)  ) else memo((genDComp(depth - 1) |@| genDComp(depth - 1))((op _)))
@@ -60,7 +62,7 @@ trait CompNodeFactory {
   def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
   def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]])
-  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)
+  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)(implicitly[WireFormat[String]].asInstanceOf[WireFormat[A]])
   def pd(in: CompNode, env: CompNode = Return(()), groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
     ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier)
 

@@ -45,7 +45,7 @@ trait Optimiser {
    *       Flatten
    */
   def flattenSink = everywhere(rule {
-    case p @ ParallelDo(Flatten(ins),_,_,_,_) => Flatten(ins.map(in => p.copy(in)))
+    case p @ ParallelDo(Flatten(ins),_,_,_,_) => Flatten(ins.map(in => p.copy(in)(p.awf, p.bwf, p.ewf)))
   })
 
   /**
@@ -87,7 +87,7 @@ trait Optimiser {
    * This rule is repeated until nothing can be flattened anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_),_,_,_,false) => p2 fuse p1
+    case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_),_,_,_,false) => p2.fuse(p1)(p1.bwf, p1.ewf)
   }))
 
   /**
@@ -119,14 +119,14 @@ trait Optimiser {
    *    node1     node2
    */
   def combineSplit = everywhere(rule {
-    case c @ Combine(_,_) => c.copy()
+    case c @ Combine(_,_) => c.copy()(c.kwf, c.vwf)
   })
 
   /**
    * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
    */
   def parDoFuseBarrier(outputs: Set[CompNode]) = everywhere(rule {
-    case p @ ParallelDo(_,_,_,_,_) if outputs contains p => p.copy(fuseBarrier = true)
+    case p @ ParallelDo(_,_,_,_,_) if outputs contains p => p.copy(fuseBarrier = true)(p.awf, p.bwf, p.ewf)
   })
 
   /**
@@ -150,14 +150,14 @@ trait Optimiser {
 
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
-    case n @ Op(in1, in2, _)        => n.copy()
+    case n @ Op(in1, in2, _)        => n.copy()(n.wf)
     case n @ Flatten(ins)           => n.copy()
-    case n @ Materialize(in)        => n.copy()
+    case n @ Materialize(in)        => n.copy()(n.wf)
     case n @ GroupByKey(in)         => n.copy()
-    case n @ Combine(in, _)         => n.copy()
-    case n @ ParallelDo(in,_,_,_,_) => n.copy()
+    case n @ Combine(in, _)         => n.copy()(n.kwf, n.vwf)
+    case n @ ParallelDo(in,_,_,_,_) => n.copy()(n.awf, n.bwf, n.ewf)
     case n @ Load(_)                => n.copy()
-    case n @ Return(_)              => n.copy()
+    case n @ Return(_)              => n.copy()(n.wf)
   }))(node)
 
   /** apply one strategy to a list of Nodes. Used for testing */

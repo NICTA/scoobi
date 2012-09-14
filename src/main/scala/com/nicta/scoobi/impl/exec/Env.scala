@@ -29,6 +29,7 @@ import core._
   * the "side-input" of a "ParallelDo". Computed environments are pushed/pulled to/from
   * the distributed cache. */
 class Env[E : WireFormat] private (path: Path) {
+  val wf = implicitly[WireFormat[E]]
 
   /** Store the environment value in the distributed cache. */
   def push(conf: Configuration, env: E) {

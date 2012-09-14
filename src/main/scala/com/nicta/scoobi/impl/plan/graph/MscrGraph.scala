@@ -126,7 +126,6 @@ trait MscrGraph {
       case pd @ ParallelDo(_,_,_,_,_)                                         => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
       case other                                                              => false
     }
-
   /**
    * @return true if a parallel do and its environment are computed by the same mscr
    */
