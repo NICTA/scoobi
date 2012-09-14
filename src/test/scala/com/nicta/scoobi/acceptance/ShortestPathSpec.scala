@@ -66,7 +66,7 @@ object ShortestPath {
   implicit val unprocessedFormat           : WireFormat[Unprocessed] = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _)
   implicit val frontierFormat              : WireFormat[Frontier]    = mkCaseWireFormat(Frontier, Frontier.unapply _)
   implicit val doneFormat                  : WireFormat[Done]        = mkCaseWireFormat(Done, Done.unapply _)
-  implicit val progressFormat              : WireFormat[Progress]    = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]()
+  implicit val progressFormat              : WireFormat[Progress]    = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]
   implicit val nodeFormat                  : WireFormat[Node]        = mkCaseWireFormat(Node, Node.unapply _)
   implicit val nodeInfoFormat              : WireFormat[NodeInfo]    = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
 

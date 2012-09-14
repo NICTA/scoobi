@@ -51,24 +51,28 @@ object WireFormat extends WireFormatImplicits {
 /** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits {
 
-  def mkObjectWireFormat[T](x: T) = new WireFormat[T] {
+  def mkObjectWireFormat[T](x: T): WireFormat[T] = new ObjectWireFormat(x)
+  class ObjectWireFormat[T](x: T) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}
     override def fromWire(in: DataInput): T = x
   }
 
-  def mkCaseWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new WireFormat[T] {
+  def mkCaseWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new CaseWireFormat(apply, unapply)
+  class CaseWireFormat[T](apply: () => T, unapply: T => Boolean) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}
     override def fromWire(in: DataInput): T = apply()
   }
 
-  def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new WireFormat[T] {
+  def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new CaseWireFormat1(apply, unapply)
+  class CaseWireFormat1[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {
       implicitly[WireFormat[A1]].toWire(unapply(obj).get, out)
     }
     override def fromWire(in: DataInput): T = apply(implicitly[WireFormat[A1]].fromWire(in))
   }
 
-  def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]): WireFormat[T] = new WireFormat[T] {
+  def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]): WireFormat[T] = new CaseWireFormat2(apply, unapply)
+  class CaseWireFormat2[T, A1: WireFormat, A2: WireFormat](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]) extends WireFormat[T] {
 
     override def toWire(obj: T, out: DataOutput) {
       val v: Product2[A1, A2] = unapply(obj).get
@@ -84,7 +88,8 @@ trait WireFormatImplicits {
     }
   }
 
-  def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat](apply: (A1, A2, A3) => T, unapply: T => Option[(A1, A2, A3)]): WireFormat[T] = new WireFormat[T] {
+  def mkCaseWireFormat[T, A1: WireFormat, A2: WireFormat, A3: WireFormat](apply: (A1, A2, A3) => T, unapply: T => Option[(A1, A2, A3)]): WireFormat[T] = new CaseWireFormat3(apply, unapply)
+  class CaseWireFormat3[T, A1: WireFormat, A2: WireFormat, A3: WireFormat](apply: (A1, A2, A3) => T, unapply: T => Option[(A1, A2, A3)]) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {
       val v: Product3[A1, A2, A3] = unapply(obj).get
       implicitly[WireFormat[A1]].toWire(v._1, out)
@@ -233,7 +238,7 @@ trait WireFormatImplicits {
       }
   }
 
-  def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat]() = new WireFormat[T] {
+  def mkAbstractWireFormat[T, A <: T : Manifest : WireFormat, B <: T : Manifest : WireFormat,  C <: T : Manifest : WireFormat]: WireFormat[T] = new WireFormat[T] {
 
     override def toWire(obj: T, out: DataOutput) {
       val clazz: Class[_] = obj.getClass
@@ -462,7 +467,8 @@ trait WireFormatImplicits {
    * Note that this WireFormat instance definition is *not* implicit, meaning that you will need to explicitely
    * import it when you need it.
    */
-  def AnythingFmt[T <: Serializable] = new WireFormat[T] {
+  def AnythingFmt[T <: Serializable]: WireFormat[T] = new AnythingWireFormat[T]
+  class AnythingWireFormat[T <: Serializable] extends WireFormat[T] {
     def toWire(x: T, out: DataOutput) {
       val bytesOut = new ByteArrayOutputStream
       val bOut =  new ObjectOutputStream(bytesOut)
@@ -487,7 +493,8 @@ trait WireFormatImplicits {
   /**
    * Hadoop Writable types.
    */
-  implicit def WritableFmt[T <: Writable : Manifest] = new WireFormat[T] {
+  implicit def WritableFmt[T <: Writable : Manifest]: WireFormat[T] = new WritableWireFormat[T]
+  class WritableWireFormat[T <: Writable : Manifest] extends WireFormat[T] {
     def toWire(x: T, out: DataOutput) { x.write(out) }
     def fromWire(in: DataInput): T = {
       val x: T = implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T]
@@ -500,52 +507,62 @@ trait WireFormatImplicits {
   /**
    * "Primitive" types.
    */
-  implicit def UnitFmt = new WireFormat[Unit] {
+  implicit def UnitFmt = new UnitWireFormat
+  class UnitWireFormat extends WireFormat[Unit] {
     def toWire(x: Unit, out: DataOutput) {}
     def fromWire(in: DataInput): Unit = ()
   }
 
-  implicit def IntFmt = new WireFormat[Int] {
+  implicit def IntFmt = new IntWireFormat
+  class IntWireFormat extends WireFormat[Int] {
     def toWire(x: Int, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): Int = in.readInt()
   }
 
-  implicit def IntegerFmt: WireFormat[java.lang.Integer] = new WireFormat[java.lang.Integer] {
+  implicit def IntegerFmt: WireFormat[java.lang.Integer] = new IntegerWireFormat
+  class IntegerWireFormat extends WireFormat[java.lang.Integer] {
     def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): java.lang.Integer = in.readInt()
   }
 
-  implicit def BooleanFmt = new WireFormat[Boolean] {
+  implicit def BooleanFmt = new BooleanWireFormat
+  class BooleanWireFormat extends WireFormat[Boolean] {
     def toWire(x: Boolean, out: DataOutput) { out.writeBoolean(x) }
     def fromWire(in: DataInput): Boolean = in.readBoolean()
   }
 
-  implicit def LongFmt = new WireFormat[Long] {
+  implicit def LongFmt = new LongWireFormat
+  class LongWireFormat extends WireFormat[Long] {
     def toWire(x: Long, out: DataOutput) { out.writeLong(x) }
     def fromWire(in: DataInput): Long = in.readLong()
   }
 
-  implicit def DoubleFmt = new WireFormat[Double] {
+  implicit def DoubleFmt = new DoubleWireFormat
+  class DoubleWireFormat extends WireFormat[Double] {
     def toWire(x: Double, out: DataOutput) { out.writeDouble(x) }
     def fromWire(in: DataInput): Double = { in.readDouble() }
   }
 
-  implicit def FloatFmt = new WireFormat[Float] {
+  implicit def FloatFmt = new FloatWireFormat
+  class FloatWireFormat extends WireFormat[Float] {
     def toWire(x: Float, out: DataOutput) { out.writeFloat(x) }
     def fromWire(in: DataInput): Float = { in.readFloat() }
   }
 
-  implicit def CharFmt = new WireFormat[Char] {
+  implicit def CharFmt = new CharWireFormat
+  class CharWireFormat extends WireFormat[Char] {
     def toWire(x: Char, out: DataOutput) { out.writeChar(x) }
     def fromWire(in: DataInput): Char = in.readChar()
   }
 
-  implicit def ByteFmt = new WireFormat[Byte] {
+  implicit def ByteFmt = new ByteWireFormat
+  class ByteWireFormat extends WireFormat[Byte] {
     def toWire(x: Byte, out: DataOutput) { out.writeByte(x) }
     def fromWire(in: DataInput): Byte = in.readByte()
   }
 
-  implicit def StringFmt: WireFormat[String] = new WireFormat[String] {
+  implicit def StringFmt: WireFormat[String] = new StringWireFormat
+  class StringWireFormat extends WireFormat[String] {
     def toWire(x: String, out: DataOutput) {
       if (x == null)
         out.writeInt(-1)
@@ -570,8 +587,8 @@ trait WireFormatImplicits {
   /*
    * Useful Scala types.
    */
-  implicit def Tuple2Fmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) =
-    new WireFormat[(T1, T2)] {
+  implicit def Tuple2Fmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]): WireFormat[(T1, T2)] = new Tuple2WireFormat(wt1, wt2)
+  class Tuple2WireFormat[T1, T2](wt1: WireFormat[T1], wt2: WireFormat[T2]) extends WireFormat[(T1, T2)] {
       def toWire(x: (T1, T2), out: DataOutput) = {
         wt1.toWire(x._1, out)
         wt2.toWire(x._2, out)
@@ -584,9 +601,9 @@ trait WireFormatImplicits {
     }
 
   implicit def Tuple3Fmt[T1, T2, T3]
-  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3]) =
-    new WireFormat[(T1, T2, T3)] {
-      def toWire(x: (T1, T2, T3), out: DataOutput) = {
+  (implicit wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3]): WireFormat[(T1, T2, T3)] = new Tuple3WireFormat(wt1, wt2, wt3)
+  class Tuple3WireFormat[T1, T2, T3](wt1: WireFormat[T1], wt2: WireFormat[T2], wt3: WireFormat[T3]) extends WireFormat[(T1, T2, T3)] {
+    def toWire(x: (T1, T2, T3), out: DataOutput) = {
         wt1.toWire(x._1, out)
         wt2.toWire(x._2, out)
         wt3.toWire(x._3, out)
