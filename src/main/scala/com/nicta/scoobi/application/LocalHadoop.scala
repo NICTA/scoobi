@@ -19,6 +19,7 @@ package application
 import org.apache.commons.logging.LogFactory
 import impl.time.SimpleTimer
 import HadoopLogFactory._
+import org.apache.hadoop.fs.FileSystem._
 
 /**
  * Execute Hadoop code locally
@@ -35,11 +36,12 @@ trait LocalHadoop extends ScoobiUserArgs {
   }
 
   /** execute some code locally, possibly showing execution times */
-  def onLocal[T](t: =>T) =
+  def onLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration) =
     showTime(executeOnLocal(t))(displayTime("Local execution time"))
 
   /** execute some code locally */
-  def executeOnLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration = ScoobiConfiguration()) = {
+  def executeOnLocal[T](t: =>T)(implicit configuration: ScoobiConfiguration) = {
+    setLogFactory()
     configureForLocal
     runOnLocal(t)
   }
@@ -52,12 +54,8 @@ trait LocalHadoop extends ScoobiUserArgs {
   /**
    * @return a configuration with local setup
    */
-  def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
-    setLogFactory()
-    configuration.jobNameIs(getClass.getSimpleName)
-    configuration.setInt("scoobi.progress.time", 500)
-    configuration
-  }
+  def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration =
+    configuration.setAsLocal
 
   /** @return a function to display execution times. The default uses log messages */
   def displayTime(prefix: String) = (timer: SimpleTimer) => {

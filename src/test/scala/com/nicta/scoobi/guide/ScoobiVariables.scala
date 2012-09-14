@@ -40,8 +40,8 @@ trait ScoobiVariables {
   lazy val apiSnapshotPage  = apiDir+"master/scala/index.html"
   lazy val apiPage          = (if (isSnapshot) apiSnapshotPage else apiOfficialPage)
 
-  lazy val guideOfficialDir = "guide"
-  lazy val guideSnapshotDir = guideOfficialDir + "-SNAPSHOT/guide"
+  lazy val guideOfficialDir = "guide/"
+  lazy val guideSnapshotDir = "guide-SNAPSHOT/guide/"
   lazy val guideDir         = (if (isSnapshot) guideSnapshotDir else guideOfficialDir)
 
   lazy val guideOfficialPage = landingPage + guideOfficialDir
@@ -66,8 +66,8 @@ trait ScoobiVariables {
           "BRANCH"              -> branch,
           "OFFICIAL_TAG"        -> previousVersionIfSnapshot,
           "GUIDE"               -> guideDir,
-          "GUIDE_OFFICIAL"      -> guideOfficialDir,
-          "GUIDE_SNAPSHOT"      -> guideSnapshotDir,
+          "GUIDE_OFFICIAL_DIR"  -> guideOfficialDir,
+          "GUIDE_SNAPSHOT_DIR"  -> guideSnapshotDir,
           "GUIDE_PAGE"          -> guidePage,
           "GUIDE_OFFICIAL_PAGE" -> guideOfficialPage,
           "GUIDE_SNAPSHOT_PAGE" -> guideSnapshotPage).foldLeft(t) { case (res, (k, v)) => res.replaceAll("\\$\\{SCOOBI_"+k+"\\}", v) }

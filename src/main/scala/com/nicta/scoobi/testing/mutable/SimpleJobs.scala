@@ -25,7 +25,7 @@ import scalaz.Scalaz._
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
  * All data is written to temporary files and is deleted after usage.
  */
-trait SimpleJobs extends ThrownMessages { outer: ThrownExpectations with LocalHadoop =>
+trait SimpleJobs { outer =>
 
   implicit def asRunnableDList[T](list: DList[T]) = new RunnableDList(list)
   case class RunnableDList[T](list: DList[T]) {

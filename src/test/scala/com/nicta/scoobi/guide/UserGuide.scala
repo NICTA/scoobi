@@ -45,13 +45,15 @@ In this user guide, you will find:                                              
    "how to use " + gp.markdownLink.fromTop,
    "extensions ".markdownLink(ext).fromTop + "for db-like programming",
    "how to create " + app.markdownLink("Scoobi applications").fromTop,
-   "a "+ ts.markdownLink("testing guide").fromTop
+   "a "+ ts.markdownLink("testing guide").fromTop,
+   dply.markdownLink.fromTop + " instructions",
+   "some " + adv.markdownLink.fromTop
     ).map("* "+_).mkString("\n")                                                                                        ^
                                                                                                                         p^
    link(all.map(_.hide))                                                                                                ^
                                                                                                                         end
 
-  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts)
+  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts, dply, adv)
 
   val qs    = new QuickStart
   val app   = new Application
@@ -62,5 +64,7 @@ In this user guide, you will find:                                              
   val gp    = new Grouping
   val ext   = new Extensions
   val ts    = new Testing
+  val dply  = new Deployment
+  val adv   = new Advanced
 
 }
