@@ -66,8 +66,8 @@ trait ScoobiVariables {
           "BRANCH"              -> branch,
           "OFFICIAL_TAG"        -> previousVersionIfSnapshot,
           "GUIDE"               -> guideDir,
-          "GUIDE_OFFICIAL"      -> guideOfficialDir,
-          "GUIDE_SNAPSHOT"      -> guideSnapshotDir,
+          "GUIDE_OFFICIAL_DIR"  -> guideOfficialDir,
+          "GUIDE_SNAPSHOT_DIR"  -> guideSnapshotDir,
           "GUIDE_PAGE"          -> guidePage,
           "GUIDE_OFFICIAL_PAGE" -> guideOfficialPage,
           "GUIDE_SNAPSHOT_PAGE" -> guideSnapshotPage).foldLeft(t) { case (res, (k, v)) => res.replaceAll("\\$\\{SCOOBI_"+k+"\\}", v) }

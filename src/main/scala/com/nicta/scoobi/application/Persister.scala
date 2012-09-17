@@ -24,6 +24,10 @@ import io.DataSink
 import impl.plan._
 import impl.exec._
 import Smart._
+import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
+import org.apache.hadoop.io.SequenceFile.CompressionType
+import scalaz.{Scalaz}
+import Scalaz._
 
 /** Type class for things that can be persisted. Mechanism to allow tuples of DLists and
   * DObjects to be persisted. */
@@ -40,6 +44,16 @@ object Persister {
   /** Evaluate and persist a distributed computation. This can be a combination of one or more
    * DLists (i.e. DListPersisters) and DObjects. */
   def persist[P](p: P)(implicit conf: ScoobiConfiguration, persister: Persister[P]): persister.Out = persister(p, conf)
+
+  implicit def sequencePersister[T](implicit pfn: PFn[T]): Persister[Seq[T]] = new Persister[Seq[T]] {
+
+    type Out = Seq[pfn.Ret]
+
+    def apply(seq: Seq[T], conf: ScoobiConfiguration): Seq[pfn.Ret] = {
+      val (st, nodeMap) = createPlan(seq.map(pfn.plan).toList, conf)
+      seq.toStream.traverseS(x => pfn.execute(x)).eval((st, nodeMap)).toSeq
+    }
+  }
 
   implicit def tuple1persister[T1](implicit pfn1: PFn[T1]) = new Persister[T1] {
 
@@ -289,7 +303,10 @@ object Persister {
 
 
 /** The container for persisting a DList. */
-case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A])
+case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A]) {
+  def compress = compressWith(new GzipCodec)
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(sink = sink.outputCompression(codec))
+}
 
 import scalaz.State
 

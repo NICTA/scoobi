@@ -193,7 +193,9 @@ class MapReduceJob(stepId: Int) {
         }
         case _ => {}
       }
-      sinks.zipWithIndex.foreach { case (sink, ix) => ChannelOutputFormat.addOutputChannel(job, reducer.tag, ix, sink) }
+      sinks.zipWithIndex.foreach { case (sink, ix) =>
+        ChannelOutputFormat.addOutputChannel(sink.configureCompression(job), reducer.tag, ix, sink)
+      }
     }
 
     val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer[_,_,_,_]))] =

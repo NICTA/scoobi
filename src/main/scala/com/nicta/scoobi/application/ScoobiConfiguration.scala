@@ -32,6 +32,7 @@ import java.io.File
 import ScoobiConfiguration._
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem._
+import io.FileSystems
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -235,6 +236,9 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
 
   def deleteScoobiTmpDirectory = fs.delete(new Path(scoobiTmpDir), true)
   def deleteWorkingDirectory = fs.delete(new Path(defaultWorkDir), true)
+
+  /** @return the file system for this configuration, either a local or a remote one */
+  def fileSystem = FileSystems.fileSystem(this)
 }
 
 object ScoobiConfiguration {
