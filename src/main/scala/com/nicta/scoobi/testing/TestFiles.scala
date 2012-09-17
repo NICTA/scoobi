@@ -70,6 +70,12 @@ trait TestFiles {
     if (!keep) configuration.addValues("scoobi.test.files", file.getPath)
     file
   }
+
+  /** readLines in the ch* files of a result directory */
+  def dirResults(implicit sc: ScoobiConfiguration) = (d: File) => {
+    getFiles(path(d)).filterNot(_.getName.contains(".crc")).flatMap(p => Source.fromFile(p).getLines.toSeq)
+  }
+
   private def deleteFiles(files: Seq[File])(implicit configuration: ScoobiConfiguration) {
     if (isRemote)
       files.foreach(f => TempFiles.deleteFile(f, isRemote))
