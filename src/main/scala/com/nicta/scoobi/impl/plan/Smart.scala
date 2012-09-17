@@ -488,8 +488,8 @@ object Smart {
             def setup(env: Unit) = {}
             def process(env: Unit, input: (K, Iterable[V]), emitter: Emitter[(K, V)]) = {
               val key = input._1
-              val values = input._2
-              emitter.emit(key, values.tail.foldLeft(values.head)(f))
+              val values = input._2.toStream
+              emitter.emit(key, values.reduce(f))
             }
             def cleanup(env: Unit, emitter: Emitter[(K, V)]) = {}
           }

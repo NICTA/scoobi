@@ -24,9 +24,10 @@ class WordCountSpec extends NictaSimpleJobs {
   "Counting words frequencies must return the frequency for each word" >> { implicit sc: SC =>
 
     val frequencies =
-      DList(repeat("hello" -> 3, "world" -> 4):_*).
+      DList(repeat("hello" -> 3, "world" -> 4, "universe" -> 2):_*).
       flatMap(_.split(" ")).map((_, 1)).
       groupByKey.
+      filter { case (word, n) => word.length < 6 }.
       combine((i: Int, j: Int) => i + j)
 
     frequencies.run.sorted must_== Seq(("hello", 3), ("world", 4))
