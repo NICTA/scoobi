@@ -29,7 +29,8 @@ libraryDependencies ++= Seq(
 
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "apache"   at "https://repository.apache.org/content/repositories/releases",
-                  "scoobi"   at "http://nicta.github.com/scoobi/releases")
+                  "scoobi"   at "http://nicta.github.com/scoobi/releases",
+                  "sonatype" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Compilation */
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
