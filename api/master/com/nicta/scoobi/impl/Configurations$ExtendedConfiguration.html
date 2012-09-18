@@ -515,6 +515,20 @@ or value if necessary</p></div><dl class="paramcmts block"><dt>returns</dt><dd c
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#withoutClassLoader" data-isabs="false">
+      <a id="withoutClassLoader[T]((Configuration) ⇒ T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withoutClassLoader</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (<span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span>) ⇒ T</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">execute a function with a configuration having no classLoader.</p><div class="fullcomment"><div class="comment cmt"><p>execute a function with a configuration having no classLoader.</p><p>The classLoader is set back on the configuration after f has been executed.
+This is used during the serialization of objects to avoid the classLoader to be inadvertently serialized
+</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#workingDirectory" data-isabs="false">
       <a id="workingDirectory:String"></a>
       <h4 class="signature">
