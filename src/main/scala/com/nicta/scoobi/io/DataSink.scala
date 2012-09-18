@@ -37,22 +37,22 @@ trait DataSink[K, V, B] { outer =>
   def outputValueClass: Class[V]
 
   /** Check the validity of the DataSink specification. */
-  def outputCheck(sc: ScoobiConfiguration)
+  def outputCheck(implicit sc: ScoobiConfiguration)
 
   /** Configure the DataSink. */
-  def outputConfigure(job: Job)
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
 
   /** Maps the type consumed by this DataSink to the key-values of its OutputFormat. */
   def outputConverter: OutputConverter[K, V, B]
 
   /** Set the compression configuration */
   def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = new DataSink[K, V, B] {
-    def outputFormat: Class[_ <: OutputFormat[K, V]] = outer.outputFormat
-    def outputKeyClass: Class[K]                     = outer.outputKeyClass
-    def outputValueClass: Class[V]                   = outer.outputValueClass
-    def outputCheck(sc: ScoobiConfiguration)         = outer.outputCheck(sc)
-    def outputConfigure(job: Job)                    = outer.outputConfigure(job)
-    def outputConverter: OutputConverter[K, V, B]    = outer.outputConverter
+    def outputFormat: Class[_ <: OutputFormat[K, V]]                = outer.outputFormat
+    def outputKeyClass: Class[K]                                    = outer.outputKeyClass
+    def outputValueClass: Class[V]                                  = outer.outputValueClass
+    def outputCheck(implicit sc: ScoobiConfiguration)               = outer.outputCheck(sc)
+    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = outer.outputConfigure(job)
+    def outputConverter: OutputConverter[K, V, B]                   = outer.outputConverter
     /** configure the job so that the output is compressed */
     override def configureCompression(job: Job) = {
       job.getConfiguration.set("mapred.output.compress", "true")

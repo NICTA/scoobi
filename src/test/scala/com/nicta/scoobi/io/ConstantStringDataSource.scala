@@ -26,12 +26,12 @@ import application.ScoobiConfiguration
 class ConstantStringDataSource(value: String) extends DataSource[String, String, String] {
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
-  def inputCheck(sc: ScoobiConfiguration) {}
-  def inputConfigure(job: Job) {
+  def inputCheck(implicit sc: ScoobiConfiguration) {}
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     job.getConfiguration.set("mapred.constant.string", "value")
     DistributedCache.addCacheFile(new java.net.URI("string"), job.getConfiguration)
   }
-  def inputSize: Long = value.size
+  def inputSize(implicit sc: ScoobiConfiguration): Long = value.size
   lazy val inputConverter = ConstantStringInputConverter(value)
 
   case class ConstantStringInputSplit(value: String) extends InputSplit {

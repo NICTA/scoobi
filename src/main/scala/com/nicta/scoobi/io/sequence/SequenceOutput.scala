@@ -108,7 +108,7 @@ object SequenceOutput {
     val outputKeyClass = keyClass
     val outputValueClass = valueClass
 
-    def outputCheck(sc: ScoobiConfiguration) {
+    def outputCheck(implicit sc: ScoobiConfiguration) {
       if (Helper.pathExists(outputPath)(sc))
         if (overwrite) {
           logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
@@ -120,7 +120,7 @@ object SequenceOutput {
         logger.info("Output path: " + outputPath.toUri.toASCIIString)
     }
 
-    def outputConfigure(job: Job) {
+    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
       FileOutputFormat.setOutputPath(job, outputPath)
     }
 

@@ -51,21 +51,20 @@ object FunctionInput {
   def fromFunction[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
       val inputFormat = classOf[FunctionInputFormat[A]]
-      def inputCheck(sc: ScoobiConfiguration) {}
+      def inputCheck(implicit sc: ScoobiConfiguration) {}
 
-      def inputConfigure(job: Job) {
-        val conf = job.getConfiguration
-        conf.setInt(LengthProperty, n)
+      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+        job.getConfiguration.setInt(LengthProperty, n)
         /* Because FunctionInputFormat is shared between multiple instances of the Function
          * DataSource, each must have a unique id to distinguish their serialised
          * functions that are pushed out by the distributed cache.
          * Note that the previous function Id might have been set on a key such as "scoobi.input0:scoobi.function.id"
          * This is why we need to look for keys by regular expression in order to find the maximum value to increment
          */
-        DistCache.pushObject(conf, f, functionProperty(conf.incrementRegex(IdProperty, ".*"+IdProperty)))
+        DistCache.pushObject(job.getConfiguration, f, functionProperty(job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)))
       }
 
-      def inputSize: Long = n.toLong
+      def inputSize(implicit sc: ScoobiConfiguration): Long = n.toLong
 
       lazy val inputConverter = new InputConverter[NullWritable, A, A] {
         def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v

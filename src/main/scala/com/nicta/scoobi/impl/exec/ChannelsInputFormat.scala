@@ -43,6 +43,7 @@ import io.DataSource
 import ChannelsInputFormat._
 import util.JarBuilder
 import scalaz.Scalaz._
+import application.ScoobiConfiguration
 
 /** An input format that delegates to multiple input formats, one for each
  * input channel. */
@@ -100,12 +101,12 @@ object ChannelsInputFormat {
    * - configure the input channel for each source
    *
    */
-  def configureSources(job: Job, jar: JarBuilder, sources: List[DataSource[_,_,_]]) = {
+  def configureSources(job: Job, jar: JarBuilder, sources: List[DataSource[_,_,_]])(implicit sc: ScoobiConfiguration) = {
     configureChannelsInputFormat(job) |>
     configureSourcesChannels(jar, sources)
   }
 
-  private def configureSourcesChannels(jar: JarBuilder, sources: List[DataSource[_,_,_]]) = (initial: Configuration) => {
+  private def configureSourcesChannels(jar: JarBuilder, sources: List[DataSource[_,_,_]])(implicit sc: ScoobiConfiguration) = (initial: Configuration) => {
     sources.zipWithIndex.foldLeft(initial) { case (conf, (source, channel)) =>
       conf |>
       configureSourceRuntimeClass(jar, source) |>
@@ -114,7 +115,7 @@ object ChannelsInputFormat {
   }
 
   /** configure a new input channel on the job's configuration */
-  private def configureInputChannel(channel: Int, source: DataSource[_,_,_]) = (conf: Configuration) => {
+  private def configureInputChannel(channel: Int, source: DataSource[_,_,_])(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
     conf |>
     configureSourceInputFormat(source, channel) |>
     configureSource(source, channel)
@@ -147,7 +148,7 @@ object ChannelsInputFormat {
    *
    * Also include the properties which might have been modified by the source (like the DistributedCache files)
    */
-  private def configureSource(source: DataSource[_,_,_], channel: Int) = (conf: Configuration) => {
+  private def configureSource(source: DataSource[_,_,_], channel: Int)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
     val job = new Job(new Configuration(conf))
     source.inputConfigure(job)
 

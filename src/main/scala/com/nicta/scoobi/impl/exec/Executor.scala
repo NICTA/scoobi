@@ -167,7 +167,7 @@ object Executor {
     var resultingState = state
     mscr.bridgeStores.foreach { store =>
       resultingState = resultingState.decRefcnt(store)
-      if (!resultingState.isReferenced(store)) { store.freePath }
+      if (!resultingState.isReferenced(store)) { store.freePath(state.conf) }
     }
     resultingState
   }
@@ -179,7 +179,7 @@ object Executor {
       case AST.Materialize(in)  => {
         logger.debug("Executing " + node)
         val st1 = executeOnce(in, st)
-        val exp: Iterable[E] = st.matTable(in).asInstanceOf[BridgeStore[E]].readAsIterable
+        val exp: Iterable[E] = st.matTable(in).asInstanceOf[BridgeStore[E]].readAsIterable(st.conf)
         (exp, st1)
       }
 

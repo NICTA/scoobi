@@ -29,6 +29,7 @@ import scala.collection.mutable.{Map => MMap}
 
 import io.DataSink
 import Configurations._
+import application.ScoobiConfiguration
 
 
 /** A class that simplifies writing output to different paths and with different types
@@ -99,7 +100,7 @@ object ChannelOutputFormat {
   private def otherProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ":"
 
   /** Add a new output channel. */
-  def addOutputChannel(job: Job, channel: Int, output: Int, sink: DataSink[_,_,_]) = {
+  def addOutputChannel(job: Job, channel: Int, output: Int, sink: DataSink[_,_,_])(implicit sc: ScoobiConfiguration) = {
     val conf = job.getConfiguration
     conf.set(formatProperty(channel, output), sink.outputFormat.getName)
     conf.set(keyClassProperty(channel, output), sink.outputKeyClass.getName)

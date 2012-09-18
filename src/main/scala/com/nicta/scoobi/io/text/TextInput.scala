@@ -32,7 +32,6 @@ import impl.exec.TaggedInputSplit
 import core._
 import application.ScoobiConfiguration
 
-
 /** Smart functions for materializing distributed lists by loading text files. */
 object TextInput {
   lazy val logger = LogFactory.getLog("scoobi.TextInput")
@@ -125,14 +124,11 @@ object TextInput {
   class TextSource[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
     extends DataSource[LongWritable, Text, A] {
 
-    // default config until its set through inputConfigure or outputConfigure
-    var config: Configuration = new Configuration
-
     private val inputPaths = paths.map(p => new Path(p))
 
     val inputFormat = classOf[TextInputFormat]
 
-    def inputCheck(sc: ScoobiConfiguration) {
+    def inputCheck(implicit sc: ScoobiConfiguration) {
       inputPaths foreach { p =>
         if (Helper.pathExists(p)(sc))
           logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
@@ -141,12 +137,11 @@ object TextInput {
       }
     }
 
-    def inputConfigure(job: Job) = {
-      config = job.getConfiguration
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = {
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 
-    def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
+    def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
 
     lazy val inputConverter = converter
   }

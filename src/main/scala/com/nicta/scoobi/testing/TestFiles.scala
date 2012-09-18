@@ -62,9 +62,9 @@ trait TestFiles {
 
   def moveToRemote(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
     if (isRemote) {
-      FileSystems.fileSystem.copyFromLocalFile(!keep, new Path(file.getPath), new Path(configuration.workingDirectory+file.getName))
-      new File(configuration.workingDirectory+file.getName)
-    } else file
+      FileSystems.fileSystem.copyFromLocalFile(!keep, new Path(file.getPath), remotePath(file))
+    }
+    file
   }
   def registerFile(file: File, keep: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
     if (!keep) configuration.addValues("scoobi.test.files", file.getPath)
@@ -78,9 +78,16 @@ trait TestFiles {
 
   private def deleteFiles(files: Seq[File])(implicit configuration: ScoobiConfiguration) {
     if (isRemote)
-      files.foreach(f => TempFiles.deleteFile(f, isRemote))
-    files.foreach(f => TempFiles.deleteFile(f))
+      files.foreach(f => TempFiles.deleteFile(remoteFile(f), isRemote))
+    files.foreach(f => TempFiles.deleteFile(f, isRemote))
   }
+
+  /** create a Path for a test file that's going to be remote */
+  private def remotePath(file: File)(implicit configuration: ScoobiConfiguration) =
+    new Path(remoteFile(file).getPath)
+
+  private def remoteFile(file: File)(implicit configuration: ScoobiConfiguration) =
+    new File(configuration.workingDirectory+file.getName)
 }
 
 object TestFiles extends TestFiles
