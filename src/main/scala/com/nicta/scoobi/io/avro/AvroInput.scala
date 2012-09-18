@@ -60,16 +60,13 @@ object AvroInput extends AvroParsingImplicits {
     }
     val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
 
-      // default config until its set through inputConfigure or outputConfigure
-      private var config: Configuration = new Configuration
-
       private val inputPaths = paths.map(p => new Path(p))
 
       val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 
       /** Check if the input paths exist and optionally that the reader schema is compatible with the written schema.
         * For efficiency, the schema checking will only check one file per dir. */
-      def inputCheck(sc: ScoobiConfiguration) {
+      def inputCheck(implicit sc: ScoobiConfiguration) {
         inputPaths foreach { p =>
           val fileStats = Helper.getFileStatus(p)(sc)
 
@@ -109,12 +106,11 @@ object AvroInput extends AvroParsingImplicits {
       }
 
       def inputConfigure(job: Job) = {
-        config = job.getConfiguration
         inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
         job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
       }
 
-      def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
+      def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
 
       lazy val inputConverter = converter
     }

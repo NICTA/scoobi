@@ -128,16 +128,13 @@ object SequenceInput {
   private class SeqSource[K : Manifest, V : Manifest, A : Manifest : WireFormat](paths: List[String], converter: InputConverter[K, V, A], checkFileTypes: Boolean)
     extends DataSource[K, V, A] {
 
-    // default config until its set through inputConfigure or outputConfigure
-    var config: Configuration = new Configuration
-
     private val inputPaths = paths.map(p => new Path(p))
 
     val inputFormat = classOf[SequenceFileInputFormat[K, V]]
 
     /** Check if the input path exists, and optionally the expected key/value types match those in the file.
       * For efficiency, the type checking will only check one file per dir */
-    def inputCheck(sc: ScoobiConfiguration) {
+    def inputCheck(implicit sc: ScoobiConfiguration) {
       inputPaths foreach { p =>
         if (Helper.pathExists(p)(sc))
           logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
@@ -159,11 +156,10 @@ object SequenceInput {
     }
 
     def inputConfigure(job: Job) {
-      config = job.getConfiguration
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 
-    def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
+    def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
 
     lazy val inputConverter = converter
   }

@@ -29,13 +29,13 @@ trait DataSource[K, V, A] {
   def inputFormat: Class[_ <: InputFormat[K, V]]
 
   /** Check the validity of the DataSource specification. */
-  def inputCheck(sc: ScoobiConfiguration)
+  def inputCheck(implicit sc: ScoobiConfiguration)
 
   /** Configure the DataSource. */
   def inputConfigure(job: Job)
 
   /** Size in bytes of the data being input by this source. */
-  def inputSize: Long
+  def inputSize(implicit sc: ScoobiConfiguration): Long
 
   /** Maps the key-values of a DataSource's InputFormat to the final type produced by it. */
   def inputConverter: InputConverter[K, V, A]
