@@ -39,7 +39,7 @@ object TextInput {
 
   /** Create a distributed list from one or more files or directories (in the case of a directory,
     * the input forms all files in that directory). */
-  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths: _*))
+  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths:_*))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
@@ -57,7 +57,7 @@ object TextInput {
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(paths: _*)
+  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(List(paths:_*))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
