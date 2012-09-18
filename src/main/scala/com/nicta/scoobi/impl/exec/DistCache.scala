@@ -52,10 +52,9 @@ object DistCache {
     /* Serialize */
     val path = mkPath(conf, tag)
     val dos = path.getFileSystem(conf).create(path)
-    try {
-      xstream.toXML(obj, dos)
-    } finally {
-      dos.close()
+    conf.withoutClassLoader { c =>
+      try { xstream.toXML(obj, dos) }
+      finally { dos.close()  }
     }
     action(path)
   }
