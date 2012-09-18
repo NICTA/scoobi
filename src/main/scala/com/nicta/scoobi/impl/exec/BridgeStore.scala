@@ -58,9 +58,9 @@ case class BridgeStore[A]()
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck(sc: ScoobiConfiguration) {}
-  def outputConfigure(job: Job) {
-    FileOutputFormat.setOutputPath(job, path(job.getConfiguration))
+  def outputCheck(implicit sc: ScoobiConfiguration) {}
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+    FileOutputFormat.setOutputPath(job, path)
   }
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 
