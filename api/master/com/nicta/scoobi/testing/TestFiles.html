@@ -168,6 +168,30 @@ The files paths are registered in the configuration so that they can be deleted 
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#createTempFile" data-isabs="false">
+      <a id="createTempFile(String,String,Boolean)(ScoobiConfiguration):File"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createTempFile</span><span class="params">(<span name="prefix">prefix: String</span>, <span name="suffix">suffix: String</span>, <span name="keep">keep: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#createTempFile" data-isabs="false">
+      <a id="createTempFile(String,String)(ScoobiConfiguration):File"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createTempFile</span><span class="params">(<span name="prefix">prefix: String</span>, <span name="suffix">suffix: String</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#createTempFile" data-isabs="false">
       <a id="createTempFile(String)(ScoobiConfiguration):File"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -203,6 +227,18 @@ The files paths are registered in the configuration so that they can be deleted 
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#dirResults" data-isabs="false">
+      <a id="dirResults(ScoobiConfiguration):(File) ⇒ Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dirResults</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: ScoobiConfiguration</span>)</span><span class="result">: (<span name="java.io.File" class="extype">File</span>) ⇒ <span name="scala.collection.Seq" class="extype">Seq</span>[String]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">readLines in the ch* files of a result directory</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -323,6 +359,18 @@ The files paths are registered in the configuration so that they can be deleted 
       </span>
       <span class="symbol">
         <span class="name">isRemote</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles#moveToRemote" data-isabs="false">
+      <a id="moveToRemote(File,Boolean)(ScoobiConfiguration):File"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">moveToRemote</span><span class="params">(<span name="file">file: <span name="java.io.File" class="extype">File</span></span>, <span name="keep">keep: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
       </span>
       </h4>
       

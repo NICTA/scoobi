@@ -190,6 +190,18 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.io.DataSink#configureCompression" data-isabs="false">
+      <a id="configureCompression(Job):Job"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureCompression</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">configure the compression for a given job</p><div class="fullcomment"><div class="comment cmt"><p>configure the compression for a given job</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -410,6 +422,18 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       </h4>
       <p class="shortcomment cmt">Check the validity of the DataSink specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSink specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.DataSink#outputCompression" data-isabs="false">
+      <a id="outputCompression(CompressionCodec,CompressionType):DataSink[NullWritable, ScoobiWritable[A], A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputCompression</span><span class="params">(<span name="codec">codec: <span name="org.apache.hadoop.io.compress.CompressionCodec" class="extype">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span name="org.apache.hadoop.io.SequenceFile.CompressionType" class="extype">CompressionType</span> = <span class="symbol"><span class="name"><a href="../../../../../org/package.html">CompressionType.BLOCK</a></span></span></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A], A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Set the compression configuration</p><div class="fullcomment"><div class="comment cmt"><p>Set the compression configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#outputConfigure" data-isabs="false">
       <a id="outputConfigure(Job):Unit"></a>
       <h4 class="signature">

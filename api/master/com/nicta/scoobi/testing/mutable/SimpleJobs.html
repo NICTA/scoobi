@@ -85,6 +85,18 @@ All data is written to temporary files and is deleted after usage.
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDListSeq" data-isabs="false">
+      <a id="RunnableDListSeq:RunnableDListSeq[T, S]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SimpleJobs$RunnableDListSeq.html"><span class="name">RunnableDListSeq</span></a><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="lists">lists: Seq[DList[T]]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDObject" data-isabs="false">
       <a id="RunnableDObject:RunnableDObject[T]"></a>
       <h4 class="signature">
@@ -197,6 +209,18 @@ All data is written to temporary files and is deleted after usage.
       </span>
       <span class="symbol">
         <span class="name">asRunnableDListPair</span><span class="tparams">[<span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="lists">lists: (<a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T], <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[S])</span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDListPair" class="extype" href="SimpleJobs$RunnableDListPair.html">RunnableDListPair</a>[T, S]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#asRunnableDListSeq" data-isabs="false">
+      <a id="asRunnableDListSeq[T](Seq[DList[T]]):RunnableDListSeq[T, Nothing]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asRunnableDListSeq</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="lists">lists: Seq[<a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T]]</span>)</span><span class="result">: <a name="com.nicta.scoobi.testing.mutable.SimpleJobs.RunnableDListSeq" class="extype" href="SimpleJobs$RunnableDListSeq.html">RunnableDListSeq</a>[T, <span name="scala.Nothing" class="extype">Nothing</span>]</span>
       </span>
       </h4>
       
@@ -385,6 +409,18 @@ All data is written to temporary files and is deleted after usage.
       </span>
       <span class="symbol">
         <span class="name">run</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="o">o: <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a>[T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable.SimpleJobs#run" data-isabs="false">
+      <a id="run[T](Seq[DList[T]])(ScoobiConfiguration):Seq[Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="lists">lists: Seq[<a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[T]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Seq[Seq[T]]</span>
       </span>
       </h4>
       

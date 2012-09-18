@@ -225,6 +225,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.LinearAlgebra#matrixByDenseFunc" data-isabs="false">
+      <a id="matrixByDenseFunc[V, Value, Q](DMatrix[Int, Value],() ⇒ Seq[V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(Manifest[V],WireFormat[V],Manifest[Value],WireFormat[Value],Manifest[Q],WireFormat[Q]):DMatrix[Int, Q]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">matrixByDenseFunc</span><span class="tparams">[<span name="V">V</span>, <span name="Value">Value</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="matrix">matrix: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[<span name="scala.Int" class="extype">Int</span>, Value]</span>, <span name="generateRow">generateRow: () ⇒ Seq[V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: WireFormat[V]</span>, <span name="arg2">arg2: Manifest[Value]</span>, <span name="arg3">arg3: WireFormat[Value]</span>, <span name="arg4">arg4: Manifest[Q]</span>, <span name="arg5">arg5: WireFormat[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[<span name="scala.Int" class="extype">Int</span>, Q]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.lib.LinearAlgebra#matrixByMatrix" data-isabs="false">
       <a id="matrixByMatrix[Elem, V, Value, Q](DMatrix[Elem, Value],DMatrix[Elem, V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[V],WireFormat[V],Manifest[Value],WireFormat[Value],Manifest[Q],WireFormat[Q]):DMatrix[Elem, Q]"></a>
       <h4 class="signature">
@@ -246,6 +258,18 @@
       </span>
       <span class="symbol">
         <span class="name">matrixByMatrixTimeoutWorkaround</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="V">V</span>, <span name="Value">Value</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="l">l: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[Elem, Value]</span>, <span name="r">r: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: WireFormat[V]</span>, <span name="arg5">arg5: Manifest[Value]</span>, <span name="arg6">arg6: WireFormat[Value]</span>, <span name="arg7">arg7: Manifest[Q]</span>, <span name="arg8">arg8: WireFormat[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[Elem, Q]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.LinearAlgebra#matrixBySparseFunc" data-isabs="false">
+      <a id="matrixBySparseFunc[Elem, V, Value, Q](DMatrix[Elem, Value],() ⇒ Map[Elem, V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(Manifest[Elem],WireFormat[Elem],Ordering[Elem],Manifest[V],WireFormat[V],Manifest[Value],WireFormat[Value],Manifest[Q],WireFormat[Q]):DMatrix[Elem, Q]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">matrixBySparseFunc</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="V">V</span>, <span name="Value">Value</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="matrix">matrix: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[Elem, Value]</span>, <span name="generateRow">generateRow: () ⇒ Map[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: WireFormat[V]</span>, <span name="arg5">arg5: Manifest[Value]</span>, <span name="arg6">arg6: WireFormat[Value]</span>, <span name="arg7">arg7: Manifest[Q]</span>, <span name="arg8">arg8: WireFormat[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="DMatrix.html">DMatrix</a>[Elem, Q]</span>
       </span>
       </h4>
       

@@ -29,7 +29,7 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><dl class="attributes block"> <dt>Self Type</dt><dd><a name="com.nicta.scoobi.io.DataSink" class="extype" href="">DataSink</a>[K, V, B]</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
@@ -228,6 +228,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.DataSink#configureCompression" data-isabs="false">
+      <a id="configureCompression(Job):Job"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureCompression</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">configure the compression for a given job</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -339,6 +351,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.DataSink#outputCompression" data-isabs="false">
+      <a id="outputCompression(CompressionCodec,CompressionType):DataSink[K, V, B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputCompression</span><span class="params">(<span name="codec">codec: <span name="org.apache.hadoop.io.compress.CompressionCodec" class="extype">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span name="org.apache.hadoop.io.SequenceFile.CompressionType" class="extype">CompressionType</span> = <span class="symbol"><span class="name"><a href="../../../../org/package.html">CompressionType.BLOCK</a></span></span></span>)</span><span class="result">: <a name="com.nicta.scoobi.io.DataSink" class="extype" href="">DataSink</a>[K, V, B]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Set the compression configuration</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
