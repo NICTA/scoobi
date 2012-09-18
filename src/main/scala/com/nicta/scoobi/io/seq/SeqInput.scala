@@ -52,17 +52,16 @@ object SeqInput {
       val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
       def inputCheck(implicit sc: ScoobiConfiguration) {}
 
-      def inputConfigure(job: Job) {
-        val conf = job.getConfiguration
-        conf.setInt(LengthProperty, seq.size)
+      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+        sc.setInt(LengthProperty, seq.size)
         /* Because SeqInputFormat is shared between multiple instances of the Seq
          * DataSource, each must have a unique id to distinguish their serialised
          * elements that are pushed out by the distributed cache.
          * Note that the previous seq Id might have been set on a key such as "scoobi.input0:scoobi.seq.id"
          * This is why we need to look for keys by regular expression in order to find the maximum value to increment
          */
-        val id = conf.incrementRegex(IdProperty, ".*"+IdProperty)
-        DistCache.pushObject(conf, seq.map(toByteArray(_, implicitly[WireFormat[A]].toWire(_: A, _: DataOutput))), seqProperty(id))
+        val id = sc.incrementRegex(IdProperty, ".*"+IdProperty)
+        DistCache.pushObject(sc, seq.map(toByteArray(_, implicitly[WireFormat[A]].toWire(_: A, _: DataOutput))), seqProperty(id))
       }
 
       def inputSize(implicit sc: ScoobiConfiguration): Long = seq.size.toLong

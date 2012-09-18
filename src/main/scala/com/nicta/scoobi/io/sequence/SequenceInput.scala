@@ -155,7 +155,7 @@ object SequenceInput {
       if (!expected.isAssignableFrom(actual)) throw new IOException(msg.format(typeStr, expected, actual))
     }
 
-    def inputConfigure(job: Job) {
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 

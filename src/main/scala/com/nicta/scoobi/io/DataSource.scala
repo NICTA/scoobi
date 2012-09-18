@@ -32,7 +32,7 @@ trait DataSource[K, V, A] {
   def inputCheck(implicit sc: ScoobiConfiguration)
 
   /** Configure the DataSource. */
-  def inputConfigure(job: Job)
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
 
   /** Size in bytes of the data being input by this source. */
   def inputSize(implicit sc: ScoobiConfiguration): Long
