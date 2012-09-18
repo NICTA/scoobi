@@ -54,14 +54,14 @@ object FunctionInput {
       def inputCheck(implicit sc: ScoobiConfiguration) {}
 
       def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-        sc.setInt(LengthProperty, n)
+        job.getConfiguration.setInt(LengthProperty, n)
         /* Because FunctionInputFormat is shared between multiple instances of the Function
          * DataSource, each must have a unique id to distinguish their serialised
          * functions that are pushed out by the distributed cache.
          * Note that the previous function Id might have been set on a key such as "scoobi.input0:scoobi.function.id"
          * This is why we need to look for keys by regular expression in order to find the maximum value to increment
          */
-        DistCache.pushObject(sc, f, functionProperty(sc.incrementRegex(IdProperty, ".*"+IdProperty)))
+        DistCache.pushObject(job.getConfiguration, f, functionProperty(job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)))
       }
 
       def inputSize(implicit sc: ScoobiConfiguration): Long = n.toLong

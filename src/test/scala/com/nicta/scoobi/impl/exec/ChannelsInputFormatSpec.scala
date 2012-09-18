@@ -37,8 +37,6 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 
   "Each input format can be configured as an input channel on a job's configuration" >> {
     implicit val sc = (new ScoobiConfiguration).setAsLocal
-    // adding one file to the cache
-    DistCache.pushObject(sc, "cached object", "3")
     val job = new Job(sc, "id")
     val jarBuilder = mock[JarBuilder]
 
