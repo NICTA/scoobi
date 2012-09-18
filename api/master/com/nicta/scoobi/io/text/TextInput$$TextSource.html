@@ -165,18 +165,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput.TextSource#config" data-isabs="false">
-      <a id="config:Configuration"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">config</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -248,19 +236,19 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputCheck</span><span class="params">(<span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">inputCheck</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Check the validity of the DataSource specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSource specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.text.TextInput.TextSource" class="extype" href="">TextSource</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../DataSource.html">DataSource</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput.TextSource#inputConfigure" data-isabs="false">
-      <a id="inputConfigure(Job):Unit"></a>
+      <a id="inputConfigure(Job)(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputConfigure</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">inputConfigure</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Configure the DataSource.</p><div class="fullcomment"><div class="comment cmt"><p>Configure the DataSource.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.text.TextInput.TextSource" class="extype" href="">TextSource</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../DataSource.html">DataSource</a></dd></dl></div>
@@ -289,14 +277,14 @@
       </h4>
       <p class="shortcomment cmt">The InputFormat specifying the type of input for this DataSource.</p><div class="fullcomment"><div class="comment cmt"><p>The InputFormat specifying the type of input for this DataSource.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.text.TextInput.TextSource" class="extype" href="">TextSource</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../DataSource.html">DataSource</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput.TextSource#inputSize" data-isabs="false">
-      <a id="inputSize:Long"></a>
+      <a id="inputSize(ScoobiConfiguration):Long"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputSize</span><span class="result">: <span name="scala.Long" class="extype">Long</span></span>
+        <span class="name">inputSize</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Long" class="extype">Long</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Size in bytes of the data being input by this source.</p><div class="fullcomment"><div class="comment cmt"><p>Size in bytes of the data being input by this source.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.text.TextInput.TextSource" class="extype" href="">TextSource</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../DataSource.html">DataSource</a></dd></dl></div>

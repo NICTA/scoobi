@@ -153,14 +153,14 @@ to be specified. Makes use of ChannelsInputFormat
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelsInputFormat#configureSources" data-isabs="false">
-      <a id="configureSources(Job,JarBuilder,List[com.nicta.scoobi.io.DataSource[_, _, _]]):Configuration"></a>
+      <a id="configureSources(Job,JarBuilder,List[com.nicta.scoobi.io.DataSource[_, _, _]])(ScoobiConfiguration):Configuration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureSources</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>, <span name="jar">jar: <a name="com.nicta.scoobi.impl.util.JarBuilder" class="extype" href="../util/JarBuilder.html">JarBuilder</a></span>, <span name="sources">sources: List[com.nicta.scoobi.io.DataSource[_, _, _]]</span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+        <span class="name">configureSources</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>, <span name="jar">jar: <a name="com.nicta.scoobi.impl.util.JarBuilder" class="extype" href="../util/JarBuilder.html">JarBuilder</a></span>, <span name="sources">sources: List[com.nicta.scoobi.io.DataSource[_, _, _]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">configure the sources for multiple channels:</p><div class="fullcomment"><div class="comment cmt"><p>configure the sources for multiple channels:</p><p>- add the necessary classes to the jar builder

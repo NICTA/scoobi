@@ -178,18 +178,6 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#config" data-isabs="false">
-      <a id="config:Configuration"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">config</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.io.DataSink#configureCompression" data-isabs="false">
       <a id="configureCompression(Job):Job"></a>
       <h4 class="signature">
@@ -242,14 +230,14 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#freePath" data-isabs="false">
-      <a id="freePath:Unit"></a>
+      <a id="freePath(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">freePath</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">freePath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       
@@ -298,19 +286,19 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputCheck</span><span class="params">(<span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">inputCheck</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Check the validity of the DataSource specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSource specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../../io/DataSource.html">DataSource</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#inputConfigure" data-isabs="false">
-      <a id="inputConfigure(Job):Unit"></a>
+      <a id="inputConfigure(Job)(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputConfigure</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">inputConfigure</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Configure the DataSource.</p><div class="fullcomment"><div class="comment cmt"><p>Configure the DataSource.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../../io/DataSource.html">DataSource</a></dd></dl></div>
@@ -339,14 +327,14 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </h4>
       <p class="shortcomment cmt">The InputFormat specifying the type of input for this DataSource.</p><div class="fullcomment"><div class="comment cmt"><p>The InputFormat specifying the type of input for this DataSource.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../../io/DataSource.html">DataSource</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#inputSize" data-isabs="false">
-      <a id="inputSize:Long"></a>
+      <a id="inputSize(ScoobiConfiguration):Long"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputSize</span><span class="result">: <span name="scala.Long" class="extype">Long</span></span>
+        <span class="name">inputSize</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Long" class="extype">Long</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Size in bytes of the data being input by this source.</p><div class="fullcomment"><div class="comment cmt"><p>Size in bytes of the data being input by this source.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSource" class="extype" href="../../io/DataSource.html">DataSource</a></dd></dl></div>
@@ -418,7 +406,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputCheck</span><span class="params">(<span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">outputCheck</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Check the validity of the DataSink specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSink specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
@@ -435,14 +423,14 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </h4>
       <p class="shortcomment cmt">Set the compression configuration</p><div class="fullcomment"><div class="comment cmt"><p>Set the compression configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#outputConfigure" data-isabs="false">
-      <a id="outputConfigure(Job):Unit"></a>
+      <a id="outputConfigure(Job)(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputConfigure</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">outputConfigure</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Configure the DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>Configure the DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
@@ -495,14 +483,14 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </h4>
       <p class="shortcomment cmt">The Class of the OutputFormat's value.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's value.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.io.DataSink" class="extype" href="../../io/DataSink.html">DataSink</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#path" data-isabs="false">
-      <a id="path:Path"></a>
+      <a id="path(ScoobiConfiguration):Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">path</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="name">path</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
       </span>
       </h4>
       
@@ -555,14 +543,14 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.BridgeStore" class="extype" href="">BridgeStore</a> → Product</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.BridgeStore#readAsIterable" data-isabs="false">
-      <a id="readAsIterable:Iterable[A]"></a>
+      <a id="readAsIterable(ScoobiConfiguration):Iterable[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">readAsIterable</span><span class="result">: Iterable[A]</span>
+        <span class="name">readAsIterable</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Iterable[A]</span>
       </span>
       </h4>
       
