@@ -214,7 +214,7 @@ trait ClassBuilder {
 
         fieldType match {
           case CJBoolean    => sb ++= "new Boolean(" + fieldObj.toString + ");"
-          case CJByte       => sb ++= "new Byte(" +fieldObj.toString + ");"
+          case CJByte       => sb ++= "new Byte((byte) " +fieldObj.toString + ");"
           case CJCharacter  => sb ++= "new Character('" + fieldObj.toString + "');"
           case CJDouble     => sb ++= "new Double(" + fieldObj.toString + "d);"
           case CJFloat      => sb ++= "new Float(" + fieldObj + "f);"
