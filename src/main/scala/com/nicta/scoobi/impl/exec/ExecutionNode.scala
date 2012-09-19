@@ -5,6 +5,7 @@ package exec
 import plan.comp._
 import application.ScoobiConfiguration
 import plan.graph.{OutputChannel, InputChannel}
+import io.DataSource
 
 /**
  * GADT representing elementary computations to perform in hadoop jobs
@@ -37,7 +38,24 @@ case class GbkReducerExec[A, B, E](pd: Ref[ParallelDo[A, B, E]], n: CompNode) ex
 case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set())
 
 sealed trait InputChannelExec extends InputChannel
-case class MapperInputChannelExec() extends InputChannelExec
+
+/**
+ * @param nodes
+ */
+case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec {
+//  def source: DataSource[_,_,_]
+  def input = nodes.head
+//  def inputEnv: ExecutionNode= nodes.head.env
+}
+
+case class BypassInputChannelExec(input: CompNode) extends InputChannelExec
+case class StraightInputChannelExec(input: CompNode) extends InputChannelExec
 
 sealed trait OutputChannelExec extends OutputChannel
-case class GbkOutputChannelExec() extends OutputChannelExec
+case class GbkOutputChannelExec(groupByKey: CompNode,
+                                flatten:    Option[CompNode] = None,
+                                combiner:   Option[CompNode] = None,
+                                reducer:    Option[CompNode] = None) extends OutputChannelExec
+
+case class FlattenOutputChannelExec(in: CompNode) extends OutputChannelExec
+case class BypassOutputChannelExec(in: CompNode) extends OutputChannelExec

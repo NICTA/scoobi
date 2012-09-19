@@ -4,10 +4,19 @@ package exec
 
 import plan.comp
 import comp._
-import plan.graph.{GbkOutputChannel, MapperInputChannel, MscrGraph, Mscr}
+import comp.Combine
+import comp.Flatten
+import comp.GroupByKey
+import comp.Load
+import comp.Materialize
+import comp.Op
+import comp.Return
+import plan.graph._
 import org.kiama.rewriting.Rewriter._
 import org.kiama.rewriting.Rewriter
 import application.ScoobiConfiguration
+import plan.graph.MapperInputChannel
+import plan.graph.GbkOutputChannel
 
 /**
  * The execution transforms the DComp nodes as created by the user and the Mscrs computed by the MscrGraph
@@ -21,27 +30,61 @@ trait ExecutionPlan extends MscrGraph {
 
   type Term = Any
 
+  /**
+   * create an execution plan for a set of Mcrs
+   */
   def createExecutionPlan(mscrs: Seq[Mscr]): Seq[Term] =
     rewrite(rewriteMscrs)(mscrs)
 
-  def createExecutionGraph(computations: Seq[CompNode]): Seq[Term] =
-    rewrite(rewriteNodes)(computations)
-
-  def collectEnvironments(computations: Seq[CompNode])(implicit sc: ScoobiConfiguration): Seq[Env[_]] =
-    collectEnvs(createExecutionGraph(computations))
-
-  def rewriteNodes: Rewriter.Strategy =
-    all(rewriteNode)
-
+  /**
+   * MSCR rewriting
+   */
+  /** rewrite all mscrs */
   def rewriteMscrs: Rewriter.Strategy =
     all(rewriteMscr)
 
-  def rewriteMscr: Strategy = everywhere(rule {
-    case m @ Mscr(in, out)              => MscrExec(in, out)
-    case m @ MapperInputChannel(_)      => MapperInputChannelExec()
-    case m @ GbkOutputChannel(_,_,_,_)  => GbkOutputChannelExec()
-  })
+  /** rewrite a Mscr and all its channels */
+  def rewriteMscr: Strategy =
+    rewriteSingleMscr <*
+    rewriteChannels
 
+  /** rewrite a single Mscr */
+  def rewriteSingleMscr = rule {
+    case m @ Mscr(in, out) => MscrExec(in, out)
+  }
+
+
+  /**
+   * Channels rewriting
+   */
+  /** rewrite all input channels */
+  def rewriteChannels: Rewriter.Strategy =
+    everywhere(rewriteChannel)
+
+  def rewriteChannel: Strategy =
+    rewriteSingleChannel <*
+    rewriteNodes
+
+    /** rewrite one channel */
+  def rewriteSingleChannel: Strategy = rule {
+    // input channels
+    case MapperInputChannel(pdos)   => MapperInputChannelExec(pdos.toSeq)
+    case IdInputChannel(in)         => BypassInputChannelExec(in)
+    case StraightInputChannel(in)   => StraightInputChannelExec(in)
+    // output channels
+    case GbkOutputChannel(g,f,c,r)  => GbkOutputChannelExec(g, f, c, r)
+    case FlattenOutputChannel(in)   => FlattenOutputChannelExec(in)
+    case BypassOutputChannel(in)    => BypassOutputChannelExec(in)
+  }
+
+  /**
+   * Nodes rewriting
+   */
+  /** rewrite all nodes */
+  def rewriteNodes: Rewriter.Strategy =
+    all(rewriteNode)
+
+  /** rewrite one node */
   def rewriteNode: Strategy = attemptSomeTopdown(rule {
     case n @ Materialize(in)                                    => MaterializeExec(Ref(n), in)
     case n @ Load(_)                                            => LoadExec(Ref(n))
@@ -72,6 +115,18 @@ trait ExecutionPlan extends MscrGraph {
 
   def attemptSomeTopdown(s : =>Strategy): Strategy =
     attempt(s <* some (attemptSomeTopdown (s)))
+
+  // intermediary methods for testing
+  def createExecutionPlanInputChannels(inputChannels: Seq[InputChannel]): Seq[Term] =
+    rewrite(rewriteChannels)(inputChannels)
+
+  def createExecutionGraph(computations: Seq[CompNode]): Seq[Term] =
+    rewrite(rewriteNodes)(computations)
+
+  def collectEnvironments(computations: Seq[CompNode])(implicit sc: ScoobiConfiguration): Seq[Env[_]] =
+    collectEnvs(createExecutionGraph(computations))
+
+
 
 }
 

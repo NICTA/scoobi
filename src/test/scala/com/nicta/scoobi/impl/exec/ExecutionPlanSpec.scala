@@ -5,19 +5,42 @@ package exec
 import org.specs2.mutable.Specification
 import ExecutionPlan._
 import plan._
-import graph.{MapperInputChannel, GbkOutputChannel}
+import graph._
 import comp.{CompNode, CompNodeFactory}
 import application.ScoobiConfiguration
 import core.WireFormat
-import graph.{Mscr, factory}
+import graph.{GbkOutputChannel, InputChannel, MapperInputChannel, StraightInputChannel, BypassOutputChannel, FlattenOutputChannel}
+import org.kiama.rewriting.Rewriter
 
-class ExecutionPlanSpec extends Specification with CompNodeFactory with Plans {
+class ExecutionPlanSpec extends Specification with Plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
   "Mscrs are transformed into mscrs with actual channels" >> {
     "each Mscr must transform its channels to become an executable Mscr" >> {
-      execPlanForMscrs(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbk(load))))) ===
-        Seq(MscrExec(Set(MapperInputChannelExec()), Set(GbkOutputChannelExec())))
+      transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbk(load))))) ===
+        MscrExec(Set(MapperInputChannelExec(Seq())), Set(GbkOutputChannelExec(gbkExec)))
+    }
+    "input channels must be transformed to executable input channels, containing executable nodes" >> {
+      "A MapperInputChannel is transformed to a MapperInputChannelExec" >> {
+        transform(MapperInputChannel(Set(pd(load)))) === MapperInputChannelExec(Seq(MapperExec(Ref(pd(load)), loadExec)))
+      }
+      "An IdInputChannel is transformed into a BypassInputChannelExec" >> {
+        transform(IdInputChannel(load)) === BypassInputChannelExec(loadExec)
+      }
+      "A StraightInputChannel is transformed into a StraightInputChannelExec" >> {
+        transform(StraightInputChannel(load)) === StraightInputChannelExec(loadExec)
+      }
+    }
+    "output channels must be transformed to executable output channels, containing executable nodes" >> {
+      "A GbkOutputChannel is transformed to a GbkOutputChannelExec" >> {
+        transform(GbkOutputChannel(gbk(load))) === GbkOutputChannelExec(gbkExec)
+      }
+      "An FlattenOutputChannel is transformed into a FlattenOutputChannelExec" >> {
+        transform(FlattenOutputChannel(flatten(load))) === FlattenOutputChannelExec(flattenExec)
+      }
+      "A BypassOutputChannel is transformed into a BypassOutputChannelExec" >> {
+        transform(BypassOutputChannel(pd(load))) === BypassOutputChannelExec(pdExec)
+      }
     }
   }
 
@@ -34,28 +57,28 @@ class ExecutionPlanSpec extends Specification with CompNodeFactory with Plans {
 
     "Materialize nodes remain unchanged" >> {
       val mat = mt(load)
-      execPlan(mat) === Seq(MaterializeExec(Ref(mat), LoadExec(Ref(load))))
+      execPlan(mat) === Seq(MaterializeExec(Ref(mat), loadExec))
 
       val mat1 = mt(mat)
-      execPlan(mat1) === Seq(MaterializeExec(Ref(mat1), MaterializeExec(Ref(mat), LoadExec(Ref(load)))))
+      execPlan(mat1) === Seq(MaterializeExec(Ref(mat1), MaterializeExec(Ref(mat), loadExec)))
 
       val mat2 = mt(mat1)
-      execPlan(mat2) === Seq(MaterializeExec(Ref(mat2), MaterializeExec(Ref(mat1), MaterializeExec(Ref(mat), LoadExec(Ref(load))))))
+      execPlan(mat2) === Seq(MaterializeExec(Ref(mat2), MaterializeExec(Ref(mat1), MaterializeExec(Ref(mat), loadExec))))
     }
 
     "Op nodes remain unchanged" >> {
       val add = op[String, String](load, load)
-      execPlan(add) === Seq(OpExec(Ref(add), LoadExec(Ref(load)), LoadExec(Ref(load))))
+      execPlan(add) === Seq(OpExec(Ref(add), loadExec, loadExec))
     }
 
     "Combine nodes remain unchanged" >> {
       val cb1 = cb(load)
-      execPlan(cb1) === Seq(CombineExec(Ref(cb1), LoadExec(Ref(load))))
+      execPlan(cb1) === Seq(CombineExec(Ref(cb1), loadExec))
     }
 
     "GroupByKey nodes remain unchanged" >> {
       val gbk1 = gbk(load)
-      execPlan(gbk1) === Seq(GroupByKeyExec(Ref(gbk1), LoadExec(Ref(load))))
+      execPlan(gbk1) === Seq(GroupByKeyExec(Ref(gbk1), loadExec))
     }
 
     "Flatten nodes remain unchanged" >> {
@@ -68,9 +91,9 @@ class ExecutionPlanSpec extends Specification with CompNodeFactory with Plans {
       "Mapper if input is: Load, ParallelDo, Flatten" >> {
         val (pd1, pd2, pd3) = (pd(load), pd(pd(load)), pd(flatten[String](load)))
         execPlan(pd1, pd2, pd3) ===
-          Seq(MapperExec(Ref(pd1), LoadExec(Ref(load))),
-            MapperExec(Ref(pd2), MapperExec(Ref(pd1), LoadExec(Ref(load)))),
-            MapperExec(Ref(pd3), FlattenExec(Ref(flatten[String](load)), Vector(LoadExec(Ref(load))))))
+          Seq(MapperExec(Ref(pd1), loadExec),
+            MapperExec(Ref(pd2), MapperExec(Ref(pd1), loadExec)),
+            MapperExec(Ref(pd3), FlattenExec(Ref(flatten[String](load)), Vector(loadExec))))
       }
       "Mapper if input is: Gbk, Combine and the node is a mapper" >> new factory {
         val (gbk1, cb1) = (gbk(load), cb(load))
@@ -79,8 +102,8 @@ class ExecutionPlanSpec extends Specification with CompNodeFactory with Plans {
         (pd1 -> isMapper) must beTrue // because pd1 has outputs
 
         execPlan(pd1, pd2) ===
-          Seq(MapperExec(Ref(pd1), GroupByKeyExec(Ref(gbk1), LoadExec(Ref(load)))),
-            MapperExec(Ref(pd2), CombineExec(Ref(cb1), LoadExec(Ref(load)))))
+          Seq(MapperExec(Ref(pd1), GroupByKeyExec(Ref(gbk1), loadExec)),
+              MapperExec(Ref(pd2), CombineExec(Ref(cb1), loadExec)))
       }
       "Reducer if input is: Gbk, Combine and the node is a reducer in the Mscr" >>  new factory {
         val (gbk1, cb1) = (gbk(load), cb(load))
@@ -88,8 +111,8 @@ class ExecutionPlanSpec extends Specification with CompNodeFactory with Plans {
         (pd1 -> isReducer) must beTrue // because pd1 has a barrier
 
         execPlan(pd1, pd2) ===
-          Seq(GbkReducerExec(Ref(pd1), GroupByKeyExec(Ref(gbk1), LoadExec(Ref(load)))),
-            ReducerExec(Ref(pd2), CombineExec(Ref(cb1), LoadExec(Ref(load)))))
+          Seq(GbkReducerExec(Ref(pd1), GroupByKeyExec(Ref(gbk1), loadExec)),
+            ReducerExec(Ref(pd2), CombineExec(Ref(cb1), loadExec)))
       }
       "error if input is: Materialize, Op or Return" >> {
         execPlan(pd(mt(load)))       must throwAn[Exception]
@@ -123,13 +146,28 @@ class ExecutionPlanSpec extends Specification with CompNodeFactory with Plans {
   }
 }
 
-trait Plans {
+import Rewriter._
+trait Plans extends CompNodeFactory {
   def execPlan(nodes: CompNode*) =
     createExecutionGraph(Vector(nodes:_*))
 
   def execPlanForMscrs(mscrs: Mscr*) =
     createExecutionPlan(mscrs)
 
+  def execPlanForInputChannels(inputChannels: InputChannel*) =
+    createExecutionPlanInputChannels(inputChannels)
+
   def environments(nodes: CompNode*)(implicit sc: ScoobiConfiguration) =
     collectEnvironments(Vector(nodes:_*))
+
+  def transform(mscr: Mscr): Any =
+    rewrite(rewriteMscr)(mscr)
+
+  def transform(channel: Channel) =
+    rewrite(rewriteChannels)(channel)
+
+  lazy val loadExec    = LoadExec(Ref(load))
+  lazy val gbkExec     = GroupByKeyExec(Ref(gbk(load)), loadExec)
+  lazy val flattenExec = FlattenExec(Ref(flatten[String](load)), Seq(loadExec))
+  lazy val pdExec      = MapperExec(Ref(pd(load)), loadExec)
 }

@@ -6,8 +6,9 @@ package graph
 import comp._
 import exec.UniqueId
 
+trait Channel
 /** ADT for MSCR input channels. */
-trait InputChannel {
+trait InputChannel extends Channel {
   lazy val id: Int = UniqueId.get
 }
 
