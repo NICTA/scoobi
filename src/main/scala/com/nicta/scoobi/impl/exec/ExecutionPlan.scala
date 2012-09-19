@@ -63,7 +63,8 @@ trait ExecutionPlan extends MscrGraph {
 
   def rewriteChannel: Strategy =
     rewriteSingleChannel <*
-    rewriteNodes
+    rewriteNodes         <* // rewrite the nodes in channels
+    all(rewriteNodes)       // rewrite the remaining nodes which may be in Options (see GbkOutputChannel)
 
     /** rewrite one channel */
   def rewriteSingleChannel: Strategy = rule {

@@ -33,7 +33,13 @@ class ExecutionPlanSpec extends Specification with Plans {
     }
     "output channels must be transformed to executable output channels, containing executable nodes" >> {
       "A GbkOutputChannel is transformed to a GbkOutputChannelExec" >> {
-        transform(GbkOutputChannel(gbk(load))) === GbkOutputChannelExec(gbkExec)
+        "with a gbk node only" >> {
+          transform(GbkOutputChannel(gbk(load))) === GbkOutputChannelExec(gbkExec)
+        }
+        "with optional nodes" >> {
+          transform(GbkOutputChannel(gbk(load), Some(flatten[String](load)))) ===
+            GbkOutputChannelExec(gbkExec, Some(flattenExec))
+        }
       }
       "An FlattenOutputChannel is transformed into a FlattenOutputChannelExec" >> {
         transform(FlattenOutputChannel(flatten(load))) === FlattenOutputChannelExec(flattenExec)
