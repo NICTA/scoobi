@@ -4,12 +4,12 @@ package exec
 
 import plan.comp._
 import application.ScoobiConfiguration
+import plan.graph.{OutputChannel, InputChannel}
 
 /**
  * GADT representing elementary computations to perform in hadoop jobs
  */
-sealed trait ExecutionNode extends CompNode {
-}
+sealed trait ExecutionNode extends CompNode
 
 case class Ref[T <: CompNode](n: T)
 case class LoadExec[T](load: Ref[Load[T]]) extends ExecutionNode
@@ -33,3 +33,11 @@ case class MapperExec[A, B, E](pd: Ref[ParallelDo[A, B, E]], n: CompNode) extend
 case class ReducerExec[A, B, E](pd: Ref[ParallelDo[A, B, E]], n: CompNode) extends ExecutionNode
 /** specialised ParallelDo to be translated to a Hadoop Reducer class, following a Gbk */
 case class GbkReducerExec[A, B, E](pd: Ref[ParallelDo[A, B, E]], n: CompNode) extends ExecutionNode
+
+case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set())
+
+sealed trait InputChannelExec extends InputChannel
+case class MapperInputChannelExec() extends InputChannelExec
+
+sealed trait OutputChannelExec extends OutputChannel
+case class GbkOutputChannelExec() extends OutputChannelExec

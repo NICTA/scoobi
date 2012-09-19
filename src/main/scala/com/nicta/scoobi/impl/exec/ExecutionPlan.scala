@@ -2,9 +2,9 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import plan._
+import plan.comp
 import comp._
-import graph.{MscrGraph, Mscr}
+import plan.graph.{GbkOutputChannel, MapperInputChannel, MscrGraph, Mscr}
 import org.kiama.rewriting.Rewriter._
 import org.kiama.rewriting.Rewriter
 import application.ScoobiConfiguration
@@ -21,19 +21,28 @@ trait ExecutionPlan extends MscrGraph {
 
   type Term = Any
 
-  def createExecutionPlan(computations: Seq[CompNode], mscrs: Set[Mscr]): Seq[Term] =
-    rewrite(allStrategies(computations, mscrs))(computations)
+  def createExecutionPlan(mscrs: Seq[Mscr]): Seq[Term] =
+    rewrite(rewriteMscrs)(mscrs)
 
-  def collectEnvironments(computations: Seq[CompNode], mscrs: Set[Mscr])(implicit sc: ScoobiConfiguration): Seq[Env[_]] =
-    collectEnvs(createExecutionPlan(computations, mscrs))
+  def createExecutionGraph(computations: Seq[CompNode]): Seq[Term] =
+    rewrite(rewriteNodes)(computations)
 
-  def allStrategies(outputs: Seq[CompNode], mscrs: Set[Mscr]): Rewriter.Strategy =
-    all(convert)
+  def collectEnvironments(computations: Seq[CompNode])(implicit sc: ScoobiConfiguration): Seq[Env[_]] =
+    collectEnvs(createExecutionGraph(computations))
 
-  def attemptSomeTopdown(s : =>Strategy): Strategy =
-    attempt(s <* some (attemptSomeTopdown (s)))
+  def rewriteNodes: Rewriter.Strategy =
+    all(rewriteNode)
 
-  def convert: Strategy = attemptSomeTopdown(rule {
+  def rewriteMscrs: Rewriter.Strategy =
+    all(rewriteMscr)
+
+  def rewriteMscr: Strategy = everywhere(rule {
+    case m @ Mscr(in, out)              => MscrExec(in, out)
+    case m @ MapperInputChannel(_)      => MapperInputChannelExec()
+    case m @ GbkOutputChannel(_,_,_,_)  => GbkOutputChannelExec()
+  })
+
+  def rewriteNode: Strategy = attemptSomeTopdown(rule {
     case n @ Materialize(in)                                    => MaterializeExec(Ref(n), in)
     case n @ Load(_)                                            => LoadExec(Ref(n))
     case n @ Return(_)                                          => ReturnExec(Ref(n))
@@ -60,6 +69,10 @@ trait ExecutionPlan extends MscrGraph {
     }
     nodes.foldLeft(Vector[Env[_]]())((res, cur) => res ++ envs(cur))
   }
+
+  def attemptSomeTopdown(s : =>Strategy): Strategy =
+    attempt(s <* some (attemptSomeTopdown (s)))
+
 }
 
 object ExecutionPlan extends ExecutionPlan

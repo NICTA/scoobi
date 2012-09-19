@@ -7,7 +7,7 @@ import comp._
 import exec.UniqueId
 
 /** ADT for MSCR input channels. */
-sealed trait InputChannel {
+trait InputChannel {
   lazy val id: Int = UniqueId.get
 }
 
