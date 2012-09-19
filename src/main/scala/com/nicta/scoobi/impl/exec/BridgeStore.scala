@@ -34,6 +34,7 @@ import io._
 import rtt._
 import Configurations._
 import application.ScoobiConfiguration
+import application.ScoobiConfiguration._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
@@ -51,18 +52,14 @@ case class BridgeStore[A]()
    */
   lazy val id = java.util.UUID.randomUUID.toString
   lazy val typeName = "BS" + id
-  lazy val path = new Path(config.workingDirectory, "bridges/" + id)
-
-  // default config until its set through inputConfigure or outputConfigure
-  var config: Configuration = new Configuration
+  def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + id)
 
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
   def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck(sc: ScoobiConfiguration) {}
-  def outputConfigure(job: Job) {
-    config = job.getConfiguration
+  def outputCheck(implicit sc: ScoobiConfiguration) {}
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     FileOutputFormat.setOutputPath(job, path)
   }
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
@@ -70,31 +67,31 @@ case class BridgeStore[A]()
 
   /* Input (i.e. output of bridge) */
   val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
-  def inputCheck(sc: ScoobiConfiguration) {}
-  def inputConfigure(job: Job) {
-    config = job.getConfiguration
-    FileInputFormat.addInputPath(job, new Path(path, "ch*"))
+  def inputCheck(implicit sc: ScoobiConfiguration) {}
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+    FileInputFormat.addInputPath(job, new Path(path(sc), "ch*"))
   }
 
-  def inputSize: Long = Helper.pathSize(new Path(path, "ch*"))(config)
+  def inputSize(implicit sc: ScoobiConfiguration): Long = Helper.pathSize(new Path(path, "ch*"))(sc)
+
   lazy val inputConverter = new InputConverter[NullWritable, ScoobiWritable[A], A] {
     def fromKeyValue(context: InputContext, key: NullWritable, value: ScoobiWritable[A]): A = value.get
   }
 
 
   /* Free up the disk space being taken up by this intermediate data. */
-  def freePath {
-    val fs = path.getFileSystem(config)
+  def freePath(implicit sc: ScoobiConfiguration) {
+    val fs = path.getFileSystem(sc)
     fs.delete(path, true)
   }
 
 
   /* Read the contents of this bridge store sequence files as an Iterable collection. */
-  def readAsIterable: Iterable[A] = new Iterable[A] {
+  def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[A] = new Iterable[A] {
     def iterator = {
-      val fs = FileSystem.get(path.toUri, config)
+      val fs = FileSystem.get(path.toUri, sc)
       val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(config, SequenceFile.Reader.file(stat.getPath))
+        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
       }
 
       val iterators = readers.toIterable map { reader =>

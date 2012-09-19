@@ -129,10 +129,3 @@ trait CompressedFiles {
     }((e:Exception) => println("error compressing a "+suffix+" file: "+e.getMessage)).getOrElse(file.getPath)
   }
 }
-
-class TestSpec extends Specification {
-  "this " should {
-    "be ok" in ok
-    "be ok2" in ok
-  }
-}

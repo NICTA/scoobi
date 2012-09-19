@@ -50,7 +50,7 @@ object AvroOutput {
       val outputKeyClass = classOf[AvroKey[sch.AvroType]]
       val outputValueClass = classOf[NullWritable]
 
-      def outputCheck(sc: ScoobiConfiguration) {
+      def outputCheck(implicit sc: ScoobiConfiguration) {
         if (Helper.pathExists(outputPath)(sc)) {
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
@@ -64,7 +64,7 @@ object AvroOutput {
         }
       }
 
-      def outputConfigure(job: Job) {
+      def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         FileOutputFormat.setOutputPath(job, outputPath)
         job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }

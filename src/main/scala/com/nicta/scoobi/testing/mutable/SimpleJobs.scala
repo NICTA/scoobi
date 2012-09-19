@@ -20,7 +20,8 @@ package mutable
 import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
 import application._
 import core._
-import scalaz.Scalaz._
+import scalaz.syntax.biFunctor._
+import scalaz.std.tuple._
 /**
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
  * All data is written to temporary files and is deleted after usage.
@@ -37,6 +38,11 @@ trait SimpleJobs { outer =>
     def run(implicit configuration: ScoobiConfiguration) = outer.run(lists._1, lists._2)
   }
 
+  implicit def asRunnableDListSeq[T](lists: Seq[DList[T]]) = new RunnableDListSeq(lists)
+  case class RunnableDListSeq[T, S](lists: Seq[DList[T]]) {
+    def run(implicit configuration: ScoobiConfiguration) = outer.run(lists)
+  }
+
   implicit def asRunnableDObject[T](o: DObject[T]) = new RunnableDObject(o)
   case class RunnableDObject[T](o: DObject[T]) {
     def run(implicit configuration: ScoobiConfiguration) = outer.run(o)
@@ -47,6 +53,10 @@ trait SimpleJobs { outer =>
 
   def run[T, S](list1: DList[T], list2: DList[S])(implicit configuration: ScoobiConfiguration): (Seq[T], Seq[S]) =
     Persister.persist((list1.materialize, list2.materialize)).bimap((_.toSeq), (_.toSeq))
+
+  def run[T](lists: Seq[DList[T]])(implicit configuration: ScoobiConfiguration): Seq[Seq[T]] =
+    // E.T. I don't know how to avoid the asInstanceOf here :-(
+    Persister.persist(lists.map(_.materialize)).asInstanceOf[Seq[Iterable[T]]].map(_.toSeq)
 
   def run[T](o: DObject[T])(implicit configuration: ScoobiConfiguration): T =
     Persister.persist(o)

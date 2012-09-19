@@ -41,7 +41,7 @@ class ExecutorSpec extends UnitSpecification with Mockito with CommandLineHadoop
   "During the execution, when the number of references on a BridgeStore reaches 0, the intermediate data is removed" >> {
     val state = Executor.freeIntermediateOutputs(mscr1, state1)
     state.refcnts.map { case (bs, size) => (bs.id, size) } must contain("1" -> 0, "2" -> 1, "3" -> 1)
-    there was one(bs1).freePath
+    there was one(bs1).freePath(state1.conf)
   }
 
   def bypassInput(bs: BridgeStore[_]) =

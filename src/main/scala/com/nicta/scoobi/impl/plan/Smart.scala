@@ -42,8 +42,14 @@ object Smart {
   sealed abstract class DComp[A : Manifest : WireFormat, Sh <: Shape] {
 
     val id = Id.get
-    /* We don't want structural equality */
-    override def equals(arg0: Any): Boolean = eq(arg0.asInstanceOf[AnyRef])
+
+    override def equals(other: Any) = {
+      other match {
+        case dc: DComp[_, _] => dc.id == this.id
+        case _               => false
+      }
+    }
+
     override def hashCode = id
 
     def toVerboseString: String
@@ -482,8 +488,8 @@ object Smart {
             def setup(env: Unit) = {}
             def process(env: Unit, input: (K, Iterable[V]), emitter: Emitter[(K, V)]) = {
               val key = input._1
-              val values = input._2
-              emitter.emit(key, values.tail.foldLeft(values.head)(f))
+              val values = input._2.toStream
+              emitter.emit(key, values.reduce(f))
             }
             def cleanup(env: Unit, emitter: Emitter[(K, V)]) = {}
           }

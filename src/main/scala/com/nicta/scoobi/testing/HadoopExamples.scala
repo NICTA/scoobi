@@ -19,6 +19,7 @@ package testing
 import org.specs2.execute._
 import org.specs2.specification._
 import org.specs2.Specification
+import org.specs2.execute.ResultLogicalCombinators._
 import application._
 import impl.time.SimpleTimer
 import ResultLogicalCombinators._

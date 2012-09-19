@@ -32,14 +32,13 @@ import impl.exec.TaggedInputSplit
 import core._
 import application.ScoobiConfiguration
 
-
 /** Smart functions for materializing distributed lists by loading text files. */
 object TextInput {
   lazy val logger = LogFactory.getLog("scoobi.TextInput")
 
   /** Create a distributed list from one or more files or directories (in the case of a directory,
     * the input forms all files in that directory). */
-  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths: _*))
+  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths:_*))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
@@ -57,7 +56,7 @@ object TextInput {
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(paths: _*)
+  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(List(paths:_*))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
@@ -125,14 +124,11 @@ object TextInput {
   class TextSource[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
     extends DataSource[LongWritable, Text, A] {
 
-    // default config until its set through inputConfigure or outputConfigure
-    var config: Configuration = new Configuration
-
     private val inputPaths = paths.map(p => new Path(p))
 
     val inputFormat = classOf[TextInputFormat]
 
-    def inputCheck(sc: ScoobiConfiguration) {
+    def inputCheck(implicit sc: ScoobiConfiguration) {
       inputPaths foreach { p =>
         if (Helper.pathExists(p)(sc))
           logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
@@ -141,12 +137,11 @@ object TextInput {
       }
     }
 
-    def inputConfigure(job: Job) = {
-      config = job.getConfiguration
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = {
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 
-    def inputSize: Long = inputPaths.map(p => Helper.pathSize(p)(config)).sum
+    def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
 
     lazy val inputConverter = converter
   }

@@ -36,11 +36,12 @@ class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
 Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
 
   "Each input format can be configured as an input channel on a job's configuration" >> {
-    val job = new Job((new ScoobiConfiguration).setAsLocal, "id")
+    implicit val sc = (new ScoobiConfiguration).setAsLocal
+    val job = new Job(sc, "id")
     val jarBuilder = mock[JarBuilder]
 
-    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore))
-                                    .toMap.showAs(_.toList.sorted.mkString("\n")).evaluate
+    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore)).toMap.
+                          showAs(_.toList.sorted.mkString("\n")).evaluate
 
     "the input format class must be set as 'ChannelsInputFormat' " >> {
       job.getInputFormatClass.getSimpleName must_== "ChannelsInputFormat"
@@ -76,7 +77,8 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     def getSplits(sources: DataSource[_,_,_]*) = new ChannelsInputFormat[String, Int].getSplits(jobContextFor(sources:_*)).toSeq
 
     def jobContextFor(sources: DataSource[_,_,_]*) = {
-      val job = new Job(new ScoobiConfiguration, "id")
+      implicit val sc = new ScoobiConfiguration
+      val job = new Job(sc, "id")
       val jarBuilder = mock[JarBuilder]
       val configuration = configureSources(job, jarBuilder, List(sources:_*))
       new JobContextImpl(configuration, new JobID)
