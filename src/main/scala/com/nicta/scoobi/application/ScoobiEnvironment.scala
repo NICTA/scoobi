@@ -8,10 +8,38 @@ object ScoobiEnvironmentPrivate {
   // placed in a separate object to which there are no pointers. (There's
   // a pointer to ScoobiEnvironment in the main `object Scoobi`.)
 
-  // On the job tracker, we need the Job object
-  private[scoobi] var job: Job = _
   // On the task tracker, we need the context from the mapper or reducer
   private[scoobi] var taskContext: TaskInputOutputContext[_,_,_,_] = _
+
+  /* A comment about Hadoop contexts:
+  
+     -- On a task tracker, context is available through a
+     TaskInputOutputContext object, which is passed into the setup(),
+     map()/reduce(), and cleanup() methods of the Hadoop Mapper and
+     Reducer classes.
+
+     -- On the job tracker, context is available from a Job object, which
+     is used to run jobs.  Note that in Scoobi, we don't create any Job
+     objects until a call to persist() is made.
+
+     -- Both TaskInputOutputContext and Job are subclasses of JobContext,
+     which provides certain basic context information that is shared by
+     both task and job trackers -- for example, the configuration, stored
+     in a Configuration object and retrievable from the getConfiguration()
+     method on a JobContext.
+     
+     -- Note that Scoobi creates its own Configuration object, which contains
+     Configuration settings from the command line and is separate from
+     the Configuration object provided by Hadoop from getConfiguration().
+     However, it's not clear that these settings are available in a task
+     tracker. In addition, there are other settings that Hadoop adds to the
+     Configuration object internally during the running of jobs or tasks,
+     e.g. the current task ID, which is available inside of a task tracker
+     from the `mapred.task.partition` setting.  Settings like this can't
+     be retrieved from the Scoobi-provided Configuration, but can be
+     retrieved by client code by calling `getTaskContext.getConfiguration`
+     to fetch the Hadoop-provided Configuration.
+   */
 }
 
 /**
@@ -19,8 +47,6 @@ object ScoobiEnvironmentPrivate {
  * e.g. accessing and setting counters.
  */
 object ScoobiEnvironment {
-  ///////////// Keep track of job and task contexts
-  
   /*
   FIXME: The code below for tracking the job context isn't currently used.
   It should be possible to retrieve counters programmatically after a call
@@ -34,21 +60,6 @@ object ScoobiEnvironment {
   */
 
   /**
-   * Set the Job object, if we're running the job-running code on the
-   * job tracker.
-   */
-  private[scoobi] def setJob(job: Job) {
-    ScoobiEnvironmentPrivate.job = job
-  }
-
-  /**
-   * Return the Job object associated with the current job, if we are
-   * running on the job tracker.  If we're running on a task tracker,
-   * this will be null.
-   */
-  private[scoobi] def getJob = ScoobiEnvironmentPrivate.job
-
-  /**
    * Set the task context, if we're running in the map or reduce task
    * code on a task tracker. (Both Mapper.Context and Reducer.Context are
    * subclasses of TaskInputOutputContext.)
@@ -59,52 +70,29 @@ object ScoobiEnvironment {
 
   /**
    * Return the TaskInputOutputContext associated with the current task,
-   * if we are running on a task tracker. If we're running on the job tracker,
-   * this will be null.
+   * if we are running on a task tracker; otherwise null.
    */
   def getTaskContext = ScoobiEnvironmentPrivate.taskContext
-
-  /**
-   * Return the JobContext object.  This is available either when running on
-   * a task tracker or a job tracker.
-   */
-  private def getJobContext: JobContext = {
-    if (getTaskContext != null) getTaskContext
-    else if (getJob != null) getJob
-    else needToSetContext()
-  }
-
-  ///////////// Get the raw configuration.
-  //
-  // FIXME: Should probably integrate this with ScoobiConfiguration, which
-  // only functions on the job tracker (not task tracker) and may not (?)
-  // contain all the system properties.
-
-  /**
-   * Return the raw configuration associated with the job or task.
-   */
-  def getContextConfiguration = getJobContext.getConfiguration
-
-  // def getTaskID = get_configuration.getInt("mapred.task.partition", -1)
 
   ///////////// Counters
 
   /**
-   * Find the Counter object for the given counter.  The way to do this
-   * depends on whether we're running on the job tracker, or in a map or
-   * reduce task on a task tracker.
+   * Find the Counter object for the given counter.
    */
   def findCounter(group: String, counter: String): Counter = {
     if (getTaskContext != null)
       getTaskContext.getCounter(group, counter)
-    else if (getJob != null)
-      getJob.getCounters.findCounter(group, counter)
+    // This isn't the right interface to retrieving counters from a job
+    // context, since there may be more than one context active (or at least
+    // available) in the client program -- at least one per DList or DObject.
+    // else if (getJob != null)
+    //   getJob.getCounters.findCounter(group, counter)
     else
-      needToSetContext()
+      noContextAvailable()
   }
 
-  private def needToSetContext() =
-    throw new IllegalStateException("Either task context or job needs to be set before any counter operations")
+  private def noContextAvailable() =
+    throw new IllegalStateException("Not running on a task tracker")
 
   private[scoobi] var logCounters = false
   private[scoobi] var logSystemCounters = false
