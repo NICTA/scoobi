@@ -15,6 +15,15 @@ import org.kiama.rewriting.Rewriter
 class ExecutionPlanSpec extends Specification with Plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
+  """
+   - Mscr transformation
+   - Channel transformation
+   - Node transformation
+   - attach data sinks to outputChannels: normal outputs + bridgestores
+       -> some nodes should be outputted to some data sinks as decided by the user
+   -
+  """.txt
+
   "Mscrs are transformed into mscrs with actual channels" >> {
     "each Mscr must transform its channels to become an executable Mscr" >> {
       transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbk(load))))) ===
