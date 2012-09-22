@@ -167,7 +167,17 @@ object AST {
       def setup(env: E) = dofn.setup(env)
       def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]) = {
         dofn.setup(env)
-        dofn.process(env, (key, values), emitter)
+        // Hadoop's ReducerContext() buggily implements an Iterable interface
+        // that doesn't respect the normal Iterable contract, which allows for
+        // iteration multiple times over the Iterable. This is done for
+        // efficiency purposes, but it breaks the rules -- normally you should
+        // use an Iterator if you can't support multiple iteration.
+        // Unfortunately Java does not allow for loops and other convenient
+        // operations over Iterators, which is probably why Hadoop did what
+        // they did.  By calling `toStream`, we get a proper Iterable that
+        // caches values as necessary to allow multiple iteration, which is
+        // required if the user function looks at the values in any way.
+        dofn.process(env, (key, values.toStream), emitter)
       }
       def cleanup(env: E, emitter: Emitter[B]) = dofn.cleanup(env, emitter)
     }
