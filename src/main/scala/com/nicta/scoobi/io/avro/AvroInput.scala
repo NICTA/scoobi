@@ -29,6 +29,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import org.apache.avro.AvroTypeException
 import org.apache.avro.generic.GenericDatumReader
+import org.apache.avro.specific.SpecificDatumReader
 import org.apache.avro.mapred.{AvroKey, FsInput}
 import org.apache.avro.mapreduce.AvroKeyInputFormat
 import org.apache.avro.io.ResolvingDecoder
@@ -82,7 +83,7 @@ object AvroInput extends AvroParsingImplicits {
             Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
               val avroFile = new FsInput(filePath, sc);
               try {
-                val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[AnyRef]()).getSchema
+                val writerSchema = DataFileReader.openReader(avroFile, new SpecificDatumReader[sch.AvroType]()).getSchema
                 val readerSchema = sch.schema
 
                 // resolve the two schemas.
