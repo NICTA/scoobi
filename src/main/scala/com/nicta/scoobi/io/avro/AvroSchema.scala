@@ -22,13 +22,12 @@ import java.util.{Map => JMap}
 import org.apache.avro.Schema
 import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.generic.{GenericContainer,GenericData}
-import org.apache.avro.specific.SpecificData
+import org.apache.avro.specific.{SpecificRecord,SpecificData}
 import org.apache.avro.util.Utf8
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
 import core._
-import org.apache.avro.specific.SpecificRecord
 
 
 

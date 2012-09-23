@@ -28,7 +28,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.Job
 
 import org.apache.avro.AvroTypeException
-import org.apache.avro.generic.GenericDatumReader
 import org.apache.avro.specific.SpecificDatumReader
 import org.apache.avro.mapred.{AvroKey, FsInput}
 import org.apache.avro.mapreduce.AvroKeyInputFormat
