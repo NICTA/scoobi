@@ -3,7 +3,7 @@ name := "scoobi"
 
 organization := "com.nicta"
 
-version := "0.6.0-cdh3-SNAPSHOT"
+version := "0.6.0-cdh3-SNAPSHOT-benwing"
 
 scalaVersion := "2.9.2"
 

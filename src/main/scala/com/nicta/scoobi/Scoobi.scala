@@ -20,7 +20,7 @@ import core._
 import org.apache.hadoop.io._
 
 /** Global Scoobi functions and values. */
-object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib with DObjects {
+object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Environment with Lib with DObjects {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
@@ -106,6 +106,42 @@ trait InputsOutputs {
   def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
 }
 object InputsOutputs extends InputsOutputs
+
+trait Environment {
+  /* Hadoop environment */
+
+  /**
+   * Increment a counter by a given amount.  This only works inside of
+   * code run from a task tracker.  If you want to have your counters logged
+   * on the job tracker, use `enableCounterLogging` in the job tracker
+   * (where `persist` is called).
+   */
+  def incrCounter(group: String, name: String, incr: Long = 1) {
+    ScoobiEnvironment.incrCounter(group, name, incr)
+  }
+
+  /**
+   * Return the value of a counter.  NOTE: May not reflect latest updates
+   * to the counter, especially when done in other tasks.
+   */
+  def getCounter(group: String, name: String): Long =
+    ScoobiEnvironment.getCounter(group, name)
+
+  /**
+   * Enable or disable logging of set counters after each job.
+   *
+   * @param enable Whether to log counters at the end of each mapreduce job
+   * @param includeSystem Whether to include system-internal counters in
+   *   the log (rather than just user-set counters)
+   */
+  def enableCounterLogging(enable: Boolean = true,
+      includeSystem: Boolean = false) {
+    ScoobiEnvironment.enableCounterLogging(enable, includeSystem)
+  }
+ 
+  val ScoobiEnvironment = com.nicta.scoobi.application.ScoobiEnvironment
+}
+object Environment extends Environment
 
 trait Lib {
   /* lib stuff */

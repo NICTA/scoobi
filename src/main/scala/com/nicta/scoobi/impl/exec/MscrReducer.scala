@@ -24,6 +24,7 @@ import scala.collection.JavaConversions._
 import io.OutputConverter
 import rtt._
 import core._
+import application.ScoobiEnvironment
 
 
 /** Hadoop Reducer class for an MSCR. */
@@ -37,6 +38,7 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {
+    ScoobiEnvironment.setTaskContext(context)
     outputs = DistCache.pullObject[Reducers](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
     channelOutput = new ChannelOutputFormat(context)
 
