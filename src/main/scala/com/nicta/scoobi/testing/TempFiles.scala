@@ -20,8 +20,6 @@ import java.io.File
 import org.apache.hadoop.fs.{FileSystem, Path}
 import sys.process._
 
-import impl.control.Exceptions._
-
 /**
  * This trait helps with the creation of temporary files and directories
  */
@@ -92,12 +90,11 @@ trait TempFiles {
   private def safeSeq[A](array: Array[A]) = Option(array).map(_.toSeq).getOrElse(Seq[A]())
 
   /** @return a list of remote paths which is empty if there are no paths */
-  private def listPaths(dir: String)(implicit fs: FileSystem): Seq[Path] = tryOrElse {
+  private def listPaths(dir: String)(implicit fs: FileSystem): Seq[Path] =
     safeSeq(fs.listStatus(new Path(dir))).flatMap {
       case f if fs.isFile(f.getPath) => Seq(f.getPath)
       case d                         => listPaths(d.getPath.toUri.getPath)
     }
-  }(Seq.empty)
 
   /** @return a list of local files (recursively) which is empty if there are no files */
   private def listFiles(dir: String)(implicit fs: FileSystem): Seq[File] = {

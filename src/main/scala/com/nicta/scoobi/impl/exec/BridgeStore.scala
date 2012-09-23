@@ -91,7 +91,7 @@ case class BridgeStore[A]()
     def iterator = {
       val fs = FileSystem.get(path.toUri, sc)
       val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
+        new SequenceFile.Reader(fs, stat.getPath, sc)
       }
 
       val iterators = readers.toIterable map { reader =>

@@ -35,13 +35,12 @@ object Helper {
   }(false)
 
   /** Get a Set of FileStatus objects for a given Path. */
-  def getFileStatus(path: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Seq[FileStatus] =
-    tryOrElse {
-      ?(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)) match {
-        case None    => Seq.empty
-        case Some(s) => s.toSeq
-      }
-    }(Seq.empty)
+  def getFileStatus(path: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Seq[FileStatus] = {
+    ?(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)) match {
+      case None => Seq()
+      case Some(s) => s.toSeq
+    }
+  }
 
   /** Only get one file per dir. This helps when checking correctness of input data by reducing
    *  the number of files to check. We don't want to check every file as its expensive */
@@ -50,7 +49,7 @@ object Helper {
   }
 
   def getSingleFilePerDir(stats: Seq[FileStatus])(implicit conf: Configuration): Set[Path] = {
-    stats.groupBy(_.getPath.getParent).flatMap(_._2.filterNot(_.isDirectory).headOption.map(_.getPath)).toSet
+    stats.groupBy(_.getPath.getParent).flatMap(_._2.filterNot(_.isDir).headOption.map(_.getPath)).toSet
   }
 
   def deletePath(p: Path)(implicit conf: Configuration) = FileSystem.get(conf).delete(p, true)
@@ -58,11 +57,9 @@ object Helper {
   /** Determine the byte size of data specified by a path. */
   def pathSize(p: Path)(implicit conf: Configuration): Long = {
     val fs = FileSystem.get(p.toUri, conf)
-    tryOrElse {
-      ?(fs.globStatus(p)).getOrElse(Array()).map { stat =>
-        fs.getContentSummary(stat.getPath).getLength
-      }.sum
-    }(0)
+    Option(fs.globStatus(p)).getOrElse(Array()).map { stat =>
+      fs.getContentSummary(stat.getPath).getLength
+    }.sum
   }
 
   /** Provide a nicely formatted string for a byte size. */

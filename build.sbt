@@ -3,16 +3,17 @@ name := "scoobi"
 
 organization := "com.nicta"
 
-version := "0.6.0-cdh4-SNAPSHOT"
+version := "0.6.0-cdh3-SNAPSHOT-benwing"
 
 scalaVersion := "2.9.2"
+
+crossScalaVersions := Seq("2.9.1", "2.9.2")
 
 libraryDependencies ++= Seq(
   "javassist" % "javassist" % "3.12.1.GA",
   "org.apache.avro" % "avro-mapred" % "1.7.0",
   "org.apache.avro" % "avro" % "1.7.0",
-  "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0",
-  "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0",
+  "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
   "org.scalaz" %% "scalaz-core" % "6.95",
   "org.specs2" %% "specs2" % "1.12.2-SNAPSHOT" % "optional",
@@ -44,19 +45,3 @@ testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
 testOptions in Test += Tests.Argument("scoobi", "local")
 
 fork in Test := true
-
-publishArtifact in packageDoc := false // disable building docs, as it takes so much time
-
-pomExtra :=
-    <build>
-        <plugins>
-             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <configuration>
-                    <header>notes/header.txt</header>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-

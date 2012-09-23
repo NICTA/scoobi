@@ -31,8 +31,6 @@ import org.apache.avro.file.DataFileWriter
 
 class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
-  skipAll
-
   "Reading (Int, Seq[(Float, String)], Map[String, Int]) Avro file" >> { implicit sc: SC =>
     // create test data
     val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int])] = Seq(

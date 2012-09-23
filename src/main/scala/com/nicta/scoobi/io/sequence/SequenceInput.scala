@@ -143,7 +143,7 @@ object SequenceInput {
 
         if (checkFileTypes)
           Helper.getSingleFilePerDir(p)(sc) foreach { filePath =>
-            val seqReader: SequenceFile.Reader = new SequenceFile.Reader(sc, SequenceFile.Reader.file(filePath))
+            val seqReader: SequenceFile.Reader = new SequenceFile.Reader(filePath.getFileSystem(sc), filePath, sc)
             checkType(seqReader.getKeyClass, implicitly[Manifest[K]].erasure, "KEY")
             checkType(seqReader.getValueClass, implicitly[Manifest[V]].erasure, "VALUE")
           }
