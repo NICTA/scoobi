@@ -47,13 +47,14 @@ In this user guide, you will find:                                              
    "how to create " + app.markdownLink("Scoobi applications").fromTop,
    "a "+ ts.markdownLink("testing guide").fromTop,
    dply.markdownLink.fromTop + " instructions",
-   "some " + adv.markdownLink.fromTop
+   "some " + adv.markdownLink.fromTop,
+   "get involved in " + dev.markdownLink.fromTop
     ).map("* "+_).mkString("\n")                                                                                        ^
                                                                                                                         p^
    link(all.map(_.hide))                                                                                                ^
                                                                                                                         end
 
-  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts, dply, adv)
+  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts, dply, adv, dev)
 
   val qs    = new QuickStart
   val app   = new Application
@@ -66,5 +67,6 @@ In this user guide, you will find:                                              
   val ts    = new Testing
   val dply  = new Deployment
   val adv   = new Advanced
+  val dev   = new ScoobiDevelopment
 
 }
