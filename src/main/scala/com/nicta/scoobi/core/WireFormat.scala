@@ -121,7 +121,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * Avro types
    */
-  implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new  WireFormat[T] {
+  implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new  AvroWireFormat[T] 
+  class AvroWireFormat[T <: GenericContainer : Manifest : AvroSchema] extends WireFormat[T] {
     def toWire(x : T, out : DataOutput) {
       val avroclass = implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]]
       val bytestream = new ByteArrayOutputStream()
