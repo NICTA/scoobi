@@ -6,6 +6,7 @@ package comp
 import org.kiama.attribution.Attributable
 import core.{WireFormat, EnvDoFn, Emitter, BasicDoFn}
 import io.DataSource
+import exec.BridgeStore
 
 /**
  * GADT for distributed list computation graph.
@@ -17,6 +18,7 @@ sealed trait DComp[+A, +Sh <: Shape] extends CompNode
  */
 trait CompNode extends Attributable {
   lazy val id = Id.get
+  lazy val dataSource: DataSource[_,_,_] = BridgeStore()
 }
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
@@ -25,10 +27,13 @@ case class ParallelDo[A : WireFormat, B : WireFormat, E : WireFormat](in: DComp[
   val (awf, bwf, ewf) = (implicitly[WireFormat[A]], implicitly[WireFormat[B]], implicitly[WireFormat[E]])
 
   override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "") + " env: " + env
-  def fuse[Z : WireFormat, G : WireFormat](p2: ParallelDo[B, Z, G]) = ParallelDo.fuse(this, p2)
+  def fuse[C : WireFormat, F : WireFormat](p2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] = ParallelDo.fuse[A, B, C, E, F](this, p2)
+
+  override lazy val dataSource = in.dataSource
 }
+
 object ParallelDo {
-  def fuse[X : WireFormat, Y : WireFormat, Z : WireFormat, F : WireFormat, G : WireFormat](pd1: ParallelDo[X, Y, F], pd2: ParallelDo[Y, Z, G]): ParallelDo[X, Z, (F, G)] = {
+  def fuse[A : WireFormat, B : WireFormat, C : WireFormat, E : WireFormat, F : WireFormat](pd1: ParallelDo[A, B, E], pd2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] = {
     val ParallelDo(in1, env1, dofn1, gb1, _)   = pd1
     val ParallelDo(in2, env2, dofn2, gb2, fb2) = pd2
     new ParallelDo(in1, fuseEnv(env1, env2), fuseDoFn(dofn1, dofn2), gb1 || gb2, fb2)
@@ -92,6 +97,7 @@ case class GroupByKey[K, V](in: DComp[(K, V), Arr]) extends DComp[(K, Iterable[V
  * A DataSource object specifies how the loading is performed. */
 case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
   override val toString = "Load ("+id+")"
+  override lazy val dataSource: DataSource[_,_,_] = source
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */

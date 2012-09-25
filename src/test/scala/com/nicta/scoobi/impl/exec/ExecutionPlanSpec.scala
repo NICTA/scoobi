@@ -162,7 +162,8 @@ class ExecutionPlanSpec extends Specification with Plans {
 }
 
 import Rewriter._
-trait Plans extends CompNodeFactory {
+trait Plans extends CompNodeExecFactory {
+
   def execPlan(nodes: CompNode*) =
     createExecutionGraph(Vector(nodes:_*))
 
@@ -181,6 +182,9 @@ trait Plans extends CompNodeFactory {
   def transform(channel: Channel) =
     rewrite(rewriteChannels)(channel)
 
+}
+
+trait CompNodeExecFactory extends CompNodeFactory {
   lazy val loadExec    = LoadExec(Ref(load))
   lazy val gbkExec     = GroupByKeyExec(Ref(gbk(load)), loadExec)
   lazy val flattenExec = FlattenExec(Ref(flatten[String](load)), Seq(loadExec))
