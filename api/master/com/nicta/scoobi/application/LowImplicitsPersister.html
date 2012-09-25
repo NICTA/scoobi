@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.application.Persister</title>
+          <title>com.nicta.scoobi.application.LowImplicitsPersister</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -12,26 +12,30 @@
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="Persister.html"><img src="../../../../lib/object_to_trait_big.png" /></a>
+        <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.application" class="extype" href="package.html">application</a></p>
-        <h1><a title="Go to companion" href="Persister.html">Persister</a></h1>
+        <h1>LowImplicitsPersister</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Persister</span><span class="result"> extends <a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></span>
+        <span class="name">LowImplicitsPersister</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Persister type class instances for tuples.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Those additional implicits allow to pass tuples of persisters to persist at once with the persist method</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>PersisterSpec
+</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister$.html">Persister</a></div>
         </div></div>
     
 
@@ -45,7 +49,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.application.Persister" class="in"><span>Persister</span></li><li name="com.nicta.scoobi.application.LowImplicitsPersister" class="in"><span>LowImplicitsPersister</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.application.LowImplicitsPersister" class="in"><span>LowImplicitsPersister</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -225,18 +229,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#logger" data-isabs="false">
-      <a id="logger:Log"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span name="org.apache.commons.logging.Log" class="extype">Log</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -273,31 +265,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#persist" data-isabs="false">
-      <a id="persist[P](P)(ScoobiConfiguration,Persister[P]):Out"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">persist</span><span class="tparams">[<span name="P">P</span>]</span><span class="params">(<span name="p">p: P</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="conf">conf: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="persister">persister: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[P]</span>)</span><span class="result">: Out</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Evaluate and persist a distributed computation.</p><div class="fullcomment"><div class="comment cmt"><p>Evaluate and persist a distributed computation. This can be a combination of one or more
-DLists (i.e. DListPersisters) and DObjects.</p></div></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#sequencePersister" data-isabs="false">
-      <a id="sequencePersister[T](PFn[T]):Persister[Seq[T]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sequencePersister</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn">pfn: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[Seq[T]]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -322,30 +289,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple1persister" data-isabs="false">
-      <a id="tuple1persister[T1](PFn[T1]):Persister[T1] { type Out = pfn1.Ret }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple1persister</span><span class="tparams">[<span name="T1">T1</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1] { type Out = pfn1.Ret }</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple2persister" data-isabs="false">
-      <a id="tuple2persister[T1, T2](PFn[T1],PFn[T2]):Persister[(T1, T2)] { type Out = (pfn1.Ret, pfn2.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple2persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2)] { type Out = (pfn1.Ret, pfn2.Ret) }</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.application.LowImplicitsPersister#tuple2persisters" data-isabs="false">
       <a id="tuple2persisters[T1, T2](Persister[T1],Persister[T2]):Persister[(T1, T2)] { type Out = (p1.Out, p2.Out) }"></a>
       <h4 class="signature">
@@ -355,18 +298,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
       </span>
       <span class="symbol">
         <span class="name">tuple2persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2)] { type Out = (p1.Out, p2.Out) }</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple3persister" data-isabs="false">
-      <a id="tuple3persister[T1, T2, T3](PFn[T1],PFn[T2],PFn[T3]):Persister[(T1, T2, T3)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple3persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>, <span name="pfn3">pfn3: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T3]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret) }</span>
       </span>
       </h4>
       
@@ -381,18 +312,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
         <span class="name">tuple3persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>, <span name="p3">p3: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T3]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3)] { type Out = (p1.Out, p2.Out, p3.Out) }</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple4persister" data-isabs="false">
-      <a id="tuple4persister[T1, T2, T3, T4](PFn[T1],PFn[T2],PFn[T3],PFn[T4]):Persister[(T1, T2, T3, T4)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple4persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>, <span name="pfn3">pfn3: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T3]</span>, <span name="pfn4">pfn4: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T4]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret) }</span>
-      </span>
-      </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.LowImplicitsPersister#tuple4persisters" data-isabs="false">
       <a id="tuple4persisters[T1, T2, T3, T4](Persister[T1],Persister[T2],Persister[T3],Persister[T4]):Persister[(T1, T2, T3, T4)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out) }"></a>
@@ -403,18 +322,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
       </span>
       <span class="symbol">
         <span class="name">tuple4persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>, <span name="p3">p3: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T3]</span>, <span name="p4">p4: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T4]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out) }</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple5persister" data-isabs="false">
-      <a id="tuple5persister[T1, T2, T3, T4, T5](PFn[T1],PFn[T2],PFn[T3],PFn[T4],PFn[T5]):Persister[(T1, T2, T3, T4, T5)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple5persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>, <span name="pfn3">pfn3: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T3]</span>, <span name="pfn4">pfn4: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T4]</span>, <span name="pfn5">pfn5: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T5]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret) }</span>
       </span>
       </h4>
       
@@ -429,18 +336,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
         <span class="name">tuple5persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>, <span name="p3">p3: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T3]</span>, <span name="p4">p4: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T4]</span>, <span name="p5">p5: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T5]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out, p5.Out) }</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple6persister" data-isabs="false">
-      <a id="tuple6persister[T1, T2, T3, T4, T5, T6](PFn[T1],PFn[T2],PFn[T3],PFn[T4],PFn[T5],PFn[T6]):Persister[(T1, T2, T3, T4, T5, T6)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple6persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>, <span name="pfn3">pfn3: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T3]</span>, <span name="pfn4">pfn4: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T4]</span>, <span name="pfn5">pfn5: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T5]</span>, <span name="pfn6">pfn6: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T6]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5, T6)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret) }</span>
-      </span>
-      </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.LowImplicitsPersister#tuple6persisters" data-isabs="false">
       <a id="tuple6persisters[T1, T2, T3, T4, T5, T6](Persister[T1],Persister[T2],Persister[T3],Persister[T4],Persister[T5],Persister[T6]):Persister[(T1, T2, T3, T4, T5, T6)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out, p5.Out, p6.Out) }"></a>
@@ -451,18 +346,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
       </span>
       <span class="symbol">
         <span class="name">tuple6persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>, <span name="p3">p3: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T3]</span>, <span name="p4">p4: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T4]</span>, <span name="p5">p5: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T5]</span>, <span name="p6">p6: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T6]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5, T6)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out, p5.Out, p6.Out) }</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple7persister" data-isabs="false">
-      <a id="tuple7persister[T1, T2, T3, T4, T5, T6, T7](PFn[T1],PFn[T2],PFn[T3],PFn[T4],PFn[T5],PFn[T6],PFn[T7]):Persister[(T1, T2, T3, T4, T5, T6, T7)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple7persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>, <span name="pfn3">pfn3: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T3]</span>, <span name="pfn4">pfn4: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T4]</span>, <span name="pfn5">pfn5: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T5]</span>, <span name="pfn6">pfn6: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T6]</span>, <span name="pfn7">pfn7: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T7]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5, T6, T7)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret) }</span>
       </span>
       </h4>
       
@@ -477,18 +360,6 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
         <span class="name">tuple7persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>, <span name="p3">p3: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T3]</span>, <span name="p4">p4: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T4]</span>, <span name="p5">p5: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T5]</span>, <span name="p6">p6: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T6]</span>, <span name="p7">p7: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T7]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5, T6, T7)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out, p5.Out, p6.Out, p7.Out) }</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister#tuple8persister" data-isabs="false">
-      <a id="tuple8persister[T1, T2, T3, T4, T5, T6, T7, T8](PFn[T1],PFn[T2],PFn[T3],PFn[T4],PFn[T5],PFn[T6],PFn[T7],PFn[T8]):Persister[(T1, T2, T3, T4, T5, T6, T7, T8)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret, pfn8.Ret) }"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple8persister</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>, <span name="T8">T8</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="pfn1">pfn1: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T1]</span>, <span name="pfn2">pfn2: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T2]</span>, <span name="pfn3">pfn3: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T3]</span>, <span name="pfn4">pfn4: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T4]</span>, <span name="pfn5">pfn5: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T5]</span>, <span name="pfn6">pfn6: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T6]</span>, <span name="pfn7">pfn7: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T7]</span>, <span name="pfn8">pfn8: <a name="com.nicta.scoobi.application.PFn" class="extype" href="PFn.html">PFn</a>[T8]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5, T6, T7, T8)] { type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret, pfn8.Ret) }</span>
-      </span>
-      </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.LowImplicitsPersister#tuple8persisters" data-isabs="false">
       <a id="tuple8persisters[T1, T2, T3, T4, T5, T6, T7, T8](Persister[T1],Persister[T2],Persister[T3],Persister[T4],Persister[T5],Persister[T6],Persister[T7],Persister[T8]):Persister[(T1, T2, T3, T4, T5, T6, T7, T8)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out, p5.Out, p6.Out, p7.Out, p8.Out) }"></a>
@@ -501,7 +372,7 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
         <span class="name">tuple8persisters</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>, <span name="T3">T3</span>, <span name="T4">T4</span>, <span name="T5">T5</span>, <span name="T6">T6</span>, <span name="T7">T7</span>, <span name="T8">T8</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="p1">p1: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T1]</span>, <span name="p2">p2: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T2]</span>, <span name="p3">p3: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T3]</span>, <span name="p4">p4: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T4]</span>, <span name="p5">p5: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T5]</span>, <span name="p6">p6: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T6]</span>, <span name="p7">p7: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T7]</span>, <span name="p8">p8: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[T8]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.Persister" class="extype" href="Persister.html">Persister</a>[(T1, T2, T3, T4, T5, T6, T7, T8)] { type Out = (p1.Out, p2.Out, p3.Out, p4.Out, p5.Out, p6.Out, p7.Out, p8.Out) }</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></dd></dl></div>
+      
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -554,9 +425,7 @@ DLists (i.e. DListPersisters) and DObjects.</p></div></div>
         </div>
 
         <div id="inheritedMembers">
-        <div name="com.nicta.scoobi.application.LowImplicitsPersister" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.application.LowImplicitsPersister" class="extype" href="LowImplicitsPersister.html">LowImplicitsPersister</a></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

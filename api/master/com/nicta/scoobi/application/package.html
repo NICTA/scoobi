@@ -183,6 +183,18 @@
       </h4>
       <p class="comment cmt">Execute Hadoop code locally
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.LowImplicitsPersister" data-isabs="true">
+      <a id="LowImplicitsPersister:LowImplicitsPersister"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LowImplicitsPersister.html"><span class="name">LowImplicitsPersister</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Those additional implicits allow to pass tuples of persisters to persist at once with the persist method</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.PFn" data-isabs="true">
       <a id="PFn:PFn[A]"></a>
       <h4 class="signature">
@@ -359,7 +371,7 @@ added to the classpath.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Persister$.html"><span class="name">Persister</span></a><span class="result"> extends AnyRef</span>
+        <a href="Persister$.html"><span class="name">Persister</span></a><span class="result"> extends LowImplicitsPersister</span>
       </span>
       </h4>
       <p class="comment cmt">Persister type class instances for tuples.</p>
