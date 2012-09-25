@@ -61,7 +61,7 @@
            tabber code, then the init code -->
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
-    </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Application.html">Application</a></div><div id="leftcolumn"><div id="tree">
+    </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html">ScoobiDevelopment</a></div><div id="leftcolumn"><div id="tree">
       <ul><li id="2134962137"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
             <ul><li id="1508104405"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
@@ -247,131 +247,10 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['2134962137','1623526347'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
-    </div></div><div id="central"><title>Application</title><a name="Application"><h2 specId="1623526347">Application</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Creation"><h3>Creation</h3></a><p>Scoobi provides several traits to help building applications. <code class="prettyprint">ScoobiApp</code> brings them all together:</p>
-<pre><code class="prettyprint">object WordCount extends ScoobiApp {
-  def run() {
-    val lines = DList(repeat(&quot;hello&quot; -&gt; 3, &quot;world&quot; -&gt; 4):_*)
-
-    val frequencies = lines.flatMap(_.split(&quot; &quot;))
-      .map(word =&gt; (word, 1))
-      .groupByKey
-      .combine((a: Int, b: Int) =&gt; a + b).materialize
-
-    println(persist(frequencies).toList.sorted)
-  }
-
-  /** @return a Seq of strings where each key has been duplicated a number of times indicated by the value */
-  def repeat(m: (String, Int)*): Seq[String] = m.flatMap { case (k, v) =&gt; Seq.fill(v)(k) }
-}
-</code></pre><p>When you extend the <code class="prettyprint">ScoobiApp</code> trait:</p>
-<ul>
-  <li><p>you need to implement the <code class="prettyprint">run</code> method with your Scoobi logic</p></li>
-  <li><p>if you create an object, you get a <code class="prettyprint">main(arguments: Array[String])</code> method to run your code from the command-line: <code class="prettyprint">run-main examples.WordCount</code></p></li>
-  <li><p>you inherit the command-line arguments in a variable named <code class="prettyprint">args</code></p></li>
-  <li><p>you inherit an implicit <code class="prettyprint">ScoobiConfiguration</code> object, for persisting <code class="prettyprint">DLists</code>. The <code class="prettyprint">ScoobiConfiguration</code> object encapsulates a Hadoop <code class="prettyprint">Configuration</code> object setup with the Hadoop command-line arguments, and is accessible through the <code class="prettyprint">configuration</code> variable.</p></li>
-</ul><a name="Arguments"><h3>Arguments</h3></a><p>ScoobiApp provides support for passing in Hadoop-configuration and Scoobi-configuration arguments, which are stripped from the command line prior to being made available in the <code class="prettyprint">args</code> variable.</p><p>The format of the command line is as follows:</p><p><code class="prettyprint">COMMAND-TO-INVOKE-PROGRAM [HADOOP-ARGS ...] [APPLICATION-ARGS ...] [-- scoobi VALUE1.VALUE2.VALUE3]</code></p><p>where <code class="prettyprint">COMMAND-TO-INVOKE-PROGRAM</code> is the invocation needed to run the program, <code class="prettyprint">HADOOP-ARGS</code> are optional arguments to configure Hadoop, <code class="prettyprint">APPLICATION-ARGS</code> are the arguments to the application itself, and everything else specifies arguments to configure Scoobi. Note that both the Hadoop-configuration and Scoobi-configuration arguments are optional.</p><p>A simple example that runs an application <code class="prettyprint">mypackage.MyApp</code> using <code class="prettyprint">sbt run-main</code> with application arguments <code class="prettyprint">input-dir output-dir</code> and without any configuration-level arguments is:</p><p><code class="prettyprint">sbt run-main mypackage.MyApp input-dir output-dir</code></p><p>A more complicated example is as follows:</p><p><code class="prettyprint">sbt run-main mypackage.MyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 --by-time input-dir output-dir -- scoobi warn.times</code></p><p>This command contains the following sets of arguments:</p>
-<ol>
-  <li>The arguments <code class="prettyprint">-Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20</code> are handled by Hadoop. (They allow for 20% of the map or reduce tasks to fail and the job as a whole to still succeed.)</li>
-  <li>The arguments <code class="prettyprint">--by-time input-dir output-dir</code> are passed to the application itself.</li>
-  <li>The arguments <code class="prettyprint">warn.times</code> are handled by Scoobi. (They set the log level to WARN and cause logging of execution time.)</li>
-</ol><p>The various sets of arguments are accessible from the <code class="prettyprint">ScoobiApp</code> with the following variables:</p>
-<ol>
-  <li><code class="prettyprint">args</code>: The application arguments.</li>
-  <li><code class="prettyprint">scoobiArgs</code>: The Scoobi-configuration arguments, split on &quot;.&quot;.</li>
-  <li><code class="prettyprint">commandLineArguments</code>: The entire set of command-line arguments.</li>
-</ol><a name="Scoobi+Configuration+Arguments"><h3>Scoobi Configuration Arguments</h3></a><p>The following are the possible configuration arguments for Scoobi:</p>
-<table>
-  <thead>
-    <tr>
-      <th>Name </th>
-      <th>Default value </th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>verbose </td>
-      <td>true </td>
-      <td>if defined, log statements are displayed</td>
-    </tr>
-    <tr>
-      <td>quiet </td>
-      <td>false </td>
-      <td>if defined, log statements are not displayed</td>
-    </tr>
-    <tr>
-      <td>times </td>
-      <td>false </td>
-      <td>if defined the total execution time is logged</td>
-    </tr>
-    <tr>
-      <td>level </td>
-      <td>info </td>
-      <td>minimum level of statements to log</td>
-    </tr>
-    <tr>
-      <td>category </td>
-      <td>.* </td>
-      <td>regular expression. By default everything is logged. Use <code class="prettyprint">scoobi</code> to display only Scoobi logs</td>
-    </tr>
-    <tr>
-      <td>local </td>
-      <td>false </td>
-      <td>if defined, run the Scoobi job locally</td>
-    </tr>
-    <tr>
-      <td>deletelibjars </td>
-      <td>false </td>
-      <td>if defined, remove jars from the <code class="prettyprint">libjars</code> directory before uploading them again</td>
-    </tr>
-    <tr>
-      <td>nolibjars </td>
-      <td>false </td>
-      <td>if defined, do not upload dependent jars to the <code class="prettyprint">libjars</code> directory and include the Scoobi jar in the job jar</td>
-    </tr>
-    <tr>
-      <td>useconfdir </td>
-      <td>false </td>
-      <td>if defined, use the configuration files in <code class="prettyprint">$HADOOP_HOME/conf</code> (useful when running apps from inside sbt)</td>
-    </tr>
-    <tr>
-      <td>keepfiles </td>
-      <td>false </td>
-      <td>if defined, temp files and working directory files are not deleted after the job execution (only for testing)</td>
-    </tr>
-  </tbody>
-</table><p>The list of possible log levels is <code class="prettyprint">all</code>, <code class="prettyprint">fatal</code>, <code class="prettyprint">info</code>, <code class="prettyprint">warn</code>, <code class="prettyprint">trace</code>, <code class="prettyprint">off</code>.</p><p>It is also possible to change configuration values by overriding methods in <code class="prettyprint">ScoobiApp</code>.</p><a name="Dependencies"><h3>Dependencies</h3></a><p>The <code class="prettyprint">ScoobiApp</code> trait extends the <code class="prettyprint">LibJars</code> trait which provides functionalities to manage dependent jars. More specifically it helps you load all the dependent jars on the cluster before executing your Scoobi job:</p>
-<ol>
-  <li><p>the dependent jars are taken from the context classloader and are only loaded if they come from a <code class="prettyprint">.ivy2</code> or <code class="prettyprint">.m2</code> directory (the Hadoop jars are <em>not</em> included). This behavior can be redefined by overriding the <code class="prettyprint">jars</code> method</p></li>
-  <li><p><code class="prettyprint">uploadLibJarFiles</code> uploads all the new jars to a directory on the cluster. By default this directory is named <code class="prettyprint">libjars</code> (this is declared in the <code class="prettyprint">libJarsDirectory</code> method). When you upload the jars, <em>all</em> the dependencies will be added to the <code class="prettyprint">mapred.classpath</code> Hadoop configuration variable)</p></li>
-  <li><p><code class="prettyprint">deleteJars</code> can be used to remove all existing jars in the <code class="prettyprint">libjars</code> directory if one of your dependencies has changed (but kept the same name)</p></li>
-</ol><p>Here is an example on how to use these methods:</p>
-<pre><code class="prettyprint">package mypackage
-
-object MyApp extends ScoobiApp {
-  def run() {
-    // remove the existing jars on the cluster
-    deleteJars
-    // upload the dependencies to the cluster
-    uploadLibJarFiles
-
-    // define and execute a Scoobi job
-    val lines = ...
-  }
-}
-</code></pre><p>If you don't want to use this facility at all, you can override the <code class="prettyprint">upload</code> method and set it to <code class="prettyprint">false</code> or pass <code class="prettyprint">scoobi nolibjars</code> on the command line.</p><a name="Configuration"><h3>Configuration</h3></a><p>The <code class="prettyprint">ScoobiApp</code> trait can be used in 2 different contexts:</p>
-<ol>
-  <li><p>with the <code class="prettyprint">hadoop jar</code> command</p><p>In that case, <code class="prettyprint">hadoop</code> finds the cluster location by either using the configuration files in its <code class="prettyprint">conf</code> directory or by using the <code class="prettyprint">fs</code> and <code class="prettyprint">jt</code> arguments</p></li>
-  <li><p>within sbt</p><p>In that case the cluster location can be either defined by using the <code class="prettyprint">useconfdir</code> command line argument to get the configuration files found in <code class="prettyprint">$HADOOP_HOME/conf</code> directory<br />You can also override the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> methods, and get those values from your own properties file.</p></li>
-</ol><a name="Local+execution"><h3>Local execution</h3></a><p>For testing, it can useful to run Scoobi applications locally only:</p>
-<ul>
-  <li>if you are using the <code class="prettyprint">hadoop jar</code> command, you can specify a local configuration by either using the <code class="prettyprint">fs</code>/<code class="prettyprint">jt</code> arguments</li>
-  <li>if you are using sbt, you can pass the &quot;<code class="prettyprint">scoobi local</code>&quot; argument for a local execution</li>
-</ul><a name="Logging"><h3>Logging</h3></a><p>By default, when extending the <code class="prettyprint">Hadoop</code> trait, Hadoop and Scoobi logs will be shown in the console at the &quot;INFO&quot; level. However for debugging failed jobs you may want to change the log level or the log categories:</p>
-<ul>
-  <li><p>show some log levels: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones from the Apache commons logging library: <code class="prettyprint">ALL</code>, <code class="prettyprint">FATAL</code>, <code class="prettyprint">INFO</code>, <code class="prettyprint">WARN</code>, <code class="prettyprint">TRACE</code></p></li>
-  <li><p>show some log categories: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn.(hadoop|scoobi)</code> will only display the log lines where the category matches <code class="prettyprint">.*(hadoop|scoobi).*</code>. Note that you can visually separate this regular expression for log categories with brackets to help the reading: <code class="prettyprint">run mypackage.MyApp -- scoobi.warn.[(hadoop|scoobi)].times</code></p></li>
-  <li><p>you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">run-main mypackage.MyApp -- scoobi times</code> (or override the <code class="prettyprint">showTimes</code> method)</p></li>
-  <li><p>finally you can combine those flags: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn.times</code></p></li>
-</ul><p>Note that logs can be turned off by using the 'quiet' argument: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi quiet</code> (you can also override the <code class="prettyprint">quiet</code> method to return <code class="prettyprint">true</code>)</p></div></status></div><div id="rightcolumn"></div></body></html>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['2134962137','1746040910'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div><div id="central"><title>Scoobi Development</title><a name="Scoobi+Development"><h2 specId="1746040910">Scoobi Development</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Building"><h3>Building</h3></a><p>Building scoobi should be as easy as <code class="prettyprint">sbt publish-local</code> to build and install scoobi locally. An easy way to insure your applications are picking up your local version of scoobi, is by deleting the version that was downloaded from sonatype. It is stored at ~/.ivy2/cache/com.nicta.scoobi*:</p><a name="Run+the+tests"><h3>Run the tests</h3></a><p><code class="prettyprint">sbt test</code> will run the unit tests, as well as the tests in local mode. It's also possible to run the tests on a cluster too, with some fancy options (See testing guide)</p><a name="User+Guide+%2F+Docs"><h3>User Guide / Docs</h3></a><p>Are located at <code class="prettyprint">src/test/scala/com/nicta/scoobi/guide</code>. They can be built with the command:</p>
+<pre><code class="prettyprint">$ sbt
+&gt; test-only *UserGuide* -- html
+</code></pre><p>and are built into <code class="prettyprint">target/spec2-reports/guide-SNAPSHOT/guide</code></p><a name="Contributions"><h3>Contributions</h3></a><p>We welcome pull-requests on github. We rebase commits aggressively (up until the point they land on master) to have a clean and linear history. So don't be suprised if the sha1 changes when it lands. As such, it makes our lives a lot easier if your commit is already based on master and all squashed down into nice logical commits.</p><p>After landing on master, the commit will automatically get merged down into the cdh3 and publishing branches. Our build server will then run the full tests, on our internal cluster -- and if everything looks good, a new snapshot will be published.</p><a name="Eclipse"><h3>Eclipse</h3></a><p>The <a href="https://github.com/typesafehub/sbteclipse">sbteclipse plugin</a> can be used to generate an eclipse project. However, <a href="https://github.com/typesafehub/sbteclipse/issues/115">issue #115</a> means you will need to first build scoobi (<code class="prettyprint">sbt compile</code>) and then copy the auto-generated code to somewhere sbteclipse will find it:</p>
+<pre><code class="prettyprint">  cp target/scala-2.9.2/src_managed/main/scoobi/codegen/* src/main/scala/
+</code></pre><p>This however, will break the build from within sbt (as it will see two versions of the code generated stuff). An easy solution is to simply comment out the line in build.sbt <code class="prettyprint">(sourceGenerators in Compile) &lt;+= (sourceManaged in Compile) map GenWireFormat.gen</code> just remember not to commit this.</p><p>Now after running <code class="prettyprint">sbt eclipse</code> and importing the project, you will get compile errors related to dependent types. This is <a href="https://github.com/typesafehub/sbteclipse/issues/115">issue #115</a> and can easily be worked around by right-clicking on the scoobi project, going to properties, then 'scala compiler and adding <code class="prettyprint">-Ydependent-method-types</code>. </p></div></status></div><div id="rightcolumn"></div></body></html>
