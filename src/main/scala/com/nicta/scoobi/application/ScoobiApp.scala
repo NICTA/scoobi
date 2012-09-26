@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package application
 
 import io.FileSystems
+import impl.reflect.Classes._
+import impl.reflect.Classes
 
 /**
  * This trait can be extended to create an application running Scoobi code.
@@ -86,7 +88,14 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
   }
 
   /** upload the jars unless 'nolibjars' has been set on the command-line' */
-  override def upload = !noLibJars
+  override def upload = !noLibJars && !mainJarContainsDependencies
+
+  /**
+   * @return true if the main jar contains all the dependencies for this application
+   *         by default this is delegated to the Classes trait which looks for the presence of a scoobi_* jar or
+   *         for com/nicta/scoobi jar entries in the main jar
+   */
+  def mainJarContainsDependencies = Classes.mainJarContainsDependencies
 
   /**
    * the execution is local if the file system is local, as determined by the configuration files loaded by the hadoop script
