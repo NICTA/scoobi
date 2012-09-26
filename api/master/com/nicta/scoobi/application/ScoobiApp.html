@@ -606,6 +606,21 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </h4>
       <p class="shortcomment cmt">parse the command-line argument and:</p><div class="fullcomment"><div class="comment cmt"><p>parse the command-line argument and:</p><ul><li>upload the dependent jars on the cluster</li><li>execute the user code
 </li></ul></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiApp#mainJarContainsDependencies" data-isabs="false">
+      <a id="mainJarContainsDependencies:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mainJarContainsDependencies</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the main jar contains all the dependencies for this application
+        by default this is delegated to the Classes trait which looks for the presence of a scoobi_* jar or
+        for com/nicta/scoobi jar entries in the main jar
+</p></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">

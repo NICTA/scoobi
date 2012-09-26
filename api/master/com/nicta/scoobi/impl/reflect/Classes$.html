@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.util.JarBuilder</title>
+          <title>com.nicta.scoobi.impl.reflect.Classes</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
@@ -12,26 +12,26 @@
       <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.util" class="extype" href="package.html">util</a></p>
-        <h1>JarBuilder</h1>
+        <a title="Go to companion" href="Classes.html"><img src="../../../../../lib/object_to_trait_big.png" /></a>
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.reflect" class="extype" href="package.html">reflect</a></p>
+        <h1><a title="Go to companion" href="Classes.html">Classes</a></h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">JarBuilder</span><span class="result"> extends AnyRef</span>
+        <span class="name">Classes</span><span class="result"> extends <a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Class to manage the creation of a new JAR file.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.util.JarBuilder" class="in"><span>JarBuilder</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.reflect.Classes" class="in"><span>Classes</span></li><li name="com.nicta.scoobi.impl.reflect.Classes" class="in"><span>Classes</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -55,22 +55,7 @@
 
       <div id="template">
         <div id="allMembers">
-        <div class="members" id="constructors">
-              <h3>Instance Constructors</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#this" data-isabs="false">
-      <a id="this:JarBuilder"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">JarBuilder</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -138,78 +123,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#addClass" data-isabs="false">
-      <a id="addClass(Class[_]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addClass</span><span class="params">(<span name="clazz">clazz: Class[_]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add a class that has been loaded and is contained in some exising JAR.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#addClassDirectory" data-isabs="false">
-      <a id="addClassDirectory(String):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addClassDirectory</span><span class="params">(<span name="path">path: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add the class files found in a given directory</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#addClassFromBytecode" data-isabs="false">
-      <a id="addClassFromBytecode(String,Array[Byte]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addClassFromBytecode</span><span class="params">(<span name="className">className: String</span>, <span name="bytecode">bytecode: <span name="scala.Array" class="extype">Array</span>[<span name="scala.Byte" class="extype">Byte</span>]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add a single class to the JAR where its bytecode is given directly.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#addContainingJar" data-isabs="false">
-      <a id="addContainingJar(Class[_]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addContainingJar</span><span class="params">(<span name="clazz">clazz: Class[_]</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add the entire contents of a JAR that contains a particular class.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#addJar" data-isabs="false">
-      <a id="addJar(String):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addJar</span><span class="params">(<span name="jarFile">jarFile: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Merge in the contents of an entire JAR.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#addRuntimeClass" data-isabs="false">
-      <a id="addRuntimeClass(RuntimeClass):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addRuntimeClass</span><span class="params">(<span name="runtimeClass">runtimeClass: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="../rtt/RuntimeClass.html">RuntimeClass</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add a class to the JAR that was generated at runtime.</p>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -237,19 +150,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.JarBuilder#close" data-isabs="false">
-      <a id="close(ScoobiConfiguration):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">close</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Write-out the JAR file.</p><div class="fullcomment"><div class="comment cmt"><p>Write-out the JAR file. Once this method is called, the JAR cannot be
-modified further.</p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -274,6 +174,18 @@ modified further.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#filePath" data-isabs="false">
+      <a id="filePath(Class[_]):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filePath</span><span class="params">(<span name="clazz">clazz: Class[_]</span>)</span><span class="result">: String</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Return the class file path string as specified in a JAR for a give class.</p><div class="fullcomment"><div class="comment cmt"><p>Return the class file path string as specified in a JAR for a give class.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -289,6 +201,18 @@ modified further.</p></div></div>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#findContainingJar" data-isabs="false">
+      <a id="findContainingJar(Class[_]):Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">findContainingJar</span><span class="params">(<span name="clazz">clazz: Class[_]</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[String]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the location of JAR that contains a particular class.</p><div class="fullcomment"><div class="comment cmt"><p>Find the location of JAR that contains a particular class.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -325,6 +249,78 @@ modified further.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#jarEntries" data-isabs="false">
+      <a id="jarEntries(String):Seq[JarEntry]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jarEntries</span><span class="params">(<span name="jarPath">jarPath: String</span>)</span><span class="result">: Seq[<span name="java.util.jar.JarEntry" class="extype">JarEntry</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the entries for a given jar path</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#lastStackElementWithMethodName" data-isabs="false">
+      <a id="lastStackElementWithMethodName(String):StackTraceElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lastStackElementWithMethodName</span><span class="params">(<span name="name">name: String</span>)</span><span class="result">: <span name="java.lang.StackTraceElement" class="extype">StackTraceElement</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the last stackElement having this method name, or the first stack element of the current stack</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#mainClass" data-isabs="false">
+      <a id="mainClass:java.lang.Class[_ &lt;: Nothing]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mainClass</span><span class="result">: java.lang.Class[_ &lt;: Nothing]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the class with a main method calling this code</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#mainJarContainsDependencies" data-isabs="false">
+      <a id="mainJarContainsDependencies:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mainJarContainsDependencies</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if at least one of the entries in the main jar is a Scoobi class</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#mainJarEntries" data-isabs="false">
+      <a id="mainJarEntries:Seq[JarEntry]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mainJarEntries</span><span class="result">: Seq[<span name="java.util.jar.JarEntry" class="extype">JarEntry</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the jar entries of the jar file containing the main class</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect.Classes#mainStackElement" data-isabs="false">
+      <a id="mainStackElement:StackTraceElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mainStackElement</span><span class="result">: <span name="java.lang.StackTraceElement" class="extype">StackTraceElement</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the first stack element being a main method (from the bottom of the stack)</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -437,7 +433,9 @@ modified further.</p></div></div>
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.impl.reflect.Classes" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.reflect.Classes" class="extype" href="Classes.html">Classes</a></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
