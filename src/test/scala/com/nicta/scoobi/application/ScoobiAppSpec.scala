@@ -17,8 +17,9 @@ package com.nicta.scoobi
 package application
 
 import testing.mutable.UnitSpecification
+import org.specs2.mutable.Tables
 
-class ScoobiAppSpec extends UnitSpecification {
+class ScoobiAppSpec extends UnitSpecification with Tables{
 
   "Arguments from the command line must be parsed" >> {
     val app = new ScoobiApp { def run {} }
@@ -43,6 +44,21 @@ class ScoobiAppSpec extends UnitSpecification {
       val app = new ScoobiApp { def run {} }
       app.main(Array("scoobi", "local.quiet"))
       app.quiet aka "quiet" must beTrue
+    }
+  }
+
+  "In a ScoobiApp the upload of dependent jars depends on the nolibjar arguments and on the content of the jar containing the main class (fat jar or not)" >> {
+    "nolibjars" | "fat jar" | "upload" |>
+    true        ! true      ! false    |
+    true        ! false     ! false    |
+    false       ! true      ! false    |
+    false       ! false     ! true     | { (nolibjars, fatjar, upload) =>
+      val app = new ScoobiApp {
+        def run {}
+        override def mainJarContainsDependencies = fatjar
+      }
+      app.main(Array("example.MyApp", "--", "scoobi", if (nolibjars) "nolibjars" else ""))
+      app.upload must be_==(upload)
     }
   }
 }
