@@ -2,15 +2,13 @@ package com.nicta.scoobi
 package guide
 
 class Deployment extends ScoobiPage { def is = "Deployment".title^
-                                                                                                                        """
+  """
 ### Introduction
 
-If using `sbt run` to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment. Previously we had a plugin `sbt-scoobi` but since deprecated in favor of using existing tools. [Sbt-assembly](https://github.com/sbt/sbt-assembly/) does the trick, but unfortunately isn't too particularly easy/nice to use.
+If using `sbt run` to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:
 
-
-### Disable jars uploading
-
-By default an application using th `ScoobiApp` trait, will upload all the dependent jars to the cluster in a `libjars` directory (see the [Application](Application.html#Dependencies) page). If you package your own fat jar with all the dependent classes, you will want to deactivate this functionality by adding the following arguments to the command line: `scoobi nolibjars`. Or alternatively, hardcode it in via `override def upload = false` inside your scoobi app.
+ - [Sbt assembly](https://github.com/sbt/sbt-assembly)
+ - [Maven assembly](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html)
 
 ### Sbt-assembly
 
@@ -30,7 +28,7 @@ import AssemblyKeys._
 assemblySettings
 ```
 
-### Quick Hack
+#### Quick Hack
 
 Ben Wing's suggestion provides a quick and easy solution by using a merge strategy, by putting this at the bottom of your `build.sbt`:
 
@@ -50,7 +48,7 @@ The downside is, that this brings in dependencies that are not strictly required
 
 The big advantage to this approach, is that `sbt run` still works
 
-### Ugly Hack
+#### Ugly Hack
 
 We can also fake the `libraryDependencies` to build a proper jar. Please note, the way we change this, will make it incompatible with a normal `sbt run`. So you might want to have two versions of your `build.sbt`
 
@@ -106,20 +104,17 @@ resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/reposit
                   "scoobi"   at "http://nicta.github.com/scoobi/releases") // for scalaz 6.95
 ```
 
+### Maven assembly
+
+Building Maven jars for Hadoop is documented in several blog posts. [This one](http://www.tikalk.com/java/build-your-first-hadoop-project-maven), for example, provides a step-by-step guide.
+
 ### Running
-
-Create the jar:
-
-```
-$ sbt assembly
-```
 
 Running the jar:
 
 ```
-$ hadoop jar target/appname-assembly-version.jar scoobi nolibjars
+$ hadoop jar target/appname-assembly-version.jar scoobi
 ```
-
 
 Note that there appears to be an OSX and Java 6 specific [issue](https://github.com/NICTA/scoobi/issues/1) associated with calling `hadoop` in this manner requiring the jar to be added to `HADOOP_CLASSPATH` and then `hadoop` being given the correct object to run. e.g.:
 
@@ -128,6 +123,11 @@ $ export HADOOP_CLASSPATH=$PWD/target/appname-assembly-version.jar
 $ hadoop WordCount <args>
 ```
 
-If you have any `ClassNotFoundException` with a Scoobi class missing, make sure you've disabled jars uploading (see above).
-"""
+### Troubleshooting
+
+You might get some `ClassNotFoundException` on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi "job jar" that is distributed to the cluster node by turning off the dependency uploading mechanism (see the [Application](Application.html) page):
+
+`$ hadoop WordCount <args> scoobi nolibjars`
+
+  """
 }
