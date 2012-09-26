@@ -32,6 +32,7 @@ import impl.rtt.RuntimeClass
 import application.ScoobiConfiguration
 import JarBuilder._
 import org.apache.commons.logging.LogFactory
+import org.specs2.internal.scalaz.Logger
 
 
 /** Class to manage the creation of a new JAR file. */
@@ -42,11 +43,15 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   private val entries: MSet[String] = MSet.empty
 
   /** Merge in the contents of an entire JAR. */
-  def addJar(jarFile: String) { addJarEntries(jarFile, e => true) }
+  def addJar(jarFile: String) {
+    addJarEntries(jarFile, e => true)
+  }
 
   /** Add the entire contents of a JAR that contains a particular class. */
   def addContainingJar(clazz: Class[_]) {
-    findContainingJar(clazz).foreach(addJar(_))
+    val jar = findContainingJar(clazz)
+    logger.debug("adding jar entries for class "+clazz.getName+" from jar "+jar.getOrElse("<no jar found>"))
+    jar.foreach(addJar(_))
   }
 
   /** Add a class that has been loaded and is contained in some exising JAR. */
