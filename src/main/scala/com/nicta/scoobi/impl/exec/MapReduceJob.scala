@@ -16,7 +16,6 @@
 package com.nicta.scoobi
 package impl
 package exec
-
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
@@ -38,6 +37,7 @@ import plan._
 import rtt._
 import util._
 import application.ScoobiConfiguration
+import reflect.Classes._
 import ScoobiConfiguration._
 import scala.collection.mutable.{Set => MSet, Map => MMap}
 
@@ -113,8 +113,11 @@ class MapReduceJob(stepId: Int) {
   private[scoobi] def configureJar(jar: JarBuilder)(implicit configuration: ScoobiConfiguration) {
     // if the dependent jars have not been already uploaded, make sure that the Scoobi jar
     // i.e. the jar containing this.getClass, is included in the job jar.
-    if (!configuration.uploadedLibJars)
+    // add also the client jar containing the main method executing the job
+    if (!configuration.uploadedLibJars) {
       jar.addContainingJar(getClass)
+      jar.addContainingJar(mainClass)
+    }
     configuration.userJars.foreach { jar.addJar(_) }
     configuration.userDirs.foreach { jar.addClassDirectory(_) }
   }

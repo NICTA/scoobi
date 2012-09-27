@@ -80,7 +80,7 @@ The various sets of arguments are accessible from the `ScoobiApp` with the follo
 2. `scoobiArgs`: The Scoobi-configuration arguments, split on ".".
 3. `commandLineArguments`: The entire set of command-line arguments.
 
-### Scoobi Configuration Arguments
+#### Scoobi Configuration Arguments
 
 The following are the possible configuration arguments for Scoobi:
 
@@ -104,13 +104,44 @@ It is also possible to change configuration values by overriding methods in `Sco
 
 ### Dependencies
 
-The `ScoobiApp` trait extends the `LibJars` trait which provides functionalities to manage dependent jars. More specifically it helps you load all the dependent jars on the cluster before executing your Scoobi job:
+Based on how you package your Scoobi application, Scoobi will try to determine what is the best way to find your dependencies and to add them to the classpath:
 
- 1. the dependent jars are taken from the context classloader and are only loaded if they come from a `.ivy2` or `.m2` directory (the Hadoop jars are *not* included). This behavior can be redefined by overriding the `jars` method
+ 1. if you build a "fat" jar containing the application code plus all the dependent jars (see the [Deployment](Deployment.html) page), Scoobi will get all entries in this jar and add them to a "Job" jar that is distributed to all nodes on the cluster. The drawback of this method is that all the dependencies are sent to the cluster each time the application is executed
 
- 2. `uploadLibJarFiles` uploads all the new jars to a directory on the cluster. By default this directory is named `libjars` (this is declared in the `libJarsDirectory` method). When you upload the jars, *all* the dependencies will be added to the `mapred.classpath` Hadoop configuration variable)
+ 2. if you build a "slim" jar with only the application code or execute from inside sbt, Scoobi will find the dependent jars by introspecting the classloader and try to upload them to a directory on the cluster, then to distribute them to each node. This will be done only once to speed-up the development cycle
 
- 3. `deleteJars` can be used to remove all existing jars in the `libjars` directory if one of your dependencies has changed (but kept the same name)
+For each of those 2 options, you can still alter Scoobi behavior by passing command-line arguments or by overriding some methods of the `ScoobiApp` trait
+
+#### "Fat" jar
+
+Scoobi determines if a jar is a "fat" jar by:
+
+ 1. determining which class is used to run the application (a class extending `ScoobiApp`)
+ 2. finding the jar containing this class
+ 3. checking if this jar contains the "scoobi" jar (in a `lib` directory for example if packaged using sbt-assembly) or some Scoobi classes
+
+In this case all jar entries will be copied to a job-specific jar distributed to each node before the Scoobi job execution.
+
+#### Dependencies uploading
+
+Dependencies are being uploaded to the cluster if Scoobi determines that you are not using a "fat" jar:
+
+ 1. the dependent jars are taken from the context classloader and are only loaded if they come from a `.ivy2` or `.m2` directory (the Hadoop jars are *not* included)
+
+ 2. the jars are uploaded to a directory on the cluster. By default this directory is named `libjars` and only new jars are uploaded.
+
+ 3. *all* those dependencies are added to the `mapred.classpath` Hadoop configuration variable
+
+If you don't want to use this facility at all (or if Scoobi fails to recognize your jar as a "fat" jar), you can override the `upload` method and set it to `false` or pass `scoobi nolibjars` on the command line.
+
+#### `LibJars` usage
+
+The functionalities for managing dependencies reside in methods of the `LibJars` trait which can be reused independently from the `ScoobiApp` trait, or overidden:
+
+ 1. `jars` defines the list of jars to upload
+ 2. `uploadLibJarFiles` uploads the new jars to the `libjars` directory
+ 3. `libJarsDirectory` defines the name of the directory containing the dependent jars
+ 4. `deleteJars` removes all existing jars in the `libjars` directory if one of your dependencies has changed (but kept the same name)
 
 Here is an example on how to use these methods:
 
@@ -129,8 +160,6 @@ object MyApp extends ScoobiApp {
   }
 }
 ```
-
-If you don't want to use this facility at all, you can override the `upload` method and set it to `false` or pass `scoobi nolibjars` on the command line.
 
 ### Configuration
 

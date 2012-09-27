@@ -25,14 +25,14 @@ import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
 import Configurations._
-import com.nicta.scoobi.impl.util.JarBuilder
-import java.net.{URLClassLoader, URL}
+import java.net.URL
 import org.apache.hadoop.mapred.JobConf
 import java.io.File
 import ScoobiConfiguration._
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem._
 import io.FileSystems
+import impl.reflect.Classes
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -89,7 +89,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * add a new jar of a given class, by finding the url in the current classloader, to the current configuration
    */
-  def addJarByClass(clazz: Class[_]) = JarBuilder.findContainingJar(clazz).map(addJar).getOrElse(this)
+  def addJarByClass(clazz: Class[_]) = Classes.findContainingJar(clazz).map(addJar).getOrElse(this)
 
   /**
    * add a user directory to the classpath of this configuration
