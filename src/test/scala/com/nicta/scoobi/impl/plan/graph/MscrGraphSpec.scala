@@ -10,6 +10,7 @@ import CompNode._
 import org.scalacheck.{Gen, Arbitrary}
 import org.specs2.mutable.Tags
 import org.specs2.main.CommandLineArguments
+import testing.mutable.UnitSpecification
 
 
 class MscrGraphSpec extends MscrGraphSpecification {
@@ -22,7 +23,7 @@ class MscrGraphSpec extends MscrGraphSpecification {
           new OtherMscrsSpec)
 }
 
-trait MscrGraphSpecification extends Specification with CompNodeData with Tags {
+trait MscrGraphSpecification extends UnitSpecification with CompNodeData with Tags {
 
   def beAnAncestorOf(node: CompNode): Matcher[CompNode] = new Matcher[CompNode] {
     def apply[S <: CompNode](other: Expectable[S]) =

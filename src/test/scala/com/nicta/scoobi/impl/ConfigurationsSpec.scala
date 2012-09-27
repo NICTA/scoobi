@@ -21,7 +21,7 @@ import testing.mutable.UnitSpecification
 import Configurations._
 import org.specs2.matcher.Matcher
 
-class ConfigurationsSpec extends UnitSpecification{
+class ConfigurationsSpec extends UnitSpecification {
 
   "A configuration can be updated with the keys existing in another configuration" >> {
     val updated = configuration("a" -> "1", "b" -> "2").updateWith(configuration("c" -> "3", "d" -> "4")) {

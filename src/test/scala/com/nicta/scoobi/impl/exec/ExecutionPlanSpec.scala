@@ -3,7 +3,6 @@ package impl
 package exec
 
 import org.specs2.mutable.Specification
-import ExecutionPlan._
 import plan._
 import graph._
 import comp.{CompNode, CompNodeFactory}
@@ -11,51 +10,54 @@ import application.ScoobiConfiguration
 import core.WireFormat
 import graph.{GbkOutputChannel, InputChannel, MapperInputChannel, StraightInputChannel, BypassOutputChannel, FlattenOutputChannel}
 import org.kiama.rewriting.Rewriter
+import org.specs2.specification.Scope
 
-class ExecutionPlanSpec extends Specification with Plans {
+class ExecutionPlanSpec extends Specification with plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
   """
-   - Mscr transformation
-   - Channel transformation
-   - Node transformation
-   - attach data sinks to outputChannels: normal outputs + bridgestores
-       -> some nodes should be outputted to some data sinks as decided by the user
-   -
+   - set tags on output  channels
+   - set set(tags) in input channels
   """.txt
 
   "Mscrs are transformed into mscrs with actual channels" >> {
     "each Mscr must transform its channels to become an executable Mscr" >> {
-      transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbk(load))))) ===
+      transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad)))) ===
         MscrExec(Set(MapperInputChannelExec(Seq())), Set(GbkOutputChannelExec(gbkExec)))
     }
     "input channels must be transformed to executable input channels, containing executable nodes" >> {
       "A MapperInputChannel is transformed to a MapperInputChannelExec" >> {
-        transform(MapperInputChannel(Set(pd(load)))) === MapperInputChannelExec(Seq(MapperExec(Ref(pd(load)), loadExec)))
+        transform(MapperInputChannel(Set(pdLoad))) === MapperInputChannelExec(Seq(MapperExec(Ref(pdLoad), loadExec)))
       }
       "An IdInputChannel is transformed into a BypassInputChannelExec" >> {
-        transform(IdInputChannel(load)) === BypassInputChannelExec(loadExec)
+        transform(IdInputChannel(ld)) === BypassInputChannelExec(loadExec)
       }
       "A StraightInputChannel is transformed into a StraightInputChannelExec" >> {
-        transform(StraightInputChannel(load)) === StraightInputChannelExec(loadExec)
+        transform(StraightInputChannel(ld)) === StraightInputChannelExec(loadExec)
       }
     }
     "output channels must be transformed to executable output channels, containing executable nodes" >> {
       "A GbkOutputChannel is transformed to a GbkOutputChannelExec" >> {
         "with a gbk node only" >> {
-          transform(GbkOutputChannel(gbk(load))) === GbkOutputChannelExec(gbkExec)
+          transform(GbkOutputChannel(gbkLoad)) === GbkOutputChannelExec(gbkExec)
         }
         "with optional nodes" >> {
-          transform(GbkOutputChannel(gbk(load), Some(flatten[String](load)))) ===
+          transform(GbkOutputChannel(gbkLoad, Some(flattenLoad))) ===
             GbkOutputChannelExec(gbkExec, Some(flattenExec))
         }
       }
       "An FlattenOutputChannel is transformed into a FlattenOutputChannelExec" >> {
-        transform(FlattenOutputChannel(flatten(load))) === FlattenOutputChannelExec(flattenExec)
+        transform(FlattenOutputChannel(flattenLoad)) === FlattenOutputChannelExec(flattenExec)
       }
       "A BypassOutputChannel is transformed into a BypassOutputChannelExec" >> {
-        transform(BypassOutputChannel(pd(load))) === BypassOutputChannelExec(pdExec)
+        transform(BypassOutputChannel(pdLoad)) === BypassOutputChannelExec(pdExec)
       }
+    }
+    "output channels must be tagged with an Int index starting from 0" >> new plans {
+      val mscrExec = transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad): graph.OutputChannel,
+                                                                        FlattenOutputChannel(flattenLoad),
+                                                                        BypassOutputChannel(pdLoad))))
+      mscrExec.outputChannels.map(_.tag) === Set(0, 1, 2)
     }
   }
 
@@ -162,7 +164,7 @@ class ExecutionPlanSpec extends Specification with Plans {
 }
 
 import Rewriter._
-trait Plans extends CompNodeExecFactory {
+trait plans extends CompNodeExecFactory with ExecutionPlan with Scope {
 
   def execPlan(nodes: CompNode*) =
     createExecutionGraph(Vector(nodes:_*))
@@ -176,8 +178,8 @@ trait Plans extends CompNodeExecFactory {
   def environments(nodes: CompNode*)(implicit sc: ScoobiConfiguration) =
     collectEnvironments(Vector(nodes:_*))
 
-  def transform(mscr: Mscr): Any =
-    rewrite(rewriteMscr)(mscr)
+  def transform(mscr: Mscr): MscrExec =
+    rewrite(rewriteMscr)(mscr).asInstanceOf[MscrExec]
 
   def transform(channel: Channel) =
     rewrite(rewriteChannels)(channel)
@@ -185,8 +187,12 @@ trait Plans extends CompNodeExecFactory {
 }
 
 trait CompNodeExecFactory extends CompNodeFactory {
-  lazy val loadExec    = LoadExec(Ref(load))
-  lazy val gbkExec     = GroupByKeyExec(Ref(gbk(load)), loadExec)
-  lazy val flattenExec = FlattenExec(Ref(flatten[String](load)), Seq(loadExec))
-  lazy val pdExec      = MapperExec(Ref(pd(load)), loadExec)
+  lazy val ld          = load
+  lazy val pdLoad      = pd(load)
+  lazy val flattenLoad = flatten[String](ld)
+  lazy val gbkLoad     = gbk(ld)
+  lazy val loadExec    = LoadExec(Ref(ld))
+  lazy val gbkExec     = GroupByKeyExec(Ref(gbkLoad), loadExec)
+  lazy val flattenExec = FlattenExec(Ref(flattenLoad), Seq(loadExec))
+  lazy val pdExec      = MapperExec(Ref(pdLoad), loadExec)
 }

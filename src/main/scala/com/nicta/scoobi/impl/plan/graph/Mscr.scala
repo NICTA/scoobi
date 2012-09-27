@@ -8,6 +8,7 @@ import comp._
 import collection._
 import IdSet._
 import scala.collection.immutable.SortedSet
+import io.DataSink
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
@@ -29,11 +30,11 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the id channels */
   def idChannels = inputChannels.collect { case c @ IdInputChannel(_) => c }
   /** @return all the flatten channels */
-  def flattenOutputChannels = outputChannels.collect { case c @ FlattenOutputChannel(_) => c }
+  def flattenOutputChannels = outputChannels.collect { case c @ FlattenOutputChannel(_,_) => c }
   /** @return all the gbk output channels */
-  def gbkOutputChannels = outputChannels.collect { case c @ GbkOutputChannel(_,_,_,_) => c }
+  def gbkOutputChannels = outputChannels.collect { case c @ GbkOutputChannel(_,_,_,_,_) => c }
   /** @return all the bypass output channels */
-  def bypassOutputChannels = outputChannels.collect { case c @ BypassOutputChannel(_) => c }
+  def bypassOutputChannels = outputChannels.collect { case c @ BypassOutputChannel(_,_) => c }
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
@@ -42,11 +43,11 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
   /** @return all the GroupByKeys of this mscr */
-  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_)            => gbk }
+  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_,_)            => gbk }
   /** @return all the reducers of this mscr */
-  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer))  => reducer }
+  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer),_)  => reducer }
   /** @return all the combiners of this mscr */
-  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_,_) => combiner }
   /** @return all the parallelDos of this mscr */
   def parallelDos = mappers ++ reducers
 
@@ -55,6 +56,15 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
    inputChannels  = (inputChannels ++ in)
    outputChannels = (outputChannels ++ out)
    this
+  }
+
+  def addSinks(sinks: Map[CompNode, Seq[DataSink[_,_,_]]]) = {
+    outputChannels = outputChannels.map {
+      case c @ GbkOutputChannel(_,_,_,_,_) => c.addSinks(sinks)
+      case c @ BypassOutputChannel(_,_)    => c.addSinks(sinks)
+      case c @ FlattenOutputChannel(_,_)   => c.addSinks(sinks)
+    }
+    this
   }
 }
 

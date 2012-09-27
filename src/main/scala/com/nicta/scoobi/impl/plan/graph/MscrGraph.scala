@@ -11,6 +11,7 @@ import CompNode._
 import collection._
 import IdSet._
 import scala.collection.immutable.SortedSet
+import io.DataSink
 
 /**
  * This trait computes the Mscr for a given nodes graph.
@@ -27,7 +28,7 @@ trait MscrGraph {
 
   /** compute the mscr of a node: it is either a Mscr around a gbk or a floating parallelDo or a floating flatten */
   lazy val mscr: CompNode => Mscr = attr { case n => (n -> mscrOpt).getOrElse(Mscr()) }
-  lazy val mscrOpt: CompNode => Option[Mscr] = attr {
+  def mscrOpt: CompNode => Option[Mscr] = attr {
     case n => (n -> gbkMscr).orElse(n -> parallelDosMscr).orElse(n -> flattenMscr)
   }
 
@@ -276,17 +277,25 @@ trait MscrGraph {
                               map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
     }
 
+  private def addSinks(sinks: SinksMap) = (m: Mscr) => m.addSinks(sinks)
+
+  /** type synonym to keep the relations between output nodes and datasinks */
+  type SinksMap = Map[CompNode, Seq[DataSink[_,_,_]]]
+
   /** @return the MSCRs accessible from a given node, without optimising the graph first */
-  def makeMscrs(node: CompNode): Set[Mscr] = {
+  def makeMscrs(node: CompNode, sinks: SinksMap = Map()): Set[Mscr] = {
     // make sure that the parent <-> children relationships are initialized
     Attribution.initTree(node)
-    ((node -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
+    val mscrs = ((node -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
+    mscrs.map(addSinks(sinks))
   }
 
   /** @return the first reachable MSCR for a given node, without optimising the graph first */
-  private[plan] def makeMscr(node: CompNode) = makeMscrs(node).headOption.getOrElse(Mscr())
+  private[plan] def makeMscr(node: CompNode, sinks: SinksMap = Map()) =
+    makeMscrs(node, sinks).headOption.getOrElse(Mscr())
   /** @return the MSCR for a given node. Used for testing only because it does the optimisation first */
-  private[plan] def mscrFor(node: CompNode) = makeMscr(Optimiser.optimise(node))
+  private[plan] def mscrFor(node: CompNode) =
+    makeMscr(Optimiser.optimise(node))
   /** @return the MSCRs for a list of nodes. Used for testing only */
   private[plan] def mscrsFor(nodes: CompNode*) = (nodes map mscrFor).toSet
 }

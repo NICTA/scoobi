@@ -5,7 +5,7 @@ package exec
 import plan.comp._
 import application.ScoobiConfiguration
 import plan.graph.{OutputChannel, InputChannel}
-import io.DataSource
+import io.{DataSink, DataSource}
 
 /**
  * GADT representing elementary computations to perform in hadoop jobs
@@ -54,7 +54,10 @@ case class GbkReducerExec[A, B, E](pd: Ref[ParallelDo[A, B, E]], n: CompNode) ex
   def referencedNode = pd.n
 }
 
-case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set())
+case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set()) {
+  def inputChannels:  Set[InputChannelExec]  = inputs. map(_.asInstanceOf[InputChannelExec])
+  def outputChannels: Set[OutputChannelExec] = outputs.map(_.asInstanceOf[OutputChannelExec])
+}
 
 sealed trait InputChannelExec extends InputChannel {
   def source: DataSource[_,_,_] = input.referencedNode.dataSource
@@ -82,11 +85,34 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
 
-sealed trait OutputChannelExec extends OutputChannel
-case class GbkOutputChannelExec(groupByKey: CompNode,
-                                flatten:    Option[CompNode] = None,
-                                combiner:   Option[CompNode] = None,
-                                reducer:    Option[CompNode] = None) extends OutputChannelExec
+sealed trait OutputChannelExec extends OutputChannel {
+  def sinks: Seq[DataSink[_,_,_]]
+  def tag: Int
+}
 
-case class FlattenOutputChannelExec(in: CompNode) extends OutputChannelExec
-case class BypassOutputChannelExec(in: CompNode) extends OutputChannelExec
+case class GbkOutputChannelExec(groupByKey: CompNode,
+                                flatten:    Option[CompNode]     = None,
+                                combiner:   Option[CompNode]     = None,
+                                reducer:    Option[CompNode]     = None,
+                                sinks:      Seq[DataSink[_,_,_]] = Seq(),
+                                tag:        Int = 0) extends OutputChannelExec {
+
+  override def equals(a: Any) = a match {
+    case o: GbkOutputChannelExec => o.groupByKey == groupByKey
+    case _                       => false
+  }
+
+}
+
+case class FlattenOutputChannelExec(in: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+  override def equals(a: Any) = a match {
+    case o: FlattenOutputChannelExec => o.in == in
+    case _                           => false
+  }
+}
+case class BypassOutputChannelExec(in: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+  override def equals(a: Any) = a match {
+    case o: BypassOutputChannelExec => o.in == in
+    case _                          => false
+  }
+}

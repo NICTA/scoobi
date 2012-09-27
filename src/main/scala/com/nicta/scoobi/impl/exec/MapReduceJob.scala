@@ -35,6 +35,7 @@ import scalaz.Scalaz._
 import core._
 import io._
 import plan._
+import graph.Mscr
 import rtt._
 import util._
 import application.ScoobiConfiguration
@@ -341,6 +342,48 @@ object MapReduceJob {
           job.addTaggedMapper(input, None, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
       }
     }
+
+    job
+  }
+
+  /** Construct a MapReduce job from an executable Mscr. */
+  def create(stepId: Int, mscr: MscrExec): MapReduceJob = {
+    val job = new MapReduceJob(stepId)
+
+//    /* Tag each output channel with a unique index. */
+//    mscr.outputChannels.zipWithIndex.foreach { case (oc, tag) =>
+//
+//      /* Add combiner functionality from output channel descriptions. */
+//      oc match {
+//        case GbkOutputChannel(_, _, _, JustCombiner(c))          => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
+//        case GbkOutputChannel(_, _, _, CombinerReducer(c, _, _)) => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
+//        case _                                                   => Unit
+//      }
+//
+//      /* Add reducer functionality from output channel descriptions. */
+//      oc match {
+//        case GbkOutputChannel(outputs, _, _, JustCombiner(c))            => job.addTaggedReducer(outputs, None, c.mkTaggedReducer(tag))
+//        case GbkOutputChannel(outputs, _, _, JustReducer(r, env))        => job.addTaggedReducer(outputs, Some(env), r.mkTaggedReducer(tag))
+//        case GbkOutputChannel(outputs, _, _, CombinerReducer(_, r, env)) => job.addTaggedReducer(outputs, Some(env), r.mkTaggedReducer(tag))
+//        case GbkOutputChannel(outputs, _, g, Empty)                      => job.addTaggedReducer(outputs, None, g.mkTaggedReducer(tag))
+//        case BypassOutputChannel(outputs, origin)                        => job.addTaggedReducer(outputs, None, origin.mkTaggedReducer(tag))
+//        case FlattenOutputChannel(outputs, flat)                         => job.addTaggedReducer(outputs, None, flat.mkTaggedReducer(tag))
+//      }
+//    }
+
+    /* Add mapping functionality from input channel descriptions. */
+//    mscr.inputChannels.foreach { ic =>
+//      ic match {
+//        case b@BypassInputChannel(input, origin) => {
+//          job.addTaggedMapper(input, None, origin.mkTaggedIdentityMapper(mapperTags(origin)))
+//        }
+//        case MapperInputChannel(input, mappers) => mappers.foreach { case (env, m) =>
+//          job.addTaggedMapper(input, Some(env), m.mkTaggedMapper(mapperTags(m)))
+//        }
+//        case StraightInputChannel(input, origin) =>
+//          job.addTaggedMapper(input, None, origin.mkStraightTaggedIdentityMapper(mapperTags(origin)))
+//      }
+//    }
 
     job
   }

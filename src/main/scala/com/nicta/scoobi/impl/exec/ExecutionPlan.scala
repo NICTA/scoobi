@@ -67,15 +67,18 @@ trait ExecutionPlan extends MscrGraph {
     all(rewriteNodes)       // rewrite the remaining nodes which may be in Options (see GbkOutputChannel)
 
     /** rewrite one channel */
-  def rewriteSingleChannel: Strategy = rule {
-    // input channels
-    case MapperInputChannel(pdos)   => MapperInputChannelExec(pdos.toSeq)
-    case IdInputChannel(in)         => BypassInputChannelExec(in)
-    case StraightInputChannel(in)   => StraightInputChannelExec(in)
-    // output channels
-    case GbkOutputChannel(g,f,c,r)  => GbkOutputChannelExec(g, f, c, r)
-    case FlattenOutputChannel(in)   => FlattenOutputChannelExec(in)
-    case BypassOutputChannel(in)    => BypassOutputChannelExec(in)
+  lazy val rewriteSingleChannel: Strategy = {
+    val tag = Tag()
+    rule {
+      // input channels
+      case MapperInputChannel(pdos)     => MapperInputChannelExec(pdos.toSeq)
+      case IdInputChannel(in)           => BypassInputChannelExec(in)
+      case StraightInputChannel(in)     => StraightInputChannelExec(in)
+      // output channels
+      case GbkOutputChannel(g,f,c,r,s)  => GbkOutputChannelExec(g, f, c, r, s, tag.newTag)
+      case FlattenOutputChannel(in,s)   => FlattenOutputChannelExec(in, s,     tag.newTag)
+      case BypassOutputChannel(in,s)    => BypassOutputChannelExec(in, s,      tag.newTag)
+    }
   }
 
   /**
@@ -128,6 +131,14 @@ trait ExecutionPlan extends MscrGraph {
     collectEnvs(createExecutionGraph(computations))
 
 
+  case class Tag() {
+    var tag = 0
+    def newTag = {
+      val t = tag
+      tag += 1
+      t
+    }
+  }
 
 }
 

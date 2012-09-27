@@ -3,13 +3,12 @@ package impl
 package plan
 package graph
 
-import org.specs2.mutable.Specification
-import org.kiama.attribution.Attribution
 import org.specs2.specification.Scope
-import comp.{ShowNode, Return, CompNode, CompNodeFactory}
+import comp.{Return, CompNode, CompNodeFactory}
 import collection._
+import testing.mutable.UnitSpecification
 
-class GraphFunctionsSpec extends Specification {
+class GraphFunctionsSpec extends UnitSpecification {
 
   "the inputs of a node are its children" >> new nodes {
     val load0 = load
