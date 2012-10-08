@@ -86,26 +86,34 @@ case class BridgeStore[A]()
   }
 
 
-  /* Read the contents of this bridge store sequence files as an Iterable collection. */
+  /* Read the contents of this bridge store sequence files as an Iterable collection. The
+   * undelying Iterator has a lazy implementation and will only bring one element into memory
+   * at a time. */
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[A] = new Iterable[A] {
-    def iterator = {
+    def iterator = new Iterator[A] {
+
       val fs = FileSystem.get(path.toUri, sc)
       val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
         new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
       }
 
-      val iterators = readers.toIterable map { reader =>
-        new Iterator[A] {
-          val key = NullWritable.get
-          val value: ScoobiWritable[A] =
-            Class.forName(reader.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
-          def next(): A = value.get
-          def hasNext: Boolean = reader.next(key, value)
+      val key = NullWritable.get
+      lazy val value: ScoobiWritable[A] =
+        Class.forName(readers.head.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
 
-        } toIterable
+      var remainingReaders = readers.toList
+      var empty = if (readers.isEmpty) true else !readNext()
+
+      def next(): A = { val v = value.get; empty = !readNext(); v }
+      def hasNext(): Boolean = !empty
+
+      /* Attempt to read the next key-value and return true if successful, else false. As the
+       * end of each SequenceFile.Reader is reached, move on to the next until they have all
+       * been read. */
+      def readNext(): Boolean = remainingReaders match {
+        case cur :: rest => if (cur.next(key, value)) true else { remainingReaders = rest; readNext() }
+        case Nil         => false
       }
-
-      iterators.flatten.toIterator
     }
   }
 
