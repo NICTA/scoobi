@@ -62,26 +62,26 @@ case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChanne
 sealed trait InputChannelExec extends InputChannel {
   def source: DataSource[_,_,_] = input.referencedNode.dataSource
   def input: ExecutionNode
+  def tags: Set[Int]
 }
 
 /**
  * @param nodes: list of related MapperExec nodes
  */
-case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec {
+case class MapperInputChannelExec(nodes: Seq[CompNode], tags: Set[Int] = Set()) extends InputChannelExec {
   def input: ExecutionNode = nodes.head.asInstanceOf[ExecutionNode]
-  //  def inputEnv: ExecutionNode= nodes.head.env
 }
 
 /**
  * @param in
  */
-case class BypassInputChannelExec(in: CompNode) extends InputChannelExec {
+case class BypassInputChannelExec(in: CompNode, tags: Set[Int] = Set()) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
 /**
  * @param in
  */
-case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
+case class StraightInputChannelExec(in: CompNode, tags: Set[Int] = Set()) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
 

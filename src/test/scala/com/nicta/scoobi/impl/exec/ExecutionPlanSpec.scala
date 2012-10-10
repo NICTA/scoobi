@@ -59,6 +59,13 @@ class ExecutionPlanSpec extends Specification with plans {
                                                                         BypassOutputChannel(pdLoad))))
       mscrExec.outputChannels.map(_.tag) === Set(0, 1, 2)
     }
+    "input channels must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
+      val mscrExec = transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad): graph.OutputChannel,
+        FlattenOutputChannel(flattenLoad),
+        BypassOutputChannel(pdLoad))))
+
+      mscrExec.inputChannels.map(_.tags) === Set(0, 1, 2)
+    }
   }
 
   "Graph nodes are transformed to more specific nodes" >> {
