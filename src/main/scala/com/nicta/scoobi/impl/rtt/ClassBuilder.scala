@@ -94,13 +94,7 @@ trait ClassBuilder {
          else
            false
        }
-       override def hashCode(): Int = {
-         try {
-           data.hashCode
-         } catch { // sometimes scala likes overriding hashCode with something that's broken
-           case _ => 1 // so we can just return a constant collision instead
-         }
-       }
+       override def hashCode(): Int = java.lang.System.identityHashCode(data)
     }
 
     def add(o: AnyRef, varName: String) {
