@@ -124,6 +124,18 @@ to be specified.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelOutputFormat#OutputChannelFileName" data-isabs="false">
+      <a id="OutputChannelFileName:Regex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">OutputChannelFileName</span><span class="result">: <span name="scala.util.matching.Regex" class="extype">Regex</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">format of output file names</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelOutputFormat#addOutputChannel" data-isabs="false">
       <a id="addOutputChannel(Job,Int,Int,com.nicta.scoobi.io.DataSink[_, _, _])(ScoobiConfiguration):Configuration"></a>
       <h4 class="signature">
@@ -238,6 +250,18 @@ to be specified.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ChannelOutputFormat#isResultFile" data-isabs="false">
+      <a id="isResultFile(Int,Int):(Path) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isResultFile</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="ix">ix: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file</p></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
