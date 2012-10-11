@@ -19,20 +19,19 @@ package util
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.{Set => MSet}
-import Option.{apply => ?}
 
 import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
 import java.util.jar.JarEntry
 import java.io._
-import java.net.{URLClassLoader, URLDecoder}
+import java.net.URLClassLoader
 
 
 import impl.rtt.RuntimeClass
 import application.ScoobiConfiguration
-import JarBuilder._
 import org.apache.commons.logging.LogFactory
-
+import reflect.Classes
+import Classes._
 
 /** Class to manage the creation of a new JAR file. */
 class JarBuilder(implicit configuration: ScoobiConfiguration) {
@@ -42,16 +41,20 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   private val entries: MSet[String] = MSet.empty
 
   /** Merge in the contents of an entire JAR. */
-  def addJar(jarFile: String) { addJarEntries(jarFile, e => true) }
+  def addJar(jarFile: String) {
+    addJarEntries(jarFile, e => true)
+  }
 
   /** Add the entire contents of a JAR that contains a particular class. */
   def addContainingJar(clazz: Class[_]) {
-    findContainingJar(clazz).foreach(addJar(_))
+    val jar = findContainingJar(clazz)
+    logger.debug("adding jar entries for class "+clazz.getName+" from jar "+jar.getOrElse("<no jar found>"))
+    jar.foreach(addJar(_))
   }
 
   /** Add a class that has been loaded and is contained in some exising JAR. */
   def addClass(clazz: Class[_]) {
-    findContainingJar(clazz).foreach(addJarEntries(_, (mkClassFile(clazz) == _.getName)))
+    findContainingJar(clazz).foreach(addJarEntries(_, (filePath(clazz) == _.getName)))
   }
 
   /** Add the class files found in a given directory */
@@ -142,34 +145,3 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   }
 }
 
-object JarBuilder {
-
-  /** Find the location of JAR that contains a particular class. */
-  def findContainingJar(clazz: Class[_]): Option[String] = {
-
-    val classFile = mkClassFile(clazz)
-    val loader = ?(clazz.getClassLoader) match {
-      case Some(l) => l
-      case None    => ClassLoader.getSystemClassLoader
-    }
-
-    val foundPaths =
-      (for {
-        url <- loader.getResources(classFile)
-        if ("jar" == url.getProtocol)
-        path = url.getPath.replaceAll("file:", "")
-                          .replaceAll("\\+", "%2B")
-                          .replaceAll("!.*$", "")
-      } yield URLDecoder.decode(path, "UTF-8")).toList
-
-    if (foundPaths.isEmpty)
-      None
-    else
-      Some(foundPaths.head)
-  }
-
-  /** Return the class file path string as specified in a JAR for a give class. */
-  private def mkClassFile(clazz: Class[_]): String = {
-    clazz.getName.replaceAll("\\.", "/") + ".class"
-  }
-}
