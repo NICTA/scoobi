@@ -41,8 +41,6 @@ scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
                                      Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
 
-testOptions in Test += Tests.Argument("scoobi", "local")
-
 fork in Test := true
 
 publishArtifact in packageDoc := false // disable building docs, as it takes so much time

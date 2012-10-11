@@ -69,7 +69,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
       if (!outer.isLocalOnly) remotely(cleanup(a).apply(outside))
-      else                    Skipped("excluded", "No cluster execution time")
+      else                    Skipped("excluded", "No cluster execution"+time_?)
     }
   }
 
@@ -94,7 +94,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
       if (!outer.isClusterOnly) locally(cleanup(a).apply(outside))
-      else                      Skipped("excluded", "No local execution time")
+      else                      Skipped("excluded", "No local execution"+time_?)
     }
     override def isRemote = false
   }
@@ -126,6 +126,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    */
   trait HadoopContext extends Outside[ScoobiConfiguration] {
     def isRemote = true
+    def time_? = if (outer.showTimes) " time" else ""
   }
 
   /**
