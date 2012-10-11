@@ -31,6 +31,7 @@ import scala.collection.mutable.{Map => MMap}
 import io.DataSink
 import Configurations._
 import application.ScoobiConfiguration
+import org.apache.hadoop.fs.Path
 
 
 /** A class that simplifies writing output to different paths and with different types
@@ -93,6 +94,16 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 /** Object that allows for channels with different output format requirements
   * to be specified. */
 object ChannelOutputFormat {
+  /** format of output file names */
+  val OutputChannelFileName = """ch(\d+)out(\d+)-.-\d+.*""".r
+
+  /** @return true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file */
+  def isResultFile(tag: Int, ix: Int) =
+    (f: Path) => f.getName match {
+      case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == ix
+      case "_SUCCESS"           => true
+      case _                    => false
+    }
 
   private def propertyPrefix(ch: Int, ix: Int) = "scoobi.output." + ch + ":" + ix
   private def formatProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".format"
@@ -117,3 +128,4 @@ object ChannelOutputFormat {
     }
   }
 }
+

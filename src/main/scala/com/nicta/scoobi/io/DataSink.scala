@@ -23,6 +23,7 @@ import application.ScoobiConfiguration
 import org.apache.hadoop.io.compress.{CompressionCodec, SplittableCompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
 
 /* An output store from a MapReduce job. */
@@ -64,6 +65,13 @@ trait DataSink[K, V, B] { outer =>
 
   /** configure the compression for a given job */
   def configureCompression(job: Job) = job
+
+  /** @return the output path of this sink */
+  def outputPath(implicit sc: ScoobiConfiguration) = {
+    val jobCopy = new Job(sc)
+    outputConfigure(jobCopy)
+    Option(FileOutputFormat.getOutputPath(jobCopy))
+  }
 }
 
 

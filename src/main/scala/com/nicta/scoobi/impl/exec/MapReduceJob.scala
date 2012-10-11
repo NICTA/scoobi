@@ -40,9 +40,13 @@ import application.ScoobiConfiguration
 import reflect.Classes._
 import ScoobiConfiguration._
 import scala.collection.mutable.{Set => MSet, Map => MMap}
+import ChannelOutputFormat._
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int) {
+  protected val fileSystems: FileSystems = FileSystems
+  import fileSystems._
+
   private lazy val logger = LogFactory.getLog("scoobi.Step")
 
   /* Keep track of all the mappers for each input channel. */
@@ -255,33 +259,19 @@ class MapReduceJob(stepId: Int) {
     job
   }
 
-  private def collectOutputs(implicit configuration: ScoobiConfiguration) = (job: Job) => {
-    val fs = FileSystem.get(job.getConfiguration)
+  private[scoobi] def collectOutputs(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+    val fs = configuration.fileSystem
 
     /* Move named file-based sinks to their correct output paths. */
-    val outputFiles = fs.listStatus(configuration.temporaryOutputDirectory) map { _.getPath }
-    val FileName = """ch(\d+)out(\d+)-.-\d+.*""".r
+    val outputFiles = listFiles(configuration.temporaryOutputDirectory)
 
     reducers.foreach { case (sinks, (_, reducer)) =>
-
       sinks.zipWithIndex.foreach { case (sink, ix) =>
-        val outputPath = {
-          val jobCopy = new Job(new Configuration(job.getConfiguration))
-          sink.outputConfigure(jobCopy)
-          FileOutputFormat.getOutputPath(jobCopy)
+        sink.outputPath foreach { outDir =>
+          fs.mkdirs(outDir)
+          val files = outputFiles filter isResultFile(reducer.tag, ix)
+          files foreach copyTo(outDir)
         }
-        ?(outputPath) foreach { p =>
-          fs.mkdirs(p)
-          outputFiles filter (forOutput) foreach { srcPath =>
-            fs.rename(srcPath, new Path(p, srcPath.getName))
-          }
-        }
-
-        def forOutput = (f: Path) => f.getName match {
-          case FileName(t, i) => t.toInt == reducer.tag && i.toInt == ix
-          case _              => false
-        }
-
       }
     }
     fs.delete(configuration.temporaryOutputDirectory, true)
