@@ -40,13 +40,18 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def aroundContext: HadoopContext = context
 
-  /** define the context to use: local, cluster or localThenCluster */
+  /** define the context to use: local, cluster, localThenCluster */
   def context: HadoopContext = localThenCluster
 
   /**
    * the execution time will not be displayed with this function, but by adding more information to the execution Result
    */
   override def displayTime(prefix: String) = (timer: SimpleTimer) => ()
+
+  /** tests are always local by default, unless !local is passed */
+  override def isLocal                   = !is("!local")
+  /** tests are executed on the cluster only if cluster is specified */
+  override def isCluster                 = is("cluster")
 
   /** context for local execution */
   def local: HadoopContext = new LocalHadoopContext
@@ -68,8 +73,8 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     def outside = configureForCluster(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (!outer.isLocalOnly) remotely(cleanup(a).apply(outside))
-      else                    Skipped("excluded", "No cluster execution"+time_?)
+      if (outer.isCluster) remotely(cleanup(a).apply(outside))
+      else                 Skipped("excluded", "No cluster execution"+time_?)
     }
   }
 
@@ -93,8 +98,8 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     def outside = configureForLocal(new ScoobiConfiguration)
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (!outer.isClusterOnly) locally(cleanup(a).apply(outside))
-      else                      Skipped("excluded", "No local execution"+time_?)
+      if (outer.isLocal) locally(cleanup(a).apply(outside))
+      else               Skipped("excluded", "No local execution"+time_?)
     }
     override def isRemote = false
   }

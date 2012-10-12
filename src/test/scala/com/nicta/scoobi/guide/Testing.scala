@@ -57,7 +57,7 @@ This specification does several things for you:
   * it creates a new `ScoobiConfiguration` for each example so that you should be able to run your examples concurrently
   * this configuration is setup with the properties found in the `$HADOOP_HOME/conf` directory. If the `$HADOOP_HOME` variable is not set or the properties not found you will get an exception at runtime
   * because you are passed in the configuration you can change those properties if required
-  * every example will be executed twice: once locally and once on the cluster if the local execution doesn't fail
+  * each example will be executed locally only. If you want to execute them on the cluster as well, add `scoobi cluster` to the command line arguments. If you want some cluster execution but no local execution, use `scoobi !local.cluster`.
   * all the logging is intercepted so as not to clutter the console output
   * before executing the examples, all the dependent jars, as defined by the sbt classpath, will be copied in a directory on the cluster (`~/libjars` by default). This upload is only done for missing jars on the cluster
 
