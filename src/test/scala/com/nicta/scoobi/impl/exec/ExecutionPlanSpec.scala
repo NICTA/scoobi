@@ -11,7 +11,11 @@ import graph.{GbkOutputChannel, InputChannel, MapperInputChannel, StraightInputC
 import org.kiama.rewriting.Rewriter
 import org.specs2.specification.Scope
 import testing.mutable.UnitSpecification
+import Rewriter._
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class ExecutionPlanSpec extends UnitSpecification with plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
@@ -59,12 +63,12 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
                                                                         BypassOutputChannel(pdLoad))))
       mscrExec.outputChannels.map(_.tag) === Set(0, 1, 2)
     }
-    "input channels must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
+    "inputs must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
       val mscrExec = transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad): graph.OutputChannel,
-        FlattenOutputChannel(flattenLoad),
-        BypassOutputChannel(pdLoad))))
+                                                                        FlattenOutputChannel(flattenLoad),
+                                                                        BypassOutputChannel(pdLoad))))
 
-      mscrExec.inputChannels.map(_.tags) === Set(0, 1, 2)
+      mscrExec.mapperInputChannels.map(_.tags) === Seq(Map(gbkLoad -> 0, flattenLoad -> 1, pdLoad -> 2))
     }
   }
 
@@ -176,8 +180,6 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
     }
   }
 }
-
-import Rewriter._
 trait plans extends CompNodeExecFactory with ExecutionPlan with Scope {
 
   def execPlan(nodes: CompNode*) =

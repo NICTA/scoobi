@@ -31,7 +31,7 @@ trait ExecutionPlan extends MscrGraph {
   type Term = Any
 
   /**
-   * create an execution plan for a set of Mcrs
+   * create an execution plan for a set of Mscrs
    */
   def createExecutionPlan(mscrs: Seq[Mscr]): Seq[Term] =
     rewrite(rewriteMscrs)(mscrs)
@@ -63,10 +63,11 @@ trait ExecutionPlan extends MscrGraph {
 
   def rewriteChannel: Strategy =
     rewriteSingleChannel <*
+    addTagsOnInputNodes  <*
     rewriteNodes         <* // rewrite the nodes in channels
     all(rewriteNodes)       // rewrite the remaining nodes which may be in Options (see GbkOutputChannel)
 
-    /** rewrite one channel */
+  /** rewrite one channel */
   lazy val rewriteSingleChannel: Strategy = {
     val tag = Tag()
     rule {
@@ -81,6 +82,14 @@ trait ExecutionPlan extends MscrGraph {
     }
   }
 
+  /** for each input node find the corresponding output tag */
+  lazy val addTagsOnInputNodes: Strategy = rule {
+    case n @ MapperInputChannelExec(pdos,_) => n.copy(tags = Map(pdos.map(pd => pd -> tag(pd)):_*))
+    case n @ BypassInputChannelExec(in,_)   => n.copy(tag = tag(in))
+    case n @ StraightInputChannelExec(in,_) => n.copy(tag = tag(in))
+  }
+
+  def tag(node: CompNode) = 1
   /**
    * Nodes rewriting
    */

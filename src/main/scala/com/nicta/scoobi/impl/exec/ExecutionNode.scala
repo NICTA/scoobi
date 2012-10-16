@@ -57,31 +57,26 @@ case class GbkReducerExec[A, B, E](pd: Ref[ParallelDo[A, B, E]], n: CompNode) ex
 case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set()) {
   def inputChannels:  Set[InputChannelExec]  = inputs. map(_.asInstanceOf[InputChannelExec])
   def outputChannels: Set[OutputChannelExec] = outputs.map(_.asInstanceOf[OutputChannelExec])
+  
+  def mapperInputChannels = inputChannels.collect { case m @ MapperInputChannelExec(_,_) => m }
 }
 
 sealed trait InputChannelExec extends InputChannel {
   def source: DataSource[_,_,_] = input.referencedNode.dataSource
   def input: ExecutionNode
-  def tags: Set[Int]
 }
 
 /**
  * @param nodes: list of related MapperExec nodes
  */
-case class MapperInputChannelExec(nodes: Seq[CompNode], tags: Set[Int] = Set()) extends InputChannelExec {
+case class MapperInputChannelExec(nodes: Seq[CompNode], tags: Map[CompNode, Int] = Map()) extends InputChannelExec {
   def input: ExecutionNode = nodes.head.asInstanceOf[ExecutionNode]
 }
 
-/**
- * @param in
- */
-case class BypassInputChannelExec(in: CompNode, tags: Set[Int] = Set()) extends InputChannelExec {
+case class BypassInputChannelExec(in: CompNode, tag: Int = 0) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
-/**
- * @param in
- */
-case class StraightInputChannelExec(in: CompNode, tags: Set[Int] = Set()) extends InputChannelExec {
+case class StraightInputChannelExec(in: CompNode, tag: Int = 0) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
 
