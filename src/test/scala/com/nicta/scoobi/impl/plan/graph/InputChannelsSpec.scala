@@ -4,8 +4,6 @@ package plan
 package graph
 
 import comp._
-import CompNode._
-import org.specs2.mutable.Specification
 
 class InputChannelsSpec extends MscrGraphSpecification {
 
@@ -62,8 +60,8 @@ class InputChannelsSpec extends MscrGraphSpecification {
     }
     "two parallelDos sharing the same input must be in the same inputChannel" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
       distinctPairs(descendents(graph).collect(isAParallelDo)).foreach  { case (pd1, pd2) =>
-        if (pd1.in eq pd2.in) {
-          (pd1 -> mapperInputChannels).flatMap(_.parDos) must contain(pd2)
+        if ((pd1.in eq pd2.in) && (pd1 -> isMapper)) {
+            (pd1 -> mapperInputChannels).flatMap(_.parDos) must contain(pd2)
         }
       }
     }

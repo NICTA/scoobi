@@ -7,7 +7,6 @@ import comp._
 import Optimiser._
 import org.kiama.attribution.Attribution
 import org.kiama.attribution.Attribution._
-import CompNode._
 import collection._
 import IdSet._
 import scala.collection.immutable.SortedSet
@@ -24,7 +23,7 @@ import io.DataSink
  *  2 GroupByKey nodes are being "related" if they have input ParallelDos sharing the same inputs.
  *  Those ParallelDo nodes are said to be "siblings" in the code below
  */
-trait MscrGraph {
+trait MscrGraph extends CompNodes {
 
   /** compute the mscr of a node: it is either a Mscr around a gbk or a floating parallelDo or a floating flatten */
   lazy val mscr: CompNode => Mscr = attr { case n => (n -> mscrOpt).getOrElse(Mscr()) }
@@ -49,8 +48,8 @@ trait MscrGraph {
 
   /** compute the mscr of "floating" parallelDo nodes, sharing the same input */
   lazy val parallelDosMscr: CompNode => Option[Mscr] = attr {
-    case pd @ ParallelDo(in,_,_,_,_) if pd -> isFloating => Some(Mscr.floatingParallelDosMscr(pd, (pd -> siblings).collect(isAParallelDo)))
-    case other                                           => None
+    case pd: ParallelDo[_,_,_] if pd -> isFloating => Some(Mscr.floatingParallelDosMscr(pd, (pd -> siblings).collect(isAParallelDo)))
+    case other                                    => None
   }
 
   /** compute the mscr of a "floating" flatten node */
@@ -65,10 +64,10 @@ trait MscrGraph {
   }
 
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
-  lazy val mapperInputChannels: CompNode =>Set[MapperInputChannel] =
+  lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
     attr {
-      case pd @ ParallelDo(in,_,_,_,_) if pd -> isMapper && (pd -> hasSiblings) => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
-      case other                                                                => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
+      case pd: ParallelDo[_,_,_] if pd -> isMapper && (pd -> hasSiblings) => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
+      case other                                                          => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
     }
 
   /**
@@ -104,9 +103,9 @@ trait MscrGraph {
    */
   lazy val bypassOutputChannels: CompNode => Set[BypassOutputChannel] =
     attr {
-      case pd @ ParallelDo(in,_,_,_,_) if  (pd -> isMapper) &&
-                                           (pd -> outputs).exists(isGroupByKey)  &&
-                                          !(pd -> outputs).forall(isGroupByKey) => Set(BypassOutputChannel(pd))
+      case pd: ParallelDo[_,_,_] if  (pd -> isMapper) &&
+                                    (pd -> outputs).exists(isGroupByKey)  &&
+                                   !(pd -> outputs).forall(isGroupByKey) => Set(BypassOutputChannel(pd))
       case other                                                                => other.children.asNodes.flatMap(_ -> bypassOutputChannels).toSet
     }
 
@@ -121,11 +120,11 @@ trait MscrGraph {
    */
   lazy val isReducer: CompNode => Boolean =
     attr {
-      case pd @ ParallelDo(_, mt @ Materialize(_),_,_,_) if envInSameMscr(pd) => false
-      case pd @ ParallelDo(cb @ Combine(_,_),_,_,true,_)                      => true
-      case pd @ ParallelDo(cb @ Combine(_,_),_,_,_,true)                      => true
-      case pd @ ParallelDo(_,_,_,_,_)                                         => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
-      case other                                                              => false
+      case pd @ ParallelDo(_, mt: Materialize[_],_,_,_,_,_,_) if envInSameMscr(pd) => false
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,true,_,_,_,_)                        => true
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,true,_,_,_)                        => true
+      case pd: ParallelDo[_,_,_]                                                      => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case other                                                                     => false
     }
   /**
    * @return true if a parallel do and its environment are computed by the same mscr
@@ -145,7 +144,7 @@ trait MscrGraph {
   /** compute if a node is a combiner of a GroupByKey, i.e. the direct output of a GroupByKey */
   lazy val isCombiner: CompNode => Boolean =
     attr {
-      case Combine(GroupByKey(_),_) => true
+      case Combine(GroupByKey(_),_,_,_) => true
       case other                    => false
     }
 
@@ -161,11 +160,11 @@ trait MscrGraph {
     attr {
       case g @ GroupByKey(_) =>
         (g -> parentOpt) match {
-          case Some(pd @ ParallelDo(_,_,_,_,_)) if pd -> isReducer => Some(pd)
-          case Some(c @ Combine(_,_))                              => (c -> parentOpt).collect { case pd @ ParallelDo(_,_,_,_,_) if pd -> isReducer => pd }
-          case other                                               => None
+          case Some(pd: ParallelDo[_,_,_]) if pd -> isReducer => Some(pd)
+          case Some(c:  Combine[_,_])                        => (c -> parentOpt).collect { case pd @ ParallelDo1(_) if pd -> isReducer => pd }
+          case other                                        => None
         }
-      case other                                                   => None
+      case other                                            => None
     }
 
   /** compute if a ParallelDo or a Flatten is 'floating', i.e. it doesn't have a Gbk in it outputs */
@@ -188,93 +187,11 @@ trait MscrGraph {
    */
   lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] =
     attr {
-      case g @ GroupByKey(Flatten(ins))               => (g -> siblings).collect(isAGroupByKey) ++
-                                                         ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
-      case g @ GroupByKey(pd @ ParallelDo(_,_,_,_,_)) => (g -> siblings).collect(isAGroupByKey) ++
-                                                         (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
-      case g @ GroupByKey(_)                          => (g -> siblings).collect(isAGroupByKey)
-    }
-
-  /** compute the inputs of a given node */
-  lazy val inputs : CompNode => SortedSet[CompNode] = attr {
-    case n  => n.children.asNodes.toIdSet
-  }
-
-  /**
-   *  compute the outputs of a given node.
-   *  They are all the parents of the node where the parent inputs contain this node.
-   */
-  lazy val outputs : CompNode => SortedSet[CompNode] = attr {
-    case node: CompNode => (node -> parents) collect { case a if (a -> inputs).exists(_ eq node) => a }
-  }
-
-  /**
-   *  compute the shared input of a given node.
-   *  They are all the distinct inputs of a node which are also inputs of another node
-   */
-  lazy val sharedInputs : CompNode => SortedSet[CompNode] = attr {
-    case node: CompNode => ((node -> inputs).collect { case in if (in -> outputs).filterNot(_ eq node).nonEmpty => in })
-  }
-
-  /**
-   *  compute the siblings of a given node.
-   *  They are all the nodes which share at least one input with this node
-   */
-  lazy val siblings : CompNode => SortedSet[CompNode] = attr {
-    case node: CompNode => (node -> inputs).flatMap { in => (in -> outputs) }.filterNot(_ eq node)
-  }
-
-  /** @return true if a node has siblings */
-  lazy val hasSiblings : CompNode => Boolean = attr { case node: CompNode => (node -> siblings).nonEmpty }
-  /**
-   * compute all the descendents of a node
-   * They are all the recursive children reachable from this node */
-  lazy val descendents : CompNode => SortedSet[CompNode] =
-    attr { case node: CompNode => (node -> nonUniqueDescendents).toIdSet }
-
-  private lazy val nonUniqueDescendents : CompNode => Seq[CompNode] =
-    attr { case node: CompNode => (node.children.asNodes ++ node.children.asNodes.flatMap(nonUniqueDescendents)) }
-
-  /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
-  def canReach(n: CompNode): CompNode => Boolean =
-    paramAttr { target: CompNode =>
-      node: CompNode => descendents(node).contains(target)
-    }(n)
-
-  /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
-  lazy val ancestors : CompNode => SortedSet[CompNode] =
-    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
-      case node: CompNode => {
-        val p = Option(node.parent).toSeq.asNodes
-        (p ++ p.flatMap { parent => ancestors(parent) }).toIdSet
-      }
-    }
-
-  /** compute all the parents of a given node. A node A is parent of a node B if B can be reached from A */
-  lazy val parents : CompNode => SortedSet[CompNode] =
-    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
-      case node: CompNode => {
-        (node -> ancestors).flatMap { ancestor =>
-          ((ancestor -> descendents) + ancestor).filter(canReach(node))
-        }
-      }
-    }
-
-  /** @return an option for the potentially missing parent of a node */
-  lazy val parentOpt: CompNode => Option[CompNode] = attr { case n => Option(n.parent).map(_.asNode) }
-
-  /** compute the vertices starting from a node */
-  lazy val vertices : CompNode => Seq[CompNode] =
-    circular(Seq[CompNode]()) {
-      case node: CompNode => ((node +: node.children.asNodes.flatMap(n => n -> vertices).toSeq) ++ node.children.asNodes).
-                              toIdSet.toSeq // make the vertices unique
-    }
-
-  /** compute all the edges which compose this graph */
-  lazy val edges : CompNode => Seq[(CompNode, CompNode)] =
-    circular(Seq[(CompNode, CompNode)]()) {
-      case node: CompNode => (node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges).toSeq).
-                              map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
+      case g @ GroupByKey(Flatten(ins))        => (g -> siblings).collect(isAGroupByKey) ++
+                                                   ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
+      case g @ GroupByKey(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
+                                                  (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
+      case g @ GroupByKey(_)                   => (g -> siblings).collect(isAGroupByKey)
     }
 
   private def addSinks(sinks: SinksMap) = (m: Mscr) => m.addSinks(sinks)

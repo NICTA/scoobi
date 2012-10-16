@@ -4,15 +4,13 @@ package plan
 package comp
 
 import org.kiama.rewriting.Rewriter._
-import CompNode._
 /**
  * Optimiser for the DComp AST graph
  *
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
-trait Optimiser {
-  type Term = CompNode
+trait Optimiser extends CompNodes {
 
   /**
    * Flatten nodes which are input to several other nodes must be duplicated
@@ -45,7 +43,7 @@ trait Optimiser {
    *       Flatten
    */
   def flattenSink = everywhere(rule {
-    case p @ ParallelDo(Flatten(ins),_,_,_,_) => Flatten(ins.map(in => p.copy(in)(p.awf, p.bwf, p.ewf)))
+    case p @ ParallelDo(Flatten(ins),_,_,_,_,_,_,_) => Flatten(ins.map(i => p.copy(in = i)))
   })
 
   /**
@@ -71,8 +69,8 @@ trait Optimiser {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey(_), _) => c
-    case c @ Combine(other, f)         => c.toParallelDo
+    case c @ Combine(GroupByKey(_),_,_,_) => c
+    case c: Combine[_,_]                  => c.toParallelDo
   })
 
   /**
@@ -87,7 +85,7 @@ trait Optimiser {
    * This rule is repeated until nothing can be flattened anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_),_,_,_,false) => p2.fuse(p1)(p1.bwf, p1.ewf)
+    case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_,_,_,_),_,_,_,false,_,_,_) => p2.fuse(p1)(p1.wfb, p1.wfe)
   }))
 
   /**
@@ -119,14 +117,14 @@ trait Optimiser {
    *    node1     node2
    */
   def combineSplit = everywhere(rule {
-    case c @ Combine(_,_) => c.copy()(c.kwf, c.vwf)
+    case c: Combine[_,_] => c.copy()
   })
 
   /**
    * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
    */
   def parDoFuseBarrier(outputs: Set[CompNode]) = everywhere(rule {
-    case p @ ParallelDo(_,_,_,_,_) if outputs contains p => p.copy(fuseBarrier = true)(p.awf, p.bwf, p.ewf)
+    case p: ParallelDo[_,_,_] if outputs contains p => p.copy(fuseBarrier = true)
   })
 
   /**
@@ -150,14 +148,14 @@ trait Optimiser {
 
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
-    case n @ Op(in1, in2, _)        => n.copy()(n.wf)
-    case n @ Flatten(ins)           => n.copy()
-    case n @ Materialize(in)        => n.copy()(n.wf)
-    case n @ GroupByKey(in)         => n.copy()
-    case n @ Combine(in, _)         => n.copy()(n.kwf, n.vwf)
-    case n @ ParallelDo(in,_,_,_,_) => n.copy()(n.awf, n.bwf, n.ewf)
-    case n @ Load(_)                => n.copy()
-    case n @ Return(_)              => n.copy()(n.wf)
+    case n: Op[_,_,_]         => n.copy()
+    case n: Flatten[_]        => n.copy()
+    case n: Materialize[_]    => n.copy()
+    case n: GroupByKey[_,_]   => n.copy()
+    case n: Combine[_,_]      => n.copy()
+    case n: ParallelDo[_,_,_] => n.copy()
+    case n: Load[_]           => n.copy()
+    case n: Return[_]         => n.copy()
   }))(node)
 
   /** apply one strategy to a list of Nodes. Used for testing */

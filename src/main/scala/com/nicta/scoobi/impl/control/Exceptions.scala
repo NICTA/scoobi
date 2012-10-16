@@ -98,6 +98,11 @@ trait Exceptions {
    */
   def tryOk[T](a: =>T) = tryMap(a)(true)(false)
   /**
+   * try to evaluate an expression and return true if there is an exception
+   * return false otherwise
+   */
+  def tryKo[T](a: =>T) = !tryOk(a)
+  /**
    * try to evaluate an expression, returning Either
    *
    * If the expression throws an Exception a function f is used to return the left value

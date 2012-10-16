@@ -6,8 +6,16 @@ package comp
 import org.kiama.attribution.Attributable
 import core.{WireFormat, EnvDoFn, Emitter, BasicDoFn}
 import io.DataSource
+import WireFormat._
+import org.kiama.attribution.Attribution._
+import plan.Exp
 import exec.BridgeStore
+import plan.Arr
+import collection._
+import IdSet._
+import scala.collection.immutable.SortedSet
 
+import control.Exceptions._
 /**
  * GADT for distributed list computation graph.
  */
@@ -23,20 +31,33 @@ trait CompNode extends Attributable {
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
  * all elements of an existing DComp and concatenating the results. */
-case class ParallelDo[A : WireFormat, B : WireFormat, E : WireFormat](in: DComp[A, Arr], env: DComp[E, Exp], dofn: EnvDoFn[A, B, E], groupBarrier: Boolean = false, fuseBarrier: Boolean = false) extends DComp[B, Arr] {
-  val (awf, bwf, ewf) = (implicitly[WireFormat[A]], implicitly[WireFormat[B]], implicitly[WireFormat[E]])
+case class ParallelDo[A, B, E](in:               DComp[A, Arr],
+                               env:              DComp[E, Exp],
+                               dofn:             EnvDoFn[A, B, E],
+                               groupBarrier:     Boolean = false,
+                               fuseBarrier:      Boolean = false,
+                               implicit val wfa: WireFormat[A],
+                               implicit val wfb: WireFormat[B],
+                               implicit val wfe: WireFormat[E]) extends DComp[B, Arr] {
+
+  override def equals(a: Any) = a match {
+    case pd: ParallelDo[_,_,_] => in == pd.in && env == pd.env && groupBarrier == pd.groupBarrier && fuseBarrier == pd.fuseBarrier
+    case _                     => false
+  }
 
   override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "") + " env: " + env
-  def fuse[C : WireFormat, F : WireFormat](p2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] = ParallelDo.fuse[A, B, C, E, F](this, p2)
+  def fuse[C : WireFormat, F : WireFormat](p2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] =
+    ParallelDo.fuse[A, B, C, E, F](this, p2)(wfa, wfb, wireFormat[C], wfe, wireFormat[F])
 
   override lazy val dataSource = in.dataSource
 }
 
 object ParallelDo {
+
   def fuse[A : WireFormat, B : WireFormat, C : WireFormat, E : WireFormat, F : WireFormat](pd1: ParallelDo[A, B, E], pd2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] = {
-    val ParallelDo(in1, env1, dofn1, gb1, _)   = pd1
-    val ParallelDo(in2, env2, dofn2, gb2, fb2) = pd2
-    new ParallelDo(in1, fuseEnv(env1, env2), fuseDoFn(dofn1, dofn2), gb1 || gb2, fb2)
+    val ParallelDo(in1, env1, dofn1, gb1, _  , wfa, wfb, wfe) = pd1
+    val ParallelDo(in2, env2, dofn2, gb2, fb2, _   , wfc, wf)  = pd2
+    new ParallelDo(in1, fuseEnv(env1, env2), fuseDoFn(dofn1, dofn2), gb1 || gb2, fb2, wfa, wfc, wireFormat[(E, F)])
   }
 
   /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
@@ -54,8 +75,12 @@ object ParallelDo {
   }
 
   /** Create a new environment by forming a tuple from two separate evironments.*/
-  def fuseEnv[F : WireFormat, G : WireFormat](fExp: DComp[F, Exp], gExp: DComp[G, Exp]): DComp[(F, G), Exp] = Op(fExp, gExp, (f: F, g: G) => (f, g))
-
+  def fuseEnv[F : WireFormat, G : WireFormat](fExp: DComp[F, Exp], gExp: DComp[G, Exp]): DComp[(F, G), Exp] =
+    Op(fExp, gExp, (f: F, g: G) => (f, g), wireFormat[(F, G)])
+}
+object ParallelDo1 {
+  /** extract only the incoming node of this parallel do */
+  def unapply(pd: ParallelDo[_, _, _]): Option[DComp[_, Arr]] = Some(pd.in)
 }
 
 
@@ -67,8 +92,12 @@ case class Flatten[A](ins: List[DComp[A, Arr]]) extends DComp[A, Arr] {
 
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
-case class Combine[K : WireFormat, V : WireFormat](in: DComp[(K, Iterable[V]), Arr], f: (V, V) => V) extends DComp[(K, V), Arr] {
-  val (kwf, vwf) = (implicitly[WireFormat[K]], implicitly[WireFormat[V]])
+case class Combine[K, V](in: DComp[(K, Iterable[V]), Arr], f: (V, V) => V, implicit val wfk: WireFormat[K], implicit val wfv: WireFormat[V]) extends DComp[(K, V), Arr] {
+
+  override def equals(a: Any) = a match {
+    case c: Combine[_,_] => in == c.in
+    case _               => false
+  }
 
   override val toString = "Combine ("+id+")"
 
@@ -83,8 +112,11 @@ case class Combine[K : WireFormat, V : WireFormat](in: DComp[(K, Iterable[V]), A
       }
     }
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo(in, Return(()), dofn)
+    ParallelDo(in, Return((), wireFormat[Unit]), dofn, false, false, wireFormat[(K, Iterable[V])], wireFormat[(K, V)], wireFormat[Unit])
   }
+}
+object Combine1 {
+  def unapply(combine: Combine[_, _]): Option[DComp[(_, Iterable[_]), Arr]] = Some(combine.in)
 }
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
@@ -101,25 +133,45 @@ case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A : WireFormat](x: A) extends DComp[A, Exp] {
-  val wf = implicitly[WireFormat[A]]
+case class Return[A](in: A, implicit val wf: WireFormat[A]) extends DComp[A, Exp] {
+  override def equals(a: Any) = a match {
+    case r: Return[_] => in == r.in
+    case _            => false
+  }
   override val toString = "Return ("+id+")"
+}
+object Return1 {
+  def unapply(ret: Return[_]): Option[_] = Some(ret.in)
 }
 
 /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A : WireFormat](in: DComp[A, Arr]) extends DComp[Iterable[A], Exp] {
-  val wf = implicitly[WireFormat[A]]
+case class Materialize[A](in: DComp[A, Arr], implicit val wf: WireFormat[A]) extends DComp[Iterable[A], Exp] {
+  override def equals(a: Any) = a match {
+    case mat: Materialize[_] => in == mat.in
+    case _                   => false
+  }
   override val toString = "Materialize ("+id+")"
+}
+object Materialize1 {
+  def unapply(mat: Materialize[_]): Option[DComp[_, Arr]] = Some(mat.in)
 }
 
 /** The Op node type specifies the building of Exp DComp by applying a function to the values
  * of two other Exp DComp nodes. */
-case class Op[A, B, C : WireFormat](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C) extends DComp[C, Exp] {
-  val wf = implicitly[WireFormat[C]]
+case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C, implicit val wf: WireFormat[C]) extends DComp[C, Exp] {
+  override def equals(a: Any) = a match {
+    case o: Op[_,_,_] => in1 == o.in1 && in2 == o.in2
+    case _            => false
+  }
+
   override val toString = "Op ("+id+")"
 }
+object Op1 {
+  def unapply(op: Op[_, _, _]): Option[(DComp[_, Exp], DComp[_, Exp])] = Some(op.in1, op.in2)
+}
 
-object CompNode {
+object CompNode extends CompNodes
+trait CompNodes {
   /** @return a sequence of distinct nodes */
   def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Set[T] =
     nodes.asNodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSet
@@ -151,20 +203,104 @@ object CompNode {
   /** return true if a CompNodeis a Flatten */
   lazy val isFlatten: CompNode => Boolean = { case Flatten(_) => true; case other => false }
   /** return true if a CompNodeis a ParallelDo */
-  lazy val isParallelDo: CompNode => Boolean = { case ParallelDo(_,_,_,_,_) => true; case other => false }
+  lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo[_,_,_] => true; case other => false }
   /** return true if a CompNodeis a Flatten */
   lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f @ Flatten(_) => f }
   /** return true if a CompNodeis a ParallelDo */
-  lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p @ ParallelDo(_,_,_,_,_) => p }
+  lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p: ParallelDo[_,_,_] => p }
   /** return true if a CompNodeis a GroupByKey */
   lazy val isGroupByKey: CompNode => Boolean = { case GroupByKey(_) => true; case other => false }
   /** return true if a CompNodeis a GroupByKey */
   lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk @ GroupByKey(_) => gbk }
   /** return true if a CompNodeis a Materialize */
-  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_) => true; case other => false }
+  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_,_) => true; case other => false }
   /** return true if a CompNodeis a Return */
-  lazy val isReturn: CompNode => Boolean = { case Return(_) => true; case other => false }
-  /** return true if a CompNodeis an Op */
-  lazy val isOp: CompNode => Boolean = { case Op(_,_,_) => true; case other => false }
+  lazy val isReturn: CompNode => Boolean = { case Return(_,_) => true; case other => false }
+  /** return true if a CompNode is an Op */
+  lazy val isOp: CompNode => Boolean = { case Op(_,_,_,_) => true; case other => false }
+  /** return true if a CompNode has a cycle in its graph */
+  lazy val isCyclic: CompNode => Boolean = (n: CompNode) => tryKo(n -> descendents)
+
+  /** compute the inputs of a given node */
+  lazy val inputs : CompNode => SortedSet[CompNode] = attr {
+    case n  => n.children.asNodes.toIdSet
+  }
+
+  /**
+   *  compute the outputs of a given node.
+   *  They are all the parents of the node where the parent inputs contain this node.
+   */
+  lazy val outputs : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => (node -> parents) collect { case a if (a -> inputs).exists(_ eq node) => a }
+  }
+
+  /**
+   *  compute the shared input of a given node.
+   *  They are all the distinct inputs of a node which are also inputs of another node
+   */
+  lazy val sharedInputs : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => ((node -> inputs).collect { case in if (in -> outputs).filterNot(_ eq node).nonEmpty => in })
+  }
+
+  /**
+   *  compute the siblings of a given node.
+   *  They are all the nodes which share at least one input with this node
+   */
+  lazy val siblings : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => (node -> inputs).flatMap { in => (in -> outputs) }.filterNot(_ eq node)
+  }
+
+  /** @return true if a node has siblings */
+  lazy val hasSiblings : CompNode => Boolean = attr { case node: CompNode => (node -> siblings).nonEmpty }
+  /**
+   * compute all the descendents of a node
+   * They are all the recursive children reachable from this node */
+  lazy val descendents : CompNode => SortedSet[CompNode] =
+    attr { case node: CompNode => (node -> nonUniqueDescendents).toIdSet }
+
+  private lazy val nonUniqueDescendents : CompNode => Seq[CompNode] =
+    attr { case node: CompNode => (node.children.asNodes ++ node.children.asNodes.flatMap(nonUniqueDescendents)) }
+
+  /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
+  def canReach(n: CompNode): CompNode => Boolean =
+    paramAttr { target: CompNode =>
+      node: CompNode => descendents(node).contains(target)
+    }(n)
+
+  /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
+  lazy val ancestors : CompNode => SortedSet[CompNode] =
+    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
+      case node: CompNode => {
+        val p = Option(node.parent).toSeq.asNodes
+        (p ++ p.flatMap { parent => ancestors(parent) }).toIdSet
+      }
+    }
+
+  /** compute all the parents of a given node. A node A is parent of a node B if B can be reached from A */
+  lazy val parents : CompNode => SortedSet[CompNode] =
+    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
+      case node: CompNode => {
+        (node -> ancestors).flatMap { ancestor =>
+          ((ancestor -> descendents) + ancestor).filter(canReach(node))
+        }
+      }
+    }
+
+  /** @return an option for the potentially missing parent of a node */
+  lazy val parentOpt: CompNode => Option[CompNode] = attr { case n => Option(n.parent).map(_.asNode) }
+
+  /** compute the vertices starting from a node */
+  lazy val vertices : CompNode => Seq[CompNode] =
+    circular(Seq[CompNode]()) {
+      case node: CompNode => ((node +: node.children.asNodes.flatMap(n => n -> vertices).toSeq) ++ node.children.asNodes).
+        toIdSet.toSeq // make the vertices unique
+    }
+
+  /** compute all the edges which compose this graph */
+  lazy val edges : CompNode => Seq[(CompNode, CompNode)] =
+    circular(Seq[(CompNode, CompNode)]()) {
+      case node: CompNode => (node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges).toSeq).
+        map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
+    }
 
 }

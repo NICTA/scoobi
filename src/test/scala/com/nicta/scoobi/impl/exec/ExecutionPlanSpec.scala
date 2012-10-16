@@ -2,7 +2,6 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.specs2.mutable.Specification
 import plan._
 import graph._
 import comp.{CompNode, CompNodeFactory}
@@ -11,8 +10,9 @@ import core.WireFormat
 import graph.{GbkOutputChannel, InputChannel, MapperInputChannel, StraightInputChannel, BypassOutputChannel, FlattenOutputChannel}
 import org.kiama.rewriting.Rewriter
 import org.specs2.specification.Scope
+import testing.mutable.UnitSpecification
 
-class ExecutionPlanSpec extends Specification with plans {
+class ExecutionPlanSpec extends UnitSpecification with plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
   """
@@ -113,11 +113,18 @@ class ExecutionPlanSpec extends Specification with plans {
 
     "Parallel do nodes are transformed into Mappers or Reducers" >> {
       "Mapper if input is: Load, ParallelDo, Flatten" >> {
-        val (pd1, pd2, pd3) = (pd(load), pd(pd(load)), pd(flatten[String](load)))
-        execPlan(pd1, pd2, pd3) ===
-          Seq(MapperExec(Ref(pd1), loadExec),
-            MapperExec(Ref(pd2), MapperExec(Ref(pd1), loadExec)),
-            MapperExec(Ref(pd3), FlattenExec(Ref(flatten[String](load)), Vector(loadExec))))
+        "input is: Load" >> {
+          val pd1 = pd(load)
+          execPlan(pd1) === Seq(MapperExec(Ref(pd1), loadExec))
+        }
+        "input is: ParallelDo" >> {
+          val (pd1, pd2) = (pd(load), pd(pd(load)))
+          execPlan(pd2) === Seq(MapperExec(Ref(pd2), MapperExec(Ref(pd1), loadExec)))
+        }
+        "input is: Flatten" >> {
+          val pd1 =  pd(flatten[String](load))
+          execPlan(pd1) === Seq(MapperExec(Ref(pd1), FlattenExec(Ref(flatten[String](load)), List(loadExec))))
+        }
       }
       "Mapper if input is: Gbk, Combine and the node is a mapper" >> new factory {
         val (gbk1, cb1) = (gbk(load), cb(load))

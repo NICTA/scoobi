@@ -34,7 +34,7 @@ trait WireFormat[A] {
 object WireFormat extends WireFormatImplicits {
 
   // extend WireFormat with useful methods
-  implicit def wireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
+  implicit def extendedWireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
 
   case class WireFormatX[A](wf: WireFormat[A]) {
     /**
@@ -45,6 +45,8 @@ object WireFormat extends WireFormatImplicits {
       def toWire(x: B, out: DataOutput) { wf.toWire(f(x), out) }
     }
   }
+
+  def wireFormat[A](implicit wf: WireFormat[A]): WireFormat[A] = wf
 }
 
 /** Implicit definitions of WireFormat instances for common types. */

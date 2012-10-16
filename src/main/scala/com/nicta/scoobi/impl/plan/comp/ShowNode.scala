@@ -10,7 +10,7 @@ import graph.MscrGraph
 import com.github.mdr.ascii.layout._
 import control.Exceptions._
 
-trait ShowNode extends MscrGraph {
+trait ShowNode extends MscrGraph with CompNodes{
   val prettyPrinter = new PrettyPrinter {}
   import prettyPrinter._
 
@@ -21,14 +21,14 @@ trait ShowNode extends MscrGraph {
    */
   implicit lazy val showCompNode: Show[CompNode] = new Show[CompNode] {
     def show(n: CompNode) = (n.toString + (n match {
-      case Op(in1, in2, _)        => Seq(in1, in2).showString("[","]")
-      case Flatten(ins)           => ins.showString("[","]")
-      case Materialize(in)        => parens(pretty(in))
-      case GroupByKey(in)         => parens(pretty(in))
-      case Combine(in, _)         => parens(pretty(in))
-      case ParallelDo(in,_,_,_,_) => parens(pretty(in))
-      case Load(_)                => ""
-      case Return(_)              => ""
+      case Op1(in1, in2)   => Seq(in1, in2).showString("[","]")
+      case Flatten(ins)    => ins.showString("[","]")
+      case Materialize1(in)=> parens(pretty(in))
+      case GroupByKey(in)  => parens(pretty(in))
+      case Combine1(in)    => parens(pretty(in))
+      case ParallelDo1(in) => parens(pretty(in))
+      case Load(_)         => ""
+      case Return1(_)      => ""
     })).toList
   }
   /**
@@ -85,13 +85,14 @@ trait ShowNode extends MscrGraph {
    */
   private def show[T](node: CompNode, attribute: Option[CompNode => T] = None): Doc =
     node match {
-      case Load(_)                => value(showNode(node, attribute))
-      case Flatten(ins)           => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
-      case ParallelDo(in,_,_,_,_) => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Return(_)              => value(showNode(node, attribute))
-      case Combine(in,_)          => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case GroupByKey(in)         => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Materialize(in)        => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Op(in1, in2, _)        => showNode(node, attribute) <> braces (nest (line <> "1." <> show(in1, attribute) <> line <> "2." <> show(in2, attribute)))
+      case Load(_)          => value(showNode(node, attribute))
+      case Flatten(ins)     => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
+      case ParallelDo1(in)  => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Return1(_)       => value(showNode(node, attribute))
+      case Combine1(in)     => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case GroupByKey(in)   => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Materialize1(in) => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Op1(in1,in2)     => showNode(node, attribute) <> braces (nest (line <> "1." <> show(in1, attribute) <> line <> "2." <> show(in2, attribute)))
     }
 }
+object ShowNode extends ShowNode

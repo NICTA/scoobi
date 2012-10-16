@@ -16,15 +16,15 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   "1. Nodes must be flattened" >> {
     "1.1 A Flatten Node which is an input to 2 other nodes must be copied to each node" >> new nodes {
       optimise(flattenSplit, parallelDo(f1), parallelDo(f1)) must beLike {
-        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_) :: _  => nodesAreDistinct(ff1, ff2)
+        case ParallelDo1(ff1) :: ParallelDo1(ff2) :: _  => nodesAreDistinct(ff1, ff2)
       }
       optimise(flattenSplit, parallelDo(f1), parallelDo(f1), parallelDo(f1)) must beLike {
-        case ParallelDo(ff1,_,_,_,_) :: ParallelDo(ff2,_,_,_,_)  :: ParallelDo(ff3,_,_,_,_) :: _  => nodesAreDistinct(ff1, ff2, ff3)
+        case ParallelDo1(ff1) :: ParallelDo1(ff2)  :: ParallelDo1(ff3) :: _  => nodesAreDistinct(ff1, ff2, ff3)
       }
     }
     "1.2 A Flatten Node which is an input to a ParallelDo then replicate the ParallelDo on each of the Flatten inputs" >> new nodes {
       optimise(flattenSink, parallelDo(flattens)) must beLike {
-        case List(Flatten(ParallelDo(ll1,_,_,_,_) :: ParallelDo(ll2,_,_,_,_) :: _))  => (l1 === ll1) and (l2 === ll2)
+        case List(Flatten(ParallelDo1(ll1) :: ParallelDo1(ll2) :: _))  => (l1 === ll1) and (l2 === ll2)
       }
     }
     "1.3 A Flatten Node with Flatten inputs must collect all the inner inputs" >> new nodes {
@@ -56,7 +56,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     }
     "Any optimised Combine in the graph can only have GroupByKey as an input" >> prop { (node: CompNode, f: factory) => {}; import f._
       forall(collectCombine(optimise(combineToParDo, node).head)) { n =>
-        n aka show(node) must beLike { case Combine(GroupByKey(_), _) => ok }
+        n aka show(node) must beLike { case Combine1(GroupByKey(_)) => ok }
       }
     }
     "After optimisation, all the transformed Combines must be ParallelDo" >> prop { (node: CompNode) =>
@@ -92,10 +92,10 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
 
     "4.3 examples" >> new nodes {
       optimise(groupByKeySplit, parallelDo(gbk1), parallelDo(gbk1)) must beLike {
-        case ParallelDo(ggbk1,_,_,_,_) :: ParallelDo(ggbk2,_,_,_,_) :: _  => nodesAreDistinct(ggbk1, ggbk2)
+        case ParallelDo1(ggbk1) :: ParallelDo1(ggbk2) :: _  => nodesAreDistinct(ggbk1, ggbk2)
       }
       optimise(groupByKeySplit, parallelDo(gbk1), parallelDo(gbk1), parallelDo(gbk1)) must beLike {
-        case ParallelDo(ggbk1,_,_,_,_) :: ParallelDo(ggbk2,_,_,_,_)  :: ParallelDo(ggbk3,_,_,_,_) :: _  => nodesAreDistinct(ggbk1, ggbk2, ggbk3)
+        case ParallelDo1(ggbk1) :: ParallelDo1(ggbk2)  :: ParallelDo1(ggbk3) :: _  => nodesAreDistinct(ggbk1, ggbk2, ggbk3)
       }
       optimise(groupByKeySplit, flatten(gbkf1), flatten(gbkf1), flatten(gbkf1)) must beLike {
         case Flatten((ggbk1 @ GroupByKey(ff1))::_) :: Flatten((ggbk2 @ GroupByKey(ff2))::_)  :: Flatten((ggbk3 @ GroupByKey(ff3))::_) :: _  =>
@@ -117,10 +117,10 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
 
     "5.2 examples" >> new nodes {
       optimise(combineSplit, parallelDo(combine1), parallelDo(combine1)) must beLike {
-        case ParallelDo(c1,_,_,_,_) :: ParallelDo(c2,_,_,_,_) :: _  => nodesAreDistinct(c1, c2)
+        case ParallelDo1(c1) :: ParallelDo1(c2) :: _  => nodesAreDistinct(c1, c2)
       }
       optimise(combineSplit, parallelDo(combine1), parallelDo(combine1), parallelDo(combine1)) must beLike {
-        case ParallelDo(c1,_,_,_,_) :: ParallelDo(c2,_,_,_,_)  :: ParallelDo(c3,_,_,_,_) :: _  => nodesAreDistinct(c1, c2, c3)
+        case ParallelDo1(c1) :: ParallelDo1(c2)  :: ParallelDo1(c3) :: _  => nodesAreDistinct(c1, c2, c3)
       }
     }
   }
@@ -130,8 +130,9 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       val optimised = optimise(parDoFuseBarrier(outputs), node).head
       // collects the flatten nodes which are leaves. If they are in the outputs set
       // their fuseBarrier must be true
-      val inOutputs = collectParallelDo(optimised).filter(outputs.contains)
-      forall(inOutputs){ pd => pd must beTrue ^^ ((pd: ParallelDo[_,_,_]) => pd.fuseBarrier) }
+      val inOutputs: Seq[CompNode] = collectParallelDo(optimised).filter(outputs.contains)
+      def fuseBarrier: CompNode => Boolean = { case pd: ParallelDo[_,_,_] => pd.fuseBarrier }
+      forall(inOutputs){ pd => pd must beTrue ^^ fuseBarrier }
     }
   }
 
@@ -153,10 +154,10 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   def nodesAreDistinct(nodes: CompNode*) = nodes.map(_.id).distinct.size === nodes.size
 
   def collectFlatten          = collectl { case f @ Flatten(_) => f }
-  def collectCombine          = collectl { case c @ Combine(_,_) => c }
-  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey(_),_) => c }
-  def collectParallelDo       = collectl { case p @ ParallelDo(_,_,_,_,_) => p }
-  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo(_,_,_,_,_),_,_,_,false) => p }
+  def collectCombine          = collectl { case c @ Combine(_,_,_,_) => c }
+  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey(_),_,_,_) => c }
+  def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
+  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,false,_,_,_) => p }
   def collectGroupByKey       = collectl { case g @ GroupByKey(_) => g }
   def collectGBKFlatten       = collectl { case GroupByKey(f @ Flatten(_)) => f }
 }

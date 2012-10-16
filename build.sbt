@@ -5,9 +5,7 @@ organization := "com.nicta"
 
 version := "0.6.0-cdh4-SNAPSHOT"
 
-scalaVersion := "2.10.0-RC1"
-
-crossVersion := CrossVersion.full
+scalaVersion := "2.9.2"
 
 libraryDependencies ++= Seq(
   "javassist" % "javassist" % "3.12.1.GA",
@@ -16,12 +14,12 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0",
   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0",
   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
-  "com.googlecode.kiama" % "kiama_2.10.0-RC1" % "1.4.0-B2",
-//  "com.github.mdr" % "ascii-graphs_2.10.0-RC1" % "0.0.2",
-  "org.scalaz" % "scalaz-core_2.10.0-M7" % "7.0.0-M3",
-  "org.specs2" % "specs2_2.10.0-RC1" % "1.12.2" % "optional",
+  "com.googlecode.kiama" %% "kiama" % "1.3.0",
+  "com.github.mdr" %% "ascii-graphs" % "0.0.2",
+  "org.scalaz" %% "scalaz-core" % "6.95",
+  "org.specs2" %% "specs2" % "1.12.2" % "optional",
   "org.specs2" % "classycle" % "1.4.1"% "test",
-  "org.scalacheck" % "scalacheck_2.10.0-RC1" % "1.10.0" % "test",
+  "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
   "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
   "org.mockito" % "mockito-all" % "1.9.0" % "optional",
@@ -39,7 +37,7 @@ resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/reposit
                   "sonatype" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Compilation */
-scalacOptions ++= Seq("-deprecation", "-unchecked")
+scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 
 /** Testing */
 testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||

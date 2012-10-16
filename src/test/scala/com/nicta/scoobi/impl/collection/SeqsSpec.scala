@@ -2,10 +2,10 @@ package com.nicta.scoobi
 package impl
 package collection
 
-import org.specs2.mutable.Specification
 import Seqs._
+import testing.mutable.UnitSpecification
 
-class SeqsSpec extends Specification {
+class SeqsSpec extends UnitSpecification {
 
   "A sequence can be splitted into several smaller ones" >> {
     split(Seq(), 3, Splitted)           === Seq()

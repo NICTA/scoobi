@@ -4,8 +4,7 @@ package plan
 package graph
 
 import graph.Mscr._
-import comp.{ParallelDo, CompNode}
-import CompNode._
+import comp.{ParallelDo1, CompNode}
 import collection.IdSet
 
 class GbkMscrsSpec extends MscrGraphSpecification {
@@ -60,7 +59,7 @@ class GbkMscrsSpec extends MscrGraphSpecification {
     mscrsFor(graph).filter(_.mappers.size > 1) foreach { m =>
       m.mappers foreach { pd =>
         (pd -> descendents) collect {
-          case p @ ParallelDo(_,_,_,_,_) => (p -> mscr) aka show(p) must be_!== (m)
+          case p @ ParallelDo1(_) => (p -> mscr) aka show(p) must be_!== (m)
         }
       }
     }
@@ -91,6 +90,6 @@ class GbkMscrsSpec extends MscrGraphSpecification {
       } must beTrue.unless(ms.isEmpty)
       //aka "for\n"+showGraph(graph, mscr)+"\nMSCRs\n"+ms.mkString("\n") must beTrue.unless(ms.isEmpty)
     }
-  }.pendingUntilFixed("I'm not sure this property holds - need to check with Ben")
+  }.pendingUntilFixed("check this with Ben")
 }
 

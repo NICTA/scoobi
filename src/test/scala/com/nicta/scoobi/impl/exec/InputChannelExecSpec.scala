@@ -2,9 +2,9 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.specs2.mutable.Specification
+import testing.mutable.UnitSpecification
 
-class InputChannelExecSpec extends Specification with CompNodeExecFactory {
+class InputChannelExecSpec extends UnitSpecification with CompNodeExecFactory {
   "A MapperInputChannelExec has a data source which must be the source of one parallel do in the channel" >> {
     (new MapperInputChannelExec(Seq(pdExec)).source: Any) === load.source
   }

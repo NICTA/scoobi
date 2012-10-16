@@ -2,11 +2,11 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.specs2.mutable.Specification
 import ChannelOutputFormat._
 import org.apache.hadoop.fs.Path
+import testing.mutable.UnitSpecification
 
-class ChannelOutputFormatSpec extends Specification {
+class ChannelOutputFormatSpec extends UnitSpecification {
   "Channels determine result files for a given job run" >> {
     "_SUCCESS is a result file for any sink" >> {
       isResultFile(0, 0)(new Path("_SUCCESS"))

@@ -2,10 +2,10 @@ package com.nicta.scoobi
 package impl
 package control
 
-import org.specs2.mutable.Specification
 import Functions._
+import testing.mutable.UnitSpecification
 
-class FunctionsSpec extends Specification {
+class FunctionsSpec extends UnitSpecification {
   "functions can be or-ed with ||" >> {
     val f1: String => Boolean = (_:String).length < 3
     val f2: String => Boolean = (_:String).length < 5

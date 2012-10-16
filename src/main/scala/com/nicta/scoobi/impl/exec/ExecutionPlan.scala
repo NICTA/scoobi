@@ -90,22 +90,22 @@ trait ExecutionPlan extends MscrGraph {
 
   /** rewrite one node */
   def rewriteNode: Strategy = attemptSomeTopdown(rule {
-    case n @ Materialize(in)                                    => MaterializeExec(Ref(n), in)
-    case n @ Load(_)                                            => LoadExec(Ref(n))
-    case n @ Return(_)                                          => ReturnExec(Ref(n))
-    case n @ GroupByKey(in)                                     => GroupByKeyExec(Ref(n), in)
-    case n @ Combine(in, f)                                     => CombineExec(Ref(n), in)
-    case n @ Op(a, b, _)                                        => OpExec(Ref(n), a, b)
-    case n @ Flatten(ins)                                       => FlattenExec(Ref(n), ins)
-    case n @ ParallelDo(Load(_),_,_,_,_)                        => MapperExec(Ref(n), n.in)
-    case n @ ParallelDo(ParallelDo(_,_,_,_,_),_,_,_,_)          => MapperExec(Ref(n), n.in)
-    case n @ ParallelDo(Flatten(_),_,_,_,_)                     => MapperExec(Ref(n), n.in)
-    case n @ ParallelDo(GroupByKey(_),_,_,_,_) if n -> isMapper => MapperExec(Ref(n), n.in)
-    case n @ ParallelDo(Combine(_,_),_,_,_,_)  if n -> isMapper => MapperExec(Ref(n), n.in)
-    case n @ ParallelDo(GroupByKey(_),_,_,_,_)                  => GbkReducerExec(Ref(n), n.in)
-    case n @ ParallelDo(Combine(_,_),_,_,_,_)                   => ReducerExec(Ref(n), n.in)
-    case n @ ParallelDo(in,_,_,_,_)                             => sys.error("a ParallelDo node can not have an input which is: "+in)
-    case ns : Seq[_]                                            => ns // this allows to recurse into flatten inputs
+    case n: Materialize[_]       => MaterializeExec(Ref(n), n.in)
+    case n: Load[_]              => LoadExec(Ref(n))
+    case n: Return[_]            => ReturnExec(Ref(n))
+    case n: GroupByKey[_,_]      => GroupByKeyExec(Ref(n), n.in)
+    case n: Combine[_,_]         => CombineExec(Ref(n),    n.in)
+    case n: Op[_,_,_]            => OpExec(Ref(n),         n.in1, n.in2)
+    case n: Flatten[_]           => FlattenExec(Ref(n),    n.ins)
+    case n: ParallelDo[_,_,_] => n.in match {
+      case i: Load[_]            => MapperExec(Ref(n), i)
+      case i: ParallelDo[_,_,_]  => MapperExec(Ref(n), i)
+      case i: Flatten[_]         => MapperExec(Ref(n), i)
+      case i: GroupByKey[_,_]    => if (n -> isMapper) MapperExec(Ref(n), i) else GbkReducerExec(Ref(n), i)
+      case i: Combine[_,_]       => if (n -> isMapper) MapperExec(Ref(n), i) else ReducerExec(Ref(n), i)
+      case i                     => sys.error("a ParallelDo node can not have an input which is: "+i)
+    }
+    case ns : Seq[_]             => ns // this allows to recurse into flatten inputs
   })
 
   def collectEnvs(nodes: Seq[Term])(implicit sc: ScoobiConfiguration): Seq[Env[_]] = {

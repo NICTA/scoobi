@@ -13,6 +13,7 @@ import org.specs2.mutable.Specification
 import org.kiama.attribution.Attribution
 import CompNode._
 import control.Functions._
+import WireFormat._
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
 
@@ -31,23 +32,28 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
   implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(Gen.sized(depth => genDComp(depth).map(init)))
   implicit lazy val arbitraryParallelDo: Arbitrary[ParallelDo[_,_,_]] = Arbitrary(Gen.sized(depth => genParallelDo(depth).map(init)))
 
-  def genDComp(depth: Int = 1): Gen[CompNode] = lzy(frequency((3, genLoad(depth)),
+  def genDComp(depth: Int = 1): Gen[CompNode] = lzy(frequency[CompNode]((3, genLoad(depth)),
                                                               (4, genParallelDo(depth)),
                                                               (4, genGroupByKey(depth)),
                                                               (3, genMaterialize(depth)),
                                                               (3, genCombine(depth)),
                                                               (5, genFlatten(depth)),
                                                               (2, genOp(depth)),
-                                                              (2, genReturn(depth))))
+                                                              (2, genReturn(depth))).filter(!isCyclic))
 
-  def genLoad       (depth: Int = 1) = Gen.oneOf(load, load)
-  def genReturn     (depth: Int = 1) = Gen.oneOf(rt, rt)
-  def genParallelDo (depth: Int = 1) = if (depth <= 1) Gen.value(parallelDo(load)) else memo(genDComp(depth - 1).filter(!(isMaterialize || isReturn || isOp)).map(parallelDo _))
-  def genFlatten    (depth: Int = 1) = if (depth <= 1) Gen.value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
-  def genCombine    (depth: Int = 1) = if (depth <= 1) Gen.value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
-  def genOp         (depth: Int = 1) = if (depth <= 1) Gen.value(op(load, load)  ) else memo((genDComp(depth - 1) |@| genDComp(depth - 1))((op _)))
-  def genMaterialize(depth: Int = 1) = if (depth <= 1) Gen.value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
-  def genGroupByKey (depth: Int = 1) = if (depth <= 1) Gen.value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
+  def genLoad       (depth: Int = 1): Gen[CompNode] = Gen.oneOf(load, load)
+  def genReturn     (depth: Int = 1): Gen[CompNode] = Gen.oneOf(rt, rt)
+  def genFlatten    (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
+  def genCombine    (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
+  def genOp         (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(op(load, load)  ) else memo((genDComp(depth - 1) |@| genDComp(depth - 1))((op _)))
+  def genMaterialize(depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
+  def genGroupByKey (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
+  def genParallelDo (depth: Int = 1): Gen[ParallelDo[_,_,_]] =
+    if (depth <= 1) Gen.value(parallelDo(load)) else memo(Gen.oneOf(genLoad(depth-1),
+                                                                    genCombine(depth-1),
+                                                                    genParallelDo(depth-1),
+                                                                    genGroupByKey(depth-1),
+                                                                    genFlatten(depth-1)).map(parallelDo _))
 
 }
 
@@ -58,13 +64,13 @@ trait CompNodeFactory {
   def load                                   = Load(ConstantStringDataSource("start"))
   def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
   def parallelDo(in: CompNode)               = pd(in)
-  def rt                                     = Return("")
-  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2)
+  def rt                                     = Return("", wireFormat[String])
+  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2, wireFormat[String], wireFormat[String])
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
-  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]])
-  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a)(implicitly[WireFormat[String]].asInstanceOf[WireFormat[A]])
-  def pd(in: CompNode, env: CompNode = Return(()), groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier)
+  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]], wireFormat[String])
+  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a, wireFormat[String].asInstanceOf[WireFormat[A]])
+  def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
+    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier, wireFormat[String], wireFormat[String], wireFormat[Unit])
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
 

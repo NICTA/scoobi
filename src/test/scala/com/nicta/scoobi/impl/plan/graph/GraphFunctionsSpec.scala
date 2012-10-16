@@ -5,6 +5,7 @@ package graph
 
 import org.specs2.specification.Scope
 import comp.{Return, CompNode, CompNodeFactory}
+import CompNode._
 import collection._
 import testing.mutable.UnitSpecification
 
@@ -104,7 +105,7 @@ trait factory extends Scope with CompNodeFactory with MscrAttributes {
   override def gbk(in: CompNode)                      = init(super.gbk(in))
   override def mt(in: CompNode)                       = init(super.mt(in))
   override def op[A, B](in1: CompNode, in2: CompNode) = init(super.op(in1, in2))
-  override def pd(in: CompNode, env: CompNode = Return(()), groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
+  override def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
     init(super.pd(in, env, groupBarrier, fuseBarrier))
 
   /** show before and after the optimisation */

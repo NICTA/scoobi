@@ -15,8 +15,10 @@ class OtherMscrsSpec extends MscrGraphSpecification {
       val pd1 = pd(l1)
       val pd2 = pd(l1)
       val op1 = op(pd1, pd2)
+
       makeMscrs(op1).filter(isParallelDoMscr).toSeq(0) ==== Mscr(inputChannels  = Set(MapperInputChannel(IdSet(pd1, pd2))),
-                                                                 outputChannels = Set(BypassOutputChannel(pd1), BypassOutputChannel(pd2)))
+                                                                       outputChannels = Set(BypassOutputChannel(pd1), BypassOutputChannel(pd2)))
+
     }
   }
   "Flatten mscrs" >> {
@@ -26,6 +28,7 @@ class OtherMscrsSpec extends MscrGraphSpecification {
       val pd1 = pd(l1)
       val pd2 = pd(l1)
       val fl1 = flatten(pd1, pd2, l2)
+
       makeMscrs(fl1).filter(isFlattenMscr).toSeq(0) ==== Mscr(inputChannels = Set(StraightInputChannel(l2),
                                                                                     MapperInputChannel(IdSet(pd1)),
                                                                                     MapperInputChannel(IdSet(pd2))),
