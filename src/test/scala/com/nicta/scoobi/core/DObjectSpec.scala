@@ -16,15 +16,21 @@
 package com.nicta.scoobi
 package core
 
-import testing.NictaHadoop
+import testing.NictaSimpleJobs
 import Scoobi._
 
-class DObjectSpec extends NictaHadoop {
+class DObjectSpec extends NictaSimpleJobs {
 
   tag("issue 113")
   "it must be possible to take the minimum and the maximum of a list" >> { implicit sc: SC =>
     val r = DList(1, 2, 3, 4)
     persist(r.min, r.max) === (1, 4)
+  }
+
+  tag("issue 156")
+  "it must be possible to turn a DObject to a DList" >> { implicit sc: SC =>
+    DObject(5).toSingleElementDList.run === Seq(5)
+    DObject(Seq(10, 7, 5)).toDList.run === Seq(10, 7, 5)
   }
 
 }
