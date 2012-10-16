@@ -67,7 +67,7 @@
         <dependency>
             <groupId>org.scalaz</groupId>
             <artifactId>scalaz-core_2.9.2</artifactId>
-            <version>6.95</version>
+            <version>7.0.0-M3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -136,12 +136,6 @@
             <id>apache</id>
             <name>apache</name>
             <url>https://repository.apache.org/content/repositories/releases/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>scoobi</id>
-            <name>scoobi</name>
-            <url>http://nicta.github.com/scoobi/releases/</url>
             <layout>default</layout>
         </repository>
     </repositories>
