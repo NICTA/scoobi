@@ -20,7 +20,7 @@ package mutable
 import org.specs2.matcher.{ThrownExpectations, ThrownMessages}
 import application._
 import core._
-import scalaz.syntax.biFunctor._
+import scalaz.syntax.bifunctor._
 import scalaz.std.tuple._
 /**
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
