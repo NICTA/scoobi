@@ -19,11 +19,6 @@ import org.specs2.runner.JUnitRunner
 class ExecutionPlanSpec extends UnitSpecification with plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
-  """
-   - set tags on output  channels
-   - set set(tags) in input channels
-  """.txt
-
   "Mscrs are transformed into mscrs with actual channels" >> {
     "each Mscr must transform its channels to become an executable Mscr" >> {
       transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad)))) ===
@@ -61,14 +56,14 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
       val mscrExec = transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad): graph.OutputChannel,
                                                                         FlattenOutputChannel(flattenLoad),
                                                                         BypassOutputChannel(pdLoad))))
-      mscrExec.outputChannels.map(_.tag) === Set(0, 1, 2)
+      mscrExec.outputChannels.map(tag) === Set(0, 1, 2)
     }
     "inputs must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
-      val mscrExec = transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad): graph.OutputChannel,
-                                                                        FlattenOutputChannel(flattenLoad),
-                                                                        BypassOutputChannel(pdLoad))))
+      val mscrExec = transform(Mscr(Set(MapperInputChannel(Set(pdLoad, pdLoad))), 
+                                    Set(GbkOutputChannel(gbk(pdLoad)): graph.OutputChannel,
+                                        FlattenOutputChannel(flatten(pdLoad)))))
 
-      mscrExec.mapperInputChannels.map(_.tags) === Seq(Map(gbkLoad -> 0, flattenLoad -> 1, pdLoad -> 2))
+      mscrExec.inputChannels.map(tags(mscrExec)) === Set(Map((pdLoad, Set(0, 1))))
     }
   }
 

@@ -49,7 +49,7 @@ trait MscrGraph extends CompNodes {
   /** compute the mscr of "floating" parallelDo nodes, sharing the same input */
   lazy val parallelDosMscr: CompNode => Option[Mscr] = attr {
     case pd: ParallelDo[_,_,_] if pd -> isFloating => Some(Mscr.floatingParallelDosMscr(pd, (pd -> siblings).collect(isAParallelDo)))
-    case other                                    => None
+    case other                                     => None
   }
 
   /** compute the mscr of a "floating" flatten node */
@@ -103,10 +103,10 @@ trait MscrGraph extends CompNodes {
    */
   lazy val bypassOutputChannels: CompNode => Set[BypassOutputChannel] =
     attr {
-      case pd: ParallelDo[_,_,_] if  (pd -> isMapper) &&
+      case pd: ParallelDo[_,_,_] if (pd -> isMapper) &&
                                     (pd -> outputs).exists(isGroupByKey)  &&
                                    !(pd -> outputs).forall(isGroupByKey) => Set(BypassOutputChannel(pd))
-      case other                                                                => other.children.asNodes.flatMap(_ -> bypassOutputChannels).toSet
+      case other                                                         => other.children.asNodes.flatMap(_ -> bypassOutputChannels).toSet
     }
 
   /**
@@ -121,10 +121,10 @@ trait MscrGraph extends CompNodes {
   lazy val isReducer: CompNode => Boolean =
     attr {
       case pd @ ParallelDo(_, mt: Materialize[_],_,_,_,_,_,_) if envInSameMscr(pd) => false
-      case pd @ ParallelDo(cb: Combine[_,_],_,_,true,_,_,_,_)                        => true
-      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,true,_,_,_)                        => true
-      case pd: ParallelDo[_,_,_]                                                      => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
-      case other                                                                     => false
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,true,_,_,_,_)                      => true
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,true,_,_,_)                      => true
+      case pd: ParallelDo[_,_,_]                                                   => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case other                                                                   => false
     }
   /**
    * @return true if a parallel do and its environment are computed by the same mscr
@@ -145,7 +145,7 @@ trait MscrGraph extends CompNodes {
   lazy val isCombiner: CompNode => Boolean =
     attr {
       case Combine(GroupByKey(_),_,_,_) => true
-      case other                    => false
+      case other                        => false
     }
 
   /** compute the combiner of a Gbk */
@@ -161,10 +161,10 @@ trait MscrGraph extends CompNodes {
       case g @ GroupByKey(_) =>
         (g -> parentOpt) match {
           case Some(pd: ParallelDo[_,_,_]) if pd -> isReducer => Some(pd)
-          case Some(c:  Combine[_,_])                        => (c -> parentOpt).collect { case pd @ ParallelDo1(_) if pd -> isReducer => pd }
-          case other                                        => None
+          case Some(c:  Combine[_,_])                         => (c -> parentOpt).collect { case pd @ ParallelDo1(_) if pd -> isReducer => pd }
+          case other                                          => None
         }
-      case other                                            => None
+      case other                                              => None
     }
 
   /** compute if a ParallelDo or a Flatten is 'floating', i.e. it doesn't have a Gbk in it outputs */
@@ -187,11 +187,11 @@ trait MscrGraph extends CompNodes {
    */
   lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] =
     attr {
-      case g @ GroupByKey(Flatten(ins))        => (g -> siblings).collect(isAGroupByKey) ++
-                                                   ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
+      case g @ GroupByKey(Flatten(ins))          => (g -> siblings).collect(isAGroupByKey) ++
+                                                     ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
       case g @ GroupByKey(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
-                                                  (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
-      case g @ GroupByKey(_)                   => (g -> siblings).collect(isAGroupByKey)
+                                                    (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
+      case g @ GroupByKey(_)                     => (g -> siblings).collect(isAGroupByKey)
     }
 
   private def addSinks(sinks: SinksMap) = (m: Mscr) => m.addSinks(sinks)

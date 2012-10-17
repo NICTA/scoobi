@@ -17,6 +17,7 @@ import org.kiama.rewriting.Rewriter
 import application.ScoobiConfiguration
 import plan.graph.MapperInputChannel
 import plan.graph.GbkOutputChannel
+import org.kiama.attribution.Attribution._
 
 /**
  * The execution transforms the DComp nodes as created by the user and the Mscrs computed by the MscrGraph
@@ -53,7 +54,6 @@ trait ExecutionPlan extends MscrGraph {
     case m @ Mscr(in, out) => MscrExec(in, out)
   }
 
-
   /**
    * Channels rewriting
    */
@@ -63,33 +63,40 @@ trait ExecutionPlan extends MscrGraph {
 
   def rewriteChannel: Strategy =
     rewriteSingleChannel <*
-    addTagsOnInputNodes  <*
     rewriteNodes         <* // rewrite the nodes in channels
     all(rewriteNodes)       // rewrite the remaining nodes which may be in Options (see GbkOutputChannel)
 
   /** rewrite one channel */
-  lazy val rewriteSingleChannel: Strategy = {
-    val tag = Tag()
+  lazy val rewriteSingleChannel: Strategy =
     rule {
       // input channels
       case MapperInputChannel(pdos)     => MapperInputChannelExec(pdos.toSeq)
       case IdInputChannel(in)           => BypassInputChannelExec(in)
       case StraightInputChannel(in)     => StraightInputChannelExec(in)
       // output channels
-      case GbkOutputChannel(g,f,c,r,s)  => GbkOutputChannelExec(g, f, c, r, s, tag.newTag)
-      case FlattenOutputChannel(in,s)   => FlattenOutputChannelExec(in, s,     tag.newTag)
-      case BypassOutputChannel(in,s)    => BypassOutputChannelExec(in, s,      tag.newTag)
+      case GbkOutputChannel(g,f,c,r,s)  => GbkOutputChannelExec(g, f, c, r, s)
+      case FlattenOutputChannel(in,s)   => FlattenOutputChannelExec(in, s)
+      case BypassOutputChannel(in,s)    => BypassOutputChannelExec(in, s)
     }
-  }
 
-  /** for each input node find the corresponding output tag */
-  lazy val addTagsOnInputNodes: Strategy = rule {
-    case n @ MapperInputChannelExec(pdos,_) => n.copy(tags = Map(pdos.map(pd => pd -> tag(pd)):_*))
-    case n @ BypassInputChannelExec(in,_)   => n.copy(tag = tag(in))
-    case n @ StraightInputChannelExec(in,_) => n.copy(tag = tag(in))
+  /** attribute returning a unique tag for an OutputChannel */
+  lazy val tag: OutputChannelExec => Int = {
+    val t = Tag()
+    attr { case _  => t.newTag }
   }
-
-  def tag(node: CompNode) = 1
+  
+  /** attribute returning a unique tag for an OutputChannel */
+  lazy val tags: MscrExec => InputChannelExec => Map[CompNode, Set[Int]] = {
+    paramAttr { (mscr: MscrExec) => {
+      case n @ MapperInputChannelExec(_) => Map(n.referencedNodes.map(pd => (pd, outputTags(pd, mscr))):_*) 
+      case n                             => Map(n.referencedNode -> outputTags(n.referencedNode, mscr))
+    }}
+  }
+  
+  /** for a given node get the tags of the corresponding output channels */
+  private[scoobi] def outputTags(node: CompNode, mscr: MscrExec): Set[Int] = {
+    mscr.outputChannels.collect { case out: OutputChannelExec if (out.outputs diff (node -> outputs).toSeq).nonEmpty => tag(out) }.toSet
+  }
   /**
    * Nodes rewriting
    */

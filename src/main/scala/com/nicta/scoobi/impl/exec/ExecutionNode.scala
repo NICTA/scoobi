@@ -58,31 +58,34 @@ case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChanne
   def inputChannels:  Set[InputChannelExec]  = inputs. map(_.asInstanceOf[InputChannelExec])
   def outputChannels: Set[OutputChannelExec] = outputs.map(_.asInstanceOf[OutputChannelExec])
   
-  def mapperInputChannels = inputChannels.collect { case m @ MapperInputChannelExec(_,_) => m }
+  def mapperInputChannels = inputChannels.collect { case m @ MapperInputChannelExec(_) => m }
 }
 
 sealed trait InputChannelExec extends InputChannel {
   def source: DataSource[_,_,_] = input.referencedNode.dataSource
   def input: ExecutionNode
+  def referencedNode = input.referencedNode
 }
 
 /**
  * @param nodes: list of related MapperExec nodes
  */
-case class MapperInputChannelExec(nodes: Seq[CompNode], tags: Map[CompNode, Int] = Map()) extends InputChannelExec {
+case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec {
   def input: ExecutionNode = nodes.head.asInstanceOf[ExecutionNode]
+  def inputs: Seq[ExecutionNode] = nodes.map(_.asInstanceOf[ExecutionNode])
+  def referencedNodes: Seq[CompNode] = inputs.map(_.referencedNode)
 }
 
-case class BypassInputChannelExec(in: CompNode, tag: Int = 0) extends InputChannelExec {
+case class BypassInputChannelExec(in: CompNode) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
-case class StraightInputChannelExec(in: CompNode, tag: Int = 0) extends InputChannelExec {
+case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
 }
 
 sealed trait OutputChannelExec extends OutputChannel {
   def sinks: Seq[DataSink[_,_,_]]
-  def tag: Int
+  def outputs: Seq[CompNode]
 }
 
 case class GbkOutputChannelExec(groupByKey: CompNode,
@@ -97,17 +100,19 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     case _                       => false
   }
 
+  def outputs = Seq(Seq(groupByKey), flatten.toSeq, combiner.toSeq, reducer.toSeq).flatten
 }
 
-case class FlattenOutputChannelExec(in: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
   override def equals(a: Any) = a match {
-    case o: FlattenOutputChannelExec => o.in == in
+    case o: FlattenOutputChannelExec => o.out == out
     case _                           => false
   }
+  def outputs = Seq(out)
 }
-case class BypassOutputChannelExec(in: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+case class BypassOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
   override def equals(a: Any) = a match {
-    case o: BypassOutputChannelExec => o.in == in
+    case o: BypassOutputChannelExec => o.out == out
     case _                          => false
   }
-}
+  def outputs = Seq(out)}
