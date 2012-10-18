@@ -28,7 +28,7 @@ import org.specs2.mutable.Specification
 
 class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 
-  "the local context runs the examples locally only" >> {
+  "the local context runs the examples locally" >> {
     implicit val context = localExamples
 
     "successful local run" >> {
@@ -38,8 +38,8 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
       context.withTiming.example1.execute.expected must startWith ("Local execution time: ")
     }
   }
-  "the cluster context runs the examples remotely only" >> {
-    implicit val context = clusterExamples
+  "the cluster context runs the examples remotely" >> {
+    implicit val context = clusterExamples("scoobi cluster")
     "successful cluster run" >> {
       runMustBeCluster
     }
@@ -48,7 +48,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     }
   }
   "the localThenCluster context runs the examples" >> {
-    implicit val context = localThenClusterExamples
+    implicit val context = localThenClusterExamples("scoobi cluster")
 
     "locally first, then remotely if there is no failure" >> {
       "normal execution" >> {
@@ -80,8 +80,9 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     step(HadoopLogFactory.setLogFactory())
   }
   "arguments can be used to control the execution of examples locally or on the cluster" >> {
-    "'cluster'    runs on the cluster only"      >> runMustBeCluster(examplesWithArguments("scoobi cluster"))
-    "'local'      run locally only"              >> runMustBeLocal(examplesWithArguments("scoobi local"))
+    "no arguments     runs locally only"               >> runMustBeLocal(examplesWithArguments(""))
+    "'cluster'        runs locally and on the cluster" >> runMustBeLocalThenCluster(examplesWithArguments("scoobi cluster"))
+    "'!local.cluster' runs on the cluster only"        >> runMustBeCluster(examplesWithArguments("scoobi !local.cluster"))
   }
   "arguments for scoobi can be passed from the command line" >> {
     localExamples.scoobiArgs must beEmpty
@@ -114,9 +115,10 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   }
 
   // various Hadoop Examples traits
-  def localExamples            = new HadoopExamplesForTesting { override def context = local }
-  def clusterExamples          = new HadoopExamplesForTesting { override def context = cluster }
-  def localThenClusterExamples = new HadoopExamplesForTesting { override def context = localThenCluster }
+  def localExamples                                  = new HadoopExamplesForTesting { override def context = local }
+  def clusterExamples(command: String = "")          = new HadoopExamplesForTesting { override def context = cluster; override lazy val arguments = Arguments(command) }
+  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = localThenCluster; override lazy val arguments = Arguments(command) }
+
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)
   }
