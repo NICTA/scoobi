@@ -72,7 +72,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Not checking sequence file types, and catching the exception in the mapper" >> { implicit sc: SC =>
-    if (sc.mode) ok
+    if (sc.isInMemory) ok
     else {
       val filePath = createTempFile()
 

@@ -17,6 +17,10 @@ package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
+import org.apache.hadoop.io.SequenceFile.CompressionType
+import scalaz.{Scalaz, State}
+import Scalaz._
 
 import core._
 import io.DataSource
@@ -24,10 +28,7 @@ import io.DataSink
 import impl.plan._
 import impl.exec._
 import Smart._
-import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
-import org.apache.hadoop.io.SequenceFile.CompressionType
-import scalaz.{Scalaz, State}
-import Scalaz._
+import Mode._
 
 
 object Eval {
@@ -254,7 +255,7 @@ object Persister extends LowImplicitsPersister {
     outputs collect { case (_, Some(sink)) => sink } foreach { _.outputCheck(conf) }
 
     /* Performing any up-front planning before execution. */
-    if (conf.mode) VectorMode.prepareST(outputs, conf) else HadoopMode.prepareST(outputs, conf)
+    if (conf.isInMemory) VectorMode.prepareST(outputs, conf) else HadoopMode.prepareST(outputs, conf)
   }
 }
 
@@ -337,18 +338,18 @@ object PFn {
   implicit def DListPersister[A] = new PFn[DListPersister[A]] {
     type Ret = Unit
     def plan(x: DListPersister[A]) = (x.dlist.getComp, Some(x.sink))
-    def execute(x: DListPersister[A], c: ScoobiConfiguration): State[Eval.ST, Unit] = c.mode match {
-      case true  => VectorMode.executeDListPersister(x, c)
-      case false => HadoopMode.executeDListPersister(x, c)
+    def execute(x: DListPersister[A], sc: ScoobiConfiguration): State[Eval.ST, Unit] = sc.mode match {
+      case InMemory        => VectorMode.executeDListPersister(x, sc)
+      case Local | Cluster => HadoopMode.executeDListPersister(x, sc)
     }
   }
 
   implicit def DObjectPersister[A] = new PFn[DObject[A]] {
     type Ret = A
     def plan(x: DObject[A]) = (x.getComp, None)
-    def execute(x: DObject[A], c: ScoobiConfiguration): State[Eval.ST, A] = c.mode match {
-      case true  => VectorMode.executeDObject(x, c)
-      case false => HadoopMode.executeDObject(x, c)
+    def execute(x: DObject[A], sc: ScoobiConfiguration): State[Eval.ST, A] = sc.mode match {
+      case InMemory        => VectorMode.executeDObject(x, sc)
+      case Local | Cluster => HadoopMode.executeDObject(x, sc)
     }
   }
 }

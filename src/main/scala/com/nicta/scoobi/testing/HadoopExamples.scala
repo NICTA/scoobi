@@ -20,17 +20,18 @@ import org.specs2.execute._
 import org.specs2.specification._
 import org.specs2.Specification
 import org.specs2.execute.ResultLogicalCombinators._
+import org.specs2.execute.StandardResults._
 import application._
 import impl.time.SimpleTimer
 
 /**
  * This trait provides an Around context to be used in a Specification
  *
- * Subclasses need to define the context method:
+ * Subclasses can override the context method:
  *
+ *  - def context = inMemory         // execute the code in memory with Scala collections
  *  - def context = local            // execute the code locally
  *  - def context = cluster          // execute the code on the cluster
- *  - def context = localThenCluster // execute the code locally then on the cluster in case of a success
  *
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
@@ -41,30 +42,74 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   implicit protected def aroundContext: HadoopContext = context
 
   /** define the context to use: local, cluster, localThenCluster */
-  def context: HadoopContext = localThenCluster
+  def context: HadoopContext = chain(contexts)
 
   /**
    * the execution time will not be displayed with this function, but by adding more information to the execution Result
    */
   override def displayTime(prefix: String) = (timer: SimpleTimer) => ()
 
+  /** tests are always in memory by default, unless !inmemory is passed */
+  override def isInMemory                = !is("!inmemory")
   /** tests are always local by default, unless !local is passed */
   override def isLocal                   = !is("!local")
-  /** tests are executed on the cluster only if cluster is specified */
-  override def isCluster                 = is("cluster")
 
+  /** context for in memory execution */
+  def inMemory: HadoopContext = new InMemoryHadoopContext
   /** context for local execution */
   def local: HadoopContext = new LocalHadoopContext
   /** context for cluster execution */
   def cluster: HadoopContext = new ClusterHadoopContext
-  /** context for local then cluster execution */
-  def localThenCluster: HadoopContext = new LocalThenClusterHadoopContext
+  /** context for showing a skipped execution */
+  def skippedContext(name: String): HadoopContext = new SkippedHadoopContext(name)
+  /** all contexts to run */
+  def contexts = Seq(if (isInMemory) inMemory else skippedContext("in memory"),
+                     if (isLocal)    local    else skippedContext("local"),
+                     if (isCluster)  cluster  else skippedContext("cluster"))
 
+  /** @return a context chaining a sequence of contexts */
+  def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
+    def outside = new ScoobiConfiguration
+    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
+      changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(a) })
+    }
+  }
   /** execute an example body on the cluster */
   def remotely[R <% Result](r: =>R) = showResultTime("Cluster execution time", runOnCluster(r))
 
   /** execute an example body locally */
   def locally[R <% Result](r: =>R) = showResultTime("Local execution time", runOnLocal(r))
+
+  /** execute an example body locally */
+  def inMemory[R <% Result](r: =>R) = showResultTime("In memory execution time", runInMemory(r))
+
+  /**
+   * Context for showing that an execution is skipped
+   */
+  class SkippedHadoopContext(name: String) extends HadoopContext {
+    def outside = configureForLocal(new ScoobiConfiguration)
+
+    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+      Skipped("excluded", "No "+name+" execution"+time_?)
+  }
+  /**
+   * Context for running examples in memory
+   */
+  class InMemoryHadoopContext extends HadoopContext {
+    def outside = configureForInMemory(new ScoobiConfiguration)
+
+    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+      inMemory(cleanup(a).apply(outside))
+  }
+  /**
+   * Context for running examples locally
+   */
+  class LocalHadoopContext extends HadoopContext {
+    def outside = configureForLocal(new ScoobiConfiguration)
+
+    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+      locally(cleanup(a).apply(outside))
+  }
 
   /**
    * Context for running examples on the cluster
@@ -72,10 +117,10 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   class ClusterHadoopContext extends HadoopContext {
     def outside = configureForCluster(new ScoobiConfiguration)
 
-    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (outer.isCluster) remotely(cleanup(a).apply(outside))
-      else                 Skipped("excluded", "No cluster execution"+time_?)
-    }
+    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+      remotely(cleanup(a).apply(outside))
+
+    override def isRemote = true
   }
 
   /** @return a composed function cleaning up after the job execution */
@@ -91,36 +136,6 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     finally { TestFiles.deleteFiles(c) }
   }
 
-  /**
-   * Context for running examples locally
-   */
-  class LocalHadoopContext extends HadoopContext {
-    def outside = configureForLocal(new ScoobiConfiguration)
-
-    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      if (outer.isLocal) locally(cleanup(a).apply(outside))
-      else               Skipped("excluded", "No local execution"+time_?)
-    }
-    override def isRemote = false
-  }
-
-  /**
-   * Context for running examples locally, then on the cluster if it succeeds locally
-   */
-  case class LocalThenClusterHadoopContext() extends ClusterHadoopContext {
-    /**
-     * delegate the apply method to the LocalContext, then the Cluster context in case of a Success
-     */
-    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
-      local(a) match {
-        case f @ Failure(_,_,_,_) => f
-        case e @ Error(_,_)       => e
-        case s @ Skipped(_,_)     => cluster(a).mapExpected((e: String) => s.expected+"\n"+e)
-        case other                => changeSeparator(other and cluster(a))
-      }
-    }
-  }
-
   /** change the separator of a Result */
   private def changeSeparator(r: Result) = r.mapExpected((_:String).replace("; ", "\n"))
   /**
@@ -130,8 +145,12 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * is local)
    */
   trait HadoopContext extends Outside[ScoobiConfiguration] {
-    def isRemote = true
+    def isRemote = false
     def time_? = if (outer.showTimes) " time" else ""
+
+    override def equals(a: Any) = {
+      this.getClass == a.getClass
+    }
   }
 
   /**

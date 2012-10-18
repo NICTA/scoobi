@@ -18,8 +18,9 @@ package application
 
 import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables
+import org.specs2.specification.Scope
 
-class ScoobiAppSpec extends UnitSpecification with Tables{
+class ScoobiAppSpec extends UnitSpecification with Tables {
 
   "Arguments from the command line must be parsed" >> {
     val app = new ScoobiApp { def run {} }
@@ -44,6 +45,29 @@ class ScoobiAppSpec extends UnitSpecification with Tables{
       val app = new ScoobiApp { def run {} }
       app.main(Array("scoobi", "local.quiet"))
       app.quiet aka "quiet" must beTrue
+    }
+    "By default, the job executes on the cluster" >> {
+      "however if 'inmemory' is passed, it executes locally" >> new run {
+        app.main(Array("scoobi", "inmemory"))
+        inMemory must beTrue
+        onLocal must beFalse
+      }
+      "however if 'local' is passed, it executes locally" >> new run {
+        app.main(Array("scoobi", "local"))
+        inMemory must beFalse
+        onLocal must beTrue
+      }
+      trait run extends Scope { outer =>
+        var inMemory  = false
+        var onLocal   = false
+        var onCluster = false
+        val app = new ScoobiApp {
+          def run() {}
+          override def inMemory[T](t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.inMemory = true; t }
+          override def onLocal[T] (t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.onLocal = true; t }
+          override def onCluster[T] (t: =>T)(implicit configuration: ScoobiConfiguration) = { outer.onCluster = true; t }
+        }
+      }
     }
   }
 
