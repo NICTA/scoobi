@@ -70,8 +70,8 @@ However, we do need some of Scoobi's dependencies -- so we have to add them in m
 
 And lastly, we probably want `sbt compile` to work -- so we add in we add in all the dependencies we excluded, but as a provided". e.g.
 
-"org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0" % "provided"
-"org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0" % "provided"
+"org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" % "provided"
+"org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1" % "provided"
 
 When you put this all together, here's is what an example `build.sbt` should look like:
 
@@ -93,8 +93,8 @@ libraryDependencies ++= Seq(
    "javassist" % "javassist" % "3.12.1.GA",
    "org.apache.avro" % "avro-mapred" % "1.7.0", // Note: add ' % "provided"'  if you don't need it 
    "org.apache.avro" % "avro" % "1.7.0",        // Note: add ' % "provided"'  if you don't need it 
-   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.0" % "provided",
-   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.0" % "provided",
+   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" % "provided",
+   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1" % "provided",
    "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
    "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
    )
