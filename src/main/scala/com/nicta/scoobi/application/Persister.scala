@@ -17,17 +17,28 @@ package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
-import scala.collection.immutable.DefaultMap
 
 import core._
+import io.DataSource
 import io.DataSink
 import impl.plan._
 import impl.exec._
 import Smart._
 import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
-import scalaz.{Scalaz}
+import scalaz.{Scalaz, State}
 import Scalaz._
+
+
+object Eval {
+  type HadoopST = (ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]])
+  type VectorST = Int // This is kind of arbitrary
+
+  sealed abstract class ST
+  case class Hadoop(st: HadoopST) extends ST
+  case class Vector(st: VectorST) extends ST
+}
+
 
 /** Type class for things that can be persisted. Mechanism to allow tuples of DLists and
   * DObjects to be persisted. */
@@ -50,8 +61,8 @@ object Persister extends LowImplicitsPersister {
     type Out = Seq[pfn.Ret]
 
     def apply(seq: Seq[T], conf: ScoobiConfiguration): Seq[pfn.Ret] = {
-      val (st, nodeMap) = createPlan(seq.map(pfn.plan).toList, conf)
-      seq.toStream.traverseS(x => pfn.execute(x)).eval((st, nodeMap)).toSeq
+      val st = prepareST(seq.map(pfn.plan).toList, conf)
+      seq.toStream.traverseS(x => pfn.execute(x, conf)).eval(st).toSeq
     }
   }
 
@@ -60,9 +71,8 @@ object Persister extends LowImplicitsPersister {
     type Out = pfn1.Ret
 
     def apply(x: T1, conf: ScoobiConfiguration): pfn1.Ret = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x)), conf)
-      pfn1.execute(x).eval((st, nodeMap))
-
+      val st = prepareST(List(pfn1.plan(x)), conf)
+      pfn1.execute(x, conf).eval(st)
     }
   }
 
@@ -73,12 +83,12 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret)
 
     def apply(x: (T1, T2), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
       } yield (r1, r2)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
@@ -90,13 +100,13 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret)
 
     def apply(x: (T1, T2, T3), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret, pfn3.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
-        r3 <- pfn3.execute(x._3)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
+        r3 <- pfn3.execute(x._3, conf)
       } yield (r1, r2, r3)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
@@ -109,14 +119,14 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret)
 
     def apply(x: (T1, T2, T3, T4), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
-        r3 <- pfn3.execute(x._3)
-        r4 <- pfn4.execute(x._4)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
+        r3 <- pfn3.execute(x._3, conf)
+        r4 <- pfn4.execute(x._4, conf)
       } yield (r1, r2, r3, r4)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
@@ -130,15 +140,15 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret)
 
     def apply(x: (T1, T2, T3, T4, T5), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
-        r3 <- pfn3.execute(x._3)
-        r4 <- pfn4.execute(x._4)
-        r5 <- pfn5.execute(x._5)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
+        r3 <- pfn3.execute(x._3, conf)
+        r4 <- pfn4.execute(x._4, conf)
+        r5 <- pfn5.execute(x._5, conf)
       } yield (r1, r2, r3, r4, r5)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
@@ -153,16 +163,16 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret)
 
     def apply(x: (T1, T2, T3, T4, T5, T6), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5), pfn6.plan(x._6)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5), pfn6.plan(x._6)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
-        r3 <- pfn3.execute(x._3)
-        r4 <- pfn4.execute(x._4)
-        r5 <- pfn5.execute(x._5)
-        r6 <- pfn6.execute(x._6)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
+        r3 <- pfn3.execute(x._3, conf)
+        r4 <- pfn4.execute(x._4, conf)
+        r5 <- pfn5.execute(x._5, conf)
+        r6 <- pfn6.execute(x._6, conf)
       } yield (r1, r2, r3, r4, r5, r6)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
@@ -178,17 +188,17 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret)
 
     def apply(x: (T1, T2, T3, T4, T5, T6, T7), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5), pfn6.plan(x._6), pfn7.plan(x._7)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5), pfn6.plan(x._6), pfn7.plan(x._7)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
-        r3 <- pfn3.execute(x._3)
-        r4 <- pfn4.execute(x._4)
-        r5 <- pfn5.execute(x._5)
-        r6 <- pfn6.execute(x._6)
-        r7 <- pfn7.execute(x._7)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
+        r3 <- pfn3.execute(x._3, conf)
+        r4 <- pfn4.execute(x._4, conf)
+        r5 <- pfn5.execute(x._5, conf)
+        r6 <- pfn6.execute(x._6, conf)
+        r7 <- pfn7.execute(x._7, conf)
       } yield (r1, r2, r3, r4, r5, r6, r7)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
@@ -205,101 +215,49 @@ object Persister extends LowImplicitsPersister {
     type Out = (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret, pfn8.Ret)
 
     def apply(x: (T1, T2, T3, T4, T5, T6, T7, T8), conf: ScoobiConfiguration): (pfn1.Ret, pfn2.Ret, pfn3.Ret, pfn4.Ret, pfn5.Ret, pfn6.Ret, pfn7.Ret, pfn8.Ret) = {
-      val (st, nodeMap) = createPlan(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5), pfn6.plan(x._6), pfn7.plan(x._7), pfn8.plan(x._8)), conf)
+      val st = prepareST(List(pfn1.plan(x._1), pfn2.plan(x._2), pfn3.plan(x._3), pfn4.plan(x._4), pfn5.plan(x._5), pfn6.plan(x._6), pfn7.plan(x._7), pfn8.plan(x._8)), conf)
       val execute = for {
-        r1 <- pfn1.execute(x._1)
-        r2 <- pfn2.execute(x._2)
-        r3 <- pfn3.execute(x._3)
-        r4 <- pfn4.execute(x._4)
-        r5 <- pfn5.execute(x._5)
-        r6 <- pfn6.execute(x._6)
-        r7 <- pfn7.execute(x._7)
-        r8 <- pfn8.execute(x._8)
+        r1 <- pfn1.execute(x._1, conf)
+        r2 <- pfn2.execute(x._2, conf)
+        r3 <- pfn3.execute(x._3, conf)
+        r4 <- pfn4.execute(x._4, conf)
+        r5 <- pfn5.execute(x._5, conf)
+        r6 <- pfn6.execute(x._6, conf)
+        r7 <- pfn7.execute(x._7, conf)
+        r8 <- pfn8.execute(x._8, conf)
       } yield (r1, r2, r3, r4, r5, r6, r7, r8)
-      execute.eval((st, nodeMap))
+      execute.eval(st)
     }
   }
 
 
-  private def createPlan(outputs: List[(Smart.DComp[_, _ <: Shape], Option[DataSink[_,_,_]])], conf: ScoobiConfiguration)
-    : (ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]) = {
-
-    /* Produce map of all unique outputs and their corresponding persisters. */
-    val rawOutMap: List[(Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]])] =
-      outputs.groupBy(_._1)
-             .map(t => (t._1, t._2.map(_._2).flatten.toSet))
-             .toList
-
-    logger.debug("Raw graph")
-    rawOutMap foreach { case (c, s) => logger.debug("(" + c.toVerboseString + ", " + s + ")") }
-
-
-    /* Optimise the plan associated with the outputs. */
-    val optOuts = {
-      val opt: List[Smart.DComp[_, _ <: Shape]] = Smart.optimisePlan(rawOutMap.map(_._1))
-      (rawOutMap zip opt) map { case ((o1, s), o2) => (o2, (o1, s)) }
+  private def sources(outputs: List[Smart.DComp[_, _ <: Shape]]): List[DataSource[_,_,_]] = {
+    import Smart._
+    def addLoads(set: Set[Load[_]], comp: DComp[_, _ <: Shape]): Set[Load[_]] = comp match {
+      case ld@Load(_)                   => set + ld
+      case ParallelDo(in, env, _, _, _) => { val s1 = addLoads(set, in); addLoads(s1, env) }
+      case GroupByKey(in)               => addLoads(set, in)
+      case Combine(in, _)               => addLoads(set, in)
+      case Flatten(ins)                 => ins.foldLeft(set) { case (s, in) => addLoads(s, in) }
+      case Materialize(in)              => addLoads(set, in)
+      case Op(in1, in2, f)              => { val s1 = addLoads(set, in1); addLoads(s1, in2) }
+      case Return(_)                    => set
     }
 
-    logger.debug("Optimised graph")
-    optOuts foreach { case (c, s) => logger.debug("(" + c.toVerboseString + ", " + s + ")") }
+    val loads = outputs.foldLeft(Set.empty: Set[Load[_]]) { case (set, output) => addLoads(set, output) }
+    loads.toList.map(_.source)
+  }
 
-    /*
-     *  Convert the Smart.DComp abstract syntax tree to AST.Node abstract syntax tree.
-     *  This is a side-effecting expression. The @m@ field of the @ci@ parameter is updated.
-     */
-    import com.nicta.scoobi.impl.plan.{Intermediate => I}
-    val outMap = optOuts.map { case (o2, (o1, s)) => (o2, s) }.toMap[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]]
-    val ds = outMap.keys
-    val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
-    val ci = ConvertInfo(conf, outMap , iMSCRGraph.mscrs, iMSCRGraph.g)
+  private def prepareST(outputs: List[(Smart.DComp[_, _ <: Shape], Option[DataSink[_,_,_]])], conf: ScoobiConfiguration): Eval.ST = {
+    /* Check inputs + outputs. */
+    sources(outputs.map(_._1)) foreach { _.inputCheck(conf) }
+    outputs collect { case (_, Some(sink)) => sink } foreach { _.outputCheck(conf) }
 
-    logger.debug("Intermediate MSCRs")
-    iMSCRGraph.mscrs foreach { mscr => logger.debug(mscr.toString) }
-
-    ds.foreach(_.convert(ci))     // Step 3 (see top of Intermediate.scala)
-    val mscrGraph = MSCRGraph(ci) // Step 4 (See top of Intermediate.scala)
-
-    logger.debug("Converted graph")
-    mscrGraph.outputs.map(_.node.toVerboseString) foreach { out => logger.debug(out) }
-
-    logger.debug("MSCRs")
-    mscrGraph.mscrs foreach { mscr => logger.debug(mscr.toString) }
-
-    logger.debug("Environments")
-    mscrGraph.environments foreach { env => logger.debug(env.toString) }
-
-    /* Do execution preparation - setup state, etc */
-    val st = Executor.prepare(mscrGraph, conf)
-
-    /* Generate a map from the original (non-optimised) Smart.DComp to AST.Node */
-    val nodeMap = new DefaultMap[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]] {
-      def get(d: Smart.DComp[_, _ <: Shape]): Option[AST.Node[_, _ <: Shape]] = {
-        for {
-          rawOutput <- rawOutMap.find(_._1 == d)
-          dataSinks <- Some(rawOutput._2)
-          optOutput <- optOuts.find(_._2 == rawOutput)
-          optNode   <- Some(optOutput._1)
-        } yield (ci.astMap(optNode))
-      }
-
-      val iterator = {
-        val it = rawOutMap.toIterator
-        new Iterator[(Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape])] {
-          def hasNext: Boolean = it.hasNext
-          def next(): (Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]) = {
-            val n = for {
-              dcomp <- Some(it.next()._1)
-              ast   <- get(dcomp)
-            } yield (dcomp, ast)
-            n.orNull
-          }
-        }
-      }
-    }
-
-    (st, nodeMap)
+    /* Performing any up-front planning before execution. */
+    if (conf.mode) VectorMode.prepareST(outputs, conf) else HadoopMode.prepareST(outputs, conf)
   }
 }
+
 
 /**
  * Those additional implicits allow to pass tuples of persisters to persist at once with the persist method
@@ -365,13 +323,11 @@ case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A]) {
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(sink = sink.outputCompression(codec))
 }
 
-import scalaz.State
 
-/** Type class for persisting something. */
 sealed trait PFn[A] {
   type Ret
   def plan(x: A): (Smart.DComp[_, _ <: Shape], Option[DataSink[_,_,_]])
-  def execute(x: A): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), Ret]
+  def execute(x: A, c: ScoobiConfiguration): State[Eval.ST, Ret]
 }
 
 
@@ -381,21 +337,18 @@ object PFn {
   implicit def DListPersister[A] = new PFn[DListPersister[A]] {
     type Ret = Unit
     def plan(x: DListPersister[A]) = (x.dlist.getComp, Some(x.sink))
-    def execute(x: DListPersister[A]): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), Unit] =
-      State({ case(st, nodeMap) =>
-        val node: AST.Node[A, _ <: Shape] = nodeMap(x.dlist.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
-        ((Executor.executeArrOutput(node, x.sink, st), nodeMap), ())
-      })
+    def execute(x: DListPersister[A], c: ScoobiConfiguration): State[Eval.ST, Unit] = c.mode match {
+      case true  => VectorMode.executeDListPersister(x, c)
+      case false => HadoopMode.executeDListPersister(x, c)
+    }
   }
 
   implicit def DObjectPersister[A] = new PFn[DObject[A]] {
     type Ret = A
     def plan(x: DObject[A]) = (x.getComp, None)
-    def execute(x: DObject[A]): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), A] =
-      State({ case(st, nodeMap) =>
-        val node: AST.Node[A, _ <: Shape] = nodeMap(x.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
-        val (e, stU) = Executor.executeExp(node, st)
-        ((stU, nodeMap), e)
-      })
+    def execute(x: DObject[A], c: ScoobiConfiguration): State[Eval.ST, A] = c.mode match {
+      case true  => VectorMode.executeDObject(x, c)
+      case false => HadoopMode.executeDObject(x, c)
+    }
   }
 }

@@ -42,6 +42,10 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
                                var userJars: Set[String] = Set(),
                                var userDirs: Set[String] = Set()) {
 
+
+  /* By default use vector mode. */
+  var mode: Boolean = true  // TODO - control this via the command line, etc
+
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
 
