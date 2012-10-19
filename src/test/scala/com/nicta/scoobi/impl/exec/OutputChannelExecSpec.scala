@@ -2,21 +2,15 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.specs2.mutable.Specification
-import com.nicta.scoobi.impl.plan.graph.factory
-import org.specs2.runner.JUnitRunner
-import org.junit.runner.RunWith
 import application.ScoobiConfiguration
+import testing.mutable.UnitSpecification
 
-@RunWith(classOf[JUnitRunner])
-class OutputChannelExecSpec extends Specification {
+class OutputChannelExecSpec extends UnitSpecification {
   implicit val sc = ScoobiConfiguration()
 
   "Output channels must configure the MapReduceJob".txt
 
   "A GroupByKeyChannelExec" >> {
-    implicit val sc = ScoobiConfiguration()
-
     "must not configure a Combiner if the channel has no combiner node" >> new example {
       GbkOutputChannelExec(gbkExec).configure(job).combiners must be empty
     }

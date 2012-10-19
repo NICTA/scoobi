@@ -125,7 +125,10 @@ trait ExecutionPlan extends MscrGraph {
       case i: Flatten[_]         => MapperExec(Ref(n), i)
       case i: GroupByKey[_,_]    => if (n -> isMapper) MapperExec(Ref(n), i) else GbkReducerExec(Ref(n), i)
       case i: Combine[_,_]       => if (n -> isMapper) MapperExec(Ref(n), i) else ReducerExec(Ref(n), i)
-      case i                     => sys.error("a ParallelDo node can not have an input which is: "+i)
+      case i                     => n.parent match {
+        case g: GroupByKey[_,_]  => GbkMapperExec(Ref(n), Ref(g), i)
+        case _                   => sys.error("a ParallelDo node can not have an input which is: "+i)
+      }
     }
     case ns : Seq[_]             => ns // this allows to recurse into flatten inputs
   })

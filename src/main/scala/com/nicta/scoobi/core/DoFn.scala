@@ -16,7 +16,8 @@
 package com.nicta.scoobi
 package core
 
-import impl.exec.TaggedReducer
+import impl.exec.{TaggedMapper, TaggedReducer}
+import WireFormat._
 
 /**
  * Interface for specifying parallel operation over DLists in the absence of an
@@ -58,6 +59,27 @@ trait EnvDoFn[A, B, E] { outer =>
       }
       def cleanup(env: Any, emitter: Emitter[Any]) { outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]]) }
     }
+
+  def makeTaggedMapper(tags: Set[Int], mfv: Manifest[_], wfv: WireFormat[_]) = new TaggedMapper(tags, manifest[Int], wireFormat[Int], grouping[Int], mfv, wfv) {
+    def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
+    def map(env: Any, input: Any, emitter: Emitter[Any]) {
+      val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
+      outer.process(env.asInstanceOf[E], input.asInstanceOf[A], e.asInstanceOf[Emitter[B]])
+    }
+    def cleanup(env: Any, emitter: Emitter[Any]) {
+      val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
+      outer.cleanup(env.asInstanceOf[E], e.asInstanceOf[Emitter[B]])
+    }
+  }
+  def makeTaggedMapper(tags: Set[Int], mfk: Manifest[_], wfk: WireFormat[_], gpk: Grouping[_], mfv: Manifest[_], wfv: WireFormat[_]) = new TaggedMapper(tags, mfk, wfk, gpk, mfv, wfv) {
+    def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
+    def map(env: Any, input: Any, emitter: Emitter[Any]) {
+      outer.process(env.asInstanceOf[E], input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
+    }
+    def cleanup(env: Any, emitter: Emitter[Any]) {
+      outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
+    }
+  }
 }
 
 

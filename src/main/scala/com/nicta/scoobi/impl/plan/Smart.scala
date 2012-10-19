@@ -147,7 +147,8 @@ object Smart {
                  (ci: ConvertInfo): AST.Node[(K,V), Sh] with KVLike[K,V]  = {
       val maybeN: Option[AST.Node[_,_]] = ci.astMap.get(this)
       maybeN match {
-        case Some(n) => n.asInstanceOf[AST.Node[(K,V), Sh] with KVLike[K,V]] // Run-time cast. Shouldn't fail though.
+        case Some(n) => n.asInstanceOf[AST.Node[(K,V), Sh]
+        with KVLike[K,V]] // Run-time cast. Shouldn't fail though.
         case None    => convertNew2(ci)
       }
     }

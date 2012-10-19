@@ -56,9 +56,9 @@ class Env[E : WireFormat] private (path: Path) {
 object Env {
 
   /** Create a new "environment" container. */
-  def apply[E](wf: WireFormat[E], conf: ScoobiConfiguration): Env[E] = {
+  def apply[E](wf: WireFormat[E])(implicit sc: ScoobiConfiguration): Env[E] = {
     val id = java.util.UUID.randomUUID.toString
-    val path = new Path(conf.workingDirectory, "env/" + id)
+    val path = new Path(sc.workingDirectory, "env/" + id)
     new Env(path)(wf)
   }
 

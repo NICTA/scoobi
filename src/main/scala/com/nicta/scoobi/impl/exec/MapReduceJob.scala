@@ -39,7 +39,7 @@ import ScoobiConfiguration._
 import ChannelOutputFormat._
 
 /** A class that defines a single Hadoop MapReduce job. */
-class MapReduceJob(stepId: Int, mscrExec: MscrExec = MscrExec()) {
+class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   protected val fileSystems: FileSystems = FileSystems
   import fileSystems._
 
@@ -59,12 +59,12 @@ class MapReduceJob(stepId: Int, mscrExec: MscrExec = MscrExec()) {
   def addTaggedMapper(input: DataSource[_,_,_], env: Option[Env[_]], m: TaggedMapper) = {
     val tm = (env.getOrElse(Env.empty), m)
 
-    if (!mappers.contains(input)) mappers + ((input, Set(tm)))
-    else                          mappers(input) + tm: Unit
+    if (!mappers.contains(input)) mappers += ((input, Set(tm)))
+    else                          mappers(input) += tm: Unit
 
     m.tags.foreach { tag =>
-      keyTypes   + ((tag, (m.mk, m.wfk, m.gpk)))
-      valueTypes + ((tag, (m.mv, m.wfv)))
+      keyTypes   += ((tag, (m.mk, m.wfk, m.gpk)))
+      valueTypes += ((tag, (m.mv, m.wfv)))
     }
     this
   }

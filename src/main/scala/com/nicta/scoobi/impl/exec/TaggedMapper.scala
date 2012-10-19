@@ -18,26 +18,33 @@ package impl
 package exec
 
 import core._
+import util.UniqueInt
 
 /** A wrapper for a 'map' function tagged for a specific output channel. */
 abstract class TaggedMapper(val tags: Set[Int],
                             val mk: Manifest[_], val wfk: WireFormat[_], val gpk: Grouping[_],
                             val mv: Manifest[_], val wfv: WireFormat[_]) {
 
-  /** The actual 'map' function that will be used by Hadoop in the mapper task. */
+  object RollingInt extends UniqueInt
+
+  /** setup(env: E) */
   def setup(env: Any)
+  /** map(env: E, input: A, emitter: Emitter[(K, V)]) */
   def map(env: Any, input: Any, emitter: Emitter[Any])
+  /** cleanup(env: E, emitter: Emitter[(K, V)]) */
   def cleanup(env: Any, emitter: Emitter[Any])
 }
 
 
 /** A TaggedMapper that is an identity mapper. */
 class TaggedIdentityMapper(tags: Set[Int],
-                           mk: Manifest[_], wfk: WireFormat[_], grpk: Grouping[_],
-                           mv: Manifest[_], wfv: WireFormat[_]) extends TaggedMapper(tags, mk, wfk, grpk, mv, wfv) {
+                           mk: Manifest[_], wfk: WireFormat[_], gpk: Grouping[_],
+                           mv: Manifest[_], wfv: WireFormat[_]) extends TaggedMapper(tags, mk, wfk, gpk, mv, wfv) {
 
-  /** Identity mapping */
+  /** setup(env: Unit) */
   def setup(env: Any) {}
+  /** map(env: Unit, input: A, emitter: Emitter[(K, V)]) */
   def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit(input) }
+  /** cleanup(env: Unit, emitter: Emitter[(K, V)]) */
   def cleanup(env: Any, emitter: Emitter[Any]) {}
 }

@@ -56,7 +56,9 @@ case class ParallelDo[A, B, E](in:               CompNode,
 
   override lazy val dataSource = in.dataSource
 
-  def makeTaggedReducer(tag: Int) = dofn.makeTaggedReducer(tag, mfb, wfb)
+  def makeTaggedReducer(tag: Int)                           = dofn.makeTaggedReducer(tag, mfb, wfb)
+  def makeTaggedMapper(gbk: GroupByKey[_,_],tags: Set[Int]) = dofn.makeTaggedMapper(tags, gbk.mfk, gbk.wfk, gbk.gpk, gbk.mfv, gbk.wfv)
+  def makeTaggedMapper(tags: Set[Int])                      = dofn.makeTaggedMapper(tags, mfb, wfb)
 }
 
 object ParallelDo {

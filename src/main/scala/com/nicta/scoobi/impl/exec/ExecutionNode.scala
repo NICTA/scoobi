@@ -17,6 +17,9 @@ import com.nicta.scoobi.core.WireFormat
 sealed trait ExecutionNode extends CompNode {
   def referencedNode: CompNode
 }
+trait MapperExecutionNode extends ExecutionNode {
+  def makeTaggedMapper(tags: Map[CompNode, Set[Int]]): TaggedMapper
+}
 
 case class Ref[T <: CompNode](n: T)
 case class LoadExec(load: Ref[Load[_]]) extends ExecutionNode {
@@ -37,20 +40,26 @@ case class FlattenExec(flatten: Ref[Flatten[_]], ins: Seq[CompNode]) extends Exe
 
 case class ReturnExec(rt: Ref[Return[_]]) extends ExecutionNode {
   def referencedNode = rt.n
-  def env(implicit sc: ScoobiConfiguration) = Env(rt.n.wf, sc)
+  def env(implicit sc: ScoobiConfiguration) = Env(rt.n.wf)(sc)
 }
 case class MaterializeExec(mat: Ref[Materialize[_]], n: CompNode) extends ExecutionNode {
   def referencedNode = mat.n
-  def env(implicit sc: ScoobiConfiguration) = Env(mat.n.wf, sc)
+  def env(implicit sc: ScoobiConfiguration) = Env(mat.n.wf)(sc)
 }
 case class OpExec(op: Ref[Op[_,_,_]], a: CompNode, b: CompNode) extends ExecutionNode {
   def referencedNode = op.n
-  def env(implicit sc: ScoobiConfiguration) = Env(op.n.wf, sc)
+  def env(implicit sc: ScoobiConfiguration) = Env(op.n.wf)(sc)
 }
 
 /** specialised ParallelDo to be translated to a Hadoop Mapper class */
-case class MapperExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends ExecutionNode {
+case class MapperExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends MapperExecutionNode {
   def referencedNode = pd.n
+  def makeTaggedMapper(tags: Map[CompNode, Set[Int]]) = referencedNode.makeTaggedMapper(tags(referencedNode))
+}
+/** specialised ParallelDo followed by a GroupByKey to be translated to a Hadoop Mapper class */
+case class GbkMapperExec(pd: Ref[ParallelDo[_,_,_]], gbk: Ref[GroupByKey[_,_]], n: CompNode) extends MapperExecutionNode {
+  def referencedNode = pd.n
+  def makeTaggedMapper(tags: Map[CompNode, Set[Int]]) = referencedNode.makeTaggedMapper(gbk.n, tags(referencedNode))
 }
 /** specialised ParallelDo to be translated to a Hadoop Reducer class */
 case class ReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends ExecutionNode {
@@ -62,7 +71,7 @@ case class GbkReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends Execu
   def dofn           = referencedNode.dofn
   
   def makeTaggedReducer(tag: Int) = referencedNode.makeTaggedReducer(tag)
-  def env(implicit sc: ScoobiConfiguration) = Env(referencedNode.wfe, sc)
+  def env(implicit sc: ScoobiConfiguration) = Env(referencedNode.wfe)(sc)
 }
 
 case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set()) {
@@ -78,27 +87,46 @@ trait ChannelExec {
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
   def source: DataSource[_,_,_] = input.referencedNode.dataSource
-  def input: ExecutionNode
+  def input: MapperExecutionNode
   def referencedNode = input.referencedNode
+
+  protected lazy val plan = new ExecutionPlan {}
 }
 
 /**
  * @param nodes: list of related MapperExec nodes
  */
 case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec {
-  def input: ExecutionNode = nodes.head.asInstanceOf[ExecutionNode]
-  def inputs: Seq[ExecutionNode] = nodes.map(_.asInstanceOf[ExecutionNode])
-  def referencedNodes: Seq[CompNode] = inputs.map(_.referencedNode)
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = job
+  def input                             = nodes.head.asInstanceOf[MapperExecutionNode]
+  def mappers: Seq[MapperExecutionNode] = nodes.map(_.asInstanceOf[MapperExecutionNode])
+  def referencedNodes: Seq[CompNode]    = mappers.map(_.referencedNode)
+
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
+    val tags = plan.tags(job.mscrExec)(this)
+    mappers.map { mapper =>
+      val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
+      val env = Env(pd.wfe)
+      job.addTaggedMapper(source, Some(env), mapper.makeTaggedMapper(tags))
+    }
+    job
+  }
 }
 
 case class BypassInputChannelExec(in: CompNode) extends InputChannelExec {
-  def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = job
+  def input = in.asInstanceOf[MapperExecutionNode]
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
+    val tags = plan.tags(job.mscrExec)(this)
+//    job.addTaggedMapper(source, None, input.makeTaggedIdentityMapper(tags))
+    job
+  }
 }
 case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
-  def input: ExecutionNode = in.asInstanceOf[ExecutionNode]
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = job
+  def input = in.asInstanceOf[MapperExecutionNode]
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
+    val tags = plan.tags(job.mscrExec)(this)
+//    job.addTaggedMapper(source, None, input.makeTaggedIdentityMapper(tags))
+    job
+  }
 }
 
 sealed trait OutputChannelExec extends OutputChannel with ChannelExec {

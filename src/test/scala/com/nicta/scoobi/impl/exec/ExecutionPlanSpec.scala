@@ -144,6 +144,11 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
           Seq(GbkReducerExec(Ref(pd1), GroupByKeyExec(Ref(gbk1), loadExec)),
             ReducerExec(Ref(pd2), CombineExec(Ref(cb1), loadExec)))
       }
+      "GbkMapper if output is a GroupByKey" >> {
+        val gbk1 = gbk(pdLoad)
+        val pd1  = pd(gbk(pdLoad))
+        execPlan(gbk1) === Seq(GbkMapperExec(Ref(pd1), Ref(gbk1), gbkExec))
+      }
       "error if input is: Materialize, Op or Return" >> {
         execPlan(pd(mt(load)))       must throwAn[Exception]
         execPlan(pd(op(load, load))) must throwAn[Exception]

@@ -20,19 +20,19 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputC
   }
   override def equals(a: Any) = a match {
     case i: MapperInputChannel => i.parDos.map(_.id) == parDos.map(_.id)
-    case _ => false
+    case _                     => false
   }
 }
 
 case class IdInputChannel(input: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
-    case _ => false
+    case _                 => false
   }
 }
 case class StraightInputChannel(input: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
-    case _ => false
+    case _                       => false
   }
 }
