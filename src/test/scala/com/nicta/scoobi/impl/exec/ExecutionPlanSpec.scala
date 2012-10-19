@@ -175,7 +175,7 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
     }
   }
 }
-trait plans extends CompNodeExecFactory with ExecutionPlan with Scope {
+trait plans extends execfactory with ExecutionPlan {
 
   def execPlan(nodes: CompNode*) =
     createExecutionGraph(Vector(nodes:_*))
@@ -197,13 +197,17 @@ trait plans extends CompNodeExecFactory with ExecutionPlan with Scope {
 
 }
 
-trait CompNodeExecFactory extends CompNodeFactory {
-  lazy val ld          = load
-  lazy val pdLoad      = pd(load)
-  lazy val flattenLoad = flatten[String](ld)
-  lazy val gbkLoad     = gbk(ld)
-  lazy val loadExec    = LoadExec(Ref(ld))
-  lazy val gbkExec     = GroupByKeyExec(Ref(gbkLoad), loadExec)
-  lazy val flattenExec = FlattenExec(Ref(flattenLoad), Seq(loadExec))
-  lazy val pdExec      = MapperExec(Ref(pdLoad), loadExec)
+trait execfactory extends CompNodeFactory {
+  lazy val ld                = load
+  lazy val pdLoad            = pd(load)
+  lazy val flattenLoad       = flatten[String](ld)
+  lazy val gbkLoad           = gbk(ld)
+  lazy val cbLoad            = cb(ld)
+  lazy val cbLoadExec        = CombineExec(Ref(cbLoad), load)
+  lazy val loadExec          = LoadExec(Ref(ld))
+  lazy val gbkExec           = GroupByKeyExec(Ref(gbkLoad), loadExec)
+  lazy val gbkCombinerExec   = CombineExec(Ref(cbLoad), cbLoadExec)
+  lazy val gbkReducerExec    = GbkReducerExec(Ref(pdLoad), cbLoadExec)
+  lazy val flattenExec       = FlattenExec(Ref(flattenLoad), Seq(loadExec))
+  lazy val pdExec            = MapperExec(Ref(pdLoad), loadExec)
 }

@@ -21,6 +21,7 @@ import core._
 import exec._
 import util.UniqueInt
 
+/*
 /* Execution plan intermediate representation. */
 object AST {
 
@@ -120,7 +121,7 @@ object AST {
       (implicit mK:  Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
                 mV:  Manifest[V], wtV: WireFormat[V],
                 mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
-    extends Node[(K, V), Arr] with CombinerLike[V] with ReducerLike[K, V, (K, V), Unit] {
+    extends Node[(K, V), Arr] {
 
     def mkTaggedCombiner(tag: Int) = new TaggedCombiner[V](tag) {
       def combine(x: V, y: V): V = f(x, y)
@@ -300,3 +301,4 @@ object AST {
     }
   }
 }
+*/

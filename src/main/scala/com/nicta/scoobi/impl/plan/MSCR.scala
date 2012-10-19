@@ -21,6 +21,7 @@ import io.DataSink
 import io.DataSource
 import exec._
 
+/*
 object MSCRGraph {
 
   /* 
@@ -181,3 +182,4 @@ object Empty extends CRPipe
 case class JustCombiner(combiner: AST.Combiner[_,_]) extends CRPipe
 case class JustReducer(reducer: AST.GbkReducer[_,_,_,_], env: Env[_]) extends CRPipe
 case class CombinerReducer(combiner: AST.Combiner[_,_], reducer: AST.Reducer[_,_,_,_], env: Env[_]) extends CRPipe
+*/

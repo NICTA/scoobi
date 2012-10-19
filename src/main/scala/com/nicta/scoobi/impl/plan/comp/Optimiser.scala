@@ -43,7 +43,7 @@ trait Optimiser extends CompNodes {
    *       Flatten
    */
   def flattenSink = everywhere(rule {
-    case p @ ParallelDo(Flatten(ins),_,_,_,_,_,_,_) => Flatten(ins.map(i => p.copy(in = i)))
+    case p @ ParallelDo(Flatten(ins),_,_,_,_,_,_,_,_,_,_) => Flatten(ins.map(i => p.copy(in = i)))
   })
 
   /**
@@ -69,8 +69,8 @@ trait Optimiser extends CompNodes {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey(_),_,_,_) => c
-    case c: Combine[_,_]                  => c.toParallelDo
+    case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c
+    case c: Combine[_,_]                         => c.toParallelDo
   })
 
   /**
@@ -85,7 +85,7 @@ trait Optimiser extends CompNodes {
    * This rule is repeated until nothing can be flattened anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2 @ ParallelDo(_,_,_,_,_,_,_,_),_,_,_,false,_,_,_) => p2.fuse(p1)(p1.wfb, p1.wfe)
+    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,false,_,_,_,_,_,_) => p2.fuse(p1)(p1.mfb, p1.wfb, p1.mfe, p1.wfe)
   }))
 
   /**
@@ -101,8 +101,8 @@ trait Optimiser extends CompNodes {
    */
   def groupByKeySplit = everywhere(rule {
     // I think that this case is redundant with the flattenSplit rule
-    case g @ GroupByKey(f @ Flatten(ins)) => g.copy(in = f.copy())
-    case g @ GroupByKey(_)                => g.copy()
+    case g @ GroupByKey1(f: Flatten[_]) => g.copy(in = f.copy())
+    case g: GroupByKey[_,_]             => g.copy()
   })
 
   /**

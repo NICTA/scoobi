@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package impl
 package plan
 
+/*
 object DGraph {
 
   /**
@@ -134,3 +135,4 @@ class DGraph(val inputs:  Set[Smart.DComp[_, _ <: Shape]],
 
   }
 }
+*/

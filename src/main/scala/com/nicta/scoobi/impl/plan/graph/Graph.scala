@@ -22,6 +22,7 @@ import core._
 import exec._
 import util.UniqueInt
 
+/*
 /* Execution plan intermediate representation. */
 object Graph {
 
@@ -323,3 +324,4 @@ object Graph {
     }
   }
 }
+*/

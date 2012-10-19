@@ -16,8 +16,12 @@
 package com.nicta.scoobi
 package core
 
-/** Interface for specifying parallel operation over DLists in the absence of an
-  * environment. */
+import impl.exec.TaggedReducer
+
+/**
+ * Interface for specifying parallel operation over DLists in the absence of an
+ * environment
+ */
 trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   def setup()
   def process(input: A, emitter: Emitter[B])
@@ -28,7 +32,8 @@ trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   final def cleanup(env: Unit, emitter: Emitter[B]) { cleanup(emitter) }
 }
 
-/**Interface for specifying parallel operation over DLists. The semantics
+/**
+ * Interface for specifying parallel operation over DLists. The semantics
  * of DoFn lifecycle are as follows:
  *
  * For a given chunk of DList elements:
@@ -37,18 +42,29 @@ trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
  * 3. 'cleanup' will be called.
  *
  * These 3 steps encapsulate the entire life-cycle of a DoFn. A DoFn object
- * will not be referenced after these steps. */
-trait EnvDoFn[A, B, E] {
+ * will not be referenced after these steps
+ */
+trait EnvDoFn[A, B, E] { outer =>
   def setup(env: E)
-
   def process(env: E, input: A, emitter: Emitter[B])
-
   def cleanup(env: E, emitter: Emitter[B])
+
+  def makeTaggedReducer(tag: Int, mfb: Manifest[_], wfb: WireFormat[_]) =
+    new TaggedReducer(tag, mfb, wfb) {
+      def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
+      def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
+        outer.setup(env.asInstanceOf[E])
+        outer.process(env.asInstanceOf[E], (key, values).asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
+      }
+      def cleanup(env: Any, emitter: Emitter[Any]) { outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]]) }
+    }
 }
 
 
-/** Interface for specifying parallel operation over DLists in the absence of an
- * environment with an do-nothing setup and cleanup phases. */
+/**
+ * Interface for specifying parallel operation over DLists in the absence of an
+ * environment with an do-nothing setup and cleanup phases
+ */
 trait BasicDoFn[A, B] extends DoFn[A, B] {
   def setup() {}
   def cleanup(emitter: Emitter[B]) {}

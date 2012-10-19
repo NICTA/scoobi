@@ -19,7 +19,6 @@ package plan
 
 import io._
 import exec._
-import plan.Smart._
 import util.Pretty
 
 /*
@@ -27,16 +26,6 @@ import util.Pretty
  *
  * The C suffix on CGbkOutputChannel, etc, is for converted.
  */
-import impl.plan.{GbkOutputChannel     => CGbkOutputChannel,
-                  BypassOutputChannel  => CBypassOutputChannel,
-                  MapperInputChannel   => CMapperInputChannel,
-                  StraightInputChannel => CStraightInputChannel,
-                  FlattenOutputChannel => CFlattenOutputChannel,
-                  InputChannel         => CInputChannel,
-                  OutputChannel        => COutputChannel,
-                  MSCR                 => CMSCR }
-
-
 /*
  * === A high-level overview of MSCR conversion ===
  *
@@ -92,6 +81,8 @@ import impl.plan.{GbkOutputChannel     => CGbkOutputChannel,
  * of GroupByKey nodes are related if for each GroupByKey node, n, in the collection, n is related
  * to at least one other GroupByKey node in the collection. See the comments for findRelated.
  */
+
+/*
 object Intermediate {
 
   /*
@@ -751,3 +742,4 @@ object Intermediate {
     }
   }
 }
+*/

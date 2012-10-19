@@ -119,7 +119,7 @@ case class OutputTestFile[T](list: DList[T])
   def outputFiles     = getFiles(outputDir)
 
   lazy val lines: Either[String, Seq[String]] = {
-    persist(configuration)(toTextFile(list, outputPath, overwrite = true))
+//    persist(configuration)(toTextFile(list, outputPath, overwrite = true))
     if (outputFiles.isEmpty) Left("There are no output files in "+ outputDir.getName)
     else                     Right(Source.fromFile(outputFiles.head).getLines.toSeq)
   }

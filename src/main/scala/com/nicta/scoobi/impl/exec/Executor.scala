@@ -18,13 +18,12 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.fs.FileSystem
-import org.apache.hadoop.fs.Path
-import scala.collection.mutable.{Set => MSet}
 
 import io.DataSink
 import plan._
 import application.ScoobiConfiguration
+import comp.CompNode
+import graph.Mscr
 
 /** The only state required to be passed around during execution of the
   * Scoobi compute graph.
@@ -32,14 +31,14 @@ import application.ScoobiConfiguration
   * @param computeTable Which nodes have already been computed.
   * @param refcnts Number of nodes that are still to consume the output of an MSCR. */
 case class ExecState(
-    conf: ScoobiConfiguration,
-    computeTable: Map[AST.Node[_, _ <: Shape], Option[_]],
-    refcnts: Map[BridgeStore[_], Int],
-    step: Int,
-    environments: Map[AST.Node[_, _ <: Shape], Env[_]],
-    mscrEnvs: Set[AST.Node[_, _ <: Shape]],
-    mscrs: Set[MSCR],
-    matTable: Map[AST.Node[_, _ <: Shape], BridgeStore[_]]) {
+    conf        : ScoobiConfiguration,
+    computeTable: Map[CompNode, Option[_]]      = Map(),
+    refcnts     : Map[BridgeStore[_], Int]      = Map(),
+    step        : Int                           = 0,
+    environments: Map[CompNode, Env[_]]         = Map(),
+    mscrEnvs    : Set[CompNode]                 = Set(),
+    mscrs       : Set[Mscr]                     = Set(),
+    matTable    : Map[CompNode, BridgeStore[_]] = Map()) {
 
   def incStep: ExecState =
     ExecState(conf, computeTable, refcnts, step + 1, environments, mscrEnvs, mscrs, matTable)
@@ -47,10 +46,10 @@ case class ExecState(
   def decRefcnt(store: BridgeStore[_]): ExecState =
     ExecState(conf, computeTable, refcnts + (store -> (refcnts(store) - 1)), step, environments, mscrEnvs, mscrs, matTable)
 
-  def addComputedArr(node: AST.Node[_, _ <: Shape]): ExecState =
+  def addComputedArr(node: CompNode): ExecState =
     ExecState(conf, computeTable + (node -> None), refcnts, step, environments, mscrEnvs, mscrs, matTable)
 
-  def addComputedExp[E](node: AST.Node[_, _ <: Shape], exp: E): ExecState =
+  def addComputedExp[E](node: CompNode, exp: E): ExecState =
     ExecState(conf, computeTable + (node -> Some(exp)), refcnts, step, environments, mscrEnvs, mscrs, matTable)
 
   def isReferenced(store: BridgeStore[_]) = refcnts(store) != 0
@@ -62,9 +61,10 @@ case class ExecState(
 object Executor {
   lazy val logger = LogFactory.getLog("scoobi.Job")
 
+/*
   /** Prepare for execution of the graph. */
   def prepare(mscrGraph: MSCRGraph, conf: ScoobiConfiguration): ExecState = {
-
+    ExecState(conf)
     val mscrs   = mscrGraph.mscrs
     val outputs = mscrGraph.outputs
     val matTable = mscrGraph.matTable
@@ -218,4 +218,5 @@ object Executor {
       (exp, st1)
     }
   }
+    */
 }

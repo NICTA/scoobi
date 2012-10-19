@@ -32,6 +32,12 @@ trait ExecutionPlan extends MscrGraph {
   type Term = Any
 
   /**
+   * create an executable Mscr from an original one
+   */
+  def createExecutableMscr(mscr: Mscr): MscrExec =
+    createExecutionPlan(Seq(mscr)).head.asInstanceOf[MscrExec]
+
+  /**
    * create an execution plan for a set of Mscrs
    */
   def createExecutionPlan(mscrs: Seq[Mscr]): Seq[Term] =

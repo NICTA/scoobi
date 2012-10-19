@@ -14,6 +14,7 @@ import org.kiama.attribution.Attribution
 import CompNode._
 import control.Functions._
 import WireFormat._
+import org.specs2.specification.Scope
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
 
@@ -60,12 +61,13 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 /**
  * Creation functions
  */
-trait CompNodeFactory {
+trait CompNodeFactory extends Scope {
+  lazy val stringManifest = implicitly[Manifest[String]]
   def load                                   = Load(ConstantStringDataSource("start"))
   def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
   def parallelDo(in: CompNode)               = pd(in)
   def rt                                     = Return("", wireFormat[String])
-  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2, wireFormat[String], wireFormat[String])
+  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2, stringManifest, stringManifest, wireFormat[String], wireFormat[String])
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
   def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]], wireFormat[String])
   def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a, wireFormat[String].asInstanceOf[WireFormat[A]])

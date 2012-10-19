@@ -18,49 +18,39 @@ package impl
 package plan
 
 import core._
+import comp._
 import io.DataSource
-
+import WireFormat._
 
 /** An implemenentation of the DList trait that builds up a DAG of computation nodes. */
-class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A, Arr]) extends DList[A] {
-
-  val m = implicitly[Manifest[A]]
-  val wf = implicitly[WireFormat[A]]
+class DListImpl[A] private[scoobi] (comp: CompNode)(implicit val mf: Manifest[A], val wf: WireFormat[A]) extends DList[A] {
 
   private[scoobi]
-  def this(source: DataSource[_, _, A]) = {
-    this(Smart.ParallelDo(
-      Smart.Load(source),
-      UnitDObject.getComp,
-      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } }))
-  }
-
-  private[scoobi]
-  def getComp: Smart.DComp[A, Arr] = comp
+  def getComp: CompNode = comp
 
   def parallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(Smart.ParallelDo(comp, env.getComp, dofn))
+    new DListImpl(ParallelDo[A, B, E](comp, env.getComp, dofn, groupBarrier = false, fuseBarrier = false, manifest[A], wireFormat[A], manifest[B], wireFormat[B], manifest[E], wireFormat[E]))
 
-  def ++(ins: DList[A]*): DList[A] = new DListImpl(Smart.Flatten(List(comp) ::: ins.map(_.getComp).toList))
+  def ++(ins: DList[A]*): DList[A] = new DListImpl(Flatten(List(comp) ::: ins.map(_.getComp).toList))
 
   def groupByKey[K, V]
-      (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
-                mK:   Manifest[K],
-                wtK:  WireFormat[K],
-                grpK: Grouping[K],
-                mV:   Manifest[V],
-                wtV:  WireFormat[V]): DList[(K, Iterable[V])] = new DListImpl(Smart.GroupByKey(comp))
+      (implicit ev:   DComp[A, Arr] <:< DComp[(K, V), Arr],
+                mfk:  Manifest[K],
+                wfk:  WireFormat[K],
+                gpk:  Grouping[K],
+                mfv:  Manifest[V],
+                wfv:  WireFormat[V]): DList[(K, Iterable[V])] = new DListImpl(GroupByKey(comp, mfk, wfk, gpk, mfv, wfv))
 
   def combine[K, V]
       (f: (V, V) => V)
-      (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K,Iterable[V]), Arr],
-                mK:   Manifest[K],
-                wtK:  WireFormat[K],
-                grpK: Grouping[K],
-                mV:   Manifest[V],
-                wtV:  WireFormat[V]): DList[(K, V)] = new DListImpl(Smart.Combine(comp, f))
+      (implicit ev:   DComp[A, Arr] <:< DComp[(K,Iterable[V]), Arr],
+                mfk:  Manifest[K],
+                wfk:  WireFormat[K],
+                gpk:  Grouping[K],
+                mfv:  Manifest[V],
+                wfv:  WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, mfk, wfk, gpk, mfv, wfv))
 
-  def materialize: DObject[Iterable[A]] = new DObjectImpl(Smart.Materialize(comp))
+  def materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, mf, wf))
 
   def groupBarrier: DList[A] = {
     val dofn = new DoFn[A, A] {
@@ -68,6 +58,19 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
       def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
       def cleanup(emitter: Emitter[A]) {}
     }
-    new DListImpl(Smart.ParallelDo(comp, UnitDObject.getComp, dofn, groupBarrier = true))
+    new DListImpl(ParallelDo(comp, UnitDObject.getComp, dofn, groupBarrier = true, fuseBarrier = false, mf, wf, mf, wf, manifest[Unit], wireFormat[Unit]))
   }
+}
+
+private[scoobi]
+object DListImpl {
+  def apply[A : Manifest : WireFormat](source: DataSource[_, _, A]) =  {
+    new DListImpl(ParallelDo[A, A, Unit](Load(source), UnitDObject.getComp,
+      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
+      groupBarrier = false, fuseBarrier = false,
+      manifest[A], wireFormat[A],
+      manifest[A], wireFormat[A],
+      manifest[Unit], wireFormat[Unit]))
+  }
+
 }

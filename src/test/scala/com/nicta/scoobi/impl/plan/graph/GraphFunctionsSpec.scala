@@ -3,7 +3,6 @@ package impl
 package plan
 package graph
 
-import org.specs2.specification.Scope
 import comp.{Return, CompNode, CompNodeFactory}
 import CompNode._
 import collection._
@@ -96,7 +95,7 @@ trait nodes extends factory {
   lazy val fl1  = flatten(gbk1, pd1)
   lazy val mat1 = mt(fl1)
 }
-trait factory extends Scope with CompNodeFactory with MscrAttributes {
+trait factory extends CompNodeFactory with MscrAttributes {
   override def load                                   = init(super.load)
   override def flatten[A](nodes: CompNode*)           = init(super.flatten(nodes:_*))
   override def parallelDo(in: CompNode)               = init(super.parallelDo(in))

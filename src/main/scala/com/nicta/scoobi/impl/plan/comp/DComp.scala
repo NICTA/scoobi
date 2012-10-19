@@ -4,18 +4,16 @@ package plan
 package comp
 
 import org.kiama.attribution.Attributable
-import core.{WireFormat, EnvDoFn, Emitter, BasicDoFn}
+import core._
 import io.DataSource
 import WireFormat._
 import org.kiama.attribution.Attribution._
-import plan.Exp
-import exec.BridgeStore
-import plan.Arr
+import exec._
 import collection._
 import IdSet._
 import scala.collection.immutable.SortedSet
-
 import control.Exceptions._
+
 /**
  * GADT for distributed list computation graph.
  */
@@ -31,13 +29,16 @@ trait CompNode extends Attributable {
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
  * all elements of an existing DComp and concatenating the results. */
-case class ParallelDo[A, B, E](in:               DComp[A, Arr],
-                               env:              DComp[E, Exp],
+case class ParallelDo[A, B, E](in:               CompNode,
+                               env:              CompNode,
                                dofn:             EnvDoFn[A, B, E],
                                groupBarrier:     Boolean = false,
                                fuseBarrier:      Boolean = false,
+                               implicit val mfa: Manifest[A],
                                implicit val wfa: WireFormat[A],
+                               implicit val mfb: Manifest[B],
                                implicit val wfb: WireFormat[B],
+                               implicit val mfe: Manifest[E],
                                implicit val wfe: WireFormat[E]) extends DComp[B, Arr] {
 
   override def equals(a: Any) = a match {
@@ -46,53 +47,78 @@ case class ParallelDo[A, B, E](in:               DComp[A, Arr],
   }
 
   override val toString = "ParallelDo ("+id+")" + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "") + " env: " + env
-  def fuse[C : WireFormat, F : WireFormat](p2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] =
-    ParallelDo.fuse[A, B, C, E, F](this, p2)(wfa, wfb, wireFormat[C], wfe, wireFormat[F])
+  def fuse[C, F](p2: ParallelDo[_, C, F])
+                (implicit mfc: Manifest[C],
+                          wfc: WireFormat[C],
+                          mff: Manifest[F],
+                          wff: WireFormat[F]): ParallelDo[A, C, (E, F)] =
+          ParallelDo.fuse[A, C, E, F](this, p2)(mfa, wfa, mfc, wfc, mfe, wfe, mff, wff)
 
   override lazy val dataSource = in.dataSource
+
+  def makeTaggedReducer(tag: Int) = dofn.makeTaggedReducer(tag, mfb, wfb)
 }
 
 object ParallelDo {
 
-  def fuse[A : WireFormat, B : WireFormat, C : WireFormat, E : WireFormat, F : WireFormat](pd1: ParallelDo[A, B, E], pd2: ParallelDo[B, C, F]): ParallelDo[A, C, (E, F)] = {
-    val ParallelDo(in1, env1, dofn1, gb1, _  , wfa, wfb, wfe) = pd1
-    val ParallelDo(in2, env2, dofn2, gb2, fb2, _   , wfc, wf)  = pd2
-    new ParallelDo(in1, fuseEnv(env1, env2), fuseDoFn(dofn1, dofn2), gb1 || gb2, fb2, wfa, wfc, wireFormat[(E, F)])
+  private[scoobi]
+  def fuse[A, C, E, F](pd1: ParallelDo[A, _, E], pd2: ParallelDo[_, C, F])
+                (implicit
+                 mfa: Manifest[A],
+                 wfa: WireFormat[A],
+                 mfc: Manifest[C],
+                 wfc: WireFormat[C],
+                 mfe: Manifest[E],
+                 wfe: WireFormat[E],
+                 mff: Manifest[F],
+                 wff: WireFormat[F]): ParallelDo[A, C, (E, F)] = {
+    new ParallelDo(pd1.in, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
+                   pd1.groupBarrier || pd2.groupBarrier,
+                   pd2.fuseBarrier,
+                   mfa, wfa, mfc, wfc,
+                   manifest[(E, F)], wireFormat[(E, F)])
   }
 
   /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
-  def fuseDoFn[X, Y, Z, F, G](f: EnvDoFn[X, Y, F], g: EnvDoFn[Y, Z, G]): EnvDoFn[X, Z, (F, G)] = new EnvDoFn[X, Z, (F, G)] {
+  private[scoobi]
+  def fuseDoFn[X, Z, F, G](f: EnvDoFn[X, Any, F], g: EnvDoFn[Any, Z, G]): EnvDoFn[X, Z, (F, G)] = new EnvDoFn[X, Z, (F, G)] {
     def setup(env: (F, G)) { f.setup(env._1); g.setup(env._2) }
 
     def process(env: (F, G), input: X, emitter: Emitter[Z]) {
-      f.process(env._1, input, new Emitter[Y] { def emit(value: Y) { g.process(env._2, value, emitter) } } )
+      f.process(env._1, input, new Emitter[Any] { def emit(value: Any) { g.process(env._2, value, emitter) } } )
     }
 
     def cleanup(env: (F, G), emitter: Emitter[Z]) {
-      f.cleanup(env._1, new Emitter[Y] { def emit(value: Y) { g.process(env._2, value, emitter) } })
+      f.cleanup(env._1, new Emitter[Any] { def emit(value: Any) { g.process(env._2, value, emitter) } })
       g.cleanup(env._2, emitter)
     }
   }
 
   /** Create a new environment by forming a tuple from two separate evironments.*/
-  def fuseEnv[F : WireFormat, G : WireFormat](fExp: DComp[F, Exp], gExp: DComp[G, Exp]): DComp[(F, G), Exp] =
-    Op(fExp, gExp, (f: F, g: G) => (f, g), wireFormat[(F, G)])
+  private[scoobi]
+  def fuseEnv[F : Manifest : WireFormat, G : Manifest : WireFormat](fExp: CompNode, gExp: CompNode): DComp[(F, G), Exp] =
+    Op(fExp, gExp, (f: F, g: G) => (f, g), manifest[(F, G)], wireFormat[(F, G)])
 }
 object ParallelDo1 {
   /** extract only the incoming node of this parallel do */
-  def unapply(pd: ParallelDo[_, _, _]): Option[DComp[_, Arr]] = Some(pd.in)
+  def unapply(pd: ParallelDo[_, _, _]): Option[CompNode] = Some(pd.in)
 }
 
 
 /** The Flatten node type specifies the building of a DComp that contains all the elements from
  * one or more existing DLists of the same type. */
-case class Flatten[A](ins: List[DComp[A, Arr]]) extends DComp[A, Arr] {
+case class Flatten[A](ins: List[CompNode]) extends DComp[A, Arr] {
   override val toString = "Flatten ("+id+")"
 }
 
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
-case class Combine[K, V](in: DComp[(K, Iterable[V]), Arr], f: (V, V) => V, implicit val wfk: WireFormat[K], implicit val wfv: WireFormat[V]) extends DComp[(K, V), Arr] {
+case class Combine[K, V](in: CompNode, f: (V, V) => V,
+                         implicit val mfk: Manifest[K],
+                         implicit val wfk: WireFormat[K],
+                         implicit val gpk: Grouping[K],
+                         implicit val mfv: Manifest[V],
+                         implicit val wfv: WireFormat[V]) extends DComp[(K, V), Arr] {
 
   override def equals(a: Any) = a match {
     case c: Combine[_,_] => in == c.in
@@ -108,21 +134,36 @@ case class Combine[K, V](in: DComp[(K, Iterable[V]), Arr], f: (V, V) => V, impli
     val dofn = new BasicDoFn[(K, Iterable[V]), (K, V)] {
       def process(input: (K, Iterable[V]), emitter: Emitter[(K, V)]) {
         val (key, values) = input
-        emitter.emit(key, values.reduce(f))
+        emitter.emit((key, values.reduce(f)))
       }
     }
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo(in, Return((), wireFormat[Unit]), dofn, false, false, wireFormat[(K, Iterable[V])], wireFormat[(K, V)], wireFormat[Unit])
+    ParallelDo(in, Return((), manifest[Unit], wireFormat[Unit]), dofn, false, false,
+      manifest[(K, Iterable[V])], wireFormat[(K, Iterable[V])],
+      manifest[(K, V)], wireFormat[(K, V)],
+      manifest[Unit],   wireFormat[Unit])
+  }
+
+  def makeTaggedCombiner(tag: Int) = new TaggedCombiner[V](tag, mfv, wfv) {
+    def combine(x: V, y: V): V = f(x, y)
   }
 }
 object Combine1 {
-  def unapply(combine: Combine[_, _]): Option[DComp[(_, Iterable[_]), Arr]] = Some(combine.in)
+  def unapply(combine: Combine[_, _]): Option[CompNode] = Some(combine.in)
 }
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
  * key-value DComp by key. */
-case class GroupByKey[K, V](in: DComp[(K, V), Arr]) extends DComp[(K, Iterable[V]), Arr] {
+case class GroupByKey[K, V](in: CompNode,
+                            implicit val mfk: Manifest[K],
+                            implicit val wfk: WireFormat[K],
+                            implicit val gpk: Grouping[K],
+                            implicit val mfv: Manifest[V],
+                            implicit val wfv: WireFormat[V]) extends DComp[(K, Iterable[V]), Arr] {
   override val toString = "GroupByKey ("+id+")"
+}
+object GroupByKey1 {
+  def unapply(gbk: GroupByKey[_, _]): Option[CompNode] = Some(gbk.in)
 }
 
 /** The Load node type specifies the creation of a DComp from some source other than another DComp.
@@ -133,19 +174,26 @@ case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A](in: A, implicit val wf: WireFormat[A]) extends DComp[A, Exp] {
+case class Return[A](in: A,
+                     implicit val mf: Manifest[A],
+                     implicit val wf: WireFormat[A]) extends DComp[A, Exp] {
   override def equals(a: Any) = a match {
     case r: Return[_] => in == r.in
     case _            => false
   }
   override val toString = "Return ("+id+")"
 }
+object Return {
+  def unit = Return((), manifest[Unit], wireFormat[Unit])
+}
 object Return1 {
   def unapply(ret: Return[_]): Option[_] = Some(ret.in)
 }
 
 /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A](in: DComp[A, Arr], implicit val wf: WireFormat[A]) extends DComp[Iterable[A], Exp] {
+case class Materialize[A](in: CompNode,
+                          implicit val mf: Manifest[A],
+                          implicit val wf: WireFormat[A]) extends DComp[Iterable[A], Exp] {
   override def equals(a: Any) = a match {
     case mat: Materialize[_] => in == mat.in
     case _                   => false
@@ -153,12 +201,14 @@ case class Materialize[A](in: DComp[A, Arr], implicit val wf: WireFormat[A]) ext
   override val toString = "Materialize ("+id+")"
 }
 object Materialize1 {
-  def unapply(mat: Materialize[_]): Option[DComp[_, Arr]] = Some(mat.in)
+  def unapply(mat: Materialize[_]): Option[CompNode] = Some(mat.in)
 }
 
 /** The Op node type specifies the building of Exp DComp by applying a function to the values
  * of two other Exp DComp nodes. */
-case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C, implicit val wf: WireFormat[C]) extends DComp[C, Exp] {
+case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C,
+                       implicit val mf: Manifest[C],
+                       implicit val wf: WireFormat[C]) extends DComp[C, Exp] {
   override def equals(a: Any) = a match {
     case o: Op[_,_,_] => in1 == o.in1 && in2 == o.in2
     case _            => false
@@ -167,7 +217,7 @@ case class Op[A, B, C](in1: DComp[A, Exp], in2: DComp[B, Exp], f: (A, B) => C, i
   override val toString = "Op ("+id+")"
 }
 object Op1 {
-  def unapply(op: Op[_, _, _]): Option[(DComp[_, Exp], DComp[_, Exp])] = Some(op.in1, op.in2)
+  def unapply(op: Op[_, _, _]): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
 }
 
 object CompNode extends CompNodes
@@ -209,15 +259,15 @@ trait CompNodes {
   /** return true if a CompNodeis a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p: ParallelDo[_,_,_] => p }
   /** return true if a CompNodeis a GroupByKey */
-  lazy val isGroupByKey: CompNode => Boolean = { case GroupByKey(_) => true; case other => false }
+  lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey[_,_] => true; case other => false }
   /** return true if a CompNodeis a GroupByKey */
-  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk @ GroupByKey(_) => gbk }
+  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk: GroupByKey[_,_] => gbk }
   /** return true if a CompNodeis a Materialize */
-  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_,_) => true; case other => false }
+  lazy val isMaterialize: CompNode => Boolean = { case Materialize(_,_,_) => true; case other => false }
   /** return true if a CompNodeis a Return */
-  lazy val isReturn: CompNode => Boolean = { case Return(_,_) => true; case other => false }
+  lazy val isReturn: CompNode => Boolean = { case Return(_,_,_) => true; case other => false }
   /** return true if a CompNode is an Op */
-  lazy val isOp: CompNode => Boolean = { case Op(_,_,_,_) => true; case other => false }
+  lazy val isOp: CompNode => Boolean = { case Op(_,_,_,_,_) => true; case other => false }
   /** return true if a CompNode has a cycle in its graph */
   lazy val isCyclic: CompNode => Boolean = (n: CompNode) => tryKo(n -> descendents)
 

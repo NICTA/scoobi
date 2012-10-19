@@ -19,35 +19,18 @@ package exec
 
 import core._
 
-/** A producer of a TaggedReducer. */
-trait ReducerLike[K, V, B, E] {
-  def mkTaggedReducer(tag: Int): TaggedReducer[K, V, B, E]
-}
-
-
 /** A wrapper for a 'reduce' function tagged for a specific output channel. */
-abstract case class TaggedReducer[K, V, B, E]
-    (tag: Int)
-    (implicit mK: Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
-              mV: Manifest[V], wtV: WireFormat[V],
-              val mB: Manifest[B], val wtB: WireFormat[B],
-              mE: Manifest[E], wtE: WireFormat[E]) {
-
+abstract class TaggedReducer(val tag: Int, val mfb: Manifest[_], val wfb: WireFormat[_]) {
   /** The actual 'reduce' function that will be by Hadoop in the reducer task. */
-  def setup(env: E)
-  def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B])
-  def cleanup(env: E, emitter: Emitter[B])
+  def setup(env: Any)
+  def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any])
+  def cleanup(env: Any, emitter: Emitter[Any])
 }
 
 /** A TaggedReducer that is an identity reducer. */
-class TaggedIdentityReducer[B : Manifest : WireFormat](tag: Int)
-  extends TaggedReducer[Int, B, B, Unit](tag)(implicitly[Manifest[Int]], implicitly[WireFormat[Int]], implicitly[Grouping[Int]],
-                                              implicitly[Manifest[B]], implicitly[WireFormat[B]],
-                                              implicitly[Manifest[B]], implicitly[WireFormat[B]],
-                                              implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]]) {
-
-  /** Identity reducing - ignore the key. */
-  def setup(env: Unit) {}
-  def reduce(env: Unit, key: Int, values: Iterable[B], emitter: Emitter[B]) { values.foreach { emitter.emit(_) } }
-  def cleanup(env: Unit, emitter: Emitter[B]) {}
+class TaggedIdentityReducer(tag: Int, mb: Manifest[_], wfb: WireFormat[_]) extends TaggedReducer(tag, mb, wfb) {
+  def setup(env: Any) {}
+  def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any])  { values.foreach { emitter.emit(_) } }
+  def cleanup(env: Any, emitter: Emitter[Any]) {}
 }
+

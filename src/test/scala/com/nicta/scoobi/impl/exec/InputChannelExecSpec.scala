@@ -4,7 +4,7 @@ package exec
 
 import testing.mutable.UnitSpecification
 
-class InputChannelExecSpec extends UnitSpecification with CompNodeExecFactory {
+class InputChannelExecSpec extends UnitSpecification with execfactory {
   "A MapperInputChannelExec has a data source which must be the source of one parallel do in the channel" >> {
     (new MapperInputChannelExec(Seq(pdExec)).source: Any) === load.source
   }
@@ -14,4 +14,7 @@ class InputChannelExecSpec extends UnitSpecification with CompNodeExecFactory {
   "A StraightInputChannelExec has a data source which must be the source of the input node of the channel" >> {
     (new StraightInputChannelExec(flattenExec).source: Any) must beLike { case BridgeStore() => ok }
   }
+  
+  "Input channels must configure the MapReduceJob".txt
+  "A MapperInputChannelExec" >> pending
 }

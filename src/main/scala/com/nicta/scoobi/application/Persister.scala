@@ -22,11 +22,11 @@ import scala.collection.immutable.DefaultMap
 import core._
 import io.DataSink
 import impl.plan._
+import comp.CompNode
 import impl.exec._
-import Smart._
 import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
-import scalaz.{Scalaz}
+import scalaz.Scalaz
 import Scalaz._
 
 /** Type class for things that can be persisted. Mechanism to allow tuples of DLists and
@@ -221,14 +221,14 @@ object Persister extends LowImplicitsPersister {
   }
 
 
-  private def createPlan(outputs: List[(Smart.DComp[_, _ <: Shape], Option[DataSink[_,_,_]])], conf: ScoobiConfiguration)
-    : (ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]) = {
-
+  private
+  def createPlan(outputs: List[(CompNode, Option[DataSink[_,_,_]])], conf: ScoobiConfiguration): (ExecState, Map[CompNode, ExecutionNode]) = {
+/*
     /* Produce map of all unique outputs and their corresponding persisters. */
-    val rawOutMap: List[(Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]])] =
-      outputs.groupBy(_._1)
-             .map(t => (t._1, t._2.map(_._2).flatten.toSet))
-             .toList
+    val rawOutMap: List[(CompNode, Set[DataSink[_,_,_]])] =
+      outputs.groupBy(_._1).
+              map(t => (t._1, t._2.map(_._2).flatten.toSet)).
+              toList
 
     logger.debug("Raw graph")
     rawOutMap foreach { case (c, s) => logger.debug("(" + c.toVerboseString + ", " + s + ")") }
@@ -298,6 +298,8 @@ object Persister extends LowImplicitsPersister {
     }
 
     (st, nodeMap)
+    */
+    (ExecState(conf), Map())
   }
 }
 
@@ -370,20 +372,21 @@ import scalaz.State
 /** Type class for persisting something. */
 sealed trait PFn[A] {
   type Ret
-  def plan(x: A): (Smart.DComp[_, _ <: Shape], Option[DataSink[_,_,_]])
-  def execute(x: A): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), Ret]
+  def plan(x: A): (CompNode, Option[DataSink[_,_,_]])
+  def execute(x: A): State[(ExecState, Map[CompNode, ExecutionNode]), Ret]
 }
 
 
 /** PFn type class instances for DLists (i.e. DListPersister) and DObjects. */
 object PFn {
 
+  /*
   implicit def DListPersister[A] = new PFn[DListPersister[A]] {
     type Ret = Unit
     def plan(x: DListPersister[A]) = (x.dlist.getComp, Some(x.sink))
-    def execute(x: DListPersister[A]): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), Unit] =
+    def execute(x: DListPersister[A]): State[(ExecState, Map[CompNode, ExecutionNode]), Unit] =
       State({ case(st, nodeMap) =>
-        val node: AST.Node[A, _ <: Shape] = nodeMap(x.dlist.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
+        val node: ExecutionNode = nodeMap(x.dlist.getComp).asInstanceOf[ExecutionNode]
         ((), (Executor.executeArrOutput(node, x.sink, st), nodeMap))
       })
   }
@@ -391,11 +394,12 @@ object PFn {
   implicit def DObjectPersister[A] = new PFn[DObject[A]] {
     type Ret = A
     def plan(x: DObject[A]) = (x.getComp, None)
-    def execute(x: DObject[A]): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), A] =
+    def execute(x: DObject[A]): State[(ExecState, Map[CompNode, ExecutionNode]), A] =
       State({ case(st, nodeMap) =>
-        val node: AST.Node[A, _ <: Shape] = nodeMap(x.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
+        val node: ExecutionNode = nodeMap(x.getComp).asInstanceOf[ExecutionNode]
         val (e, stU) = Executor.executeExp(node, st)
         (e, (stU, nodeMap))
       })
   }
+  */
 }

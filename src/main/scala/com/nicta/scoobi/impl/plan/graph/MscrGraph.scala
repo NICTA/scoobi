@@ -33,7 +33,7 @@ trait MscrGraph extends CompNodes {
 
   /** A gbk mscr is a mscr for a group by key + input and output channels */
   lazy val gbkMscr: CompNode => Option[Mscr] = attr {
-    case g @ GroupByKey(in) => {
+    case g: GroupByKey[_,_] => {
       val related = (g -> relatedGbks)
       (g -> baseGbkMscr).map(m => m.addChannels((g -> inputChannels)  ++ related.flatMap(_ -> inputChannels),
                                                 (g -> outputChannels) ++ related.flatMap(_ -> outputChannels)))
@@ -42,7 +42,7 @@ trait MscrGraph extends CompNodes {
   }
   /** there must be a new Mscr for each related GroupByKey */
   lazy val baseGbkMscr: CompNode => Option[Mscr] = circular(Option(Mscr.empty)) {
-    case g @ GroupByKey(in) => (g -> relatedGbks).flatMap(_ -> baseGbkMscr).headOption.orElse(Option(Mscr.empty))
+    case g: GroupByKey[_,_] => (g -> relatedGbks).flatMap(_ -> baseGbkMscr).headOption.orElse(Option(Mscr.empty))
     case other              => None
   }
 
@@ -92,9 +92,9 @@ trait MscrGraph extends CompNodes {
    */
   lazy val gbkOutputChannels: CompNode => Set[GbkOutputChannel] =
     attr {
-      case g @ GroupByKey(in @ Flatten(_)) => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
-      case g @ GroupByKey(in)              => Set(GbkOutputChannel(g, combiner = g -> combiner, reducer = g -> reducer))
-      case other                           => Set()
+      case g @ GroupByKey1(in @ Flatten(_)) => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
+      case g: GroupByKey[_,_]               => Set(GbkOutputChannel(g, combiner = g -> combiner, reducer = g -> reducer))
+      case other                            => Set()
     }
 
   /**
@@ -120,11 +120,11 @@ trait MscrGraph extends CompNodes {
    */
   lazy val isReducer: CompNode => Boolean =
     attr {
-      case pd @ ParallelDo(_, mt: Materialize[_],_,_,_,_,_,_) if envInSameMscr(pd) => false
-      case pd @ ParallelDo(cb: Combine[_,_],_,_,true,_,_,_,_)                      => true
-      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,true,_,_,_)                      => true
-      case pd: ParallelDo[_,_,_]                                                   => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
-      case other                                                                   => false
+      case pd @ ParallelDo(_, mt: Materialize[_],_,_,_,_,_,_,_,_,_) if envInSameMscr(pd) => false
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,true,_,_,_,_,_,_,_)                      => true
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,true,_,_,_,_,_,_)                      => true
+      case pd: ParallelDo[_,_,_]                                                         => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case other                                                                         => false
     }
   /**
    * @return true if a parallel do and its environment are computed by the same mscr
@@ -144,21 +144,21 @@ trait MscrGraph extends CompNodes {
   /** compute if a node is a combiner of a GroupByKey, i.e. the direct output of a GroupByKey */
   lazy val isCombiner: CompNode => Boolean =
     attr {
-      case Combine(GroupByKey(_),_,_,_) => true
-      case other                        => false
+      case Combine(g: GroupByKey[_,_],_,_,_,_,_,_) => true
+      case other                                   => false
     }
 
   /** compute the combiner of a Gbk */
   lazy val combiner: GroupByKey[_,_] => Option[Combine[_,_]] =
     attr {
-      case g @ GroupByKey(_) if hasParent(g) && (g.parent.asNode -> isCombiner) => Some(g.parent.asInstanceOf[Combine[_,_]])
-      case other                                                                => None
+      case g @ GroupByKey1(_) if hasParent(g) && (g.parent.asNode -> isCombiner) => Some(g.parent.asInstanceOf[Combine[_,_]])
+      case other                                                                 => None
     }
 
   /** compute the reducer of a Gbk */
   lazy val reducer: GroupByKey[_,_] => Option[ParallelDo[_,_,_]] =
     attr {
-      case g @ GroupByKey(_) =>
+      case g : GroupByKey[_,_] =>
         (g -> parentOpt) match {
           case Some(pd: ParallelDo[_,_,_]) if pd -> isReducer => Some(pd)
           case Some(c:  Combine[_,_])                         => (c -> parentOpt).collect { case pd @ ParallelDo1(_) if pd -> isReducer => pd }
@@ -176,8 +176,8 @@ trait MscrGraph extends CompNodes {
 
   /** compute if a node is the input of a Gbk, but not a Gbk */
   lazy val isGbkInput: CompNode => Boolean = attr {
-    case GroupByKey(_) => false
-    case node          => (node -> outputs).exists(isGroupByKey)
+    case GroupByKey1(_) => false
+    case node           => (node -> outputs).exists(isGroupByKey)
   }
 
   /**
@@ -187,11 +187,11 @@ trait MscrGraph extends CompNodes {
    */
   lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] =
     attr {
-      case g @ GroupByKey(Flatten(ins))          => (g -> siblings).collect(isAGroupByKey) ++
-                                                     ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
-      case g @ GroupByKey(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
-                                                    (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
-      case g @ GroupByKey(_)                     => (g -> siblings).collect(isAGroupByKey)
+      case g @ GroupByKey1(Flatten(ins))          => (g -> siblings).collect(isAGroupByKey) ++
+                                                      ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
+      case g @ GroupByKey1(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
+                                                     (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
+      case g @ GroupByKey1(_)                     => (g -> siblings).collect(isAGroupByKey)
     }
 
   private def addSinks(sinks: SinksMap) = (m: Mscr) => m.addSinks(sinks)

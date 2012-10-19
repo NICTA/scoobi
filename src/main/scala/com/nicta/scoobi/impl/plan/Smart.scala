@@ -28,7 +28,7 @@ import exec.BridgeStore
 import exec.TaggedIdentityMapper
 import util.UniqueInt
 
-
+/*
 /** Abstract syntax of tree of primitive "language". */
 object Smart {
 
@@ -976,3 +976,5 @@ object Smart {
 trait KVLike[K,V] {
   def mkTaggedIdentityMapper(tags: Set[Int]): TaggedIdentityMapper[K,V]
 }
+
+*/

@@ -154,8 +154,8 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   def nodesAreDistinct(nodes: CompNode*) = nodes.map(_.id).distinct.size === nodes.size
 
   def collectFlatten          = collectl { case f @ Flatten(_) => f }
-  def collectCombine          = collectl { case c @ Combine(_,_,_,_) => c }
-  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey(_),_,_,_) => c }
+  def collectCombine          = collectl { case c @ Combine(_,_,_,_,_,_) => c }
+  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey(_),_,_,_,_,_) => c }
   def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
   def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,false,_,_,_) => p }
   def collectGroupByKey       = collectl { case g @ GroupByKey(_) => g }

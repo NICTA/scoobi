@@ -25,7 +25,6 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
-
 /* An output store from a MapReduce job. */
 trait DataSink[K, V, B] { outer =>
   /** The OutputFormat specifying the type of output for this DataSink. */

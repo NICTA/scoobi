@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package core
 
 import impl.plan._
+import comp.{DComp, CompNode}
 import io.func.FunctionInput
 import io.DataSource
 import io.seq.SeqInput
@@ -33,15 +34,11 @@ import io.seq.SeqInput
  * - materialize: transforms a distributed list into a non-distributed list
  */
 trait DList[A] {
-
-  /**Manifest typeclass constraint. */
-  implicit def m: Manifest[A]
-
-  /**WireFormat typeclass constraint. */
+  implicit def mf: Manifest[A]
   implicit def wf: WireFormat[A]
 
   private[scoobi]
-  def getComp: Smart.DComp[A, Arr]
+  def getComp: CompNode
 
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,23 +55,22 @@ trait DList[A] {
 
   /**Group the values of a distributed list with key-value elements by key. */
   def groupByKey[K, V]
-  (implicit ev: Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
-   mK: Manifest[K],
-   wtK: WireFormat[K],
-   grpK: Grouping[K],
-   mV: Manifest[V],
-   wtV: WireFormat[V]): DList[(K, Iterable[V])]
+  (implicit ev: DComp[A, Arr] <:< DComp[(K, V), Arr],
+   mk:   Manifest[K],
+   wtk:  WireFormat[K],
+   gpk:  Grouping[K],
+   mv:   Manifest[V],
+   wfv:  WireFormat[V]): DList[(K, Iterable[V])]
 
   /**Apply an associative function to reduce the collection of values to a single value in a
    * key-value-collection distributed list. */
-  def combine[K, V]
-  (f: (V, V) => V)
-  (implicit ev: Smart.DComp[A, Arr] <:< Smart.DComp[(K, Iterable[V]), Arr],
-   mK: Manifest[K],
-   wtK: WireFormat[K],
-   grpK: Grouping[K],
-   mV: Manifest[V],
-   wtV: WireFormat[V]): DList[(K, V)]
+  def combine[K, V](f: (V, V) => V)
+  (implicit ev: DComp[A, Arr] <:< DComp[(K, Iterable[V]), Arr],
+   mk:   Manifest[K],
+   wtk:  WireFormat[K],
+   gpk:  Grouping[K],
+   mv:   Manifest[V],
+   wfv:  WireFormat[V]): DList[(K, V)]
 
   /**Turn a distributed list into a normal, non-distributed collection that can be accessed
    * by the client. */
@@ -88,9 +84,9 @@ trait DList[A] {
   // Derived functionality (return DLists).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  def parallelDo[B: Manifest : WireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject, dofn)
+  def parallelDo[B : Manifest : WireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject, dofn)
 
-  private def basicParallelDo[B: Manifest : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
+  private def basicParallelDo[B : Manifest : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
     val dofn = new BasicDoFn[A, B] {
       def process(input: A, emitter: Emitter[B]) {
         proc(input, emitter)
@@ -276,7 +272,7 @@ object DList {
 
   /** Create a distributed list from a data source. */
   def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A] =
-    new DListImpl(source)
+    DListImpl(source)
 
   /** Concatenate all distributed lists into a single distributed list. */
   def concat[A : Manifest : WireFormat](xss: List[DList[A]]): DList[A] = xss match {

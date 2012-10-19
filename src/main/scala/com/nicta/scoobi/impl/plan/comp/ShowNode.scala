@@ -21,14 +21,14 @@ trait ShowNode extends MscrGraph with CompNodes{
    */
   implicit lazy val showCompNode: Show[CompNode] = new Show[CompNode] {
     def show(n: CompNode) = (n.toString + (n match {
-      case Op1(in1, in2)   => Seq(in1, in2).showString("[","]")
-      case Flatten(ins)    => ins.showString("[","]")
-      case Materialize1(in)=> parens(pretty(in))
-      case GroupByKey(in)  => parens(pretty(in))
-      case Combine1(in)    => parens(pretty(in))
-      case ParallelDo1(in) => parens(pretty(in))
-      case Load(_)         => ""
-      case Return1(_)      => ""
+      case Op1(in1, in2)    => Seq(in1, in2).showString("[","]")
+      case Flatten(ins)     => ins.showString("[","]")
+      case Materialize1(in) => parens(pretty(in))
+      case GroupByKey1(in)  => parens(pretty(in))
+      case Combine1(in)     => parens(pretty(in))
+      case ParallelDo1(in)  => parens(pretty(in))
+      case Load(_)          => ""
+      case Return1(_)       => ""
     })).toList
   }
   /**
@@ -90,7 +90,7 @@ trait ShowNode extends MscrGraph with CompNodes{
       case ParallelDo1(in)  => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Return1(_)       => value(showNode(node, attribute))
       case Combine1(in)     => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case GroupByKey(in)   => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case GroupByKey1(in)  => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Materialize1(in) => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Op1(in1,in2)     => showNode(node, attribute) <> braces (nest (line <> "1." <> show(in1, attribute) <> line <> "2." <> show(in2, attribute)))
     }

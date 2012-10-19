@@ -33,7 +33,7 @@ class MapReduceJobSpec extends UnitSpecification with Mockito { isolated
   }
   "At the end of the job execution the outputs must be collected" >> {
     // mock the file system interactions
-    val (sink, reducer, fss, files) = (mock[DataSink[_,_,_]], mock[TaggedReducer[_,_,_,_]], mock[FileSystems], mock[FileSystem])
+    val (sink, reducer, fss, files) = (mock[DataSink[_,_,_]], mock[TaggedReducer], mock[FileSystems], mock[FileSystem])
     val configuration = new ScoobiConfiguration { override def fileSystem = files }
     val mrj = new MapReduceJob(0) { override protected val fileSystems = fss  }
 

@@ -17,30 +17,30 @@ package com.nicta.scoobi
 package core
 
 import impl.plan._
+import comp.CompNode
+import WireFormat._
 
 /* A wrapper around an object that is part of the graph of a distributed computation.*/
 trait DObject[A] {
-
-  implicit def m: Manifest[A]
-
+  implicit def mf: Manifest[A]
   implicit def wf: WireFormat[A]
 
   private[scoobi]
-  def getComp: Smart.DComp[A, Exp]
+  def getComp: CompNode
 
   /**Create a new distributed object by apply a function to this distributed object. */
-  def map[B: Manifest : WireFormat](f: A => B): DObject[B]
+  def map[B : Manifest : WireFormat](f: A => B): DObject[B]
 
   /**Create a new distributed list by replicating the value of this distributed object
    * to every element within the provided distributed list. */
-  def join[B: Manifest : WireFormat](list: DList[B]): DList[(A, B)]
+  def join[B : Manifest : WireFormat](list: DList[B]): DList[(A, B)]
 }
 
 /** This object provides a set of operations to create distributed objects. */
 object DObject extends DObjects {
 
   /** Create a new distributed list object from an "ordinary" value. */
-  def apply[A : Manifest : WireFormat](x: A): DObject[A] = new DObjectImpl(x)
+  def apply[A : Manifest : WireFormat](x: A): DObject[A] = DObjectImpl(x)
 }
 
 /** Implicit conversions for DObjects */

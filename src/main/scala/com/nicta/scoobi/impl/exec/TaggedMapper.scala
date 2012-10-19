@@ -19,37 +19,25 @@ package exec
 
 import core._
 
-/** A producer of a TaggedMapper. */
-trait MapperLike[A, E, K, V] {
-  def mkTaggedMapper(tags: Set[Int]): TaggedMapper[A, E, K, V]
-}
-
-
 /** A wrapper for a 'map' function tagged for a specific output channel. */
-abstract case class TaggedMapper[A, E, K, V]
-    (tags: Set[Int])
-    (implicit mA: Manifest[A], wtA: WireFormat[A],
-              mE: Manifest[E], wtE: WireFormat[E],
-              val mK: Manifest[K], val wtK: WireFormat[K], val grpK: Grouping[K],
-              val mV: Manifest[V], val wtV: WireFormat[V]) {
+abstract class TaggedMapper(val tags: Set[Int],
+                            val mk: Manifest[_], val wfk: WireFormat[_], val gpk: Grouping[_],
+                            val mv: Manifest[_], val wfv: WireFormat[_]) {
 
   /** The actual 'map' function that will be used by Hadoop in the mapper task. */
-  def setup(env: E)
-  def map(env: E, input: A, emitter: Emitter[(K, V)])
-  def cleanup(env: E, emitter: Emitter[(K, V)])
+  def setup(env: Any)
+  def map(env: Any, input: Any, emitter: Emitter[Any])
+  def cleanup(env: Any, emitter: Emitter[Any])
 }
 
 
 /** A TaggedMapper that is an identity mapper. */
-class TaggedIdentityMapper[K, V]
-    (tags: Set[Int])
-    (implicit mK: Manifest[K], wtK: WireFormat[K], grpK: Grouping[K],
-              mV: Manifest[V], wtV: WireFormat[V],
-              mKV: Manifest[(K, V)], wtKV: WireFormat[(K, V)])
-  extends TaggedMapper[(K, V), Unit, K, V](tags)(mKV, wtKV, implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]], mK, wtK, grpK, mV, wtV) {
+class TaggedIdentityMapper(tags: Set[Int],
+                           mk: Manifest[_], wfk: WireFormat[_], grpk: Grouping[_],
+                           mv: Manifest[_], wfv: WireFormat[_]) extends TaggedMapper(tags, mk, wfk, grpk, mv, wfv) {
 
   /** Identity mapping */
-  def setup(env: Unit) {}
-  def map(env: Unit, input: (K, V), emitter: Emitter[(K, V)]) { emitter.emit(input) }
-  def cleanup(env: Unit, emitter: Emitter[(K, V)]) {}
+  def setup(env: Any) {}
+  def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit(input) }
+  def cleanup(env: Any, emitter: Emitter[Any]) {}
 }

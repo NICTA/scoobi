@@ -19,18 +19,7 @@ package exec
 
 import core._
 
-/** A producer of a TaggedCombiner. */
-trait CombinerLike[V] {
-  def mkTaggedCombiner(tag: Int): TaggedCombiner[V]
-}
-
-
 /** A wrapper for a 'combine' function tagged for a specific output channel. */
-abstract class TaggedCombiner[V]
-    (val tag: Int)
-    (implicit val mV: Manifest[V], val wtV: WireFormat[V]) {
-
-  /** The actual 'combine' function that will be called by Hadoop at the
-    * completion of the mapping phase. */
+abstract class TaggedCombiner[V](val tag: Int, val mv: Manifest[_], val wfv: WireFormat[_]) {
   def combine(x: V, y: V): V
 }
