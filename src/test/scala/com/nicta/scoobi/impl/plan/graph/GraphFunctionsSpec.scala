@@ -3,7 +3,7 @@ package impl
 package plan
 package graph
 
-import comp.{Return, CompNode, CompNodeFactory}
+import comp.{ParallelDo, Return, CompNode, CompNodeFactory}
 import CompNode._
 import collection._
 import testing.mutable.UnitSpecification

@@ -47,6 +47,7 @@ object WireFormat extends WireFormatImplicits {
   }
 
   def manifest[A](implicit mf: Manifest[A]): Manifest[A] = mf
+  def grouping[A](implicit gp: Grouping[A]): Grouping[A] = gp
   def wireFormat[A](implicit wf: WireFormat[A]): WireFormat[A] = wf
 }
 

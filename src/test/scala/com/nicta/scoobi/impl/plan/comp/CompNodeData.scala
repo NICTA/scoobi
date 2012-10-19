@@ -62,17 +62,18 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  * Creation functions
  */
 trait CompNodeFactory extends Scope {
-  lazy val stringManifest = implicitly[Manifest[String]]
+
   def load                                   = Load(ConstantStringDataSource("start"))
   def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A,Arr]]))
   def parallelDo(in: CompNode)               = pd(in)
-  def rt                                     = Return("", wireFormat[String])
-  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2, stringManifest, stringManifest, wireFormat[String], wireFormat[String])
-  def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]])
-  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]], wireFormat[String])
-  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a, wireFormat[String].asInstanceOf[WireFormat[A]])
+  def rt                                     = Return("", manifest[String], wireFormat[String])
+  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String]),Arr]], (s1: String, s2: String) => s1 + s2,
+                                                                       manifest[String], wireFormat[String], grouping[String], manifest[String], wireFormat[String])
+  def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String),Arr]], manifest[String], wireFormat[String], grouping[String], manifest[String], wireFormat[String])
+  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String,Arr]], manifest[String], wireFormat[String])
+  def op[A, B](in1: CompNode, in2: CompNode) = Op[A, B, A](in1.asInstanceOf[DComp[A,Exp]], in2.asInstanceOf[DComp[B,Exp]], (a, b) => a, manifest[String].asInstanceOf[Manifest[A]], wireFormat[String].asInstanceOf[WireFormat[A]])
   def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier, wireFormat[String], wireFormat[String], wireFormat[Unit])
+    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String,Arr]], env.asInstanceOf[DComp[Unit, Exp]], fn, groupBarrier, fuseBarrier, manifest[String], wireFormat[String], manifest[String], wireFormat[String], manifest[Unit], wireFormat[Unit])
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
 

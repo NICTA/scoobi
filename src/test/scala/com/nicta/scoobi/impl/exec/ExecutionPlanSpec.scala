@@ -107,7 +107,7 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
     "Flatten nodes remain unchanged" >> {
       val (l, ret) = (load, rt)
       val fl = flatten[String](l, ret)
-      execPlan(fl) === Seq(FlattenExec(Ref(fl), Vector(LoadExec(Ref(l)), ReturnExec(Ref(ret)))))
+      execPlan(fl) === Seq(FlattenExec(Ref(fl), Vector[ExecutionNode](LoadExec(Ref(l)), ReturnExec(Ref(ret)))))
     }
 
     "Parallel do nodes are transformed into Mappers or Reducers" >> {

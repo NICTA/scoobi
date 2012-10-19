@@ -380,14 +380,14 @@ sealed trait PFn[A] {
 /** PFn type class instances for DLists (i.e. DListPersister) and DObjects. */
 object PFn {
 
-  /*
   implicit def DListPersister[A] = new PFn[DListPersister[A]] {
     type Ret = Unit
     def plan(x: DListPersister[A]) = (x.dlist.getComp, Some(x.sink))
     def execute(x: DListPersister[A]): State[(ExecState, Map[CompNode, ExecutionNode]), Unit] =
       State({ case(st, nodeMap) =>
-        val node: ExecutionNode = nodeMap(x.dlist.getComp).asInstanceOf[ExecutionNode]
-        ((), (Executor.executeArrOutput(node, x.sink, st), nodeMap))
+        //val node: ExecutionNode = nodeMap(x.dlist.getComp).asInstanceOf[ExecutionNode]
+        //((), (Executor.executeArrOutput(node, x.sink, st), nodeMap))
+        ((), (st, nodeMap))
       })
   }
 
@@ -396,10 +396,10 @@ object PFn {
     def plan(x: DObject[A]) = (x.getComp, None)
     def execute(x: DObject[A]): State[(ExecState, Map[CompNode, ExecutionNode]), A] =
       State({ case(st, nodeMap) =>
-        val node: ExecutionNode = nodeMap(x.getComp).asInstanceOf[ExecutionNode]
-        val (e, stU) = Executor.executeExp(node, st)
-        (e, (stU, nodeMap))
+//        val node: ExecutionNode = nodeMap(x.getComp).asInstanceOf[ExecutionNode]
+//        val (e, stU) = Executor.executeExp(node, st)
+        (null.asInstanceOf[A], (st, nodeMap))
       })
   }
-  */
 }
+

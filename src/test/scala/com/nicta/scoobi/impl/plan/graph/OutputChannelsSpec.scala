@@ -8,6 +8,7 @@ import io.{OutputConverter, DataSink}
 import org.apache.hadoop.mapreduce._
 import application.ScoobiConfiguration
 import exec.BridgeStore
+import comp.CompNode
 
 class OutputChannelsSpec extends MscrGraphSpecification {
 

@@ -56,7 +56,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     }
     "Any optimised Combine in the graph can only have GroupByKey as an input" >> prop { (node: CompNode, f: factory) => {}; import f._
       forall(collectCombine(optimise(combineToParDo, node).head)) { n =>
-        n aka show(node) must beLike { case Combine1(GroupByKey(_)) => ok }
+        n aka show(node) must beLike { case Combine1(GroupByKey1(_)) => ok }
       }
     }
     "After optimisation, all the transformed Combines must be ParallelDo" >> prop { (node: CompNode) =>
@@ -98,7 +98,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
         case ParallelDo1(ggbk1) :: ParallelDo1(ggbk2)  :: ParallelDo1(ggbk3) :: _  => nodesAreDistinct(ggbk1, ggbk2, ggbk3)
       }
       optimise(groupByKeySplit, flatten(gbkf1), flatten(gbkf1), flatten(gbkf1)) must beLike {
-        case Flatten((ggbk1 @ GroupByKey(ff1))::_) :: Flatten((ggbk2 @ GroupByKey(ff2))::_)  :: Flatten((ggbk3 @ GroupByKey(ff3))::_) :: _  =>
+        case Flatten((ggbk1 @ GroupByKey1(ff1))::_) :: Flatten((ggbk2 @ GroupByKey1(ff2))::_)  :: Flatten((ggbk3 @ GroupByKey1(ff3))::_) :: _  =>
           nodesAreDistinct(ggbk1, ggbk2, ggbk3) and nodesAreDistinct(ff1, ff2, ff3)
       }
     }
@@ -153,12 +153,12 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
 
   def nodesAreDistinct(nodes: CompNode*) = nodes.map(_.id).distinct.size === nodes.size
 
-  def collectFlatten          = collectl { case f @ Flatten(_) => f }
-  def collectCombine          = collectl { case c @ Combine(_,_,_,_,_,_) => c }
-  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey(_),_,_,_,_,_) => c }
+  def collectFlatten          = collectl { case f : Flatten[_] => f }
+  def collectCombine          = collectl { case c @ Combine1(_) => c: CompNode }
+  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c }
   def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
-  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,false,_,_,_) => p }
-  def collectGroupByKey       = collectl { case g @ GroupByKey(_) => g }
-  def collectGBKFlatten       = collectl { case GroupByKey(f @ Flatten(_)) => f }
+  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,false,_,_,_,_,_,_) => p }
+  def collectGroupByKey       = collectl { case g @ GroupByKey1(_) => g }
+  def collectGBKFlatten       = collectl { case GroupByKey1(f @ Flatten(_)) => f }
 }
 

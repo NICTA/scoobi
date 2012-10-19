@@ -6,17 +6,14 @@ import org.specs2.mutable.Specification
 import com.nicta.scoobi.impl.plan.graph.factory
 import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
+import application.ScoobiConfiguration
 
 @RunWith(classOf[JUnitRunner])
 class OutputChannelExecSpec extends Specification {
   "Output channels must configure the MapReduceJob".txt
   
   "A GroupByKeyChannelExec" >> {
-//          oc match {
-//        case GbkOutputChannel(_, _, _, JustCombiner(c))          => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
-//        case GbkOutputChannel(_, _, _, CombinerReducer(c, _, _)) => job.addTaggedCombiner(c.mkTaggedCombiner(tag))
-//        case _                                                   => Unit
-//      }
+    implicit val sc = ScoobiConfiguration()
 
     "must not configure a Combiner if the channel has no combiner node" >> new example {
       GbkOutputChannelExec(gbkExec).configure(job).combiners must be empty

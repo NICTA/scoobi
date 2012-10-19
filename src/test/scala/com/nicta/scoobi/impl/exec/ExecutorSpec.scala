@@ -16,18 +16,19 @@
 package com.nicta.scoobi
 package impl
 package exec
-
+/*
 import application.ScoobiConfiguration
 import plan._
 import plan.BypassInputChannel
 import plan.AST.Load
 import plan.MapperInputChannel
+*/
 import org.specs2.mock.Mockito
 import testing.CommandLineHadoopLogFactory
 import testing.mutable.UnitSpecification
 
 class ExecutorSpec extends UnitSpecification with Mockito with CommandLineHadoopLogFactory {
-
+/*
   // sample graph for the examples, with 2 Mscrs and 3 BridgeStores
   lazy val bs1 :: bs2 :: bs3 :: _ = Seq.fill(3)(mockBridgeStore)
   lazy val (mscr1, mscr2) = (MSCR(Set(bypassInput(bs1)), Set()), MSCR(Set(mapperInput(bs2)), Set()))
@@ -60,4 +61,5 @@ class ExecutorSpec extends UnitSpecification with Mockito with CommandLineHadoop
     bs.id returns ids.next
     bs
   }
+  */
 }

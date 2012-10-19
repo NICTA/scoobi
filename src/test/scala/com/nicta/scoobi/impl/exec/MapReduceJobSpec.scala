@@ -41,7 +41,7 @@ class MapReduceJobSpec extends UnitSpecification with Mockito { isolated
     fss.copyTo(anyPath)(anySC) returns ((p: Path) => p.getName === "_SUCCESS")
     // mock a sink for this job
     sink.outputPath(anySC) returns Some(new Path("out"))
-    mrj.addTaggedReducer(Set(sink), None, reducer)
+    mrj.addTaggedReducer(List(sink), None, reducer)
 
     // collect outputs and check that files were moved
     mrj.collectOutputs(configuration)(new Job)
