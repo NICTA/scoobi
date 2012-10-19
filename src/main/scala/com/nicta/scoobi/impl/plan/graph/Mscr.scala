@@ -9,13 +9,14 @@ import collection._
 import IdSet._
 import scala.collection.immutable.SortedSet
 import io.DataSink
+import org.kiama.attribution.Attributable
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
  * It is a mutable class which is constructed incrementally by using Kiama grammar attributes
  * @see MscrGraph
  */
-case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) {
+case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) extends Attributable {
   val id: Int = UniqueId.get
 
   /** it is necessary to override the generated equality method in order to use the vars */
@@ -33,7 +34,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the channels containing mappers, i.e. parallel dos */
   def mapperChannels = inputChannels.collect { case c @ MapperInputChannel(_) => c }
   /** @return all the id channels */
-  def idChannels = inputChannels.collect { case c @ IdInputChannel(_) => c }
+  def idChannels = inputChannels.collect { case c @ IdInputChannel(_,_) => c }
   /** @return all the flatten channels */
   def flattenOutputChannels = outputChannels.collect { case c @ FlattenOutputChannel(_,_) => c }
   /** @return all the gbk output channels */
@@ -43,7 +44,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
-  def idMappers = idChannels.collect { case IdInputChannel(p @ ParallelDo1(_)) => p }
+  def idMappers = idChannels.collect { case IdInputChannel(p @ ParallelDo1(_),_) => p }
   /** @return an input channel containing a specific parallelDo */
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 

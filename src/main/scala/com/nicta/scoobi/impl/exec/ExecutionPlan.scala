@@ -18,6 +18,7 @@ import application.ScoobiConfiguration
 import plan.graph.MapperInputChannel
 import plan.graph.GbkOutputChannel
 import org.kiama.attribution.Attribution._
+import org.kiama.attribution.{Attributable, Attribution}
 
 /**
  * The execution transforms the DComp nodes as created by the user and the Mscrs computed by the MscrGraph
@@ -41,7 +42,11 @@ trait ExecutionPlan extends MscrGraph {
    * create an execution plan for a set of Mscrs
    */
   def createExecutionPlan(mscrs: Seq[Mscr]): Seq[Term] =
-    rewrite(rewriteMscrs)(mscrs)
+    rewrite(rewriteMscrs)(mscrs.map(initAttributable))
+
+  /** initialize the Kiama attributes */
+  private def initAttributable[T <: Attributable](t: T): T  =
+    { Attribution.initTree(t); t }
 
   /**
    * MSCR rewriting
@@ -77,7 +82,7 @@ trait ExecutionPlan extends MscrGraph {
     rule {
       // input channels
       case MapperInputChannel(pdos)     => MapperInputChannelExec(pdos.toSeq)
-      case IdInputChannel(in)           => BypassInputChannelExec(in)
+      case IdInputChannel(in, gbk)      => BypassInputChannelExec(in, gbk)
       case StraightInputChannel(in)     => StraightInputChannelExec(in)
       // output channels
       case GbkOutputChannel(g,f,c,r,s)  => GbkOutputChannelExec(g, f, c, r, s)
@@ -119,15 +124,15 @@ trait ExecutionPlan extends MscrGraph {
     case n: Combine[_,_]         => CombineExec(Ref(n),    n.in)
     case n: Op[_,_,_]            => OpExec(Ref(n),         n.in1, n.in2)
     case n: Flatten[_]           => FlattenExec(Ref(n),    n.ins)
-    case n: ParallelDo[_,_,_] => n.in match {
-      case i: Load[_]            => MapperExec(Ref(n), i)
-      case i: ParallelDo[_,_,_]  => MapperExec(Ref(n), i)
-      case i: Flatten[_]         => MapperExec(Ref(n), i)
-      case i: GroupByKey[_,_]    => if (n -> isMapper) MapperExec(Ref(n), i) else GbkReducerExec(Ref(n), i)
-      case i: Combine[_,_]       => if (n -> isMapper) MapperExec(Ref(n), i) else ReducerExec(Ref(n), i)
-      case i                     => n.parent match {
-        case g: GroupByKey[_,_]  => GbkMapperExec(Ref(n), Ref(g), i)
-        case _                   => sys.error("a ParallelDo node can not have an input which is: "+i)
+    case n: ParallelDo[_,_,_]    => n.parent match {
+      case g: GroupByKey[_,_]    => GbkMapperExec(Ref(n), Ref(g), n.in)
+      case _                     => n.in match {
+        case i: Load[_]            => MapperExec(Ref(n), i)
+        case i: ParallelDo[_,_,_]  => MapperExec(Ref(n), i)
+        case i: Flatten[_]         => MapperExec(Ref(n), i)
+        case i: GroupByKey[_,_]    => if (n -> isMapper) MapperExec(Ref(n), i) else GbkReducerExec(Ref(n), i)
+        case i: Combine[_,_]       => if (n -> isMapper) MapperExec(Ref(n), i) else ReducerExec(Ref(n), i)
+        case i                     => sys.error("a ParallelDo node can not have an input which is: "+i)
       }
     }
     case ns : Seq[_]             => ns // this allows to recurse into flatten inputs
@@ -147,10 +152,10 @@ trait ExecutionPlan extends MscrGraph {
 
   // intermediary methods for testing
   def createExecutionPlanInputChannels(inputChannels: Seq[InputChannel]): Seq[Term] =
-    rewrite(rewriteChannels)(inputChannels)
+    rewrite(rewriteChannels)(inputChannels.map(initAttributable))
 
   def createExecutionGraph(computations: Seq[CompNode]): Seq[Term] =
-    rewrite(rewriteNodes)(computations)
+    rewrite(rewriteNodes)(computations.map(initAttributable))
 
   def collectEnvironments(computations: Seq[CompNode])(implicit sc: ScoobiConfiguration): Seq[Env[_]] =
     collectEnvs(createExecutionGraph(computations))

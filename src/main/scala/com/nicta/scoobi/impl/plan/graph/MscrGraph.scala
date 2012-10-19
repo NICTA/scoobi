@@ -35,7 +35,7 @@ trait MscrGraph extends CompNodes {
   lazy val gbkMscr: CompNode => Option[Mscr] = attr {
     case g: GroupByKey[_,_] => {
       val related = (g -> relatedGbks)
-      (g -> baseGbkMscr).map(m => m.addChannels((g -> inputChannels)  ++ related.flatMap(_ -> inputChannels),
+      (g -> baseGbkMscr).map(m => m.addChannels((g -> inputChannels(g))  ++ related.flatMap(_ -> inputChannels(g)),
                                                 (g -> outputChannels) ++ related.flatMap(_ -> outputChannels)))
     }
     case other              => None
@@ -59,9 +59,10 @@ trait MscrGraph extends CompNodes {
   }
 
   /** compute the input channels of a node */
-  lazy val inputChannels: CompNode => Set[InputChannel] = attr {
-    case n => (n -> mapperInputChannels) ++ (n -> idInputChannels)
-  }
+  lazy val inputChannels =
+    paramAttr { gbk: GroupByKey[_,_] => { n: CompNode =>
+      (n -> mapperInputChannels) ++ (n -> idInputChannels(gbk))
+    }}
 
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
   lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
@@ -73,11 +74,11 @@ trait MscrGraph extends CompNodes {
   /**
    * compute the id input channels of a node.
    * An IdInputChannel is a channel for an input node which has no siblings and is connected to a GroupByKey */
-  lazy val idInputChannels: CompNode => Set[IdInputChannel] =
-    attr {
-      case n if (n -> isGbkInput) && !(n -> hasSiblings) => Set(IdInputChannel(n))
-      case other                                         => other.children.asNodes.flatMap(_ -> idInputChannels).toSet
-    }
+  lazy val idInputChannels: GroupByKey[_,_] => CompNode => Set[IdInputChannel] =
+    paramAttr { gbk: GroupByKey[_,_] => { node: CompNode => node match {
+      case n if (n -> isGbkInput) && !(n -> hasSiblings) => Set(IdInputChannel(n, gbk))
+      case other                                         => other.children.asNodes.flatMap(_ -> idInputChannels(gbk)).toSet
+    }}}
 
   /** compute the output channels of a node */
   lazy val outputChannels: CompNode => Set[OutputChannel] = attr {

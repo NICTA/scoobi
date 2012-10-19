@@ -37,7 +37,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     copy(sinks = sinks.get(output).getOrElse(Seq(BridgeStore())))
 
   /** @return the output node of this channel */
-  def output = reducer.orElse(combiner).orElse(flatten).getOrElse(groupByKey)
+  def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
 }
 
 case class BypassOutputChannel(output: ParallelDo[_,_,_], sinks: Seq[DataSink[_,_,_]] = Seq()) extends OutputChannel {

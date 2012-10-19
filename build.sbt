@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "com.googlecode.kiama" %% "kiama" % "1.3.0",
   "com.github.mdr" %% "ascii-graphs" % "0.0.2",
   "org.scalaz" %% "scalaz-core" % "6.95",
-  "org.specs2" %% "specs2" % "1.12.2" % "optional",
+  "org.specs2" %% "specs2" % "1.12.3-SNAPSHOT" % "optional",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",

@@ -27,7 +27,7 @@ trait ShowNode extends MscrGraph with CompNodes{
       case GroupByKey1(in)  => parens(pretty(in))
       case Combine1(in)     => parens(pretty(in))
       case ParallelDo1(in)  => parens(pretty(in))
-      case Load(_)          => ""
+      case Load1(_)          => ""
       case Return1(_)       => ""
     })).toList
   }
@@ -85,7 +85,7 @@ trait ShowNode extends MscrGraph with CompNodes{
    */
   private def show[T](node: CompNode, attribute: Option[CompNode => T] = None): Doc =
     node match {
-      case Load(_)          => value(showNode(node, attribute))
+      case Load1(_)         => value(showNode(node, attribute))
       case Flatten1(ins)    => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
       case ParallelDo1(in)  => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Return1(_)       => value(showNode(node, attribute))

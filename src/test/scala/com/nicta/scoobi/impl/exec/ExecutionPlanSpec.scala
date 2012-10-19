@@ -9,13 +9,10 @@ import application.ScoobiConfiguration
 import core.WireFormat
 import graph.{GbkOutputChannel, InputChannel, MapperInputChannel, StraightInputChannel, BypassOutputChannel, FlattenOutputChannel}
 import org.kiama.rewriting.Rewriter
-import org.specs2.specification.Scope
 import testing.mutable.UnitSpecification
 import Rewriter._
 import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class ExecutionPlanSpec extends UnitSpecification with plans {
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
@@ -29,7 +26,7 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
         transform(MapperInputChannel(Set(pdLoad))) === MapperInputChannelExec(Seq(MapperExec(Ref(pdLoad), loadExec)))
       }
       "An IdInputChannel is transformed into a BypassInputChannelExec" >> {
-        transform(IdInputChannel(ld)) === BypassInputChannelExec(loadExec)
+        transform(IdInputChannel(ld, gbkLoad)) === BypassInputChannelExec(loadExec, gbkExec)
       }
       "A StraightInputChannel is transformed into a StraightInputChannelExec" >> {
         transform(StraightInputChannel(ld)) === StraightInputChannelExec(loadExec)
@@ -145,9 +142,9 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
             ReducerExec(Ref(pd2), CombineExec(Ref(cb1), loadExec)))
       }
       "GbkMapper if output is a GroupByKey" >> {
-        val gbk1 = gbk(pdLoad)
-        val pd1  = pd(gbk(pdLoad))
-        execPlan(gbk1) === Seq(GbkMapperExec(Ref(pd1), Ref(gbk1), gbkExec))
+        val pd1 = pd(load)
+        val gbk1 = gbk(pd1)
+        execPlan(gbk1) === Seq(GroupByKeyExec(Ref(gbk1), GbkMapperExec(Ref(pd1), Ref(gbk1), loadExec)))
       }
       "error if input is: Materialize, Op or Return" >> {
         execPlan(pd(mt(load)))       must throwAn[Exception]

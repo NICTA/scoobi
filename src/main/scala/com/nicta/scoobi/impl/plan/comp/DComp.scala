@@ -17,7 +17,15 @@ import control.Exceptions._
 /**
  * GADT for distributed list computation graph.
  */
-sealed trait DComp[+A, +Sh <: Shape] extends CompNode
+sealed trait DComp[+A, +Sh <: Shape] extends CompNode {
+  def mf: Manifest[_]
+  def wf: WireFormat[_]
+
+  def makeStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper =
+    new TaggedIdentityMapper(tags: Set[Int], manifest[Int], wireFormat[Int], grouping[Int], mf, wf) {
+      override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
+    }
+}
 
 /**
  * Base trait for "computation nodes" with no generic type information for easier rewriting
@@ -40,6 +48,8 @@ case class ParallelDo[A, B, E](in:               CompNode,
                                implicit val wfb: WireFormat[B],
                                implicit val mfe: Manifest[E],
                                implicit val wfe: WireFormat[E]) extends DComp[B, Arr] {
+  def mf = mfb
+  def wf = wfb
 
   override def equals(a: Any) = a match {
     case pd: ParallelDo[_,_,_] => in == pd.in && env == pd.env && groupBarrier == pd.groupBarrier && fuseBarrier == pd.fuseBarrier
@@ -110,6 +120,12 @@ object ParallelDo1 {
 /** The Flatten node type specifies the building of a DComp that contains all the elements from
  * one or more existing DLists of the same type. */
 case class Flatten[A](ins: List[CompNode], implicit val mf: Manifest[A], wf: WireFormat[A]) extends DComp[A, Arr] {
+
+  override def equals(a: Any) = a match {
+    case f: Flatten[_] => ins == f.ins
+    case _             => false
+  }
+
   override val toString = "Flatten ("+id+")"
 
   def makeTaggedReducer(tag: Int) = new TaggedIdentityReducer(tag, mf, wf)
@@ -126,6 +142,8 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V,
                          implicit val gpk: Grouping[K],
                          implicit val mfv: Manifest[V],
                          implicit val wfv: WireFormat[V]) extends DComp[(K, V), Arr] {
+  def mf = manifest[(K, V)]
+  def wf = wireFormat[(K, V)]
 
   override def equals(a: Any) = a match {
     case c: Combine[_,_] => in == c.in
@@ -174,6 +192,15 @@ case class GroupByKey[K, V](in: CompNode,
                             implicit val gpk: Grouping[K],
                             implicit val mfv: Manifest[V],
                             implicit val wfv: WireFormat[V]) extends DComp[(K, Iterable[V]), Arr] {
+
+  def mf = manifest[(K, Iterable[V])]
+  def wf = wireFormat[(K, Iterable[V])]
+
+  override def equals(a: Any) = a match {
+    case g: GroupByKey[_,_] => in == g.in
+    case _                  => false
+  }
+
   override val toString = "GroupByKey ("+id+")"
 
   def makeTaggedReducer(tag: Int) = new TaggedReducer(tag, manifest[(K, V)], wireFormat[(K, V)]) {
@@ -183,6 +210,7 @@ case class GroupByKey[K, V](in: CompNode,
     }
     def cleanup(env: Any, emitter: Emitter[Any]) {}
   }
+  def makeTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper(tags, mfk, wfk, gpk, mfv, wfv)
 }
 object GroupByKey1 {
   def unapply(gbk: GroupByKey[_, _]): Option[CompNode] = Some(gbk.in)
@@ -190,9 +218,17 @@ object GroupByKey1 {
 
 /** The Load node type specifies the creation of a DComp from some source other than another DComp.
  * A DataSource object specifies how the loading is performed. */
-case class Load[A](source: DataSource[_, _, A]) extends DComp[A, Arr] {
+case class Load[A](source: DataSource[_, _, A], implicit val mf: Manifest[A], implicit val wf: WireFormat[A]) extends DComp[A, Arr] {
+
+  override def equals(a: Any) = a match {
+    case l: Load[_] => source == l.source
+    case _          => false
+  }
   override val toString = "Load ("+id+")"
   override lazy val dataSource: DataSource[_,_,_] = source
+}
+object Load1 {
+  def unapply(l: Load[_]): Option[DataSource[_,_,_]] = Some(l.source)
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */

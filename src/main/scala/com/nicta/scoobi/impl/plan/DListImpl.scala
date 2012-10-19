@@ -65,7 +65,7 @@ class DListImpl[A] private[scoobi] (comp: CompNode)(implicit val mf: Manifest[A]
 private[scoobi]
 object DListImpl {
   def apply[A : Manifest : WireFormat](source: DataSource[_, _, A]) =  {
-    new DListImpl(ParallelDo[A, A, Unit](Load(source), UnitDObject.getComp,
+    new DListImpl(ParallelDo[A, A, Unit](Load(source, manifest[A], wireFormat[A]), UnitDObject.getComp,
       new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
       groupBarrier = false, fuseBarrier = false,
       manifest[A], wireFormat[A],

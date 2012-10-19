@@ -79,7 +79,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       val before = collectGroupByKey(node).map(_.id)
       val after  = collectGroupByKey(optimised).map(_.id)
       before.size aka show(node) must be_>=(after.size)
-      after.size aka optimisation(node, optimised) must_== after.toSet.size
+      after.size must_== after.toSet.size
     }
 
     "4.2 if the input of a GroupByKey is a Flatten, the Flatten is also replicated" >> prop { (node: CompNode, f: factory) => import f._
@@ -87,7 +87,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
 
       // collects the flattens inside GroupByKey, they must form a set and not a bag
       val flattens = collectGBKFlatten(optimised).map(_.id)
-      flattens.size aka optimisation(node, optimised) must_== flattens.toSet.size
+      flattens.size must_== flattens.toSet.size
     }
 
     "4.3 examples" >> new nodes {
@@ -112,7 +112,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       val before = collectCombine(node).map(_.id)
       val after = collectCombine(optimised).map(_.id)
       before.size aka show(node) must be_>=(after.size)
-      before.size aka optimisation(node, optimised) must_== after.toSet.size
+      before.size must_== after.toSet.size
     }
 
     "5.2 examples" >> new nodes {

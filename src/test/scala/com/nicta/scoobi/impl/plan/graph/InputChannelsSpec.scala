@@ -68,7 +68,7 @@ class InputChannelsSpec extends MscrGraphSpecification {
   }
   "IdInputChannels" >> {
     "we create an IdInputChannel for each GroupByKey input which has no siblings" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      (graph -> descendents).collect { case d if (d -> idInputChannels).size > 1 => d -> idInputChannels }.flatten foreach { channel =>
+      (graph -> descendents).collect { case d if (d -> idInputChannels(gbk(load))).size > 1 => d -> idInputChannels(gbk(load)) }.flatten foreach { channel =>
         val input = channel.input
         (input -> siblings) aka show(input) must beEmpty
       }
@@ -81,9 +81,9 @@ class InputChannelsSpec extends MscrGraphSpecification {
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
       val graph = flatten(gbk1, gbk2, gbk3)
 
-      (graph -> idInputChannels)     must have size(1)
-      (graph -> mapperInputChannels) must have size(1)
-      (graph -> inputChannels)       must have size(2)
+      (graph -> idInputChannels(gbk1))  must have size(1)
+      (graph -> mapperInputChannels)    must have size(1)
+      (graph -> inputChannels(gbk1))    must have size(2)
     }
   }
 

@@ -5,8 +5,9 @@ package graph
 
 import comp._
 import exec.UniqueId
+import org.kiama.attribution.Attributable
 
-trait Channel
+trait Channel extends Attributable
 /** ADT for MSCR input channels. */
 trait InputChannel extends Channel {
   lazy val id: Int = UniqueId.get
@@ -24,7 +25,7 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputC
   }
 }
 
-case class IdInputChannel(input: CompNode) extends InputChannel {
+case class IdInputChannel(input: CompNode, gbk: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
