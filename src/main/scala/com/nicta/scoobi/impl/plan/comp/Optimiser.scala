@@ -23,7 +23,7 @@ trait Optimiser extends CompNodes {
    *    node1      node2
    */
   def flattenSplit = everywhere(rule {
-    case f @ Flatten(_) => f.copy()
+    case f : Flatten[_] => f.copy()
   })
 
   /**
@@ -43,7 +43,7 @@ trait Optimiser extends CompNodes {
    *       Flatten
    */
   def flattenSink = everywhere(rule {
-    case p @ ParallelDo(Flatten(ins),_,_,_,_,_,_,_,_,_,_) => Flatten(ins.map(i => p.copy(in = i)))
+    case p @ ParallelDo(fl @ Flatten1(ins),_,_,_,_,_,_,_,_,_,_) => fl.copy(ins = fl.ins.map(i => p.copy(in = i)))
   })
 
   /**
@@ -62,7 +62,7 @@ trait Optimiser extends CompNodes {
    * This rule is repeated until nothing can be flattened anymore
    */
   def flattenFuse = repeat(sometd(rule {
-    case Flatten(ins) if ins exists isFlatten => Flatten(ins.flatMap { case Flatten(nodes) => nodes; case other => List(other) })
+    case fl @ Flatten1(ins) if ins exists isFlatten => fl.copy(ins = fl.ins.flatMap { case Flatten1(nodes) => nodes; case other => List(other) })
   }))
 
   /**

@@ -31,7 +31,7 @@ class DListImpl[A] private[scoobi] (comp: CompNode)(implicit val mf: Manifest[A]
   def parallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo[A, B, E](comp, env.getComp, dofn, groupBarrier = false, fuseBarrier = false, manifest[A], wireFormat[A], manifest[B], wireFormat[B], manifest[E], wireFormat[E]))
 
-  def ++(ins: DList[A]*): DList[A] = new DListImpl(Flatten(List(comp) ::: ins.map(_.getComp).toList))
+  def ++(ins: DList[A]*): DList[A] = new DListImpl(Flatten(List(comp) ::: ins.map(_.getComp).toList, mf, wf))
 
   def groupByKey[K, V]
       (implicit ev:   DComp[A, Arr] <:< DComp[(K, V), Arr],

@@ -107,10 +107,15 @@ object ParallelDo1 {
 
 /** The Flatten node type specifies the building of a DComp that contains all the elements from
  * one or more existing DLists of the same type. */
-case class Flatten[A](ins: List[CompNode]) extends DComp[A, Arr] {
+case class Flatten[A](ins: List[CompNode], implicit val mf: Manifest[A], wf: WireFormat[A]) extends DComp[A, Arr] {
   override val toString = "Flatten ("+id+")"
-}
 
+  def makeTaggedReducer(tag: Int) = new TaggedIdentityReducer(tag, mf, wf)
+}
+object Flatten1 {
+  /** extract only the incoming nodes of this flatten */
+  def unapply(fl: Flatten[_]): Option[Seq[CompNode]] = Some(fl.ins)
+}
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
 case class Combine[K, V](in: CompNode, f: (V, V) => V,
@@ -147,6 +152,13 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V,
   def makeTaggedCombiner(tag: Int) = new TaggedCombiner[V](tag, mfv, wfv) {
     def combine(x: V, y: V): V = f(x, y)
   }
+  def makeTaggedReducer(tag: Int) = new TaggedReducer(tag, manifest[(K, V)], wireFormat[(K, V)]) {
+    def setup(env: Any) {}
+    def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
+      emitter.emit((key, values.reduce((v1, v2) => f(v1.asInstanceOf[V], v2.asInstanceOf[V]))))
+    }
+    def cleanup(env: Any, emitter: Emitter[Any]) {}
+  }
 }
 object Combine1 {
   def unapply(combine: Combine[_, _]): Option[CompNode] = Some(combine.in)
@@ -161,6 +173,14 @@ case class GroupByKey[K, V](in: CompNode,
                             implicit val mfv: Manifest[V],
                             implicit val wfv: WireFormat[V]) extends DComp[(K, Iterable[V]), Arr] {
   override val toString = "GroupByKey ("+id+")"
+
+  def makeTaggedReducer(tag: Int) = new TaggedReducer(tag, manifest[(K, V)], wireFormat[(K, V)]) {
+    def setup(env: Any) {}
+    def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
+      values.foreach(value => emitter.emit((key, value)))
+    }
+    def cleanup(env: Any, emitter: Emitter[Any]) {}
+  }
 }
 object GroupByKey1 {
   def unapply(gbk: GroupByKey[_, _]): Option[CompNode] = Some(gbk.in)
@@ -251,11 +271,11 @@ trait CompNodes {
   }
 
   /** return true if a CompNodeis a Flatten */
-  lazy val isFlatten: CompNode => Boolean = { case Flatten(_) => true; case other => false }
+  lazy val isFlatten: CompNode => Boolean = { case f: Flatten[_] => true; case other => false }
   /** return true if a CompNodeis a ParallelDo */
   lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo[_,_,_] => true; case other => false }
   /** return true if a CompNodeis a Flatten */
-  lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f @ Flatten(_) => f }
+  lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f: Flatten[_] => f }
   /** return true if a CompNodeis a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p: ParallelDo[_,_,_] => p }
   /** return true if a CompNodeis a GroupByKey */

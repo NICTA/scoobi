@@ -54,7 +54,7 @@ trait MscrGraph extends CompNodes {
 
   /** compute the mscr of a "floating" flatten node */
   lazy val flattenMscr: CompNode => Option[Mscr] = attr {
-    case f @ Flatten(ins) if f -> isFloating => Some(Mscr.floatingFlattenMscr(f))
+    case f : Flatten[_] if f -> isFloating => Some(Mscr.floatingFlattenMscr(f))
     case other                               => None
   }
 
@@ -92,7 +92,7 @@ trait MscrGraph extends CompNodes {
    */
   lazy val gbkOutputChannels: CompNode => Set[GbkOutputChannel] =
     attr {
-      case g @ GroupByKey1(in @ Flatten(_)) => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
+      case g @ GroupByKey1(in : Flatten[_]) => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
       case g: GroupByKey[_,_]               => Set(GbkOutputChannel(g, combiner = g -> combiner, reducer = g -> reducer))
       case other                            => Set()
     }
@@ -187,7 +187,7 @@ trait MscrGraph extends CompNodes {
    */
   lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] =
     attr {
-      case g @ GroupByKey1(Flatten(ins))          => (g -> siblings).collect(isAGroupByKey) ++
+      case g @ GroupByKey1(Flatten1(ins))         => (g -> siblings).collect(isAGroupByKey) ++
                                                       ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
       case g @ GroupByKey1(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
                                                      (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)

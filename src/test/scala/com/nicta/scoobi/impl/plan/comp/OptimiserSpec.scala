@@ -24,7 +24,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     }
     "1.2 A Flatten Node which is an input to a ParallelDo then replicate the ParallelDo on each of the Flatten inputs" >> new nodes {
       optimise(flattenSink, parallelDo(flattens)) must beLike {
-        case List(Flatten(ParallelDo1(ll1) :: ParallelDo1(ll2) :: _))  => (l1 === ll1) and (l2 === ll2)
+        case List(Flatten1(ParallelDo1(ll1) :: ParallelDo1(ll2) :: _))  => (l1 === ll1) and (l2 === ll2)
       }
     }
     "1.3 A Flatten Node with Flatten inputs must collect all the inner inputs" >> new nodes {
@@ -98,7 +98,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
         case ParallelDo1(ggbk1) :: ParallelDo1(ggbk2)  :: ParallelDo1(ggbk3) :: _  => nodesAreDistinct(ggbk1, ggbk2, ggbk3)
       }
       optimise(groupByKeySplit, flatten(gbkf1), flatten(gbkf1), flatten(gbkf1)) must beLike {
-        case Flatten((ggbk1 @ GroupByKey1(ff1))::_) :: Flatten((ggbk2 @ GroupByKey1(ff2))::_)  :: Flatten((ggbk3 @ GroupByKey1(ff3))::_) :: _  =>
+        case Flatten1((ggbk1 @ GroupByKey1(ff1))::_) :: Flatten1((ggbk2 @ GroupByKey1(ff2))::_)  :: Flatten1((ggbk3 @ GroupByKey1(ff3))::_) :: _  =>
           nodesAreDistinct(ggbk1, ggbk2, ggbk3) and nodesAreDistinct(ff1, ff2, ff3)
       }
     }
@@ -148,7 +148,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
 
   def collectNestedFlatten = collectl {
-    case f @ Flatten(ins) if ins exists isFlatten => f
+    case f @ Flatten1(ins) if ins exists isFlatten => f
   }
 
   def nodesAreDistinct(nodes: CompNode*) = nodes.map(_.id).distinct.size === nodes.size
@@ -159,6 +159,6 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
   def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,false,_,_,_,_,_,_) => p }
   def collectGroupByKey       = collectl { case g @ GroupByKey1(_) => g }
-  def collectGBKFlatten       = collectl { case GroupByKey1(f @ Flatten(_)) => f }
+  def collectGBKFlatten       = collectl { case GroupByKey1(f : Flatten[_]) => f }
 }
 

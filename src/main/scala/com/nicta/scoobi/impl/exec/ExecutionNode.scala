@@ -24,10 +24,12 @@ case class LoadExec(load: Ref[Load[_]]) extends ExecutionNode {
 }
 case class GroupByKeyExec(gbk: Ref[GroupByKey[_,_]], n: CompNode) extends ExecutionNode {
   def referencedNode = gbk.n
+  def makeTaggedReducer(tag: Int) = referencedNode.makeTaggedReducer(tag)
 }
 case class CombineExec(cb: Ref[Combine[_,_]], n: CompNode) extends ExecutionNode {
   def referencedNode = cb.n
   def makeTaggedCombiner(tag: Int) = referencedNode.makeTaggedCombiner(tag)
+  def makeTaggedReducer(tag: Int)  = referencedNode.makeTaggedReducer(tag)
 }
 case class FlattenExec(flatten: Ref[Flatten[_]], ins: Seq[CompNode]) extends ExecutionNode {
   def referencedNode = flatten.n
@@ -111,9 +113,10 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
                                 sinks:      Seq[DataSink[_,_,_]] = Seq(),
                                 tag:        Int = 0) extends OutputChannelExec {
 
-  val theCombiner = combiner.asInstanceOf[Option[CombineExec]]
-  val theReducer  = reducer.asInstanceOf[Option[GbkReducerExec]]
-  
+  val theCombiner   = combiner.asInstanceOf[Option[CombineExec]]
+  val theReducer    = reducer.asInstanceOf[Option[GbkReducerExec]]
+  val theGroupByKey = groupByKey.asInstanceOf[GroupByKeyExec]
+
   override def equals(a: Any) = a match {
     case o: GbkOutputChannelExec => o.groupByKey == groupByKey
     case _                       => false
@@ -123,24 +126,39 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     theCombiner.map(c => job.addTaggedCombiner(c.makeTaggedCombiner(tag)))
-    theReducer .map(r => job.addTaggedReducer(sinks.toList, Some(r.env), r.makeTaggedReducer(tag)))
+
+    // if there is a reducer node, use it as the tagged reducer
+    // otherwise use the combiner node if there is one
+    // and finally default to the GroupByKey node
+    theReducer.map(r => job.addTaggedReducer(sinks.toList, Some(r.env), r.makeTaggedReducer(tag))).orElse {
+      theCombiner.map(c => job.addTaggedReducer(sinks.toList, None, c.makeTaggedReducer(tag))).orElse {
+        Some(job.addTaggedReducer(sinks.toList, None, theGroupByKey.makeTaggedReducer(tag)))
+      }
+    }
     job
   }
 }
 
 case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+  val theFlatten = out.asInstanceOf[FlattenExec]
+
   override def equals(a: Any) = a match {
     case o: FlattenOutputChannelExec => o.out == out
     case _                           => false
   }
   def outputs = Seq(out)
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = job
+
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
+    job.addTaggedReducer(sinks.toList, None, theFlatten.referencedNode.makeTaggedReducer(tag))
 }
 case class BypassOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+  val theParallelDo = out.asInstanceOf[MapperExec]
+
   override def equals(a: Any) = a match {
     case o: BypassOutputChannelExec => o.out == out
     case _                          => false
   }
   def outputs = Seq(out)
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = job
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
+    job.addTaggedReducer(sinks.toList, None, theParallelDo.referencedNode.makeTaggedReducer(tag))
 }

@@ -71,13 +71,13 @@ class MapReduceJob(stepId: Int, mscrExec: MscrExec = MscrExec()) {
 
   /** Add a combiner function to this MapReduce job. */
   def addTaggedCombiner[V](c: TaggedCombiner[_]) = {
-    combiners + c
+    combiners += c
     this
   }
 
   /** Add an output reducing function to this MapReduce job. */
   def addTaggedReducer(outputs: scala.collection.immutable.List[DataSink[_,_,_]], env: Option[Env[_]], r: TaggedReducer) = {
-    reducers :+ ((outputs, (env.getOrElse(Env.empty), r)))
+    reducers += ((outputs, (env.getOrElse(Env.empty), r)))
     this
   }
 
