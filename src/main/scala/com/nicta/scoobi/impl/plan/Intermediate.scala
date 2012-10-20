@@ -1,76 +1,77 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.impl.plan
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package impl
+package plan
 
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.impl.plan.Smart._
-import com.nicta.scoobi.impl.util.Pretty
-import com.nicta.scoobi.impl.exec.MapperLike
+import io._
+import exec._
+import plan.Smart._
+import util.Pretty
 
 /*
  * Import renamings. (TODO: Perhaps wrap the final MSCR data structures in a namespace?)
  *
  * The C suffix on CGbkOutputChannel, etc, is for converted.
  */
-import com.nicta.scoobi.impl.plan.{GbkOutputChannel    => CGbkOutputChannel,
-                                   BypassOutputChannel => CBypassOutputChannel,
-                                   MapperInputChannel  => CMapperInputChannel,
-                                   StraightInputChannel => CStraightInputChannel,
-                                   FlattenOutputChannel => CFlattenOutputChannel,
-                                   InputChannel        => CInputChannel,
-                                   OutputChannel       => COutputChannel,
-                                   MSCR                => CMSCR }
+import impl.plan.{GbkOutputChannel     => CGbkOutputChannel,
+                  BypassOutputChannel  => CBypassOutputChannel,
+                  MapperInputChannel   => CMapperInputChannel,
+                  StraightInputChannel => CStraightInputChannel,
+                  FlattenOutputChannel => CFlattenOutputChannel,
+                  InputChannel         => CInputChannel,
+                  OutputChannel        => COutputChannel,
+                  MSCR                 => CMSCR }
 
 
 /*
  * === A high-level overview of MSCR conversion ===
  *
- * This extended comment describes the conversion from the DList data structure
+ * This extended comment describes the conversion from the DComp data structure
  * to MSCRs containing nodes of type AST.Node. This is a multi-step process that goes
  * as follows:
  *
  * (FIXME:clarify w.r.t. DList.persist method )
 
  * 1. Creation of a DGraph data structure by introspecting the structure of the
- *    Smart.DList abstract syntax tree. (Class DList provides syntactic sugar for the real
- *    abstract syntax tree of type Smart.DList).
+ *    Smart.DComp abstract syntax tree. (Class DList provides syntactic sugar for the real
+ *    abstract syntax tree of type Smart.DComp).
  * 2. Creation of an intermediate MSCRGraph data structure (Intermediate.MSCRGraph).
- *     It requires the Smart.DList abstract syntax tree and DGraph data structures as inputs.
+ *     It requires the Smart.DComp abstract syntax tree and DGraph data structures as inputs.
  *
  *
- * 3. Conversion from the Smart.DList abstract syntax to the AST.Node abstract syntax tree.
+ * 3. Conversion from the Smart.DComp abstract syntax to the AST.Node abstract syntax tree.
  * 4. Conversion from intermediate MSCRGraph to the final MSCRGraph (defined in MSCR.scala)
  *
  * Step 1 is required by Step 2. In order to easily discover the nodes that go into the various
  * MSCRs that make up the Intermediate.MSCRGraph a graph data structure (DGraph) is very useful.
- * One needs to be able traverse both forwards and backwards within the Smart.DList abstract syntax
+ * One needs to be able traverse both forwards and backwards within the Smart.DComp abstract syntax
  * tree in order to find out such things as:
  *   - which GroupByKey nodes are related.
  *   - for a GroupByKey what its successors are in order to create output channels of an MSCR.
  *   - for a GroupByKey what its predecessors are in order to create input channels of an MSCR.
  *
- * Step 2 can be thought of as "drawing boxes around" Smart.DList nodes. Intermediate MSCRs
+ * Step 2 can be thought of as "drawing boxes around" Smart.DComp nodes. Intermediate MSCRs
  * (and indeed MSCRs proper) contain input and output channels and these channels contain
- * references to Smart.DList nodes. All Smart.DList nodes in the abstract syntax tree should be
+ * references to Smart.DComp nodes. All Smart.DComp nodes in the abstract syntax tree should be
  * part of exactly one MSCR in the Intermediate.MSCRGraph that is the output of this step
  * (i.e. in a "box") This is not guaranteed by construction. The implementation must be
  * carefully written to guarantee this.
  *
- * Step 3 converts from Smart.DList nodes to AST.Node nodes. In the process *extra* type information
+ * Step 3 converts from Smart.DComp nodes to AST.Node nodes. In the process *extra* type information
  * is recovered. For example, if one is currently on a GroupByKey node then one knows that its
  * predecessor must have output type (K,V) for some key K and value V.
  *
@@ -102,9 +103,17 @@ object Intermediate {
    */
   sealed abstract class InputChannel {
 
-    def hasInput(d: DList[_]): Boolean
+    def hasNode(d: DComp[_, _ <: Shape]): Boolean
 
-    def hasOutput(d: DList[_]): Boolean
+    def hasInput(d: DComp[_, _ <: Shape]): Boolean
+
+    def hasOutput(d: DComp[_, _ <: Shape]): Boolean
+
+    /*
+     * Returns @true@ if this input channel contains a @Smart.ParallelDo@ node
+     * that should be converted to a @AST.GbkMapper@ node.
+     */
+    def containsGbkMapper(d: Smart.ParallelDo[_,_,_]): Boolean
 
     /*
      * Creates the @DataSource@ input for this input channel.
@@ -118,7 +127,7 @@ object Intermediate {
 
   }
 
-  case class MapperInputChannel(parDos: List[ParallelDo[_,_]]) extends InputChannel {
+  case class MapperInputChannel(parDos: List[ParallelDo[_,_,_]]) extends InputChannel {
 
     override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
 
@@ -129,9 +138,13 @@ object Intermediate {
      *
      *  See descriptions of these methods in super class @InputChannel@
      */
-    def hasInput(d: DList[_]): Boolean = parDos(0).in ==d
+    def hasNode(d: DComp[_, _ <: Shape]): Boolean = parDos.exists(d ==)
 
-    def hasOutput(d: DList[_]): Boolean = parDos.exists(_==d)
+    def hasInput(d: DComp[_, _ <: Shape]): Boolean = parDos(0).in ==d
+
+    def hasOutput(d: DComp[_, _ <: Shape]): Boolean = parDos.exists(_==d)
+
+    def containsGbkMapper(d: ParallelDo[_,_,_]) = parDos.exists{_ == d}
 
     def dataSource(ci: ConvertInfo): DataSource[_,_,_] = {
       // This should be safe since there should be at least one parallelDo in @parDos@
@@ -140,17 +153,24 @@ object Intermediate {
 
     def convert(ci: ConvertInfo): CMapperInputChannel = {
       // TODO: Yet another asInstanceOf. Don't like them.
-      def f(d: DList[_]): AST.Node[_] with MapperLike[_,_,_] =
-        ci.getASTNode(d).asInstanceOf[AST.Node[_] with MapperLike[_,_,_]]
-      val ns: Set[AST.Node[_] with MapperLike[_,_,_]] = parDos.map(f).toSet
+      def conv(pd: ParallelDo[_,_,_]): (Env[_], AST.Node[_, _ <: Shape] with MapperLike[_,_,_,_]) = {
+        val node = ci.getASTNode(pd).asInstanceOf[AST.Node[_, _ <: Shape] with MapperLike[_,_,_,_]]
+        val env = ci.envMap(ci.getASTNode(pd.env))
+        (env, node)
+      }
+
+      val ns: Set[(Env[_], AST.Node[_, _ <: Shape] with MapperLike[_,_,_,_])] = parDos.map(conv).toSet
+
       new CMapperInputChannel(dataSource(ci), ns) {
-        def inputNode: AST.Node[_] = ci.astMap(parDos.head.in)
+        def inputNode: AST.Node[_, _ <: Shape] = ci.astMap(parDos.head.in)
+        def inputEnvs: Set[AST.Node[_, _ <: Shape]] = parDos.map(pd => ci.astMap(pd.env)).toSet
+        def nodes: Set[AST.Node[_, _ <: Shape]] = parDos.map(ci.astMap(_)).toSet
       }
     }
 
   }
 
-  case class IdInputChannel(input: DList[_]) extends InputChannel {
+  case class IdInputChannel(input: DComp[_, _ <: Shape]) extends InputChannel {
 
     override def toString = "IdInputChannel("+ input + ")"
     /*
@@ -160,26 +180,32 @@ object Intermediate {
      *
      *  See descriptions of these methods in super class @InputChannel@
      */
-    def hasInput(d: DList[_]): Boolean = d == input
+    def hasNode(d: DComp[_, _ <: Shape]): Boolean = false
 
-    def hasOutput(d: DList[_]): Boolean = hasInput(d)
+    def hasInput(d: DComp[_, _ <: Shape]): Boolean = d == input
+
+    def hasOutput(d: DComp[_, _ <: Shape]): Boolean = hasInput(d)
+
+    def containsGbkMapper(d: ParallelDo[_,_,_]) = d == input
 
     def convert(ci: ConvertInfo): BypassInputChannel = {
       // TODO. Yet another asInstanceOf
       BypassInputChannel(dataSource(ci), ci.getASTNode(input)
-                                               .asInstanceOf[AST.Node[_] with KVLike[_,_]])
+                                               .asInstanceOf[AST.Node[_, _ <: Shape] with KVLike[_,_]])
     }
 
     def dataSource(ci: ConvertInfo): DataSource[_,_,_] = input.dataSource(ci)
 
   }
 
-  case class StraightInputChannel(input: DList[_]) extends InputChannel {
+  case class StraightInputChannel(input: DComp[_, _ <: Shape]) extends InputChannel {
     override def toString = "StraightInputChannel(" + input + ")"
-    override def hasInput(d: DList[_]): Boolean = input == d
-    override def hasOutput(d: DList[_]): Boolean = input == d
+    override def hasNode(d: DComp[_, _ <: Shape]): Boolean = false
+    override def hasInput(d: DComp[_, _ <: Shape]): Boolean = input == d
+    override def hasOutput(d: DComp[_, _ <: Shape]): Boolean = input == d
+    override def containsGbkMapper(d: ParallelDo[_,_,_]) = false
     override def convert(ci: ConvertInfo): CStraightInputChannel =
-      CStraightInputChannel(dataSource(ci), ci.getASTNode(input).asInstanceOf[AST.Node[_]])
+      CStraightInputChannel(dataSource(ci), ci.getASTNode(input).asInstanceOf[AST.Node[_, _ <: Shape]])
     override def dataSource(ci: ConvertInfo): DataSource[_,_,_] =
       input.dataSource(ci)
   }
@@ -194,12 +220,13 @@ object Intermediate {
   sealed abstract class OutputChannel {
 
     /*
-     * Returns the @Smart.DList@ output for this output channel.
+     * Returns the @Smart.DComp@ output for this output channel.
      */
-    def output: DList[_]
+    def output: DComp[_, _ <: Shape]
 
-    def hasInput(d: DList[_]): Boolean
-    def hasOutput(d: DList[_]): Boolean
+    def hasNode(d: DComp[_, _ <: Shape]): Boolean
+    def hasInput(d: DComp[_, _ <: Shape]): Boolean
+    def hasOutput(d: DComp[_, _ <: Shape]): Boolean
 
     /*
      * Creates the @DataSink@ outputs for this channel.
@@ -209,9 +236,10 @@ object Intermediate {
      * output channel there is at most one @BridgeStore@ object.
      */
     final def dataSinks(parentMSCR: MSCR, ci: ConvertInfo): Set[DataSink[_,_,_]] = {
-      val d: DList[_] = this.output
+      val d: DComp[_, _ <: Shape] = this.output
       val bridgeStores:Set[DataSink[_,_,_]] =
-        if ( parentMSCR.connectsToOtherMSCR(d, ci.mscrs) ) {
+        if ( parentMSCR.connectsToOtherNode(d, ci.mscrs, ci.g) ) {
+          val bs = ci.getBridgeStore(d)
           Set(ci.getBridgeStore(d))
         } else {
           Set()
@@ -239,7 +267,7 @@ object Intermediate {
     /*
      * Given a @Smart.GroupByKey@ node creates a new (incomplete) intermediate @GbkOutputChannel@.
      */
-    def apply(d: DList[_]): GbkOutputChannel = {
+    def apply(d: DComp[_, _ <: Shape]): GbkOutputChannel = {
       d match {
         case gbk@GroupByKey(_) => GbkOutputChannel(None, gbk, None, None)
         case _                 => throw new RuntimeException("This is not a GBK")
@@ -256,7 +284,7 @@ object Intermediate {
   case class GbkOutputChannel(flatten:    Option[Flatten[_]],
                               groupByKey: GroupByKey[_,_],
                               combiner:   Option[Combine[_,_]],
-                              reducer:    Option[ParallelDo[_,_]]) extends OutputChannel {
+                              reducer:    Option[ParallelDo[_,_,_]]) extends OutputChannel {
 
      /*
       * Adds a @Flatten@ node to this output channel returning a new channel.
@@ -267,7 +295,7 @@ object Intermediate {
      /*
       * Adds a @ParallelDo@ node to this output channel returning a new channel.
       */
-     def addReducer(reducer: ParallelDo[_,_]): GbkOutputChannel =
+     def addReducer(reducer: ParallelDo[_,_,_]): GbkOutputChannel =
        new GbkOutputChannel(this.flatten, this.groupByKey, this.combiner, Some(reducer))
 
      /*
@@ -277,12 +305,15 @@ object Intermediate {
        new GbkOutputChannel(this.flatten, this.groupByKey, Some(combiner), this.reducer)
 
 
-     def hasInput(d: DList[_]): Boolean = flatten match {
+     def hasNode(d: DComp[_, _ <: Shape]): Boolean =
+      flatten.exists(d ==) || groupByKey == d || combiner.exists(d ==) || reducer.exists(d ==)
+
+     def hasInput(d: DComp[_, _ <: Shape]): Boolean = flatten match {
        case Some(f) => f.ins.exists(_ == d)
        case None    => groupByKey.in == d
      }
 
-     def hasOutput(d: DList[_]): Boolean = output == d
+     def hasOutput(d: DComp[_, _ <: Shape]): Boolean = output == d
 
      /*
       * Find the inputs to this channel. If there is a Flatten node then it is the parents of this
@@ -292,13 +323,13 @@ object Intermediate {
       * In fact, predecessors in the DGraph data structure are only there for
       * convenience rather than necessity.
       */
-     def inputs(g: DGraph): Iterable[DList[_]] = {
+     def inputs(g: DGraph): Iterable[DComp[_, _ <: Shape]] = {
        (this.flatten match {
          case Some(fltn) => g.preds.getOrElse(fltn,
            throw new RuntimeException("Flatten can't have no parents in GbkOutputChannel"))
          case None => g.preds.getOrElse(this.groupByKey,
            throw new RuntimeException("GroupByKey can't have no parents in GbkOutputChannel"))
-       }) toList
+       }).toList
      }
 
     override def toString = {
@@ -311,7 +342,7 @@ object Intermediate {
         mkString(header,",\n" + " " * header.length , ")")
       }
 
-    def output = reducer match {
+    def output: DComp[_, _ <: Shape] = reducer match {
       case Some(r) => r
       case None => combiner match {
         case Some(c) => c
@@ -324,13 +355,13 @@ object Intermediate {
         case Some(c) => {
           val nc: AST.Combiner[_,_] = ci.getASTCombiner(c)
           reducer match {
-            case Some(r) => CombinerReducer(nc, ci.getASTReducer(r))
+            case Some(r) => CombinerReducer(nc, ci.getASTReducer(r), ci.envMap(ci.getASTNode(r.env)))
             case None    => JustCombiner(nc)
           }
         }
         case None    => {
           reducer match {
-            case Some(r) => JustReducer(ci.getASTGbkReducer(r))
+            case Some(r) => JustReducer(ci.getASTGbkReducer(r), ci.envMap(ci.getASTNode(r.env)))
             case None    => Empty
           }
         }
@@ -343,40 +374,43 @@ object Intermediate {
     }
   }
 
-  case class BypassOutputChannel(input: ParallelDo[_,_]) extends OutputChannel {
-    def hasInput(d: DList[_]) = d == input
-    def hasOutput(d: DList[_]) = d == input
+  case class BypassOutputChannel(input: ParallelDo[_,_,_]) extends OutputChannel {
+    def hasNode(d: DComp[_, _ <: Shape]): Boolean = false
+    def hasInput(d: DComp[_, _ <: Shape]) = d == input
+    def hasOutput(d: DComp[_, _ <: Shape]) = d == input
 
     override def toString = "BypassOutputChannel(" + input.toString + ")"
 
-    def output: DList[_] = input
+    def output: DComp[_, _ <: Shape] = input
 
     def convert(parentMSCR: MSCR, ci: ConvertInfo): CBypassOutputChannel = {
       val n = ci.getASTNode(input)
-      if (n.isInstanceOf[AST.GbkMapper[_,_,_]])
-        CBypassOutputChannel(dataSinks(parentMSCR, ci), n.asInstanceOf[AST.GbkMapper[_,_,_]])
-      else if (n.isInstanceOf[AST.Mapper[_,_]])
-        CBypassOutputChannel(dataSinks(parentMSCR, ci), n.asInstanceOf[AST.Mapper[_,_]])
+      if (n.isInstanceOf[AST.GbkMapper[_,_,_,_]])
+        CBypassOutputChannel(dataSinks(parentMSCR, ci), n.asInstanceOf[AST.GbkMapper[_,_,_,_]])
+      else if (n.isInstanceOf[AST.Mapper[_,_,_]])
+        CBypassOutputChannel(dataSinks(parentMSCR, ci), n.asInstanceOf[AST.Mapper[_,_,_]])
       else
         throw new RuntimeException("Expecting GbkMapper or Mapper node.")
     }
   }
 
   case class FlattenOutputChannel(input: Flatten[_]) extends OutputChannel {
-    override def hasInput(d: DList[_]) = input.ins.exists(_ == d)
-    override def hasOutput(d: DList[_]) = d == output
+    override def hasNode(d: DComp[_, _ <: Shape]): Boolean = input == d
+    override def hasInput(d: DComp[_, _ <: Shape]) = input.ins.exists(_ == d)
+    override def hasOutput(d: DComp[_, _ <: Shape]) = d == output
     override def toString = "MultiOutputChannel(" + input.toString + ")"
-    override def output: DList[_] = input
+    override def output: DComp[_, _ <: Shape] = input
     override def convert(parentMSCR: MSCR, ci: ConvertInfo): CFlattenOutputChannel = {
       CFlattenOutputChannel(dataSinks(parentMSCR, ci), ci.getASTNode(input).asInstanceOf[AST.Flatten[_]])
     }
   }
 
 
-  class MSCR(val inputChannels: Set[InputChannel], val outputChannels: Set[OutputChannel]) {
+  case class MSCR(inputChannels: Set[InputChannel], outputChannels: Set[OutputChannel]) {
 
-    def hasInput(d: DList[_]): Boolean = this.inputChannels.exists(_.hasInput(d))
-    def hasOutput(d: DList[_]): Boolean = this.outputChannels.exists(_.hasOutput(d))
+    def hasNode(d: DComp[_, _ <: Shape]): Boolean = inputChannels.exists(_.hasNode(d)) || outputChannels.exists(_.hasNode(d))
+    def hasInput(d: DComp[_, _ <: Shape]): Boolean = this.inputChannels.exists(_.hasInput(d))
+    def hasOutput(d: DComp[_, _ <: Shape]): Boolean = this.outputChannels.exists(_.hasOutput(d))
 
     override def toString = {
       Pretty.indent(
@@ -387,21 +421,21 @@ object Intermediate {
     }
 
     /** Returns @true@ if this MSCR contains a @Smart.ParallelDo@ node that should be converted
-     *  to an @AST.GbkMapper@ node. Used during the translation from Smart.DList to AST */
-    def containsGbkMapper(d: Smart.ParallelDo[_,_]): Boolean = inputChannels.exists {
+     *  to an @AST.GbkMapper@ node. Used during the translation from Smart.DComp to AST */
+    def containsGbkMapper(d: Smart.ParallelDo[_,_,_]): Boolean = inputChannels.exists {
       case MapperInputChannel(pds) => pds.exists(_ == d)
       case other                   => false
     }
 
     /** Returns @true@ if this MSCR contains a @Smart.ParallelDo@ node that should be converted
-     *  to an @AST.GbkReducer@ node. Used during the translation from Smart.DList to AST */
-    def containsGbkReducer(d: Smart.ParallelDo[_,_]): Boolean = outputChannels.exists {
+     *  to an @AST.GbkReducer@ node. Used during the translation from Smart.DComp to AST */
+    def containsGbkReducer(d: Smart.ParallelDo[_,_,_]): Boolean = outputChannels.exists {
       case gbkOC@GbkOutputChannel(_,_,_,_) => gbkOC.combiner.isEmpty && gbkOC.reducer.map(_ == d).getOrElse(false)
       case other                           => false
     }
 
-    /* Used during the translation from Smart.DList to AST */
-    def containsReducer(d: Smart.ParallelDo[_,_]): Boolean = {
+    /* Used during the translation from Smart.DComp to AST */
+    def containsReducer(d: Smart.ParallelDo[_,_,_]): Boolean = {
       def pred(oc: OutputChannel): Boolean = oc match {
         case BypassOutputChannel(_) => false
         case gbkOC@GbkOutputChannel(_,_,_,_) =>
@@ -412,11 +446,14 @@ object Intermediate {
     }
 
     /*
-     * Checks whether a given node is an output from this MSCR and is input to another another.
+     * Checks whether a given node is an output from this MSCR and is input to another MSCR
+     * or a Materialize node.
      * The parameter @mscrs@ may or may not include this MSCR
      */
-    def connectsToOtherMSCR(d: DList[_], mscrs: Iterable[MSCR]) =
-      mscrs.exists(_.hasInput(d)) && !hasInput(d) && hasOutput(d)
+    def connectsToOtherNode(d: DComp[_, _ <: Shape], mscrs: Iterable[MSCR], g: DGraph) =
+      !hasInput(d) &&
+      hasOutput(d) &&
+      (mscrs.exists(_.hasInput(d)) || g.succs.get(d).map(_.exists(isMaterialize(_))).getOrElse(false))
 
     def convert(ci: ConvertInfo): CMSCR = {
       val cInputChannels:  Set[CInputChannel]  = inputChannels.map{_.convert(ci)}
@@ -432,7 +469,7 @@ object Intermediate {
 
     /** Construct multiple MSCRs for the logical plan/graph represented by a set of distributed
       * lists. */
-    def apply(outputs: Iterable[DList[_]]): MSCRGraph = {
+    def apply(outputs: Iterable[DComp[_, _ <: Shape]]): MSCRGraph = {
 
       val g = DGraph(outputs)
 
@@ -444,12 +481,12 @@ object Intermediate {
       val gbkMSCRs = relatedNodes(g) map { related =>
 
         /* Create a GbkOutputChannel for each GroupByKey and the related group. */
-        val gbkOCs = related.gbks map { outputChannelForGbk(_, g) }
+        val gbkOCs = related.gbks map { outputChannelForGbk(_, g, related) }
 
         /* Create a MapperInputChannel for each group of ParallelDo nodes, "belonging" to this
          * set of related GBKs, that share the same input. */
         val pdos = related.pdos map { getParallelDo(_).orNull }
-        val mapperICs = pdos.toList.groupBy { case ParallelDo(i, _, _, _) => i }
+        val mapperICs = pdos.toList.groupBy { case ParallelDo(i, _, _, _, _) => i }
                                    .values
                                    .map { MapperInputChannel(_) }
                                    .toSet
@@ -483,31 +520,34 @@ object Intermediate {
        *   1. The ouput is a ParallelDo node connected directly to a Load node;
        *   2. The output is a Flatten node, connected to the output(s) of an MSCR and/or
        *      Load node(s). */
-      val floatingOutputs = outputs filterNot { o => gbkMSCRs.exists(mscr => mscr.hasOutput(o)) }
+      val floatingNodes = g.nodes filterNot { n => gbkMSCRs.exists(_.hasNode(n)) }
 
-      val allMSCRs = if (floatingOutputs.isEmpty) gbkMSCRs else {
-        val (ics, ocs) = floatingOutputs map {
-          case pd@ParallelDo(_, _, _, _) => (List(MapperInputChannel(List(pd))), BypassOutputChannel(pd))
-          case flat@Flatten(_)     => {
-            (flat.ins map {
-              case pd@ParallelDo(_, _, _, _) => MapperInputChannel(List(pd))
-              case other => StraightInputChannel(other)
-            }, FlattenOutputChannel(flat))
+      /* Case 1 */
+      val floatingPDs = floatingNodes collect { case pd@ParallelDo(_, _, _, _, _) => pd }
+      val groupedPDs = floatingPDs.groupBy { case ParallelDo(in, _, _, _, _) => in }
+      val parallelDoMSCRs = groupedPDs map {
+        case (in, pds) => MSCR(Set(MapperInputChannel(pds.toList)), pds.map(BypassOutputChannel(_)).toSet)
+      }
+
+      /* Case 2 */
+      val flattenMSCRs = floatingNodes collect {
+        case flat@Flatten(_) => {
+          val ics = flat.ins map {
+            case pd@ParallelDo(_, _, _, _, _) => MapperInputChannel(List(pd))
+            case other                        => StraightInputChannel(other)
           }
-          case node => sys.error("Not expecting " + node + " as remaining node.")
-        } unzip
-
-        gbkMSCRs :+ new MSCR(ics.flatten.toSet, ocs.toSet)
+          MSCR(ics.toSet, Set(FlattenOutputChannel(flat)))
+        }
       }
 
       /* Final MSCR graph contains both GBK MSCRs and Map-only MSCRs. */
-      new MSCRGraph(allMSCRs, g)
+      new MSCRGraph(gbkMSCRs ++ parallelDoMSCRs ++ flattenMSCRs, g)
     }
 
 
     /* The primary data structure for determining related GroupByKey and ParallelDo nodes. */
-    type DListSet = Set[DList[_]]
-    private case class Relation(gbks: DListSet, pdos: DListSet, pdoInputs: DListSet, dependentGbks: DListSet) {
+    type DCompSet = Set[DComp[_, _ <: Shape]]
+    private case class Relation(gbks: DCompSet, pdos: DCompSet, pdoInputs: DCompSet, dependentGbks: DCompSet) {
 
       /** Field-wise union of two relations. */
       def union(that: Relation) =
@@ -532,30 +572,33 @@ object Intermediate {
     private def relatedNodes(g: DGraph): List[Relation] = {
 
       /* Step 1. */
-      def gbkInputs(gbk: DList[_]): Relation = {
+      def gbkInputs(gbk: DComp[_, _ <: Shape]): Relation = {
 
-        def parallelDos(dlist: DList[_]): Set[DList[_]] = {
+        def parallelDos(dlist: DComp[_, _ <: Shape]): Set[DComp[_, _ <: Shape]] = {
           dlist match {
-            case Flatten(ds)                => ds.flatMap(parallelDos(_)).toSet
-            case ParallelDo(_, _, false, _) => Set(dlist)
-            case _                          => Set.empty
+            case Flatten(ds)                   => ds.flatMap(parallelDos(_)).toSet
+            case ParallelDo(_, _, _, false, _) => Set(dlist)
+            case _                             => Set.empty
           }
         }
 
-        def parallelDoInputs(dlist: DList[_]): Set[DList[_]] = {
+        def parallelDoInputs(dlist: DComp[_, _ <: Shape]): Set[DComp[_, _ <: Shape]] = {
           dlist match {
-            case Flatten(ds)                => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
-            case ParallelDo(d, _, false, _) => Set(d)
-            case _                          => Set.empty
+            case Flatten(ds)                   => ds.filter(isParallelDo).flatMap(parallelDoInputs(_)).toSet
+            case ParallelDo(d, _, _, false, _) => Set(d)
+            case _                             => Set.empty
           }
         }
 
-        def dependentGbks(dlist: DList[_]): Set[DList[_]] = dlist match {
-          case Load(_)                 => Set.empty
-          case ParallelDo(in, _, _, _) => dependentGbks(in)
-          case gbk@GroupByKey(in)      => Set(gbk) ++ dependentGbks(in)
-          case Combine(in, _)          => dependentGbks(in)
-          case Flatten(ins)            => ins.map(dependentGbks(_).toList).flatten.toSet
+        def dependentGbks(dlist: DComp[_, _ <: Shape]): Set[DComp[_, _ <: Shape]] = dlist match {
+          case Load(_)                    => Set.empty
+          case ParallelDo(in, e, _, _, _) => dependentGbks(in) ++ dependentGbks(e)
+          case gbk@GroupByKey(in)         => Set(gbk) ++ dependentGbks(in)
+          case Combine(in, _)             => dependentGbks(in)
+          case Flatten(ins)               => ins.map(dependentGbks(_).toList).flatten.toSet
+          case Materialize(in)            => dependentGbks(in)
+          case Op(in1, in2, _)            => dependentGbks(in1) ++ dependentGbks(in2)
+          case Return(_)                  => Set.empty
         }
 
         val (GroupByKey(d)) = gbk
@@ -567,22 +610,36 @@ object Intermediate {
        */
       def merge(p: (Relation, Relation) => Boolean)(rs: List[Relation]): List[Relation] = {
 
-        def oneStepMerge(r: Relation, rs: List[Relation]): (Relation, List[Relation]) = {
-          val (overlapped, disjoint) = rs.partition(p(r, _))
-          val newPair = overlapped.foldLeft(r)(_.union(_))
-          (newPair, disjoint)
+        def mergeOne(r: Relation, rs: List[Relation], merged: List[Relation]): (Relation, List[Relation]) = {
+
+          /* check for indirect dependencies through dependent relation. */
+          val dependentRelations = (s: Relation) => (rs ++ merged).filter(_.gbks.intersect(s.dependentGbks).nonEmpty)
+
+          val isRelated = (q: Relation) => {
+            p(r, q) &&
+            dependentRelations(r).forall(!hasGbkDependency(_, q)) &&
+            dependentRelations(q).forall(!hasGbkDependency(_, r))
+          }
+
+          val (overlapped, disjoint) = rs.partition(isRelated)
+          overlapped match {
+            case x :: xs => mergeOne(x.union(r), xs ++ disjoint, x :: merged)
+            case Nil     => (r, disjoint)
+          }
         }
 
-        rs match {
+        def innerMerge(remaining: List[Relation], merged: List[Relation]): List[Relation] = remaining match {
           case r :: rs => {
-            val (r_, rs_) = oneStepMerge(r, rs)
-            if (r == r_) // Fixed point reached. No more relatedness for r.
-              r_ :: merge(p)(rs_)
+            val (q, qs) = mergeOne(r, rs, merged)
+            if (r == q)
+              q :: innerMerge(qs, q :: merged)
             else
-              merge(p)(r_ :: rs_)
+              innerMerge(q :: qs, merged)
           }
-          case _ => List()
+          case _ => Nil
         }
+
+        innerMerge(rs, Nil)
       }
 
       /* Step 4.
@@ -616,7 +673,7 @@ object Intermediate {
         (merge(relatedByParallelDoInputs) _) andThen
         (pruneUnrelated _)
 
-      val gbks: List[DList[_]] = g.nodes.filter(isGroupByKey).toList
+      val gbks: List[DComp[_, _ <: Shape]] = g.nodes.filter(isGroupByKey).toList
       findRelated(gbks.map(gbkInputs(_)))
     }
 
@@ -642,9 +699,9 @@ object Intermediate {
      *    another MSCR (in a MapperInputChannel)
      *
      * (Note: Perhaps this condition is too restrictive!) */
-    private def outputChannelForGbk(gbk: DList[_], g: DGraph): GbkOutputChannel = {
+    private def outputChannelForGbk(gbk: DComp[_, _ <: Shape], g: DGraph, related: MSCRGraph.Relation): GbkOutputChannel = {
 
-      def getSingleSucc(d: DList[_]): Option[DList[_]] =
+      def getSingleSucc(d: DComp[_, _ <: Shape]): Option[DComp[_, _ <: Shape]] =
         g.succs.get(d) match {
           case Some(s) => Some(s.toList.head)
           case None    => None
@@ -659,16 +716,28 @@ object Intermediate {
         maybeOC.getOrElse(oc)
       }
 
-      def addCombinerAndOrReducer(oc: GbkOutputChannel): GbkOutputChannel = {
-        def addTheReducer(d: DList[_], oc: GbkOutputChannel): GbkOutputChannel = {
-          val maybeOC =
-            for { d_              <- getSingleSucc(d)
-                  reducer         <- getParallelDo(d_)
-                  hasNoSuccessors <- Some(!g.succs.get(reducer).isDefined)
-                  hasGroupBarrier <- Some(reducer.groupBarrier)
-                  hasFuseBarrier  <- Some(reducer.fuseBarrier)
+      /** Follow predecessors up the graph finding any related GroupByKey nodes after any Materialize nodes */
+      def hasMaterializedPredWithRelatedPreds(node: DComp[_, _ <: Shape], foundMaterialize: Boolean = false): Boolean = {
+        g.preds.get(node).map(_.exists(_ match {
+          case a if(isGroupByKey(a))  => (foundMaterialize && (related.gbks.contains(a) ||
+                                          hasMaterializedPredWithRelatedPreds(a, foundMaterialize)))
+          case a if(isMaterialize(a)) => hasMaterializedPredWithRelatedPreds(a, true)
+          case a                      => hasMaterializedPredWithRelatedPreds(a, foundMaterialize)
+        })).getOrElse(false)
+      }
 
-            } yield (if (hasNoSuccessors || hasGroupBarrier || hasFuseBarrier) { oc.addReducer(reducer)} else { oc })
+      def addCombinerAndOrReducer(oc: GbkOutputChannel): GbkOutputChannel = {
+        def addTheReducer(d: DComp[_, _ <: Shape], oc: GbkOutputChannel): GbkOutputChannel = {
+          val maybeOC =
+            for { d_                      <- getSingleSucc(d)
+                  reducer                 <- getParallelDo(d_)
+                  hasNoSuccessors         <- Some(!g.succs.get(reducer).isDefined)
+                  hasDepPredecssors       <- Some(hasMaterializedPredWithRelatedPreds(reducer))
+                  hasMaterializeSucessor  <- Some(g.succs.get(reducer).map(_.exists(isMaterialize(_))).getOrElse(false))
+                  hasGroupBarrier         <- Some(reducer.groupBarrier)
+                  hasFuseBarrier          <- Some(reducer.fuseBarrier)
+
+            } yield (if ((hasNoSuccessors || hasMaterializeSucessor || hasGroupBarrier || hasFuseBarrier) && !hasDepPredecssors) { oc.addReducer(reducer) } else { oc })
           maybeOC.getOrElse(oc)
         }
 

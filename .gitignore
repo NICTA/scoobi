@@ -1,5 +1,17 @@
 target
 project/boot/
+*.jar
 
-src/test/resources/out/
-examples/joinExamples/output-dir/
+examples/*.iml
+src/main/*.iml
+.idea/
+
+.jvmopts
+pgp.sbt
+.history
+.cache
+.project
+.classpath
+.settings
+examples/wordCount/word-count-results/
+.DS_Store

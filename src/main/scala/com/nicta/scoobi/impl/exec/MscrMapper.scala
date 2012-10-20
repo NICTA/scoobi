@@ -1,35 +1,38 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.impl.exec
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package impl
+package exec
 
-import org.apache.hadoop.mapreduce.{Mapper => HMapper, _}
+import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.mapreduce.{Mapper => HMapper}
 
-import com.nicta.scoobi.Emitter
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.impl.rtt.Tagged
-import com.nicta.scoobi.impl.rtt.TaggedKey
-import com.nicta.scoobi.impl.rtt.TaggedValue
-
+import core._
+import io.InputConverter
+import rtt._
 
 /** Hadoop Mapper class for an MSCR. */
-class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
+class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
 
-  private var inputs: Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A, _, _]])] = _
+  lazy val logger = LogFactory.getLog("scoobi.MapTask")
+
+  private type Mappers = Map[Int, (InputConverter[K1, V1, A], Set[(Env[_], TaggedMapper[A, _, _, _])])]
+  private var inputs: Mappers = _
   private var converter: InputConverter[K1, V1, A] = _
-  private var mappers: Set[TaggedMapper[A, K2, V2]] = _
+  private var mappers: Set[(_, TaggedMapper[A, _, _, _])] = _
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
 
@@ -39,20 +42,25 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 
     /* Find the converter and its mappers for this input channel from the tagged input split. */
-    inputs = DistCache.pullObject(context.getConfiguration, "scoobi.mappers")
-                      .asInstanceOf[Map[Int, (InputConverter[K1, V1, A], Set[TaggedMapper[A,_,_]])]]
+    inputs = DistCache.pullObject[Mappers](context.getConfiguration, "scoobi.mappers").getOrElse(Map())
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
-    val input = inputs(inputSplit.channel)
+    val input: (InputConverter[K1, V1, A], Set[(Env[_], TaggedMapper[A, _, _, _])]) = inputs(inputSplit.channel)
+
+    logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
+    logger.info("Input is " + inputSplit.inputSplit)
 
     converter = input._1.asInstanceOf[InputConverter[K1, V1, A]]
-    mappers = input._2.asInstanceOf[Set[TaggedMapper[A, K2, V2]]]
 
-    mappers.foreach { _.setup() }
+    mappers = input._2 map { case (env, mapper) => (env.pull(context.getConfiguration), mapper) }
+
+    mappers.foreach { case (env, mapper: TaggedMapper[_, _, _, _]) =>
+      mapper.setup(env)
+    }
   }
 
   override def map(key: K1, value: V1, context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
     val v: A = converter.fromKeyValue(context, key, value).asInstanceOf[A]
-    mappers foreach { mapper =>
+    mappers foreach { case (env, mapper: TaggedMapper[_, _, _, _]) =>
       val emitter = new Emitter[(K2, V2)] {
         def emit(x: (K2, V2)) = {
           mapper.tags.foreach { tag =>
@@ -62,12 +70,12 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
           }
         }
       }
-      mapper.map(v, emitter)
+      mapper.map(env, v, emitter)
     }
   }
 
   override def cleanup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) = {
-    mappers foreach { mapper =>
+    mappers foreach { case (env, mapper: TaggedMapper[_, _, _, _]) =>
       val emitter = new Emitter[(K2, V2)] {
         def emit(x: (K2, V2)) = {
           mapper.tags.foreach { tag =>
@@ -77,7 +85,7 @@ class MscrMapper[K1, V1, A, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedVal
           }
         }
       }
-      mapper.cleanup(emitter)
+      mapper.cleanup(env, emitter)
     }
   }
 }

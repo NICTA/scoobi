@@ -1,28 +1,27 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.impl.rtt
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package impl
+package rtt
 
 import org.apache.hadoop.mapreduce.Partitioner
 import javassist._
+import core._
 
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.Grouping
-
-
-/** Custom paritioner for tagged key-values. */
+/** Custom partitioner for tagged key-values. */
 abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
 
 
@@ -46,14 +45,14 @@ class TaggedPartitionerClassBuilder
 
   def extendClass: Class[_] = classOf[TaggedPartitioner]
 
-  def build = {
+  def build {
 
     tags.foreach { case (t, (_, _, grp)) =>
       /* 'grouperN' - Grouping type class field for each tagged-type. */
       addTypeClassModel(grp, "grouper" + t)
     }
 
-    /* 'getPartition' - do hash paritioning on the key value that is tagged. */
+    /* 'getPartition' - do hash partitioning on the key value that is tagged. */
     val getPartitionCode =
       "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
       "switch(tag) {" +

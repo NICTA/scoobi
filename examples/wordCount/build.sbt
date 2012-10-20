@@ -1,7 +1,11 @@
 name := "Scoobi Word Count"
 
-version := "0.1"
+version := "1.0"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
-libraryDependencies += "com.nicta" %% "scoobi" % "0.4.0-SNAPSHOT" % "provided"
+scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
+
+libraryDependencies += "com.nicta" %% "scoobi" % "0.6.0-cdh4-SNAPSHOT"
+
+resolvers += "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"

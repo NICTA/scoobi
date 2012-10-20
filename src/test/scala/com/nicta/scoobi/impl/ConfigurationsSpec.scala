@@ -1,0 +1,68 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package impl
+
+import org.apache.hadoop.conf.Configuration
+import testing.mutable.UnitSpecification
+import Configurations._
+import org.specs2.matcher.Matcher
+
+class ConfigurationsSpec extends UnitSpecification{
+
+  "A configuration can be updated with the keys existing in another configuration" >> {
+    val updated = configuration("a" -> "1", "b" -> "2").updateWith(configuration("c" -> "3", "d" -> "4")) {
+      case (k, v) => ("got: "+k, "and: "+v)
+    }
+    updated.toMap must_== configuration("a" -> "1", "b" -> "2", "got: c" -> "and: 3", "got: d" -> "and: 4").toMap
+  }
+
+  "It is possible to increment the Int value of a configuration key" >> {
+    "for a simple key" >> {
+      val c1 = configuration("a" -> "1")
+      c1.increment("b")
+      c1 must beTheSameAs(configuration("a" -> "1", "b" -> "1"))
+
+      val c2 = configuration("a" -> "1")
+      c2.increment("a")
+      c2 must beTheSameAs(configuration("a" -> "2"))
+    }
+  }
+
+  "Values can be added to a given key" >> {
+    "they will be comma separated by default" >> {
+      val c1 = configuration()
+      c1.addValues("a", "1", "2").get("a") === "1,2"
+     }
+    "redundant values are suppressed" >> {
+      val c1 = configuration("a" -> "1,2")
+      c1.addValues("a", "2", "1", "3", "4").get("a") === "1,2,3,4"
+    }
+  }
+
+  "it is possible to temporarily use a configuration without its classLoader" >> {
+    val conf = configuration("a" -> "1")
+    val cl = getClass.getClassLoader
+    conf.setClassLoader(cl)
+    conf.withoutClassLoader { c: Configuration =>
+      c.getClassLoader must beNull
+    }
+    conf.getClassLoader must beTheSameAs(cl)
+  }
+
+  def beTheSameAs(other: Configuration): Matcher[Configuration] = (c: Configuration) =>
+    (c.show == other.show, c.show+"\n\nis not the same as\n\n"+other.show)
+}

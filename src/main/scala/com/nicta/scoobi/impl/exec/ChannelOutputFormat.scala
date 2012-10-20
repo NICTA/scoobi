@@ -1,33 +1,37 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.impl.exec
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package impl
+package exec
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
 import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.util.ReflectionUtils
-import scala.util.matching.Regex
-import scala.collection.JavaConversions._
+import org.apache.hadoop.filecache.DistributedCache._
 import scala.collection.mutable.{Map => MMap}
 
-import com.nicta.scoobi.io.DataSink
+import io.DataSink
+import Configurations._
+import application.ScoobiConfiguration
+import org.apache.hadoop.fs.Path
 
 
 /** A class that simplifies writing output to different paths and with different types
@@ -53,7 +57,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
      * the job thus supporting arbitrary output formats. */
     def mkTaskContext = {
       val conf = context.getConfiguration
-      val job = new Job(conf)
+      val job = new Job(new Configuration(conf))
 
       /* Set standard properties. */
       val format = conf.getClass(ChannelOutputFormat.formatProperty(channel, output), null)
@@ -64,11 +68,11 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
       job.getConfiguration.set("mapreduce.output.basename", "ch" + channel + "out" + output)
 
       val PropertyPrefix = (ChannelOutputFormat.otherProperty(channel, output) + """(.*)""").r
-      ChannelOutputFormat.confToMap(conf) collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
+      conf.toMap collect { case (PropertyPrefix(k), v) => (k, v) } foreach {
         case (k, v) => job.getConfiguration.set(k, v)
       }
 
-      new TaskAttemptContext(job.getConfiguration, context.getTaskAttemptID())
+      new TaskAttemptContextImpl(job.getConfiguration, context.getTaskAttemptID())
     }
 
     taskContexts.getOrElseUpdate((channel, output), mkTaskContext)
@@ -89,7 +93,17 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
 /** Object that allows for channels with different output format requirements
   * to be specified. */
-object ChannelOutputFormat extends ChannelFormatBase {
+object ChannelOutputFormat {
+  /** format of output file names */
+  val OutputChannelFileName = """ch(\d+)out(\d+)-.-\d+.*""".r
+
+  /** @return true if the file path has the name of an output channel with the proper tag and index or if it is a _SUCCESS file */
+  def isResultFile(tag: Int, ix: Int) =
+    (f: Path) => f.getName match {
+      case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == ix
+      case "_SUCCESS"           => true
+      case _                    => false
+    }
 
   private def propertyPrefix(ch: Int, ix: Int) = "scoobi.output." + ch + ":" + ix
   private def formatProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ".format"
@@ -98,16 +112,20 @@ object ChannelOutputFormat extends ChannelFormatBase {
   private def otherProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ":"
 
   /** Add a new output channel. */
-  def addOutputChannel(job: Job, channel: Int, output: Int, sink: DataSink[_,_,_]) = {
+  def addOutputChannel(job: Job, channel: Int, output: Int, sink: DataSink[_,_,_])(implicit sc: ScoobiConfiguration) = {
     val conf = job.getConfiguration
     conf.set(formatProperty(channel, output), sink.outputFormat.getName)
     conf.set(keyClassProperty(channel, output), sink.outputKeyClass.getName)
     conf.set(valueClassProperty(channel, output), sink.outputValueClass.getName)
 
-    val jobCopy = new Job(conf)
+    val jobCopy = new Job(new Configuration(conf))
     sink.outputConfigure(jobCopy)
-    (confToMap(jobCopy.getConfiguration) -- confToMap(conf).keys) foreach { case (k, v) =>
-      conf.set(otherProperty(channel, output) + k, v)
+    Option(jobCopy.getConfiguration.get(CACHE_FILES)).foreach { files =>
+      conf.set(otherProperty(channel, output) + CACHE_FILES, files)
+    }
+    conf.updateWith(jobCopy.getConfiguration) { case (k, v) if k != CACHE_FILES =>
+      (otherProperty(channel, output) + k, v)
     }
   }
 }
+

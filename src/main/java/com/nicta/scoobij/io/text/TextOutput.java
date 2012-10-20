@@ -28,7 +28,7 @@ public class TextOutput {
 		return com.nicta.scoobi.io.text.TextOutput.toTextFile(dl.getImpl(),
 				path, overwrite, bundle.typeInfo());
 	}
-//
+
 	public static <K, V> com.nicta.scoobi.DListPersister<scala.Tuple2<K, V>> toTextFile(
 			DTable<K, V> dt, String path, boolean overwrite, WireFormatType<K> bundleK,
 			WireFormatType<V> bundleV) {

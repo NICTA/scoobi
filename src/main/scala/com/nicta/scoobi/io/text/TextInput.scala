@@ -1,45 +1,36 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.io.text
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package io
+package text
 
 import java.io.IOException
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
-import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
-import com.nicta.scoobi.Scoobi
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.exec.TaggedInputSplit
-
+import impl.exec.TaggedInputSplit
+import core._
+import application.ScoobiConfiguration
 
 /** Smart functions for materializing distributed lists by loading text files. */
 object TextInput {
@@ -47,7 +38,7 @@ object TextInput {
 
   /** Create a distributed list from one or more files or directories (in the case of a directory,
     * the input forms all files in that directory). */
-  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths: _*))
+  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths:_*))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
@@ -65,7 +56,7 @@ object TextInput {
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(paths: _*)
+  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(List(paths:_*))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
@@ -105,25 +96,25 @@ object TextInput {
   private type NFE = java.lang.NumberFormatException
 
   /** Extract an Int from a String. */
-  object Int {
+  object AnInt {
     def unapply(s: String): Option[Int] =
       try { Some(s.toInt) } catch { case _: NFE => None }
   }
 
   /** Extract a Long from a String. */
-  object Long {
+  object ALong {
     def unapply(s: String): Option[Long] =
       try { Some(s.toLong) } catch { case _: NFE => None }
   }
 
   /** Extract a Double from a String. */
-  object Double {
+  object ADouble {
     def unapply(s: String): Option[Double] =
       try { Some(s.toDouble) } catch { case _: NFE => None }
   }
 
   /** Extract a Float from a String. */
-  object Float {
+  object AFloat {
     def unapply(s: String): Option[Float] =
       try { Some(s.toFloat ) } catch { case _: NFE => None }
   }
@@ -137,17 +128,21 @@ object TextInput {
 
     val inputFormat = classOf[TextInputFormat]
 
-    def inputCheck() = inputPaths foreach { p =>
-      if (Helper.pathExists(p))
-        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)) + ")")
-      else
-         throw new IOException("Input path " + p + " does not exist.")
+    def inputCheck(implicit sc: ScoobiConfiguration) {
+      inputPaths foreach { p =>
+        if (Helper.pathExists(p)(sc))
+          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
+        else
+          throw new IOException("Input path " + p + " does not exist.")
+      }
     }
 
-    def inputConfigure(job: Job) = inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = {
+      inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+    }
 
-    def inputSize(): Long = inputPaths.map(p => Helper.pathSize(p)).sum
+    def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
 
-    val inputConverter = converter
+    lazy val inputConverter = converter
   }
 }

@@ -1,28 +1,28 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.io.func
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package io
+package func
 
-import java.io.IOException
 import java.io.DataInput
 import java.io.DataOutput
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.NullWritable
@@ -34,15 +34,13 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.JobContext
 import scala.collection.JavaConversions._
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSource
-import com.nicta.scoobi.io.InputConverter
-import com.nicta.scoobi.impl.plan.Smart
-import com.nicta.scoobi.impl.plan.AST
-import com.nicta.scoobi.impl.exec.DistCache
-import com.nicta.scoobi.impl.util.UniqueInt
-
+import impl.exec.DistCache
+import impl.Configurations
+import Configurations._
+import core._
+import application.ScoobiConfiguration
+import impl.collection.Seqs._
+import impl.collection.{BoundedLinearSeq, FunctionBoundedLinearSeq}
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {
@@ -52,30 +50,28 @@ object FunctionInput {
     * a function that maps list indices to element values. */
   def fromFunction[A : Manifest : WireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
-      private val id = FunctionId.get
       val inputFormat = classOf[FunctionInputFormat[A]]
-      def inputCheck() = {}
+      def inputCheck(implicit sc: ScoobiConfiguration) {}
 
-      def inputConfigure(job: Job) = {
-        val conf = job.getConfiguration
-        conf.setInt(LengthProperty, n)
-        conf.setInt(IdProperty, id)
-        DistCache.pushObject(conf, f, functionProperty(id))
+      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+        job.getConfiguration.setInt(LengthProperty, n)
+        /* Because FunctionInputFormat is shared between multiple instances of the Function
+         * DataSource, each must have a unique id to distinguish their serialised
+         * functions that are pushed out by the distributed cache.
+         * Note that the previous function Id might have been set on a key such as "scoobi.input0:scoobi.function.id"
+         * This is why we need to look for keys by regular expression in order to find the maximum value to increment
+         */
+        DistCache.pushObject(job.getConfiguration, f, functionProperty(job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)))
       }
 
-      def inputSize(): Long = n.toLong
+      def inputSize(implicit sc: ScoobiConfiguration): Long = n.toLong
 
-      val inputConverter = new InputConverter[NullWritable, A, A] {
+      lazy val inputConverter = new InputConverter[NullWritable, A, A] {
         def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
       }
     }
     DList.fromSource(source)
   }
-
-  /* Because FunctionInputFormat is shared between multiple instances of the Function
-   * DataSource, each must have a unique id to distinguish their serialised
-   * functions that are pushed out by the distributed cache. */
-  object FunctionId extends UniqueInt
 
   /* Configuration property names. */
   private val PropertyPrefix = "scoobi.function"
@@ -94,7 +90,8 @@ object FunctionInput {
       val conf = context.getConfiguration
       val n = context.getConfiguration.getInt(LengthProperty, 0)
       val id = context.getConfiguration.getInt(IdProperty, 0)
-      val f = DistCache.pullObject(context.getConfiguration, functionProperty(id)).asInstanceOf[Int => A]
+
+      val f = DistCache.pullObject[Int => A](context.getConfiguration, functionProperty(id)).getOrElse((i:Int) => sys.error("no function found in the distributed cache for: "+functionProperty(id)))
 
       val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
       val splitSize = n / numSplitsHint
@@ -104,10 +101,7 @@ object FunctionInput {
       logger.debug("numSplitsHint=" + numSplitsHint)
       logger.debug("splitSize=" + splitSize)
 
-      (0 to (n - 1)).grouped(splitSize)
-                    .map { r => (r.head, r.size) }
-                    .map { case (s, l) => new FunctionInputSplit[A](s, l, f) }
-                    .toList
+      split(f, splitSize, (offset: Int, length: Int, fs: Int => A) => new FunctionInputSplit(offset, length, fs))(FunctionBoundedLinearSeq(_, n))
     }
   }
 

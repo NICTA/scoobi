@@ -1,23 +1,22 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.io.avro
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package io
+package avro
 
-import java.util.UUID
-import java.util.{Map => JMap}
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapred.FileAlreadyExistsException
@@ -26,16 +25,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyOutputFormat
-import scala.collection.JavaConversions._
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.WireFormat
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.AST
-
+import application.DListPersister
+import core._
+import application.ScoobiConfiguration
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -57,11 +50,11 @@ object AvroOutput {
       val outputKeyClass = classOf[AvroKey[sch.AvroType]]
       val outputValueClass = classOf[NullWritable]
 
-      def outputCheck() =
-        if (Helper.pathExists(outputPath)) {
+      def outputCheck(implicit sc: ScoobiConfiguration) {
+        if (Helper.pathExists(outputPath)(sc)) {
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)
+            Helper.deletePath(outputPath)(sc)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }
@@ -69,13 +62,14 @@ object AvroOutput {
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)
         }
+      }
 
-      def outputConfigure(job: Job) = {
+      def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         FileOutputFormat.setOutputPath(job, outputPath)
         job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
 
-      val outputConverter = converter
+      lazy val outputConverter = converter
     }
 
     new DListPersister(dl, sink)

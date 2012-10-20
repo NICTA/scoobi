@@ -1,25 +1,27 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.impl.rtt
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package impl
+package rtt
 
 import java.lang.reflect.{Modifier => RModifier, Array => RArray, Field => RField, Constructor => RConstructor}
 import java.io.DataOutputStream
 import java.io.ByteArrayOutputStream
-import com.nicta.scoobi.impl.util.UniqueInt
 import javassist._
+import impl.util.UniqueInt
 
 
 /** A class for building a class at run-time. */
@@ -32,7 +34,7 @@ trait ClassBuilder {
   def extendClass: Class[_]
 
   /** Implemented by sub-classes. Used for adding methods, fields, etc to the class. */
-  def build: Unit
+  def build()
 
   val pool: ClassPool = {
     val p = new ClassPool
@@ -44,8 +46,8 @@ trait ClassBuilder {
   val ctClass: CtClass = pool.makeClass(className, pool.get(extendClass.getName))
 
   /** Compile the definition and code for the class. */
-  def toRuntimeClass(): RuntimeClass = {
-    build
+  def toRuntimeClass: RuntimeClass = {
+    build()
     val bytecodeStream = new ByteArrayOutputStream
     ctClass.toBytecode(new DataOutputStream(bytecodeStream))
     new RuntimeClass(className, ctClass.toClass, bytecodeStream.toByteArray)
@@ -92,14 +94,7 @@ trait ClassBuilder {
          else
            false
        }
-       override def hashCode(): Int ={
-         1 // sigh... this is really dumb,
-         // but scala case classes seem to like overriding
-         // hasCode with something that's broken
-         // So now our search is O(n) instead of O(~log n) =/
-         // TODO: investigate if reflection can be used
-         // to call Object::hashCode without dynamic dispatch
-       }
+       override def hashCode(): Int = java.lang.System.identityHashCode(data)
     }
 
     def add(o: AnyRef, varName: String) {
@@ -213,7 +208,7 @@ trait ClassBuilder {
 
         fieldType match {
           case CJBoolean    => sb ++= "new Boolean(" + fieldObj.toString + ");"
-          case CJByte       => sb ++= "new Byte(" +fieldObj.toString + ");"
+          case CJByte       => sb ++= "new Byte((byte) " +fieldObj.toString + ");"
           case CJCharacter  => sb ++= "new Character('" + fieldObj.toString + "');"
           case CJDouble     => sb ++= "new Double(" + fieldObj.toString + "d);"
           case CJFloat      => sb ++= "new Float(" + fieldObj + "f);"

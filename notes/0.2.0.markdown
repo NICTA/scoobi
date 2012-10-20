@@ -1,0 +1,25 @@
+### New features
+
+* [Java bindings](http://nicta.github.com/scoobi/java/master/index.html)
+* Relational functionality: [`join`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.Join$), [`joinOn`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.Join$), [`coGroup`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.CoGroup$) and [`coGroupOn`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.lib.CoGroup$)
+* New [`DList`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList) methods:
+  * `parallelDo` - a sledge-hammer for when `flatMap` isn't enough
+  * `collect` - applies a partial function to each element
+  * `by` - create a keyed `DList` for join and co-group operations
+* [`WireFormat`](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.WireFormat) helpers support for algebraic data types (ADTs):
+  * `mkAbstractWireFormat`
+  * `mkCaseWireFormat` (formerly just `mkWireFormat`)
+  * `mkObjectWireFormat`
+  Read more on the [wiki page for serialization](https://github.com/NICTA/scoobi/wiki/Serialization)
+* Migration to new Hadoop API (i.e. use of *context* objects)
+* [*Shortest path* example](https://github.com/NICTA/scoobi/blob/master/examples/shortestPath/src/main/scala/Graph.scala)
+
+### Bug fixes
+
+* Checking all inputs exist before running a job
+* Bug fixes in *word count* example
+* Typos in documentation
+* Speed ups and support for all dataypes in ClassBuilder
+* Fix for reference counting intermediate data
+
+------ 

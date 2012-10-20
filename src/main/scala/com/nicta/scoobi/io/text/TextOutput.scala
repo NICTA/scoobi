@@ -1,21 +1,22 @@
 /**
-  * Copyright 2011 National ICT Australia Limited
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-package com.nicta.scoobi.io.text
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.nicta.scoobi
+package io
+package text
 
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
@@ -24,13 +25,9 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import com.nicta.scoobi.DList
-import com.nicta.scoobi.DListPersister
-import com.nicta.scoobi.io.DataSink
-import com.nicta.scoobi.io.OutputConverter
-import com.nicta.scoobi.io.Helper
-import com.nicta.scoobi.impl.plan.AST
-
+import application.DListPersister
+import application.ScoobiConfiguration
+import core._
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
@@ -55,20 +52,23 @@ object TextOutput {
         case mf               => mf.erasure.asInstanceOf[Class[A]]
       }
 
-      def outputCheck() =
-        if (Helper.pathExists(outputPath))
+      def outputCheck(implicit sc: ScoobiConfiguration) {
+        if (Helper.pathExists(outputPath)(sc))
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)
+            Helper.deletePath(outputPath)(sc)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }
         else
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
+      }
 
-      def outputConfigure(job: Job) = FileOutputFormat.setOutputPath(job, outputPath)
+      def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+        FileOutputFormat.setOutputPath(job, outputPath)
+      }
 
-      val outputConverter = new OutputConverter[NullWritable, A, A] {
+      lazy val outputConverter = new OutputConverter[NullWritable, A, A] {
         def toKeyValue(x: A) = (NullWritable.get, x)
       }
     }
