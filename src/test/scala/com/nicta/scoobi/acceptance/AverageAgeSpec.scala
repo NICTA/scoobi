@@ -45,7 +45,7 @@ class AverageAgeSpec extends NictaSimpleJobs {
       grouped map { case (n, ages) => (n, average(ages)) }
     }
 
-    averages.run.mkString(", ") must_== "(Ben,29), (Michael,40), (Rami,35), (Sean,57), (Tom,55)"
+    averages.run.sorted.mkString(", ") must_== "(Ben,29), (Michael,40), (Rami,35), (Sean,57), (Tom,55)"
   }
 }
 

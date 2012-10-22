@@ -42,6 +42,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
                                var userJars: Set[String] = Set(),
                                var userDirs: Set[String] = Set()) {
 
+
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
 
@@ -106,14 +107,28 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * @return true if this configuration is used for a remote job execution
    */
-  def isRemote = configuration.getBoolean("scoobi.remote", false)
+  def isRemote = mode == Mode.Cluster
 
   /**
-   * set a flag in order to know that this configuration is for a remote execution
+   * @return true if this configuration is used for a local memory execution
    */
-  def setRemote(remote: Boolean) {
-    set("scoobi.remote", remote.toString)
+  def isLocal = mode == Mode.Local
+
+  /**
+   * @return true if this configuration is used for an in memory execution with a collection backend
+   */
+  def isInMemory = mode == Mode.InMemory
+
+  /**
+   * set a flag in order to know that this configuration is for a in-memory, local or remote execution,
+   */
+  def modeIs(mode: Mode.Value) = {
+    set("scoobi.mode", mode.toString)
+    this
   }
+  /** @return the current mode */
+  def mode = Mode.withName(configuration.get("scoobi.mode", Mode.Local.toString))
+
   /**
    * @return true if the dependent jars have been uploaded
    */
@@ -194,6 +209,10 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   }
 
   /**
+   * force a configuration to be an in-memory one, currently doing everything as in the local mode
+   */
+  def setAsInMemory: ScoobiConfiguration = setAsLocal
+  /**
    * force a configuration to be a local one
    */
   def setAsLocal: ScoobiConfiguration = {
@@ -248,4 +267,9 @@ object ScoobiConfiguration {
   implicit def fromConfiguration(c: Configuration): ScoobiConfiguration = ScoobiConfiguration(c)
 
   def apply(args: Array[String]): ScoobiConfiguration = ScoobiConfiguration().callWithHadoopArgs(args, (a: Array[String]) => ())
+}
+
+object Mode extends Enumeration {
+  type Mode = Value
+  val InMemory, Local, Cluster = Value
 }

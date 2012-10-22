@@ -26,7 +26,7 @@ class ShortestPathSpec extends NictaSimpleJobs {
     val nodes =
       fromInput("A B", "A C", "C D", "C E", "D E", "F G", "E F", "G E")
 
-    val paths = {
+    val paths: DList[(String, Int)] = {
       val edges = nodes.map { n => val a :: b :: _ = n.split(" ").toList; (Node(a), Node(b)) }
       val adjacencies = edges.flatMap { case (first, second) => List((first, second), (second, first)) }
       val grouped = adjacencies.groupByKey[Node, Node]
@@ -40,21 +40,10 @@ class ShortestPathSpec extends NictaSimpleJobs {
       val iterations = 5
       val breadthResult = breadthFirst(formatted, iterations)
 
-      breadthResult map {
-        case (n: Node, ni: NodeInfo) => pathSize(ni.state) match {
-          case None    => "Couldn't get to " + n.data + " in " + iterations + " steps"
-          case Some(v) => "Shortest path from " + startingPoint.data + " to " + n.data + " is " + v + " steps"
-        }
-      }
+      breadthResult map { case (n, ni) => for { v <- pathSize(ni.state) } yield (n.data, v) } flatMap { x => x }
     }
 
-    paths.run must_== Seq("Shortest path from A to A is 0 steps",
-                          "Shortest path from A to B is 1 steps",
-                          "Shortest path from A to C is 1 steps",
-                          "Shortest path from A to D is 2 steps",
-                          "Shortest path from A to E is 2 steps",
-                          "Shortest path from A to F is 3 steps",
-                          "Shortest path from A to G is 3 steps")
+    paths.run.sortBy(_._1) must_== Seq(("A", 0), ("B", 1), ("C", 1), ("D", 2), ("E", 2), ("F", 3), ("G", 3))
   }
 }
 

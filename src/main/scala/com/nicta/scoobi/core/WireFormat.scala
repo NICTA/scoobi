@@ -21,7 +21,7 @@ import java.io._
 import impl.slow
 import org.apache.hadoop.io.Writable
 import collection.generic.CanBuildFrom
-import collection.mutable.{ListBuffer, Builder}
+import collection.mutable.{ ListBuffer, Builder }
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
@@ -29,7 +29,6 @@ trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
 }
-
 
 object WireFormat extends WireFormatImplicits {
 
@@ -87,7 +86,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   class AnythingWireFormat[T <: Serializable] extends WireFormat[T] {
     def toWire(x: T, out: DataOutput) {
       val bytesOut = new ByteArrayOutputStream
-      val bOut =  new ObjectOutputStream(bytesOut)
+      val bOut = new ObjectOutputStream(bytesOut)
       bOut.writeObject(x)
       bOut.close()
 
@@ -109,16 +108,21 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * Hadoop Writable types.
    */
-  implicit def WritableFmt[T <: Writable : Manifest]: WireFormat[T] = new WritableWireFormat[T]
-  class WritableWireFormat[T <: Writable : Manifest] extends WireFormat[T] {
+  implicit def WritableFmt[T <: Writable: Manifest] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) { x.write(out) }
     def fromWire(in: DataInput): T = {
-      val x: T = implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T]
+
+      val x: T = try { implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T] } catch {
+        case _: Throwable =>
+          sys.error("Hadoop does not support using a Writable type (" +
+            implicitly[Manifest[T]].erasure.getCanonicalName() +
+            ") unless it can be constructed with an empty-argument constructor. One simple way to get around this," +
+            " is by creating a new type by inheriting from, and making sure that subclass has a (working) no-argument constructor")
+      }
       x.readFields(in)
       x
     }
   }
-
 
   /**
    * "Primitive" types.
@@ -223,8 +227,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * This class is used to create a WireFormat for Traversables, Maps and Arrays
    */
-  private[scoobi]
-  case class TraversableWireFormat[T : WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
+  private[scoobi] case class TraversableWireFormat[T: WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
     def toWire(x: CC, out: DataOutput) = {
       require(x != null, "Cannot serialize a null Traversable. Consider using an empty collection, or an Option[Traversable]")
       // The "naive" approach for persisting a Traversable would be to persist the number of elements, then the
@@ -245,7 +248,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       builder.clear()
       // when the size is 0, it means that we've reached the last "chunk" of elements
       while (size != 0) {
-        (0 until size) foreach  { _ => builder += implicitly[WireFormat[T]].fromWire(in) }
+        (0 until size) foreach { _ => builder += implicitly[WireFormat[T]].fromWire(in) }
         size = in.readInt()
       }
       builder.result()
@@ -258,15 +261,14 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   implicit def OptionFmt[T](implicit wt: WireFormat[T]) = new WireFormat[Option[T]] {
     def toWire(x: Option[T], out: DataOutput) = x match {
       case Some(y) => { out.writeBoolean(true); wt.toWire(y, out) }
-      case None    => { out.writeBoolean(false) }
+      case None => { out.writeBoolean(false) }
     }
     def fromWire(in: DataInput): Option[T] = {
       val isSome = in.readBoolean()
       if (isSome) {
         val x: T = wt.fromWire(in)
         Some(x)
-      }
-      else {
+      } else {
         None
       }
     }
@@ -277,7 +279,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
    */
   implicit def EitherFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new WireFormat[Either[T1, T2]] {
     def toWire(x: Either[T1, T2], out: DataOutput) = x match {
-      case Left(x)  => { out.writeBoolean(true); wt1.toWire(x, out) }
+      case Left(x) => { out.writeBoolean(true); wt1.toWire(x, out) }
       case Right(x) => { out.writeBoolean(false); wt2.toWire(x, out) }
     }
     def fromWire(in: DataInput): Either[T1, T2] = {
@@ -285,8 +287,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       if (isLeft) {
         val x: T1 = wt1.fromWire(in)
         Left(x)
-      }
-      else {
+      } else {
         val x: T2 = wt2.fromWire(in)
         Right(x)
       }

@@ -39,12 +39,12 @@ class SecondarySortSpec extends NictaSimpleJobs {
 
     val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a => ((a._1, a._2), a._2))
 
-    bigKey.groupByKey.map { case ((first, last), values) => ((first, last), values.mkString(", ")) }.run.mkString === Seq(
-      "((Bat,Man),Man)",
-      "((John,Kennedy),Kennedy)",
-      "((Leonardo,Da Vinci),Da Vinci, De Capro)",
-      "((Mark,Edison),Edison, Twain)",
-      "((Michael,J. Fox),J. Fox, Jackson, Jordan, Landon)").mkString
+    bigKey.groupByKey.map { case ((first, _), lasts) => (first, lasts.mkString(",")) }.run.sortBy(_._1).mkString === Seq(
+      "(Bat,Man)",
+      "(John,Kennedy)",
+      "(Leonardo,Da Vinci,De Capro)",
+      "(Mark,Edison,Twain)",
+      "(Michael,J. Fox,Jackson,Jordan,Landon)").mkString
   }
 }
 
