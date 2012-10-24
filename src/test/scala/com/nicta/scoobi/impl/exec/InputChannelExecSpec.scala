@@ -14,7 +14,7 @@ class InputChannelExecSpec extends UnitSpecification {
     (new BypassInputChannelExec(pdExec, gbkExec).source: Any) === load.source
   }
   "A StraightInputChannelExec has a data source which must be the source of the input node of the channel" >> new example {
-    (new StraightInputChannelExec(flattenExec).source: Any) must beLike { case BridgeStore() => ok }
+    (new StraightInputChannelExec(flattenPdExec).source: Any) must beLike { case BridgeStore() => ok }
   }
   
   "Input channels must configure the MapReduceJob".txt

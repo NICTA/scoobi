@@ -5,18 +5,15 @@ package exec
 import plan.comp._
 import application.ScoobiConfiguration
 import plan.graph.{OutputChannel, InputChannel}
-import io.{Sink, Source, DataSink, DataSource}
-import org.apache.hadoop.mapreduce.Job
-import com.nicta.scoobi.core.Emitter
-import com.nicta.scoobi.core.Grouping
-import com.nicta.scoobi.core.WireFormat
+import io.{Sink, Source}
+import org.kiama.attribution.Attribution
+import plan.comp.CompNode._
 
 /**
  * GADT representing elementary computations to perform in hadoop jobs
  */
 sealed trait ExecutionNode extends CompNode {
   def referencedNode: CompNode
-  def source = referencedNode.source
   def sinks = referencedNode.sinks
 }
 trait MapperExecutionNode extends ExecutionNode {
@@ -89,7 +86,14 @@ trait ChannelExec {
 }
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
-  def source: Source = input.referencedNode.source
+  def source = {
+    Attribution.initTree(input.referencedNode)
+    input.referencedNode match {
+      case n: Load[_] => Some(n.source)
+      case n          => n.children.collect { case Load1(s) => s }.toSeq.headOption
+    }
+  }.getOrElse(BridgeStore())
+
   def input: MapperExecutionNode
   def referencedNode = input.referencedNode
 
@@ -129,6 +133,7 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
     job.addTaggedMapper(source, None, referencedNode.asInstanceOf[DComp[_]].makeStraightTaggedIdentityMapper(tags(referencedNode)))
+    job
   }
 }
 

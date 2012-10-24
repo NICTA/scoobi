@@ -26,7 +26,6 @@ sealed trait DComp[+A] extends CompNode {
   def mf = mwf.mf
   def wf = mwf.wf
 
-  def source: Source = io.source
   def sinks: Seq[Sink] = io.sinks
 
   def makeStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper =
@@ -44,7 +43,6 @@ sealed trait DComp[+A] extends CompNode {
 trait CompNode extends Attributable {
   lazy val id = Id.get
 
-  def source: Source
   def sinks : Seq[Sink]
 }
 
@@ -52,21 +50,20 @@ sealed trait IO[A] {
   type T <: IO[A]
 
   def mwf: ManifestWireFormat[A]
-  implicit def mf: Manifest[A] = mwf.mf
-  implicit def wf: WireFormat[A] = mwf.wf
+  def mf: Manifest[A] = mwf.mf
+  def wf: WireFormat[A] = mwf.wf
 
-  def source: Source
   def sinks : Seq[Sink]
   def updateSinks(f: Seq[Sink] => Seq[Sink]): T
 }
-case class StraightIO[A](mwf: ManifestWireFormat[A], source: Source = BridgeStore(), sinks: Seq[Sink] = Seq()) extends IO[A] { outer =>
+case class StraightIO[A](mwf: ManifestWireFormat[A], sinks: Seq[Sink] = Seq()) extends IO[A] { outer =>
   type T = StraightIO[A]
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(outer.sinks))
 }
 case class DoIO[A, B, E](mwfa: ManifestWireFormat[A],
                          mwfb: ManifestWireFormat[B],
                          mwfe: ManifestWireFormat[E],
-                         source: Source = BridgeStore(),
+                         source: Option[Source] = None,
                          sinks: Seq[Sink] = Seq()) extends IO[B] { outer =>
   type T = DoIO[A, B, E]
   def mwf = mwfb
@@ -74,7 +71,6 @@ case class DoIO[A, B, E](mwfa: ManifestWireFormat[A],
 }
 
 case class KeyValueIO[K, V](mwfk: ManifestWireFormat[K], gpk: Grouping[K], mwfv: ManifestWireFormat[V],
-                            source: Source = BridgeStore(),
                             sinks: Seq[Sink] = Seq()) extends IO[(K, V)] { outer =>
 
   type T = KeyValueIO[K, V]
@@ -89,9 +85,9 @@ case class KeyValueIO[K, V](mwfk: ManifestWireFormat[K], gpk: Grouping[K], mwfv:
 case class KeyValuesIO[K, V](mwfk: ManifestWireFormat[K],
                              gpk: Grouping[K],
                              mwfv: ManifestWireFormat[V],
-                             source: Source = BridgeStore(),
                              sinks: Seq[Sink] = Seq()) extends IO[(K, Iterable[V])] { outer =>
   type T = KeyValuesIO[K, V]
+  implicit val ((mfk, wfk), (mfv, wfv)) = (decompose(mwfk), decompose(mwfv))
   def mwf = ManifestWireFormat(manifest[(K, Iterable[V])], wireFormat[(K, Iterable[V])])
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(outer.sinks))
@@ -276,7 +272,7 @@ object GroupByKey1 {
 
 /** The Load node type specifies the creation of a DComp from some source other than another DComp.
  * A DataSource object specifies how the loading is performed. */
-case class Load[A](io: StraightIO[A]) extends DComp[A] {
+case class Load[A](source: Source, io: StraightIO[A]) extends DComp[A] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(io = io.updateSinks(f))

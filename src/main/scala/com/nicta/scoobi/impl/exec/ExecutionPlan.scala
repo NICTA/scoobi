@@ -19,7 +19,6 @@ import plan.graph.MapperInputChannel
 import plan.graph.GbkOutputChannel
 import org.kiama.attribution.Attribution._
 import org.kiama.attribution.{Attributable, Attribution}
-
 /**
  * The execution transforms the DComp nodes as created by the user and the Mscrs computed by the MscrGraph
  * and creates a graph of ExecutionNodes which will map to the final MSCRS to be executed by Hadoop.
@@ -103,7 +102,7 @@ trait ExecutionPlan extends MscrGraph {
       case n                             => Map(n.referencedNode -> outputTags(n.referencedNode, mscr))
     }}
   }
-  
+
   /** for a given node get the tags of the corresponding output channels */
   private[scoobi] def outputTags(node: CompNode, mscr: MscrExec): Set[Int] = {
     mscr.outputChannels.collect { case out: OutputChannelExec if (out.outputs diff (node -> outputs).toSeq).nonEmpty => tag(out) }.toSet

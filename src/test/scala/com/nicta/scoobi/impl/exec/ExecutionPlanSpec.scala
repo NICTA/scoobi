@@ -203,6 +203,7 @@ trait execfactory extends CompNodeFactory {
   lazy val ld                = load
   lazy val pdLoad            = pd(load)
   lazy val flattenLoad       = flatten[String](ld)
+  lazy val flattenPdLoad     = flatten[String](pdLoad)
   lazy val gbkLoad           = gbk(ld)
   lazy val cbLoad            = cb(ld)
   lazy val cbLoadExec        = CombineExec(Ref(cbLoad), load)
@@ -211,5 +212,6 @@ trait execfactory extends CompNodeFactory {
   lazy val gbkCombinerExec   = CombineExec(Ref(cbLoad), cbLoadExec)
   lazy val gbkReducerExec    = GbkReducerExec(Ref(pdLoad), cbLoadExec)
   lazy val flattenExec       = FlattenExec(Ref(flattenLoad), Seq(loadExec))
+  lazy val flattenPdExec     = FlattenExec(Ref(flattenPdLoad), Seq(loadExec))
   lazy val pdExec            = MapperExec(Ref(pdLoad), loadExec)
 }

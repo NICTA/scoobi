@@ -63,7 +63,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  */
 trait CompNodeFactory extends Scope {
 
-  def load                                   = Load(StraightIO(manifestWireFormat[String], source = ConstantStringDataSource("start")))
+  def load                                   = Load(ConstantStringDataSource("start"), StraightIO(manifestWireFormat[String]))
   def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A]]), StraightIO(manifestWireFormat[String]))
   def parallelDo(in: CompNode)               = pd(in)
   def rt                                     = Return("", StraightIO(manifestWireFormat[String]))

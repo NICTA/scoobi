@@ -75,7 +75,7 @@ object DListImpl {
   def apply[A : ManifestWireFormat](source: DataSource[_,_, A]) =  {
     new DListImpl[A](
       ParallelDo[A, A, Unit](
-        Load(StraightIO(manifestWireFormat[A], source)),
+        Load(source, StraightIO(manifestWireFormat[A])),
         UnitDObject.getComp,
         new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
         DoIO(manifestWireFormat[A], manifestWireFormat[A], manifestAndWireFormat(implicitly[Manifest[Unit]], wireFormat[Unit]))))
