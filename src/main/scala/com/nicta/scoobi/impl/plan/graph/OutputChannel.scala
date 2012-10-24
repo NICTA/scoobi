@@ -5,21 +5,21 @@ package graph
 
 import comp._
 import exec.{BridgeStore, UniqueId}
-import io.DataSink
+import io.{Sink, DataSink}
 
 /** ADT for MSCR output channels. */
 trait OutputChannel extends Channel {
   lazy val id: Int = UniqueId.get
 
   /** sinks for this output channel */
-  def sinks: Seq[DataSink[_,_,_]]
+  def sinks: Seq[Sink]
 }
 
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             var flatten:  Option[Flatten[_]]        = None,
                             var combiner: Option[Combine[_,_]]      = None,
                             var reducer:  Option[ParallelDo[_,_,_]] = None,
-                            sinks:        Seq[DataSink[_,_,_]]      = Seq()) extends OutputChannel {
+                            sinks:        Seq[Sink]      = Seq()) extends OutputChannel {
 
   override def toString =
     Seq(Some(groupByKey),
@@ -33,30 +33,30 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case _                   => false
   }
 
-  def addSinks(sinks: Map[CompNode, Seq[DataSink[_,_,_]]]) =
+  def addSinks(sinks: Map[CompNode, Seq[Sink]]) =
     copy(sinks = sinks.get(output).getOrElse(Seq(BridgeStore())))
 
   /** @return the output node of this channel */
   def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
 }
 
-case class BypassOutputChannel(output: ParallelDo[_,_,_], sinks: Seq[DataSink[_,_,_]] = Seq()) extends OutputChannel {
+case class BypassOutputChannel(output: ParallelDo[_,_,_], sinks: Seq[Sink] = Seq()) extends OutputChannel {
   override def equals(a: Any) = a match {
     case o: BypassOutputChannel => o.output.id == output.id
     case _                      => false
   }
 
-  def addSinks(sinks: Map[CompNode, Seq[DataSink[_,_,_]]]) =
+  def addSinks(sinks: Map[CompNode, Seq[Sink]]) =
     copy(sinks = sinks.get(output).getOrElse(Seq(BridgeStore())))
 
 }
 
-case class FlattenOutputChannel(output: Flatten[_], sinks: Seq[DataSink[_,_,_]] = Seq()) extends OutputChannel {
+case class FlattenOutputChannel(output: Flatten[_], sinks: Seq[Sink] = Seq()) extends OutputChannel {
   override def equals(a: Any) = a match {
     case o: FlattenOutputChannel => o.output.id == output.id
     case _ => false
   }
-  def addSinks(sinks: Map[CompNode, Seq[DataSink[_,_,_]]]) =
+  def addSinks(sinks: Map[CompNode, Seq[Sink]]) =
     copy(sinks = sinks.get(output).getOrElse(Seq(BridgeStore())))
 }
 

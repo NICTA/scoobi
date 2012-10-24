@@ -28,7 +28,7 @@ import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import scala.collection.mutable.{Map => MMap}
 
-import io.DataSink
+import io.{Sink, DataSink}
 import Configurations._
 import application.ScoobiConfiguration
 import org.apache.hadoop.fs.Path
@@ -112,7 +112,7 @@ object ChannelOutputFormat {
   private def otherProperty(ch: Int, ix: Int) = propertyPrefix(ch, ix) + ":"
 
   /** Add a new output channel. */
-  def addOutputChannel(job: Job, channel: Int, output: Int, sink: DataSink[_,_,_])(implicit sc: ScoobiConfiguration) = {
+  def addOutputChannel(job: Job, channel: Int, output: Int, sink: Sink)(implicit sc: ScoobiConfiguration) = {
     val conf = job.getConfiguration
     conf.set(formatProperty(channel, output), sink.outputFormat.getName)
     conf.set(keyClassProperty(channel, output), sink.outputKeyClass.getName)

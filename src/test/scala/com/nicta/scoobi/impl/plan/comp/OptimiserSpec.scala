@@ -155,9 +155,9 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
 
   def collectFlatten          = collectl { case f : Flatten[_] => f }
   def collectCombine          = collectl { case c @ Combine1(_) => c: CompNode }
-  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c }
+  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey1(_),_,_) => c }
   def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
-  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,false,_,_,_,_,_,_) => p }
+  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,Barriers(false,_)) => p }
   def collectGroupByKey       = collectl { case g @ GroupByKey1(_) => g }
   def collectGBKFlatten       = collectl { case GroupByKey1(f : Flatten[_]) => f }
 }

@@ -121,11 +121,11 @@ trait MscrGraph extends CompNodes {
    */
   lazy val isReducer: CompNode => Boolean =
     attr {
-      case pd @ ParallelDo(_, mt: Materialize[_],_,_,_,_,_,_,_,_,_) if envInSameMscr(pd) => false
-      case pd @ ParallelDo(cb: Combine[_,_],_,_,true,_,_,_,_,_,_,_)                      => true
-      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,true,_,_,_,_,_,_)                      => true
-      case pd: ParallelDo[_,_,_]                                                         => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
-      case other                                                                         => false
+      case pd @ ParallelDo(_, mt: Materialize[_],_,_,_) if envInSameMscr(pd) => false
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,Barriers(true,_))          => true
+      case pd @ ParallelDo(cb: Combine[_,_],_,_,_,Barriers(_,true))          => true
+      case pd: ParallelDo[_,_,_]                                             => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case other                                                             => false
     }
   /**
    * @return true if a parallel do and its environment are computed by the same mscr
@@ -145,8 +145,8 @@ trait MscrGraph extends CompNodes {
   /** compute if a node is a combiner of a GroupByKey, i.e. the direct output of a GroupByKey */
   lazy val isCombiner: CompNode => Boolean =
     attr {
-      case Combine(g: GroupByKey[_,_],_,_,_,_,_,_) => true
-      case other                                   => false
+      case Combine(g: GroupByKey[_,_],_,_) => true
+      case other                           => false
     }
 
   /** compute the combiner of a Gbk */

@@ -21,6 +21,7 @@ import scala.io.Source
 import org.apache.hadoop.fs.{Path, FileSystem}
 import Scoobi._
 import io.FileSystems
+import core.ManifestWireFormat
 
 /**
  * This trait creates input and output files which are temporary
@@ -95,13 +96,13 @@ object TestFiles extends TestFiles
 import TestFiles._
 
 class InputTestFile[S](ls: Seq[String], mapping: String => S)
-                      (implicit configuration: ScoobiConfiguration, m: Manifest[S], w: WireFormat[S]) {
+                      (implicit configuration: ScoobiConfiguration, m: ManifestWireFormat[S]) {
 
   lazy val file = createTempFile("test.input")
 
   def inputLines = fromTextFile(TempFiles.writeLines(file, ls, isRemote))
-  def map[T : Manifest : WireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
-  def collect[T : Manifest : WireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
+  def map[T : ManifestWireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
+  def collect[T : ManifestWireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
   def lines: DList[S] = inputLines.map(mapping)
 }
 

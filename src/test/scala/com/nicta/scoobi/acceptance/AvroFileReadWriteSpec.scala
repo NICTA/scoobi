@@ -56,7 +56,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean, String)], Array[Long])] = fromAvroFile(filePath)
@@ -72,7 +72,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(filePath)
@@ -88,7 +88,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(List(filePath), false)
@@ -108,7 +108,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     }
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean)])] = fromAvroFile(filePath)
@@ -156,7 +156,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
   def createTempAvroFile[T](input: DList[T])(implicit sc: SC, as: AvroSchema[T]): String = {
     val initialTmpFile = createTempFile()
-    persist(toAvroFile(input, initialTmpFile, overwrite = true))
+    persist(input.toAvroFile(initialTmpFile, overwrite = true))
     initialTmpFile
   }
 

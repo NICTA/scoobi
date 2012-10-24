@@ -401,7 +401,7 @@ and sinks.
 
 We have seen that Scoobi provides many *factory* methods for creaing `DList` objects, for example, `fromTextFile` and `fromAvroFile`. At their heart, all of these methods are built upon a single primitive mechanism: `DList` companion object's `fromSource` factory method:
 
-    def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A]
+    def fromSource[K, V, A : ManifestWireFormat](source: DataSource[K, V, A]): DList[A]
 
 `fromSource` takes as input an object implementing the `DataSource` trait. Implementing the `DataSource` trait is all that is required to create a `DList` from a custom data source. If we look at the `DataSource` trait, we can see that it is tightly coupled with the Hadoop `InputFormat` interface:
 

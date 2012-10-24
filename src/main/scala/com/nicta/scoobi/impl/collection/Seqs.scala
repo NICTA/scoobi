@@ -20,6 +20,56 @@ trait Seqs {
   }
 
   implicit def sequenceToSeqBoundedLinearSeq[A](seq: Seq[A]): BoundedLinearSeq[A] = SeqBoundedLinearSeq(seq)
+
+  /** @return an extension for a seq */
+  implicit def extendSeq[T](seq: Seq[T]): ExtendedSeq[T] = new ExtendedSeq(seq)
+  /**
+   * Additional methods for seqs
+   */
+  class ExtendedSeq[T](seq: Seq[T]) {
+
+    /** update the last element if there is one */
+    def updateLast(f: T => T) = seq match {
+      case s :+ last => s :+ f(last)
+      case other     => other
+    }
+
+    /** update the last element or start the sequence with a new init value */
+    def updateLastOr(f: PartialFunction[T, T])(initValue: =>T) = seq match {
+      case s :+ last => s :+ f(last)
+      case other     => seq :+ initValue
+    }
+
+    /**
+     * remove the first element satisfying the predicate
+     * @return a seq minus the first element satisfying the predicate
+     */
+    def removeFirst(predicate: T => Boolean): Seq[T] = {
+      val (withoutElement, startWithElement) = seq span (x => !predicate(x))
+      withoutElement ++ startWithElement.drop(1)
+    }
+
+  }
+
+}
+/**
+ * extrator for the first element of Seq[T]
+ */
+object +: {
+  def unapply[T](l: Seq[T]): Option[(T, Seq[T])] = {
+    if(l.isEmpty) None
+    else          Some(l.head, l.tail)
+  }
+}
+
+/**
+ * extrator for the last element of Seq[T]
+ */
+object :+ {
+  def unapply[T](l: Seq[T]): Option[(Seq[T], T)] = {
+    if(l.isEmpty) None
+    else          Some(l.init, l.last)
+  }
 }
 
 trait BoundedLinearSeq[+A] {

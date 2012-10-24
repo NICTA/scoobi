@@ -5,7 +5,7 @@ package exec
 import plan.comp._
 import application.ScoobiConfiguration
 import plan.graph.{OutputChannel, InputChannel}
-import io.{DataSink, DataSource}
+import io.{Sink, Source, DataSink, DataSource}
 import org.apache.hadoop.mapreduce.Job
 import com.nicta.scoobi.core.Emitter
 import com.nicta.scoobi.core.Grouping
@@ -16,6 +16,8 @@ import com.nicta.scoobi.core.WireFormat
  */
 sealed trait ExecutionNode extends CompNode {
   def referencedNode: CompNode
+  def source = referencedNode.source
+  def sinks = referencedNode.sinks
 }
 trait MapperExecutionNode extends ExecutionNode {
   def makeTaggedMapper(tags: Map[CompNode, Set[Int]]): TaggedMapper
@@ -72,7 +74,7 @@ case class GbkReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends Execu
   def dofn           = referencedNode.dofn
   
   def makeTaggedReducer(tag: Int) = referencedNode.makeTaggedReducer(tag)
-  def env(implicit sc: ScoobiConfiguration) = Env(referencedNode.wfe)(sc)
+  def env(implicit sc: ScoobiConfiguration) = Env(referencedNode.mwfe.wf)(sc)
 }
 
 case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set()) {
@@ -87,7 +89,7 @@ trait ChannelExec {
 }
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
-  def source: DataSource[_,_,_] = input.referencedNode.dataSource
+  def source: Source = input.referencedNode.source
   def input: MapperExecutionNode
   def referencedNode = input.referencedNode
 
@@ -106,7 +108,7 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
     val tags = plan.tags(job.mscrExec)(this)
     mappers.map { mapper =>
       val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
-      val env = Env(pd.wfe)
+      val env = Env(pd.mwfe.wf)
       job.addTaggedMapper(source, Some(env), mapper.makeTaggedMapper(tags))
     }
     job
@@ -126,12 +128,12 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def input = in.asInstanceOf[MapperExecutionNode]
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
-    job.addTaggedMapper(source, None, referencedNode.asInstanceOf[DComp[_,_]].makeStraightTaggedIdentityMapper(tags(referencedNode)))
+    job.addTaggedMapper(source, None, referencedNode.asInstanceOf[DComp[_]].makeStraightTaggedIdentityMapper(tags(referencedNode)))
   }
 }
 
 sealed trait OutputChannelExec extends OutputChannel with ChannelExec {
-  def sinks: Seq[DataSink[_,_,_]]
+  def sinks: Seq[Sink]
   def outputs: Seq[CompNode]
 }
 
@@ -139,7 +141,7 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
                                 flatten:    Option[CompNode]     = None,
                                 combiner:   Option[CompNode]     = None,
                                 reducer:    Option[CompNode]     = None,
-                                sinks:      Seq[DataSink[_,_,_]] = Seq(),
+                                sinks:      Seq[Sink] = Seq(),
                                 tag:        Int = 0) extends OutputChannelExec {
 
   lazy val theCombiner   = combiner.asInstanceOf[Option[CombineExec]]
@@ -168,7 +170,7 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
   }
 }
 
-case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag: Int = 0) extends OutputChannelExec {
   lazy val theFlatten = out.asInstanceOf[FlattenExec]
 
   override def equals(a: Any) = a match {
@@ -180,7 +182,7 @@ case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] =
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
     job.addTaggedReducer(sinks.toList, None, theFlatten.referencedNode.makeTaggedReducer(tag))
 }
-case class BypassOutputChannelExec(out: CompNode, sinks: Seq[DataSink[_,_,_]] = Seq(), tag: Int = 0) extends OutputChannelExec {
+case class BypassOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag: Int = 0) extends OutputChannelExec {
   lazy val theParallelDo = out.asInstanceOf[MapperExec]
 
   override def equals(a: Any) = a match {

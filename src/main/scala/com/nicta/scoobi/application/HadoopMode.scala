@@ -22,8 +22,8 @@ import scalaz.State
 
 import core._
 import impl.plan._
+import comp.CompNode
 import impl.exec._
-import Smart._
 import io.DataSource
 import io.DataSink
 
@@ -35,9 +35,11 @@ object HadoopMode {
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
 
-  def prepareST(outputs: List[(Smart.DComp[_, _ <: Shape], Option[DataSink[_,_,_]])], conf: ScoobiConfiguration): Eval.ST = {
+  def prepareST(outputs: List[(CompNode, Option[DataSink[_,_,_]])])(implicit sc: ScoobiConfiguration) = {
+
     /* Produce map of all unique outputs and their corresponding persisters. */
-    val rawOutMap: List[(Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]])] =
+    /*
+    val rawOutMap: List[(CompNode, Set[DataSink[_,_,_]])] =
       outputs.groupBy(_._1)
              .map(t => (t._1, t._2.map(_._2).flatten.toSet))
              .toList
@@ -48,7 +50,7 @@ object HadoopMode {
 
     /* Optimise the plan associated with the outputs. */
     val optOuts = {
-      val opt: List[Smart.DComp[_, _ <: Shape]] = Smart.optimisePlan(rawOutMap.map(_._1))
+      val opt: List[CompNode] = Smart.optimisePlan(rawOutMap.map(_._1))
       (rawOutMap zip opt) map { case ((o1, s), o2) => (o2, (o1, s)) }
     }
 
@@ -60,9 +62,9 @@ object HadoopMode {
      *  This is a side-effecting expression. The @m@ field of the @ci@ parameter is updated.
      */
     import com.nicta.scoobi.impl.plan.{Intermediate => I}
-    val outMap = optOuts.map { case (o2, (o1, s)) => (o2, s) }.toMap[Smart.DComp[_, _ <: Shape], Set[DataSink[_,_,_]]]
+    val outMap = optOuts.map { case (o2, (o1, s)) => (o2, s) }.toMap[CompNode, Set[DataSink[_,_,_]]]
     val ds = outMap.keys
-    val iMSCRGraph: I.MSCRGraph = I.MSCRGraph(ds)
+    val iMSCRGraph  = I.MSCRGraph(ds)
     val ci = ConvertInfo(conf, outMap , iMSCRGraph.mscrs, iMSCRGraph.g)
 
     logger.debug("Intermediate MSCRs")
@@ -84,8 +86,8 @@ object HadoopMode {
     val st = Executor.prepare(mscrGraph, conf)
 
     /* Generate a map from the original (non-optimised) Smart.DComp to AST.Node */
-    val nodeMap = new DefaultMap[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]] {
-      def get(d: Smart.DComp[_, _ <: Shape]): Option[AST.Node[_, _ <: Shape]] = {
+    val nodeMap = new DefaultMap[CompNode, ExecutionNode] {
+      def get(d: CompNode): Option[ExecutionNode] = {
         for {
           rawOutput <- rawOutMap.find(_._1 == d)
           dataSinks <- Some(rawOutput._2)
@@ -96,9 +98,9 @@ object HadoopMode {
 
       val iterator = {
         val it = rawOutMap.toIterator
-        new Iterator[(Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape])] {
+        new Iterator[(CompNode, ExecutionNode)] {
           def hasNext: Boolean = it.hasNext
-          def next(): (Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]) = {
+          def next(): (CompNode, ExecutionNode) = {
             val n = for {
               dcomp <- Some(it.next()._1)
               ast   <- get(dcomp)
@@ -109,25 +111,29 @@ object HadoopMode {
       }
     }
 
-    Eval.Hadoop((st, nodeMap))
+    */
+    //Eval.Hadoop((ExecState(ScoobiConfiguration()), Map()))
   }
 
-
-  def executeDListPersister[A](x: DListPersister[A], conf: ScoobiConfiguration): State[Eval.ST, Unit] = State({
+/*
+  def executeDListPersister[A](x: DListPersister[A])(implicit sc: ScoobiConfiguration): State[Eval.ST, Unit] = State({
     case Eval.Hadoop((exSt, nodeMap)) => {
-      val node: AST.Node[A, _ <: Shape] = nodeMap(x.dlist.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
-      (Eval.Hadoop(Executor.executeArrOutput(node, x.sink, exSt), nodeMap), ())
+//      val node = nodeMap(x.dlist.getComp).asInstanceOf[ExecutionNode]
+      // (Eval.Hadoop(Executor.executeArrOutput(node, x.sink, exSt), nodeMap), ())
+      sys.error("Not implemented yet")
     }
     case _ => sys.error("something went wrong")
   })
 
 
-  def executeDObject[A](x: DObject[A], conf: ScoobiConfiguration): State[Eval.ST, A] = State({
+  def executeDObject[A](x: DObject[A])(implicit sc: ScoobiConfiguration): State[Eval.ST, A] = State({
     case Eval.Hadoop((exSt, nodeMap)) => {
-      val node: AST.Node[A, _ <: Shape] = nodeMap(x.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
-      val (e, stU) = Executor.executeExp(node, exSt)
-      (Eval.Hadoop((stU, nodeMap)), e)
+//      val node = nodeMap(x.getComp).asInstanceOf[ExecutionNode]
+//      val (e, stU) = Executor.executeExp(node, exSt)
+//      (Eval.Hadoop((stU, nodeMap)), e)
+      sys.error("Not implemented yet")
     }
     case _ => sys.error("something went wrong")
   })
+  */
 }

@@ -18,8 +18,9 @@ package impl
 package exec
 
 import core._
+import plan.comp.StraightIO
 
 /** A wrapper for a 'combine' function tagged for a specific output channel. */
-abstract class TaggedCombiner[V](val tag: Int, val mv: Manifest[_], val wfv: WireFormat[_]) {
+abstract class TaggedCombiner[V](val tag: Int, val io: StraightIO[_]) {
   def combine(x: V, y: V): V
 }

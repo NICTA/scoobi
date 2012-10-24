@@ -34,6 +34,15 @@ trait Grouping[K] {
   /** Specifies how values, for a given partition, are grouped together in
    * a given partition. */
   def groupCompare(x: K, y: K): Int
+
+  private[scoobi]
+  def unsafePartition(key: Any, num: Int): Int = partition(key.asInstanceOf[K], num)
+
+  private[scoobi]
+  def unsafeSortCompare(x: Any, y: Any): Int = sortCompare(x.asInstanceOf[K], y.asInstanceOf[K])
+
+  private[scoobi]
+  def unsafeGroupCompare(x: Any, y: Any): Int = groupCompare(x.asInstanceOf[K], y.asInstanceOf[K])
 }
 
 object Grouping extends GroupingImplicits

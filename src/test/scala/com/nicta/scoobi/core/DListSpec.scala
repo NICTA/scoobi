@@ -43,7 +43,7 @@ class DListSpec extends NictaSimpleJobs {
   "A complex graph example must not throw an exception" >> { implicit sc: SC =>
 
 
-    def simpleJoin[T: Manifest: WireFormat, V: Manifest: WireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
+    def simpleJoin[T: ManifestWireFormat, V: ManifestWireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
       (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey.groupBarrier
 
     val data = DList((12 -> 13), (14 -> 15), (13 -> 55))

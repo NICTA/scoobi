@@ -18,9 +18,13 @@ package impl
 package exec
 
 import core._
+import plan.comp.StraightIO
 
 /** A wrapper for a 'reduce' function tagged for a specific output channel. */
-abstract class TaggedReducer(val tag: Int, val mfb: Manifest[_], val wfb: WireFormat[_]) {
+abstract class TaggedReducer(val tag: Int, val mwf: ManifestWireFormat[_]) {
+  def mf = mwf.mf
+  def wf = mwf.wf
+
   /** The actual 'reduce' function that will be by Hadoop in the reducer task. */
   def setup(env: Any)
   def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any])
@@ -28,7 +32,7 @@ abstract class TaggedReducer(val tag: Int, val mfb: Manifest[_], val wfb: WireFo
 }
 
 /** A TaggedReducer that is an identity reducer. */
-class TaggedIdentityReducer(tag: Int, mb: Manifest[_], wfb: WireFormat[_]) extends TaggedReducer(tag, mb, wfb) {
+class TaggedIdentityReducer(tag: Int, mwf: ManifestWireFormat[_]) extends TaggedReducer(tag, mwf) {
   def setup(env: Any) {}
   def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any])  { values.foreach { emitter.emit(_) } }
   def cleanup(env: Any, emitter: Emitter[Any]) {}

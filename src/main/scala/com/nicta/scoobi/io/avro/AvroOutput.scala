@@ -37,13 +37,15 @@ object AvroOutput {
 
   /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
   def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false): DListPersister[B] = {
+    new DListPersister(dl, avroSink(path, overwrite))
+  }
+  def avroSink[B : AvroSchema](path: String, overwrite: Boolean = false) = {
     val sch = implicitly[AvroSchema[B]]
-
     val converter = new OutputConverter[AvroKey[sch.AvroType], NullWritable, B] {
       def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
-    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
+    new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
       protected val outputPath = new Path(path)
 
       val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
@@ -71,7 +73,5 @@ object AvroOutput {
 
       lazy val outputConverter = converter
     }
-
-    new DListPersister(dl, sink)
   }
 }

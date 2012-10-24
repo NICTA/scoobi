@@ -48,7 +48,7 @@ object WordCount extends ScoobiApp {
     val outputDirectory: String = if (args.length == 0) "word-count-results" else args(1)
 
     // We can evaluate this, and write it to a text file
-    persist(toTextFile(combined, outputDirectory))
+    persist(combined.toTextFile(outputDirectory))
   }
 
   /* Generate 'count' random words with a high amount of collisions */

@@ -23,6 +23,7 @@ import application.ScoobiConfiguration
 
 import PageRank._
 import lib.Relational._
+import core.WireFormat
 
 class PageRankSpec extends NictaSimpleJobs {
 
@@ -49,10 +50,14 @@ class PageRankSpec extends NictaSimpleJobs {
 object PageRank {
   val Node = """^(\d+): (.*)$""".r
 
-  def initialise[K : Manifest : WireFormat](input: DList[(K, Seq[K])]) =
+  def initialise[K : ManifestWireFormat](input: DList[(K, Seq[K])]) = {
+    implicit val (mf, wf) = WireFormat.decompose[K]
     input map { case (url, links) => (url, (1f, 0f, links)) }
+  }
 
-  def update[K : Manifest : WireFormat : Grouping](prev: DList[(K, (Float, Float, Seq[K]))], d: Float) = {
+  def update[K : ManifestWireFormat : Grouping](prev: DList[(K, (Float, Float, Seq[K]))], d: Float) = {
+    implicit val (mf, wf) = WireFormat.decompose[K]
+
     val outbound = prev flatMap { case (url, (pr, _, links)) => links.map((_, pr / links.size)) }
 
     (prev coGroup outbound) map { case (url, (prev_data, outbound_mass)) =>
@@ -73,8 +78,8 @@ object PageRank {
     val curr = if (i == 0) initialise(graph) else latestRankings(outputDir, i)
     val next = update(curr, 0.5f)
     val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max
-    val (_, d) = persist(configuration)(toAvroFile(next, outputFile(outputDir, i + 1)), maxDelta)
-    d
+    persist(next.toAvroFile(outputFile(outputDir, i + 1)))
+    persist(maxDelta)
   }
 
   /**

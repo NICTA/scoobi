@@ -23,32 +23,33 @@ import WireFormat._
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
-class DObjectImpl[A](comp: CompNode)(implicit val mf: Manifest[A], val wf: WireFormat[A]) extends DObject[A] {
+class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) extends DObject[A] {
 
   private[scoobi]
   def getComp: CompNode = comp
 
-  def map[B : Manifest : WireFormat](f: A => B): DObject[B] =
-    new DObjectImpl(Op(comp, Return((), manifest[Unit], wireFormat[Unit]), (a: A, _: Unit) => f(a), manifest[B], wireFormat[B]))
+  def map[B : ManifestWireFormat](f: A => B): DObject[B] =
+    new DObjectImpl(Op(comp, Return.unit, (a: A, _: Unit) => f(a), StraightIO(manifestWireFormat[B])))
 
-  def join[B : Manifest : WireFormat](list: DList[B]): DList[(A, B)] = {
+  def join[B : ManifestWireFormat](list: DList[B]): DList[(A, B)] = {
     val dofn = new EnvDoFn[B, (A, B), A] {
       def setup(env: A) {}
       def process(env: A, input: B, emitter: Emitter[(A, B)]) { emitter.emit((env, input)) }
       def cleanup(env: A, emitter: Emitter[(A, B)]) {}
     }
-    new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, false, false, manifest[B], wireFormat[B], manifest[(A, B)], wireFormat[(A, B)], manifest[A], wireFormat[A]))
+    new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, DoIO(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
   }
 }
-
 
 object UnitDObject extends DObjectImpl[Unit](Return.unit)
 
 private[scoobi]
 object DObjectImpl {
-  def apply[A : Manifest : WireFormat](a: A) = new DObjectImpl(Return(a, manifest[A], wireFormat[A]))
+
+  def apply[A : ManifestWireFormat](a: A) = new DObjectImpl[A](Return(a, StraightIO(manifestWireFormat[A])))
 
   /* Implicit conversions from tuples of DObjects to DObject tuples. */
-  def tupled2[T1 : Manifest : WireFormat, T2 : Manifest : WireFormat] (tup: (DObject[T1], DObject[T2])): DObject[(T1, T2)] =
-    new DObjectImpl(Op(tup._1.getComp, tup._2.getComp, (a: T1, b: T2) => (a, b), manifest[(T1, T2)], wireFormat[(T1, T2)]))
+  def tupled2[T1 : ManifestWireFormat, T2 : ManifestWireFormat] (tup: (DObject[T1], DObject[T2])): DObject[(T1, T2)] =
+    new DObjectImpl[(T1, T2)](Op(tup._1.getComp, tup._2.getComp, (a: T1, b: T2) => (a, b), StraightIO(manifestWireFormat[(T1, T2)])))
+
 }

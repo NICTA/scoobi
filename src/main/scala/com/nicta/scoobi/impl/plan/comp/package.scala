@@ -13,6 +13,6 @@ package object comp {
 
   object Id extends UniqueInt
 
-  type CopyFn[A, Sh <: Shape] = (DComp[A, Sh], CopyTable) => (DComp[A, Sh], CopyTable, Boolean)
-  type CopyTable = Map[DComp[_, _ <: Shape], DComp[_, _ <: Shape]]
+  type CopyFn[A, Sh <: Shape] = (DComp[A], CopyTable) => (DComp[A], CopyTable, Boolean)
+  type CopyTable = Map[DComp[_], DComp[_]]
 }

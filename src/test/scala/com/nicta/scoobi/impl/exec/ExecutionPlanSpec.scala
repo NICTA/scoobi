@@ -87,7 +87,7 @@ class ExecutionPlanSpec extends UnitSpecification with plans {
     }
 
     "Op nodes remain unchanged" >> {
-      val add = op[String, String](load, load)
+      val add = op(load, load)
       execPlan(add) === Seq(OpExec(Ref(add), loadExec, loadExec))
     }
 

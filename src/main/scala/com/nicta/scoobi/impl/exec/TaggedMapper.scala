@@ -19,11 +19,15 @@ package exec
 
 import core._
 import util.UniqueInt
+import plan.comp.KeyValueIO
 
 /** A wrapper for a 'map' function tagged for a specific output channel. */
-abstract class TaggedMapper(val tags: Set[Int],
-                            val mk: Manifest[_], val wfk: WireFormat[_], val gpk: Grouping[_],
-                            val mv: Manifest[_], val wfv: WireFormat[_]) {
+abstract class TaggedMapper(val tags: Set[Int], mwfk: ManifestWireFormat[_], val gpk: Grouping[_], mwfv: ManifestWireFormat[_]) {
+
+  def mfk = mwfk.mf
+  def wfk = mwfk.wf
+  def mfv = mwfv.mf
+  def wfv = mwfv.wf
 
   object RollingInt extends UniqueInt
 
@@ -37,9 +41,7 @@ abstract class TaggedMapper(val tags: Set[Int],
 
 
 /** A TaggedMapper that is an identity mapper. */
-class TaggedIdentityMapper(tags: Set[Int],
-                           mk: Manifest[_], wfk: WireFormat[_], gpk: Grouping[_],
-                           mv: Manifest[_], wfv: WireFormat[_]) extends TaggedMapper(tags, mk, wfk, gpk, mv, wfv) {
+class TaggedIdentityMapper(tags: Set[Int], mwfk: ManifestWireFormat[_], gpk: Grouping[_], mwfv: ManifestWireFormat[_]) extends TaggedMapper(tags, mwfk, gpk, mwfv) {
 
   /** setup(env: Unit) */
   def setup(env: Any) {}

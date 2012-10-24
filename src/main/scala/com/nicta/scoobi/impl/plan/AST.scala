@@ -29,7 +29,7 @@ object AST {
   object RollingInt extends UniqueInt
 
   /** Intermediate representation - closer aligned to actual MSCR contents. */
-  sealed abstract class Node[A : Manifest : WireFormat, Sh <: Shape] {
+  sealed abstract class Node[A : ManifestWireFormat, Sh <: Shape] {
     val id = Id.get
 
     def mkStraightTaggedIdentityMapper(tags: Set[Int]): TaggedMapper[A, Unit, Int, A] =
@@ -48,9 +48,9 @@ object AST {
 
 
   /** Input channel mapper that is not hooked up to a GBK. */
-  case class Mapper[A : Manifest : WireFormat,
-                    B : Manifest : WireFormat,
-                    E : Manifest : WireFormat]
+  case class Mapper[A : ManifestWireFormat,
+                    B : ManifestWireFormat,
+                    E : ManifestWireFormat]
       (in: Node[A, Arr],
        env: Node[E, Exp],
        dofn: EnvDoFn[A, B, E])
@@ -81,10 +81,10 @@ object AST {
 
 
   /** Input channel mapper that is hooked up to a GBK. */
-  case class GbkMapper[A : Manifest : WireFormat,
-                       K : Manifest : WireFormat : Grouping,
-                       V : Manifest : WireFormat,
-                       E : Manifest : WireFormat]
+  case class GbkMapper[A : ManifestWireFormat,
+                       K : ManifestWireFormat : Grouping,
+                       V : ManifestWireFormat,
+                       E : ManifestWireFormat]
       (in: Node[A, Arr],
        env: Node[E, Exp],
        dofn: EnvDoFn[A, (K, V), E])
@@ -155,10 +155,10 @@ object AST {
 
 
   /** GbkReducer - a reduce (i.e. ParallelDo) that follows a GroupByKey (i.e. no Combiner). */
-  case class GbkReducer[K : Manifest : WireFormat : Grouping,
-                        V : Manifest : WireFormat,
-                        B : Manifest : WireFormat,
-                        E : Manifest : WireFormat]
+  case class GbkReducer[K : ManifestWireFormat : Grouping,
+                        V : ManifestWireFormat,
+                        B : ManifestWireFormat,
+                        E : ManifestWireFormat]
       (in: Node[(K, Iterable[V]), Arr],
        env: Node[E, Exp],
        dofn: EnvDoFn[((K, Iterable[V])), B, E])
@@ -180,10 +180,10 @@ object AST {
 
 
   /** Reducer - a reduce (i.e. FlatMap) that follows a Combiner. */
-  case class Reducer[K : Manifest : WireFormat : Grouping,
-                     V : Manifest : WireFormat,
-                     B : Manifest : WireFormat,
-                     E : Manifest : WireFormat]
+  case class Reducer[K : ManifestWireFormat : Grouping,
+                     V : ManifestWireFormat,
+                     B : ManifestWireFormat,
+                     E : ManifestWireFormat]
       (in: Node[(K, V), Arr],
        env: Node[E, Exp],
        dofn: EnvDoFn[(K, V), B, E])
@@ -202,7 +202,7 @@ object AST {
 
 
   /** Usual Load node. */
-  case class Load[A : Manifest : WireFormat]() extends Node[A, Arr] with ReducerLike[Int, A, A, Unit] {
+  case class Load[A : ManifestWireFormat]() extends Node[A, Arr] with ReducerLike[Int, A, A, Unit] {
     override def toString = "Load" + id
 
     def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A, Unit] = new TaggedIdentityReducer(tag)
@@ -211,7 +211,7 @@ object AST {
 
 
   /** Usual Flatten node. */
-  case class Flatten[A : Manifest : WireFormat](ins: List[Node[A, Arr]]) extends Node[A, Arr] with ReducerLike[Int, A, A, Unit] {
+  case class Flatten[A : ManifestWireFormat](ins: List[Node[A, Arr]]) extends Node[A, Arr] with ReducerLike[Int, A, A, Unit] {
     override def toString = "Flatten" + id
 
     def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A, Unit] = new TaggedIdentityReducer(tag)
@@ -221,8 +221,8 @@ object AST {
 
 
   /** Usual GBK node. */
-  case class GroupByKey[K : Manifest : WireFormat : Grouping,
-                        V : Manifest : WireFormat]
+  case class GroupByKey[K : ManifestWireFormat : Grouping,
+                        V : ManifestWireFormat]
       (in: Node[(K, V), Arr])
     extends Node[(K, Iterable[V]), Arr] with ReducerLike[K, V, (K, Iterable[V]), Unit] {
 
@@ -241,7 +241,7 @@ object AST {
 
 
   /** */
-  case class Materialize[A : Manifest : WireFormat](in : Node[A, Arr]) extends Node[Iterable[A], Exp] {
+  case class Materialize[A : ManifestWireFormat](in : Node[A, Arr]) extends Node[Iterable[A], Exp] {
 
 
     override def toString = "Materialize" + id
@@ -251,9 +251,9 @@ object AST {
 
 
   /** */
-  case class Op[A : Manifest : WireFormat,
-                B : Manifest : WireFormat,
-                C : Manifest : WireFormat]
+  case class Op[A : ManifestWireFormat,
+                B : ManifestWireFormat,
+                C : ManifestWireFormat]
       (in1: Node[A, Exp],
        in2: Node[B, Exp],
        f: (A, B) => C)
@@ -267,7 +267,7 @@ object AST {
 
 
   /** */
-  case class Return[A : Manifest : WireFormat](x: A) extends Node[A, Exp] {
+  case class Return[A : ManifestWireFormat](x: A) extends Node[A, Exp] {
 
 
     override def toString = "Return" + id

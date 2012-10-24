@@ -103,7 +103,7 @@ trait factory extends CompNodeFactory with MscrAttributes {
   override def cb(in: CompNode)                       = init(super.cb(in))
   override def gbk(in: CompNode)                      = init(super.gbk(in))
   override def mt(in: CompNode)                       = init(super.mt(in))
-  override def op[A, B](in1: CompNode, in2: CompNode) = init(super.op(in1, in2))
+  override def op(in1: CompNode, in2: CompNode)       = init(super.op(in1, in2))
   override def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
     init(super.pd(in, env, groupBarrier, fuseBarrier))
 

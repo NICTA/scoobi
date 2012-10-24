@@ -20,7 +20,7 @@ trait ShowNode extends MscrGraph with CompNodes{
    * Show instance for a CompNode
    */
   implicit lazy val showCompNode: Show[CompNode] = new Show[CompNode] {
-    def show(n: CompNode) = (n.toString + (n match {
+    override def shows(n: CompNode) = (n.toString + (n match {
       case Op1(in1, in2)    => Seq(in1, in2).showString("[","]")
       case Flatten1(ins)    => ins.showString("[","]")
       case Materialize1(in) => parens(pretty(in))
@@ -29,13 +29,13 @@ trait ShowNode extends MscrGraph with CompNodes{
       case ParallelDo1(in)  => parens(pretty(in))
       case Load1(_)          => ""
       case Return1(_)       => ""
-    })).toList
+    }))
   }
   /**
    * Show is not covariant so it is necessary to add this implicit to prove that we can show subclasses of CompNode
    */
   implicit def showCompNodeInstance[T <: CompNode]: Show[T] = new Show[T] {
-    def show(t: T) = implicitly[Show[CompNode]].show(t)
+    override def show(t: T) = implicitly[Show[CompNode]].show(t)
   }
 
   /**

@@ -46,14 +46,14 @@ object AvroInput extends AvroParsingImplicits {
   /** Create a new DList from the contents of one or more Avro files. The type of the DList must conform to
     * the schema types allowed by Avro, as constrained by the 'AvroSchema' type class. In the case of a directory
     * being specified, the input forms all the files in that directory. */
-  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*): DList[A] = fromAvroFile(List(paths: _*))
+  def fromAvroFile[A : ManifestWireFormat : AvroSchema](paths: String*): DList[A] = fromAvroFile(List(paths: _*))
 
 
   /** Create a new DList from the contents of a list of one or more Avro files. The type of the
     * DList must conform to the schema types allowed by Avro, as constrained by the 'AvroSchema' type
     * class. In the case of a directory being specified, the input forms all the files in
     * that directory. */
-  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true): DList[A] = {
+  def fromAvroFile[A : ManifestWireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true): DList[A] = {
     val sch = implicitly[AvroSchema[A]]
     val converter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
       def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)

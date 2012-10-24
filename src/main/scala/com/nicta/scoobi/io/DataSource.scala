@@ -21,10 +21,21 @@ import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job
 
 import application.ScoobiConfiguration
+import org.apache.hadoop.mapreduce.RecordReader
 
+trait Source {
+  def inputFormat: Class[_ <: InputFormat[_,_]]
+  def inputCheck(implicit sc: ScoobiConfiguration)
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
+  def inputSize(implicit sc: ScoobiConfiguration): Long
+  def inputConverter: InputConverter[_,_,_]
+
+  private[scoobi]
+  def unsafeRead(reader: RecordReader[_,_], mapContext: MapContext[_,_,_,_], read: Any => Unit)
+}
 
 /** An input data store to a MapReduce job. */
-trait DataSource[K, V, A] {
+trait DataSource[K, V, A] extends Source {
   /** The InputFormat specifying the type of input for this DataSource. */
   def inputFormat: Class[_ <: InputFormat[K, V]]
 
@@ -39,6 +50,14 @@ trait DataSource[K, V, A] {
 
   /** Maps the key-values of a DataSource's InputFormat to the final type produced by it. */
   def inputConverter: InputConverter[K, V, A]
+
+  def unsafeRead(reader: RecordReader[_,_], mapContext: MapContext[_,_,_,_], read: Any => Unit) {
+    while (reader.nextKeyValue) {
+      read(inputConverter.fromKeyValue(mapContext.asInstanceOf[MapContext[K,V,_,_]],
+                                       reader.getCurrentKey.asInstanceOf[K],
+                                       reader.getCurrentValue.asInstanceOf[V]).asInstanceOf[Any])
+    }
+  }
 }
 
 

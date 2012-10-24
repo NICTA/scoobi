@@ -50,8 +50,8 @@ trait EnvDoFn[A, B, E] { outer =>
   def process(env: E, input: A, emitter: Emitter[B])
   def cleanup(env: E, emitter: Emitter[B])
 
-  def makeTaggedReducer(tag: Int, mfb: Manifest[_], wfb: WireFormat[_]) =
-    new TaggedReducer(tag, mfb, wfb) {
+  def makeTaggedReducer(tag: Int, mwf: ManifestWireFormat[_]) =
+    new TaggedReducer(tag, mwf) {
       def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
       def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
         outer.setup(env.asInstanceOf[E])
@@ -60,7 +60,7 @@ trait EnvDoFn[A, B, E] { outer =>
       def cleanup(env: Any, emitter: Emitter[Any]) { outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]]) }
     }
 
-  def makeTaggedMapper(tags: Set[Int], mfv: Manifest[_], wfv: WireFormat[_]) = new TaggedMapper(tags, manifest[Int], wireFormat[Int], grouping[Int], mfv, wfv) {
+  def makeTaggedMapper(tags: Set[Int], mwf: ManifestWireFormat[_]) = new TaggedMapper(tags, manifestWireFormat[Int], grouping[Int], mwf) {
     def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
     def map(env: Any, input: Any, emitter: Emitter[Any]) {
       val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
@@ -71,7 +71,7 @@ trait EnvDoFn[A, B, E] { outer =>
       outer.cleanup(env.asInstanceOf[E], e.asInstanceOf[Emitter[B]])
     }
   }
-  def makeTaggedMapper(tags: Set[Int], mfk: Manifest[_], wfk: WireFormat[_], gpk: Grouping[_], mfv: Manifest[_], wfv: WireFormat[_]) = new TaggedMapper(tags, mfk, wfk, gpk, mfv, wfv) {
+  def makeTaggedMapper(tags: Set[Int], mwfk: ManifestWireFormat[_], gpk: Grouping[_], mwfv: ManifestWireFormat[_]) = new TaggedMapper(tags, mwfk, gpk, mwfv) {
     def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
     def map(env: Any, input: Any, emitter: Emitter[Any]) {
       outer.process(env.asInstanceOf[E], input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
@@ -79,6 +79,12 @@ trait EnvDoFn[A, B, E] { outer =>
     def cleanup(env: Any, emitter: Emitter[Any]) {
       outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
     }
+  }
+
+  def unsafeExecute(values: Seq[Any], emitter: Emitter[Any], env: Any) {
+    setup(env.asInstanceOf[E])
+    values foreach { v => process(env.asInstanceOf[E], v.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]]) }
+    cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
   }
 }
 
@@ -90,6 +96,10 @@ trait EnvDoFn[A, B, E] { outer =>
 trait BasicDoFn[A, B] extends DoFn[A, B] {
   def setup() {}
   def cleanup(emitter: Emitter[B]) {}
+  override def unsafeExecute(values: Seq[Any], emitter: Emitter[Any], env: Any) {
+    values foreach { v => process(v.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]]) }
+  }
+
 }
 
 

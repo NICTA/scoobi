@@ -19,38 +19,46 @@ package plan
 
 import core._
 import comp._
-import io.DataSource
+import io.{Sink, DataSink, DataSource}
 import WireFormat._
+import ManifestWireFormat._
 
 /** An implemenentation of the DList trait that builds up a DAG of computation nodes. */
-class DListImpl[A] private[scoobi] (comp: CompNode)(implicit val mf: Manifest[A], val wf: WireFormat[A]) extends DList[A] {
+class DListImpl[A] private[scoobi] (comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) extends DList[A] {
 
   private[scoobi]
-  def getComp: CompNode = comp
+  def getComp: DComp[A] = comp
 
-  def parallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(ParallelDo[A, B, E](comp, env.getComp, dofn, groupBarrier = false, fuseBarrier = false, manifest[A], wireFormat[A], manifest[B], wireFormat[B], manifest[E], wireFormat[E]))
+  private[scoobi]
+  def setComp(f: DComp[A] => DComp[A]) = new DListImpl[A](f(comp))(mwf)
 
-  def ++(ins: DList[A]*): DList[A] = new DListImpl(Flatten(List(comp) ::: ins.map(_.getComp).toList, mf, wf))
+  def parallelDo[B : ManifestWireFormat, E : ManifestWireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
+    new DListImpl(ParallelDo[A, B, E](comp, env.getComp, dofn,
+                                      DoIO(manifestWireFormat[A], manifestWireFormat[B], manifestWireFormat[E])))
+
+  def ++(ins: DList[A]*): DList[A] = new DListImpl[A](Flatten[A](comp +: ins.map(_.getComp).toList, StraightIO(manifestWireFormat[A])))
 
   def groupByKey[K, V]
-      (implicit ev:   DComp[A, Arr] <:< DComp[(K, V), Arr],
-                mfk:  Manifest[K],
-                wfk:  WireFormat[K],
+      (implicit ev:   DComp[A] <:< DComp[(K, V)],
+                mwfk: ManifestWireFormat[K],
                 gpk:  Grouping[K],
-                mfv:  Manifest[V],
-                wfv:  WireFormat[V]): DList[(K, Iterable[V])] = new DListImpl(GroupByKey(comp, mfk, wfk, gpk, mfv, wfv))
+                mwfv: ManifestWireFormat[V]): DList[(K, Iterable[V])] = {
+    implicit val mfk = mwfk.mf
+    implicit val mfv = mwfv.mf
+    implicit val wfk = mwfk.wf
+    implicit val wfv = mwfv.wf
+
+    new DListImpl(GroupByKey(comp, KeyValuesIO(mwfk, gpk, mwfv)))(manifestAndWireFormat[(K, Iterable[V])])
+  }
 
   def combine[K, V]
       (f: (V, V) => V)
-      (implicit ev:   DComp[A, Arr] <:< DComp[(K,Iterable[V]), Arr],
-                mfk:  Manifest[K],
-                wfk:  WireFormat[K],
+      (implicit ev:   DComp[A] <:< DComp[(K,Iterable[V])],
+                mwfk: ManifestWireFormat[K],
                 gpk:  Grouping[K],
-                mfv:  Manifest[V],
-                wfv:  WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, mfk, wfk, gpk, mfv, wfv))
+                mwfv: ManifestWireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, KeyValueIO(mwfk, gpk, mwfv)))
 
-  def materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, mf, wf))
+  def materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, StraightIO(manifestWireFormat[A])))
 
   def groupBarrier: DList[A] = {
     val dofn = new DoFn[A, A] {
@@ -58,19 +66,19 @@ class DListImpl[A] private[scoobi] (comp: CompNode)(implicit val mf: Manifest[A]
       def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
       def cleanup(emitter: Emitter[A]) {}
     }
-    new DListImpl(ParallelDo(comp, UnitDObject.getComp, dofn, groupBarrier = true, fuseBarrier = false, mf, wf, mf, wf, manifest[Unit], wireFormat[Unit]))
+    new DListImpl(ParallelDo(comp, UnitDObject.getComp, dofn, DoIO(mwf, mwf, manifestWireFormat[Unit]), Barriers(groupBarrier = true, fuseBarrier = false)))
   }
 }
 
 private[scoobi]
 object DListImpl {
-  def apply[A : Manifest : WireFormat](source: DataSource[_, _, A]) =  {
-    new DListImpl(ParallelDo[A, A, Unit](Load(source, manifest[A], wireFormat[A]), UnitDObject.getComp,
-      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
-      groupBarrier = false, fuseBarrier = false,
-      manifest[A], wireFormat[A],
-      manifest[A], wireFormat[A],
-      manifest[Unit], wireFormat[Unit]))
+  def apply[A : ManifestWireFormat](source: DataSource[_,_, A]) =  {
+    new DListImpl[A](
+      ParallelDo[A, A, Unit](
+        Load(StraightIO(manifestWireFormat[A], source)),
+        UnitDObject.getComp,
+        new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
+        DoIO(manifestWireFormat[A], manifestWireFormat[A], manifestAndWireFormat(implicitly[Manifest[Unit]], wireFormat[Unit]))))
   }
 
 }

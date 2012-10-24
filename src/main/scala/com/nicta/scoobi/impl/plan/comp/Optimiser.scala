@@ -4,6 +4,9 @@ package plan
 package comp
 
 import org.kiama.rewriting.Rewriter._
+import scalaz.Digit._0
+import core.ManifestWireFormat
+
 /**
  * Optimiser for the DComp AST graph
  *
@@ -43,7 +46,7 @@ trait Optimiser extends CompNodes {
    *       Flatten
    */
   def flattenSink = everywhere(rule {
-    case p @ ParallelDo(fl @ Flatten1(ins),_,_,_,_,_,_,_,_,_,_) => fl.copy(ins = fl.ins.map(i => p.copy(in = i)))
+    case p @ ParallelDo(fl @ Flatten1(ins),_,_,_,_) => fl.copy(ins = fl.ins.map(i => p.copy(in = i)))
   })
 
   /**
@@ -69,8 +72,8 @@ trait Optimiser extends CompNodes {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c
-    case c: Combine[_,_]                         => c.toParallelDo
+    case c @ Combine(GroupByKey1(_),_,_) => c
+    case c: Combine[_,_]                 => c.toParallelDo
   })
 
   /**
@@ -85,7 +88,7 @@ trait Optimiser extends CompNodes {
    * This rule is repeated until nothing can be flattened anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,false,_,_,_,_,_,_) => p2.fuse(p1)(p1.mfb, p1.wfb, p1.mfe, p1.wfe)
+    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,Barriers(_,false)) => p2.fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
   }))
 
   /**
@@ -124,7 +127,7 @@ trait Optimiser extends CompNodes {
    * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
    */
   def parDoFuseBarrier(outputs: Set[CompNode]) = everywhere(rule {
-    case p: ParallelDo[_,_,_] if outputs contains p => p.copy(fuseBarrier = true)
+    case p: ParallelDo[_,_,_] if outputs contains p => p.copy(barriers = p.barriers.copy(fuseBarrier = true))
   })
 
   /**

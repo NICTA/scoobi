@@ -20,13 +20,32 @@ import org.apache.hadoop.mapreduce.OutputFormat
 import org.apache.hadoop.mapreduce.Job
 
 import application.ScoobiConfiguration
-import org.apache.hadoop.io.compress.{CompressionCodec, SplittableCompressionCodec}
+import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import org.apache.hadoop.mapreduce.RecordWriter
+import org.apache.hadoop.fs.Path
+
+trait Sink {
+  def outputCheck(implicit sc: ScoobiConfiguration)
+  def outputFormat: Class[_ <: OutputFormat[_, _]]
+  def outputKeyClass: Class[_]
+  def outputValueClass: Class[_]
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
+  def outputConverter: OutputConverter[_,_,_]
+  def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): Sink
+  def configureCompression(job: Job): Job
+  def outputPath(implicit sc: ScoobiConfiguration): Option[Path]
+
+  def compress = compressWith(new GzipCodec)
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = outputCompression(codec)
+
+  private [scoobi]
+  def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_])
+}
 
 /* An output store from a MapReduce job. */
-trait DataSink[K, V, B] { outer =>
+trait DataSink[K, V, B] extends Sink { outer =>
   /** The OutputFormat specifying the type of output for this DataSink. */
   def outputFormat: Class[_ <: OutputFormat[K, V]]
 
@@ -71,6 +90,16 @@ trait DataSink[K, V, B] { outer =>
     outputConfigure(jobCopy)
     Option(FileOutputFormat.getOutputPath(jobCopy))
   }
+
+  private [scoobi]
+  def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_]) {
+    values foreach { value =>
+      val (k, v) = outputConverter.toKeyValue(value.asInstanceOf[B])
+      recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
+    }
+
+  }
+
 }
 
 

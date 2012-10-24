@@ -34,8 +34,11 @@ object TextOutput {
   lazy val logger = LogFactory.getLog("scoobi.TextOutput")
 
   /** Persist a distributed list as a text file. */
-  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false): DListPersister[A] = {
-    val sink = new DataSink[NullWritable, A, A] {
+  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false): DListPersister[A] =
+    new DListPersister(dl, textFileSink(path, overwrite))
+
+  def textFileSink[A : Manifest](path: String, overwrite: Boolean = false) = {
+    new DataSink[NullWritable, A, A] {
       private val outputPath = new Path(path)
 
       val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
@@ -72,7 +75,6 @@ object TextOutput {
         def toKeyValue(x: A) = (NullWritable.get, x)
       }
     }
-    new DListPersister(dl, sink)
   }
 
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file. */

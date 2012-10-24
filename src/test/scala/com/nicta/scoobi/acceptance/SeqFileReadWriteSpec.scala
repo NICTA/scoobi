@@ -38,7 +38,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     val filePath = createTempFile()
 
     val testDList: DList[(String, String)] = DList(("a", "b"), ("c", "d"))
-    persist(toSequenceFile(testDList.map((kv: (String, String)) => (new Text(kv._1), new Text(kv._2))), filePath, overwrite =true))
+    persist(testDList.map((kv: (String, String)) => (new Text(kv._1), new Text(kv._2))).toSequenceFile(filePath, overwrite =true))
 
     // load test data from the sequence file
     val loadedTestData = fromSequenceFile[Text, Text](filePath)
@@ -53,7 +53,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     // load test data from the sequence file
     val loadedTestData = fromSequenceFile[Text, IntWritable](tmpSeqFile)
     val mappedTestData = loadedTestData.map(x => (new BytesWritable(x._1.getBytes), new DoubleWritable(x._2.get)))
-    persist(toSequenceFile(mappedTestData, outPath, overwrite = true))
+    persist(mappedTestData.toSequenceFile(outPath, overwrite = true))
 
     // load data to check it was stored correctly
     val writtenTestData = fromSequenceFile[BytesWritable, DoubleWritable](outPath)
@@ -64,7 +64,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     val filePath = createTempFile()
 
     val testDList: DList[(Float, Boolean)] = DList((1.2f, false), (2.5f, true))
-    persist(toSequenceFile(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))), filePath, overwrite = true))
+    persist(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))).toSequenceFile(filePath, overwrite = true))
 
     // load test data from the sequence file, then persist to force execution and expect an IOException
     val loadedTestData = fromSequenceFile[Text, BooleanWritable](filePath)
@@ -77,7 +77,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
       val filePath = createTempFile()
 
       val testDList: DList[(Float, Boolean)] = DList((1.2f, false), (2.5f, true))
-      persist(toSequenceFile(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))), filePath, overwrite = true))
+      persist(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))).toSequenceFile(filePath, overwrite = true))
 
       // load test data from the sequence file, then persist to force execution and expect a ClassCastException in the mapper
       val loadedTestData = fromSequenceFile[Text, BooleanWritable](List(filePath), checkKeyValueTypes = false)
@@ -91,7 +91,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
    */
   def createTempSeqFile[K, V](input: DList[(K, V)])(implicit sc: SC, ks: SeqSchema[K], vs: SeqSchema[V]): String = {
     val initialTmpFile = createTempFile()
-    persist(convertToSequenceFile(input, initialTmpFile, true))
+    persist(input.convertToSequenceFile(initialTmpFile, true))
     initialTmpFile
   }
 

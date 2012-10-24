@@ -33,37 +33,16 @@ trait SimpleJobs { outer =>
     def run(implicit configuration: ScoobiConfiguration) = outer.run(list)
   }
 
-  implicit def asRunnableDListPair[T, S](lists: (DList[T], DList[S])) = new RunnableDListPair(lists)
-  case class RunnableDListPair[T, S](lists: (DList[T], DList[S])) {
-    def run(implicit configuration: ScoobiConfiguration) = outer.run(lists._1, lists._2)
-  }
-
-  implicit def asRunnableDListSeq[T](lists: Seq[DList[T]]) = new RunnableDListSeq(lists)
-  case class RunnableDListSeq[T, S](lists: Seq[DList[T]]) {
-    def run(implicit configuration: ScoobiConfiguration) = outer.run(lists)
-  }
-
   implicit def asRunnableDObject[T](o: DObject[T]) = new RunnableDObject(o)
   case class RunnableDObject[T](o: DObject[T]) {
     def run(implicit configuration: ScoobiConfiguration) = outer.run(o)
   }
 
   def run[T](list: =>DList[T])(implicit configuration: ScoobiConfiguration): Seq[T] =
-    //Persister.persist(list.materialize).toSeq
-    Seq()
-
-  def run[T, S](list1: DList[T], list2: DList[S])(implicit configuration: ScoobiConfiguration): (Seq[T], Seq[S]) =
-    //Persister.persist((list1.materialize, list2.materialize)).bimap((_.toSeq), (_.toSeq))
-    (Seq(), Seq())
-
-  def run[T](lists: Seq[DList[T]])(implicit configuration: ScoobiConfiguration): Seq[Seq[T]] =
-    // E.T. I don't know how to avoid the asInstanceOf here :-(
-    //Persister.persist(lists.map(_.materialize)).asInstanceOf[Seq[Iterable[T]]].map(_.toSeq)
-   Seq()
+    run(list.materialize).toSeq
 
   def run[T](o: DObject[T])(implicit configuration: ScoobiConfiguration): T =
-    //Persister.persist(o)
-    null.asInstanceOf[T]
+    Persister.persist(o)
 
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration

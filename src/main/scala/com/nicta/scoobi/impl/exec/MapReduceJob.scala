@@ -46,9 +46,9 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   private lazy val logger = LogFactory.getLog("scoobi.Step")
 
   /* Keep track of all the mappers for each input channel. */
-  private[scoobi] val mappers: Map[DataSource[_,_,_], Set[(Env[_], TaggedMapper)]] = Map.empty
+  private[scoobi] val mappers: Map[Source, Set[(Env[_], TaggedMapper)]] = Map.empty
   private[scoobi] val combiners: Set[TaggedCombiner[_]] = Set()
-  private[scoobi] val reducers: ListBuffer[(List[DataSink[_,_,_]], (Env[_], TaggedReducer))] = new ListBuffer
+  private[scoobi] val reducers: ListBuffer[(List[Sink], (Env[_], TaggedReducer))] = new ListBuffer
 
   /* The types that will be combined together to form (K2, V2). */
   private val keyTypes: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])] = Map.empty
@@ -56,15 +56,15 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
 
 
   /** Add an input mapping function to this MapReduce job. */
-  def addTaggedMapper(input: DataSource[_,_,_], env: Option[Env[_]], m: TaggedMapper) = {
+  def addTaggedMapper(input: Source, env: Option[Env[_]], m: TaggedMapper) = {
     val tm = (env.getOrElse(Env.empty), m)
 
     if (!mappers.contains(input)) mappers += ((input, Set(tm)))
     else                          mappers(input) += tm: Unit
 
     m.tags.foreach { tag =>
-      keyTypes   += ((tag, (m.mk, m.wfk, m.gpk)))
-      valueTypes += ((tag, (m.mv, m.wfv)))
+      keyTypes   += ((tag, (m.mfk, m.wfk, m.gpk)))
+      valueTypes += ((tag, (m.mfv, m.wfv)))
     }
     this
   }
@@ -76,7 +76,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   }
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer(outputs: scala.collection.immutable.List[DataSink[_,_,_]], env: Option[Env[_]], r: TaggedReducer) = {
+  def addTaggedReducer(outputs: scala.collection.immutable.List[Sink], env: Option[Env[_]], r: TaggedReducer) = {
     reducers += ((outputs, (env.getOrElse(Env.empty), r)))
     this
   }
@@ -160,7 +160,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
     val mappersList = mappers.toList
     ChannelsInputFormat.configureSources(job, jar, mappersList.map(_._1))
 
-    val inputChannels: List[((DataSource[_,_,_], Set[(Env[_], TaggedMapper)]), Int)] = mappersList.zipWithIndex
+    val inputChannels: List[((Source, Set[(Env[_], TaggedMapper)]), Int)] = mappersList.zipWithIndex
     val inputs: Map[Int, (InputConverter[_, _, _], Set[(Env[_], TaggedMapper)])] =
       Map(inputChannels.map { case ((source, ms), ix) => (ix, (source.inputConverter, HashSet(ms.toSeq:_*))) }:_*)
 
@@ -193,7 +193,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
             case Some(rtc) => jar.addRuntimeClass(rtc)
             case None      => {
               /* NOTE: must do this before calling addOutputChannel */
-              val rtClass = ScoobiWritable(bs.typeName, reducer.mfb, reducer.wfb)
+              val rtClass = ScoobiWritable(bs.typeName, reducer.mf, reducer.wf)
               jar.addRuntimeClass(rtClass)
               bs.rtClass = Some(rtClass)
             }

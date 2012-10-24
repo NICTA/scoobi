@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory
 import scala.collection.JavaConversions._
 
 import Configurations._
-import io.DataSource
+import io.{Source, DataSource}
 import ChannelsInputFormat._
 import util.JarBuilder
 import scalaz.Scalaz._
@@ -104,12 +104,12 @@ object ChannelsInputFormat {
    * - configure the input channel for each source
    *
    */
-  def configureSources(job: Job, jar: JarBuilder, sources: List[DataSource[_,_,_]])(implicit sc: ScoobiConfiguration) = {
+  def configureSources(job: Job, jar: JarBuilder, sources: List[Source])(implicit sc: ScoobiConfiguration) = {
     configureChannelsInputFormat(job) |>
     configureSourcesChannels(jar, sources)
   }
 
-  private def configureSourcesChannels(jar: JarBuilder, sources: List[DataSource[_,_,_]])(implicit sc: ScoobiConfiguration) = (initial: Configuration) => {
+  private def configureSourcesChannels(jar: JarBuilder, sources: List[Source])(implicit sc: ScoobiConfiguration) = (initial: Configuration) => {
     sources.zipWithIndex.foldLeft(initial) { case (conf, (source, channel)) =>
       conf |>
       configureSourceRuntimeClass(jar, source) |>
@@ -118,7 +118,7 @@ object ChannelsInputFormat {
   }
 
   /** configure a new input channel on the job's configuration */
-  private def configureInputChannel(channel: Int, source: DataSource[_,_,_])(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
+  private def configureInputChannel(channel: Int, source: Source)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
     conf |>
     configureSourceInputFormat(source, channel) |>
     configureSource(source, channel)
@@ -129,7 +129,7 @@ object ChannelsInputFormat {
     job.getConfiguration
   }
 
-  private def configureSourceRuntimeClass(jar: JarBuilder, source: DataSource[_,_,_]) = (conf: Configuration) => {
+  private def configureSourceRuntimeClass(jar: JarBuilder, source: Source) = (conf: Configuration) => {
     source match {
       case bs @ BridgeStore() => jar.addRuntimeClass(bs.rtClass.getOrElse(sys.error("Run-time class should be set.")))
       case _                  => ()
@@ -140,7 +140,7 @@ object ChannelsInputFormat {
    * Record as configuration properties the channel number to InputFormat mappings
    * as described by the DataSource
    */
-  private def configureSourceInputFormat(source: DataSource[_,_,_], channel: Int) = (conf: Configuration) => {
+  private def configureSourceInputFormat(source: Source, channel: Int) = (conf: Configuration) => {
     conf.addValues(INPUT_FORMAT_PROPERTY, channel+";"+source.inputFormat.getName)
   }
 
@@ -151,7 +151,7 @@ object ChannelsInputFormat {
    *
    * Also include the properties which might have been modified by the source (like the DistributedCache files)
    */
-  private def configureSource(source: DataSource[_,_,_], channel: Int)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
+  private def configureSource(source: Source, channel: Int)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
     val job = new Job(new Configuration(conf))
     source.inputConfigure(job)
 

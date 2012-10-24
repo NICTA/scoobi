@@ -47,7 +47,8 @@ object SeqInput {
   lazy val logger = LogFactory.getLog("scoobi.SeqInput")
 
   /** Create a distributed list of a specified length whose elements are coming from a scala collection */
-  def fromSeq[A : Manifest : WireFormat](seq: Seq[A]): DList[A] = {
+  def fromSeq[A : ManifestWireFormat](seq: Seq[A]): DList[A] = {
+
     val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
       val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
       def inputCheck(implicit sc: ScoobiConfiguration) {}
@@ -61,6 +62,7 @@ object SeqInput {
          * This is why we need to look for keys by regular expression in order to find the maximum value to increment
          */
         val id = job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)
+        import ManifestWireFormatDecompose._
         DistCache.pushObject(job.getConfiguration, seq.map(toByteArray(_, implicitly[WireFormat[A]].toWire(_: A, _: DataOutput))), seqProperty(id))
       }
 
@@ -70,7 +72,7 @@ object SeqInput {
         def fromKeyValue(context: InputContext, k: NullWritable, v: Array[Byte]) = v
       }
     }
-    DList.fromSource(source).map(fromByteArray[A])
+    DList.fromSource(source).map(a => fromByteArray[A](a)(ManifestWireFormatDecompose.manifestWireFormatToWireFormat[A]))
   }
 
   private def fromByteArray[A : WireFormat](barr: Array[Byte]): A = {
