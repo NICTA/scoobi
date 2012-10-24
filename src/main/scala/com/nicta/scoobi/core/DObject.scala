@@ -35,7 +35,8 @@ trait DObject[A] {
   /**Create a new distributed list by replicating the value of this distributed object
    * to every element within the provided distributed list. */
   def join[B : ManifestWireFormat](list: DList[B]): DList[(A, B)]
-  
+  def join[B : ManifestWireFormat](o: DObject[B]): DObject[(A, B)]
+
   def toSingleElementDList: DList[A] = (this join DList(())).map(_._1)
   def toDList[B](implicit ev: A <:< Iterable[B], mwfb: ManifestWireFormat[B]): DList[B] = toSingleElementDList.flatMap(x => x)
 }

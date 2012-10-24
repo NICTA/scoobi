@@ -25,7 +25,7 @@ import scalaz.Scalaz._
 /**
  * Generic data functions
  */
-trait Data {
+trait Data { outer =>
 
   /**
    * allow the use of the applicative syntax to build generators:
@@ -63,6 +63,12 @@ trait Data {
         if (n == previousValues.size) previousValues.toList(n - 1) else previousValues.toList(n)
       else memoizeValue(v)
     }
+  }
+
+  implicit def memoize[T](g: Gen[T]): MemoizedGen[T] = new MemoizedGen[T](g)
+  class MemoizedGen[T](g: Gen[T]) {
+    def memo =  outer.memo(g)
+    def memo(ratio: Int) = outer.memo(g, ratio)
   }
 
   def distinctPairs[T1 <: AnyRef](set1: Set[T1]): Set[(T1, T1)] = distinctPairs(set1, set1)

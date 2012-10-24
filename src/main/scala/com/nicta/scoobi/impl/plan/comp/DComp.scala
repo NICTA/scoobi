@@ -289,7 +289,7 @@ object Load1 {
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
 case class Return[A](in: A, io: StraightIO[A]) extends DComp[A] {
-  type Sh = Arr
+  type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(io = io.updateSinks(f))
 

@@ -39,6 +39,9 @@ class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) ex
     }
     new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, DoIO(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
   }
+
+  def join[B : ManifestWireFormat](o: DObject[B]): DObject[(A, B)] =
+    DObjectImpl.tupled2((this, o))
 }
 
 object UnitDObject extends DObjectImpl[Unit](Return.unit)
