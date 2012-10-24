@@ -24,7 +24,9 @@ class DObjectSpec extends NictaSimpleJobs {
   tag("issue 113")
   "it must be possible to take the minimum and the maximum of a list" >> { implicit sc: SC =>
     val r = DList(1, 2, 3, 4)
-    persist(r.min, r.max) === (1, 4)
+    val min = persist(r.min)
+    val max = persist(r.max)
+    (min, max) === (1, 4)
   }
 
   tag("issue 156")

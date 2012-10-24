@@ -47,7 +47,7 @@ object InMemoryMode {
 
   def execute(o: DObject[_])(implicit sc: ScoobiConfiguration) = {
     o.getComp -> prepare(sc)
-    (o.getComp -> compute(sc)).head
+    o.getComp -> computeValue(sc)
   }
 
   private
@@ -58,18 +58,25 @@ object InMemoryMode {
     }}
 
   private
+  lazy val computeValue: ScoobiConfiguration => CompNode => Any =
+    paramAttr { sc: ScoobiConfiguration => (n: CompNode) =>
+      (n -> compute(sc)).head
+    }
+
+  private
   lazy val compute: ScoobiConfiguration => CompNode => Seq[_] =
     paramAttr { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Load[_]           => saveSinks(computeLoad(n)                                                , n.sinks)
-        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                                          , n.sinks)
-        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                                          , n.sinks)
-        case n: Combine[_,_]      => saveSinks(computeCombine(n)                                             , n.sinks)
-        case n: Flatten[_]        => saveSinks(n.ins.map(_ -> compute(c)).reduce(_++_)                       , n.sinks)
-        case n: Materialize[_]    => saveSinks(Seq(n.in -> compute(c))                                       , n.sinks)
-        case n: Op[_,_,_]         => saveSinks(Seq(n.unsafeExecute(n.in1 -> compute(c), n.in2 -> compute(c))), n.sinks)
-        case n: Return[_]         => saveSinks(Seq(n.in)                                                     , n.sinks)
+        case n: Load[_]           => saveSinks(computeLoad(n)                                 , n.sinks)
+        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                           , n.sinks)
+        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                           , n.sinks)
+        case n: Combine[_,_]      => saveSinks(computeCombine(n)                              , n.sinks)
+        case n: Flatten[_]        => saveSinks(n.ins.map(_ -> compute(c)).reduce(_++_)        , n.sinks)
+        case n: Materialize[_]    => saveSinks(Seq(n.in -> compute(c))                        , n.sinks)
+        case n: Op[_,_,_]         => saveSinks(Seq(n.unsafeExecute(n.in1 -> computeValue(c),
+                                                                   n.in2 -> computeValue(c))) , n.sinks)
+        case n: Return[_]         => saveSinks(Seq(n.in)                                      , n.sinks)
       }
     }
 
@@ -103,7 +110,7 @@ object InMemoryMode {
     val vb = new VectorBuilder[Any]()
     val emitter = new Emitter[Any] { def emit(v: Any) { vb += v } }
 
-    val (dofn, env) = (pd.dofn, pd.env -> compute(sc))
+    val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
     dofn.unsafeExecute(pd.in -> compute(sc), emitter, env)
     vb.result
 

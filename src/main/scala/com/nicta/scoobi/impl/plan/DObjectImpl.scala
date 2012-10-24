@@ -29,7 +29,7 @@ class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) ex
   def getComp: CompNode = comp
 
   def map[B : ManifestWireFormat](f: A => B): DObject[B] =
-    new DObjectImpl(Op(comp, Return.unit, (a: A, _: Unit) => f(a), StraightIO(manifestWireFormat[B])))
+    new DObjectImpl(Op(comp, Return.unit, (a: A, any: Any) => f(a), StraightIO(manifestWireFormat[B])))
 
   def join[B : ManifestWireFormat](list: DList[B]): DList[(A, B)] = {
     val dofn = new EnvDoFn[B, (A, B), A] {

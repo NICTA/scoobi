@@ -42,7 +42,7 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
     val (resultDir1, resultDir2) = (TestFiles.createTempDir("result1"), TestFiles.createTempDir("result2"))
 
     persist(list1.toTextFile(outputPath(resultDir1)).compress)
-    persist(list2.toTextFile(outputPath(resultDir2)).compress)
+    persist(list2.toTextFile(outputPath(resultDir2)))
 
     copyResults(resultDir1) must containFiles(".gz")
     copyResults(resultDir2) must notContainFiles(".gz")
