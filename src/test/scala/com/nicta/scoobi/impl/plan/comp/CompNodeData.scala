@@ -11,8 +11,6 @@ import org.specs2.ScalaCheck
 import org.specs2.main.CommandLineArguments
 import org.specs2.mutable.Specification
 import org.kiama.attribution.Attribution
-import CompNode._
-import control.Functions._
 import WireFormat._
 import org.specs2.specification.Scope
 
@@ -30,40 +28,16 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
                                    workers      -> arguments.commandLine.int("workers").getOrElse(1))
 
   import Gen._
-  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(Gen.sized(depth => genDComp(depth).map(init)))
-  implicit lazy val arbitraryParallelDo: Arbitrary[ParallelDo[_,_,_]] = Arbitrary(Gen.sized(depth => genParallelDo(depth).map(init)))
+  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(arbitraryDList.arbitrary.map(_.getComp))
   implicit lazy val arbitraryDList: Arbitrary[DList[String]] = Arbitrary(Gen.sized(depth => genList(depth).map(_.setComp(c => init(c)).map(_.toString))))
   implicit lazy val arbitraryDObject: Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
-
-  def genDComp(depth: Int = 1): Gen[CompNode] = lzy(frequency[CompNode]((3, genLoad(depth)),
-                                                              (4, genParallelDo(depth)),
-                                                              (4, genGroupByKey(depth)),
-                                                              (3, genMaterialize(depth)),
-                                                              (3, genCombine(depth)),
-                                                              (5, genFlatten(depth)),
-                                                              (2, genOp(depth)),
-                                                              (2, genReturn(depth))).filter(!isCyclic))
-
-  def genLoad       (depth: Int = 1): Gen[CompNode] = Gen.oneOf(load, load)
-  def genReturn     (depth: Int = 1): Gen[CompNode] = Gen.oneOf(rt, rt)
-  def genFlatten    (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(flatten(load)   ) else memo(choose(1, 3).flatMap(n => listOfN(n, genDComp(depth - 1))).map(l => flatten(l:_*)))
-  def genCombine    (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(cb(load)        ) else memo(genDComp(depth - 1) map (cb _))
-  def genOp         (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(op(load, load)  ) else memo(^(genDComp(depth - 1), genDComp(depth - 1))((op _)))
-  def genMaterialize(depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(mt(load)        ) else memo(genDComp(depth - 1) map (mt _))
-  def genGroupByKey (depth: Int = 1): Gen[CompNode] = if (depth <= 1) Gen.value(gbk(load)       ) else memo(genDComp(depth - 1) map (gbk _))
-  def genParallelDo (depth: Int = 1): Gen[ParallelDo[_,_,_]] =
-    if (depth <= 1) Gen.value(parallelDo(load)) else memo(Gen.oneOf(genLoad(depth-1),
-                                                                    genCombine(depth-1),
-                                                                    genParallelDo(depth-1),
-                                                                    genGroupByKey(depth-1),
-                                                                    genFlatten(depth-1)).map(parallelDo _))
 
   /** lists of elements of any type */
   def genList(depth: Int = 1): Gen[DList[_]] = Gen.oneOf(genList1(depth), genList2(depth), genList3(depth))
 
   /** lists of elements with a simple type A */
   def genList1(depth: Int = 1): Gen[DList[String]] =
-    if (depth <= 1) genLoad().map(l => new DListImpl[String](l.asInstanceOf[DComp[String]]))
+    if (depth <= 1) Gen.value(new DListImpl[String](load))
     else            Gen.oneOf(genList1(depth - 1).map(l => l.map(identity)),
                               genList2(depth - 1).map(l => l.map(_._1)),
                               genList3(depth - 1).map(l => l.map(_._1)),

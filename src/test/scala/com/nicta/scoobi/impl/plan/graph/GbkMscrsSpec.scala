@@ -90,6 +90,6 @@ class GbkMscrsSpec extends MscrGraphSpecification {
       } must beTrue.unless(ms.isEmpty)
       //aka "for\n"+showGraph(graph, mscr)+"\nMSCRs\n"+ms.mkString("\n") must beTrue.unless(ms.isEmpty)
     }
-  }.pendingUntilFixed("check this with Ben")
+  }
 }
 

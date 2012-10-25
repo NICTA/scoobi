@@ -9,7 +9,7 @@ import CompNode._
 import impl.control.Functions._
 
 class InMemoryModeSpec extends HadoopSpecification with SimpleJobs with CompNodeData { sequential
-  
+
   "The in memory mode can execute DLists and DObjects with repeating shared computations".txt
 
   "Basic computations for DLists" >> {

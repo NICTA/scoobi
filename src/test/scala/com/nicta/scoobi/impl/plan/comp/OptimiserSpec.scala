@@ -78,7 +78,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       // collects the gbks, they must form a set and not a bag
       val before = collectGroupByKey(node).map(_.id)
       val after  = collectGroupByKey(optimised).map(_.id)
-      before.size aka show(node) must be_>=(after.size)
+      before.size must be_>=(after.size)
       after.size must_== after.toSet.size
     }
 
