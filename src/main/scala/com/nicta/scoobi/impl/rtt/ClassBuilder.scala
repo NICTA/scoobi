@@ -21,6 +21,7 @@ import java.lang.reflect.{Modifier => RModifier, Array => RArray, Field => RFiel
 import java.io.DataOutputStream
 import java.io.ByteArrayOutputStream
 import javassist._
+
 import impl.util.UniqueInt
 
 

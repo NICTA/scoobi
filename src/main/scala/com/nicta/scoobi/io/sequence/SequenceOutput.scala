@@ -26,9 +26,9 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import application.DListPersister
 import core._
-import application.ScoobiConfiguration
+import impl.ScoobiConfigurationImpl._
+import impl.io.Helper
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 object SequenceOutput {

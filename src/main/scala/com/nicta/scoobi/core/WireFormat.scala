@@ -16,12 +16,12 @@
 package com.nicta.scoobi
 package core
 
-import annotation.implicitNotFound
 import java.io._
-import impl.slow
 import org.apache.hadoop.io.Writable
 import collection.generic.CanBuildFrom
 import collection.mutable.{ ListBuffer, Builder }
+
+import annotation.implicitNotFound
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")

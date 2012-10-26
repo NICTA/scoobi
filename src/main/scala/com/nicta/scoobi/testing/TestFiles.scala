@@ -17,11 +17,13 @@ package com.nicta.scoobi
 package testing
 
 import java.io.File
-import scala.io.Source
 import org.apache.hadoop.fs.{Path, FileSystem}
+import scala.io.Source
 import Scoobi._
-import io.FileSystems
 import core.ManifestWireFormat
+import impl.io.FileSystems
+
+import impl.ScoobiConfigurationImpl._
 
 /**
  * This trait creates input and output files which are temporary

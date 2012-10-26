@@ -19,7 +19,6 @@ package text
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
@@ -28,9 +27,11 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
-import impl.exec.TaggedInputSplit
 import core._
-import application.ScoobiConfiguration
+import impl.plan.DListImpl
+import impl.mapreducer.TaggedInputSplit
+import impl.ScoobiConfigurationImpl._
+import impl.io.Helper
 
 /** Smart functions for materializing distributed lists by loading text files. */
 object TextInput {
@@ -48,7 +49,7 @@ object TextInput {
       def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
     }
 
-    DList.fromSource(new TextSource(paths, converter))
+    DListImpl(new TextSource(paths, converter))
   }
 
 
@@ -73,7 +74,7 @@ object TextInput {
       }
     }
 
-    DList.fromSource(new TextSource(paths, converter))
+    DListImpl(new TextSource(paths, converter))
   }
 
 

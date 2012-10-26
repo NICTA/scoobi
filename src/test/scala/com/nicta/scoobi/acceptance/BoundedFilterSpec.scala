@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.{NictaSimpleJobs, NictaHadoop}
+import testing.NictaSimpleJobs
 
 class BoundedFilterSpec extends NictaSimpleJobs {
 

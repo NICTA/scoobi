@@ -16,21 +16,16 @@
 package com.nicta.scoobi
 package core
 
-import io.NullDataOutput
 import java.io._
 import org.specs2.ScalaCheck
 import org.scalacheck.{Prop, Arbitrary}
 import Arbitrary._
 import Prop.forAll
+
 import testing.mutable.UnitSpecification
-import WireFormat._
+import io.NullDataOutput
 import data._
-import com.nicta.scoobi.testing.mutable.UnitSpecification
-import com.nicta.scoobi.data._
-import com.nicta.scoobi.io.NullDataOutput
-import com.nicta.scoobi.data.DefaultStringNested
-import com.nicta.scoobi.data.DefaultDoubleStringInt
-import com.nicta.scoobi.data.IntHolder
+import WireFormat._
 
 @SuppressWarnings(Array("slow"))
 class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassData {

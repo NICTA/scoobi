@@ -17,9 +17,10 @@ package com.nicta.scoobi
 package impl
 
 import org.apache.hadoop.conf.Configuration
+import org.specs2.matcher.Matcher
+
 import testing.mutable.UnitSpecification
 import Configurations._
-import org.specs2.matcher.Matcher
 
 class ConfigurationsSpec extends UnitSpecification {
 

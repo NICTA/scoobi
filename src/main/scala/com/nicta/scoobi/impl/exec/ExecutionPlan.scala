@@ -2,23 +2,16 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import plan.comp
-import comp._
-import comp.Combine
-import comp.Flatten
-import comp.GroupByKey
-import comp.Load
-import comp.Materialize
-import comp.Op
-import comp.Return
-import plan.graph._
 import org.kiama.rewriting.Rewriter._
 import org.kiama.rewriting.Rewriter
-import application.ScoobiConfiguration
-import plan.graph.MapperInputChannel
-import plan.graph.GbkOutputChannel
 import org.kiama.attribution.Attribution._
 import org.kiama.attribution.{Attributable, Attribution}
+
+import core._
+import plan.comp._
+import plan.mscr._
+import mapreducer.Env
+
 /**
  * The execution transforms the DComp nodes as created by the user and the Mscrs computed by the MscrGraph
  * and creates a graph of ExecutionNodes which will map to the final MSCRS to be executed by Hadoop.
@@ -27,7 +20,7 @@ import org.kiama.attribution.{Attributable, Attribution}
  * Mscrs. For example a ParallelDo node will be transformed into a Mapper, a GbkMapper, a GbkReducer depending on its
  * position in the graph
  */
-trait ExecutionPlan extends MscrGraph {
+trait ExecutionPlan extends MscrMaker {
 
   type Term = Any
 

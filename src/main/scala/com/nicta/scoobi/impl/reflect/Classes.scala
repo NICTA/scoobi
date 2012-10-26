@@ -2,18 +2,18 @@ package com.nicta.scoobi
 package impl
 package reflect
 
-import control.Exceptions._
 import java.util.jar.{JarEntry, JarInputStream}
-import java.io.{File, FileInputStream}
-import scala.Option
+import java.io.FileInputStream
 import java.net.{URL, URLDecoder}
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
+import control.Exceptions._
+
 /**
  * Utility methods for accessing classes and methods
  */
-//private[scoobi]
+private[scoobi]
 trait Classes {
 
   /** @return the class with a main method calling this code */

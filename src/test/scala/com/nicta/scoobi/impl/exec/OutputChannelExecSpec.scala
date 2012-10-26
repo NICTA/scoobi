@@ -2,8 +2,8 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import application.ScoobiConfiguration
 import testing.mutable.UnitSpecification
+import application.ScoobiConfiguration
 
 class OutputChannelExecSpec extends UnitSpecification {
   implicit val sc = ScoobiConfiguration()

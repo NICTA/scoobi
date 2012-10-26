@@ -17,22 +17,10 @@ package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
-import org.apache.hadoop.io.SequenceFile.CompressionType
-import scalaz.{Scalaz, State}
-import Scalaz._
 
 import core._
-import io.DataSource
-import io.DataSink
-import impl.plan._
-import comp.CompNode
-import impl.exec._
-import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
-import org.apache.hadoop.io.SequenceFile.CompressionType
-import scalaz.Scalaz
-import Scalaz._
 import Mode._
+import impl.exec._
 
 object Persister {
   lazy val logger = LogFactory.getLog("scoobi.Persister")
@@ -106,8 +94,3 @@ object Persister {
 }
 
 
-/** The container for persisting a DList. */
-case class DListPersister[A](dlist: DList[A], sink: DataSink[_, _, A]) {
-  def compress = compressWith(new GzipCodec)
-  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(sink = sink.outputCompression(codec))
-}

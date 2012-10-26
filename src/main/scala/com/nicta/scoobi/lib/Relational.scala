@@ -22,7 +22,6 @@ import scala.Right
 import scala.Left
 import core._
 import core.WireFormat._
-import scala.Some
 
 case class Relational[K : ManifestWireFormat: Grouping, A : ManifestWireFormat](left: DList[(K, A)]) {
   /** Perform an equijoin with another distributed lists. */

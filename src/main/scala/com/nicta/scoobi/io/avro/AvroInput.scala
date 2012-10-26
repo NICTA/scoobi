@@ -21,8 +21,7 @@ import java.io.IOException
 
 import org.apache.commons.logging.LogFactory
 
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.Job
@@ -36,7 +35,9 @@ import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.file.DataFileReader
 
 import core._
-import application.ScoobiConfiguration
+import impl.plan.DListImpl
+import impl.ScoobiConfigurationImpl._
+import impl.io.Helper
 
 /** Smart functions for materializing distributed lists by loading Avro files. */
 object AvroInput extends AvroParsingImplicits {
@@ -115,6 +116,6 @@ object AvroInput extends AvroParsingImplicits {
       lazy val inputConverter = converter
     }
 
-    DList.fromSource(source)
+    DListImpl(source)
   }
 }

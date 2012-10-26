@@ -20,7 +20,6 @@ import java.lang.Class
 import org.apache.commons.logging.{Log, LogFactory}
 import org.apache.commons.logging.impl.{SimpleLog, NoOpLog, LogFactoryImpl}
 import HadoopLogFactory._
-import org.specs2.internal.scalaz.Logger
 
 /**
  * Log factory used for testing.
@@ -126,18 +125,5 @@ object HadoopLogFactory {
   lazy val OFF  : Level = level("OFF"  )
   lazy val FATAL: Level = level("FATAL")
   lazy val WARN : Level = level("WARN" )
-
-  implicit def loggable[T](t: T)(implicit logger: Log): Loggable[T] = new Loggable(t)
-  class Loggable[T](t: T)(implicit logger: Log) {
-    def debug(msg: String)      = { logger.debug(msg); t }
-    def debug(msg: T => String) = { logger.debug(msg(t)); t }
-    def info(msg: String)       = { logger.info(msg); t }
-    def info(msg: T => String)  = { logger.info(msg(t)); t }
-    def warn(msg: String)       = { logger.warn(msg); t }
-    def warn(msg: T => String)  = { logger.warn(msg(t)); t }
-    def error(msg: String)      = { logger.error(msg); t }
-    def error(msg: T => String) = { logger.error(msg(t)); t }
-
-  }
 
 }

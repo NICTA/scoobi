@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package core
 
 import org.apache.hadoop.io.Text
+
 import testing.NictaSimpleJobs
 import Scoobi._
 

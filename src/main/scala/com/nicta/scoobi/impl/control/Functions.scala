@@ -1,8 +1,8 @@
 package com.nicta.scoobi
 package impl
 package control
-import scalaz.Scalaz._
 
+private[scoobi]
 trait Functions {
   implicit def logicalFunction[A](f: A => Boolean): LogicalFunction[A] = LogicalFunction(f)
 

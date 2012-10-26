@@ -3,14 +3,15 @@ package impl
 package plan
 package comp
 
-import scalaz.Show
-import impl.text.Showx._
 import org.kiama.output.PrettyPrinter
-import graph.MscrGraph
+import scalaz.Show
 import com.github.mdr.ascii.layout._
+import mscr.MscrMaker
+import core._
+import text.Showx._
 import control.Exceptions._
 
-trait ShowNode extends MscrGraph with CompNodes{
+trait ShowNode extends MscrMaker with CompNodes {
   val prettyPrinter = new PrettyPrinter {}
   import prettyPrinter._
 

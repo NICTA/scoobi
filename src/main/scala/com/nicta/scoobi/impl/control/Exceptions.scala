@@ -26,6 +26,7 @@ package control
  *
  * @see com.nicta.scoobi.impl.control.ExceptionsSpec for examples
  */
+private[scoobi]
 trait Exceptions {
   /**
    * this implicit avoids having to pass a function when no effect is desired on the Exception being thrown (on the tryo method for example)

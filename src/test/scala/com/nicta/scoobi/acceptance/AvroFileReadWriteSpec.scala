@@ -16,18 +16,15 @@
 package com.nicta.scoobi
 package acceptance
 
-import Scoobi._
-import testing.{NictaSimpleJobs, TestFiles}
-import impl.exec.JobExecException
-
 import org.apache.hadoop.fs.{Path, FileSystem}
-import org.apache.hadoop.io._
-
-import org.specs2.matcher.{HaveTheSameElementsAs, MatchResult}
-
 import org.apache.avro.{AvroTypeException, Schema}
 import org.apache.avro.generic.{GenericDatumWriter, GenericRecord, GenericData}
 import org.apache.avro.file.DataFileWriter
+
+import Scoobi._
+import testing.{NictaSimpleJobs, TestFiles}
+import impl.exec.JobExecException
+import application.ScoobiConfiguration._
 
 class AvroFileReadWriteSpec extends NictaSimpleJobs {
 

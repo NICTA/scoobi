@@ -5,7 +5,7 @@ package control
 /**
  * This trait can be used to overcome some limitations with method overloading due to type erasure
  */
-private[impl]
+private[scoobi]
 trait ImplicitParameters {
 
   trait ImplicitParam

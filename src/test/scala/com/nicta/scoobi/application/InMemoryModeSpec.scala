@@ -3,10 +3,7 @@ package application
 
 import testing.mutable.{SimpleJobs, HadoopSpecification}
 import Scoobi._
-import impl.plan.comp.{DComp, CompNode, CompNodeData}
-import impl.plan.DListImpl
-import CompNode._
-import impl.control.Functions._
+import impl.plan.comp._
 
 class InMemoryModeSpec extends HadoopSpecification with SimpleJobs with CompNodeData { sequential
 

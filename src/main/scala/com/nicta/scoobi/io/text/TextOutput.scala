@@ -25,9 +25,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
-import application.DListPersister
-import application.ScoobiConfiguration
 import core._
+import impl.io.Helper
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
@@ -56,10 +55,10 @@ object TextOutput {
       }
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc))
+        if (Helper.pathExists(outputPath)(sc.conf))
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)(sc)
+            Helper.deletePath(outputPath)(sc.conf)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }

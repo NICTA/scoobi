@@ -2,14 +2,19 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.specs2.mock.Mockito
-import util.JarBuilder
-import application.ScoobiConfiguration
-import org.specs2.specification.Outside
-import testing.mutable.UnitSpecification
-import io.{FileSystems, DataSink}
-import org.apache.hadoop.fs.{FileStatus, Path, FileSystem}
+import org.apache.hadoop.fs.{Path, FileSystem}
 import org.apache.hadoop.mapreduce.Job
+import org.specs2.mock.Mockito
+import org.specs2.specification.Outside
+
+import core._
+import rtt.JarBuilder
+import impl.io.FileSystems
+
+import mapreducer.TaggedReducer
+import testing.mutable.UnitSpecification
+import application.ScoobiConfiguration
+import core.ScoobiConfiguration
 
 class MapReduceJobSpec extends UnitSpecification with Mockito { isolated
 
@@ -33,8 +38,8 @@ class MapReduceJobSpec extends UnitSpecification with Mockito { isolated
   }
   "At the end of the job execution the outputs must be collected" >> {
     // mock the file system interactions
-    val (sink, reducer, fss, files) = (mock[DataSink[_,_,_]], mock[TaggedReducer], mock[FileSystems], mock[FileSystem])
-    val configuration = new ScoobiConfiguration { override def fileSystem = files }
+    val (sink, reducer, fss, files) = (mock[Sink], mock[TaggedReducer], mock[FileSystems], mock[FileSystem])
+    val configuration = new ScoobiConfigurationImpl { override def fileSystem = files }
     val mrj = new MapReduceJob(0) { override protected val fileSystems = fss  }
 
     fss.listFiles(anyPath)(anySC) returns Seq(new Path("_SUCCESS"))

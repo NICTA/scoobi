@@ -1,11 +1,11 @@
 package com.nicta.scoobi
 package application
 
-import impl.time.SimpleTimer
 import org.apache.commons.logging.LogFactory
-import HadoopLogFactory._
-import org.apache.hadoop.fs.FileSystem._
+import core._
 import Mode._
+import HadoopLogFactory._
+import impl.time.SimpleTimer
 
 trait InMemoryHadoop extends ScoobiUserArgs {
 
@@ -65,5 +65,4 @@ trait InMemoryHadoop extends ScoobiUserArgs {
   def setLogFactory(name: String = classOf[HadoopLogFactory].getName) {
     HadoopLogFactory.setLogFactory(name, quiet, showTimes, level, categories)
   }
-
 }

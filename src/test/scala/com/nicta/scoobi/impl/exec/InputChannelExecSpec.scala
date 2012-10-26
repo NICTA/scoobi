@@ -3,6 +3,7 @@ package impl
 package exec
 
 import testing.mutable.UnitSpecification
+import mapreducer._
 import application.ScoobiConfiguration
 
 class InputChannelExecSpec extends UnitSpecification {

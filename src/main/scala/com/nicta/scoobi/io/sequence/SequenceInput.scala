@@ -19,15 +19,16 @@ package sequence
 
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{Writable, SequenceFile}
 import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, SequenceFileInputFormat}
 import org.apache.hadoop.mapreduce.Job
 
 import core._
-import application.ScoobiConfiguration
 import ManifestWireFormat._
+import impl.plan.DListImpl
+import impl.ScoobiConfigurationImpl._
+import impl.io.Helper
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */
 object SequenceInput {
@@ -50,7 +51,7 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: Writable) = convK.fromWritable(k)
     }
 
-    DList.fromSource(new SeqSource[convK.SeqType, Writable, K](paths, converter, checkKeyType)
+    DListImpl(new SeqSource[convK.SeqType, Writable, K](paths, converter, checkKeyType)
                         (convK.mf, implicitly[Manifest[Writable]], WireFormat.manifestWireFormat[K]))
   }
 
@@ -72,9 +73,9 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: Writable, v: convV.SeqType) = convV.fromWritable(v)
     }
 
-    DList.fromSource(new SeqSource[Writable, convV.SeqType, V]
-                        (paths, converter, checkValueType)
-                        (implicitly[Manifest[Writable]], convV.mf, WireFormat.manifestWireFormat[V]))
+    DListImpl(new SeqSource[Writable, convV.SeqType, V]
+                 (paths, converter, checkValueType)
+                 (implicitly[Manifest[Writable]], convV.mf, WireFormat.manifestWireFormat[V]))
   }
 
 
@@ -97,9 +98,9 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
     }
 
-    DList.fromSource(new SeqSource[convK.SeqType, convV.SeqType, (K, V)]
-                        (paths, converter, checkFileTypes)
-                        (convK.mf, convV.mf, WireFormat.manifestWireFormat[(K,V)]))
+    DListImpl(new SeqSource[convK.SeqType, convV.SeqType, (K, V)]
+                 (paths, converter, checkFileTypes)
+                 (convK.mf, convV.mf, WireFormat.manifestWireFormat[(K,V)]))
   }
 
 
@@ -121,7 +122,7 @@ object SequenceInput {
     val (mwfk, mwfv) = (WireFormat.manifestWireFormat[K], WireFormat.manifestWireFormat[V])
     implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
 
-    DList.fromSource(new SeqSource[K, V, (K, V)](paths, converter, checkFileTypes))
+    DListImpl(new SeqSource[K, V, (K, V)](paths, converter, checkFileTypes))
   }
 
 

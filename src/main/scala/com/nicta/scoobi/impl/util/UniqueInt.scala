@@ -22,3 +22,5 @@ trait UniqueInt {
   private var i: Int = 0
   def get: Int = synchronized { val ret = i; i = if (i == Int.MaxValue) 0 else i + 1; ret }
 }
+
+object UniqueId extends UniqueInt

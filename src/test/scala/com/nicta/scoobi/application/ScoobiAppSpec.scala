@@ -16,9 +16,11 @@
 package com.nicta.scoobi
 package application
 
-import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables
 import org.specs2.specification.Scope
+
+import testing.mutable.UnitSpecification
+import core._
 
 class ScoobiAppSpec extends UnitSpecification with Tables {
 

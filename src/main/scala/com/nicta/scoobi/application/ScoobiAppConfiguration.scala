@@ -19,6 +19,9 @@ package application
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 
+import core._
+import impl.ScoobiConfigurationImpl
+
 /**
  * This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
  * $HADOOP_HOME/conf directory.
@@ -48,4 +51,13 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
       conf
     }.getOrElse(new Configuration)
   }
+}
+
+object ScoobiConfiguration {
+  implicit def toConfiguration(sc: ScoobiConfiguration): Configuration = sc.conf
+  implicit def fromConfiguration(c: Configuration): ScoobiConfiguration = ScoobiConfigurationImpl(c)
+
+  def apply(configuration: Configuration) = new ScoobiConfigurationImpl(configuration)
+  def apply() = new ScoobiConfigurationImpl(new Configuration)
+
 }

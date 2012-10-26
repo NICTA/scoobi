@@ -16,9 +16,6 @@
 package com.nicta.scoobi
 package core
 
-import impl.exec.{TaggedMapper, TaggedReducer}
-import WireFormat._
-
 /**
  * Interface for specifying parallel operation over DLists in the absence of an
  * environment
@@ -50,37 +47,7 @@ trait EnvDoFn[A, B, E] { outer =>
   def process(env: E, input: A, emitter: Emitter[B])
   def cleanup(env: E, emitter: Emitter[B])
 
-  def makeTaggedReducer(tag: Int, mwf: ManifestWireFormat[_]) =
-    new TaggedReducer(tag, mwf) {
-      def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
-      def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
-        outer.setup(env.asInstanceOf[E])
-        outer.process(env.asInstanceOf[E], (key, values).asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
-      }
-      def cleanup(env: Any, emitter: Emitter[Any]) { outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]]) }
-    }
-
-  def makeTaggedMapper(tags: Set[Int], mwf: ManifestWireFormat[_]) = new TaggedMapper(tags, manifestWireFormat[Int], grouping[Int], mwf) {
-    def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
-    def map(env: Any, input: Any, emitter: Emitter[Any]) {
-      val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
-      outer.process(env.asInstanceOf[E], input.asInstanceOf[A], e.asInstanceOf[Emitter[B]])
-    }
-    def cleanup(env: Any, emitter: Emitter[Any]) {
-      val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
-      outer.cleanup(env.asInstanceOf[E], e.asInstanceOf[Emitter[B]])
-    }
-  }
-  def makeTaggedMapper(tags: Set[Int], mwfk: ManifestWireFormat[_], gpk: Grouping[_], mwfv: ManifestWireFormat[_]) = new TaggedMapper(tags, mwfk, gpk, mwfv) {
-    def setup(env: Any) { outer.setup(env.asInstanceOf[E]) }
-    def map(env: Any, input: Any, emitter: Emitter[Any]) {
-      outer.process(env.asInstanceOf[E], input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
-    }
-    def cleanup(env: Any, emitter: Emitter[Any]) {
-      outer.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
-    }
-  }
-
+  private[scoobi]
   def unsafeExecute(values: Seq[Any], emitter: Emitter[Any], env: Any) {
     setup(env.asInstanceOf[E])
     values foreach { v => process(env.asInstanceOf[E], v.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]]) }
@@ -96,6 +63,8 @@ trait EnvDoFn[A, B, E] { outer =>
 trait BasicDoFn[A, B] extends DoFn[A, B] {
   def setup() {}
   def cleanup(emitter: Emitter[B]) {}
+
+  private[scoobi]
   override def unsafeExecute(values: Seq[Any], emitter: Emitter[Any], env: Any) {
     values foreach { v => process(v.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]]) }
   }

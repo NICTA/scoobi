@@ -4,8 +4,7 @@ package plan
 package comp
 
 import org.kiama.rewriting.Rewriter._
-import scalaz.Digit._0
-import core.ManifestWireFormat
+import core._
 
 /**
  * Optimiser for the DComp AST graph
@@ -46,7 +45,7 @@ trait Optimiser extends CompNodes {
    *       Flatten
    */
   def flattenSink = everywhere(rule {
-    case p @ ParallelDo(fl @ Flatten1(ins),_,_,_,_) => fl.copy(ins = fl.ins.map(i => p.copy(in = i)))
+    case p @ ParallelDo(fl @ Flatten1(ins),_,_,_,_,_) => fl.copy(ins = fl.ins.map(i => p.copy(in = i)))
   })
 
   /**
@@ -72,8 +71,8 @@ trait Optimiser extends CompNodes {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_) => c
-    case c: Combine[_,_]                 => c.toParallelDo
+    case c @ Combine(GroupByKey1(_),_,_,_) => c
+    case c: Combine[_,_]                   => c.toParallelDo
   })
 
   /**
@@ -88,7 +87,7 @@ trait Optimiser extends CompNodes {
    * This rule is repeated until nothing can be flattened anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,Barriers(_,false)) => p2.fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
+    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,Barriers(_,false)) => p2.fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
   }))
 
   /**
@@ -165,6 +164,7 @@ trait Optimiser extends CompNodes {
   private[scoobi] def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
     rewrite(strategy)(nodes).toList
   }
+
   /** optimise just one node which is the output of a graph. Used for testing */
   private[scoobi] def optimise(node: CompNode): CompNode = optimise(Set(node)).headOption.getOrElse(node)
 }

@@ -16,8 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import io.FileSystems
-import impl.reflect.Classes._
+import impl.io.FileSystems
 import impl.reflect.Classes
 
 /**

@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi.application
+package com.nicta.scoobi
+package application
 
 import org.apache.hadoop.fs.FileSystem._
+import ScoobiConfiguration._
 
 /**
  * Definition of the Cluster addresses: FileSystem + JobTracker
@@ -34,7 +36,7 @@ trait Cluster {
  */
 trait ClusterConfiguration extends Cluster {
 
-  def configuration: ScoobiConfiguration
+  def configuration: com.nicta.scoobi.core.ScoobiConfiguration
 
   def fs         = configuration.get(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
   def jobTracker = configuration.get("mapred.job.tracker", "local")

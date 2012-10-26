@@ -22,6 +22,7 @@ import scala.collection._
 /**
  * This trait provides utility methods on maps, especially mutable maps
  */
+private[scoobi]
 trait Maps {
 
   implicit def extendMutableMap[K, V](map: mutable.Map[K, V]) = new ExtendedMutableMap[K, V](map)

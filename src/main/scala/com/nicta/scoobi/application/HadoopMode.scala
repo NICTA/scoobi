@@ -17,16 +17,8 @@ package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
-import scala.collection.immutable.DefaultMap
-import scalaz.State
 
 import core._
-import impl.plan._
-import comp.CompNode
-import impl.exec._
-import io.DataSource
-import io.DataSink
-
 
 /**
   * Execution of Scoobi applications using Hadoop.

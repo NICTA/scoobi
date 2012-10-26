@@ -17,19 +17,19 @@ package com.nicta.scoobi
 package impl
 package plan
 
-import comp._
 import core._
+import comp._
 import WireFormat._
+import mapreducer._
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
 class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) extends DObject[A] {
 
-  private[scoobi]
   def getComp: CompNode = comp
 
   def map[B : ManifestWireFormat](f: A => B): DObject[B] =
-    new DObjectImpl(Op(comp, Return.unit, (a: A, any: Any) => f(a), StraightIO(manifestWireFormat[B])))
+    new DObjectImpl(Op(comp, Return.unit, (a: A, any: Any) => f(a), SimpleMapReducer(manifestWireFormat[B])))
 
   def join[B : ManifestWireFormat](list: DList[B]): DList[(A, B)] = {
     val dofn = new EnvDoFn[B, (A, B), A] {
@@ -37,8 +37,10 @@ class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) ex
       def process(env: A, input: B, emitter: Emitter[(A, B)]) { emitter.emit((env, input)) }
       def cleanup(env: A, emitter: Emitter[(A, B)]) {}
     }
-    new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, DoIO(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
+    new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, DoMapReducer(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
   }
+
+  def toSingleElementDList: DList[A] = (this join new DListImpl(Return.unit)).map(_._1)
 
   def join[B : ManifestWireFormat](o: DObject[B]): DObject[(A, B)] =
     DObjectImpl.tupled2((this, o))
@@ -49,10 +51,10 @@ object UnitDObject extends DObjectImpl[Unit](Return.unit)
 private[scoobi]
 object DObjectImpl {
 
-  def apply[A : ManifestWireFormat](a: A) = new DObjectImpl[A](Return(a, StraightIO(manifestWireFormat[A])))
+  def apply[A : ManifestWireFormat](a: A) = new DObjectImpl[A](Return(a, SimpleMapReducer(manifestWireFormat[A])))
 
   /* Implicit conversions from tuples of DObjects to DObject tuples. */
   def tupled2[T1 : ManifestWireFormat, T2 : ManifestWireFormat] (tup: (DObject[T1], DObject[T2])): DObject[(T1, T2)] =
-    new DObjectImpl[(T1, T2)](Op(tup._1.getComp, tup._2.getComp, (a: T1, b: T2) => (a, b), StraightIO(manifestWireFormat[(T1, T2)])))
+    new DObjectImpl[(T1, T2)](Op(tup._1.getComp, tup._2.getComp, (a: T1, b: T2) => (a, b), SimpleMapReducer(manifestWireFormat[(T1, T2)])))
 
 }

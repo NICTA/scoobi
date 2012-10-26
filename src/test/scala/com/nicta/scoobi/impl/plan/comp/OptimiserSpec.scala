@@ -3,13 +3,15 @@ package impl
 package plan
 package comp
 
-import testing.mutable.UnitSpecification
-import org.kiama.rewriting._
-import Rewriter._
 import org.specs2.matcher.DataTables
 import org.scalacheck.{Gen, Arbitrary, Prop}
-import graph.factory
-import CompNode._
+import org.kiama.rewriting._
+import Rewriter._
+
+import core._
+import testing.mutable.UnitSpecification
+import mscr.factory
+import CompNodes._
 
 class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData {
 
@@ -41,7 +43,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       }
 
       check(Prop.forAll { (node: CompNode) =>
-        collectNestedFlatten(optimise(flattenFuse, node).head) aka show(node) must beEmpty
+        collectNestedFlatten(optimise(flattenFuse, node).head) must beEmpty
       })
     }
   }
@@ -56,7 +58,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     }
     "Any optimised Combine in the graph can only have GroupByKey as an input" >> prop { (node: CompNode, f: factory) => {}; import f._
       forall(collectCombine(optimise(combineToParDo, node).head)) { n =>
-        n aka show(node) must beLike { case Combine1(GroupByKey1(_)) => ok }
+        n must beLike { case Combine1(GroupByKey1(_)) => ok }
       }
     }
     "After optimisation, all the transformed Combines must be ParallelDo" >> prop { (node: CompNode) =>
@@ -111,7 +113,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
       // collects the combine nodes, they must form a set and not a bag
       val before = collectCombine(node).map(_.id)
       val after = collectCombine(optimised).map(_.id)
-      before.size aka show(node) must be_>=(after.size)
+      before.size must be_>=(after.size)
       before.size must_== after.toSet.size
     }
 
@@ -155,9 +157,9 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
 
   def collectFlatten          = collectl { case f : Flatten[_] => f }
   def collectCombine          = collectl { case c @ Combine1(_) => c: CompNode }
-  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey1(_),_,_) => c }
+  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey1(_),_,_,_) => c }
   def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
-  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,Barriers(false,_)) => p }
+  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,_,Barriers(false,_)) => p }
   def collectGroupByKey       = collectl { case g @ GroupByKey1(_) => g }
   def collectGBKFlatten       = collectl { case GroupByKey1(f : Flatten[_]) => f }
 }

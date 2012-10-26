@@ -16,11 +16,11 @@
 package com.nicta.scoobi
 package impl
 
-import control.Exceptions
 import org.apache.hadoop.conf.Configuration
-import Exceptions._
 import scala.collection.JavaConversions._
+
 import collection.Maps._
+import control.Exceptions._
 
 /**
  * This trait adds functionalities to Hadoop's Configuration object

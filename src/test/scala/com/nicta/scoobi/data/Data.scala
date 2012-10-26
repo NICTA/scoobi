@@ -16,10 +16,10 @@
 package com.nicta.scoobi
 package data
 
-import scalaz.Apply
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary._
 import Gen._
+import scalaz.Apply
 import scalaz.Scalaz._
 
 /**

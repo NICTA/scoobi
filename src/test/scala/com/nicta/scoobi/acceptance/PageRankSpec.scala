@@ -19,7 +19,6 @@ package acceptance
 import java.io.File
 import Scoobi._
 import testing._
-import application.ScoobiConfiguration
 
 import PageRank._
 import lib.Relational._

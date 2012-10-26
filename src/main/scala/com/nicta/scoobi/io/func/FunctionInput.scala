@@ -34,13 +34,13 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.JobContext
 import scala.collection.JavaConversions._
 
-import impl.exec.DistCache
-import impl.Configurations
-import Configurations._
 import core._
-import application.ScoobiConfiguration
+import impl._
+import Configurations._
 import impl.collection.Seqs._
-import impl.collection.{BoundedLinearSeq, FunctionBoundedLinearSeq}
+import impl.collection.FunctionBoundedLinearSeq
+import plan.DListImpl
+import util.DistCache
 
 /** Smart function for creating a distributed lists from a Scala function. */
 object FunctionInput {
@@ -70,7 +70,7 @@ object FunctionInput {
         def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
       }
     }
-    DList.fromSource(source)
+    DListImpl(source)
   }
 
   /* Configuration property names. */

@@ -3,16 +3,19 @@ package impl
 package plan
 package comp
 
-import data.Data
-import io.ConstantStringDataSource
-import core._
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
 import org.specs2.main.CommandLineArguments
 import org.specs2.mutable.Specification
-import org.kiama.attribution.Attribution
-import WireFormat._
 import org.specs2.specification.Scope
+import org.kiama.attribution.Attribution
+
+import data.Data
+import core._
+import application._
+import io.ConstantStringDataSource
+import mapreducer._
+import WireFormat._
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
 
@@ -45,7 +48,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
   /** objects of elements with a simple type A */
   def genObject(depth: Int = 1): Gen[DObject[String]] =
-    if (depth <= 1) DObject[String]("start")
+    if (depth <= 1) DObjects[String]("start")
     else            Gen.oneOf(genList(depth - 1).map(l => l.materialize.map(_.toString)),
                               ^(genObject(depth / 2), genObject(depth / 2))((_ join _)).map(o => o.map(_.toString))).memo
 
@@ -71,22 +74,23 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 trait CompNodeFactory extends Scope {
 
   implicit def manifestWireFormatString = manifestWireFormat[String]
-  def straightIO = StraightIO(manifestWireFormatString)
+  def mapReducer = SimpleMapReducer(manifestWireFormatString)
 
-  def load                                   = Load(ConstantStringDataSource("start"), straightIO)
-  def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A]]), straightIO)
+  def load                                   = Load(ConstantStringDataSource("start"), mapReducer)
+  def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A]]), mapReducer)
   def parallelDo(in: CompNode)               = pd(in)
-  def rt                                     = Return("", StraightIO(manifestWireFormat[String]))
+  def rt                                     = Return("", mapReducer)
   def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,
-                                                                       KeyValueIO(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
+                                                                       KeyValueMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String)]],
-                                                          KeyValuesIO(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
+                                                          KeyValuesMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
 
-  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], straightIO)
-  def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, straightIO)
+  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], mapReducer)
+  def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, mapReducer)
+
   def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
     ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String]], env.asInstanceOf[DComp[Unit]], fn,
-                                     DoIO(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[Unit]),
+                                     DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[Unit]), Seq(),
                                      Barriers(groupBarrier, fuseBarrier))
 
   lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }

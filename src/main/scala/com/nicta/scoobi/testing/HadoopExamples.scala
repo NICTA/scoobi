@@ -19,11 +19,13 @@ package testing
 import org.specs2.execute._
 import org.specs2.specification._
 import org.specs2.Specification
-import org.specs2.execute.ResultLogicalCombinators._
 import org.specs2.execute.StandardResults._
+import ResultLogicalCombinators._
+
+import core._
 import application._
 import impl.time.SimpleTimer
-import ResultLogicalCombinators._
+import application.ScoobiConfiguration
 
 /**
  * This trait provides an Around context to be used in a Specification
@@ -70,7 +72,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
-    def outside = new ScoobiConfiguration
+    def outside = ScoobiConfiguration()
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
       changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(a) })
     }
@@ -88,7 +90,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for showing that an execution is skipped
    */
   class SkippedHadoopContext(name: String) extends HadoopContext {
-    def outside = configureForLocal(new ScoobiConfiguration)
+    def outside = configureForLocal(ScoobiConfiguration())
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) =
       Skipped("excluded", "No "+name+" execution"+time_?)
@@ -97,7 +99,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for running examples in memory
    */
   class InMemoryHadoopContext extends HadoopContext {
-    def outside = configureForInMemory(new ScoobiConfiguration)
+    def outside = configureForInMemory(ScoobiConfiguration())
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) =
       inMemory(cleanup(a).apply(outside))
@@ -106,7 +108,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for running examples locally
    */
   class LocalHadoopContext extends HadoopContext {
-    def outside = configureForLocal(new ScoobiConfiguration)
+    def outside = configureForLocal(ScoobiConfiguration())
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) =
       locally(cleanup(a).apply(outside))
@@ -116,7 +118,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for running examples on the cluster
    */
   class ClusterHadoopContext extends HadoopContext {
-    def outside = configureForCluster(new ScoobiConfiguration)
+    def outside = configureForCluster(ScoobiConfiguration())
 
     override def apply[R <% Result](a: ScoobiConfiguration => R) =
       remotely(cleanup(a).apply(outside))

@@ -17,10 +17,12 @@ package com.nicta.scoobi
 package application
 
 import java.net.{URLClassLoader, URL}
-import com.nicta.scoobi.io.FileSystems
 import java.io.File
 import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.fs.Path
+import core._
+import impl.io.FileSystems
+import impl.ScoobiConfigurationImpl._
 
 /**
  * This trait defines:

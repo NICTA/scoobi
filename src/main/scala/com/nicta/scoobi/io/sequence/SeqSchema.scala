@@ -28,7 +28,6 @@ import org.apache.hadoop.io.ByteWritable
 import org.apache.hadoop.io.BytesWritable
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
-import scala.collection.JavaConversions._
 
 
 /** Type class for conversions between basic Scala types and Hadoop Writable types. */

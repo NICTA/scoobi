@@ -15,13 +15,9 @@
  */
 package com.nicta.scoobi
 
+import org.apache.hadoop.io._
 import application._
 import core._
-import impl.plan.comp.{DComp, CompNode}
-import org.apache.hadoop.io._
-import compress.{GzipCodec, CompressionCodec}
-import org.apache.hadoop.io.SequenceFile.CompressionType
-import impl.collection.Seqs._
 
 /** Global Scoobi functions and values. */
 object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Lib with DObjects {
@@ -29,11 +25,11 @@ object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
   type ManifestWireFormat[A] = com.nicta.scoobi.core.ManifestWireFormat[A]
-  val DList = com.nicta.scoobi.core.DList
+  val DList = DLists
   type DList[A] = com.nicta.scoobi.core.DList[A]
   implicit def traversableToDList[A : ManifestWireFormat](trav: Traversable[A]) = DList.traversableToDList(trav)
 
-  val DObject = com.nicta.scoobi.core.DObject
+  val DObject = DObjects
   type DObject[A] = com.nicta.scoobi.core.DObject[A]
 
   type DoFn[A, B] = com.nicta.scoobi.core.DoFn[A, B]
@@ -48,7 +44,8 @@ object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with 
 
 trait Application {
   type ScoobiApp = com.nicta.scoobi.application.ScoobiApp
-  type ScoobiConfiguration = com.nicta.scoobi.application.ScoobiConfiguration
+  type ScoobiConfiguration = com.nicta.scoobi.core.ScoobiConfiguration
+  val ScoobiConfiguration = com.nicta.scoobi.application.ScoobiConfiguration
 }
 object Application extends Application
 
@@ -86,20 +83,11 @@ trait InputsOutputs {
       (extractFn: PartialFunction[List[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
 
   implicit def listToTextFile[A : Manifest](list: DList[A]): ListToTextFile[A] = new ListToTextFile[A](list)
-  class ListToTextFile[A : Manifest](list: DList[A]) {
-    def toTextFile(path: String, overwrite: Boolean = false) = list.setComp((c: DComp[A]) => c.addSink(TextOutput.textFileSink(path, overwrite)))
+  case class ListToTextFile[A : Manifest](list: DList[A]) {
+    def toTextFile(path: String, overwrite: Boolean = false) = list.addSink(TextOutput.textFileSink(path, overwrite))
   }
   def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false) = TextOutput.toTextFile(dl, path, overwrite)
   def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false) = TextOutput.toDelimitedTextFile(dl, path, sep, overwrite)
-
-  /** compression, compresses the latest sink */
-  implicit def compressListOutput[A](list: DList[A]): CompressedListOutput[A] = new CompressedListOutput[A](list)
-  class CompressedListOutput[A](list: DList[A]) {
-    def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): DList[A] =
-      list.setComp((c: DComp[A]) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
-    def compress: DList[A] = compressWith(new GzipCodec)
-  }
-
   /* Sequence File I/O */
   val SequenceInput = com.nicta.scoobi.io.sequence.SequenceInput
   val SequenceOutput = com.nicta.scoobi.io.sequence.SequenceOutput
@@ -120,27 +108,27 @@ trait InputsOutputs {
   def convertToSequenceFile[K : SeqSchema, V : SeqSchema](dl: DList[(K, V)], path: String, overwrite: Boolean = false): DListPersister[(K, V)] = SequenceOutput.convertToSequenceFile(dl, path, overwrite)
 
   implicit def convertKeyListToSequenceFile[K : SeqSchema](list: DList[K]): ConvertKeyListToSequenceFile[K] = new ConvertKeyListToSequenceFile[K](list)
-  class ConvertKeyListToSequenceFile[K : SeqSchema](list: DList[K]) {
+  case class ConvertKeyListToSequenceFile[K : SeqSchema](list: DList[K]) {
     def convertKeyToSequenceFile(path: String, overwrite: Boolean = false) =
-      list.setComp((c: DComp[K]) => c.addSink(SequenceOutput.keySchemaSequenceFile(path, overwrite)))
+      list.addSink(SequenceOutput.keySchemaSequenceFile(path, overwrite))
   }
 
   implicit def convertValueListToSequenceFile[V : SeqSchema](list: DList[V]): ConvertValueListToSequenceFile[V] = new ConvertValueListToSequenceFile[V](list)
-  class ConvertValueListToSequenceFile[V : SeqSchema](list: DList[V]) {
+  case class ConvertValueListToSequenceFile[V : SeqSchema](list: DList[V]) {
     def convertValueToSequenceFile(path: String, overwrite: Boolean = false) =
-      list.setComp((c: DComp[V]) => c.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite)))
+      list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
   }
 
   implicit def convertListToSequenceFile[K : SeqSchema, V : SeqSchema](list: DList[(K, V)]): ConvertListToSequenceFile[K, V] = new ConvertListToSequenceFile[K, V](list)
-  class ConvertListToSequenceFile[K : SeqSchema, V : SeqSchema](list: DList[(K, V)]) {
+  case class ConvertListToSequenceFile[K : SeqSchema, V : SeqSchema](list: DList[(K, V)]) {
     def convertToSequenceFile(path: String, overwrite: Boolean = false) =
-      list.setComp((c: DComp[(K, V)]) => c.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(implicitly[SeqSchema[K]], implicitly[SeqSchema[V]])))
+      list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(implicitly[SeqSchema[K]], implicitly[SeqSchema[V]]))
   }
 
   implicit def listToSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](list: DList[(K, V)]): ListToSequenceFile[K, V] = new ListToSequenceFile[K, V](list)
-  class ListToSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](list: DList[(K, V)]) {
+  case class ListToSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](list: DList[(K, V)]) {
     def toSequenceFile(path: String, overwrite: Boolean = false) =
-      list.setComp((c: DComp[(K, V)]) => c.addSink(SequenceOutput.sequenceSink[K, V](path, overwrite)))
+      list.addSink(SequenceOutput.sequenceSink[K, V](path, overwrite))
   }
 
   def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String, overwrite: Boolean = false): DListPersister[(K, V)] = SequenceOutput.toSequenceFile(dl, path, overwrite)
@@ -156,8 +144,8 @@ trait InputsOutputs {
   def fromAvroFile[A : ManifestWireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)
 
   implicit def listToAvroFile[A : AvroSchema](list: DList[A]): ListToAvroFile[A] = new ListToAvroFile[A](list)
-  class ListToAvroFile[A : AvroSchema](list: DList[A]) {
-    def toAvroFile(path: String, overwrite: Boolean = false) = list.setComp((c: DComp[A]) => c.addSink(AvroOutput.avroSink(path, overwrite)))
+  case class ListToAvroFile[A : AvroSchema](list: DList[A]) {
+    def toAvroFile(path: String, overwrite: Boolean = false) = list.addSink(AvroOutput.avroSink(path, overwrite))
   }
 
   def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
@@ -206,10 +194,10 @@ trait Lib {
   implicit def dlistToColWiseWithMapReduceJob[Elem: ManifestWireFormat: Ordering, T: ManifestWireFormat](m: DMatrix[Elem, T]): DColWiseMatrix[Elem, T] =
     DColWiseMatrix(m.map { case ((r, c), v) => (c, (r, v)) }.groupByKey)
 
-  implicit def dlistToColWise[Elem: ManifestWireFormat: Ordering, T: ManifestWireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DColWiseMatrix[Elem, T] =
+  implicit def dlistToColWise[Elem : ManifestWireFormat: Ordering, T : ManifestWireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DColWiseMatrix[Elem, T] =
     DColWiseMatrix(m)
 
-  implicit def colWiseToDList[Elem: ManifestWireFormat: Ordering, T: ManifestWireFormat](m: DColWiseMatrix[Elem, T]) = m.data
+  implicit def colWiseToDList[Elem : ManifestWireFormat: Ordering, T : ManifestWireFormat](m: DColWiseMatrix[Elem, T]) = m.data
   
   
   implicit def inMemVectorToDObject[Elem, T](in: InMemVector[Elem, T]) = in.data

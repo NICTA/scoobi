@@ -1,18 +1,18 @@
 package com.nicta.scoobi
 package acceptance
 
-import testing.{TestFiles, TempFiles, NictaSimpleJobs}
-import Scoobi._
 import java.io.{OutputStream, FileInputStream, FileOutputStream, File}
-import java.util.zip.{DeflaterOutputStream, GZIPOutputStream}
-import impl.control.Exceptions._
-import io.FileSystems
+import java.util.zip.GZIPOutputStream
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.compress.GzipCodec
-import scala.io.Source
 import org.specs2.matcher.Matcher
-import org.specs2.mutable.Specification
+
+import testing.{TestFiles, TempFiles, NictaSimpleJobs}
+import impl.io.FileSystems
+
+import impl.control.Exceptions._
+import Scoobi._
 
 class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
 

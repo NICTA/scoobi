@@ -2,17 +2,19 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import plan.comp._
-import application.ScoobiConfiguration
-import plan.graph.{OutputChannel, InputChannel}
-import io.{Sink, Source}
 import org.kiama.attribution.Attribution
-import plan.comp.CompNode._
-
+import core._
+import plan.mscr._
+import plan.comp._
+import util.UniqueId
+import core.WireFormat._
+import mapreducer._
 /**
  * GADT representing elementary computations to perform in hadoop jobs
  */
 sealed trait ExecutionNode extends CompNode {
+  lazy val id = UniqueId.get
+
   def referencedNode: CompNode
   def sinks = referencedNode.sinks
 }
@@ -35,7 +37,7 @@ case class CombineExec(cb: Ref[Combine[_,_]], n: CompNode) extends ExecutionNode
 }
 case class FlattenExec(flatten: Ref[Flatten[_]], ins: Seq[CompNode]) extends MapperExecutionNode {
   def referencedNode = flatten.n
-  def makeTaggedMapper(tags: Map[CompNode, Set[Int]]): TaggedMapper = referencedNode.makeStraightTaggedIdentityMapper(tags(referencedNode))
+  def makeTaggedMapper(tags: Map[CompNode, Set[Int]]): TaggedMapper = referencedNode.mr.makeTaggedIdentityMapper(tags(referencedNode))
 }
 
 case class ReturnExec(rt: Ref[Return[_]]) extends ExecutionNode {
@@ -132,7 +134,10 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def input = in.asInstanceOf[MapperExecutionNode]
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
-    job.addTaggedMapper(source, None, referencedNode.asInstanceOf[DComp[_]].makeStraightTaggedIdentityMapper(tags(referencedNode)))
+    val mapper =  new TaggedIdentityMapper(tags(referencedNode), manifestWireFormat[Int], grouping[Int], referencedNode.asInstanceOf[DComp[_]].mr.mwf) {
+      override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
+    }
+    job.addTaggedMapper(source, None, mapper)
     job
   }
 }

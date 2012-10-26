@@ -19,11 +19,10 @@ package exec
 
 import org.apache.commons.logging.LogFactory
 
-import io.DataSink
+import core._
 import plan._
-import application.ScoobiConfiguration
-import comp.CompNode
-import graph.Mscr
+import mscr.Mscr
+import mapreducer._
 
 /** The only state required to be passed around during execution of the
   * Scoobi compute graph.

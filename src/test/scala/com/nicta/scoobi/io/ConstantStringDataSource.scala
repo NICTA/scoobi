@@ -21,7 +21,7 @@ import org.apache.hadoop.mapreduce._
 import lib.input.InvalidInputException
 import org.apache.hadoop.filecache.DistributedCache
 
-import application.ScoobiConfiguration
+import core._
 
 class ConstantStringDataSource(val value: String) extends DataSource[String, String, String] {
 

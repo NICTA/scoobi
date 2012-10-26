@@ -29,13 +29,13 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.JobContext
 import scala.collection.JavaConversions._
 
-import impl.exec.DistCache
-import impl.Configurations
-import Configurations._
 import core._
-import application.ScoobiConfiguration
-import impl.collection.Seqs._
-import impl.collection.BoundedLinearSeq
+import impl._
+import Configurations._
+import collection.Seqs._
+import plan.DListImpl
+import util.DistCache
+import impl.ScoobiConfigurationImpl._
 
 /**
  * Function for creating a distributed lists from a scala.collection.Seq
@@ -72,7 +72,7 @@ object SeqInput {
         def fromKeyValue(context: InputContext, k: NullWritable, v: Array[Byte]) = v
       }
     }
-    DList.fromSource(source).map(a => fromByteArray[A](a)(ManifestWireFormatDecompose.manifestWireFormatToWireFormat[A]))
+    DListImpl(source).map(a => fromByteArray[A](a)(ManifestWireFormatDecompose.manifestWireFormatToWireFormat[A]))
   }
 
   private def fromByteArray[A : WireFormat](barr: Array[Byte]): A = {

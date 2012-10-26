@@ -16,12 +16,13 @@
 package com.nicta.scoobi
 package acceptance
 
+import org.apache.hadoop.io._
+import java.io.IOException
+
 import Scoobi._
 import testing.NictaSimpleJobs
 import testing.TestFiles
-import org.apache.hadoop.io._
 import application._
-import java.io.IOException
 
 class SeqFileReadWriteSpec extends NictaSimpleJobs {
 

@@ -18,8 +18,6 @@ package acceptance
 
 import Scoobi._
 import testing.NictaSimpleJobs
-import application.ScoobiConfiguration
-
 import SecondarySort._
 
 class SecondarySortSpec extends NictaSimpleJobs {

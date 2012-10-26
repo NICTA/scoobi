@@ -16,6 +16,7 @@
 package com.nicta.scoobi
 package impl
 package exec
+
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.mapred.TaskCompletionEvent
 import org.apache.hadoop.mapreduce.Job
@@ -26,16 +27,16 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable._
 import scalaz.Scalaz._
+
 import core._
-import io._
 import plan._
-import comp.CompNode
-import graph.Mscr
+import mscr.Mscr
 import rtt._
 import util._
-import application.ScoobiConfiguration
 import reflect.Classes._
-import ScoobiConfiguration._
+import io._
+import mapreducer._
+import ScoobiConfigurationImpl._
 import ChannelOutputFormat._
 
 /** A class that defines a single Hadoop MapReduce job. */
@@ -345,9 +346,6 @@ object MapReduceJob extends ExecutionPlan {
   def create(stepId: Int, mscr: Mscr)(implicit configuration: ScoobiConfiguration): MapReduceJob =
     new MapReduceJob(stepId, createExecutableMscr(mscr)).configureChannels
 }
-
-
-object UniqueId extends UniqueInt
 
 
 /* Helper class to track progress of Map or Reduce tasks and whether or not

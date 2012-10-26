@@ -26,9 +26,8 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
-import application.DListPersister
 import core._
-import application.ScoobiConfiguration
+import impl.io.Helper
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -53,10 +52,10 @@ object AvroOutput {
       val outputValueClass = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc)) {
+        if (Helper.pathExists(outputPath)(sc.conf)) {
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)(sc)
+            Helper.deletePath(outputPath)(sc.conf)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }
