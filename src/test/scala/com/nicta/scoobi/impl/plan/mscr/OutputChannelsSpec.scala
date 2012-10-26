@@ -123,7 +123,7 @@ class OutputChannelsSpec extends MscrMakerSpecification {
       val graph2 = gbk(pd(graph1)).addSink(BridgeStore())
       val mscrs = makeMscrs(graph2)
 
-      mscrs.flatMap(_.outputChannels.flatMap(_.sinks)).map(_.getClass.getSimpleName).toList === Seq("BridgeStore", "StringSink")
+      mscrs.flatMap(_.outputChannels.flatMap(_.sinks)).map(_.getClass.getSimpleName).toList === Seq("StringSink", "BridgeStore")
 
     }
   }

@@ -73,13 +73,13 @@ trait ExecutionPlan extends MscrMaker {
   lazy val rewriteSingleChannel: Strategy =
     rule {
       // input channels
-      case MapperInputChannel(pdos)     => MapperInputChannelExec(pdos.toSeq)
-      case IdInputChannel(in, gbk)      => BypassInputChannelExec(in, gbk)
-      case StraightInputChannel(in)     => StraightInputChannelExec(in)
+      case MapperInputChannel(pdos)        => MapperInputChannelExec(pdos.toSeq)
+      case IdInputChannel(in, gbk)         => BypassInputChannelExec(in, gbk)
+      case StraightInputChannel(in)        => StraightInputChannelExec(in)
       // output channels
-      case GbkOutputChannel(g,f,c,r,s)  => GbkOutputChannelExec(g, f, c, r, s)
-      case FlattenOutputChannel(in,s)   => FlattenOutputChannelExec(in, s)
-      case BypassOutputChannel(in,s)    => BypassOutputChannelExec(in, s)
+      case ch @ GbkOutputChannel(g,f,c,r)  => GbkOutputChannelExec(g, f, c, r, ch.sinks)
+      case ch @ FlattenOutputChannel(in)   => FlattenOutputChannelExec(in, ch.sinks)
+      case ch @ BypassOutputChannel(in)    => BypassOutputChannelExec(in, ch.sinks)
     }
 
   /** attribute returning a unique tag for an OutputChannel */

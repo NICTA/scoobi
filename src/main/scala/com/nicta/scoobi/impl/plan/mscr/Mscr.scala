@@ -31,15 +31,15 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return true if this mscr has no input or output channels */
   def isEmpty = inputChannels.isEmpty && outputChannels.isEmpty
   /** @return all the channels containing mappers, i.e. parallel dos */
-  def mapperChannels = inputChannels.collect { case c @ MapperInputChannel(_) => c }
+  def mapperChannels = inputChannels.collect { case c : MapperInputChannel => c }
   /** @return all the id channels */
-  def idChannels = inputChannels.collect { case c @ IdInputChannel(_,_) => c }
+  def idChannels = inputChannels.collect { case c: IdInputChannel => c }
   /** @return all the flatten channels */
-  def flattenOutputChannels = outputChannels.collect { case c @ FlattenOutputChannel(_,_) => c }
+  def flattenOutputChannels = outputChannels.collect { case c: FlattenOutputChannel => c }
   /** @return all the gbk output channels */
-  def gbkOutputChannels = outputChannels.collect { case c @ GbkOutputChannel(_,_,_,_,_) => c }
+  def gbkOutputChannels = outputChannels.collect { case c: GbkOutputChannel => c }
   /** @return all the bypass output channels */
-  def bypassOutputChannels = outputChannels.collect { case c @ BypassOutputChannel(_,_) => c }
+  def bypassOutputChannels = outputChannels.collect { case c: BypassOutputChannel => c }
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
@@ -48,11 +48,11 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
   /** @return all the GroupByKeys of this mscr */
-  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_,_)            => gbk }
+  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_)            => gbk }
   /** @return all the reducers of this mscr */
-  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer),_)  => reducer }
+  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer))  => reducer }
   /** @return all the combiners of this mscr */
-  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_,_) => combiner }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
   /** @return all the parallelDos of this mscr */
   def parallelDos = mappers ++ reducers
 

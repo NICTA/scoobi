@@ -6,6 +6,7 @@ package mscr
 import core._
 import comp._
 import util._
+import mapreducer.BridgeStore
 
 /** ADT for MSCR output channels. */
 trait OutputChannel extends Channel {
@@ -15,11 +16,14 @@ trait OutputChannel extends Channel {
   def sinks: Seq[Sink]
 }
 
+trait MscrOutputChannel extends OutputChannel {
+  def sinks = if (nodeSinks.isEmpty) Seq(BridgeStore()) else nodeSinks
+  protected def nodeSinks: Seq[Sink]
+}
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             var flatten:  Option[Flatten[_]]        = None,
                             var combiner: Option[Combine[_,_]]      = None,
-                            var reducer:  Option[ParallelDo[_,_,_]] = None,
-                            sinks:        Seq[Sink]      = Seq()) extends OutputChannel {
+                            var reducer:  Option[ParallelDo[_,_,_]] = None) extends MscrOutputChannel {
 
   override def toString =
     Seq(Some(groupByKey),
@@ -35,20 +39,26 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
 
   /** @return the output node of this channel */
   def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
+
+  def nodeSinks = groupByKey.sinks ++ flatten.toSeq.map(_.sinks).flatten ++
+                                      combiner.toSeq.map(_.sinks).flatten ++
+                                      reducer.toSeq.map(_.sinks).flatten
 }
 
-case class BypassOutputChannel(output: ParallelDo[_,_,_], sinks: Seq[Sink] = Seq()) extends OutputChannel {
+case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChannel {
   override def equals(a: Any) = a match {
     case o: BypassOutputChannel => o.output.id == output.id
     case _                      => false
   }
+  def nodeSinks = output.sinks
 }
 
-case class FlattenOutputChannel(output: Flatten[_], sinks: Seq[Sink] = Seq()) extends OutputChannel {
+case class FlattenOutputChannel(output: Flatten[_]) extends MscrOutputChannel {
   override def equals(a: Any) = a match {
     case o: FlattenOutputChannel => o.output.id == output.id
     case _ => false
   }
+  def nodeSinks = output.sinks
 }
 
 object Channels extends control.ImplicitParameters {

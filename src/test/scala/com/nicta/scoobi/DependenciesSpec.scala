@@ -24,8 +24,8 @@ class DependenciesSpec extends UnitSpecification with Analysis {
   eg {
 
     Layers(application.layers    ++
-      implementation.layers ++
-      core.layers).withPrefix("com.nicta.scoobi") must beRespected
+           implementation.layers ++
+           core.layers             ).withPrefix("com.nicta.scoobi") must beRespected
 
   }
 }

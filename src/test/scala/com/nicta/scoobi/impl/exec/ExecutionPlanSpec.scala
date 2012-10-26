@@ -13,7 +13,8 @@ import mapreducer.Env
 import application.ScoobiConfiguration
 import testing.mutable.UnitSpecification
 
-class ExecutionPlanSpec extends UnitSpecification {
+class ExecutionPlanSpec extends UnitSpecification { sequential
+  
   "The execution execPlan transforms Mscrs and nodes into a graph of executable Mscrs and executable nodes".txt
 
   "Mscrs are transformed into mscrs with actual channels" >> {
