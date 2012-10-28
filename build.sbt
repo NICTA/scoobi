@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
   "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
   "org.specs2" %% "specs2" % "1.12.3-SNAPSHOT" % "optional",
+  "com.chuusai" %% "shapeless" % "1.2.2",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
