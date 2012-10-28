@@ -332,4 +332,11 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
     def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())
   }
+
+  /*
+   * Shapeless tagged types.
+   */
+  import shapeless.TypeOperators._
+  implicit def taggedTypeWireFormat[T : WireFormat, U]: WireFormat[T @@ U] =
+    implicitly[WireFormat[T]].asInstanceOf[WireFormat[T @@ U]]
 }

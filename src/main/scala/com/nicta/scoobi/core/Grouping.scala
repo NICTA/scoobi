@@ -53,6 +53,17 @@ trait GroupingImplicits {
     def groupCompare(x: T, y: T): Int = x.compareTo(y)
   }
 
+  /** Instances for Shapeless tagged types. */
+  import shapeless.TypeOperators._
+
+  implicit def taggedTypeGrouping[T : Grouping, U]: Grouping[T @@ U] =
+    implicitly[Grouping[T]].asInstanceOf[Grouping[T @@ U]]
+
+  implicit def taggedTypeOrdering[T : Ordering, U]: Ordering[T @@ U] =
+    implicitly[Ordering[T]].asInstanceOf[Ordering[T @@ U]]
+
+
+  /** Helpers for creating Ordering instances for cases classes. */
   def mkCaseOrdering[T, A1: Ordering](apply: (A1) => T, unapply: T => Option[(A1)]): Ordering[T] = new Ordering[T] {
     def compare(x: T, y: T): Int = {
       val first = unapply(x).get
