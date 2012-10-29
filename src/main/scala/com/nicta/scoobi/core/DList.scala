@@ -18,7 +18,6 @@ package core
 
 import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
-import impl.plan.comp.DComp
 
 /**
  * A list that is distributed across multiple machines.
@@ -255,6 +254,10 @@ trait DList[A] extends DataSinks {
   /**Find the smallest element in the distributed list. */
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
     reduce((x, y) => if (cmp.lteq(f(x), f(y))) x else y)
+}
+
+object CovariantDList {
+  implicit def covariant[A, B <: A](list: DList[B]): DList[A] = list
 }
 
 trait DataSinks {

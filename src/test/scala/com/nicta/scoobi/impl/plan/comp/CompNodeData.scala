@@ -12,8 +12,8 @@ import org.kiama.attribution.Attribution
 
 import data.Data
 import core._
+import com.nicta.scoobi.io.ConstantStringDataSource
 import application._
-import io.ConstantStringDataSource
 import mapreducer._
 import WireFormat._
 

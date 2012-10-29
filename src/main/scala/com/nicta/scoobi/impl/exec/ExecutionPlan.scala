@@ -28,13 +28,13 @@ trait ExecutionPlan extends MscrMaker {
    * create an executable Mscr from an original one
    */
   def createExecutableMscr(mscr: Mscr): MscrExec =
-    createExecutionPlan(Seq(mscr)).head.asInstanceOf[MscrExec]
+    createExecutionPlan(Seq(mscr)).head
 
   /**
    * create an execution plan for a set of Mscrs
    */
-  def createExecutionPlan(mscrs: Seq[Mscr]): Seq[Term] =
-    rewrite(rewriteMscrs)(mscrs.map(initAttributable))
+  def createExecutionPlan(mscrs: Seq[Mscr]): Seq[MscrExec] =
+    rewrite(rewriteMscrs)(mscrs.map(initAttributable)).map(_.asInstanceOf[MscrExec])
 
   /** initialize the Kiama attributes */
   private def initAttributable[T <: Attributable](t: T): T  =

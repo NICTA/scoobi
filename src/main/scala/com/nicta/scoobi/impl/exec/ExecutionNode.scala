@@ -81,6 +81,9 @@ case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChanne
   def outputChannels: Set[OutputChannelExec] = outputs.map(_.asInstanceOf[OutputChannelExec])
   def channels: Set[ChannelExec] = inputChannels ++ outputChannels
   def mapperInputChannels = inputChannels.collect { case m @ MapperInputChannelExec(_) => m }
+
+  def outputContains(node: CompNode) =
+    outputChannels.exists(_.contains(node))
 }
 
 trait ChannelExec {
@@ -145,6 +148,7 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
 sealed trait OutputChannelExec extends OutputChannel with ChannelExec {
   def sinks: Seq[Sink]
   def outputs: Seq[CompNode]
+  def contains(node: CompNode) = outputs.contains(node)
 }
 
 case class GbkOutputChannelExec(groupByKey: CompNode,

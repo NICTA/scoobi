@@ -9,6 +9,7 @@ import util.UniqueId
 import comp._
 import collection._
 import IdSet._
+import core.CompNode
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
@@ -62,6 +63,9 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
    outputChannels = (outputChannels ++ out)
    this
   }
+
+  def outputContains(node: CompNode) =
+    outputChannels.exists(_.contains(node))
 }
 
 object Mscr {

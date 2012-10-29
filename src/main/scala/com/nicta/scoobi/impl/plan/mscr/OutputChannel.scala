@@ -14,11 +14,15 @@ trait OutputChannel extends Channel {
 
   /** sinks for this output channel */
   def sinks: Seq[Sink]
+  def contains(node: CompNode): Boolean
 }
 
 trait MscrOutputChannel extends OutputChannel {
   def sinks = if (nodeSinks.isEmpty) Seq(BridgeStore()) else nodeSinks
   protected def nodeSinks: Seq[Sink]
+
+  def output: CompNode
+  def contains(node: CompNode) = output == node
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             var flatten:  Option[Flatten[_]]        = None,

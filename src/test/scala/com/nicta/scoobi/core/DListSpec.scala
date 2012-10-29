@@ -87,7 +87,16 @@ class DListSpec extends NictaSimpleJobs {
 
     DList.concat(aa, bb).run.sorted must_== (1 to 10).toSeq
   }
-  
+
+  "DLists can be made covariant" >> {
+    implicit def mwfa: ManifestWireFormat[A] = null.asInstanceOf[ManifestWireFormat[A]]
+    implicit def mwfb: ManifestWireFormat[B] = null.asInstanceOf[ManifestWireFormat[B]]
+    //import CovariantDList._
+    class A
+    class B extends A
+    (DList(new B): DList[A])
+    ok
+  }
   
   "DLists can be concatenated via reduce" >> {
     val lists = Seq.fill(5)(DList(1 -> 2))
