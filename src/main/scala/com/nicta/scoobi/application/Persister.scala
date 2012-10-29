@@ -384,7 +384,7 @@ object PFn {
     def execute(x: DListPersister[A]): State[(ExecState, Map[Smart.DComp[_, _ <: Shape], AST.Node[_, _ <: Shape]]), Unit] =
       State({ case(st, nodeMap) =>
         val node: AST.Node[A, _ <: Shape] = nodeMap(x.dlist.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
-        ((), (Executor.executeArrOutput(node, x.sink, st), nodeMap))
+        ((Executor.executeArrOutput(node, x.sink, st), nodeMap), ())
       })
   }
 
@@ -395,7 +395,7 @@ object PFn {
       State({ case(st, nodeMap) =>
         val node: AST.Node[A, _ <: Shape] = nodeMap(x.getComp).asInstanceOf[AST.Node[A, _ <: Shape]]
         val (e, stU) = Executor.executeExp(node, st)
-        (e, (stU, nodeMap))
+        ((stU, nodeMap), e)
       })
   }
 }

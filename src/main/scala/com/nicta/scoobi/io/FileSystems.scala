@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package io
 
 import java.io.File
-import org.apache.hadoop.fs.{LocalFileSystem, Path, FileSystem}
+import org.apache.hadoop.fs.{FileUtil, LocalFileSystem, Path, FileSystem}
 import org.apache.hadoop.filecache.DistributedCache
 import application._
 import ScoobiConfiguration._
@@ -56,12 +56,13 @@ trait FileSystems {
     sourceFiles
   }
 
-  /**
-   * @return the list of files in a given directory on the file system
-   */
-  def listFiles(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
-    if (!fileSystem.exists(new Path(dest))) Seq()
-    else                                    fileSystem.listStatus(new Path(dest)).map(_.getPath)
+  /** @return the list of files in a given directory on the file system */
+  def listFiles(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = listFiles(new Path(dest))
+
+  /** @return the list of files in a given directory on the file system */
+  def listFiles(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
+    if (!fileSystem.exists(dest)) Seq()
+    else                          fileSystem.listStatus(dest).map(_.getPath)
   }
 
   /**
@@ -91,6 +92,19 @@ trait FileSystems {
    */
   def isLocal(implicit configuration: ScoobiConfiguration) = fileSystem.isInstanceOf[LocalFileSystem]
 
+  /** @return a function moving a Path to a given directory */
+  def moveTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = moveTo(new Path(dir))
+
+  /** @return a function moving a Path to a given directory */
+  def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) =>
+    fileSystem.rename(f, new Path(dir, f.getName))
+
+  /** @return a function copying a Path to a given directory */
+  def copyTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = copyTo(new Path(dir))
+
+  /** @return a function copying a Path to a given directory */
+  def copyTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) =>
+    FileUtil.copy(fileSystem, f, fileSystem, dir, false, sc)
 }
 
 private [scoobi]

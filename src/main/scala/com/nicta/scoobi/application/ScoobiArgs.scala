@@ -54,18 +54,22 @@ trait ScoobiUserArgs extends ScoobiArgs {
   override def quiet            = isQuiet
   override def level            = extractLevel(argumentsValues)
   override def categories       = extractCategories(argumentsValues)
-  override def locally          = is("local") && !is("cluster")
+  override def locally          = isLocal && !isCluster
   override def useHadoopConfDir = is("useconfdir")
   override def deleteLibJars    = is("deletelibjars")
   override def noLibJars        = is("nolibjars")
   override def keepFiles        = is("keepfiles")
-  /** @return true if the cluster argument is specified */
-  def isClusterOnly             = is("cluster") && !is("local")
+
+  def isLocal                   = is("local")
+  def isCluster                 = is("cluster")
+
+  /** @return true if the cluster argument is specified and the local argument is not */
+  def isClusterOnly             = isCluster && !isLocal
   /** alias for locally */
   def isLocalOnly               = locally
 
-  private def is(argName: String)      = argumentsValues.exists(_.contains(argName))
-  private def matches(argName: String) = argumentsValues.exists(_.matches(argName))
+  private[scoobi] def is(argName: String)      = argumentsValues.exists(_.contains(argName))
+  private[scoobi] def matches(argName: String) = argumentsValues.exists(_.matches(argName))
 
   private[scoobi]
   lazy val argumentsValues = scoobiArgs

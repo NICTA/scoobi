@@ -6,6 +6,7 @@ examples/*.iml
 src/main/*.iml
 .idea/
 
+.jvmopts
 pgp.sbt
 .history
 .cache
