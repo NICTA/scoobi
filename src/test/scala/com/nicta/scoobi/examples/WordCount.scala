@@ -24,6 +24,7 @@ import Scoobi._
  * `test:run-main com.nicta.scoobi.examples.WordCount`
  */
 object WordCount extends ScoobiApp {
+
   def run() {
     // Firstly we load up all the (new-line-separated) words into a DList
     val lines: DList[String] =

@@ -23,6 +23,7 @@ import org.apache.hadoop.conf.Configuration
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.StaxDriver
 import Configurations._
+import application.ScoobiConfiguration._
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialize objects to XML strings and then send out via Hadoop's

@@ -23,15 +23,13 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
-import scala.collection.JavaConversions._
 import Configurations._
 import java.net.URL
 import org.apache.hadoop.mapred.JobConf
 import java.io.File
-import ScoobiConfiguration._
-import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.FileSystem._
 import io.FileSystems
+import FileSystems._
 import impl.reflect.Classes
 
 /**
@@ -95,7 +93,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * add a user directory to the classpath of this configuration
    */
-  def addUserDir(dir: String) = { userDirs = userDirs + withTrailingSlash(dir); this }
+  def addUserDir(dir: String) = { userDirs = userDirs + dirPath(dir); this }
 
   /**
    * add several user directories to the classpath of this configuration
@@ -223,16 +221,15 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   }
 
   /**
-   * this setup needs to be done only after the internal conf object has been set to a local configuration or a cluster one *
+   * this setup needs to be done only after the internal conf object has been set to a local configuration or a cluster one
    * because all the paths will depend on that
    */
   def setDirectories = {
-    configuration.set("mapreduce.jobtracker.staging.root.dir", defaultWorkDir + "staging/")
+    configuration.set("mapreduce.jobtracker.staging.root.dir", workingDir + "staging/")
     // before the creation of the input we set the mapred local dir.
     // this setting is necessary to avoid xml parsing when several scoobi jobs are executing concurrently and
     // trying to access the job.xml file
-    configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, defaultWorkDir + "localRunner/")
-    configuration.update("scoobi.workdir", defaultWorkDir)
+    configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir + "localRunner/")
     this
   }
 
@@ -244,17 +241,17 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
     configuration.set(key, if (value == null) "null" else value.toString)
   }
 
-  private lazy val scoobiTmpDir = FileSystem.get(configuration).getHomeDirectory.toUri.getPath + "/.scoobi-tmp/"
-  private lazy val defaultWorkDir = withTrailingSlash(scoobiTmpDir + jobId)
+  def setScoobiDir(dir: String)      = { set("scoobi.dir", dirPath(dir)); this }
 
-  private def withTrailingSlash(s: String) = if (s endsWith "/") s else s + '/'
-
-  lazy val workingDirectory: Path         = new Path(defaultWorkDir)
+  lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", FileSystem.get(configuration).getHomeDirectory.toUri.getPath + "/.scoobi/")
+  lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
+  lazy val scoobiDirectory: Path          = new Path(scoobiDir)
+  lazy val workingDirectory: Path         = new Path(workingDir)
   lazy val temporaryOutputDirectory: Path = new Path(workingDirectory, "tmp-out")
   lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
-  def deleteScoobiTmpDirectory = fs.delete(new Path(scoobiTmpDir), true)
-  def deleteWorkingDirectory = fs.delete(new Path(defaultWorkDir), true)
+  def deleteScoobiDirectory  = fs.delete(scoobiDirectory, true)
+  def deleteWorkingDirectory = fs.delete(workingDirectory, true)
 
   /** @return the file system for this configuration, either a local or a remote one */
   def fileSystem = FileSystems.fileSystem(this)

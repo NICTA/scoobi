@@ -16,13 +16,6 @@
 package com.nicta.scoobi
 package acceptance
 
-import org.specs2.ScalaCheck
-import testing.NictaSimpleJobs
-import application.ScoobiConfiguration
-import lib.{DMatrix, LinearAlgebra}
-import org.scalacheck.Gen
-import org.scalacheck.Prop
-import Scoobi._
 import org.apache.commons.math.linear.FieldMatrixPreservingVisitor
 import org.apache.commons.math.linear.FieldMatrix
 import org.apache.commons.math.linear.SparseFieldMatrix
@@ -31,12 +24,19 @@ import org.apache.commons.math.linear.Array2DRowRealMatrix
 import org.apache.commons.math.linear.LUDecompositionImpl
 import org.apache.commons.math.util.BigReal
 import org.apache.commons.math.util.BigRealField
-import org.specs2.mutable.Tags
+import org.specs2.ScalaCheck
+import org.scalacheck.Gen
+import org.scalacheck.Prop
+
+import testing.NictaSimpleJobs
+import lib.{DMatrix, LinearAlgebra}
+import Scoobi._
 
 import java.util.Random
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
-  tag("MatrixMultiplication")
+  skipAll
+
   "Sparse Int Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
     Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk -> 1)
   }
