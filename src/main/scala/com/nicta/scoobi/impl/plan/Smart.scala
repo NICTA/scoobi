@@ -169,7 +169,7 @@ object Smart {
 
   /** The Load node type specifies the creation of a DComp from some source other than another DComp.
     * A DataSource object specifies how the loading is performed. */
-  case class Load[A : Manifest : WireFormat](source: DataSource[_, _, A]) extends DComp[A, Arr] {
+  case class Load[A](source: DataSource[_, _, A])(implicit mA: Manifest[A], val wtA: WireFormat[A]) extends DComp[A, Arr] {
 
     override val toString = "Load" + id
 
@@ -374,9 +374,11 @@ object Smart {
 
   /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
     * key-value DComp by key. */
-  case class GroupByKey[K : Manifest : WireFormat : Grouping,
-                        V : Manifest : WireFormat]
+  case class GroupByKey[K, V]
       (in: DComp[(K, V), Arr])
+      (implicit mK: Manifest[K], wtK: WireFormat[K], val grpK: Grouping[K],
+                mV: Manifest[V], wtV: WireFormat[V])
+
     extends DComp[(K, Iterable[V]), Arr] {
 
     override val toString = "GroupByKey" + id

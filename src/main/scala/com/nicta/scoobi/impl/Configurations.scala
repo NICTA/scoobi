@@ -114,8 +114,18 @@ trait Configurations {
       value
     }
 
-    /** @return the scoobi work directory */
-    def workingDirectory = conf.get("scoobi.workdir")
+    /**
+     * @return the value of the configuration for a given key or set it with a default value
+     */
+    def getOrSet(key: String, defaultValue: String): String = {
+      if (!conf.defines(key)) conf.set(key, defaultValue)
+      conf.get(key)
+    }
+
+    /**
+     * @return true if a key is defined
+     */
+    def defines(key: String) = Option(conf.get(key)).isDefined
 
     /** @return a string with all the key/values, one per line */
     def show = conf.getValByRegex(".*").entrySet().mkString("\n")

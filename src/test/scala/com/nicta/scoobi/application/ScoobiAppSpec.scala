@@ -18,8 +18,9 @@ package application
 
 import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables
+import org.specs2.specification.Scope
 
-class ScoobiAppSpec extends UnitSpecification with Tables{
+class ScoobiAppSpec extends UnitSpecification with Tables {
 
   "Arguments from the command line must be parsed" >> {
     val app = new ScoobiApp { def run {} }
@@ -45,6 +46,42 @@ class ScoobiAppSpec extends UnitSpecification with Tables{
       app.main(Array("scoobi", "local.quiet"))
       app.quiet aka "quiet" must beTrue
     }
+    "By default, the job executes on the cluster" >> {
+      "however if 'inmemory' is passed, it executes locally" >> new run {
+        app.main(Array("scoobi", "inmemory"))
+        inMemory must beTrue
+        onLocal must beFalse
+      }
+      "however if 'local' is passed, it executes locally" >> new run {
+        app.main(Array("scoobi", "local"))
+        inMemory must beFalse
+        onLocal must beTrue
+      }
+      trait run extends Scope { outer =>
+        var inMemory  = false
+        var onLocal   = false
+        var onCluster = false
+        val app = new ScoobiApp {
+          def run() {}
+          override def inMemory[T](t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.inMemory = true; t }
+          override def onLocal[T] (t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.onLocal = true; t }
+          override def onCluster[T] (t: =>T)(implicit configuration: ScoobiConfiguration) = { outer.onCluster = true; t }
+        }
+      }
+    }
+  }
+
+  tag("issue 163")
+  "It is possible to set a different Scoobi temp directory on the ScoobiConfiguration before the job executes" >> {
+    var workDir = "undefined"
+    val app = new ScoobiApp {
+      configuration.setScoobiDir("shared-drive")
+
+      def run { workDir = configuration.workingDir }
+    }
+    app.main(Array())
+
+    "the Scoobi temporary directory has been set" ==> { workDir must contain("shared-drive") }
   }
 
   "In a ScoobiApp the upload of dependent jars depends on the nolibjar arguments and on the content of the jar containing the main class (fat jar or not)" >> {

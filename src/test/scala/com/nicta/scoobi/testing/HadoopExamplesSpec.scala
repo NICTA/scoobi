@@ -117,7 +117,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   // various Hadoop Examples traits
   def localExamples                                  = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples(command: String = "")          = new HadoopExamplesForTesting { override def context = cluster; override lazy val arguments = Arguments(command) }
-  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = localThenCluster; override lazy val arguments = Arguments(command) }
+  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = chain(contexts.filterNot(_ == inMemory)); override lazy val arguments = Arguments(command) }
 
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)

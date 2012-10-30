@@ -70,20 +70,6 @@ object Executor {
     val matTable = mscrGraph.matTable
     val environments = mscrGraph.environments
 
-    /* Check all input sources. */
-    mscrs flatMap { _.inputChannels } map {
-      case BypassInputChannel(source, _)   => source
-      case MapperInputChannel(source, _)   => source
-      case StraightInputChannel(source, _) => source
-    } filter {
-      case BridgeStore() => false
-      case _             => true
-    } foreach { _.inputCheck(conf) }
-
-
-    /* Check all output targets. */
-    outputs.flatMap(_.sinks.toList) foreach { _.outputCheck(conf) }
-
     /* Initialize compute table with all input (Load) nodes. */
     val computeTable: MSet[(AST.Node[_, _ <: Shape], Option[_])] = MSet.empty
     AST.eachNode(outputs.map(_.node).toSet) {
