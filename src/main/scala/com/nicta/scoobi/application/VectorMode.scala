@@ -17,14 +17,8 @@ package com.nicta.scoobi
 package application
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.InputFormat
-import org.apache.hadoop.mapreduce.OutputFormat
-import org.apache.hadoop.mapreduce.TaskAttemptID
-import org.apache.hadoop.mapreduce.MapContext
-import org.apache.hadoop.mapreduce.task.MapContextImpl
+import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 import scalaz.{Scalaz, State, Memo, Ordering => _}
@@ -35,6 +29,18 @@ import impl.plan._
 import Smart._
 import io.DataSource
 import io.DataSink
+import impl.plan.Smart.Flatten
+import scala.Some
+import impl.plan.Smart.Combine
+import impl.plan.Smart.GroupByKey
+import impl.plan.Smart.Materialize
+import impl.plan.Smart.ParallelDo
+import impl.plan.Smart.Op
+import application.DListPersister
+import impl.plan.Exp
+import impl.plan.Smart.Load
+import impl.plan.Arr
+import impl.plan.Smart.Return
 
 
 /**
@@ -66,7 +72,7 @@ object VectorMode {
       sink.outputConfigure(job)(conf)
 
       val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val taskContext = new TaskAttemptContext(job.getConfiguration, tid)
       val rw = outputFormat.getRecordWriter(taskContext)
       val oc = outputFormat.getOutputCommitter(taskContext)
 
@@ -115,9 +121,9 @@ object VectorMode {
 
     inputFormat.getSplits(job) foreach { split =>
       val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val taskContext = new TaskAttemptContext(job.getConfiguration, tid)
       val rr = inputFormat.createRecordReader(split, taskContext)
-      val mapContext: MapContext[K, V, _, _] = new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split)
+      val mapContext: MapContext[K, V, _, _] = new MapContext(job.getConfiguration, tid, rr, null, null, null, split)
 
       rr.initialize(split, taskContext)
       while (rr.nextKeyValue()) {
