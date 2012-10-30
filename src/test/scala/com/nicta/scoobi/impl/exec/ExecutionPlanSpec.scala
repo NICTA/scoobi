@@ -183,9 +183,6 @@ trait plans extends execfactory with ExecutionPlan {
   def execPlan(nodes: CompNode*) =
     createExecutionGraph(Vector(nodes:_*))
 
-  def execPlanForMscrs(mscrs: Mscr*) =
-    createExecutionPlan(mscrs)
-
   def execPlanForInputChannels(inputChannels: InputChannel*) =
     createExecutionPlanInputChannels(inputChannels)
 

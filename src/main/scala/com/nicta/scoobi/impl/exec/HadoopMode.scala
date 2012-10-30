@@ -9,6 +9,7 @@ import core._
 import plan.comp.CompNodes._
 import plan.comp.Optimiser
 import plan.mscr._
+import mapreducer.BridgeStore
 
 /**
  * Execution of Scoobi applications using Hadoop.
@@ -17,24 +18,32 @@ object HadoopMode extends Optimiser with MscrMaker with ExecutionPlan {
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {
-    val optimised = optimise(list.getComp)
-    val mscrs = makeMscrs(optimised)
-    Execution(mscrs.toSeq).execute
+    executeNode(list.getComp)
   }
 
   def execute(o: DObject[_])(implicit sc: ScoobiConfiguration) = {
-//    o.getComp -> prepare(sc)
-//    o.getComp -> computeValue(sc)
-    null
+    executeNode(o.getComp)
+    o.getComp.sinks.flatMap(_.asInstanceOf[BridgeStore[_]].readAsIterable).head
+  }
+
+  private def executeNode(node: CompNode)(implicit sc: ScoobiConfiguration) = {
+    val optimised = optimise(node)
+    val mscrs = makeMscrs(optimised)
+    Execution(mscrs.toSeq).execute
   }
 
   case class Execution(mscrs: Seq[Mscr])(implicit val sc: ScoobiConfiguration) {
     def execute = mscrs.foreach(_ -> compute)
 
+    private var step = 0
+
     lazy val compute: Mscr => Unit =
       attr { (mscr: Mscr) =>
+        // compute first the dependent mscrs
         (mscr -> inputMscrs).foreach(_ -> compute)
-        MapReduceJob.create(1, mscr)
+        step += 1
+        val job = MapReduceJob.create(step, mscr)
+        job.run
         ()
       }
 

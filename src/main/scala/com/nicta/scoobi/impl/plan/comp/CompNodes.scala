@@ -41,7 +41,7 @@ trait CompNodes {
   implicit def asCompNodes(as: Iterator[Attributable]): AsCompNodes = AsCompNodes(as.toSeq)
   implicit def asCompNodes(as: Seq[Attributable]): AsCompNodes = AsCompNodes(as)
   case class AsCompNodes(as: Seq[Attributable]) {
-    def asNodes = as.map(_.asNode)
+    def asNodes = as.collect { case c: CompNode => c }
   }
 
   /** return true if a CompNodeis a Flatten */

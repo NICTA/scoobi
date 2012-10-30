@@ -24,12 +24,11 @@ import scala.collection.JavaConversions._
 import org.specs2.mock.Mockito
 
 import core._
-import io._
+import com.nicta.scoobi.io._
 import testing.mutable.UnitSpecification
 import com.nicta.scoobi.impl.rtt._
 import Configurations._
 import application.ScoobiConfiguration
-import core.ScoobiConfiguration
 
 class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """

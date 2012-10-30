@@ -28,14 +28,14 @@ object Persister {
   def persist[A](list: DList[A])(implicit sc: ScoobiConfiguration) {
     sc.mode match {
       case InMemory        => InMemoryMode.execute(list)
-      case Local | Cluster => HadoopMode.execute(list)
+      case Local | Cluster => HadoopMode  .execute(list)
     }
   }
 
   def persist[A](o: DObject[A])(implicit sc: ScoobiConfiguration): A = {
     sc.mode match {
       case InMemory        => InMemoryMode.execute(o).asInstanceOf[A]
-      case Local | Cluster => HadoopMode.execute(o).asInstanceOf[A]
+      case Local | Cluster => HadoopMode.execute(o)  .asInstanceOf[A]
     }
   }
 }
