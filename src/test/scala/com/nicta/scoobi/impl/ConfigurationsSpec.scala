@@ -54,6 +54,20 @@ class ConfigurationsSpec extends UnitSpecification {
     }
   }
 
+  "A configuration has methods to access keys and values" >> {
+    "'defines' returns true if a key is defined" >> {
+      "a key is defined"     ==> (configuration("a" -> "1,2").defines("a") === true)
+      "a key is not defined" ==> (configuration("b" -> "1,2").defines("a") === false)
+    }
+    "'getOrSet' returns an existing value or set a default one for a given key" >> {
+      "the existing value was not overriden" ==> { configuration("a" -> "1").getOrSet("a", "3") === "1" }
+
+      val c = configuration("a" -> "1")
+      "the key doesn't exist" ==> { c.getOrSet("b", "3") === "3" }
+      "the default value has been set" ==> { c.get("b") === "3" }
+    }
+  }
+
   "it is possible to temporarily use a configuration without its classLoader" >> {
     val conf = configuration("a" -> "1")
     val cl = getClass.getClassLoader

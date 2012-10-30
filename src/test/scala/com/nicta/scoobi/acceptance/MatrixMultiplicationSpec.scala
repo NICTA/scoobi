@@ -35,7 +35,7 @@ import Scoobi._
 import java.util.Random
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
-  section("MatrixMultiplication")
+  skipAll
   "Sparse Int Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
     Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk -> 1)
   }

@@ -47,12 +47,15 @@ trait ScoobiConfiguration {
   def setAsLocal: ScoobiConfiguration
   def setDirectories: ScoobiConfiguration
   def set(key: String, value: Any)
+  def setScoobiDir(dir: String): ScoobiConfiguration
 
+  def scoobiDir: String
+  def workingDir: String
   def workingDirectory: Path
   def temporaryOutputDirectory: Path
   def temporaryJarFile: File
 
-  def deleteScoobiTmpDirectory: Boolean
+  def deleteScoobiDirectory: Boolean
   def deleteWorkingDirectory: Boolean
 
   def fileSystem: FileSystem

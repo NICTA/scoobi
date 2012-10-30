@@ -21,6 +21,7 @@ import testing.NictaSimpleJobs
 
 class WordCountSpec extends NictaSimpleJobs {
 
+  override def context = cluster
   "Counting words frequencies must return the frequency for each word" >> { implicit sc: SC =>
 
     val frequencies =
