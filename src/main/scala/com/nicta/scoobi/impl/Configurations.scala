@@ -142,7 +142,6 @@ trait Configurations {
       try { f(conf) }
       finally { conf.setClassLoader(classLoader) }
     }
-
   }
 
   /**

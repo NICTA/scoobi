@@ -245,6 +245,9 @@ object ScoobiConfigurationImpl {
   implicit def toExtendedConfiguration(sc: ScoobiConfiguration): ExtendedConfiguration = extendConfiguration(sc.conf)
 
   implicit def toHadoopConfiguration(sc: ScoobiConfiguration): Configuration = sc.conf
+
+  implicit def fromHadoopConfiguration(conf: Configuration): ScoobiConfigurationImpl = new ScoobiConfigurationImpl(conf)
+
   def apply(args: Array[String]): ScoobiConfiguration =
     ScoobiConfigurationImpl(new Configuration()).callWithHadoopArgs(args, (a: Array[String]) => ())
 }
