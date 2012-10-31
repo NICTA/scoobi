@@ -168,11 +168,10 @@ trait MscrMaker extends CompNodes {
       case other                                              => None
     }
 
-  /** compute if a ParallelDo or a Flatten is 'floating', i.e. it doesn't have a Gbk in it outputs */
+  /** compute if a ParallelDo or a Flatten is 'floating', i.e. it is not part of a GbkMscr */
   lazy val isFloating: CompNode => Boolean =
     attr {
-      case pd: ParallelDo[_,_,_] => !(pd -> isReducer) && !(pd -> outputs).exists(isGroupByKey)
-      case f: Flatten[_]         => !(f -> outputs).exists(isGroupByKey)
+      case node => !(node -> gbkMscr).isDefined
     }
 
   /** compute if a node is the input of a Gbk, but not a Gbk */
@@ -201,8 +200,7 @@ trait MscrMaker extends CompNodes {
   /** @return the MSCRs accessible from a given node, without optimising the graph first */
   def makeMscrs(node: CompNode): Set[Mscr] = {
     // make sure that the parent <-> children relationships are initialized
-    Attribution.initTree(node)
-    ((node -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
+    ((initAttributable(node) -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
   }
 
   /** @return the first reachable MSCR for a given node, without optimising the graph first */

@@ -161,9 +161,9 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
     val mappersList = mappers.toList
     ChannelsInputFormat.configureSources(job, jar, mappersList.map(_._1))
 
-    val inputChannels: List[((Source, Set[(Env[_], TaggedMapper)]), Int)] = mappersList.zipWithIndex
-    val inputs: Map[Int, (InputConverter[_, _, _], Set[(Env[_], TaggedMapper)])] =
-      Map(inputChannels.map { case ((source, ms), ix) => (ix, (source.inputConverter, HashSet(ms.toSeq:_*))) }:_*)
+    val inputChannels: List[((Source, scala.collection.Set[(Env[_], TaggedMapper)]), Int)] = mappersList.zipWithIndex
+    val inputs: scala.collection.Map[Int, (InputConverter[_, _, _], scala.collection.Set[(Env[_], TaggedMapper)])] =
+      scala.collection.Map(inputChannels.map { case ((source, ms), ix) => (ix, (source.inputConverter, scala.collection.Set(ms.toSeq:_*))) }:_*)
 
     DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
@@ -175,7 +175,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
    *   - use distributed cache to push all combine code out */
   private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     if (!combiners.isEmpty) {
-      val combinerMap: Map[Int, TaggedCombiner[_]] = Map(combiners.map(tc => (tc.tag, tc)).toSeq:_*)
+      val combinerMap: scala.collection.Map[Int, TaggedCombiner[_]] = scala.collection.Map(combiners.map(tc => (tc.tag, tc)).toSeq:_*)
       DistCache.pushObject(job.getConfiguration, combinerMap, "scoobi.combiners")
       job.setCombinerClass(classOf[MscrCombiner[_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
@@ -207,8 +207,8 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
       }
     }
 
-    val outputs: Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer))] =
-      Map(reducers.map { case (sinks, reducer) =>
+    val outputs: scala.collection.Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer))] =
+      scala.collection.Map(reducers.map { case (sinks, reducer) =>
         (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
       }:_*)
 

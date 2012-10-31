@@ -31,24 +31,24 @@ class Env[E : WireFormat] private (path: Path) {
   val wf = implicitly[WireFormat[E]]
 
   /** Store the environment value in the distributed cache. */
-  def push(conf: Configuration, env: E) {
-    val dos = path.getFileSystem(conf).create(path)
+  def push(env: E)(implicit configuration: Configuration) {
+    val dos = path.getFileSystem(configuration).create(path)
     implicitly[WireFormat[E]].toWire(env, dos)
     dos.close()
-    DistributedCache.addCacheFile(path.toUri, conf)
+    DistributedCache.addCacheFile(path.toUri, configuration)
   }
 
   /** Get an environment value from the distributed cache. */
-  def pull(conf: Configuration): E = {
-    val cacheFiles = DistributedCache.getCacheFiles(conf)
-    val cacheFile = new Path(cacheFiles.filter(_.toString.compareTo(path.toString) == 0)(0).toString)
-    val dis = cacheFile.getFileSystem(conf).open(cacheFile)
+  def pull(implicit configuration: Configuration): E = {
+    val cacheFiles = DistributedCache.getCacheFiles(configuration)
+    val cacheFile = new Path(cacheFiles.filter(_.toString == path.toString)(0).toString)
+    val dis = cacheFile.getFileSystem(configuration).open(cacheFile)
     val obj: E = implicitly[WireFormat[E]].fromWire(dis)
     dis.close()
     obj
   }
 
-  override def toString = "Env( " + path.toUri + ")"
+  override def toString = "Env(" + path.toUri + ")"
 }
 
 
@@ -63,7 +63,7 @@ object Env {
 
   /** Create an "environment" container for the "Unit" value. */
   val empty: Env[Unit] = new Env[Unit](new Path("empty")) {
-    override def push(conf: Configuration, env: Unit) {}
-    override def pull(conf: Configuration) = ()
+    override def push(env: Unit)(implicit c: Configuration) {}
+    override def pull(implicit c: Configuration) {}
   }
 }

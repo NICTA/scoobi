@@ -72,7 +72,7 @@ class GbkMscrsSpec extends MscrMakerSpecification {
     val graph        = flatten(gbk1, gbk2)
 
     makeMscrs(graph) must have size(2)
-    makeMscrs(graph).filter(isGbkMscr).toSeq(0) ==== Mscr(inputChannels  = Set(MapperInputChannel(IdSet(pd2, pd1))),
+    makeMscrs(graph).filter(isGbkMscr).toSeq(0) ==== Mscr(inputChannels  = Set(MapperInputChannel(pd2, pd1)),
                                                           outputChannels = Set(GbkOutputChannel(gbk2), GbkOutputChannel(gbk1)))
   }
   "a ParallelDo can not be a mapper and a reducer at the same time" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._

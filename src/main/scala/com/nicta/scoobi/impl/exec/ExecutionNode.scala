@@ -42,15 +42,12 @@ case class FlattenExec(flatten: Ref[Flatten[_]], ins: Seq[CompNode]) extends Map
 
 case class ReturnExec(rt: Ref[Return[_]]) extends ExecutionNode {
   def referencedNode = rt.n
-  def env(implicit sc: ScoobiConfiguration) = Env(rt.n.wf)(sc)
 }
 case class MaterializeExec(mat: Ref[Materialize[_]], n: CompNode) extends ExecutionNode {
   def referencedNode = mat.n
-  def env(implicit sc: ScoobiConfiguration) = Env(mat.n.wf)(sc)
 }
 case class OpExec(op: Ref[Op[_,_,_]], a: CompNode, b: CompNode) extends ExecutionNode {
   def referencedNode = op.n
-  def env(implicit sc: ScoobiConfiguration) = Env(op.n.wf)(sc)
 }
 
 /** specialised ParallelDo to be translated to a Hadoop Mapper class */
@@ -71,9 +68,10 @@ case class ReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends Executio
 case class GbkReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends ExecutionNode {
   def referencedNode = pd.n
   def dofn           = referencedNode.dofn
-  
+
+  def environment(implicit sc: ScoobiConfiguration) = referencedNode.environment(sc)
+
   def makeTaggedReducer(tag: Int) = referencedNode.makeTaggedReducer(tag)
-  def env(implicit sc: ScoobiConfiguration) = Env(referencedNode.mwfe.wf)(sc)
 }
 
 case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set()) {
@@ -109,7 +107,9 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
  * @param nodes: list of related MapperExec nodes
  */
 case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec {
-  def input                             = nodes.head.asInstanceOf[MapperExecutionNode]
+  def input  = nodes.head.asInstanceOf[MapperExecutionNode]
+  def inputs = nodes
+
   def mappers: Seq[MapperExecutionNode] = nodes.map(_.asInstanceOf[MapperExecutionNode])
   def referencedNodes: Seq[CompNode]    = mappers.map(_.referencedNode)
 
@@ -117,7 +117,7 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
     val tags = plan.tags(job.mscrExec)(this)
     mappers.map { mapper =>
       val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
-      val env = Env(pd.mwfe.wf)
+      val env = pd.environment(sc)
       job.addTaggedMapper(source, Some(env), mapper.makeTaggedMapper(tags))
     }
     job
@@ -126,6 +126,8 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
 
 case class BypassInputChannelExec(in: CompNode, gbk: CompNode) extends InputChannelExec {
   def input = in.asInstanceOf[MapperExecutionNode]
+  def inputs = Seq(in)
+
   def gbkExec = gbk.asInstanceOf[GroupByKeyExec]
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
@@ -135,6 +137,8 @@ case class BypassInputChannelExec(in: CompNode, gbk: CompNode) extends InputChan
 }
 case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def input = in.asInstanceOf[MapperExecutionNode]
+  def inputs = Seq(in)
+
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
     val mapper =  new TaggedIdentityMapper(tags(referencedNode), manifestWireFormat[Int], grouping[Int], referencedNode.asInstanceOf[DComp[_]].mr.mwf) {
@@ -175,7 +179,7 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     // if there is a reducer node, use it as the tagged reducer
     // otherwise use the combiner node if there is one
     // and finally default to the GroupByKey node
-    theReducer.map(r => job.addTaggedReducer(sinks.toList, Some(r.env), r.makeTaggedReducer(tag))).orElse {
+    theReducer.map(r => job.addTaggedReducer(sinks.toList, Some(r.environment(sc)), r.makeTaggedReducer(tag))).orElse {
       theCombiner.map(c => job.addTaggedReducer(sinks.toList, None, c.makeTaggedReducer(tag))).orElse {
         Some(job.addTaggedReducer(sinks.toList, None, theGroupByKey.makeTaggedReducer(tag)))
       }

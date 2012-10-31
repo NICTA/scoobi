@@ -10,7 +10,6 @@ import Rewriter._
 
 import core._
 import testing.mutable.UnitSpecification
-import mscr.factory
 import CompNodes._
 
 class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData {

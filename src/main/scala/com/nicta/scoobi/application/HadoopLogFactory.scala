@@ -37,9 +37,16 @@ class HadoopLogFactory() extends LogFactory {
 
   private val impl   = new LogFactoryImpl
   private val noOps  = new NoOpLog
+
   private def simple(name: String) = {
     val log = new SimpleLog(name)
     log.setLevel(commonsLevel(logLevel))
+    log
+  }
+  private def noWarnings(name: String) = {
+    val log = new SimpleLog(name)
+    if (commonsLevel(logLevel) <= commonsLevel(WARN)) log.setLevel(commonsLevel(ERROR))
+    else                                              log.setLevel(commonsLevel(logLevel))
     log
   }
 
@@ -49,11 +56,12 @@ class HadoopLogFactory() extends LogFactory {
   def removeAttribute(name: String)             { impl.removeAttribute(name) }
   def setAttribute(name: String, value: AnyRef) { impl.setAttribute(name, value) }
 
-  def getInstance(name: String): Log      =
-    if (name == SCOOBI_TIMES) if (showTimes) simple(name) else noOps
-    else if (quietFor(name))                 noOps
-    else                                     simple(name)
-
+  def getInstance(name: String): Log      = {
+    if (name == SCOOBI_TIMES)                                if (showTimes) simple(name) else noOps
+    else if (quietFor(name))                                 noOps
+    else if (name == "org.apache.hadoop.conf.Configuration") noWarnings(name)
+    else                                                     simple(name)
+  }
   def getInstance(klass: Class[_]): Log = getInstance(klass.getName)
 
   /** @return true if quiet or if the category 'name' doesn't match the regular expression for accepted categories */
@@ -109,21 +117,23 @@ object HadoopLogFactory {
   }
 
   lazy val levelsMappings =
-    Map(INFO    -> SimpleLog.LOG_LEVEL_INFO,
-        ALL     -> SimpleLog.LOG_LEVEL_ALL,
+    Map(ALL     -> SimpleLog.LOG_LEVEL_ALL,
         TRACE   -> SimpleLog.LOG_LEVEL_TRACE,
-        OFF     -> SimpleLog.LOG_LEVEL_OFF,
+        INFO    -> SimpleLog.LOG_LEVEL_INFO,
+        WARN    -> SimpleLog.LOG_LEVEL_WARN,
+        ERROR   -> SimpleLog.LOG_LEVEL_ERROR,
         FATAL   -> SimpleLog.LOG_LEVEL_FATAL,
-        WARN    -> SimpleLog.LOG_LEVEL_WARN)
+        OFF     -> SimpleLog.LOG_LEVEL_OFF)
 
   lazy val allLevels = levelsMappings.keys.map(_.toString).toSet
 
 
-  lazy val INFO : Level = level("INFO" )
   lazy val ALL  : Level = level("ALL"  )
   lazy val TRACE: Level = level("TRACE")
-  lazy val OFF  : Level = level("OFF"  )
-  lazy val FATAL: Level = level("FATAL")
+  lazy val INFO : Level = level("INFO" )
   lazy val WARN : Level = level("WARN" )
+  lazy val ERROR: Level = level("ERROR")
+  lazy val FATAL: Level = level("FATAL")
+  lazy val OFF  : Level = level("OFF"  )
 
 }

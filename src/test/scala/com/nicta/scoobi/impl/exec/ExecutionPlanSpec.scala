@@ -19,12 +19,12 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
 
   "Mscrs are transformed into mscrs with actual channels" >> {
     "each Mscr must transform its channels to become an executable Mscr" >> new plans {
-      transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad)))) ===
+      transform(Mscr(MapperInputChannel(), GbkOutputChannel(gbkLoad))) ===
         MscrExec(Set(MapperInputChannelExec(Seq())), Set(GbkOutputChannelExec(gbkExec)))
     }
     "input channels must be transformed to executable input channels, containing executable nodes" >> {
       "A MapperInputChannel is transformed to a MapperInputChannelExec" >> new plans {
-        transform(MapperInputChannel(Set(pdLoad))) === MapperInputChannelExec(Seq(MapperExec(Ref(pdLoad), loadExec)))
+        transform(MapperInputChannel(pdLoad)) === MapperInputChannelExec(Seq(MapperExec(Ref(pdLoad), loadExec)))
       }
       "An IdInputChannel is transformed into a BypassInputChannelExec" >> new plans {
         transform(IdInputChannel(ld, gbkLoad)) === BypassInputChannelExec(loadExec, gbkExec)
@@ -51,15 +51,15 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
       }
     }
     "output channels must be tagged with an Int index starting from 0" >> new plans {
-      val mscrExec = transform(Mscr(Set(MapperInputChannel(Set())), Set(GbkOutputChannel(gbkLoad): OutputChannel,
-                                                                        FlattenOutputChannel(flattenLoad),
-                                                                        BypassOutputChannel(pdLoad))))
+      val mscrExec = transform(new Mscr(Set(MapperInputChannel()), Set(GbkOutputChannel(gbkLoad): OutputChannel,
+                                                                       FlattenOutputChannel(flattenLoad),
+                                                                       BypassOutputChannel(pdLoad))))
       mscrExec.outputChannels.map(tag) === Set(0, 1, 2)
     }
     "inputs must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
-      val mscrExec = transform(Mscr(Set(MapperInputChannel(Set(pdLoad, pdLoad))), 
-                                    Set(GbkOutputChannel(gbk(pdLoad)): OutputChannel,
-                                        FlattenOutputChannel(flatten(pdLoad)))))
+      val mscrExec = transform(new Mscr(Set(MapperInputChannel(pdLoad, pdLoad)),
+                                        Set(GbkOutputChannel(gbk(pdLoad)): OutputChannel,
+                                            FlattenOutputChannel(flatten(pdLoad)))))
 
       mscrExec.inputChannels.map(tags(mscrExec)) === Set(Map((pdLoad, Set(0, 1))))
     }
@@ -154,29 +154,6 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
       }
     }
   }
-
-  "Environments".newp
-
-  "Environments can be build from" >> {
-    def envsMustHaveWireFormat(envs: Seq[Env[_]]) =
-      envs.head.wf.getClass.getName must_== implicitly[WireFormat[String]].getClass.getName
-
-    "ReturnExec nodes" >> new plans {
-      val envs = environments(rt, rt)(ScoobiConfiguration())
-      envs must have size(2)
-      envsMustHaveWireFormat(envs)
-    }
-    "MaterializeExec nodes" >> new plans {
-      val envs = environments(mt(load), mt(load))(ScoobiConfiguration())
-      envs must have size(2)
-      envsMustHaveWireFormat(envs)
-    }
-    "OpExec nodes" >> new plans {
-      val envs = environments(op(load, load))(ScoobiConfiguration())
-      envs must have size(1)
-      envsMustHaveWireFormat(envs)
-    }
-  }
 }
 trait plans extends execfactory with ExecutionPlan {
 
@@ -185,9 +162,6 @@ trait plans extends execfactory with ExecutionPlan {
 
   def execPlanForInputChannels(inputChannels: InputChannel*) =
     createExecutionPlanInputChannels(inputChannels)
-
-  def environments(nodes: CompNode*)(implicit sc: ScoobiConfiguration) =
-    collectEnvironments(Vector(nodes:_*))
 
   def transform(mscr: Mscr): MscrExec =
     rewrite(rewriteMscr)(mscr).asInstanceOf[MscrExec]

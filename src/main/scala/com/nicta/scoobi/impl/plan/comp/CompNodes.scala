@@ -5,7 +5,7 @@ package comp
 
 import scala.collection.immutable.SortedSet
 import org.kiama.attribution.Attribution._
-import org.kiama.attribution.Attributable
+import org.kiama.attribution.{Attribution, Attributable}
 
 import core._
 import control.Exceptions._
@@ -146,5 +146,16 @@ trait CompNodes {
       case node: CompNode => (node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges).toSeq).
         map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
     }
+
+  /** compute all the nodes which use a given node as an environment */
+  lazy val usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] =
+    attr {
+      case node: CompNode => (node -> outputs).collect(isAParallelDo).toSeq.filter(_.env == node)
+    }
+
+  /** initialize the Kiama attributes */
+  def initAttributable[T <: Attributable](t: T): T  =
+  { Attribution.initTree(t); t }
+
 }
 object CompNodes extends CompNodes

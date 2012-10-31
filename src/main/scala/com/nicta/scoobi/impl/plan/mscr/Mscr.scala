@@ -19,6 +19,9 @@ import core.CompNode
 case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) extends Attributable {
   val id: Int = UniqueId.get
 
+  /** @return the nodes which are inputs to this Mscr */
+  def inputs = inputChannels.toSeq.flatMap(_.inputs)
+
   /** it is necessary to override the generated equality method in order to use the vars */
   override def equals(a: Any) = a match {
     case m: Mscr => inputChannels == m.inputChannels && outputChannels == m.outputChannels
@@ -64,11 +67,15 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
    this
   }
 
+  /** @return true if the node is contained in one of the output channels */
   def outputContains(node: CompNode) =
     outputChannels.exists(_.contains(node))
 }
 
 object Mscr {
+  /** @return a Mscr from a single input and a single output */
+  def apply(input: InputChannel, output: OutputChannel): Mscr = Mscr(Set(input), Set(output))
+
   /** create an Mscr for related "floating" parallelDos */
   def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Set[ParallelDo[_,_,_]]) = {
     Mscr(inputChannels  = IdSet(MapperInputChannel(siblings + pd)),
@@ -78,7 +85,7 @@ object Mscr {
   def floatingFlattenMscr(f: Flatten[_]) = {
     Mscr(outputChannels = IdSet(FlattenOutputChannel(f)),
          inputChannels  = f.ins.map {
-                              case pd: ParallelDo[_,_,_] => MapperInputChannel(IdSet(pd))
+                              case pd: ParallelDo[_,_,_] => MapperInputChannel(pd)
                               case other                 => StraightInputChannel(other)
                           }.toIdSet.asInstanceOf[Set[InputChannel]])
   }

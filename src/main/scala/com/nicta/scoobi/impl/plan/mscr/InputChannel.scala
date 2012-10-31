@@ -7,12 +7,14 @@ import org.kiama.attribution.Attributable
 import core._
 import comp._
 import util.UniqueId
+import collection.IdSet
 
 trait Channel extends Attributable
 
 /** ADT for MSCR input channels. */
 trait InputChannel extends Channel {
   lazy val id: Int = UniqueId.get
+  def inputs: Seq[CompNode]
 }
 
 case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputChannel {
@@ -25,17 +27,23 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputC
     case i: MapperInputChannel => i.parDos.map(_.id) == parDos.map(_.id)
     case _                     => false
   }
+  def inputs = parDos.toSeq.flatMap(pd => Seq(pd.in, pd.env))
 }
-
+object MapperInputChannel {
+  def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
+}
 case class IdInputChannel(input: CompNode, gbk: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
   }
+
+  def inputs = Seq(input)
 }
 case class StraightInputChannel(input: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
     case _                       => false
   }
+  def inputs = Seq(input)
 }

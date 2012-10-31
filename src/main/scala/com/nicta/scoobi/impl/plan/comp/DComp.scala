@@ -10,7 +10,7 @@ import WireFormat._
 import ManifestWireFormat._
 import mapreducer._
 import IdSet._
-
+import scalaz.Memo._
 /**
  * GADT for distributed list computation graph.
  */
@@ -35,14 +35,22 @@ case class ParallelDo[A, B, E](in:                CompNode,
                                env:               CompNode,
                                dofn:              EnvDoFn[A, B, E],
                                mr:                DoMapReducer[A, B, E],
-                               sinks:             Seq[Sink] = Seq(),
+                               sinks:             Seq[Sink] = Seq(BridgeStore()),
                                barriers:          Barriers = Barriers()) extends DComp[B] { 
   type Sh = Arr
 
   def mwfe = mr.mwfe
+  def wfe  = mwfe.wf
 
   def groupBarrier = barriers.groupBarrier
   def fuseBarrier = barriers.fuseBarrier
+
+
+  lazy val environment = immutableHashMapMemo((sc: ScoobiConfiguration) => Env[E](wfe)(sc))
+
+  def unsafePushEnv(e: Any)(implicit sc: ScoobiConfiguration) {
+    environment(sc).push(e.asInstanceOf[E])(sc.conf)
+  }
 
   def source = in match {
     case Load1(s) => Some(s)
@@ -61,7 +69,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
                           mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] =
           ParallelDo.fuse[A, C, E, F](this, p2)(mr.mwfa, mwfc, mr.mwfe, mwff)
 
-  def makeTaggedReducer(tag: Int)                           = mr.makeTaggedReducer(tag, dofn, mwf)
+  def makeTaggedReducer(tag: Int)                           = mr.makeTaggedReducer(tag)
   def makeTaggedMapper(gbk: GroupByKey[_,_],tags: Set[Int]) = mr.makeTaggedMapper(tags, dofn, gbk.mwfk, gbk.gpk, gbk.mwfv)
   def makeTaggedMapper(tags: Set[Int])                      = mr.makeTaggedMapper(tags, dofn, mwf)
 }
@@ -235,7 +243,7 @@ object Return1 {
 }
 
 /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] { 
+case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] {
   type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))

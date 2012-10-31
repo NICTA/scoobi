@@ -7,6 +7,7 @@ import org.apache.hadoop.mapreduce._
 
 import core._
 import mapreducer.BridgeStore
+import comp.factory
 
 class OutputChannelsSpec extends MscrMakerSpecification {
 

@@ -28,7 +28,7 @@ trait ShowNode extends MscrMaker with CompNodes {
       case GroupByKey1(in)  => parens(pretty(in))
       case Combine1(in)     => parens(pretty(in))
       case ParallelDo1(in)  => parens(pretty(in))
-      case Load1(_)          => ""
+      case Load1(_)         => ""
       case Return1(_)       => ""
     }))
   }
@@ -86,14 +86,14 @@ trait ShowNode extends MscrMaker with CompNodes {
    */
   private def show[T](node: CompNode, attribute: Option[CompNode => T] = None): Doc =
     node match {
-      case Load1(_)         => value(showNode(node, attribute))
-      case Flatten1(ins)    => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
-      case ParallelDo1(in)  => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Return1(_)       => value(showNode(node, attribute))
-      case Combine1(in)     => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case GroupByKey1(in)  => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Materialize1(in) => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Op1(in1,in2)     => showNode(node, attribute) <> braces (nest (line <> "1." <> show(in1, attribute) <> line <> "2." <> show(in2, attribute)))
+      case Load1(_)             => value(showNode(node, attribute))
+      case Flatten1(ins)        => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
+      case pd @ ParallelDo1(in) => showNode(node, attribute) <> braces (nest (line <> "in. " <> show(in, attribute) <> line <> "env. " <> show(pd.env, attribute)))
+      case Return1(_)           => value(showNode(node, attribute))
+      case Combine1(in)         => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case GroupByKey1(in)      => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Materialize1(in)     => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Op1(in1, in2)        => showNode(node, attribute) <> braces (nest (line <> "1. " <> show(in1, attribute) <> line <> "2. " <> show(in2, attribute)))
     }
 }
 object ShowNode extends ShowNode

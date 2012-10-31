@@ -18,7 +18,7 @@ trait OutputChannel extends Channel {
 }
 
 trait MscrOutputChannel extends OutputChannel {
-  def sinks = if (nodeSinks.isEmpty) Seq(BridgeStore()) else nodeSinks
+  def sinks = nodeSinks
   protected def nodeSinks: Seq[Sink]
 
   def output: CompNode

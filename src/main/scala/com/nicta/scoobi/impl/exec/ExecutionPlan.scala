@@ -5,10 +5,10 @@ package exec
 import org.kiama.rewriting.Rewriter._
 import org.kiama.rewriting.Rewriter
 import org.kiama.attribution.Attribution._
-import org.kiama.attribution.{Attributable, Attribution}
 
 import core._
 import plan.comp._
+import CompNodes._
 import plan.mscr._
 import mapreducer.Env
 
@@ -29,10 +29,6 @@ trait ExecutionPlan extends MscrMaker {
    */
   def createExecutableMscr(mscr: Mscr): MscrExec =
     rewrite(rewriteMscr)(mscr).asInstanceOf[MscrExec]
-
-  /** initialize the Kiama attributes */
-  private def initAttributable[T <: Attributable](t: T): T  =
-    { Attribution.initTree(t); t }
 
   /**
    * MSCR rewriting
@@ -124,15 +120,6 @@ trait ExecutionPlan extends MscrMaker {
     case ns : Seq[_]             => ns // this allows to recurse into flatten inputs
   })
 
-  def collectEnvs(nodes: Seq[Term])(implicit sc: ScoobiConfiguration): Seq[Env[_]] = {
-    val envs = collect[Vector, Env[_]] {
-      case n @ ReturnExec(_)        => n.env
-      case n @ MaterializeExec(_,_) => n.env
-      case n @ OpExec(_,_,_)        => n.env
-    }
-    nodes.foldLeft(Vector[Env[_]]())((res, cur) => res ++ envs(cur))
-  }
-
   def attemptSomeTopdown(s : =>Strategy): Strategy =
     attempt(s <* some (attemptSomeTopdown (s)))
 
@@ -142,10 +129,6 @@ trait ExecutionPlan extends MscrMaker {
 
   def createExecutionGraph(computations: Seq[CompNode]): Seq[Term] =
     rewrite(rewriteNodes)(computations.map(initAttributable))
-
-  def collectEnvironments(computations: Seq[CompNode])(implicit sc: ScoobiConfiguration): Seq[Env[_]] =
-    collectEnvs(createExecutionGraph(computations))
-
 
   case class Tag() {
     var tag = 0

@@ -1,22 +1,18 @@
 package com.nicta.scoobi
 package impl
 package plan
-package mscr
+package comp
 
-import core._
-import comp._
-import CompNodes._
-import collection._
 import testing.mutable.UnitSpecification
+import collection.IdSet
 
-class GraphFunctionsSpec extends UnitSpecification {
+class CompNodesSpec extends UnitSpecification {
 
   "the inputs of a node are its children" >> new nodes {
     val load0 = load
     val cb1 = cb(load0)
     (cb1 -> inputs) ==== IdSet(load0)
   }
-
   "the ancestors of a node are all its direct parents" >> new nodes {
     (pd1 -> ancestors) ==== IdSet(fl1, mat1)
     (l1 -> ancestors)  ==== IdSet(pd1, fl1, mat1)
@@ -50,10 +46,7 @@ class GraphFunctionsSpec extends UnitSpecification {
     val graph = flatten(pd1, pd2)
 
     (pd1 -> siblings) ==== IdSet(pd2)
-  } newp
-
-  "CompNode functions".newp
-
+  }
   "2 gbks are related if" >> {
     "they share the same ParallelDo input" >> new factory {
       val pd1 = pd(load)
@@ -87,8 +80,14 @@ class GraphFunctionsSpec extends UnitSpecification {
       (gbk1 -> relatedGbks) ==== IdSet(gbk2)
     }
   }
+  "it is possible to get all the nodes which use a given node as an environment" >> new factory {
+    val mt1 = mt(load)
+    val pd1 = pd(load, mt1)
 
+    (mt1 -> usesAsEnvironment) === Seq(pd1)
+  }
 }
+
 trait nodes extends factory {
   lazy val l1   = load
   lazy val pd1  = pd(l1)
@@ -96,24 +95,3 @@ trait nodes extends factory {
   lazy val fl1  = flatten(gbk1, pd1)
   lazy val mat1 = mt(fl1)
 }
-trait factory extends CompNodeFactory with MscrAttributes {
-  override def load                                   = init(super.load)
-  override def flatten[A](nodes: CompNode*)           = init(super.flatten(nodes:_*))
-  override def parallelDo(in: CompNode)               = init(super.parallelDo(in))
-  override def rt                                     = init(super.rt)
-  override def cb(in: CompNode)                       = init(super.cb(in))
-  override def gbk(in: CompNode)                      = init(super.gbk(in))
-  override def mt(in: CompNode)                       = init(super.mt(in))
-  override def op(in1: CompNode, in2: CompNode)       = init(super.op(in1, in2))
-  override def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    init(super.pd(in, env, groupBarrier, fuseBarrier))
-
-  /** show before and after the optimisation */
-  def optimisation(node: CompNode, optimised: CompNode) =
-    if (show(node) != show(optimised)) "INITIAL: \n"+show(node)+"\nOPTIMISED:\n"+show(optimised) else "no optimisation"
-
-  def show(node: CompNode): String =
-    "SHOWING NODE: "+showNode(node, None)+"\n"+mscrsGraph(init(ancestors(node).headOption.getOrElse(node)))
-}
-trait graph extends MscrMaker
-
