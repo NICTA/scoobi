@@ -356,8 +356,10 @@ object AvroSchema {
    /* Actual Avro Generic/SpecificRecord support */
   implicit def AvroRecordSchema[T <: GenericContainer](implicit r : Manifest[T]) = new AvroSchema[T] {
     val sclass = r.erasure.asInstanceOf[Class[T]]
-    val schema : Schema =	if (classOf[SpecificRecord].isAssignableFrom(sclass)) SpecificData.get.getSchema(sclass)
-    						else throw new RuntimeException("Don't know how to handle class: " + sclass)
+    val record = sclass.newInstance
+    val schema : Schema =	record.getSchema
+          //       if (classOf[GenericContainer].isAssignableFrom(sclass)) GenericData.get.getRecordSchema(record)
+    						// else throw new RuntimeException("Don't know how to handle class: " + sclass)
     type AvroType = T
     def fromAvro(x : T) : T = x
     def toAvro(x: T) : T = x

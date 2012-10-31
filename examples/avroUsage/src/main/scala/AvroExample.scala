@@ -13,22 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi.examples
+ package com.nicta.scoobi.examples
 
-import com.ebay.ss.qs.phrases.BooksToAvro.Book
-import com.nicta.scoobi.Scoobi._
+ import com.ebay.ss.qs.phrases.BooksToAvro.Book
+ import com.nicta.scoobi.Scoobi._
+ // import edu.berkeley.cs.avro.marker._
+ // import edu.berkeley.cs.avro.runtime._
+ import java.io.{DataOutput,DataInput}
 
-object WordCount extends ScoobiApp {
-  
-  def run() {
-    
 
+ // case class Book(var title : String, var author : Option[String], var year : Option[Int], var other : Option[String]) 
+ // extends AvroRecord 
+
+
+ object WordCount extends ScoobiApp {
+
+
+
+    def run() {
+
+    // implicit def bookFmt : WireFormat[Book] = new AvroRecordWireFormat[Book](Book.apply, Book.unapply _)
+    // val book = Book("The Title", "Some Guy", 1970, "hardback")
     val book = new Book()
     book.title = "The Title"
     book.author = "Some Guy"
     book.year = 1970
     book.other = "hardback"
-      
+
     val books = Seq(book)
     
     val booklist = books.toDList
@@ -36,13 +47,14 @@ object WordCount extends ScoobiApp {
     val outputDirectory = "avro_output"
     val inputDirectory = "avro_input"
     
+
     persist(toAvroFile[Book](booklist, outputDirectory, true))
     
-    val mylist = fromAvroFile[Book](inputDirectory)
-    val strings = mylist.map{book => book.getTitle.toString}
-    persist(toTextFile(strings,"text_output"))
-  }
+    val mylist = fromAvroFile[Book](outputDirectory)
+    val strings = mylist.map{book => book.title.toString}
+    persist(toTextFile(strings,"text_output", true))
+}
 
-  
+
 }
 

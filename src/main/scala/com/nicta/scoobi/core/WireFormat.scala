@@ -24,10 +24,14 @@ import collection.generic.CanBuildFrom
 import collection.mutable.{ListBuffer, Builder}
 import org.apache.avro.io.EncoderFactory
 import com.nicta.scoobi.io.avro.AvroSchema
-import org.apache.avro.specific.SpecificDatumWriter
-import org.apache.avro.generic.GenericContainer
-import org.apache.avro.specific.SpecificDatumReader
+import org.apache.avro.mapred.{AvroKey, AvroWrapper}
+import org.apache.avro.hadoop.io.AvroSerialization
+import org.apache.hadoop.io.serializer.{Serializer, Deserializer}
+import org.apache.avro.reflect.ReflectDatumWriter
+import org.apache.avro.generic.{GenericDatumWriter, GenericContainer}
+import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData}
 import org.apache.avro.io.DecoderFactory
+import collection.mutable.ArrayBuffer
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
@@ -127,13 +131,13 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * Avro types
    */
-  implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new  AvroWireFormat[T] 
+   implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new AvroWireFormat[T]
   class AvroWireFormat[T <: GenericContainer : Manifest : AvroSchema] extends WireFormat[T] {
     def toWire(x : T, out : DataOutput) {
       val avroclass = implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]]
       val bytestream = new ByteArrayOutputStream()
-      val encoder =  EncoderFactory.get.directBinaryEncoder(bytestream, null)
-      val writer : SpecificDatumWriter[T] =  new SpecificDatumWriter(avroclass)
+      val encoder = EncoderFactory.get.directBinaryEncoder(bytestream, null)
+      val writer : SpecificDatumWriter[T] = new SpecificDatumWriter(avroclass)
       writer.write(x,encoder)
       val outbytes = bytestream.toByteArray()
       out.writeInt(outbytes.size)
@@ -144,11 +148,47 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       val size = in.readInt
       val bytes : Array[Byte] = new Array[Byte](size)
       in.readFully(bytes, 0, size)
-      val decoder =  DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(bytes), null)
-      val reader : SpecificDatumReader[T] =  new SpecificDatumReader(avroclass)
+      val decoder = DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(bytes), null)
+      val reader : SpecificDatumReader[T] = new SpecificDatumReader(avroclass)
       reader.read(null.asInstanceOf[T], decoder)
     }
   }
+
+
+  // implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new AvroWireFormat[T]
+  // class AvroWireFormat[T <: GenericContainer : Manifest : AvroSchema] extends WireFormat[T] {
+  //   def toWire(x : T, out : DataOutput) {
+  //     val avroclass = implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]]
+  //     val sch = implicitly[AvroSchema[T]].schema
+  //     println(sch.toString)
+  //     val bytestream = new ByteArrayOutputStream()
+  //     val encoder = EncoderFactory.get.directBinaryEncoder(bytestream, null)
+  //     val writer : SpecificDatumWriter[T] = new SpecificDatumWriter[T](avroclass)
+  //     writer.write(x,encoder)
+  //     encoder.flush
+  //     val outbytes = bytestream.toByteArray()
+  //     println("OUTBYTES: "+ outbytes.mkString(" "))
+  //     val size : Int = outbytes.size
+  //     println("SIZE: "+ size)
+
+  //     out.writeInt(size)
+  //     out.write(outbytes)
+
+  //   }
+  //   def fromWire(in : DataInput) : T = {
+  //     val sch = implicitly[AvroSchema[T]].schema
+  //     val avroclass = implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]]
+  //     val size : Int = in.readInt
+  //     println("SIZE: "+ size)
+  //     val bytes : Array[Byte] = new Array[Byte](size)
+  //     in.readFully(bytes, 0, size)
+  //     println("INBYTES: " + bytes.mkString(" "))
+  //     val decoder = DecoderFactory.get.binaryDecoder(bytes,0, size, null)
+  //     val reader : SpecificDatumReader[T] = new SpecificDatumReader[T](avroclass)
+  //     reader.read(null.asInstanceOf[T], decoder)
+  //   }
+  // }
+  
 
   /**
    * "Primitive" types.
