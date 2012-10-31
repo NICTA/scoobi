@@ -358,8 +358,6 @@ object AvroSchema {
     val sclass = r.erasure.asInstanceOf[Class[T]]
     val record = sclass.newInstance
     val schema : Schema =	record.getSchema
-          //       if (classOf[GenericContainer].isAssignableFrom(sclass)) GenericData.get.getRecordSchema(record)
-    						// else throw new RuntimeException("Don't know how to handle class: " + sclass)
     type AvroType = T
     def fromAvro(x : T) : T = x
     def toAvro(x: T) : T = x
