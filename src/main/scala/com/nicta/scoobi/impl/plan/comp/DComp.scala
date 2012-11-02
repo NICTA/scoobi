@@ -120,7 +120,7 @@ object ParallelDo1 {
 
 /** The Flatten node type specifies the building of a DComp that contains all the elements from
  * one or more existing DLists of the same type. */
-case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] { 
+case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -140,7 +140,7 @@ object Flatten1 {
 }
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
-case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq()) extends DComp[(K, V)] { 
+case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq(BridgeStore())) extends DComp[(K, V)] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -182,7 +182,7 @@ object Combine1 {
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
  * key-value DComp by key. */
-case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq()) extends DComp[(K, Iterable[V])] { 
+case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq(BridgeStore())) extends DComp[(K, Iterable[V])] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))

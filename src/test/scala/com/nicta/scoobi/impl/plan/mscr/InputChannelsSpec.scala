@@ -79,12 +79,12 @@ class InputChannelsSpec extends MscrMakerSpecification {
     "The input channels of a node are all the mapper input channels for that node + the id input channels" >> new factory {
       val (l1, l2, rt1, rt2) = (load, load, rt, rt)
       val (pd1, pd2, pd3) = (pd(l1, rt1), pd(l1, rt1), pd(l2, rt2))
-      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
+      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(rt1))
       val graph = flatten(gbk1, gbk2, gbk3)
 
-      (graph -> idInputChannels(gbk1))  must have size(1)
-      (graph -> mapperInputChannels)    must have size(1)
-      (graph -> inputChannels(gbk1))    must have size(2)
+      (graph -> mapperInputChannels)   must have size(1)
+      (graph -> idInputChannels(gbk3)) must have size(1)
+      (graph -> inputChannels(gbk3))   must have size(2)
     }
   }
 

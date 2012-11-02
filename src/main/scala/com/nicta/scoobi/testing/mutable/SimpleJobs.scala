@@ -39,7 +39,7 @@ trait SimpleJobs { outer =>
   }
 
   def run[T](list: =>DList[T])(implicit configuration: ScoobiConfiguration): Seq[T] =
-    run(list.materialize).toSeq
+    Vector(run(list.materialize).toSeq:_*)
 
   def run[T](o: DObject[T])(implicit configuration: ScoobiConfiguration): T =
     Persister.persist(o)

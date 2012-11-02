@@ -16,7 +16,8 @@
 package com.nicta.scoobi
 package testing
 
-import org.specs2.specification.{Tags, Fragments}
+import org.specs2.specification.Fragments
+import org.specs2.mutable.Tags
 
 import core._
 import application._

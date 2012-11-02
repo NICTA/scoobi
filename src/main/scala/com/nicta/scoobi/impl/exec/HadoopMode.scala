@@ -20,26 +20,35 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   def execute(list: DList[_]) {
-    executeNode(list.getComp)
+    executeNode(prepare(list.getComp))
   }
 
   def execute(o: DObject[_]) = {
-    executeNode(o.getComp)
+    executeNode(prepare(o.getComp))
   }
 
-  lazy val executeNode: CompNode => Any = attr { node => {
-
+  def prepare(node: CompNode) = {
     initAttributable(node)
     logger.debug("Raw nodes\n"+pretty(node))
     logger.debug("Raw graph\n"+showGraph(node))
 
-    node match {
-      case mt @ Materialize1(in) => store(mt, mt.in -> executeNode)
-      case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(in1 -> executeNode, in2 -> executeNode))
-      case rt @ Return1(in)      => store(rt, in)
-      case ld @ Load1(_)         => store(ld, ())
-      case other                 => executeMscr(other)
+    val optimised = initAttributable(optimise(node))
+
+    logger.debug("Optimised nodes\n"+pretty(optimised))
+    logger.debug("Optimised graph\n"+showGraph(optimised))
+    optimised
+  }
+
+  lazy val executeNode: CompNode => Any = attr { node => {
+
+    val result = node match {
+      case mt @ Materialize1(in)            => store(mt, mt.in -> executeNode)
+      case op @ Op1(in1, in2)               => store(op, op.unsafeExecute(in1 -> executeNode, in2 -> executeNode))
+      case rt @ Return1(in)                 => store(rt, in)
+      case ld @ Load1(_)                    => store(ld, ())
+      case other                            => executeMscr(other)
     }
+    result
   }}
 
   private def store(node: CompNode, execute: Any)(implicit sc: ScoobiConfiguration) = {
@@ -53,18 +62,16 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   private def executeMscr(node: CompNode)(implicit sc: ScoobiConfiguration) {
-    val optimised = initAttributable(optimise(node))
-
-    logger.debug("Optimised nodes\n"+pretty(optimised))
-    logger.debug("Optimised graph\n"+showGraph(optimised))
-    val mscrs = makeMscrs(optimised)
-
-    logger.debug("Executing Mscrs\n"+mscrsGraph(optimised))
-    Execution(mscrs.toSeq).execute
+    val mscr = makeMscr(node)
+    if (mscr.isEmpty) (node.children).asNodes.map(_ -> executeNode)
+    else {
+      logger.debug("Executing Mscr\n"+mscrGraph(node))
+      Execution(mscr).execute
+    }
   }
 
-  case class Execution(mscrs: Seq[Mscr]) {
-    def execute = mscrs.foreach(_ -> compute)
+  case class Execution(mscr: Mscr) {
+    def execute = mscr -> compute
 
     private var step = 0
 

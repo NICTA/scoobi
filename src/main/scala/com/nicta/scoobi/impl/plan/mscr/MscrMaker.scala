@@ -67,8 +67,8 @@ trait MscrMaker extends CompNodes {
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
   lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
     attr {
-      case pd: ParallelDo[_,_,_] if pd -> isMapper && (pd -> hasSiblings) => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
-      case other                                                          => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
+      case pd: ParallelDo[_,_,_] if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
+      case other                                   => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
     }
 
   /**
@@ -76,6 +76,7 @@ trait MscrMaker extends CompNodes {
    * An IdInputChannel is a channel for an input node which has no siblings and is connected to a GroupByKey */
   lazy val idInputChannels: GroupByKey[_,_] => CompNode => Set[IdInputChannel] =
     paramAttr { gbk: GroupByKey[_,_] => { node: CompNode => node match {
+      case pd: ParallelDo[_,_,_] if pd -> isMapper       => Set()
       case n if (n -> isGbkInput) && !(n -> hasSiblings) => Set(IdInputChannel(n, gbk))
       case other                                         => other.children.asNodes.flatMap(_ -> idInputChannels(gbk)).toSet
     }}}
@@ -204,13 +205,17 @@ trait MscrMaker extends CompNodes {
   }
 
   /** @return the first reachable MSCR for a given node, without optimising the graph first */
-  private[plan] def makeMscr(node: CompNode) =
-    makeMscrs(node).headOption.getOrElse(Mscr())
+  def makeMscr(node: CompNode) =
+    mscrOpt(node).getOrElse(Mscr())
+
   /** @return the MSCR for a given node. Used for testing only because it does the optimisation first */
   private[plan] def mscrFor(node: CompNode) =
     makeMscr(Optimiser.optimise(node))
   /** @return the MSCRs for a list of nodes. Used for testing only */
-  private[plan] def mscrsFor(nodes: CompNode*) = (nodes map mscrFor).toSet
+  private[plan] def mscrsFor(node: CompNode) = {
+    // make sure that the parent <-> children relationships are initialized
+    ((initAttributable(Optimiser.optimise(node)) -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
+  }
 }
 
 object MscrMaker extends MscrMaker

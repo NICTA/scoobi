@@ -5,14 +5,13 @@ package mscr
 
 import org.specs2.matcher.{Expectable, Matcher}
 import org.scalacheck.{Gen, Arbitrary}
-import org.specs2.mutable.Tags
 
 import core._
 import comp._
 import testing.mutable.UnitSpecification
 
 
-trait MscrMakerSpecification extends UnitSpecification with CompNodeData with Tags {
+trait MscrMakerSpecification extends UnitSpecification with CompNodeData {
 
   def beAnAncestorOf(node: CompNode): Matcher[CompNode] = new Matcher[CompNode] {
     def apply[S <: CompNode](other: Expectable[S]) =

@@ -38,12 +38,18 @@ case class IdInputChannel(input: CompNode, gbk: CompNode) extends InputChannel {
     case _                 => false
   }
 
-  def inputs = Seq(input)
+  def inputs = input match {
+    case pd: ParallelDo[_,_,_] => Seq(pd.in)
+    case _                     => Seq()
+  }
 }
 case class StraightInputChannel(input: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
     case _                       => false
   }
-  def inputs = Seq(input)
+  def inputs = input match {
+    case fl: Flatten[_] => fl.ins
+    case _              => Seq()
+  }
 }

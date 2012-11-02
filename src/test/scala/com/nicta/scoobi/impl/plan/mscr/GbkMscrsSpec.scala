@@ -25,9 +25,8 @@ class GbkMscrsSpec extends MscrMakerSpecification {
   "if two GroupByKey nodes don't share the same input, they belong to 2 different Mscrs" >> new factory {
     val gbk1  = gbk(pd(load))
     val gbk2  = gbk(pd(load))
-    val graph = op(gbk1, gbk2)
 
-    makeMscrs(graph) must have size(2)
+    makeMscr(gbk1) must not be_==(makeMscr(gbk2))
   }
   "two successive gbks must be in 2 different mscrs" >> new factory {
     val pd0   = load
@@ -56,24 +55,15 @@ class GbkMscrsSpec extends MscrMakerSpecification {
     (pd3 -> mscr) aka show(graph) must not be_== (pd3.env -> mscr)
   }
 
-  "if a ParallelDo is an input shared by 2 others ParallelDos, then it must belong to another Mscr" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-    mscrsFor(graph).filter(_.mappers.size > 1) foreach { m =>
-      m.mappers foreach { pd =>
-        (pd -> descendents) collect {
-          case p @ ParallelDo1(_) => (p -> mscr) aka show(p) must be_!== (m)
-        }
-      }
-    }
-  }
   "example of parallel dos sharing the same input" >> new factory {
     val op0          = op(load, load)
     val (pd1, pd2)   = (pd(op0), pd(op0))
     val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
     val graph        = flatten(gbk1, gbk2)
 
-    makeMscrs(graph) must have size(2)
-    makeMscrs(graph).filter(isGbkMscr).toSeq(0) ==== Mscr(inputChannels  = Set(MapperInputChannel(pd2, pd1)),
-                                                          outputChannels = Set(GbkOutputChannel(gbk2), GbkOutputChannel(gbk1)))
+    makeMscr(gbk1) === makeMscr(gbk2)
+    makeMscr(gbk1) ==== Mscr(inputChannels  = Set(MapperInputChannel(pd2, pd1)),
+                             outputChannels = Set(GbkOutputChannel(gbk2), GbkOutputChannel(gbk1)))
   }
   "a ParallelDo can not be a mapper and a reducer at the same time" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
     val m = makeMscr(graph)
@@ -91,6 +81,18 @@ class GbkMscrsSpec extends MscrMakerSpecification {
       } must beTrue.unless(ms.isEmpty)
       //aka "for\n"+showGraph(graph, mscr)+"\nMSCRs\n"+ms.mkString("\n") must beTrue.unless(ms.isEmpty)
     }
+  }
+  "a mapper parallelDo must be in a MapperInputChannel, a reducer parallelDo must be in a BypassOutputChannel" >> new factory {
+    val pd1  = pd(load)
+    val gbk1 = gbk(pd1)
+    val pd2  = pd(gbk1)
+
+    (pd1 -> isMapper) must beTrue
+    (pd2 -> isReducer) must beTrue
+
+    makeMscr(gbk1).mappers  aka mscrGraph(gbk1) must_== Set(pd1)
+    makeMscr(gbk1).reducers aka mscrGraph(gbk1) must_== Set(pd2)
+
   }
 }
 

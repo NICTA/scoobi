@@ -93,7 +93,7 @@ case class KeyValuesMapReducer[K, V](mwfk: ManifestWireFormat[K],
   def makeTaggedReducer(tag: Int) = new TaggedReducer(tag, mwf) {
     def setup(env: Any) {}
     def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
-      values.foreach(value => emitter.emit((key, value)))
+      emitter.emit((key, values))
     }
     def cleanup(env: Any, emitter: Emitter[Any]) {}
   }

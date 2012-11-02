@@ -49,14 +49,28 @@ trait ShowNode extends MscrMaker with CompNodes {
    *          The mscr of each node is only displayed if it is complete
    */
   def mscrsGraph[T](node: CompNode) = {
-    def showMscr(n: CompNode) = {
-      val m = n -> mscr
-      n.toString +
-        (if (m.isEmpty) "" else (" -> "+m))
-    }
     val attributedVertices = (node -> vertices).map(v => (v, showMscr(v))).toMap
     tryOrElse {
       val graph = Graph(attributedVertices.values.toList, (node -> edges).toList.map { case (v1, v2) => attributedVertices(v1) -> attributedVertices(v2) }.distinct)
+      Layouter.renderGraph(graph)
+    }("cannot represent the Mscr for\n"+show(node))
+  }
+
+  /**
+   * toString representation for a node and its Mscr
+   */
+  private def showMscr(n: CompNode) = {
+    val m = n -> mscr
+    n.toString + (if (m.isEmpty) "" else (" -> "+m))
+  }
+
+  /**
+   * Graph box for a single Mscr
+   */
+  def mscrGraph[T](node: CompNode) = {
+    val attributedVertices = Map(node -> showMscr(node))
+    tryOrElse {
+      val graph = Graph(attributedVertices.values.toList, Nil)
       Layouter.renderGraph(graph)
     }("cannot represent the Mscr for\n"+show(node))
   }
