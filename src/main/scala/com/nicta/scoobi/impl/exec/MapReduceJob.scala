@@ -99,7 +99,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   
   def configureChannels(implicit configuration: ScoobiConfiguration) = mscrExec.channels.foldRight(this)(_.configure(_))
 
-  private def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+  def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
     FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory)
 
     val jar = new JarBuilder
@@ -188,19 +188,8 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   private def configureReducers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks foreach {
-        case bs@BridgeStore() => {
-          // TODO - really want to be doing this inside the BridgeStore class
-          bs.rtClass match {
-            case Some(rtc) => jar.addRuntimeClass(rtc)
-            case None      => {
-              /* NOTE: must do this before calling addOutputChannel */
-              val rtClass = ScoobiWritable(bs.typeName, reducer.mf, reducer.wf)
-              jar.addRuntimeClass(rtClass)
-              bs.rtClass = Some(rtClass)
-            }
-          }
-        }
-        case _ => {}
+        case bs : BridgeStore[_] =>  jar.addRuntimeClass(bs.rtClass)
+        case _                   => {}
       }
       sinks.zipWithIndex.foreach { case (sink, ix) =>
         ChannelOutputFormat.addOutputChannel(sink.configureCompression(job), reducer.tag, ix, sink)

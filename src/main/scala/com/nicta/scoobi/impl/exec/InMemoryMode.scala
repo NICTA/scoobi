@@ -158,7 +158,8 @@ object InMemoryMode {
 
   def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
     sinks.foreach { sink =>
-      val job = new Job(new Configuration(sc))
+      val job = new MapReduceJob(stepId = 1).configureJob(sc)(new Job(new Configuration(sc)))
+
       val outputFormat = sink.outputFormat.newInstance()
 
       job.setOutputFormatClass(sink.outputFormat)

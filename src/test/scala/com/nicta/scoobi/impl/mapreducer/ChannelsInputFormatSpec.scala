@@ -29,6 +29,7 @@ import testing.mutable.UnitSpecification
 import com.nicta.scoobi.impl.rtt._
 import Configurations._
 import application.ScoobiConfiguration
+import WireFormat._
 
 class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """
@@ -84,11 +85,7 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     }
   }
 
-  lazy val aBridgeStore = {
-    val bs = BridgeStore[String]()
-    bs.rtClass = Some(new RuntimeClass("java.lang.String", classOf[String], Array[Byte]()))
-    bs
-  }
+  lazy val aBridgeStore = BridgeStore[String](manifest[String], wireFormat[String])
 
   def scoobiArgs = Seq[String]()
 }

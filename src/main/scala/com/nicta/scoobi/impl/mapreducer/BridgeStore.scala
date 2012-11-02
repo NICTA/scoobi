@@ -36,14 +36,14 @@ import ScoobiConfigurationImpl._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A]()
+case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
   extends DataSource[NullWritable, ScoobiWritable[A], A]
-  with DataSink[NullWritable, ScoobiWritable[A], A] {
+  with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
-  /* rtClass will be created at runtime as part of building the MapReduce job. */
-  var rtClass: Option[RuntimeClass] = None
+  /** rtClass will be created at runtime as part of building the MapReduce job. */
+  lazy val rtClass = ScoobiWritable(typeName, mf, wf)
 
   /**
    * this value is set by the configuration so as to be unique for this bridge store
@@ -55,7 +55,7 @@ case class BridgeStore[A]()
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
-  def outputValueClass = rtClass.orNull.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
+  def outputValueClass = rtClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     FileOutputFormat.setOutputPath(job, path)
@@ -64,7 +64,7 @@ case class BridgeStore[A]()
 
 
   /* Input (i.e. output of bridge) */
-  val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
+  lazy val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
   def inputCheck(implicit sc: ScoobiConfiguration) {}
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     FileInputFormat.addInputPath(job, new Path(path(sc), "ch*"))
@@ -84,9 +84,11 @@ case class BridgeStore[A]()
   }
 
 
-  /* Read the contents of this bridge store sequence files as an Iterable collection. The
-   * undelying Iterator has a lazy implementation and will only bring one element into memory
-   * at a time. */
+  /**
+   * Read the contents of this bridge store sequence files as an Iterable collection. The
+   * underlying Iterator has a lazy implementation and will only bring one element into memory
+   * at a time
+   */
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[A] = new Iterable[A] {
     def iterator = new Iterator[A] {
 

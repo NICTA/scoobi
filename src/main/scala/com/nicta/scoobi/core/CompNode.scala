@@ -9,5 +9,6 @@ import org.kiama.attribution.Attributable
 trait CompNode extends Attributable {
   def id: Int
   def sinks : Seq[Sink]
+  def bridgeStore: Bridge
 }
 

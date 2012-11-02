@@ -17,6 +17,7 @@ sealed trait ExecutionNode extends CompNode {
 
   def referencedNode: CompNode
   def sinks = referencedNode.sinks
+  lazy val bridgeStore = referencedNode.bridgeStore
 }
 trait MapperExecutionNode extends ExecutionNode {
   def makeTaggedMapper(tags: Map[CompNode, Set[Int]]): TaggedMapper
@@ -89,13 +90,13 @@ trait ChannelExec {
 }
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
-  def source = {
+  def sources = {
     Attribution.initTree(input.referencedNode)
     input.referencedNode match {
-      case n: Load[_] => Some(n.source)
-      case n          => n.children.collect { case Load1(s) => s }.toSeq.headOption
+      case n: Load[_] => Seq(n.source)
+      case n          => n.children.collect { case Load1(s) => s }.toSeq
     }
-  }.getOrElse(BridgeStore())
+  }.distinct
 
   def input: MapperExecutionNode
   def referencedNode = input.referencedNode
@@ -118,7 +119,7 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
     mappers.map { mapper =>
       val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
       val env = pd.environment(sc)
-      job.addTaggedMapper(source, Some(env), mapper.makeTaggedMapper(tags))
+      sources.foreach(source => job.addTaggedMapper(source, Some(env), mapper.makeTaggedMapper(tags)))
     }
     job
   }
@@ -131,7 +132,7 @@ case class BypassInputChannelExec(in: CompNode, gbk: CompNode) extends InputChan
   def gbkExec = gbk.asInstanceOf[GroupByKeyExec]
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
-    job.addTaggedMapper(source, None, gbkExec.referencedNode.makeTaggedIdentityMapper(tags(referencedNode)))
+    sources.foreach(source => job.addTaggedMapper(source, None, gbkExec.referencedNode.makeTaggedIdentityMapper(tags(referencedNode))))
     job
   }
 }
@@ -144,7 +145,7 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
     val mapper =  new TaggedIdentityMapper(tags(referencedNode), manifestWireFormat[Int], grouping[Int], referencedNode.asInstanceOf[DComp[_]].mr.mwf) {
       override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
     }
-    job.addTaggedMapper(source, None, mapper)
+    sources.foreach(source => job.addTaggedMapper(source, None, mapper))
     job
   }
 }

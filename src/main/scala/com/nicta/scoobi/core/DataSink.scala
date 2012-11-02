@@ -85,6 +85,9 @@ trait Sink {
   def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_])
 }
 
+trait Bridge extends Source with Sink {
+  def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
+}
 
 /** Convert the type consumed by a DataSink into an OutputFormat's key-value types. */
 trait OutputConverter[K, V, B] {

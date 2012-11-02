@@ -27,6 +27,7 @@ sealed trait DComp[+A] extends CompNode {
   def sinks: Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
   def updateSinks(f: Seq[Sink] => Seq[Sink]): DComp[A]
+  lazy val bridgeStore = BridgeStore(mf, wf)
 }
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
@@ -35,7 +36,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
                                env:               CompNode,
                                dofn:              EnvDoFn[A, B, E],
                                mr:                DoMapReducer[A, B, E],
-                               sinks:             Seq[Sink] = Seq(BridgeStore()),
+                               sinks:             Seq[Sink] = Seq(),
                                barriers:          Barriers = Barriers()) extends DComp[B] { 
   type Sh = Arr
 
@@ -56,6 +57,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
     case Load1(s) => Some(s)
     case _        => None
   }
+
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   override def equals(a: Any) = a match {
@@ -140,7 +142,7 @@ object Flatten1 {
 }
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
-case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq(BridgeStore())) extends DComp[(K, V)] {
+case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq()) extends DComp[(K, V)] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -182,7 +184,7 @@ object Combine1 {
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
  * key-value DComp by key. */
-case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq(BridgeStore())) extends DComp[(K, Iterable[V])] {
+case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq()) extends DComp[(K, Iterable[V])] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -207,7 +209,7 @@ object GroupByKey1 {
 
 /** The Load node type specifies the creation of a DComp from some source other than another DComp.
  * A DataSource object specifies how the loading is performed. */
-case class Load[A](source: Source, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] { 
+case class Load[A](source: Source, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
   type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -223,7 +225,7 @@ object Load1 {
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] { 
+case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
   type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -261,7 +263,7 @@ object Materialize1 {
 
 /** The Op node type specifies the building of Exp DComp by applying a function to the values
  * of two other Exp DComp nodes. */
-case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleMapReducer[C], sinks: Seq[Sink] = Seq()) extends DComp[C] { 
+case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleMapReducer[C], sinks: Seq[Sink] = Seq()) extends DComp[C] {
   type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))

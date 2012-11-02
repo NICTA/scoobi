@@ -7,16 +7,14 @@ import org.kiama.attribution.Attribution._
 
 import core._
 import plan.comp._
-import ShowNode._
 import plan.mscr._
-import mapreducer.BridgeStore
 import CompNodes._
 import ScoobiConfigurationImpl._
 
 /**
  * Execution of Scoobi applications using Hadoop.
  */
-case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan {
+case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan with ShowNode {
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   def execute(list: DList[_]) {
@@ -53,7 +51,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def store(node: CompNode, execute: Any)(implicit sc: ScoobiConfiguration) = {
     val result = (node match {
-      case Materialize1(in) => in.sinks.collect { case bs: BridgeStore[_] => bs.readAsIterable }.headOption
+      case Materialize1(in) => Some(in.bridgeStore.readAsIterable)
       case _                => None
     }).getOrElse(execute)
 

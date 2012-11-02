@@ -9,13 +9,13 @@ import application.ScoobiConfiguration
 class InputChannelExecSpec extends UnitSpecification {
   
   "A MapperInputChannelExec has a data source which must be the source of one parallel do in the channel" >> new example {
-    (new MapperInputChannelExec(Seq(pdExec)).source: Any) === load.source
+    new MapperInputChannelExec(Seq(pdExec)).sources === Seq(load.source)
   }
   "A BypassInputChannelExec has a data source which must be the source of the input node of the channel" >> new example {
-    (new BypassInputChannelExec(pdExec, gbkExec).source: Any) === load.source
+    new BypassInputChannelExec(pdExec, gbkExec).sources === Seq(load.source)
   }
   "A StraightInputChannelExec has a data source which must be the source of the input node of the channel" >> new example {
-    (new StraightInputChannelExec(flattenPdExec).source: Any) must beLike { case BridgeStore() => ok }
+    new StraightInputChannelExec(flattenPdExec).sources === Seq()
   }
   
   "Input channels must configure the MapReduceJob".txt

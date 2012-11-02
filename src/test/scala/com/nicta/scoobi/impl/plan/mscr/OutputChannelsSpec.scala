@@ -117,11 +117,11 @@ class OutputChannelsSpec extends MscrMakerSpecification {
       val graph = gbk(pd(load)).addSink(StringSink())
       val m = makeMscr(graph)
 
-      m.gbkOutputChannels.head.sinks.map(_.getClass.getSimpleName) === Seq("BridgeStore", "StringSink")
+      m.gbkOutputChannels.head.sinks.map(_.getClass.getSimpleName) === Seq("StringSink")
     }
     "they must be the BridgeStores if output nodes are the input of another Mscr" >> new factory {
       val graph1 = gbk(pd(load)).addSink(StringSink())
-      val graph2 = gbk(pd(graph1)).addSink(BridgeStore())
+      val graph2 = gbk(pd(graph1))
       val mscrs = makeMscrs(graph2)
 
       mscrs.flatMap(_.outputChannels.flatMap(_.sinks)).map(_.getClass.getSimpleName).toList === Seq("BridgeStore", "StringSink")

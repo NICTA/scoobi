@@ -27,7 +27,7 @@ object Persister {
 
   def persist[A](list: DList[A])(implicit sc: ScoobiConfiguration) {
     sc.mode match {
-      case InMemory        => InMemoryMode  .execute(list)
+      case InMemory        => InMemoryMode.execute(list)
       case Local | Cluster => HadoopMode().execute(list)
     }
   }
