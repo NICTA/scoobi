@@ -23,7 +23,7 @@ import ScoobiConfigurationImpl._
 /**
  * A fast local mode for execution of Scoobi applications.
  */
-object InMemoryMode {
+case class InMemoryMode() {
   implicit lazy val logger = LogFactory.getLog("scoobi.VectorMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {

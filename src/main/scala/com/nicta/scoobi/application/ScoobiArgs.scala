@@ -76,7 +76,7 @@ trait ScoobiUserArgs extends ScoobiArgs {
   lazy val argumentsValues = scoobiArgs
 
   private[scoobi]
-  lazy val argumentsNames = Seq("times", "local", "useconfdir", "deletelibjars", "nolibjars", "keepfiles", "quiet", "verbose", "cluster", "fast")
+  lazy val argumentsNames = Seq("times", "local", "useconfdir", "deletelibjars", "nolibjars", "keepfiles", "quiet", "verbose", "cluster", "inmemory")
 
   private[scoobi]
   lazy val isVerbose = argumentsValues.exists(_ == "verbose")

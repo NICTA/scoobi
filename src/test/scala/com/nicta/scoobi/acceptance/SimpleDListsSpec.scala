@@ -6,10 +6,6 @@ import com.nicta.scoobi.Scoobi._
 
 class SimpleDListsSpec extends NictaSimpleJobs {
 
-  override def keepFiles = true
-  override def quiet     = false
-  override def level     = application.level("ALL")
-
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
   }
