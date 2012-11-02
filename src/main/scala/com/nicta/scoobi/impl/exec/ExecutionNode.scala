@@ -180,9 +180,9 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     // if there is a reducer node, use it as the tagged reducer
     // otherwise use the combiner node if there is one
     // and finally default to the GroupByKey node
-    theReducer.map(r => job.addTaggedReducer(sinks.toList, Some(r.environment(sc)), r.makeTaggedReducer(tag))).orElse {
-      theCombiner.map(c => job.addTaggedReducer(sinks.toList, None, c.makeTaggedReducer(tag))).orElse {
-        Some(job.addTaggedReducer(sinks.toList, None, theGroupByKey.makeTaggedReducer(tag)))
+    theReducer.map(r => job.addTaggedReducer(sinks, Some(r.environment(sc)), r.makeTaggedReducer(tag))).orElse {
+      theCombiner.map(c => job.addTaggedReducer(sinks, None, c.makeTaggedReducer(tag))).orElse {
+        Some(job.addTaggedReducer(sinks, None, theGroupByKey.makeTaggedReducer(tag)))
       }
     }
     job

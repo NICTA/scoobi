@@ -49,7 +49,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   /* Keep track of all the mappers for each input channel. */
   private[scoobi] val mappers: Map[Source, Set[(Env[_], TaggedMapper)]] = Map.empty
   private[scoobi] val combiners: Set[TaggedCombiner[_]] = Set()
-  private[scoobi] val reducers: ListBuffer[(List[Sink], (Env[_], TaggedReducer))] = new ListBuffer
+  private[scoobi] val reducers: ListBuffer[(scala.collection.Seq[Sink], (Env[_], TaggedReducer))] = new ListBuffer
 
   /* The types that will be combined together to form (K2, V2). */
   private val keyTypes: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])] = Map.empty
@@ -77,7 +77,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   }
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer(outputs: scala.collection.immutable.List[Sink], env: Option[Env[_]], r: TaggedReducer) = {
+  def addTaggedReducer(outputs: scala.collection.Seq[Sink], env: Option[Env[_]], r: TaggedReducer) = {
     reducers += ((outputs, (env.getOrElse(Env.empty), r)))
     this
   }
@@ -196,7 +196,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
       }
     }
 
-    val outputs: scala.collection.Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer))] =
+    val outputs: scala.collection.Map[Int, (scala.collection.Seq[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer))] =
       scala.collection.Map(reducers.map { case (sinks, reducer) =>
         (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
       }:_*)

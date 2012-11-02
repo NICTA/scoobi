@@ -39,9 +39,9 @@ class InputChannelsSpec extends MscrMakerSpecification {
       }
     }
 
-    "we must create a MapperInputChannel for each 'mapper' ParallelDo that has siblings" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
+    "we must create a MapperInputChannel for each 'mapper' ParallelDo" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
       parallelDos(graph) foreach { pd =>
-        (pd -> mapperInputChannels).size aka show(graph) must be_==(1).when(pd -> isMapper && pd -> hasSiblings)
+        (pd -> mapperInputChannels).size aka show(graph) must be_==(1).when(pd -> isMapper)
         (pd -> mapperInputChannels).flatMap(_.parDos).contains(pd)
       }
     }

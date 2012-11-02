@@ -8,7 +8,7 @@ import application.ScoobiConfiguration
 class OutputChannelExecSpec extends UnitSpecification {
   implicit val sc = ScoobiConfiguration()
 
-  "Output channels must configure the MapReduceJob".txt
+  "Output channels must configure the MapReduceJob with reducers and combiners".txt
 
   "A GroupByKeyChannelExec" >> {
     "must not configure a Combiner if the channel has no combiner node" >> new example {

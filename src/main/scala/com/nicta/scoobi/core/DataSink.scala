@@ -81,6 +81,9 @@ trait Sink {
   def compress = compressWith(new GzipCodec)
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = outputCompression(codec)
 
+  private[scoobi] def isCompressed =
+    configureCompression(new Job).getConfiguration.getBoolean("mapred.output.compress", false)
+
   private [scoobi]
   def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_])
 }

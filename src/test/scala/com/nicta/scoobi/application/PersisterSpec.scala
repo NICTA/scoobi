@@ -7,6 +7,7 @@ import testing.mutable.SimpleJobs
 import testing.TestFiles._
 
 class PersisterSpec extends NictaHadoop with SimpleJobs {
+
   "A sequence of DLists can be persisted simultaneously to text files" >> { implicit sc: ScoobiConfiguration =>
     val dirs = Seq.fill(3)(TempFiles.createTempDir("test"))
     val lists = Seq(DList(1, 2), DList(3, 4), DList(5, 6)).zip(dirs).map { case (l, d) => l.toTextFile(path(d)) }
