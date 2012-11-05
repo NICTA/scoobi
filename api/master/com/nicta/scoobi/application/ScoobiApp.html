@@ -37,7 +37,7 @@ trait will attempt to load the dependent jars to the libjars directory on the cl
 method: <code>override def upload = false</code> or by passing the 'nolibjars' argument on the command line
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a>, <a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a>, <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a>, <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a>, <a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="ScoobiAppConfiguration.html">ScoobiAppConfiguration</a>, <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a>, <a name="com.nicta.scoobi.application.ClusterConfiguration" class="extype" href="ClusterConfiguration.html">ClusterConfiguration</a>, <a name="com.nicta.scoobi.application.Cluster" class="extype" href="Cluster.html">Cluster</a>, <a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a>, <span name="scala.DelayedInit" class="extype">DelayedInit</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a>, <a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a>, <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a>, <a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a>, <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a>, <a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="ScoobiAppConfiguration.html">ScoobiAppConfiguration</a>, <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a>, <a name="com.nicta.scoobi.application.ClusterConfiguration" class="extype" href="ClusterConfiguration.html">ClusterConfiguration</a>, <a name="com.nicta.scoobi.application.Cluster" class="extype" href="Cluster.html">Cluster</a>, <a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a>, <span name="scala.DelayedInit" class="extype">DelayedInit</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -51,7 +51,7 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.application.ScoobiApp" class="in"><span>ScoobiApp</span></li><li name="com.nicta.scoobi.application.Hadoop" class="in"><span>Hadoop</span></li><li name="com.nicta.scoobi.application.LibJars" class="in"><span>LibJars</span></li><li name="com.nicta.scoobi.application.LocalHadoop" class="in"><span>LocalHadoop</span></li><li name="com.nicta.scoobi.application.ScoobiUserArgs" class="in"><span>ScoobiUserArgs</span></li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="in"><span>ScoobiAppConfiguration</span></li><li name="com.nicta.scoobi.application.ScoobiArgs" class="in"><span>ScoobiArgs</span></li><li name="com.nicta.scoobi.application.ClusterConfiguration" class="in"><span>ClusterConfiguration</span></li><li name="com.nicta.scoobi.application.Cluster" class="in"><span>Cluster</span></li><li name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="in"><span>ScoobiCommandLineArgs</span></li><li name="scala.DelayedInit" class="in"><span>DelayedInit</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.application.ScoobiApp" class="in"><span>ScoobiApp</span></li><li name="com.nicta.scoobi.application.Hadoop" class="in"><span>Hadoop</span></li><li name="com.nicta.scoobi.application.LibJars" class="in"><span>LibJars</span></li><li name="com.nicta.scoobi.application.LocalHadoop" class="in"><span>LocalHadoop</span></li><li name="com.nicta.scoobi.application.InMemoryHadoop" class="in"><span>InMemoryHadoop</span></li><li name="com.nicta.scoobi.application.ScoobiUserArgs" class="in"><span>ScoobiUserArgs</span></li><li name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="in"><span>ScoobiAppConfiguration</span></li><li name="com.nicta.scoobi.application.ScoobiArgs" class="in"><span>ScoobiArgs</span></li><li name="com.nicta.scoobi.application.ClusterConfiguration" class="in"><span>ClusterConfiguration</span></li><li name="com.nicta.scoobi.application.Cluster" class="in"><span>Cluster</span></li><li name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="in"><span>ScoobiCommandLineArgs</span></li><li name="scala.DelayedInit" class="in"><span>DelayedInit</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -280,6 +280,19 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with cluster setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#configureForInMemory" data-isabs="false">
+      <a id="configureForInMemory(ScoobiConfiguration):ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configureForInMemory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with memory setup
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#configureForLocal" data-isabs="false">
       <a id="configureForLocal(ScoobiConfiguration):ScoobiConfiguration"></a>
       <h4 class="signature">
@@ -343,7 +356,7 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the libjars must be deleted before the Scoobi job runs</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a> → <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#displayTime" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#displayTime" data-isabs="false">
       <a id="displayTime(String):(SimpleTimer) ⇒ Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -354,7 +367,7 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
         <span class="name">displayTime</span><span class="params">(<span name="prefix">prefix: String</span>)</span><span class="result">: (<span name="com.nicta.scoobi.impl.time.SimpleTimer" class="extype">SimpleTimer</span>) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a function to display execution times. The default uses log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a function to display execution times. The default uses log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -379,6 +392,18 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#executeInMemory" data-isabs="false">
+      <a id="executeInMemory[T](⇒ T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">executeInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.Hadoop#executeOnCluster" data-isabs="false">
       <a id="executeOnCluster[T](⇒ T)(ScoobiConfiguration):T"></a>
       <h4 class="signature">
@@ -444,7 +469,7 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#hadoopArgs" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#hadoopArgs" data-isabs="false">
       <a id="hadoopArgs:Array[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -455,7 +480,7 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
         <span class="name">hadoopArgs</span><span class="result">: <span name="scala.Array" class="extype">Array</span>[String]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -468,6 +493,18 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#inMemory" data-isabs="false">
+      <a id="inMemory[T](⇒ T)(ScoobiConfiguration):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">execute some code in memory, using a collection backend, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code in memory, using a collection backend, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.Hadoop#includeLibJars" data-isabs="false">
       <a id="includeLibJars:Boolean"></a>
       <h4 class="signature">
@@ -480,6 +517,18 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if you want to include the library jars in the jar that is sent to the cluster for each job</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isCluster" data-isabs="false">
+      <a id="isCluster:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCluster</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isClusterOnly" data-isabs="false">
       <a id="isClusterOnly:Boolean"></a>
       <h4 class="signature">
@@ -491,7 +540,19 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
         <span class="name">isClusterOnly</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified and the local argument is not</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isInMemory" data-isabs="false">
+      <a id="isInMemory:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInMemory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -504,6 +565,18 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isLocal" data-isabs="false">
+      <a id="isLocal:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLocal</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isLocalOnly" data-isabs="false">
       <a id="isLocalOnly:Boolean"></a>
       <h4 class="signature">
@@ -717,6 +790,19 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true to suppress log messages</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a> → <a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#runInMemory" data-isabs="false">
+      <a id="runInMemory[T](⇒ T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the in-memory run
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.Hadoop#runOnCluster" data-isabs="false">
       <a id="runOnCluster[T](⇒ T):T"></a>
       <h4 class="signature">
@@ -768,7 +854,7 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiCommandLineArgs" class="extype" href="ScoobiCommandLineArgs.html">ScoobiCommandLineArgs</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#setLogFactory" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#setLogFactory" data-isabs="false">
       <a id="setLogFactory(String):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -781,8 +867,8 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </h4>
       <p class="shortcomment cmt">Static setup to use a testing log factory
 </p><div class="fullcomment"><div class="comment cmt"><p>Static setup to use a testing log factory
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#showTime" data-isabs="false">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#showTime" data-isabs="false">
       <a id="showTime[T](⇒ T)((SimpleTimer) ⇒ Unit):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -795,7 +881,7 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </h4>
       <p class="shortcomment cmt">measure the time taken by some executed code and display the time with a specific display function
 </p><div class="fullcomment"><div class="comment cmt"><p>measure the time taken by some executed code and display the time with a specific display function
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#showTimes" data-isabs="false">
       <a id="showTimes:Boolean"></a>
       <h4 class="signature">
@@ -940,7 +1026,7 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LocalHadoop#withTimer" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#withTimer" data-isabs="false">
       <a id="withTimer[T](⇒ T):(T, SimpleTimer)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -952,7 +1038,7 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the time for the execution of a piece of code
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></dd></dl></div>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -966,6 +1052,8 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
               <h3>Inherited from <a name="com.nicta.scoobi.application.LibJars" class="extype" href="LibJars.html">LibJars</a></h3>
             </div><div name="com.nicta.scoobi.application.LocalHadoop" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a></h3>
+            </div><div name="com.nicta.scoobi.application.InMemoryHadoop" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></h3>
             </div><div name="com.nicta.scoobi.application.ScoobiUserArgs" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.application.ScoobiUserArgs" class="extype" href="ScoobiUserArgs.html">ScoobiUserArgs</a></h3>
             </div><div name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="parent">

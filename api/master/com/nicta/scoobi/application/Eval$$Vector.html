@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.testing.HadoopExamples.HadoopContext</title>
+          <title>com.nicta.scoobi.application.Eval.Vector</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -14,29 +14,24 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <img src="../../../../lib/trait_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.testing" class="extype" href="package.html">testing</a>.<a name="com.nicta.scoobi.testing.HadoopExamples" class="extype" href="HadoopExamples.html">HadoopExamples</a></p>
-        <h1>HadoopContext</h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.application" class="extype" href="package.html">application</a>.<a name="com.nicta.scoobi.application.Eval" class="extype" href="Eval$.html">Eval</a></p>
+        <h1>Vector</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">HadoopContext</span><span class="result"> extends <span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>]</span>
+        <span class="name">Vector</span><span class="params">(<span name="st">st: VectorST</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.application.Eval.ST" class="extype" href="Eval$$ST.html">ST</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>trait for creating contexts having ScoobiConfigurations</p><p>the isLocalOnly method provides a hint to speed-up the execution (because there's no need to upload jars if a run
-is local)
-</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext" class="extype" href="HadoopExamples$ClusterHadoopContext.html">ClusterHadoopContext</a>, <a name="com.nicta.scoobi.testing.HadoopExamples.InMemoryHadoopContext" class="extype" href="HadoopExamples$InMemoryHadoopContext.html">InMemoryHadoopContext</a>, <a name="com.nicta.scoobi.testing.HadoopExamples.LocalHadoopContext" class="extype" href="HadoopExamples$LocalHadoopContext.html">LocalHadoopContext</a>, <a name="com.nicta.scoobi.testing.HadoopExamples.SkippedHadoopContext" class="extype" href="HadoopExamples$SkippedHadoopContext.html">SkippedHadoopContext</a></div>
+          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.application.Eval.ST" class="extype" href="Eval$$ST.html">ST</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -50,7 +45,7 @@ is local)
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" class="in"><span>HadoopContext</span></li><li name="org.specs2.specification.Outside" class="in"><span>Outside</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.application.Eval.Vector" class="in"><span>Vector</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.Product" class="in"><span>Product</span></li><li name="scala.Equals" class="in"><span>Equals</span></li><li name="com.nicta.scoobi.application.Eval.ST" class="in"><span>ST</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -60,29 +55,29 @@ is local)
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
-
-        <div class="values members" id="values">
-              <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="org.specs2.specification.Outside#outside" data-isabs="true">
-      <a id="outside:ScoobiConfiguration"></a>
+        <div class="members" id="constructors">
+              <h3>Instance Constructors</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#this" data-isabs="false">
+      <a id="this:Vector"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
+        <span class="modifier"></span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">outside</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>
+        <span class="name">Vector</span><span class="params">(<span name="st">st: VectorST</span>)</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Outside</dd></dl></div>
+      
     </li></ol>
             </div>
 
+        
+
+        
+
         <div class="values members" id="values">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li visbl="pub" name="scala.AnyRef#!=" data-isabs="false">
       <a id="!=(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -143,18 +138,6 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="org.specs2.specification.Outside#apply" data-isabs="false">
-      <a id="apply[R]((ScoobiConfiguration) ⇒ R)((R) ⇒ Result):Result"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: (<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: (R) ⇒ <span name="org.specs2.execute.Result" class="extype">Result</span></span>)</span><span class="result">: <span name="org.specs2.execute.Result" class="extype">Result</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Outside</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -167,6 +150,18 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#canEqual" data-isabs="false">
+      <a id="canEqual(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">canEqual</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → Equals</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -194,7 +189,7 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext#equals" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -202,10 +197,10 @@ is local)
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="a">a: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" class="extype" href="">HadoopContext</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → Equals → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -233,7 +228,7 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -244,7 +239,7 @@ is local)
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -257,18 +252,6 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext#isRemote" data-isabs="false">
-      <a id="isRemote:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isRemote</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -305,6 +288,66 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#productArity" data-isabs="false">
+      <a id="productArity:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productArity</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#productElement" data-isabs="false">
+      <a id="productElement(Int):Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productElement</span><span class="params">(<span name="arg0">arg0: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="scala.Product#productIterator" data-isabs="false">
+      <a id="productIterator:Iterator[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productIterator</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#productPrefix" data-isabs="false">
+      <a id="productPrefix:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productPrefix</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#st" data-isabs="false">
+      <a id="st:VectorST"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">st</span><span class="result">: VectorST</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -317,19 +360,7 @@ is local)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext#time_?" data-isabs="false">
-      <a id="time_?:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name" title="gt4s: time_$qmark">time_?</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval.Vector#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -337,10 +368,10 @@ is local)
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: String</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.Eval.Vector" class="extype" href="">Vector</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -389,12 +420,38 @@ is local)
     </li></ol>
             </div>
 
-        
+        <div class="values members" id="values">
+              <h3>Deprecated Value Members</h3>
+              <ol><li visbl="pub" name="scala.Product#productElements" data-isabs="false">
+      <a id="productElements:Iterator[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 2.8.0) use productIterator instead">productElements</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.8.0)</i> use productIterator instead</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
-        <div name="org.specs2.specification.Outside" class="parent">
-              <h3>Inherited from <span name="org.specs2.specification.Outside" class="extype">Outside</span>[<a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a>]</h3>
+        <div name="scala.Serializable" class="parent">
+              <h3>Inherited from <span name="scala.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="java.io.Serializable" class="parent">
+              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="scala.Product" class="parent">
+              <h3>Inherited from <span name="scala.Product" class="extype">Product</span></h3>
+            </div><div name="scala.Equals" class="parent">
+              <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
+            </div><div name="com.nicta.scoobi.application.Eval.ST" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.application.Eval.ST" class="extype" href="Eval$$ST.html">ST</a></h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

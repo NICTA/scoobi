@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">GroupByKey</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>, <span name="evidence$56">evidence$56: Manifest[K]</span>, <span name="evidence$57">evidence$57: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="evidence$58">evidence$58: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../../core/Grouping.html">Grouping</a>[K]</span>, <span name="evidence$59">evidence$59: Manifest[V]</span>, <span name="evidence$60">evidence$60: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, Iterable[V]), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">GroupByKey</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="grpK">grpK: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../../core/Grouping.html">Grouping</a>[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, Iterable[V]), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>] with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -66,7 +66,7 @@ key-value DComp by key.</p></div><div class="toggleContainer block">
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GroupByKey</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../../core/Grouping.html">Grouping</a>[K]</span>, <span name="arg3">arg3: Manifest[V]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[V]</span>)</span>
+        <span class="name">GroupByKey</span><span class="params">(<span name="in">in: <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="grpK">grpK: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../../core/Grouping.html">Grouping</a>[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[V]</span>)</span>
       </span>
       </h4>
       
@@ -327,6 +327,18 @@ invokes a user provided code implementing the copy.</p></div><dl class="attribut
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.GroupByKey#grpK" data-isabs="false">
+      <a id="grpK:Grouping[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">grpK</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../../core/Grouping.html">Grouping</a>[K]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.Smart.DComp#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">

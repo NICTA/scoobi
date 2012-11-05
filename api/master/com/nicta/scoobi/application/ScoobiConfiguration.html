@@ -268,15 +268,15 @@ added to the classpath.
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#deleteScoobiTmpDirectory" data-isabs="false">
-      <a id="deleteScoobiTmpDirectory:Boolean"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#deleteScoobiDirectory" data-isabs="false">
+      <a id="deleteScoobiDirectory:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deleteScoobiTmpDirectory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">deleteScoobiDirectory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       
@@ -429,6 +429,19 @@ added to the classpath.
       </span>
       </h4>
       <p class="shortcomment cmt">add a list of jars to include as -libjars in this configuration</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#isInMemory" data-isabs="false">
+      <a id="isInMemory:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInMemory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this configuration is used for an in memory execution with a collection backend
+</p></dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -441,6 +454,19 @@ added to the classpath.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#isLocal" data-isabs="false">
+      <a id="isLocal:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLocal</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this configuration is used for a local memory execution
+</p></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#isRemote" data-isabs="false">
       <a id="isRemote:Boolean"></a>
       <h4 class="signature">
@@ -516,6 +542,31 @@ added to the classpath.
       </span>
       </h4>
       <p class="shortcomment cmt">get the default values from the configuration files</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#mode" data-isabs="false">
+      <a id="mode:Value"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mode</span><span class="result">: <span name="scala.Enumeration.Value" class="extype">Value</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the current mode</p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#modeIs" data-isabs="false">
+      <a id="modeIs(Value):ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <span name="scala.Enumeration.Value" class="extype">Value</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">set a flag in order to know that this configuration is for a in-memory, local or remote execution,
+</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -613,6 +664,30 @@ The command line argument doesn't have to start with a dash.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#scoobiDir" data-isabs="false">
+      <a id="scoobiDir:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiDir</span><span class="result">: String</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#scoobiDirectory" data-isabs="false">
+      <a id="scoobiDirectory:Path"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiDirectory</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#set" data-isabs="false">
       <a id="set(String,Any):Unit"></a>
       <h4 class="signature">
@@ -625,6 +700,19 @@ The command line argument doesn't have to start with a dash.</p>
       </span>
       </h4>
       <p class="shortcomment cmt">set a value on the configuration</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setAsInMemory" data-isabs="false">
+      <a id="setAsInMemory:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setAsInMemory</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">force a configuration to be an in-memory one, currently doing everything as in the local mode
+</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setAsLocal" data-isabs="false">
       <a id="setAsLocal:ScoobiConfiguration"></a>
       <h4 class="signature">
@@ -663,7 +751,7 @@ reducers based off the size of the input data to the M/R job.
         <span class="name">setDirectories</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">this setup needs to be done only after the internal conf object has been set to a local configuration or a cluster one *
+      <p class="shortcomment cmt">this setup needs to be done only after the internal conf object has been set to a local configuration or a cluster one
 because all the paths will depend on that
 </p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setMaxReducers" data-isabs="false">
@@ -690,19 +778,18 @@ because all the paths will depend on that
       </span>
       </h4>
       <p class="shortcomment cmt">Set a lower bound for the number of reducers to be used in M/R jobs</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setRemote" data-isabs="false">
-      <a id="setRemote(Boolean):Unit"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setScoobiDir" data-isabs="false">
+      <a id="setScoobiDir(String):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRemote</span><span class="params">(<span name="remote">remote: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setScoobiDir</span><span class="params">(<span name="dir">dir: String</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">set a flag in order to know that this configuration is for a remote execution
-</p>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#setUploadedLibJars" data-isabs="false">
       <a id="setUploadedLibJars(Boolean):Unit"></a>
       <h4 class="signature">
@@ -858,6 +945,18 @@ because all the paths will depend on that
       </span>
       </h4>
       <p class="shortcomment cmt">Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#workingDir" data-isabs="false">
+      <a id="workingDir:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">workingDir</span><span class="result">: String</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration#workingDirectory" data-isabs="false">
       <a id="workingDirectory:Path"></a>
       <h4 class="signature">

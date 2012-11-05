@@ -35,7 +35,7 @@
           <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.application.ScoobiArgs" class="extype" href="ScoobiArgs.html">ScoobiArgs</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" class="extype" href="../testing/CommandLineHadoopLogFactory.html">CommandLineHadoopLogFactory</a>, <a name="com.nicta.scoobi.application.CommandLineScoobiUserArgs" class="extype" href="CommandLineScoobiUserArgs.html">CommandLineScoobiUserArgs</a>, <a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a>, <a name="com.nicta.scoobi.testing.HadoopExamples" class="extype" href="../testing/HadoopExamples.html">HadoopExamples</a>, <a name="com.nicta.scoobi.testing.HadoopLogFactorySetup" class="extype" href="../testing/HadoopLogFactorySetup.html">HadoopLogFactorySetup</a>, <a name="com.nicta.scoobi.testing.mutable.HadoopSpecification" class="extype" href="../testing/mutable/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecification" class="extype" href="../testing/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecificationStructure" class="extype" href="../testing/HadoopSpecificationStructure.html">HadoopSpecificationStructure</a>, <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a>, <a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="ScoobiApp.html">ScoobiApp</a>, <a name="com.nicta.scoobi.testing.UploadedLibJars" class="extype" href="../testing/UploadedLibJars.html">UploadedLibJars</a></div>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" class="extype" href="../testing/CommandLineHadoopLogFactory.html">CommandLineHadoopLogFactory</a>, <a name="com.nicta.scoobi.application.CommandLineScoobiUserArgs" class="extype" href="CommandLineScoobiUserArgs.html">CommandLineScoobiUserArgs</a>, <a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a>, <a name="com.nicta.scoobi.testing.HadoopExamples" class="extype" href="../testing/HadoopExamples.html">HadoopExamples</a>, <a name="com.nicta.scoobi.testing.HadoopLogFactorySetup" class="extype" href="../testing/HadoopLogFactorySetup.html">HadoopLogFactorySetup</a>, <a name="com.nicta.scoobi.testing.mutable.HadoopSpecification" class="extype" href="../testing/mutable/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecification" class="extype" href="../testing/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecificationStructure" class="extype" href="../testing/HadoopSpecificationStructure.html">HadoopSpecificationStructure</a>, <a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a>, <a name="com.nicta.scoobi.application.LocalHadoop" class="extype" href="LocalHadoop.html">LocalHadoop</a>, <a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="ScoobiApp.html">ScoobiApp</a>, <a name="com.nicta.scoobi.testing.UploadedLibJars" class="extype" href="../testing/UploadedLibJars.html">UploadedLibJars</a></div>
         </div></div>
     
 
@@ -256,6 +256,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isCluster" data-isabs="false">
+      <a id="isCluster:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCluster</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isClusterOnly" data-isabs="false">
       <a id="isClusterOnly:Boolean"></a>
       <h4 class="signature">
@@ -267,7 +279,19 @@
         <span class="name">isClusterOnly</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified</p></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the cluster argument is specified and the local argument is not</p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isInMemory" data-isabs="false">
+      <a id="isInMemory:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInMemory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -280,6 +304,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isLocal" data-isabs="false">
+      <a id="isLocal:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLocal</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs#isLocalOnly" data-isabs="false">
       <a id="isLocalOnly:Boolean"></a>
       <h4 class="signature">

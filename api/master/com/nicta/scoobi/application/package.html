@@ -146,6 +146,18 @@
       </span>
       </h4>
       <p class="comment cmt">Log factory used for testing.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop" data-isabs="true">
+      <a id="InMemoryHadoop:InMemoryHadoop"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="InMemoryHadoop.html"><span class="name">InMemoryHadoop</span></a><span class="result"> extends ScoobiUserArgs</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.package#Level" data-isabs="false">
       <a id="Level:Level"></a>
       <h4 class="signature">
@@ -178,7 +190,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="LocalHadoop.html"><span class="name">LocalHadoop</span></a><span class="result"> extends ScoobiUserArgs</span>
+        <a href="LocalHadoop.html"><span class="name">LocalHadoop</span></a><span class="result"> extends InMemoryHadoop</span>
       </span>
       </h4>
       <p class="comment cmt">Execute Hadoop code locally
@@ -206,7 +218,7 @@
         <a href="PFn.html"><span class="name">PFn</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">Type class for persisting something.</p>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.Persister" data-isabs="true">
       <a id="Persister:Persister[In]"></a>
       <h4 class="signature">
@@ -339,6 +351,18 @@ added to the classpath.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval" data-isabs="false">
+      <a id="Eval:Eval"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Eval$.html"><span class="name">Eval</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.HadoopLogFactory" data-isabs="false">
       <a id="HadoopLogFactory:HadoopLogFactory"></a>
       <h4 class="signature">
@@ -348,6 +372,30 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="HadoopLogFactory$.html"><span class="name">HadoopLogFactory</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.HadoopMode" data-isabs="false">
+      <a id="HadoopMode:HadoopMode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopMode$.html"><span class="name">HadoopMode</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Execution of Scoobi applications using Hadoop.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Mode" data-isabs="false">
+      <a id="Mode:Mode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Mode$.html"><span class="name">Mode</span></a><span class="result"> extends Enumeration</span>
       </span>
       </h4>
       
@@ -399,6 +447,18 @@ added to the classpath.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.VectorMode" data-isabs="false">
+      <a id="VectorMode:VectorMode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VectorMode$.html"><span class="name">VectorMode</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A fast local mode for execution of Scoobi applications.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.package#level" data-isabs="false">
       <a id="level(String):Level"></a>
       <h4 class="signature">
