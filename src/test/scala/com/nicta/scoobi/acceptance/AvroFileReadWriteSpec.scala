@@ -90,7 +90,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(List(filePath), false)
-    loadedTestData.run must throwA[JobExecException]
+    loadedTestData.run must (if (sc.isInMemory) throwAn[AvroTypeException] else throwA[JobExecException])
   }
 
   "Reading a subset of fields that have been written" >> { implicit sc: SC =>
