@@ -49,7 +49,7 @@ trait SimpleJobs { outer =>
   }
 
   def run[T](list: =>DList[T])(implicit configuration: ScoobiConfiguration): Seq[T] =
-    Persister.persist(list.materialize).toSeq
+    Vector(Persister.persist(list.materialize).toSeq:_*)
 
   def run[T, S](list1: DList[T], list2: DList[S])(implicit configuration: ScoobiConfiguration): (Seq[T], Seq[S]) =
     Persister.persist((list1.materialize, list2.materialize)).bimap((_.toSeq), (_.toSeq))

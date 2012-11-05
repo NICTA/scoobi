@@ -18,7 +18,8 @@ package testing
 
 import application._
 import mutable.SimpleJobs
-import org.specs2.specification.{Tags, Fragments}
+import org.specs2.specification.Fragments
+import org.specs2.mutable.Tags
 
 /**
  * This trait can be used to create Hadoop specifications on the NictaCluster
