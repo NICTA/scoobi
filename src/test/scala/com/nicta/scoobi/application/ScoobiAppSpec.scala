@@ -74,14 +74,22 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
   tag("issue 163")
   "It is possible to set a different Scoobi temp directory on the ScoobiConfiguration before the job executes" >> {
     var workDir = "undefined"
-    val app = new ScoobiApp {
+    new ScoobiApp {
       configuration.setScoobiDir("shared-drive")
-
       def run { workDir = configuration.workingDir }
-    }
-    app.main(Array())
+    }.main(Array())
 
     "the Scoobi temporary directory has been set" ==> { workDir must contain("shared-drive") }
+  }
+
+  "It is possible to set a specific job name that will be used to create the job working directory" >> {
+    var workDir = "undefined"
+    new ScoobiApp {
+      configuration.jobNameIs("WordCountApplication")
+      def run { workDir = configuration.workingDir }
+    }.main(Array())
+
+    "the Scoobi job name is used to create the working directory" ==> { workDir must contain("WordCountApplication") }
   }
 
   "In a ScoobiApp the upload of dependent jars depends on the nolibjar arguments and on the content of the jar containing the main class (fat jar or not)" >> {

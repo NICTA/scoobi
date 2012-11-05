@@ -60,7 +60,7 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
    */
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     setLogFactory()
-    configuration.jobNameIs(getClass.getSimpleName)
+    if (!configuration.jobName.isDefined) configuration.jobNameIs(getClass.getSimpleName)
     configuration.modeIs(Cluster)
     configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, fs)
     configuration.set("mapred.job.tracker", jobTracker)
