@@ -15,6 +15,7 @@ trait OutputChannel extends Channel {
   /** sinks for this output channel */
   def sinks: Seq[Sink]
   def contains(node: CompNode): Boolean
+  def environment: Option[CompNode]
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -23,6 +24,7 @@ trait MscrOutputChannel extends OutputChannel {
   def bridgeStore: Bridge
   def output: CompNode
   def contains(node: CompNode) = output == node
+  def environment: Option[CompNode]
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             var flatten:  Option[Flatten[_]]        = None,
@@ -54,6 +56,8 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
       orElse(flatten   ).
       getOrElse(groupByKey).bridgeStore
 
+  def environment: Option[CompNode] = reducer.map(_.env)
+
 }
 
 case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChannel {
@@ -63,6 +67,7 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChan
   }
   def nodeSinks = output.sinks
   def bridgeStore = output.bridgeStore
+  def environment: Option[CompNode] = Some(output.env)
 }
 
 case class FlattenOutputChannel(output: Flatten[_]) extends MscrOutputChannel {
@@ -72,6 +77,7 @@ case class FlattenOutputChannel(output: Flatten[_]) extends MscrOutputChannel {
   }
   def nodeSinks = output.sinks
   def bridgeStore = output.bridgeStore
+  def environment: Option[CompNode] = None
 }
 
 object Channels extends control.ImplicitParameters {

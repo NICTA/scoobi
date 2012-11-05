@@ -154,6 +154,7 @@ sealed trait OutputChannelExec extends OutputChannel with ChannelExec {
   def sinks: Seq[Sink]
   def outputs: Seq[CompNode]
   def contains(node: CompNode) = outputs.contains(node)
+  def environment: Option[CompNode]
 }
 
 case class GbkOutputChannelExec(groupByKey: CompNode,
@@ -187,6 +188,7 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     }
     job
   }
+  def environment: Option[CompNode] = theReducer.map(_.referencedNode.env)
 }
 
 case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag: Int = 0) extends OutputChannelExec {
@@ -200,6 +202,8 @@ case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
     job.addTaggedReducer(sinks.toList, None, theFlatten.referencedNode.makeTaggedReducer(tag))
+
+  def environment: Option[CompNode] = None
 }
 case class BypassOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag: Int = 0) extends OutputChannelExec {
   lazy val theParallelDo = out.asInstanceOf[MapperExec]
@@ -211,4 +215,7 @@ case class BypassOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag:
   def outputs = Seq(out)
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
     job.addTaggedReducer(sinks.toList, None, theParallelDo.referencedNode.makeTaggedReducer(tag))
+
+  def environment: Option[CompNode] = Some(theParallelDo.referencedNode.env)
+
 }

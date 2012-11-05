@@ -11,6 +11,8 @@ import ManifestWireFormat._
 import mapreducer._
 import IdSet._
 import scalaz.Memo._
+import org.apache.hadoop.conf.Configuration
+
 /**
  * GADT for distributed list computation graph.
  */
@@ -49,8 +51,13 @@ case class ParallelDo[A, B, E](in:                CompNode,
   def groupBarrier = barriers.groupBarrier
   def fuseBarrier = barriers.fuseBarrier
 
-
-  lazy val environment = immutableHashMapMemo((sc: ScoobiConfiguration) => Env[E](wfe)(sc))
+  private var _environment: Option[Env[E]] = None
+  def environment(sc: ScoobiConfiguration): Env[E] = {
+    _environment match {
+      case Some(e) => e
+      case None    => val e = Env(wfe)(sc); _environment = Some(e); e
+    }
+  }
 
   def unsafePushEnv(e: Any)(implicit sc: ScoobiConfiguration) {
     environment(sc).push(e.asInstanceOf[E])(sc.conf)
@@ -74,7 +81,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
                           mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] =
           ParallelDo.fuse[A, C, E, F](this, p2)(mr.mwfa, mwfc, mr.mwfe, mwff)
 
-  def makeTaggedReducer(tag: Int)                           = mr.makeTaggedReducer(tag)
+  def makeTaggedReducer(tag: Int)                           = mr.makeTaggedReducer(tag, dofn, mwf)
   def makeTaggedMapper(gbk: GroupByKey[_,_],tags: Set[Int]) = mr.makeTaggedMapper(tags, dofn, gbk.mwfk, gbk.gpk, gbk.mwfv)
   def makeTaggedMapper(tags: Set[Int])                      = mr.makeTaggedMapper(tags, dofn, mwf)
 }
@@ -119,7 +126,7 @@ object ParallelDo {
 }
 object ParallelDo1 {
   /** extract only the incoming node of this parallel do */
-  def unapply(pd: ParallelDo[_,_,_]): Option[CompNode] = Some(pd.in)
+  def unapply(node: ParallelDo[_,_,_]): Option[CompNode] = Some(node.in)
 }
 
 
@@ -186,7 +193,7 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
     values.asInstanceOf[Iterable[V]].reduce(f)
 }
 object Combine1 {
-  def unapply(combine: Combine[_,_]): Option[CompNode] = Some(combine.in)
+  def unapply(node: Combine[_,_]): Option[CompNode] = Some(node.in)
 }
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting

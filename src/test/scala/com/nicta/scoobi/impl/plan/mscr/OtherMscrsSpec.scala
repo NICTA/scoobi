@@ -38,6 +38,7 @@ class OtherMscrsSpec extends MscrMakerSpecification {
       val pd1 = pd(l1)
       val pd2 = pd(l1)
       val fl1 = flatten(pd1, pd2, l2)
+      "the flatten node is flagged as 'floating'"    ==> { fl1 -> isFloating must beTrue }
 
       makeMscrs(fl1).filter(isFlattenMscr).toSeq(0) ==== Mscr(inputChannels = Set(StraightInputChannel(l2),
                                                                                     MapperInputChannel(pd1),

@@ -26,7 +26,7 @@ import org.apache.hadoop.mapreduce.Partitioner
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.RawComparator
 import scala.collection.mutable._
-import scalaz.Scalaz._
+import scalaz.syntax.all._
 
 import core._
 import plan._

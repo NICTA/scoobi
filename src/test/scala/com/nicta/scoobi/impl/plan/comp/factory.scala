@@ -26,6 +26,8 @@ trait factory extends CompNodeFactory with MscrAttributes {
   def show(node: CompNode): String =
     "SHOWING NODE: "+showNode(node, None)+"\n"+mscrsGraph(init(ancestors(node).headOption.getOrElse(node)))
 }
+object factory extends factory
+
 import mscr.{MscrMaker, MscrAttributes}
 trait graph extends MscrMaker
 

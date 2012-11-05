@@ -20,7 +20,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   val id: Int = UniqueId.get
 
   /** @return the nodes which are inputs to this Mscr */
-  def inputs = inputChannels.toSeq.flatMap(_.inputs)
+  def inputs = inputChannels.toSeq.flatMap(_.inputs) ++ outputChannels.toSeq.flatMap(_.environment)
 
   /** it is necessary to override the generated equality method in order to use the vars */
   override def equals(a: Any) = a match {
@@ -47,7 +47,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
-  def idMappers = idChannels.collect { case IdInputChannel(p @ ParallelDo1(_),_) => p }
+  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_],_) => p }
   /** @return an input channel containing a specific parallelDo */
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 

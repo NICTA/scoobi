@@ -3,14 +3,15 @@ package impl
 package plan
 package mscr
 
-import org.kiama.attribution.Attribution
 import org.kiama.attribution.Attribution._
 import scala.collection.immutable.SortedSet
 
 import collection._
 import comp._
 import core._
+import control._
 import IdSet._
+import Functions._
 
 /**
  * This trait computes the Mscr for a given nodes graph.
@@ -121,13 +122,14 @@ trait MscrMaker extends CompNodes {
    *  For example, if the graph is: gbk(pd1) then pd1 -> isReducer == false because pd1.parent is defined
    */
   lazy val isReducer: CompNode => Boolean =
-    attr {
+    attr { (n: CompNode) => n match {
       case pd @ ParallelDo(_, mt: Materialize[_],_,_,_,_) if envInSameMscr(pd) => false
       case pd @ ParallelDo(cb: Combine[_,_],_,_,_,_,Barriers(true,_))          => true
       case pd @ ParallelDo(cb: Combine[_,_],_,_,_,_,Barriers(_,true))          => true
-      case pd: ParallelDo[_,_,_]                                               => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case pd @ ParallelDo(cb : Combine[_,_],_,_,_,_,_)                        => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
+      case pd @ ParallelDo(gbk: GroupByKey[_,_],_,_,_,_,_)                     => (pd -> outputs).isEmpty || (pd -> outputs).exists(isMaterialize)
       case other                                                               => false
-    }
+    }}
   /**
    * @return true if a parallel do and its environment are computed by the same mscr
    */
@@ -163,7 +165,7 @@ trait MscrMaker extends CompNodes {
       case g : GroupByKey[_,_] =>
         (g -> parentOpt) match {
           case Some(pd: ParallelDo[_,_,_]) if pd -> isReducer => Some(pd)
-          case Some(c:  Combine[_,_])                         => (c -> parentOpt).collect { case pd @ ParallelDo1(_) if pd -> isReducer => pd }
+          case Some(c:  Combine[_,_])                         => (c -> parentOpt).collect { case pd : ParallelDo[_,_,_] if pd -> isReducer => pd }
           case other                                          => None
         }
       case other                                              => None
@@ -172,7 +174,9 @@ trait MscrMaker extends CompNodes {
   /** compute if a ParallelDo or a Flatten is 'floating', i.e. it is not part of a GbkMscr */
   lazy val isFloating: CompNode => Boolean =
     attr {
-      case node => !(node -> gbkMscr).isDefined
+      case pd: ParallelDo[_,_,_]                                   => !(pd -> isReducer)
+      case Flatten1(ins) if ins.exists(isGroupByKey || isCombiner) => false
+      case _                                                       => true
     }
 
   /** compute if a node is the input of a Gbk, but not a Gbk */
