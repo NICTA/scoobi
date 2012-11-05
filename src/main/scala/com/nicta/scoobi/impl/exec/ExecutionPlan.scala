@@ -8,9 +8,7 @@ import org.kiama.attribution.Attribution._
 
 import core._
 import plan.comp._
-import CompNodes._
 import plan.mscr._
-import mapreducer.Env
 
 /**
  * The execution transforms the DComp nodes as created by the user and the Mscrs computed by the MscrGraph

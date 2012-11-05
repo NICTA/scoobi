@@ -214,7 +214,7 @@ case class BypassOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag:
   }
   def outputs = Seq(out)
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
-    job.addTaggedReducer(sinks.toList, None, theParallelDo.referencedNode.makeTaggedReducer(tag))
+    job.addTaggedReducer(sinks.toList, None, theParallelDo.referencedNode.makeTaggedIdentityReducer(tag))
 
   def environment: Option[CompNode] = Some(theParallelDo.referencedNode.env)
 

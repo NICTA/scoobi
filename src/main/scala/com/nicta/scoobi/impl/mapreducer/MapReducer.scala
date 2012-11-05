@@ -27,7 +27,7 @@ case class DoMapReducer[A, B, E](mwfa: ManifestWireFormat[A],
                                  mwfe: ManifestWireFormat[E]) extends MapReducer[B] { outer =>
   def mwf = mwfb
 
-  def makeTaggedReducer(tag: Int) = new TaggedIdentityReducer(tag, mwf)
+  def makeTaggedIdentityReducer(tag: Int) = new TaggedIdentityReducer(tag, mwf)
 
   def makeTaggedReducer(tag: Int, dofn: EnvDoFn[A, B, E], mwf: ManifestWireFormat[_]) =
     new TaggedReducer(tag, mwf) {

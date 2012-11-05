@@ -8,7 +8,6 @@ import org.kiama.attribution.Attribution._
 import core._
 import plan.comp._
 import plan.mscr._
-import CompNodes._
 import ScoobiConfigurationImpl._
 
 /**

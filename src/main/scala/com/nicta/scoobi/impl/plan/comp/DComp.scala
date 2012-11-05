@@ -81,6 +81,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
                           mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] =
           ParallelDo.fuse[A, C, E, F](this, p2)(mr.mwfa, mwfc, mr.mwfe, mwff)
 
+  def makeTaggedIdentityReducer(tag: Int)                   = mr.makeTaggedIdentityReducer(tag)
   def makeTaggedReducer(tag: Int)                           = mr.makeTaggedReducer(tag, dofn, mwf)
   def makeTaggedMapper(gbk: GroupByKey[_,_],tags: Set[Int]) = mr.makeTaggedMapper(tags, dofn, gbk.mwfk, gbk.gpk, gbk.mwfv)
   def makeTaggedMapper(tags: Set[Int])                      = mr.makeTaggedMapper(tags, dofn, mwf)

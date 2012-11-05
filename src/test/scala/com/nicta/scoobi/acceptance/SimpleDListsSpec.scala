@@ -6,6 +6,9 @@ import com.nicta.scoobi.Scoobi._
 
 class SimpleDListsSpec extends NictaSimpleJobs {
 
+  // for now this spec needs to be sequential otherwise example 8 doesn't pass
+  sequential
+
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
   }
@@ -15,7 +18,8 @@ class SimpleDListsSpec extends NictaSimpleJobs {
   }
 
   "3. groupByKey" >> { implicit sc: SC =>
-    DList((1, "hello"), (1, "world")).groupByKey.run must be_==(Seq((1, Seq("hello", "world")))) or be_==(Seq((1, Seq("world", "hello"))))
+    DList((1, "hello"), (1, "world")).groupByKey.run must be_==(Seq((1, Seq("hello", "world")))) or
+                                                          be_==(Seq((1, Seq("world", "hello"))))
   }
 
   "4. groupByKey + combine" >> { implicit sc: SC =>
@@ -27,7 +31,7 @@ class SimpleDListsSpec extends NictaSimpleJobs {
   }
 
   "6. flatMap" >> { implicit sc: SC =>
-    DList("hello", "world").flatMap(_.toSeq.filterNot(_ == 'l')).run.toSet === Set('h', 'e', 'w', 'r', 'd')
+    DList("hello", "world").flatMap(_.toSeq.filterNot(_ == 'l')).run.toSet === Set('h', 'e', 'o', 'w', 'r', 'd')
   }
 
   "7. flatMap + map" >> { implicit sc: SC =>
@@ -37,6 +41,12 @@ class SimpleDListsSpec extends NictaSimpleJobs {
   "8. groupByKey + filter" >> { implicit sc: SC =>
     DList((1, "hello"), (1, "world")).groupByKey.filter { case (k, v) => k >= 1 }.run must
       be_==(Seq((1, Seq("hello", "world")))) or be_==(Seq((1, Seq("world", "hello"))))
+  }
+
+  "9. combine + filter + groupBarrier" >> { implicit sc: SC =>
+    DList((1, Seq("hello", "world")), (2, Seq("universe"))).combine((_:String)+(_:String)).filter { case (k, v) => k >= 1 }.groupBarrier.run.toSet must
+      be_==(Set((1, "helloworld"), (2, "universe"))) or
+      be_==(Set((1, "worldhello"), (2, "universe")))
   }
 
 }
