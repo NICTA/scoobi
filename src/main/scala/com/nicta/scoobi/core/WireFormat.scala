@@ -21,7 +21,17 @@ import java.io._
 import impl.slow
 import org.apache.hadoop.io.Writable
 import collection.generic.CanBuildFrom
-import collection.mutable.{ ListBuffer, Builder }
+import collection.mutable.{ListBuffer, Builder}
+import org.apache.avro.io.EncoderFactory
+import com.nicta.scoobi.io.avro.AvroSchema
+import org.apache.avro.mapred.{AvroKey, AvroWrapper}
+import org.apache.avro.hadoop.io.AvroSerialization
+import org.apache.hadoop.io.serializer.{Serializer, Deserializer}
+import org.apache.avro.reflect.ReflectDatumWriter
+import org.apache.avro.generic.{GenericDatumWriter, GenericContainer}
+import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData}
+import org.apache.avro.io.DecoderFactory
+import collection.mutable.ArrayBuffer
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
@@ -117,6 +127,33 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       x
     }
   }
+  
+  /**
+   * Avro types
+   */
+   implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new AvroWireFormat[T]
+  class AvroWireFormat[T <: GenericContainer : Manifest : AvroSchema] extends WireFormat[T] {
+    def toWire(x : T, out : DataOutput) {
+      val avroclass = implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]]
+      val bytestream = new ByteArrayOutputStream()
+      val encoder = EncoderFactory.get.directBinaryEncoder(bytestream, null)
+      val writer : SpecificDatumWriter[T] = new SpecificDatumWriter(avroclass)
+      writer.write(x,encoder)
+      val outbytes = bytestream.toByteArray()
+      out.writeInt(outbytes.size)
+      out.write(outbytes)
+    }
+    def fromWire(in : DataInput) : T = {
+      val avroclass = implicitly[Manifest[T]].erasure.asInstanceOf[Class[T]]
+      val size = in.readInt
+      val bytes : Array[Byte] = new Array[Byte](size)
+      in.readFully(bytes, 0, size)
+      val decoder = DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(bytes), null)
+      val reader : SpecificDatumReader[T] = new SpecificDatumReader(avroclass)
+      reader.read(null.asInstanceOf[T], decoder)
+    }
+  }
+
 
   /**
    * "Primitive" types.

@@ -21,12 +21,14 @@ import java.util.UUID
 import java.util.{Map => JMap}
 import org.apache.avro.Schema
 import org.apache.avro.io.parsing.Symbol
-import org.apache.avro.generic.GenericData
+import org.apache.avro.generic.{GenericContainer,GenericData}
+import org.apache.avro.specific.{SpecificRecord,SpecificData}
 import org.apache.avro.util.Utf8
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
 import core._
+
 
 
 /** Defines the Avro schema for a given Scala type. */
@@ -349,6 +351,16 @@ object AvroSchema {
       record.put(7, sch8.toAvro(x._8))
       record
     }
+  }
+  
+   /* Actual Avro Generic/SpecificRecord support */
+  implicit def AvroRecordSchema[T <: GenericContainer](implicit r : Manifest[T]) = new AvroSchema[T] {
+    val sclass = r.erasure.asInstanceOf[Class[T]]
+    val record = sclass.newInstance
+    val schema : Schema =	record.getSchema
+    type AvroType = T
+    def fromAvro(x : T) : T = x
+    def toAvro(x: T) : T = x
   }
 
 
