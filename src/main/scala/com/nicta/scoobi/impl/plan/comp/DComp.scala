@@ -51,16 +51,16 @@ case class ParallelDo[A, B, E](in:                CompNode,
   def groupBarrier = barriers.groupBarrier
   def fuseBarrier = barriers.fuseBarrier
 
-  private var _environment: Option[Env[E]] = None
-  def environment(sc: ScoobiConfiguration): Env[E] = {
-    _environment match {
-      case Some(e) => e
-      case None    => val e = Env(wfe)(sc); _environment = Some(e); e
-    }
+  def environment(sc: ScoobiConfiguration): Option[Env[E]] = env match {
+    case e: WithEnvironment[_] => Some(e.environment(sc).asInstanceOf[Env[E]])
+    case other                 => None
   }
 
-  def unsafePushEnv(e: Any)(implicit sc: ScoobiConfiguration) {
-    environment(sc).push(e.asInstanceOf[E])(sc.conf)
+  def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
+    env match {
+      case e: WithEnvironment[_] => e.unsafePushEnv(result.asInstanceOf[E])(sc)
+      case other                 => ()
+    }
   }
 
   def source = in match {
@@ -244,7 +244,7 @@ object Load1 {
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
+case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] with WithEnvironment[A] {
 
   type CompNodeType = Return[A]
   type Sh = Exp
@@ -266,7 +266,7 @@ object Return1 {
 }
 
 /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] {
+case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] with WithEnvironment[A] {
 
   type CompNodeType = Materialize[A]
   type Sh = Exp
@@ -286,7 +286,7 @@ object Materialize1 {
 
 /** The Op node type specifies the building of Exp DComp by applying a function to the values
  * of two other Exp DComp nodes. */
-case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleMapReducer[C], sinks: Seq[Sink] = Seq()) extends DComp[C] {
+case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleMapReducer[C], sinks: Seq[Sink] = Seq()) extends DComp[C] with WithEnvironment[C] {
 
   type CompNodeType = Op[A, B, C]
   type Sh = Exp
@@ -304,6 +304,23 @@ case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleM
 }
 object Op1 {
   def unapply(op: Op[_,_,_]): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
+}
+
+
+trait WithEnvironment[E] {
+  def wf: WireFormat[_]
+  private var _environment: Option[Env[_]] = None
+
+  def environment(sc: ScoobiConfiguration): Env[E] = {
+    _environment match {
+      case Some(e) => e
+      case None    => val e = Env(wf)(sc); _environment = Some(e); e
+    }
+  }.asInstanceOf[Env[E]]
+
+  def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
+    environment(sc).push(result.asInstanceOf[E])(sc.conf)
+  }
 }
 
 

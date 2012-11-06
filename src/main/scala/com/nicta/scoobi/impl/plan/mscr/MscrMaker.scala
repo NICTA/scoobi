@@ -68,7 +68,7 @@ trait MscrMaker extends CompNodes {
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
   lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
     attr {
-      case pd: ParallelDo[_,_,_] if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo) + pd))
+      case pd: ParallelDo[_,_,_] if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo).filter(isMapper) + pd))
       case other                                   => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
     }
 

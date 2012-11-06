@@ -54,7 +54,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       case _                => None
     }).getOrElse(execute)
 
-    (node -> usesAsEnvironment).headOption.map(_.unsafePushEnv(result))
+    (node -> usesAsEnvironment).headOption.map(pd => pd.unsafePushEnv(result))
     result
   }
 

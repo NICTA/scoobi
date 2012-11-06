@@ -50,8 +50,7 @@ class SimpleDListsSpec extends NictaSimpleJobs {
       be_==(Set((1, "helloworld"), (2, "universe"))) or
       be_==(Set((1, "worldhello"), (2, "universe")))
   }
-  "10. test" >> { implicit sc: SC =>
-    new DListImpl(pd(gbk(cb(gbk(pd(load)))))).run
-    ok
+  "10. groupByKey + combine + groupByKey" >> { implicit sc: SC =>
+    DList((1, "1")).filter(_ => true).groupByKey.combine((a: String, b: String) => a).groupByKey.filter(_ => true).run === Seq((1, Seq("1")))
   }
 }

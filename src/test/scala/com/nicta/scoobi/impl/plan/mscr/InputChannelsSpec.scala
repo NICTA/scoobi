@@ -66,6 +66,9 @@ class InputChannelsSpec extends MscrMakerSpecification {
         }
       }
     }
+    "two parallelDos sharing the same input must be in the same inputChannel" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
+      forall((graph -> mscr).mapperChannels.flatMap(_.parDos)) { pd => isMapper(pd) must beTrue }
+    }
   }
   "IdInputChannels" >> {
     "we create an IdInputChannel for each GroupByKey input which has no siblings" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._

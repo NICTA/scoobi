@@ -52,11 +52,11 @@ case class ConstantStringInputSplit(var value: String) extends InputSplit with W
   def this() = this("")
   def getLength = value.size
   def readFields(in: DataInput) {
-    value = readLine()
+    //value = readLine()
   }
 
   def write(out: DataOutput) {
-    out.writeChars(value)
+    //out.writeChars(value)
   }
   def getLocations = Array("localhost")
 

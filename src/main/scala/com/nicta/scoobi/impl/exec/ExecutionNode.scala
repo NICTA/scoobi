@@ -118,8 +118,7 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
     val tags = plan.tags(job.mscrExec)(this)
     mappers.map { mapper =>
       val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
-      val env = pd.environment(sc)
-      sources.foreach(source => job.addTaggedMapper(source, Some(env), mapper.makeTaggedMapper(tags)))
+      sources.foreach(source => job.addTaggedMapper(source, pd.environment(sc), mapper.makeTaggedMapper(tags)))
     }
     job
   }
@@ -181,7 +180,7 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     // if there is a reducer node, use it as the tagged reducer
     // otherwise use the combiner node if there is one
     // and finally default to the GroupByKey node
-    theReducer.map(r => job.addTaggedReducer(sinks, Some(r.environment(sc)), r.makeTaggedReducer(tag))).orElse {
+    theReducer.map(r => job.addTaggedReducer(sinks, r.environment(sc), r.makeTaggedReducer(tag))).orElse {
       theCombiner.map(c => job.addTaggedReducer(sinks, None, c.makeTaggedReducer(tag))).orElse {
         Some(job.addTaggedReducer(sinks, None, theGroupByKey.makeTaggedReducer(tag)))
       }
