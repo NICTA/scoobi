@@ -99,7 +99,8 @@ libraryDependencies ++= Seq(
    "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
    )
 
-resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
+resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
+                  "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "apache"   at "https://repository.apache.org/content/repositories/releases")
 ```
 

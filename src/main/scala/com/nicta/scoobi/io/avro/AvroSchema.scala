@@ -22,7 +22,6 @@ import java.util.{Map => JMap}
 import org.apache.avro.Schema
 import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.generic.GenericData
-import org.apache.avro.util.Utf8
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
@@ -76,10 +75,10 @@ object AvroSchema {
   }
 
   implicit def StringSchema = new AvroSchema[String] {
-    type AvroType = Utf8
+    type AvroType = String
     val schema: Schema = Schema.create(Schema.Type.STRING)
-    def fromAvro(x: Utf8): String = x.toString
-    def toAvro(x: String): Utf8 = new Utf8(x)
+    def fromAvro(x: String): String = x
+    def toAvro(x: String): String = x
   }
 
 
@@ -104,19 +103,19 @@ object AvroSchema {
 
   /* Map-like types AvroSchema type class instances. */
   implicit def MapSchema[CC[String, X] <: Map[String, X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, (String, T), CC[String, T]]) = new AvroSchema[CC[String, T]] {
-    type AvroType = JMap[Utf8, sch.AvroType]
+    type AvroType = JMap[String, sch.AvroType]
 
     val schema: Schema = Schema.createMap(sch.schema)
 
     val b: Builder[(String, T), CC[String, T]] = bf()
 
-    def fromAvro(xs: JMap[Utf8, sch.AvroType]): CC[String, T] = {
+    def fromAvro(xs: AvroType): CC[String, T] = {
       b.clear()
       xs.foreach { case (s, v) => b += (s.toString -> sch.fromAvro(v)) }
       b.result()
     }
 
-    def toAvro(xs: CC[String, T]): JMap[Utf8, sch.AvroType] = xs map { case (k, v) => (new Utf8(k), (sch.toAvro(v))) }
+    def toAvro(xs: CC[String, T]): AvroType = xs map { case (k, v) => k -> sch.toAvro(v) }
   }
 
 
