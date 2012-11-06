@@ -89,11 +89,15 @@ trait CompNodeFactory extends Scope {
   def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, mapReducer)
 
   def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    ParallelDo[String, String, Unit](in.asInstanceOf[DComp[String]], env.asInstanceOf[DComp[Unit]], fn,
-                                     DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[Unit]), Seq(),
+    ParallelDo[String, String, String](in.asInstanceOf[DComp[String]], env.asInstanceOf[DComp[String]], fn,
+                                     DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
                                      Barriers(groupBarrier, fuseBarrier))
 
-  lazy val fn = new BasicDoFn[String, String] { def process(input: String, emitter: Emitter[String]) { emitter.emit(input) } }
+  lazy val fn = new EnvDoFn[String, String, String] {
+    def setup(env: String) {}
+    def cleanup(env: String, emitter: Emitter[String]) {}
+    def process(env: String, input: String, emitter: Emitter[String]) { emitter.emit(input) }
+  }
 
   /** initialize the Kiama attributes of a CompNode */
   def init[T <: CompNode](t: T): T  = { if (!t.children.hasNext) Attribution.initTree(t); t }

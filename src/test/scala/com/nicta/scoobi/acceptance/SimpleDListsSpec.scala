@@ -3,6 +3,8 @@ package acceptance
 
 import testing.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
+import impl.plan.DListImpl
+import com.nicta.scoobi.impl.plan.comp.factory._
 
 class SimpleDListsSpec extends NictaSimpleJobs {
 
@@ -48,5 +50,8 @@ class SimpleDListsSpec extends NictaSimpleJobs {
       be_==(Set((1, "helloworld"), (2, "universe"))) or
       be_==(Set((1, "worldhello"), (2, "universe")))
   }
-
+  "10. test" >> { implicit sc: SC =>
+    new DListImpl(pd(gbk(cb(gbk(pd(load)))))).run
+    ok
+  }
 }

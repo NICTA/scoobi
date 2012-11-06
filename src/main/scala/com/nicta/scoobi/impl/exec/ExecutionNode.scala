@@ -98,7 +98,7 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
     }
   }.distinct
 
-  def input: MapperExecutionNode
+  def input: ExecutionNode
   def referencedNode = input.referencedNode
 
   protected lazy val plan = new ExecutionPlan {}
@@ -126,7 +126,7 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
 }
 
 case class BypassInputChannelExec(in: CompNode, gbk: CompNode) extends InputChannelExec {
-  def input = in.asInstanceOf[MapperExecutionNode]
+  def input = in.asInstanceOf[ExecutionNode]
   def inputs = Seq(in)
 
   def gbkExec = gbk.asInstanceOf[GroupByKeyExec]

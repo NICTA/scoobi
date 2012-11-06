@@ -40,6 +40,7 @@ case class IdInputChannel(input: CompNode, gbk: CompNode) extends InputChannel {
 
   def inputs = input match {
     case pd: ParallelDo[_,_,_] => Seq(pd.in)
+    case cb: Combine[_,_]      => Seq(cb.in)
     case _                     => Seq()
   }
 }
