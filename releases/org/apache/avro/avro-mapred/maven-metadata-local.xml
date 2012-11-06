@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.avro</groupId>
+  <artifactId>avro-mapred</artifactId>
+  <versioning>
+    <versions>
+      <version>1.7.3-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20121105214728</lastUpdated>
+  </versioning>
+</metadata>

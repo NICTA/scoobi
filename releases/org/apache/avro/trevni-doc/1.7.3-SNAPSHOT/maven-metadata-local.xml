@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.apache.avro</groupId>
+  <artifactId>trevni-doc</artifactId>
+  <version>1.7.3-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <lastUpdated>20121105214728</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <classifier>site</classifier>
+        <extension>xml</extension>
+        <value>1.7.3-SNAPSHOT</value>
+        <updated>20121105214728</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.7.3-SNAPSHOT</value>
+        <updated>20121105214728</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
