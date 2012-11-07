@@ -35,8 +35,6 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
 
   lazy val HADOOP_HOME = sys.env.get("HADOOP_HOME").orElse(sys.props.get("HADOOP_HOME"))
 
-  lazy val HADOOP_CONF_DIR = HADOOP_HOME.map(_+"/conf/")
-
   /** default configuration */
   implicit def configuration: ScoobiConfiguration = {
     if (useHadoopConfDir) ScoobiConfiguration(configurationFromConfigurationDirectory)
@@ -45,18 +43,17 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
 
   def configurationFromConfigurationDirectory = {
 
-    val hadoopConfDir = "which hadoop".lines_!.headOption.map(_.replaceAll("/bin/hadoop$", "/conf/").debug("got the hadoop directory from the hadoop executable")).orElse(
-                         HADOOP_CONF_DIR.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")))
+    val hadoopHomeDir = "which hadoop".lines_!.headOption.map(_.replaceAll("/bin/hadoop$", "").debug("got the hadoop directory from the hadoop executable")).orElse(
+                        HADOOP_HOME.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")))
 
-    hadoopConfDir.map { dir =>
-      val conf = new Configuration
-
+    val conf = new Configuration
+    Seq("conf", "etc").map(d => hadoopHomeDir+"/"+d+"/").foreach { dir =>
       Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
         val path = new Path(dir+r)
         logger.debug("adding the properties file: "+path)
         conf.addResource(path)
       }
-      conf
-    }.getOrElse(new Configuration)
+    }
+    conf
   }
 }
