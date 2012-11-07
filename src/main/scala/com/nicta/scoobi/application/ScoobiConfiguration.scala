@@ -32,16 +32,19 @@ import io.FileSystems
 import FileSystems._
 import impl.reflect.Classes
 import org.apache.commons.logging.LogFactory
+import LogFactory._
 import impl.monitor.Loggable._
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
  * added to the classpath.
  */
-case class ScoobiConfiguration(configuration: Configuration = new Configuration,
+case class ScoobiConfiguration(configuration: Configuration = asLoggable(new Configuration)(getLog("scoobi.ScoobiConfiguration")).debug { c: Configuration =>
+                                 Seq(c.get("mapred.job.tracker", "no job tracker defined"), c.get("fs.defaultFS", "no fs defined")).mkString("important properties", "\n", "")
+                               },
                                var userJars: Set[String] = Set(),
                                var userDirs: Set[String] = Set()) {
 
-  private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiConfiguration")
+  private implicit lazy val logger = getLog("scoobi.ScoobiConfiguration")
 
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)

@@ -21,6 +21,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
 import sys.process._
 import impl.monitor.Loggable._
+import java.io.File
 
 /**
  * This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
@@ -50,8 +51,10 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
     Seq("conf", "etc").map(d => hadoopHomeDir+"/"+d+"/").foreach { dir =>
       Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
         val path = new Path(dir+r)
-        logger.debug("adding the properties file: "+path)
-        conf.addResource(path)
+        if (new File(dir+r).exists) {
+          logger.debug("adding the properties file: "+path)
+          conf.addResource(path)
+        }
       }
     }
     conf
