@@ -365,6 +365,10 @@ table td {
  height: auto;
 }
 
+#leftcolumn {
+  border:0px;
+}
+
 /* common column settings */
 .colright,
 .colmid,
