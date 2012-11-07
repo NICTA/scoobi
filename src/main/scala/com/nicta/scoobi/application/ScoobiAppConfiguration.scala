@@ -19,6 +19,8 @@ package application
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
+import sys.process._
+import impl.monitor.Loggable._
 
 /**
  * This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
@@ -29,7 +31,7 @@ import org.apache.commons.logging.LogFactory
  *
  */
 trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
-  private lazy val logger = LogFactory.getLog("scoobi.ScoobiAppConfiguration")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiAppConfiguration")
 
   lazy val HADOOP_HOME = sys.env.get("HADOOP_HOME").orElse(sys.props.get("HADOOP_HOME"))
 
@@ -42,8 +44,11 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
   }
 
   def configurationFromConfigurationDirectory = {
-    logger.debug("getting the configuration properties from the Hadoop configuration directory: "+HADOOP_CONF_DIR.isDefined)
-    HADOOP_CONF_DIR.map { dir =>
+
+    val hadoopConfDir = "which hadoop".lines_!.headOption.map(_.replaceAll("/bin/hadoop$", "/conf/").debug("got the hadoop directory from the hadoop executable")).orElse(
+                         HADOOP_CONF_DIR.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")))
+
+    hadoopConfDir.map { dir =>
       val conf = new Configuration
 
       Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
