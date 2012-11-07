@@ -31,7 +31,8 @@ import org.apache.hadoop.fs.FileSystem._
 import io.FileSystems
 import FileSystems._
 import impl.reflect.Classes
-
+import org.apache.commons.logging.LogFactory
+import impl.monitor.Loggable._
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
  * added to the classpath.
@@ -40,6 +41,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
                                var userJars: Set[String] = Set(),
                                var userDirs: Set[String] = Set()) {
 
+  private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiConfiguration")
 
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
@@ -121,6 +123,8 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
    * set a flag in order to know that this configuration is for a in-memory, local or remote execution,
    */
   def modeIs(mode: Mode.Value) = {
+    logger.debug("setting the scoobi execution mode as "+mode)
+
     set("scoobi.mode", mode.toString)
     this
   }
@@ -193,7 +197,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
-  lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
+  lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStep(stepId: Int) = jobId + "(Step-" + stepId + ")"
@@ -215,6 +219,8 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
    * force a configuration to be a local one
    */
   def setAsLocal: ScoobiConfiguration = {
+    logger.debug("setting the ScoobiConfiguration as local ")
+
     jobNameIs(getClass.getSimpleName)
     set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
     set("mapred.job.tracker", "local")
@@ -226,10 +232,13 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
    * because all the paths will depend on that
    */
   def setDirectories = {
+
+    logger.debug("the mapreduce.jobtracker.staging.root.dir is "+workingDir + "staging/")
     configuration.set("mapreduce.jobtracker.staging.root.dir", workingDir + "staging/")
     // before the creation of the input we set the mapred local dir.
     // this setting is necessary to avoid xml parsing when several scoobi jobs are executing concurrently and
     // trying to access the job.xml file
+    logger.debug("the "+JobConf.MAPRED_LOCAL_DIR_PROPERTY+" is "+workingDir + "localRunner/")
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir + "localRunner/")
     this
   }

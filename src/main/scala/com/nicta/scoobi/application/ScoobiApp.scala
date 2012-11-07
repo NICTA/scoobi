@@ -19,7 +19,8 @@ package application
 import io.FileSystems
 import impl.reflect.Classes._
 import impl.reflect.Classes
-
+import org.apache.commons.logging.LogFactory
+import impl.monitor.Loggable._
 /**
  * This trait can be extended to create an application running Scoobi code.
  *
@@ -45,6 +46,7 @@ import impl.reflect.Classes
  * method: `override def upload = false` or by passing the 'nolibjars' argument on the command line
  */
 trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
+  private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiApp")
 
   /** store the value of the configuration in a lazy val, so that it can be updated and still be referenced */
   override implicit lazy val configuration = super.configuration
@@ -82,13 +84,19 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     // so that we know if configuration files must be read or not
     set(arguments)
     HadoopLogFactory.setLogFactory(classOf[HadoopLogFactory].getName, quiet, showTimes, level, categories)
+
+    logger.debug("parsing the hadoop arguments "+ arguments.mkString(", "))
     configuration.withHadoopArgs(arguments) { remainingArgs =>
+
+      logger.debug("setting the non-hadoop arguments "+ remainingArgs.mkString(", "))
       setRemainingArgs(remainingArgs)
     }
   }
 
   /** upload the jars unless 'nolibjars' has been set on the command-line' */
-  override def upload = !noLibJars && !mainJarContainsDependencies
+  override lazy val upload = (!noLibJars && !mainJarContainsDependencies).
+    debug("upload is ", " because nolibjars is: "+noLibJars+" and the main jar is a 'fat' jar: "+mainJarContainsDependencies)
+
 
   /**
    * @return true if the main jar contains all the dependencies for this application
@@ -103,7 +111,13 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
    *
    * if locally returns true then we might attempt to upload the dependent jars to the cluster and to add them to the classpath
    */
-  override def locally = FileSystems.isLocal || super.locally
+  override lazy val locally = {
+    val local = FileSystems.isLocal || super.locally
+
+    logger.debug("the execution is local: "+local+" because the configured file system is local: "+FileSystems.isLocal+
+                 " or the scoobi arguments indicate a local execution "+super.locally)
+    local
+  }
 }
 
 

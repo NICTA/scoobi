@@ -34,9 +34,10 @@ trait Classes {
   def mainJarEntries: Seq[JarEntry] =
     findContainingJar(mainClass).map(jarEntries).getOrElse(Seq())
 
-  /** @return true if at least one of the entries in the main jar is a Scoobi class */
+  /** @return true if at least one of the entries in the main jar is a Scoobi class, but not an example */
   def mainJarContainsDependencies =
-    mainJarEntries.exists(e => e.getName.startsWith("com/nicta/scoobi") || e.getName.matches(".*scoobi_.*.jar"))
+    mainJarEntries.exists(e => (e.getName.startsWith("com/nicta/scoobi") && !e.getName.contains("examples")) ||
+                                e.getName.matches(".*scoobi_.*.jar"))
 
   /** @return the entries for a given jar path */
   def jarEntries(jarPath: String): Seq[JarEntry] = {

@@ -21,6 +21,7 @@ import com.nicta.scoobi.io.FileSystems
 import java.io.File
 import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.fs.Path
+import org.apache.commons.logging.LogFactory
 
 /**
  * This trait defines:
@@ -29,6 +30,7 @@ import org.apache.hadoop.fs.Path
  * - a method to upload and reference them on the classpath for cluster jobs
  */
 trait LibJars {
+  private lazy val logger = LogFactory.getLog("scoobi.LibJars")
 
   /**
    * @return the name of the directory to use when loading jars to the filesystem.
@@ -61,16 +63,23 @@ trait LibJars {
    * upload the jars which don't exist yet in the library directory on the cluster
    */
   def uploadLibJarsFiles(implicit configuration: ScoobiConfiguration) = if (upload) {
+    logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!FileSystems.isLocal)+")")
     FileSystems.mkdir(libjarsDirectory)
+
+    logger.debug("uploading the jars\n"+jars.mkString("\n"))
     FileSystems.uploadNewJars(jars.map(url => new File(url.getFile)), libjarsDirectory)
     configureJars
-  }
+  } else logger.debug("no jars are uploaded because upload=false")
+
 
   /**
    * @return a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
    */
   def configureJars(implicit configuration: ScoobiConfiguration) = if (upload) {
+    logger.debug("adding the jars paths to the distributed cache")
     uploadedJars.foreach(path => DistributedCache.addFileToClassPath(path, configuration))
+
+    logger.debug("adding the jars classpaths to the mapred.classpath variable")
     configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }
 }
