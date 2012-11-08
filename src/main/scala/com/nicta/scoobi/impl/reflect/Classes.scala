@@ -40,7 +40,7 @@ trait Classes {
 
   /** @return true if at least one of the entries in the main jar is a Scoobi class, but not an example */
   def mainJarContainsDependencies = {
-    val scoobiEntry = mainJarEntries.find(_.getName.contains(classOf[DList[Int]].getName.split("\\.").mkString("/"))).
+    val scoobiEntry = mainJarEntries.find(_.getName.contains(filePath(classOf[DList[Int]]))).
                       debug("Scoobi entry found in the main jar")
     scoobiEntry.isDefined
   }
@@ -78,10 +78,10 @@ trait Classes {
     Option(clazz.getClassLoader).getOrElse(ClassLoader.getSystemClassLoader)
 
   private def loadClass[T](name: String) =
-    loadClassOption(name).getOrElse(getClass.asInstanceOf[Class[T]])
+    loadClassOption(name).orElse(None.debug("could not load class "+name)).getOrElse(getClass.asInstanceOf[Class[T]])
 
   private def loadClassOption[T](name: String): Option[Class[T]] =
-    tryo(getClass.getClassLoader.loadClass(name).asInstanceOf[Class[T]])
+    tryo(getClass.getClassLoader.loadClass(name).asInstanceOf[Class[T]])(e => e.debug(ex => "could not load class "+name+" because "+e.getMessage))
 }
 
 object Classes extends Classes
