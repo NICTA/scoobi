@@ -21,12 +21,7 @@ object WordCount extends ScoobiApp {
   def run() {
     // Firstly we load up all the (new-line-separated) words into a DList
     val lines: DList[String] =
-      if (args.length == 0)
-        DList(generateWords(5000): _*)
-      else if (args.length == 2)
-        fromTextFile(args(0))
-      else
-        sys.error("Expecting input and output path, or no arguments at all.")
+      DList(generateWords(5000): _*)
 
     // Now what we want to do, is record the frequency of words. So we'll convert it to a key-value
     // pairs where the key is the word, and the value the frequency (which to start with is 1)
@@ -39,7 +34,7 @@ object WordCount extends ScoobiApp {
     // So what we want to do, is combine all the numbers into a single value (the frequency)
     val combined: DList[(String, Int)] = grouped.combine((_+_))
     
-    val outputDirectory: String = if (args.length == 0) "word-count-results" else args(1) 
+    val outputDirectory: String = "word-count-results"
 
     // We can evaluate this, and write it to a text file
     persist(toTextFile(combined, outputDirectory))

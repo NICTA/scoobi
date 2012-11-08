@@ -9,16 +9,20 @@ import scala.Option
 import java.net.{URL, URLDecoder}
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+import core.DList
+import monitor.Loggable._
+import org.apache.commons.logging.LogFactory
 
 /**
  * Utility methods for accessing classes and methods
  */
-//private[scoobi]
 trait Classes {
+
+  private implicit lazy val logger = LogFactory.getLog("scoobi.Classes")
 
   /** @return the class with a main method calling this code */
   def mainClass =
-    loadClass(mainStackElement.getClassName)
+    loadClass(mainStackElement.getClassName.debug("the main class for this application is"))
 
   /** @return the first stack element being a main method (from the bottom of the stack) */
   def mainStackElement: StackTraceElement =
@@ -34,9 +38,12 @@ trait Classes {
   def mainJarEntries: Seq[JarEntry] =
     findContainingJar(mainClass).map(jarEntries).getOrElse(Seq())
 
-  /** @return true if at least one of the entries in the main jar is a Scoobi class */
-  def mainJarContainsDependencies =
-    mainJarEntries.exists(e => e.getName.startsWith("com/nicta/scoobi") || e.getName.matches(".*scoobi_.*.jar"))
+  /** @return true if at least one of the entries in the main jar is a Scoobi class, but not an example */
+  def mainJarContainsDependencies = {
+    val scoobiEntry = mainJarEntries.find(_.getName.contains(classOf[DList[Int]].getName.split("\\.").mkString("/"))).
+                      debug("Scoobi entry found in the main jar")
+    scoobiEntry.isDefined
+  }
 
   /** @return the entries for a given jar path */
   def jarEntries(jarPath: String): Seq[JarEntry] = {
@@ -51,7 +58,8 @@ trait Classes {
 
   /** Find the location of JAR that contains a particular class. */
   def findContainingJar(clazz: Class[_]): Option[String] =
-    loader(clazz).getResources(filePath(clazz)).toIndexedSeq.view.filter(_.getProtocol == "jar").map(filePath).headOption
+    loader(clazz).getResources(filePath(clazz)).toIndexedSeq.view.filter(_.getProtocol == "jar").map(filePath).headOption.
+      debug("the jar containing the class "+clazz.getName+" is")
 
   /** Return the class file path string as specified in a JAR for a give class. */
   def filePath(clazz: Class[_]): String =
@@ -76,5 +84,4 @@ trait Classes {
     tryo(getClass.getClassLoader.loadClass(name).asInstanceOf[Class[T]])
 }
 
-//private[scoobi]
 object Classes extends Classes

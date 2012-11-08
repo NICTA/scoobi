@@ -92,6 +92,11 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
     "the Scoobi job name is used to create the working directory" ==> { workDir must contain("WordCountApplication") }
   }
 
+  "The default mapred-site.xml file must be added as a default resource on the configuration file "+
+  "as soon as we create a ScoobiConfiguration object" >> {
+    ScoobiConfiguration().get("mapred.job.tracker") must not beNull
+  }
+
   "In a ScoobiApp the upload of dependent jars depends on the nolibjar arguments and on the content of the jar containing the main class (fat jar or not)" >> {
     "nolibjars" | "fat jar" | "upload" |>
     true        ! true      ! false    |
