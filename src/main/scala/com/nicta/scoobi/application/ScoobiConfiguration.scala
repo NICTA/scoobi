@@ -38,11 +38,18 @@ import impl.monitor.Loggable._
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
  * added to the classpath.
  */
-case class ScoobiConfiguration(configuration: Configuration = asLoggable(new Configuration)(getLog("scoobi.ScoobiConfiguration")).debug { c: Configuration =>
-                                 Seq(c.get("mapred.job.tracker", "no job tracker defined"), c.get("fs.defaultFS", "no fs defined")).mkString("important properties", "\n", "")
-                               },
+
+case class ScoobiConfiguration(configuration: Configuration = new Configuration,
                                var userJars: Set[String] = Set(),
                                var userDirs: Set[String] = Set()) {
+
+  /**
+   * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
+   * When creating a new JobConf object the mapred-site.xml file is going to be added as a new default resource and all
+   * existing configuration objects are going to be reloaded with new properties
+   */
+  loadMapredSiteProperties
+  def loadMapredSiteProperties = new JobConf
 
   private implicit lazy val logger = getLog("scoobi.ScoobiConfiguration")
 
