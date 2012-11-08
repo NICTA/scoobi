@@ -45,9 +45,9 @@ trait FileSystems {
   def uploadNewFiles(sourceFiles: Seq[File], dest: String)
                     (onRemoteFiles: Path => Path = identity)(implicit configuration: ScoobiConfiguration): Seq[File] = {
 
-    val uploaded = listFiles(dest)
+    val uploaded = listPaths(dest)
 
-    val newFiles = sourceFiles.filterNot((f: File) => uploaded.map(_.getName).contains(f.getName))
+    val newFiles = sourceFiles.filterNot((f: File) => uploaded.map(_.getName).contains(f.getName)).filter(_.exists)
     newFiles.map { file: File =>
       fileSystem.copyFromLocalFile(new Path(file.getPath), new Path(dest))
     }
@@ -56,11 +56,17 @@ trait FileSystems {
     sourceFiles
   }
 
-  /** @return the list of files in a given directory on the file system */
-  def listFiles(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = listFiles(new Path(dest))
+  /** @return a non-null sequence of files contained in a given directory */
+  def listFiles(path: String): Seq[File] = Option(new File(path).listFiles).map(_.toSeq).getOrElse(Seq())
+
+  /** @return a non-null sequence of file paths contained in a given directory */
+  def listFilePaths(path: String): Seq[String] = listFiles(path).map(_.getPath)
 
   /** @return the list of files in a given directory on the file system */
-  def listFiles(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
+  def listPaths(dest: String)(implicit configuration: ScoobiConfiguration): Seq[Path] = listPaths(new Path(dest))
+
+  /** @return the list of files in a given directory on the file system */
+  def listPaths(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
     if (!fileSystem.exists(dest)) Seq()
     else                          fileSystem.listStatus(dest).map(_.getPath)
   }
@@ -88,8 +94,9 @@ trait FileSystems {
   def fileSystem(implicit configuration: ScoobiConfiguration) = FileSystem.get(configuration)
 
   /**
-   * @return true if the file system is loacl
+   * @return true if the file system is local
    */
+  private[scoobi]
   def isLocal(implicit configuration: ScoobiConfiguration) = fileSystem.isInstanceOf[LocalFileSystem]
 
   /** @return a function moving a Path to a given directory */

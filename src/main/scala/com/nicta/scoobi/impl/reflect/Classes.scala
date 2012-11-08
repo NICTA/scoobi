@@ -85,7 +85,7 @@ trait Classes {
 
   /** @return the file path corresponding to a full URL */
   private def filePath(url: URL): String =
-    filePath(URLDecoder.decode(url.getPath.replaceAll("file:", "").replaceAll("\\+", "%2B").replaceAll("!.*$", ""), "UTF-8"))
+    URLDecoder.decode(url.getPath.replaceAll("file:", "").replaceAll("\\+", "%2B").replaceAll("!.*$", ""), "UTF-8")
 
   /** @return the classLoader for a given class */
   private def loader(clazz: Class[_]) =

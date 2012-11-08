@@ -22,6 +22,8 @@ import java.io.File
 import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
+import impl.monitor.Loggable._
+import impl.control.SystemProperties
 
 /**
  * This trait defines:
@@ -30,7 +32,10 @@ import org.apache.commons.logging.LogFactory
  * - a method to upload and reference them on the classpath for cluster jobs
  */
 trait LibJars {
-  private lazy val logger = LogFactory.getLog("scoobi.LibJars")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.LibJars")
+
+  protected[scoobi] lazy val fss: FileSystems = FileSystems
+  protected[scoobi] lazy val sysProps: SystemProperties = SystemProperties
 
   /**
    * @return the name of the directory to use when loading jars to the filesystem.
@@ -42,32 +47,58 @@ trait LibJars {
   def upload = true
 
   /**
+   * @return the list of library jars to upload
+   */
+  def jars: Seq[URL] = classLoaderJars ++ hadoopClasspathJars
+
+  /**
    * @return the list of library jars to upload, provided by the jars loaded by the current classloader
    */
-  def jars: Seq[URL] = Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader].getURLs.filter { url =>
-    !url.getFile.contains("hadoop-core") &&
-    (Seq(".ivy2", ".m2").exists(url.getFile.contains) || url.getFile.contains("scala-library"))
-  }
+  private[scoobi]
+  def classLoaderJars: Seq[URL] = Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader].getURLs.filter(url => !url.getFile.contains("hadoop-core")).
+                        debug(jars => "the jars found with the classloader are\n"+jars.mkString("\n"))
 
+
+  /**
+   * @return the list of library jars to upload, provided by the jars found from the HADOOP_CLASSPATH variable
+   */
+  private[scoobi]
+  def hadoopClasspathJars: Seq[URL] = hadoopClasspaths.flatMap(jarsOnPath).
+    debug(jars => "the jars found with the $HADOOP_CLASSPATH variable are\n"+jars.mkString("\n"))
+
+  /** @return the list of paths on the HADOOP_CLASSPATH variable */
+  private[scoobi]
+  def hadoopClasspaths = sysProps.getEnv("HADOOP_CLASSPATH").orElse(None.debug("no HADOOP_CLASSPATH variable is set")).
+                         map(_.split(File.pathSeparatorChar).toSeq).getOrElse(Seq())
+
+  /** @return the list of jars for a given path, either a single jar or all the jars in a directory */
+  private[scoobi]
+  def jarsOnPath(path: String): Seq[URL] = {
+    if (path.endsWith(".jar"))    Seq(new File(path).toURI.toURL)
+    else if (path.endsWith("/*")) fss.listFilePaths(path.replace("/*", "")).flatMap(jarsOnPath)
+    else                          Seq()
+  }
   /**
    * @return the remote jars currently on the cluster
    */
-  def uploadedJars(implicit configuration: ScoobiConfiguration): Seq[Path] = FileSystems.listFiles(libjarsDirectory)
+  def uploadedJars(implicit configuration: ScoobiConfiguration): Seq[Path] = fss.listPaths(libjarsDirectory)
 
   /**
    * @return delete the remote jars currently on the cluster
    */
-  def deleteJars(implicit configuration: ScoobiConfiguration) { FileSystems.deleteFiles(libjarsDirectory) }
+  def deleteJars(implicit configuration: ScoobiConfiguration) { fss.deleteFiles(libjarsDirectory) }
 
   /**
    * upload the jars which don't exist yet in the library directory on the cluster
    */
   def uploadLibJarsFiles(implicit configuration: ScoobiConfiguration) = if (upload) {
-    logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!FileSystems.isLocal)+")")
-    FileSystems.mkdir(libjarsDirectory)
+    logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!fss.isLocal)+")")
+    fss.mkdir(libjarsDirectory)
 
-    logger.debug("uploading the jars\n"+jars.mkString("\n"))
-    FileSystems.uploadNewJars(jars.map(url => new File(url.getFile)), libjarsDirectory)
+    val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists || !f.isDirectory)
+
+    logger.debug("uploading the jars\n"+jarFiles.mkString("\n"))
+    fss.uploadNewJars(jarFiles, libjarsDirectory)
     configureJars
   } else logger.debug("no jars are uploaded because upload=false")
 
@@ -83,4 +114,4 @@ trait LibJars {
     configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }
 }
-
+object LibJars extends LibJars

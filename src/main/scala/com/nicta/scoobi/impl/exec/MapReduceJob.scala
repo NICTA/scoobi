@@ -16,6 +16,7 @@
 package com.nicta.scoobi
 package impl
 package exec
+
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
@@ -41,13 +42,14 @@ import reflect.Classes._
 import ScoobiConfiguration._
 import scala.collection.mutable.{Set => MSet, Map => MMap}
 import ChannelOutputFormat._
+import monitor.Loggable._
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int) {
   protected val fileSystems: FileSystems = FileSystems
   import fileSystems._
 
-  private lazy val logger = LogFactory.getLog("scoobi.Step")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.Step")
 
   /* Keep track of all the mappers for each input channel. */
   private val mappers: MMap[DataSource[_,_,_], MSet[(Env[_], TaggedMapper[_,_,_,_])]] = MMap.empty
@@ -102,11 +104,11 @@ class MapReduceJob(stepId: Int) {
 
     val jar = new JarBuilder
     job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
-    configureJar(jar)
     configureKeysAndValues(jar, job)
     configureMappers(jar, job)
     configureCombiners(jar, job)
     configureReducers(jar, job)
+    configureJar(jar)
     jar.close(configuration)
 
     job
@@ -263,7 +265,7 @@ class MapReduceJob(stepId: Int) {
     val fs = configuration.fileSystem
 
     /* Move named file-based sinks to their correct output paths. */
-    val outputFiles = listFiles(configuration.temporaryOutputDirectory)
+    val outputFiles = listPaths(configuration.temporaryOutputDirectory)
 
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks.zipWithIndex.foreach { case (sink, ix) =>

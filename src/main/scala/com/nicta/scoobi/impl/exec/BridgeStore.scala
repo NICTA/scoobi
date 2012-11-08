@@ -99,7 +99,7 @@ case class BridgeStore[A]()
 
       val key = NullWritable.get
       lazy val value: ScoobiWritable[A] =
-        Class.forName(readers.head.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
+        getClass.getClassLoader.loadClass(readers.head.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()
