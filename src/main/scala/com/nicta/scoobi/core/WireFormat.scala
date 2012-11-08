@@ -155,8 +155,6 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   }
 
 
-
-
   /**
    * "Primitive" types.
    */
