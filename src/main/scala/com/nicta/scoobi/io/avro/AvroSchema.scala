@@ -34,7 +34,7 @@ import core._
 /** Defines the Avro schema for a given Scala type. */
 trait AvroSchema[A] {
   type AvroType
-  val schema: Schema
+  def schema: Schema
   def fromAvro(x: AvroType): A
   def toAvro(x: A): AvroType
 }
@@ -356,8 +356,8 @@ object AvroSchema {
    /* Actual Avro Generic/SpecificRecord support */
   implicit def AvroRecordSchema[T <: GenericContainer](implicit r : Manifest[T]) = new AvroSchema[T] {
     val sclass = r.erasure.asInstanceOf[Class[T]]
-    val record = sclass.newInstance
-    val schema : Schema =	record.getSchema
+    def record = sclass.newInstance
+    def schema : Schema =	record.getSchema
     type AvroType = T
     def fromAvro(x : T) : T = x
     def toAvro(x: T) : T = x
