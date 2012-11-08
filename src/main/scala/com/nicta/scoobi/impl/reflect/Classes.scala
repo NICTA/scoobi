@@ -9,11 +9,11 @@ import scala.Option
 import java.net.{URL, URLDecoder}
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+import core.DList
 
 /**
  * Utility methods for accessing classes and methods
  */
-//private[scoobi]
 trait Classes {
 
   /** @return the class with a main method calling this code */
@@ -36,8 +36,7 @@ trait Classes {
 
   /** @return true if at least one of the entries in the main jar is a Scoobi class, but not an example */
   def mainJarContainsDependencies =
-    mainJarEntries.exists(e => (e.getName.startsWith("com/nicta/scoobi") && !e.getName.contains("examples")) ||
-                                e.getName.matches(".*scoobi_.*.jar"))
+    mainJarEntries.exists(_.getName.contains(classOf[DList[Int]].getName.split("\\.").mkString("/")))
 
   /** @return the entries for a given jar path */
   def jarEntries(jarPath: String): Seq[JarEntry] = {
@@ -77,5 +76,4 @@ trait Classes {
     tryo(getClass.getClassLoader.loadClass(name).asInstanceOf[Class[T]])
 }
 
-//private[scoobi]
 object Classes extends Classes
