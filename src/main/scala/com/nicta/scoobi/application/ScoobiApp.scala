@@ -46,6 +46,10 @@ import impl.monitor.Loggable._
  * method: `override def upload = false` or by passing the 'nolibjars' argument on the command line
  */
 trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
+  // set the default HadoopLogFactory in order to intercept any log calls that will
+  // be done when the Configuration object is loaded
+  HadoopLogFactory.setLogFactory()
+
   private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiApp")
 
   /** store the value of the configuration in a lazy val, so that it can be updated and still be referenced */
