@@ -82,7 +82,7 @@ object AvroInput extends AvroParsingImplicits {
             Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
               val avroFile = new FsInput(filePath, sc);
               try {
-                val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[AnyRef]()).getSchema
+                val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[sch.AvroType]()).getSchema
                 val readerSchema = sch.schema
 
                 // resolve the two schemas.
