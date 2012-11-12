@@ -30,6 +30,6 @@ trait UploadedLibJars extends SpecificationStructure with HadoopExamples with Sc
   override def map(fs: =>Fragments) = fs.insert(uploadStep)
 
   /** create a Step to upload the jars on the cluster */
-  def uploadStep = Step(if (!isLocalOnly) uploadLibJarsFiles(context.outside))
+  def uploadStep = Step(if (!isLocalOnly) uploadLibJarsFiles(cluster.outside))
 
 }
