@@ -95,7 +95,7 @@ trait LibJars {
     logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!fss.isLocal)+")")
     fss.mkdir(libjarsDirectory)
 
-    val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists || !f.isDirectory)
+    val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists && !f.isDirectory)
 
     logger.debug("uploading the jars\n"+jarFiles.mkString("\n"))
     fss.uploadNewJars(jarFiles, libjarsDirectory)
