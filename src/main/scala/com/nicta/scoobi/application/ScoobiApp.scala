@@ -45,10 +45,7 @@ import impl.monitor.Loggable._
  * (if not already there, @see LibJars for the details). This behavior can be switched off by overriding the `upload`
  * method: `override def upload = false` or by passing the 'nolibjars' argument on the command line
  */
-trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
-  // set the default HadoopLogFactory in order to intercept any log calls that will
-  // be done when the Configuration object is loaded
-  HadoopLogFactory.setLogFactory()
+trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop with HadoopLogFactoryInitialisation {
 
   private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiApp")
 
