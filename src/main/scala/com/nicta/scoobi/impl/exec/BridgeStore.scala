@@ -35,6 +35,7 @@ import rtt._
 import Configurations._
 import application.ScoobiConfiguration
 import application.ScoobiConfiguration._
+import java.net.URLClassLoader
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
@@ -98,8 +99,11 @@ case class BridgeStore[A]()
       }
 
       val key = NullWritable.get
+
+      /** instantiate a ScoobiWritable from the Writable class generated for this BridgeStore */
       lazy val value: ScoobiWritable[A] =
-        getClass.getClassLoader.loadClass(readers.head.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
+        rtClass.map(_.clazz).getOrElse(throw new Exception("No rt class is set on the BridgeStore "+this)).
+          newInstance.asInstanceOf[ScoobiWritable[A]]
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()
