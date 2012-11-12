@@ -135,58 +135,58 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   def modeIs(mode: Mode.Value) = {
     logger.debug("setting the scoobi execution mode as "+mode)
 
-    set("scoobi.mode", mode.toString)
+    set(SCOOBI_MODE, mode.toString)
     this
   }
   /** @return the current mode */
-  def mode = Mode.withName(configuration.get("scoobi.mode", Mode.Local.toString))
+  def mode = Mode.withName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
 
   /**
    * @return true if the dependent jars have been uploaded
    */
-  def uploadedLibJars = configuration.getBoolean("scoobi.uploadedlibjars", false)
+  def uploadedLibJars = configuration.getBoolean(UPLOADED_LIBJARS, false)
 
   /**
    * set a flag in order to know if jars have been uploaded before jobs are defined
    */
   def setUploadedLibJars(uploaded: Boolean) {
-    set("scoobi.uploadedlibjars", uploaded.toString)
+    set(UPLOADED_LIBJARS, uploaded.toString)
   }
 
   /** Set an upper bound for the number of reducers to be used in M/R jobs */
   def setMaxReducers(maxReducers: Int) {
-    configuration.setInt("scoobi.mapreduce.reducers.max", maxReducers)
+    configuration.setInt(MAPREDUCE_REDUCERS_MAX, maxReducers)
   }
 
   /** Get the max number of reducers to use in M/R jobs */
-  def getMaxReducers = configuration.getInt("scoobi.mapreduce.reducers.max", Int.MaxValue)
+  def getMaxReducers = configuration.getInt(MAPREDUCE_REDUCERS_MAX, Int.MaxValue)
 
   /** Set a lower bound for the number of reducers to be used in M/R jobs */
   def setMinReducers(minReducers: Int) {
-    configuration.setInt("scoobi.mapreduce.reducers.min", minReducers)
+    configuration.setInt(MAPREDUCE_REDUCERS_MIN, minReducers)
   }
 
   /** Get the min number of reducers to use in M/R jobs */
-  def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
+  def getMinReducers = configuration.getInt(MAPREDUCE_REDUCERS_MIN, 1)
 
   /**
    * Set the number of input bytes per reducer. This is used to control the number of
    * reducers based off the size of the input data to the M/R job.
    */
   def setBytesPerReducer(sizeInBytes: Long) {
-    configuration.setLong("scoobi.mapreduce.reducers.bytesperreducer", sizeInBytes)
+    configuration.setLong(MAPREDUCE_REDUCERS_BYTESPERREDUCER, sizeInBytes)
   }
 
   /**
    * Get the number of input bytes per reducer. Default is 1GiB.
    */
-  def getBytesPerReducer = configuration.getLong("scoobi.mapreduce.reducers.bytesperreducer", 1024 * 1024 * 1024)
+  def getBytesPerReducer = configuration.getLong(MAPREDUCE_REDUCERS_BYTESPERREDUCER, 1024 * 1024 * 1024)
 
   /**
    * set a new job name to help recognize the job better
    */
   def jobNameIs(name: String) {
-    set("scoobi.jobname", name)
+    set(JOB_NAME, name)
   }
 
   /**
@@ -197,7 +197,7 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
   /**
    * @return the job name if one is defined
    */
-  def jobName: Option[String] = Option(configuration.get("scoobi.jobname"))
+  def jobName: Option[String] = Option(configuration.get(JOB_NAME))
 
   /* Timestamp used to mark each Scoobi working directory. */
   private def timestamp = {
@@ -214,8 +214,8 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
 
   /**Scoobi's configuration. */
   lazy val conf = {
-    configuration.set("scoobi.jobid", jobId)
-    configuration.setInt("scoobi.progress.time", 500)
+    configuration.set(JOB_ID, jobId)
+    configuration.setInt(PROGRESS_TIME, 500)
     // this setting avoids unnecessary warnings
     configuration.set("mapred.used.genericoptionsparser", "true")
     configuration
