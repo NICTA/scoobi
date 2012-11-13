@@ -44,7 +44,7 @@ trait LibJars {
   def libjarsDirectory = "libjars/"
 
   /** this variable controls if the upload must be done at all */
-  def upload = true
+  def upload: Boolean = true
 
   /**
    * @return the list of library jars to upload
@@ -55,8 +55,9 @@ trait LibJars {
    * @return the list of library jars to upload, provided by the jars loaded by the current classloader
    */
   private[scoobi]
-  def classLoaderJars: Seq[URL] = Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader].getURLs.filter(url => !url.getFile.contains("hadoop-core")).
-                        debug(jars => "the jars found with the classloader are\n"+jars.mkString("\n"))
+  lazy val classLoaderJars: Seq[URL] =
+    Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader].getURLs.filter(url => !url.getFile.contains("hadoop-core")).
+      debugNot(_.isEmpty, jars => "jars found with the classloader\n"+jars.mkString("\n"))
 
 
   /**
@@ -64,11 +65,11 @@ trait LibJars {
    */
   private[scoobi]
   def hadoopClasspathJars: Seq[URL] = hadoopClasspaths.flatMap(jarsOnPath).
-    debug(jars => "the jars found with the $HADOOP_CLASSPATH variable are\n"+jars.mkString("\n"))
+    debugNot(_.isEmpty, jars => "the jars found with the $HADOOP_CLASSPATH variable are\n"+jars.mkString("\n"))
 
   /** @return the list of paths on the HADOOP_CLASSPATH variable */
   private[scoobi]
-  def hadoopClasspaths = sysProps.getEnv("HADOOP_CLASSPATH").orElse(None.debug("no HADOOP_CLASSPATH variable is set")).
+  def hadoopClasspaths = sysProps.getEnv("HADOOP_CLASSPATH").orElse(None.debug(_ => true, _ => "HADOOP_CLASSPATH variable is not set")).
                          map(_.split(File.pathSeparatorChar).toSeq).getOrElse(Seq())
 
   /** @return the list of jars for a given path, either a single jar or all the jars in a directory */
@@ -103,7 +104,6 @@ trait LibJars {
 
       val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists && !f.isDirectory)
 
-      logger.debug("uploading the jars\n"+jarFiles.mkString("\n"))
       fss.uploadNewJars(jarFiles, libjarsDirectory)
       configureJars
     } else logger.debug("no jars are uploaded because upload=false")
