@@ -95,7 +95,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
   }
 
   /** upload the jars unless 'nolibjars' has been set on the command-line' */
-  override lazy val upload = (!noLibJars && !mainJarContainsDependencies).
+  override lazy val upload: Boolean = (!noLibJars && !mainJarContainsDependencies).
     debug("upload is ", " because nolibjars is: "+noLibJars+" and the main jar is a 'fat' jar: "+mainJarContainsDependencies)
 
 

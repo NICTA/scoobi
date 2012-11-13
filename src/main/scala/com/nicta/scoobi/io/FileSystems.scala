@@ -21,11 +21,15 @@ import org.apache.hadoop.fs.{FileUtil, LocalFileSystem, Path, FileSystem}
 import org.apache.hadoop.filecache.DistributedCache
 import application._
 import ScoobiConfiguration._
+import org.apache.commons.logging.LogFactory
+import impl.monitor.Loggable._
 /**
  *
  */
 private [scoobi]
 trait FileSystems {
+
+  private implicit val logger = LogFactory.getLog("scoobi.FileSystems")
 
   /**
    * Upload additional local jars to a destination directory on the hdfs
@@ -47,7 +51,8 @@ trait FileSystems {
 
     val uploaded = listPaths(dest)
 
-    val newFiles = sourceFiles.filterNot((f: File) => uploaded.map(_.getName).contains(f.getName)).filter(_.exists)
+    val newFiles = sourceFiles.filter(_.exists).filterNot(isOldFile(uploaded))
+    logger.debugNot(newFiles.isEmpty, "uploading files\n"+newFiles.mkString("\n"))
     newFiles.map { file: File =>
       fileSystem.copyFromLocalFile(new Path(file.getPath), new Path(dest))
     }
@@ -55,6 +60,13 @@ trait FileSystems {
     uploaded foreach onRemoteFiles
     sourceFiles
   }
+
+  /** @return true if a file can be found in the existing files and if its size has not changed */
+  def isOldFile(existingFiles: Seq[Path])(implicit configuration: ScoobiConfiguration) = (file: File) =>
+    existingFiles.exists { (path:Path) =>
+      path.getName.contains(file.getName) &&
+      fileStatus(path).getLen == file.length
+    }.debugNot("the file "+file.getName+" was not found on the cluster or has changed")
 
   /** @return a non-null sequence of files contained in a given directory */
   def listFiles(path: String): Seq[File] = Option(new File(path).listFiles).map(_.toSeq).getOrElse(Seq())
@@ -115,6 +127,9 @@ trait FileSystems {
 
   /** @return the path with a trailing slash */
   def dirPath(s: String) = if (s endsWith "/") s else s+"/"
+
+  /** @return the file status of a file */
+  def fileStatus(path: Path)(implicit sc: ScoobiConfiguration) = fileSystem.getFileStatus(path)
 }
 
 private [scoobi]
