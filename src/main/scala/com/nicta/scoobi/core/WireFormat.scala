@@ -28,8 +28,7 @@ import org.apache.avro.mapred.{AvroKey, AvroWrapper}
 import org.apache.avro.hadoop.io.AvroSerialization
 import org.apache.hadoop.io.serializer.{Serializer, Deserializer}
 import org.apache.avro.reflect.ReflectDatumWriter
-import org.apache.avro.generic.{GenericDatumWriter, GenericContainer}
-import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData}
+import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
 import org.apache.avro.io.DecoderFactory
 import collection.mutable.ArrayBuffer
 
@@ -131,8 +130,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * Avro types
    */
-   implicit def AvroFmt[T <: GenericContainer : Manifest : AvroSchema] = new AvroWireFormat[T]
-  class AvroWireFormat[T <: GenericContainer : Manifest : AvroSchema] extends WireFormat[T] {
+   implicit def AvroFmt[T <: SpecificRecordBase : Manifest : AvroSchema] = new AvroWireFormat[T]
+  class AvroWireFormat[T <: SpecificRecordBase : Manifest : AvroSchema] extends WireFormat[T] {
     def toWire(x : T, out : DataOutput) {
       val sch = implicitly[AvroSchema[T]].schema
       val bytestream = new ByteArrayOutputStream()
