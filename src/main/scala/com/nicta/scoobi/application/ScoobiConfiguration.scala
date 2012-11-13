@@ -263,7 +263,8 @@ case class ScoobiConfiguration(configuration: Configuration = new Configuration,
 
   def setScoobiDir(dir: String)      = { set("scoobi.dir", dirPath(dir)); this }
 
-  lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", FileSystem.get(configuration).getHomeDirectory.toUri.getPath + "/.scoobi/")
+  def defaultScoobiDir                    = "/tmp/scoobi-"+sys.props.get("user.name").getOrElse("user")
+  lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", defaultScoobiDir)
   lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
   lazy val scoobiDirectory: Path          = new Path(scoobiDir)
   lazy val workingDirectory: Path         = new Path(workingDir)
