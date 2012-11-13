@@ -25,11 +25,22 @@ class LibJarsSpec extends UnitSpecification {
     hadoopClasspathJars must have size (5)
   }
 
+  "Jar upload".newp
+
+  "if deleteLibJars = true, the libjars directory must be deleted before the upload is done" >> new libjars {
+    uploadLibJarsFiles(deleteLibJarsFirst = true)(sc)
+    deleted must beSome("libjars/")
+  }
+
 
   /**
    * This mimicks the situation where there are 5 jars to be found, with one single entry and 2 directories
    */
   trait libjars extends LibJars with Scope {
+    var deleted: Option[String] = None
+
+    implicit val sc = ScoobiConfiguration()
+
     override lazy val sysProps = new SystemProperties {
       override def getEnv(name: String) = Map("HADOOP_CLASSPATH" -> Seq("/tmp/lib0/*", "/tmp/lib/*", "home/lib/one.jar").mkString(File.pathSeparator)).get(name)
     }
@@ -37,6 +48,10 @@ class LibJarsSpec extends UnitSpecification {
       override def listFilePaths(path: String) =
         if (path == "/tmp/lib") Seq("/tmp/lib/a.jar", "/tmp/lib/b.jar")
         else Seq("/tmp/lib0/a0.jar", "/tmp/lib0/b0.jar")
+
+      override def deleteFiles(dest: String)(implicit configuration: ScoobiConfiguration) {
+        deleted = Some(dest)
+      }
     }
   }
 }
