@@ -82,11 +82,6 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
     logger.debug("setting the mapreduce classpath so that the user classpath takes precedence")
     configuration.setBoolean("mapreduce.task.classpath.user.precedence", true)
 
-    // delete libjars on the cluster
-    if (deleteLibJars) {
-      logger.debug("delete existing lib jars on the cluster")
-      deleteJars
-    }
     // include libjars in the ScoobiJob jar
     if (includeLibJars) {
       logger.debug("include jars passed with the -libjars arguments")

@@ -91,16 +91,23 @@ trait LibJars {
   /**
    * upload the jars which don't exist yet in the library directory on the cluster
    */
-  def uploadLibJarsFiles(implicit configuration: ScoobiConfiguration) = if (upload) {
-    logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!fss.isLocal)+")")
-    fss.mkdir(libjarsDirectory)
+  def uploadLibJarsFiles(deleteLibJarsFirst: Boolean = false)(implicit configuration: ScoobiConfiguration) = {
+    if (deleteLibJarsFirst) {
+      logger.debug("delete existing lib jars on the cluster")
+      deleteJars
+    }
 
-    val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists && !f.isDirectory)
+    if (upload) {
+      logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!fss.isLocal)+")")
+      fss.mkdir(libjarsDirectory)
 
-    logger.debug("uploading the jars\n"+jarFiles.mkString("\n"))
-    fss.uploadNewJars(jarFiles, libjarsDirectory)
-    configureJars
-  } else logger.debug("no jars are uploaded because upload=false")
+      val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists && !f.isDirectory)
+
+      logger.debug("uploading the jars\n"+jarFiles.mkString("\n"))
+      fss.uploadNewJars(jarFiles, libjarsDirectory)
+      configureJars
+    } else logger.debug("no jars are uploaded because upload=false")
+  }
 
 
   /**
