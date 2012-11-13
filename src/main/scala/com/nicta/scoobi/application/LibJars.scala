@@ -98,7 +98,7 @@ trait LibJars {
     }
 
     if (upload) {
-      logger.debug("creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!fss.isLocal)+")")
+      logger.debugNot(fss.exists(libjarsDirectory), "creating a libjars directory at "+libjarsDirectory+" (file system is remote: "+(!fss.isLocal)+")")
       fss.mkdir(libjarsDirectory)
 
       val jarFiles = jars.map(url => new File(url.getFile)).filter(f => f.exists && !f.isDirectory)
