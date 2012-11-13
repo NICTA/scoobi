@@ -38,10 +38,9 @@ trait LibJars {
   protected[scoobi] lazy val sysProps: SystemProperties = SystemProperties
 
   /**
-   * @return the name of the directory to use when loading jars to the filesystem.
-   *         the path which will be used will be relative to the user home on the cluster
+   * @return the path of the directory to use when loading jars to the filesystem.
    */
-  def libjarsDirectory = "libjars/"
+  def libjarsDirectory = fss.dirPath(sysProps.get("scoobi.libjarsdir").getOrElse("libjars"))
 
   /** this variable controls if the upload must be done at all */
   def upload: Boolean = true

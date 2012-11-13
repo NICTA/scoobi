@@ -32,6 +32,18 @@ class LibJarsSpec extends UnitSpecification {
     deleted must beSome("libjars/")
   }
 
+  "the jars are uploaded in a `libjars` directory" >> {
+    "by default that directory is `libjars`" >> new libjars {
+      libjarsDirectory === "libjars/"
+    }
+    "but this can be overridden by the scoobi.libjarsdir property" >> new libjars {
+      override lazy val sysProps = new SystemProperties {
+        override def get(name: String) = Some("/tmp/jars")
+      }
+      libjarsDirectory === "/tmp/jars/"
+    }
+  }
+
 
   /**
    * This mimicks the situation where there are 5 jars to be found, with one single entry and 2 directories
@@ -52,6 +64,11 @@ class LibJarsSpec extends UnitSpecification {
       override def deleteFiles(dest: String)(implicit configuration: ScoobiConfiguration) {
         deleted = Some(dest)
       }
+
+      // don't create any directory for the tests
+      override def mkdir(dir: String)(implicit configuration: ScoobiConfiguration) {}
+      // don't upload anything really
+      override def uploadNewJars(sourceFiles: Seq[File], dest: String)(implicit configuration: ScoobiConfiguration): Seq[File] = sourceFiles
     }
   }
 }
