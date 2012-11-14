@@ -100,7 +100,7 @@ libraryDependencies ++= Seq(
    )
 
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-                  "apache"   at "https://repository.apache.org/content/repositories/releases")
+                  "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 ```
 
 ### Maven assembly

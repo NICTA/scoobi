@@ -9,4 +9,4 @@ scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 libraryDependencies += "com.nicta" %% "scoobi" % "0.6.0-cdh3-SNAPSHOT"
 
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-                  "apache"   at "https://repository.apache.org/content/repositories/releases")
+                  "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")

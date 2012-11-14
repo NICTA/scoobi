@@ -7,8 +7,6 @@ version := "0.6.0-cdh3-SNAPSHOT"
 
 scalaVersion := "2.9.2"
 
-crossScalaVersions := Seq("2.9.1", "2.9.2")
-
 libraryDependencies ++= Seq(
   "javassist" % "javassist" % "3.12.1.GA",
   "org.apache.avro" % "avro-mapred" % "1.7.2",
@@ -32,7 +30,6 @@ libraryDependencies ++= Seq(
 (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen
 
 resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-                  "apache"   at "https://repository.apache.org/content/repositories/releases",
                   "sonatype" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Compilation */
@@ -48,3 +45,17 @@ javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
                     "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk")
 
 publishArtifact in packageDoc := false // disable building docs, as it takes so much time
+
+pomExtra :=
+    <build>
+        <plugins>
+             <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>notes/header.txt</header>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
