@@ -74,17 +74,18 @@ object FailingDataSource {
   def apply() = new FailingDataSource
 }
 case class ConstantStringRecordReader(value: String) extends RecordReader[String, String] {
-  def this() = this("")
-  def initialize(split: InputSplit, context: TaskAttemptContext) {}
-  def nextKeyValue() = false
+  private var read = false
+  def this() = this("value")
+  def initialize(split: InputSplit, context: TaskAttemptContext) { read = false }
+  def nextKeyValue() = { if (read) false else { read = true; true } }
   def getCurrentKey = value
   def getCurrentValue = value
   def getProgress = 0.0f
-  def close() {}
+  def close() { read = false }
 }
 
 class ConstantStringInputFormat(value: String) extends InputFormat[String, String] {
-  def this() = this("")
+  def this() = this("value")
   def getSplits(context: JobContext) = asList(ConstantStringInputSplit(value))
   def createRecordReader(split: InputSplit, context: TaskAttemptContext) = ConstantStringRecordReader(value)
 }
