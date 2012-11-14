@@ -32,7 +32,6 @@ libraryDependencies ++= Seq(
 
 resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-                  "apache"   at "https://repository.apache.org/content/repositories/releases",
                   "sonatype" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Compilation */
