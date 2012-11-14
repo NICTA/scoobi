@@ -85,6 +85,7 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
   tag("issue 166")
   "The default scoobi work directory should be /tmp/scoobi-${user.name}" >> {
     "the Scoobi temporary directory has been set" ==> { ScoobiConfiguration().scoobiDir must startWith("/tmp/scoobi-"+System.getProperty("user.name")) }
+    "the Scoobi temporary directory ends with /"  ==> { ScoobiConfiguration().scoobiDir must endWith("/") }
   }
 
   "It is possible to set a specific job name that will be used to create the job working directory" >> {
