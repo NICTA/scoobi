@@ -10,10 +10,10 @@ import java.util
 class ClassesSpec extends UnitSpecification {
   "the main jar contains all the dependent jars classes if it contains the DList scoobi class" >> {
     val classesWithDependencies = new Classes {
-      override def mainJarEntries = Seq(new JarEntry(classOf[DList[String]].getName.split("\\.").mkString("/")))
+      override def mainJarEntries = Seq(new JarEntry("com/nicta/scoobi/core/DList.class"))
     }
     val classesWithoutDependencies = new Classes {
-      override def mainJarEntries = Seq(new JarEntry(classOf[util.ArrayList[Int]].getName.split("\\.").mkString("/")))
+      override def mainJarEntries = Seq(new JarEntry("java/util/ArrayList.class"))
     }
 
     classesWithDependencies.mainJarContainsDependencies must beTrue

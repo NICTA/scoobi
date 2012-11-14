@@ -211,7 +211,7 @@ object Relational {
 
     /* Grouping type class instance that implements a secondary sort to ensure left
      * values come before right values. */
-    implicit val grouping = new Grouping[(K, Boolean)] {
+    val grouping = new Grouping[(K, Boolean)] {
       override def partition(key: (K, Boolean), num: Int): Int =
         implicitly[Grouping[K]].partition(key._1, num)
 
@@ -230,7 +230,7 @@ object Relational {
       }
     }
 
-    (left ++ right).groupByKey.parallelDo(dofn).groupBarrier
+    (left ++ right).groupByKeyWith(grouping).parallelDo(dofn).groupBarrier
   }
 
 }

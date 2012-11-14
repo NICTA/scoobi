@@ -1,0 +1,33 @@
+### New Features
+
+ * [issue 138](https://github.com/NICTA/scoobi/issues/138): support for the Avro Fixed type
+ * [issue 150](https://github.com/NICTA/scoobi/issues/150): added Avro Specific/GenericRecord support (thanks to @ccsevers!)
+ * [issue 156](https://github.com/NICTA/scoobi/issues/156): a `DObject[T]` can be transformed to a `DList[T]` with a single element and to a `DList[Iterable[S]]` if `T <:< Iterable[S]`
+ * [issue 157](https://github.com/NICTA/scoobi/issues/157): added a `groupByKeyWith` method to explicitly specify the `Grouping` instance to use
+ * [issue 160](https://github.com/NICTA/scoobi/issues/160): fast local mode with the [`inmemory` argument](http://bit.ly/ZGFQtK) to run the Scoobi code with Scala collections instead of Hadoop in order to faster check the application logic
+
+### Improvements
+
+ * [issue 142](https://github.com/NICTA/scoobi/issues/142): added a better error message if a Writable type can't be instantiated because it doesn't have a no-args constructor
+ * [issue 154](https://github.com/NICTA/scoobi/issues/154): `(A, B)` has a `Grouping` instance if `A` and `B` does
+ * [issue 163](https://github.com/NICTA/scoobi/issues/163): it is possible to set Scoobi's directory
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): when using a "lean" jar, the dependent jars can be found from the `$HADOOP_CLASSPATH` variable
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): upload a jar to the `libjars` directory in the cluster if its size has changed
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): the `libjars` directory can be changed with a system variable
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): added a `transpose` method for matrices
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): added `Grouping`, `Ordering` and `WireFormat` instances for tagged types
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): added lots of Scoobi debug log statements during the execution of a `ScoobiApp`
+ 
+### Changes
+
+ * [issue 166](https://github.com/NICTA/scoobi/issues/166): Scoobi's directory is `/tmp/scoobi-{user.name}/` by default now
+ * [issue 167](https://github.com/NICTA/scoobi/issues/167): the user classpath takes precedence by default -> `mapreduce.task.classpath.user.precedence=true`
+
+### Fixes
+
+ * [issue 142](https://github.com/NICTA/scoobi/issues/142): added a better error message if a Writable type can't be instantiated because it doesn't have a no-args constructor
+ * [issue 153](https://github.com/NICTA/scoobi/issues/153): generating _SUCCESS files in the output directories
+ * [issue 158](https://github.com/NICTA/scoobi/issues/158): made sure that Avro is working with both cdh3 and cdh4
+ * [issue 164](https://github.com/NICTA/scoobi/issues/164): fixed the User Guide display on low resolution screens
+ 
+------ 

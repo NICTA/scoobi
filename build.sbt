@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
   "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
-  "org.specs2" %% "specs2" % "1.12.3-SNAPSHOT" % "optional",
+  "org.specs2" %% "specs2" % "1.12.3" % "optional",
+  "com.chuusai" %% "shapeless" % "1.2.2",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "org.scalacheck" %% "scalacheck" % "1.9" % "test",
   "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
@@ -42,3 +43,8 @@ testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
                                      Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
 
 fork in Test := true
+
+javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
+                    "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk")
+
+publishArtifact in packageDoc := false // disable building docs, as it takes so much time

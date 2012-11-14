@@ -50,7 +50,9 @@ libraryDependencies += "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}"
 
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
-resolvers += "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
+resolvers ++= Seq(
+    "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
+    "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 ```
 
 ### Write your code

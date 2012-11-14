@@ -26,7 +26,7 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import rtt._
 import impl.Configurations._
-import application.{LocalHadoop, ScoobiConfiguration}
+import application.{HadoopLogFactory, LocalHadoop, ScoobiConfiguration}
 import testing.mutable.UnitSpecification
 import ScoobiConfiguration._
 

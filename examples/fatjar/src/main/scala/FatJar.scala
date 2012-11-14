@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi
-package impl
-package util
+package com.nicta.scoobi.examples
 
-/** Trait that is sub-classed by objects to provide sets of unique identifiers. */
-trait UniqueInt {
-  private var i: Int = -1
-  def get: Int = synchronized { i=i+1 ; i }
+import com.nicta.scoobi.Scoobi._
+
+object WordCount extends ScoobiApp {
+  def run() {
+    // Nothing to see here, just a barebones scoobi app.
+    // look at examples/fatjar/README.md for more information
+    val d = DList("This", "is", "uninteresting")
+    persist(toTextFile(d, "test", overwrite=true))
+  }
 }
+

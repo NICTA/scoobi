@@ -98,6 +98,19 @@ trait DList[A] {
     }
     parallelDo(dofn)
   }
+  
+   /** Group the values of a distributed list with key-value elements by key. And explicitly
+       take the grouping that should be used. This is best used when you're doing things like
+       secondary sorts, or groupings with strange logic (like making sure None's / nulls are
+       sprayed across all reducers.. */
+  def groupByKeyWith[K, V](grpK: Grouping[K])(implicit ev: Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
+    mK: Manifest[K],
+    wtK: WireFormat[K],
+    mV: Manifest[V],
+    wtV: WireFormat[V]): DList[(K, Iterable[V])] = {
+    implicit def grping = grpK
+    groupByKey
+  }
 
   /**For each element of the distributed list produce zero or more elements by
    * applying a specified function. The resulting collection of elements form a

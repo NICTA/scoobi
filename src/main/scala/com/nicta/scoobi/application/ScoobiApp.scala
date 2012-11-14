@@ -45,10 +45,7 @@ import impl.monitor.Loggable._
  * (if not already there, @see LibJars for the details). This behavior can be switched off by overriding the `upload`
  * method: `override def upload = false` or by passing the 'nolibjars' argument on the command line
  */
-trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop {
-  // set the default HadoopLogFactory in order to intercept any log calls that will
-  // be done when the Configuration object is loaded
-  HadoopLogFactory.setLogFactory()
+trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop with HadoopLogFactoryInitialisation {
 
   private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiApp")
 
@@ -77,7 +74,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     parseHadoopArguments(arguments)
     onHadoop {
       // uploading the jars must only be done when the configuration is fully setup with "onHadoop"
-      if (!locally) uploadLibJarsFiles
+      if (!locally) uploadLibJarsFiles(deleteLibJarsFirst = deleteLibJars)
       try { run }
       finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
     }
@@ -98,7 +95,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
   }
 
   /** upload the jars unless 'nolibjars' has been set on the command-line' */
-  override lazy val upload = (!noLibJars && !mainJarContainsDependencies).
+  override lazy val upload: Boolean = (!noLibJars && !mainJarContainsDependencies).
     debug("upload is ", " because nolibjars is: "+noLibJars+" and the main jar is a 'fat' jar: "+mainJarContainsDependencies)
 
 

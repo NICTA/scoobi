@@ -21,8 +21,11 @@ trait Classes {
   private implicit lazy val logger = LogFactory.getLog("scoobi.Classes")
 
   /** @return the class with a main method calling this code */
-  def mainClass =
-    loadClass(mainStackElement.getClassName.debug("the main class for this application is"))
+  def mainClass = loadClass(mainClassName)
+
+  /** @return the class with a main method calling this code */
+  def mainClassName =
+    mainStackElement.getClassName.debug("the main class for this application is")
 
   /** @return the first stack element being a main method (from the bottom of the stack) */
   def mainStackElement: StackTraceElement =
@@ -36,11 +39,11 @@ trait Classes {
 
   /** @return the jar entries of the jar file containing the main class */
   def mainJarEntries: Seq[JarEntry] =
-    findContainingJar(mainClass).map(jarEntries).getOrElse(Seq())
+    findContainingJar(mainClassName).map(jarEntries).getOrElse(Seq())
 
   /** @return true if at least one of the entries in the main jar is a Scoobi class, but not an example */
   def mainJarContainsDependencies = {
-    val scoobiEntry = mainJarEntries.find(_.getName.contains(classOf[DList[Int]].getName.split("\\.").mkString("/"))).
+    val scoobiEntry = mainJarEntries.find(_.getName.contains(filePath(classOf[DList[Int]]))).
                       debug("Scoobi entry found in the main jar")
     scoobiEntry.isDefined
   }
@@ -58,30 +61,47 @@ trait Classes {
 
   /** Find the location of JAR that contains a particular class. */
   def findContainingJar(clazz: Class[_]): Option[String] =
-    loader(clazz).getResources(filePath(clazz)).toIndexedSeq.view.filter(_.getProtocol == "jar").map(filePath).headOption.
-      debug("the jar containing the class "+clazz.getName+" is")
+    findContainingJar(loader(clazz), clazz.getName)
 
-  /** Return the class file path string as specified in a JAR for a give class. */
-  def filePath(clazz: Class[_]): String =
-    clazz.getName.replaceAll("\\.", "/") + ".class"
+  /** Find the location of JAR that contains a particular class name. */
+  private def findContainingJar(className: String): Option[String] =
+    findContainingJar(loader(getClass), className)
+
+  /** Find the location of JAR for a given class loader and a particular class name */
+  private def findContainingJar(loader: ClassLoader, className: String): Option[String] = {
+    val resources: Seq[String] = loader.getResources(filePath(className)).toIndexedSeq.view.filter(_.getProtocol == "jar").map(filePath)
+    resources.headOption match {
+      case jar @ Some(_) => jar.debug("the jar containing the class "+className+" is")
+      case _             => None.debug("could not find the jar for class "+className+" in the following loader "+loader+" having those resources\n"+resources.mkString("\n"))
+    }
+  }
+
+  /** Return the class file path string as specified in a JAR for a given class. */
+  def filePath(clazz: Class[_]): String = filePath(clazz.getName)
+
+  /** Return the class file path string as specified in a JAR for a given class name. */
+  def filePath(className: String): String =
+    className.replaceAll("\\.", "/") + ".class"
 
   /** @return the file path corresponding to a full URL */
   private def filePath(url: URL): String =
-    filePath(url.getPath)
-
-  /** @return the file path corresponding to a full URL */
-  private def filePath(urlPath: String): String =
-    URLDecoder.decode(urlPath.replaceAll("file:", "").replaceAll("\\+", "%2B").replaceAll("!.*$", ""), "UTF-8")
+    URLDecoder.decode(url.getPath.replaceAll("file:", "").replaceAll("\\+", "%2B").replaceAll("!.*$", ""), "UTF-8")
 
   /** @return the classLoader for a given class */
   private def loader(clazz: Class[_]) =
     Option(clazz.getClassLoader).getOrElse(ClassLoader.getSystemClassLoader)
 
   private def loadClass[T](name: String) =
-    loadClassOption(name).getOrElse(getClass.asInstanceOf[Class[T]])
+    loadClassOption(name).orElse(None.debug("could not load class "+name)).getOrElse(getClass.asInstanceOf[Class[T]])
 
   private def loadClassOption[T](name: String): Option[Class[T]] =
-    tryo(getClass.getClassLoader.loadClass(name).asInstanceOf[Class[T]])
+    Seq(getClass.getClassLoader, ClassLoader.getSystemClassLoader).view.map { loader =>
+      tryo(loader.loadClass(name).asInstanceOf[Class[T]]){ e =>
+        e.debug(ex => "could not load class "+name+" with classloader "+loader+" because "+e.getMessage)
+        Option(e.getCause).foreach(_.debug(c => "caused by "+c.getMessage))
+        e.getStackTrace.foreach(st => st.debug(""))
+      }
+    }.flatten.headOption
 }
 
 object Classes extends Classes
