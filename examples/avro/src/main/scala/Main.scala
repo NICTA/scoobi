@@ -25,20 +25,11 @@ import edu.berkeley.cs.avro.marker._
 
 object AvroExample extends ScoobiApp {
 
-  // Weather is generated with an ugly Java API, so let's make a constructor
-  def weather(s: String, time: Long, temp: Int) = {
-    val w = new Weather
-    w.setStation(s)
-    w.setTime(time)
-    w.setTemp(temp)
-    w
-  }
-
   def run() {
 
     // There are WireFormat's for avro records, so there's no problem in creating DLists of them
 
-    val w: DList[Weather] = DList(weather("Town Hall", 925, 23), weather("Red Fern", 1201, -55), weather("Bondi Junction", 1920, 100))
+    val w: DList[Weather] = DList(new Weather("Town Hall", 925, 23), new Weather("Red Fern", 1201, -55), new Weather("Bondi Junction", 1920, 100))
 
     // and they can easily be persisted, using our schema ( at src/main/avro/weather.avsc )
     persist(toAvroFile(w, "test-output", overwrite = true))

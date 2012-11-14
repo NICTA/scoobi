@@ -100,6 +100,7 @@ trait InputsOutputs {
   val AvroOutput = com.nicta.scoobi.io.avro.AvroOutput
   val AvroSchema = com.nicta.scoobi.io.avro.AvroSchema
   type AvroSchema[A] = com.nicta.scoobi.io.avro.AvroSchema[A]
+  type AvroFixed[A] = com.nicta.scoobi.io.avro.AvroFixed[A]
 
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
   def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)
