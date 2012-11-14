@@ -353,8 +353,8 @@ table td {
 }
 
 #leftcolumn {
+  border:0px;
 }
-
 #tree {
   background-color: #ffffff;
   overflow: scroll;
@@ -363,10 +363,6 @@ table td {
 #tree a {
  white-space:normal !important;
  height: auto;
-}
-
-#leftcolumn {
-  border:0px;
 }
 
 /* common column settings */
