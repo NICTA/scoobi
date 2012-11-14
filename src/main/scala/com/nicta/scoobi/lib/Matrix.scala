@@ -160,6 +160,8 @@ case class DMatrix[Elem : ManifestWireFormat: Ordering, Value : ManifestWireForm
     mult: (Value, V) => Q,
     add: (Q, Q) => Q): DVector[Elem, Q] = matrixByVector(this, v, mult, add)
 
+
+  def transpose: DMatrix[Elem, Value] = DMatrix(this.data map { case ((r, c), v) => ((c, r), v) })
 }
 
 object LinearAlgebra {

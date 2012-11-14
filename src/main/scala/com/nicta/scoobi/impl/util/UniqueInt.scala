@@ -19,8 +19,8 @@ package util
 
 /** Trait that is sub-classed by objects to provide sets of unique identifiers. */
 trait UniqueInt {
-  private var i: Int = 0
-  def get: Int = synchronized { val ret = i; i = if (i == Int.MaxValue) 0 else i + 1; ret }
+  private var i: Int = -1
+  def get: Int = synchronized { i=i+1 ; i }
 }
 
 object UniqueId extends UniqueInt

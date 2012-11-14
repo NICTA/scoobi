@@ -28,6 +28,18 @@ import control.Exceptions._
 trait Configurations {
 
   /**
+   * List of Scoobi properties which are stored in the Hadoop configuration object
+   */
+  val JOB_ID                             = "scoobi.jobid"
+  val PROGRESS_TIME                      = "scoobi.progress.time"
+  val JOB_NAME                           = "scoobi.jobname"
+  val SCOOBI_MODE                        = "scoobi.mode"
+  val UPLOADED_LIBJARS                   = "scoobi.uploadedlibjars"
+  val MAPREDUCE_REDUCERS_MIN             = "scoobi.mapreduce.reducers.min"
+  val MAPREDUCE_REDUCERS_MAX             = "scoobi.mapreduce.reducers.max"
+  val MAPREDUCE_REDUCERS_BYTESPERREDUCER = "scoobi.mapreduce.reducers.bytesperreducer"
+
+  /**
    * This conversion transforms a Configuration, seen as an Iterable[Map.Entry[String, String]]
    * to a Map[String, String] or a mutable.Map[String, String]
    *

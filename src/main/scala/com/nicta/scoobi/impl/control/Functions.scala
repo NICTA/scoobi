@@ -2,6 +2,9 @@ package com.nicta.scoobi
 package impl
 package control
 
+/**
+ * This trait provides utility methods for functions
+ */
 private[scoobi]
 trait Functions {
   implicit def logicalFunction[A](f: A => Boolean): LogicalFunction[A] = LogicalFunction(f)
@@ -12,5 +15,5 @@ trait Functions {
     def unary_!             = (a: A) => !f(a)
   }
 }
-
+private[scoobi]
 object Functions extends Functions

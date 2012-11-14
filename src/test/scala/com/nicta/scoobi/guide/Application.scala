@@ -141,7 +141,7 @@ The functionalities for managing dependencies reside in methods of the `LibJars`
 
  1. `jars` defines the list of jars to upload
  2. `uploadLibJarFiles` uploads the new jars to the `libjars` directory
- 3. `libJarsDirectory` defines the name of the directory containing the dependent jars
+ 3. `libJarsDirectory` defines the name of the directory containing the dependent jars. The default value is `libjars/` but you can change it by passing the `-Dscoobi.libjarsdir` property
  4. `deleteJars` removes all existing jars in the `libjars` directory if one of your dependencies has changed (but kept the same name)
 
 Here is an example on how to use these methods:

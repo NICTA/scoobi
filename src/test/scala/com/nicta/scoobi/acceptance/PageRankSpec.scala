@@ -26,8 +26,6 @@ import core.WireFormat
 
 class PageRankSpec extends NictaSimpleJobs {
 
-  skipAll
-
   "Web pages can be ranked according to their number of incoming and outcoming links" >> { implicit sc: SC =>
     val graph =
       fromInput("1: 2 3 4",
@@ -40,9 +38,9 @@ class PageRankSpec extends NictaSimpleJobs {
                          "3, www.notfound.org").collect { case AnInt(id) :: url :: _ => (id, url.trim) }
 
     getPageRanks(urls, graph).run === Seq(
-      "(www.google.com,0.5)",
-      "(www.specs2.org,0.5833333)",
-      "(www.notfound.org,0.75)")
+      ("www.google.com" -> 0.5f),
+      ("www.specs2.org" -> 7/12f),
+      ("www.notfound.org" -> 0.75f))
   }
 }
 

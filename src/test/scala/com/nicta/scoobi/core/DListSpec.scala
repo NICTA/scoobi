@@ -99,13 +99,11 @@ class DListSpec extends NictaSimpleJobs {
   }
   
   "DLists can be concatenated via reduce" >> {
-    val lists = Seq.fill(5)(DList(1 -> 2))
-
     "without group by key" >> { implicit sc: SC =>
-      lists.reduce(_++_).run === Seq.fill(5)(1 -> 2)
+      Seq.fill(5)(DList(1 -> 2)).reduce(_++_).run === Seq.fill(5)(1 -> 2)
     }
     "with a group by key" >> { implicit sc: SC =>
-      lists.reduce(_++_).groupByKey.run.toList.toString === Seq(1 -> Vector.fill(5)(2)).toString
+      Seq.fill(5)(DList(1 -> 2)).reduce(_++_).groupByKey.run.toList.toString === Seq(1 -> Vector.fill(5)(2)).toString
     }
   }
 

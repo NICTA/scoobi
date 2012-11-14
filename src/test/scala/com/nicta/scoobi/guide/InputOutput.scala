@@ -324,19 +324,22 @@ would map to the Avro schema:
 
 #### Avro file input
 
-The method [`fromAvroFile`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroInput$) is used to loade an Avro file as a `DList`:
+The method [`fromAvroFile`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroInput$) is used to load an Avro file as a `DList`:
 
-    val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = fromAvroFile("hdfs://path/to/file")
+    val xs = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])]("hdfs://path/to/file")
 
-As with `fromSequenceFile`, the type of the `DList` must be specifeid in order for the correct Avro-to-Scala type conversions to be performed. Of course, the type annotation specified must match the schema of the Avro file else a run-time error will be raised.
+As with `fromSequenceFile`, the compiler needs to know the type of avroFile you are loading. If the file doesn't match this schema, a runtime error will occur. `fromAvroFile` has a default argument `checkSchemas` that tries to fail-fast by verifying the schema matches. 
 
-Note that for compilatoin to succeed, a `DList` is paramterised on a type for which no `AvroSchema` type class instance exiSts. For example, the following will fail unless an `AvroSchema` type class instance for `Person` is implemented and in scope:
+Note that for compilation to succeed, there must be an `AvroSchema` instance for the particular type you are using. For example, the following will fail unless an `AvroSchema` type class instance for `Person` is implemented and in scope:
 
     case class Person(name: String, age: Int)
 
-    // will not compile
-    val people: DList[Person] = fromAvroFile("hdfs://path/to/file")
+    // will not compile, unless you provide an AvroSchema
+    val people = fromAvroFile[Person]("hdfs://path/to/file")
 
+However, there is is a scala-avro plugin to make this pretty painless (See: examples/avro for an example)
+
+ 
 And naturally, `fromAvroFile` supports loading from multiple files:
 
     // load multiple Avro files
@@ -352,6 +355,10 @@ To persist a `DList` to an Avro file, Scoobi provides the method [`toAvroFile`](
 
     val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = ...
     persist(toAvroFile(xs, "hdfs://path/to/file")
+
+#### With a predefined avro schema
+
+Any type that extends org.apache.avro.generic.GenericContainer scoobi knows how to generate a WireFormat for. This means that scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given avro record/protocol. See `examples/avro` for an example of this plugin in action
 
 ### Without files
 

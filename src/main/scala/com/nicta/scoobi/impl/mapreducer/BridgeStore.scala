@@ -98,8 +98,10 @@ case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
       }
 
       val key = NullWritable.get
+
+      /** instantiate a ScoobiWritable from the Writable class generated for this BridgeStore */
       lazy val value: ScoobiWritable[A] =
-        Class.forName(readers.head.getValueClassName).newInstance.asInstanceOf[ScoobiWritable[A]]
+        rtClass.clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()

@@ -19,9 +19,7 @@ package rtt
 
 import scala.collection.mutable.{Set => MSet}
 
-import java.util.jar.JarInputStream
-import java.util.jar.JarOutputStream
-import java.util.jar.JarEntry
+import java.util.jar.{JarInputStream, JarOutputStream, JarEntry}
 import java.io._
 import java.net.URLClassLoader
 import org.apache.commons.logging.LogFactory
@@ -84,37 +82,7 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
     * modified further. */
   def close(implicit configuration: ScoobiConfiguration) {
     jos.close()
-    if (configuration.getClassLoader.isInstanceOf[URLClassLoader]) {
-      logger.debug("adding the temporary jar entries to the current classloader")
-
-      val loader = configuration.getClassLoader.asInstanceOf[URLClassLoader]
-       invoke(loader, "addURL", Array(new File(configuration.temporaryJarFile.getName).toURI.toURL))
-       // load the classes right away so that they're always available
-       // otherwise the job jar will be removed when the MapReduce job
-       // has finished running and the classes won't be available for further use
-       // like acceptance tests where we need to read the results from a SequenceFile
-      entries.foreach { e =>
-        try { loader.loadClass(e) }
-        // this might fail for some entries like scala/util/continuations/ControlContext*
-        catch { case ex: Throwable => () }
-
-      }
-    } else logger.debug("cannot add the temporary jar to the current classloader because this is not a URLClassLoader")
   }
-
-  private def invoke[T](t: T, method: String, params: Array[AnyRef]) {
-    try {
-      val m = t.getClass.getDeclaredMethod(method, params.map(_.getClass):_*)
-      m.setAccessible(true)
-      import scala.collection.JavaConversions._
-      m.invoke(t, asJavaCollection(params.toList).toArray:_*)
-    }
-    // the invocation will fail when run from sbt in the 'local' mode
-    // so don't log anything
-    catch { case e => () }
-  }
-
-
 
   /** Add an entry to the JAR file from an input stream. If the entry already exists,
     * do not add it. */

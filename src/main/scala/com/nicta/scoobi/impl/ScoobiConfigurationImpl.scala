@@ -11,6 +11,7 @@ import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.fs.FileSystem._
+import org.apache.commons.logging.LogFactory._
 
 import core._
 import reflect.Classes
@@ -18,12 +19,21 @@ import io.FileSystems
 
 import Configurations._
 import FileSystems._
-
+import monitor.Loggable._
 
 case class ScoobiConfigurationImpl(configuration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
                                    var userDirs: Set[String] = Set()) extends ScoobiConfiguration {
 
+  /**
+   * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
+   * When creating a new JobConf object the mapred-site.xml file is going to be added as a new default resource and all
+   * existing configuration objects are going to be reloaded with new properties
+   */
+  loadMapredSiteProperties
+  def loadMapredSiteProperties = new JobConf
+
+  private implicit lazy val logger = getLog("scoobi.ScoobiConfiguration")
 
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
@@ -105,58 +115,60 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
    * set a flag in order to know that this configuration is for a in-memory, local or remote execution,
    */
   def modeIs(mode: Mode.Value) = {
-    set("scoobi.mode", mode.toString)
+    logger.debug("setting the scoobi execution mode as "+mode)
+
+    set(SCOOBI_MODE, mode.toString)
     this
   }
   /** @return the current mode */
-  def mode = Mode.withName(configuration.get("scoobi.mode", Mode.Local.toString))
+  def mode = Mode.withName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
 
   /**
    * @return true if the dependent jars have been uploaded
    */
-  def uploadedLibJars = configuration.getBoolean("scoobi.uploadedlibjars", false)
+  def uploadedLibJars = configuration.getBoolean(UPLOADED_LIBJARS, false)
 
   /**
    * set a flag in order to know if jars have been uploaded before jobs are defined
    */
   def setUploadedLibJars(uploaded: Boolean) {
-    set("scoobi.uploadedlibjars", uploaded.toString)
+    set(UPLOADED_LIBJARS, uploaded.toString)
   }
 
   /** Set an upper bound for the number of reducers to be used in M/R jobs */
   def setMaxReducers(maxReducers: Int) {
-    configuration.setInt("scoobi.mapreduce.reducers.max", maxReducers)
+    configuration.setInt(MAPREDUCE_REDUCERS_MAX, maxReducers)
   }
 
   /** Get the max number of reducers to use in M/R jobs */
-  def getMaxReducers = configuration.getInt("scoobi.mapreduce.reducers.max", Int.MaxValue)
+  def getMaxReducers = configuration.getInt(MAPREDUCE_REDUCERS_MAX, Int.MaxValue)
 
   /** Set a lower bound for the number of reducers to be used in M/R jobs */
   def setMinReducers(minReducers: Int) {
-    configuration.setInt("scoobi.mapreduce.reducers.min", minReducers)
+    configuration.setInt(MAPREDUCE_REDUCERS_MIN, minReducers)
   }
 
   /** Get the min number of reducers to use in M/R jobs */
-  def getMinReducers = configuration.getInt("scoobi.mapreduce.reducers.min", 1)
+  def getMinReducers = configuration.getInt(MAPREDUCE_REDUCERS_MIN, 1)
 
   /**
    * Set the number of input bytes per reducer. This is used to control the number of
    * reducers based off the size of the input data to the M/R job.
    */
   def setBytesPerReducer(sizeInBytes: Long) {
-    configuration.setLong("scoobi.mapreduce.reducers.bytesperreducer", sizeInBytes)
+    configuration.setLong(MAPREDUCE_REDUCERS_BYTESPERREDUCER, sizeInBytes)
   }
 
   /**
    * Get the number of input bytes per reducer. Default is 1GiB.
    */
-  def getBytesPerReducer = configuration.getLong("scoobi.mapreduce.reducers.bytesperreducer", 1024 * 1024 * 1024)
+  def getBytesPerReducer = configuration.getLong(MAPREDUCE_REDUCERS_BYTESPERREDUCER, 1024 * 1024 * 1024)
 
   /**
    * set a new job name to help recognize the job better
    */
   def jobNameIs(name: String) {
-    set("scoobi.jobname", name)
+    set(JOB_NAME, name)
   }
 
   /**
@@ -167,7 +179,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   /**
    * @return the job name if one is defined
    */
-  def jobName: Option[String] = Option(configuration.get("scoobi.jobname"))
+  def jobName: Option[String] = Option(configuration.get(JOB_NAME))
 
   /* Timestamp used to mark each Scoobi working directory. */
   private def timestamp = {
@@ -177,14 +189,15 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
-  lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
+  lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
+
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStep(stepId: Int) = jobId + "(Step-" + stepId + ")"
 
   /**Scoobi's configuration. */
   lazy val conf = {
-    configuration.set("scoobi.jobid", jobId)
-    configuration.setInt("scoobi.progress.time", 500)
+    configuration.set(JOB_ID, jobId)
+    configuration.setInt(PROGRESS_TIME, 500)
     // this setting avoids unnecessary warnings
     configuration.set("mapred.used.genericoptionsparser", "true")
     configuration
@@ -198,6 +211,8 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
    * force a configuration to be a local one
    */
   def setAsLocal: ScoobiConfiguration = {
+    logger.debug("setting the ScoobiConfiguration as local ")
+
     jobNameIs(getClass.getSimpleName)
     set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
     set("mapred.job.tracker", "local")
@@ -209,10 +224,13 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
    * because all the paths will depend on that
    */
   def setDirectories = {
+
+    logger.debug("the mapreduce.jobtracker.staging.root.dir is "+workingDir + "staging/")
     configuration.set("mapreduce.jobtracker.staging.root.dir", workingDir + "staging/")
     // before the creation of the input we set the mapred local dir.
     // this setting is necessary to avoid xml parsing when several scoobi jobs are executing concurrently and
     // trying to access the job.xml file
+    logger.debug("the "+JobConf.MAPRED_LOCAL_DIR_PROPERTY+" is "+workingDir + "localRunner/")
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir + "localRunner/")
     this
   }
@@ -227,7 +245,8 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
 
   def setScoobiDir(dir: String)      = { set("scoobi.dir", dirPath(dir)); this }
 
-  lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", FileSystem.get(configuration).getHomeDirectory.toUri.getPath + "/.scoobi/")
+  def defaultScoobiDir                    = dirPath("/tmp/scoobi-"+sys.props.get("user.name").getOrElse("user"))
+  lazy val scoobiDir                      = configuration.getOrSet("scoobi.dir", defaultScoobiDir)
   lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
   lazy val scoobiDirectory: Path          = new Path(scoobiDir)
   lazy val workingDirectory: Path         = new Path(workingDir)

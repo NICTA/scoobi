@@ -16,7 +16,7 @@ class DependenciesSpec extends UnitSpecification with Analysis {
       "plan.comp plan.mscr",
       "mapreducer",
       "reflect rtt time",
-      "util control text collection").withPrefix("impl")
+      "util control text collection monitor").withPrefix("impl")
 
   val core =
     layers("core")

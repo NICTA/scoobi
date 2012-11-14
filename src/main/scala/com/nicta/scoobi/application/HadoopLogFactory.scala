@@ -137,3 +137,9 @@ object HadoopLogFactory {
   lazy val OFF  : Level = level("OFF"  )
 
 }
+
+trait HadoopLogFactoryInitialisation {
+  // set the default HadoopLogFactory in order to intercept any log calls that will
+  // be done when the Configuration object is loaded
+  HadoopLogFactory.setLogFactory()
+}

@@ -113,9 +113,9 @@ trait ScoobiUserArgs extends ScoobiArgs {
 trait CommandLineScoobiUserArgs extends ScoobiUserArgs with CommandLineArguments {
   /** the scoobi arguments passed on the command line */
   lazy val scoobiArgs = {
-    val fromCommandLine = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1).flatMap(_.split("\\."))
-    if (fromCommandLine.isEmpty) sys.props.get("scoobi").map(_.split("\\.").toSeq).getOrElse(Seq[String]())
-    else                         fromCommandLine
+    val args = arguments.commandLine.arguments.dropWhile(a => a != "scoobi").drop(1).flatMap(_.split("\\."))
+    if (args.isEmpty) sys.props.get("scoobi").map(_.split("\\.").toSeq).getOrElse(Seq())
+    else              args
   }
 
 }

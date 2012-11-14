@@ -65,6 +65,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
       job.setOutputKeyClass(conf.getClass(ChannelOutputFormat.keyClassProperty(channel, output), null))
       job.setOutputValueClass(conf.getClass(ChannelOutputFormat.valueClassProperty(channel, output), null))
       job.getConfiguration.set("mapreduce.output.basename", "ch" + channel + "out" + output)
+      job.getConfiguration.set("avro.mo.config.namedOutput", "ch" + channel + "out" + output)
 
       val PropertyPrefix = (ChannelOutputFormat.otherProperty(channel, output) + """(.*)""").r
       conf.toMap collect { case (PropertyPrefix(k), v) => (k, v) } foreach {

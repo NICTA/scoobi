@@ -1,4 +1,4 @@
-name := "Scoobi Word Count"
+name := "ScoobiWordCount"
 
 version := "1.0"
 
@@ -8,4 +8,6 @@ scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 libraryDependencies += "com.nicta" %% "scoobi" % "0.6.0-cdh4-SNAPSHOT"
 
-resolvers += "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
+resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
+                  "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
+                  "apache"   at "https://repository.apache.org/content/repositories/releases")

@@ -38,13 +38,14 @@ import io._
 import mapreducer._
 import ScoobiConfigurationImpl._
 import ChannelOutputFormat._
+import monitor.Loggable._
 
 /** A class that defines a single Hadoop MapReduce job. */
 class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   protected val fileSystems: FileSystems = FileSystems
   import fileSystems._
 
-  private lazy val logger = LogFactory.getLog("scoobi.Step")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.Step")
 
   /* Keep track of all the mappers for each input channel. */
   private[scoobi] val mappers: Map[Source, Set[(Env[_], TaggedMapper)]] = Map.empty
@@ -104,11 +105,11 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
 
     val jar = new JarBuilder
     job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
-    configureJar(jar)
     configureKeysAndValues(jar, job)
     configureMappers(jar, job)
     configureCombiners(jar, job)
     configureReducers(jar, job)
+    configureJar(jar)
     jar.close(configuration)
 
     job
@@ -254,7 +255,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
     val fs = configuration.fileSystem
 
     /* Move named file-based sinks to their correct output paths. */
-    val outputFiles = listFiles(configuration.temporaryOutputDirectory)
+    val outputFiles = listPaths(configuration.temporaryOutputDirectory)
 
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks.zipWithIndex.foreach { case (sink, ix) =>

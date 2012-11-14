@@ -76,14 +76,33 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
   tag("issue 163")
   "It is possible to set a different Scoobi temp directory on the ScoobiConfiguration before the job executes" >> {
     var workDir = "undefined"
-    val app = new ScoobiApp {
+    new ScoobiApp {
       configuration.setScoobiDir("shared-drive")
-
       def run { workDir = configuration.workingDir }
-    }
-    app.main(Array())
+    }.main(Array())
 
     "the Scoobi temporary directory has been set" ==> { workDir must contain("shared-drive") }
+  }
+
+  tag("issue 166")
+  "The default scoobi work directory should be /tmp/scoobi-${user.name}" >> {
+    "the Scoobi temporary directory has been set" ==> { ScoobiConfiguration().scoobiDir must startWith("/tmp/scoobi-"+System.getProperty("user.name")) }
+    "the Scoobi temporary directory ends with /"  ==> { ScoobiConfiguration().scoobiDir must endWith("/") }
+  }
+
+  "It is possible to set a specific job name that will be used to create the job working directory" >> {
+    var workDir = "undefined"
+    new ScoobiApp {
+      configuration.jobNameIs("WordCountApplication")
+      def run { workDir = configuration.workingDir }
+    }.main(Array())
+
+    "the Scoobi job name is used to create the working directory" ==> { workDir must contain("WordCountApplication") }
+  }
+
+  "The default mapred-site.xml file must be added as a default resource on the configuration file "+
+  "as soon as we create a ScoobiConfiguration object" >> {
+    ScoobiConfiguration().get("mapred.job.tracker") must not beNull
   }
 
   "In a ScoobiApp the upload of dependent jars depends on the nolibjar arguments and on the content of the jar containing the main class (fat jar or not)" >> {
