@@ -311,6 +311,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" data-isabs="false">
+      <a id="AvroWireFormat:AvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="WireFormatImplicits$AvroWireFormat.html"><span class="name">AvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: SpecificRecordBase</span>]</span><span class="result"> extends WireFormat[T]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.Case0WireFormat" data-isabs="false">
       <a id="Case0WireFormat:Case0WireFormat[T]"></a>
       <h4 class="signature">
@@ -957,6 +969,20 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#AvroFmt" data-isabs="false">
+      <a id="AvroFmt[T&lt;:SpecificRecordBase](Manifest[T],AvroSchema[T]):AvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">AvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span name="org.apache.avro.specific.SpecificRecordBase" class="extype">SpecificRecordBase</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[T]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="../io/avro/AvroSchema.html">AvroSchema</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" class="extype" href="WireFormatImplicits$AvroWireFormat.html">AvroWireFormat</a>[T]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Avro types
+</p><div class="fullcomment"><div class="comment cmt"><p>Avro types
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#BooleanFmt" data-isabs="false">
       <a id="BooleanFmt:WireFormat[Boolean]"></a>
       <h4 class="signature">
@@ -2124,6 +2150,18 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#taggedTypeWireFormat" data-isabs="false">
+      <a id="taggedTypeWireFormat[T, U](WireFormat[T]):WireFormat[@@[T, U]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">taggedTypeWireFormat</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[@@[T, U]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">

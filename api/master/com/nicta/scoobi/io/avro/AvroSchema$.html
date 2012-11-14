@@ -135,6 +135,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema#AvroRecordSchema" data-isabs="false">
+      <a id="AvroRecordSchema[T&lt;:GenericContainer](Manifest[T]):AvroSchema[T] { ... /* 2 definitions in type refinement */ }"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">AvroRecordSchema</span><span class="tparams">[<span name="T">T &lt;: <span name="org.apache.avro.generic.GenericContainer" class="extype">GenericContainer</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="r">r: Manifest[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[T] { ... /* 2 definitions in type refinement */ }</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema#BooleanSchema" data-isabs="false">
       <a id="BooleanSchema:AvroSchema[Boolean] { type AvroType = Boolean }"></a>
       <h4 class="signature">
@@ -156,6 +168,30 @@
       </span>
       <span class="symbol">
         <span class="name">DoubleSchema</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[<span name="scala.Double" class="extype">Double</span>] { type AvroType = Double }</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema.FixedCounter" data-isabs="false">
+      <a id="FixedCounter:FixedCounter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroSchema$$FixedCounter$.html"><span class="name">FixedCounter</span></a><span class="result"> extends UniqueInt</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema#FixedSchema" data-isabs="false">
+      <a id="FixedSchema[T](AvroFixed[T]):AvroSchema[T] { type AvroType = org.apache.avro.generic.GenericData.Fixed }"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">FixedSchema</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="fxd">fxd: <a name="com.nicta.scoobi.io.avro.AvroFixed" class="extype" href="AvroFixed.html">AvroFixed</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[T] { type AvroType = org.apache.avro.generic.GenericData.Fixed }</span>
       </span>
       </h4>
       
@@ -208,26 +244,26 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema#StringSchema" data-isabs="false">
-      <a id="StringSchema:AvroSchema[String] { type AvroType = org.apache.avro.util.Utf8 }"></a>
+      <a id="StringSchema:AvroSchema[String] { type AvroType = String }"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">StringSchema</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[String] { type AvroType = org.apache.avro.util.Utf8 }</span>
+        <span class="name">StringSchema</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[String] { type AvroType = String }</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema#TraversableSchema" data-isabs="false">
-      <a id="TraversableSchema[CC&lt;:Traversable[X], T](AvroSchema[T],scala.collection.generic.CanBuildFrom[_, T, CC[T]]):AvroSchema[CC[T]] { ... /* 2 definitions in type refinement */ }"></a>
+      <a id="TraversableSchema[CC&lt;:Traversable[X], T](AvroSchema[T],scala.collection.generic.CanBuildFrom[_, T, CC[T]]):AvroSchema[CC[T]] { type AvroType = org.apache.avro.generic.GenericData.Array[sch.AvroType] }"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">TraversableSchema</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>]</span> &lt;: Traversable[X]</span>, <span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="sch">sch: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[T]</span>, <span name="bf">bf: scala.collection.generic.CanBuildFrom[_, T, CC[T]]</span>)</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[CC[T]] { ... /* 2 definitions in type refinement */ }</span>
+        <span class="name">TraversableSchema</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>]</span> &lt;: Traversable[X]</span>, <span name="T">T</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="sch">sch: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[T]</span>, <span name="bf">bf: scala.collection.generic.CanBuildFrom[_, T, CC[T]]</span>)</span><span class="result">: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[CC[T]] { type AvroType = org.apache.avro.generic.GenericData.Array[sch.AvroType] }</span>
       </span>
       </h4>
       

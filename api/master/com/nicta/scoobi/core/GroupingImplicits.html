@@ -351,7 +351,7 @@ type class instance. Partitioning and grouping use the default implementation.</
         <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>]</span><span class="params">(<span name="apply">apply: (A1) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[A1]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>)</span><span class="result">: Ordering[T]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Helpers for creating Ordering instances for cases classes.</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -400,6 +400,30 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#taggedTypeGrouping" data-isabs="false">
+      <a id="taggedTypeGrouping[T, U](Grouping[T]):Grouping[@@[T, U]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">taggedTypeGrouping</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="Grouping.html">Grouping</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="Grouping.html">Grouping</a>[@@[T, U]]</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#taggedTypeOrdering" data-isabs="false">
+      <a id="taggedTypeOrdering[T, U](Ordering[T]):Ordering[@@[T, U]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">taggedTypeOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[T]</span>)</span><span class="result">: Ordering[@@[T, U]]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">

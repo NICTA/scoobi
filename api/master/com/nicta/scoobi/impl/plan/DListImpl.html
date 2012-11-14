@@ -368,6 +368,21 @@ the same Map-Reduce job.</p></div><dl class="attributes block"> <dt>Definition C
       </span>
       </h4>
       <p class="shortcomment cmt">Group the values of a distributed list with key-value elements by key.</p><div class="fullcomment"><div class="comment cmt"><p>Group the values of a distributed list with key-value elements by key.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.DListImpl" class="extype" href="">DListImpl</a> → <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#groupByKeyWith" data-isabs="false">
+      <a id="groupByKeyWith[K, V](Grouping[K])(&lt;:&lt;[DComp[A, Arr], DComp[(K, V), Arr]],Manifest[K],WireFormat[K],Manifest[V],WireFormat[V]):DList[(K, Iterable[V])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">groupByKeyWith</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="grpK">grpK: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../../core/Grouping.html">Grouping</a>[K]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[<a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[A, <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>], <a name="com.nicta.scoobi.impl.plan.Smart.DComp" class="extype" href="Smart$$DComp.html">DComp</a>[(K, V), <a name="com.nicta.scoobi.impl.plan.Arr" class="extype" href="Arr.html">Arr</a>]]</span>, <span name="mK">mK: Manifest[K]</span>, <span name="wtK">wtK: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="mV">mV: Manifest[V]</span>, <span name="wtV">wtV: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[(K, Iterable[V])]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Group the values of a distributed list with key-value elements by key.</p><div class="fullcomment"><div class="comment cmt"><p>Group the values of a distributed list with key-value elements by key. And explicitly
+       take the grouping that should be used. This is best used when you're doing things like
+       secondary sorts, or groupings with strange logic (like making sure None's / nulls are
+       sprayed across all reducers..</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">

@@ -458,18 +458,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>NumericBaseMatchers</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_CONF_DIR" data-isabs="false">
-      <a id="HADOOP_CONF_DIR:Option[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">HADOOP_CONF_DIR</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[<span name="java.lang.String" class="extype">String</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="../application/ScoobiAppConfiguration.html">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiAppConfiguration#HADOOP_HOME" data-isabs="false">
       <a id="HADOOP_HOME:Option[String]"></a>
       <h4 class="signature">
@@ -3471,6 +3459,18 @@
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the filesystem address</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ClusterConfiguration" class="extype" href="../application/ClusterConfiguration.html">ClusterConfiguration</a> → <a name="com.nicta.scoobi.application.Cluster" class="extype" href="../application/Cluster.html">Cluster</a></dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.application.LibJars#fss" data-isabs="false">
+      <a id="fss:FileSystems"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fss</span><span class="result">: <span name="com.nicta.scoobi.io.FileSystems" class="extype">FileSystems</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="../application/LibJars.html">LibJars</a></dd></dl></div>
     </li><li visbl="pub" name="org.specs2.main.ArgumentsShortcuts#fullStackTrace" data-isabs="false">
       <a id="fullStackTrace:Arguments"></a>
       <h4 class="signature">
@@ -4562,7 +4562,7 @@
         <span class="name">jars</span><span class="result">: Seq[<span name="java.net.URL" class="extype">URL</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of library jars to upload, provided by the jars loaded by the current classloader
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of library jars to upload
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="../application/LibJars.html">LibJars</a></dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.TraversableBaseMatchers#javaCollectionIsSized" data-isabs="false">
       <a id="javaCollectionIsSized[T&lt;:java.util.Collection[_]]:Sized[T]"></a>
@@ -4752,11 +4752,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">libjarsDirectory</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+        <span class="name">libjarsDirectory</span><span class="result">: String</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the name of the directory to use when loading jars to the filesystem.
-        the path which will be used will be relative to the user home on the cluster
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path of the directory to use when loading jars to the filesystem.
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="../application/LibJars.html">LibJars</a></dd></dl></div>
     </li><li visbl="pub" name="org.specs2.matcher.AnyBeHaveMatchers#like" data-isabs="false">
       <a id="like[T](⇒ PartialFunction[T, org.specs2.matcher.MatchResult[_]]):Matcher[T]"></a>
@@ -6277,6 +6276,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.application.LibJars#sysProps" data-isabs="false">
+      <a id="sysProps:SystemProperties"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sysProps</span><span class="result">: <span name="com.nicta.scoobi.impl.control.SystemProperties" class="extype">SystemProperties</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="../application/LibJars.html">LibJars</a></dd></dl></div>
     </li><li visbl="pub" name="org.specs2.specification.FormattingFragments#t" data-isabs="false">
       <a id="t(Int):Tab"></a>
       <h4 class="signature">
@@ -7022,14 +7033,14 @@
       </h4>
       <p class="shortcomment cmt">this variable controls if the upload must be done at all</p><div class="fullcomment"><div class="comment cmt"><p>this variable controls if the upload must be done at all</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.LibJars" class="extype" href="../application/LibJars.html">LibJars</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" data-isabs="false">
-      <a id="uploadLibJarsFiles(ScoobiConfiguration):Any"></a>
+      <a id="uploadLibJarsFiles(Boolean)(ScoobiConfiguration):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uploadLibJarsFiles</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
+        <span class="name">uploadLibJarsFiles</span><span class="params">(<span name="deleteLibJarsFirst">deleteLibJarsFirst: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">upload the jars which don't exist yet in the library directory on the cluster

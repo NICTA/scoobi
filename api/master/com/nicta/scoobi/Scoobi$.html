@@ -311,6 +311,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#AvroFixed" data-isabs="false">
+      <a id="AvroFixed:AvroFixed[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">AvroFixed</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <a name="com.nicta.scoobi.io.avro.AvroFixed" class="extype" href="io/avro/AvroFixed.html">AvroFixed</a>[A]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.InputsOutputs" class="extype" href="InputsOutputs.html">InputsOutputs</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#AvroSchema" data-isabs="false">
       <a id="AvroSchema:AvroSchema[A]"></a>
       <h4 class="signature">
@@ -323,6 +335,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.InputsOutputs" class="extype" href="InputsOutputs.html">InputsOutputs</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" data-isabs="false">
+      <a id="AvroWireFormat:AvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="core/WireFormatImplicits$AvroWireFormat.html"><span class="name">AvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: SpecificRecordBase</span>]</span><span class="result"> extends WireFormat[T]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#BasicDoFn" data-isabs="false">
       <a id="BasicDoFn:BasicDoFn[A, B]"></a>
       <h4 class="signature">
@@ -1149,6 +1173,20 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#AvroFmt" data-isabs="false">
+      <a id="AvroFmt[T&lt;:SpecificRecordBase](Manifest[T],AvroSchema[T]):AvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">AvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span name="org.apache.avro.specific.SpecificRecordBase" class="extype">SpecificRecordBase</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[T]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="io/avro/AvroSchema.html">AvroSchema</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" class="extype" href="core/WireFormatImplicits$AvroWireFormat.html">AvroWireFormat</a>[T]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Avro types
+</p><div class="fullcomment"><div class="comment cmt"><p>Avro types
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#AvroInput" data-isabs="false">
       <a id="AvroInput:com.nicta.scoobi.io.avro.AvroInput.type"></a>
       <h4 class="signature">
@@ -2574,7 +2612,7 @@ type class instance. Partitioning and grouping use the default implementation.</
         <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>]</span><span class="params">(<span name="apply">apply: (A1) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[A1]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>)</span><span class="result">: Ordering[T]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="core/GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
+      <p class="shortcomment cmt">Helpers for creating Ordering instances for cases classes.</p><div class="fullcomment"><div class="comment cmt"><p>Helpers for creating Ordering instances for cases classes.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="core/GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#mkCaseWireFormat" data-isabs="false">
       <a id="mkCaseWireFormat[T, A1]((A1) ⇒ T,(T) ⇒ Option[A1])(WireFormat[A1]):WireFormat[T]"></a>
       <h4 class="signature">
@@ -2959,6 +2997,42 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#taggedTypeGrouping" data-isabs="false">
+      <a id="taggedTypeGrouping[T, U](Grouping[T]):Grouping[@@[T, U]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">taggedTypeGrouping</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="core/Grouping.html">Grouping</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="core/Grouping.html">Grouping</a>[@@[T, U]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="core/GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#taggedTypeOrdering" data-isabs="false">
+      <a id="taggedTypeOrdering[T, U](Ordering[T]):Ordering[@@[T, U]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">taggedTypeOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[T]</span>)</span><span class="result">: Ordering[@@[T, U]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="core/GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#taggedTypeWireFormat" data-isabs="false">
+      <a id="taggedTypeWireFormat[T, U](WireFormat[T]):WireFormat[@@[T, U]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">taggedTypeWireFormat</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[@@[T, U]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.InputsOutputs#toAvroFile" data-isabs="false">
       <a id="toAvroFile[B](DList[B],String,Boolean)(AvroSchema[B]):DListPersister[B]"></a>
       <h4 class="signature">
