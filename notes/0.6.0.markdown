@@ -29,4 +29,5 @@
  * [issue 153](https://github.com/NICTA/scoobi/issues/153): generating _SUCCESS files in the output directories
  * [issue 158](https://github.com/NICTA/scoobi/issues/158): made sure that Avro is working with both cdh3 and cdh4
  * [issue 164](https://github.com/NICTA/scoobi/issues/164): fixed the User Guide display on low resolution screens
+ 
 ------ 
