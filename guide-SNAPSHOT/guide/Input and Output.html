@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Input and Output.html">InputOutput</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="1678958591">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
+                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="889425092">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
 <pre><code class="prettyprint">// load a single text file
 val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/file&quot;)
 
@@ -485,8 +485,8 @@ trait OutputConverter[K, V, B] {
   <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.avro.AvroOutput$">AvroOutput</a></li>
 </ul></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1662460266"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="371602130"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="267453918"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="194293288"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -496,7 +496,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1069569784"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1911984250"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -510,7 +510,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="685757810"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="263451123"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
@@ -524,7 +524,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1678958591"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="889425092"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -556,7 +556,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-          </li><li id="35357367"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1724398246"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -568,7 +568,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-          </li><li id="1741663741"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1946619625"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -576,7 +576,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1549146171"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1000834409"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -592,7 +592,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="111720692"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="1591772550"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -614,7 +614,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1503742046"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="625188205"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -642,7 +642,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1915211767"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="2124030576"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -658,7 +658,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="297305432"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="969531530"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -666,7 +666,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1681528019"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="561331385"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -680,7 +680,7 @@ trait OutputConverter[K, V, B] {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1662460266','1678958591'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['267453918','889425092'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
