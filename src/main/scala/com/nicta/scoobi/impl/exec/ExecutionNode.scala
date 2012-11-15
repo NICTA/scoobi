@@ -9,6 +9,7 @@ import plan.comp._
 import util.UniqueId
 import core.WireFormat._
 import mapreducer._
+import CompNodes._
 /**
  * GADT representing elementary computations to perform in hadoop jobs
  */
@@ -90,11 +91,14 @@ trait ChannelExec {
 }
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
-  def sources = {
+  lazy val sources = {
     Attribution.initTree(input.referencedNode)
     input.referencedNode match {
       case n: Load[_] => Seq(n.source)
-      case n          => n.children.collect { case Load1(s) => s }.toSeq
+      case n          => n.children.asNodes.flatMap {
+                           case ld: Load[_] => Some(ld.source)
+                           case other       => other.bridgeStore
+                         }.toSeq
     }
   }.distinct
 

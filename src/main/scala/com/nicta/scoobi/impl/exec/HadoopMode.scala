@@ -50,7 +50,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def store(node: CompNode, execute: Any)(implicit sc: ScoobiConfiguration) = {
     val result = (node match {
-      case Materialize1(in) => Some(in.bridgeStore.readAsIterable)
+      case Materialize1(in) => in.bridgeStore.map(_.readAsIterable)
       case _                => None
     }).getOrElse(execute)
 

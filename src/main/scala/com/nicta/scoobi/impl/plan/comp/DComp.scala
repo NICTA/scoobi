@@ -30,7 +30,7 @@ sealed trait DComp[+A] extends CompNode {
   def sinks: Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
   def updateSinks(f: Seq[Sink] => Seq[Sink]): CompNodeType
-  lazy val bridgeStore = BridgeStore(mf, wf)
+  lazy val bridgeStore: Option[Bridge] = None
 }
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
@@ -67,6 +67,8 @@ case class ParallelDo[A, B, E](in:                CompNode,
     case Load1(s) => Some(s)
     case _        => None
   }
+
+  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -137,6 +139,8 @@ case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[S
 
   type CompNodeType = Flatten[A]
   type Sh = Arr
+
+  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 

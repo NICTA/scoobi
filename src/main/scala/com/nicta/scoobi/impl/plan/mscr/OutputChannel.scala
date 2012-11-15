@@ -19,9 +19,9 @@ trait OutputChannel extends Channel {
 }
 
 trait MscrOutputChannel extends OutputChannel {
-  def sinks = if (nodeSinks.isEmpty) Seq(bridgeStore) else nodeSinks
+  def sinks = if (nodeSinks.isEmpty) bridgeStore.toSeq else nodeSinks
   protected def nodeSinks: Seq[Sink]
-  def bridgeStore: Bridge
+  def bridgeStore: Option[Bridge]
   def output: CompNode
   def contains(node: CompNode) = output == node
   def environment: Option[CompNode]
@@ -50,7 +50,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                                       combiner.toSeq.map(_.sinks).flatten ++
                                       reducer.toSeq.map(_.sinks).flatten
 
-  def bridgeStore =
+  lazy val bridgeStore =
      (reducer: Option[CompNode]).
       orElse(combiner  ).
       orElse(flatten   ).
@@ -66,7 +66,7 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChan
     case _                      => false
   }
   def nodeSinks = output.sinks
-  def bridgeStore = output.bridgeStore
+  lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
 }
 
@@ -76,7 +76,7 @@ case class FlattenOutputChannel(output: Flatten[_]) extends MscrOutputChannel {
     case _ => false
   }
   def nodeSinks = output.sinks
-  def bridgeStore = output.bridgeStore
+  lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = None
 }
 
