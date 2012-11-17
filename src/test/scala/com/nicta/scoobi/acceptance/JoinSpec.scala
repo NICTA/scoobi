@@ -19,6 +19,7 @@ package acceptance
 import Scoobi._
 import testing.NictaSimpleJobs
 import JoinExample._
+import lib.Relational
 
 class JoinSpec extends NictaSimpleJobs {
 
@@ -78,6 +79,26 @@ class JoinSpec extends NictaSimpleJobs {
       "(34,(Some(Smith),Some(Clerical)))",
       "(35,(None,Some(Marketing)))").mkString
   }
+
+  "Block Inner join" >> { implicit sc: SC =>
+    Relational.blockJoin(employeesByDepartmentId, departmentsById).run.map(_.toString).sorted.mkString === Seq(
+      "(31,(Rafferty,Sales))",
+      "(33,(Jones,Engineering))",
+      "(33,(Steinberg,Engineering))",
+      "(34,(Robinson,Clerical))",
+      "(34,(Smith,Clerical))").sorted.mkString
+  }
+
+  "Block Inner join 3 reps" >> { implicit sc: SC =>
+    Relational.blockJoin(employeesByDepartmentId, departmentsById, 3).run.map(_.toString).sorted.mkString === Seq(
+      "(31,(Rafferty,Sales))",
+      "(33,(Jones,Engineering))",
+      "(33,(Steinberg,Engineering))",
+      "(34,(Robinson,Clerical))",
+      "(34,(Smith,Clerical))").sorted.mkString
+  }
+
+
 }
 
 object JoinExample {
