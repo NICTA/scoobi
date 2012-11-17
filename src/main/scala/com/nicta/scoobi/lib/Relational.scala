@@ -137,6 +137,22 @@ object Relational {
     grouped.groupBarrier
   }
 
+  /**
+   * Perform an equijoin using block-join (aka replicate fragment join).  Replicate the small (left) side n times
+   * including the id of the replica in the key.  On the right side, add a random integer from 0...n-1 to the key.
+   * Join using the pseudo-key and strip out the extra fields.
+   *
+   * Useful for skewed join keys and large datasets.
+   */
+  def blockJoin[K : Manifest : WireFormat : Ordering, V1 : Manifest : WireFormat, V2 : Manifest : WireFormat](
+    left: DList[(K,V1)], right: DList[(K,V2)], replicationFactor: Int = 5) = {
+      Relational.join(
+        left.flatMap{ case (k, v) => (0 until replicationFactor).map{ i => ((k, i), v) } },
+        right.parallelDo(addRandIntToKey[K,V2](replicationFactor,0))
+      )
+      .map{case ((k,_),vs) => (k,vs)}
+  }
+
   private def innerJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
     def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
       var alist = new ArrayBuffer[A]
@@ -233,5 +249,19 @@ object Relational {
     (left ++ right).groupByKeyWith(grouping).parallelDo(dofn).groupBarrier
   }
 
+
+  /**
+   * Add a random integer to the key.  Initialze random generator for each mapper in case mapper is restarted; otherwise
+   * you may lose records unknowingly.
+   */
+  private def addRandIntToKey[A,B](ub: Int, seed: Int) = new DoFn[(A,B), ((A,Int),B)] {
+    val rgen = new util.Random(seed)
+    def setup() {}
+    def process(input: (A,B), emitter: Emitter[((A,Int),B)]) {
+      val (a,b) = input
+      emitter.emit(((a, rgen.nextInt(ub)), b))
+    }
+    def cleanup(emitter: Emitter[((A,Int),B)]) {}
+  }
 }
 
