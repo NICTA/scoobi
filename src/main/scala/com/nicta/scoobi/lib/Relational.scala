@@ -27,6 +27,18 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
   /** Perform an equijoin with another distributed lists. */
   def join[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] = Relational.join(left, right)
 
+  /** Perform an equijoin with another distributed list where this list is considerably smaller
+    * than the right (but too large to fit in memory), and where the keys of right may be
+    * particularly skewed. */
+  def blockJoin[B : Manifest : WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] =
+    Relational.blockJoin(left, right)
+
+  /** Specify a replication factor on the left DList of a block join. */
+  def replicateBy(rep: Int): Relational[K, A] = new Relational[K, A](left) {
+    override def blockJoin[B : Manifest : WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] =
+      Relational.blockJoin(left, right, rep)
+  }
+
   /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in this dlist for a value on the right dlist, it will
@@ -62,6 +74,7 @@ case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat
   def coGroup[B: Manifest: WireFormat](right: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = Relational.coGroup(left, right)
 
 }
+
 
 object Relational {
 
@@ -135,22 +148,6 @@ object Relational {
     }
 
     grouped.groupBarrier
-  }
-
-  /**
-   * Perform an equijoin using block-join (aka replicate fragment join).  Replicate the small (left) side n times
-   * including the id of the replica in the key.  On the right side, add a random integer from 0...n-1 to the key.
-   * Join using the pseudo-key and strip out the extra fields.
-   *
-   * Useful for skewed join keys and large datasets.
-   */
-  def blockJoin[K : Manifest : WireFormat : Ordering, V1 : Manifest : WireFormat, V2 : Manifest : WireFormat](
-    left: DList[(K,V1)], right: DList[(K,V2)], replicationFactor: Int = 5) = {
-      Relational.join(
-        left.flatMap{ case (k, v) => (0 until replicationFactor).map{ i => ((k, i), v) } },
-        right.parallelDo(addRandIntToKey[K,V2](replicationFactor,0))
-      )
-      .map{case ((k,_),vs) => (k,vs)}
   }
 
   private def innerJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
@@ -250,18 +247,43 @@ object Relational {
   }
 
 
-  /**
-   * Add a random integer to the key.  Initialze random generator for each mapper in case mapper is restarted; otherwise
-   * you may lose records unknowingly.
-   */
-  private def addRandIntToKey[A,B](ub: Int, seed: Int) = new DoFn[(A,B), ((A,Int),B)] {
-    val rgen = new util.Random(seed)
-    def setup() {}
-    def process(input: (A,B), emitter: Emitter[((A,Int),B)]) {
-      val (a,b) = input
-      emitter.emit(((a, rgen.nextInt(ub)), b))
+  /** Perform an equijoin using block-join (aka replicate fragment join).
+    *
+    * Replicate the small (left) side n times including the id of the replica in the key. On the right
+    * side, add a random integer from 0...n-1 to the key. Join using the pseudo-key and strip out the extra
+    * fields.
+    *
+    * Useful for skewed join keys and large datasets. */
+  def blockJoin[K : Manifest : WireFormat : Grouping, A : Manifest : WireFormat, B : Manifest : WireFormat]
+      (left: DList[(K, A)],
+       right: DList[(K, B)],
+       replicationFactor: Int = 5)
+    : DList[(K, (A, B))] = {
+
+    /* Add a random integer to the key. Initialze random generator for each mapper in case mapper is
+     * restarted; otherwise you may lose records unknowingly. */
+    def addRandIntToKey[A, B](ub: Int, seed: Int) = new DoFn[(A, B), ((A, Int), B)] {
+      val rgen = new util.Random(seed)
+      def setup() {}
+      def process(input: (A, B), emitter: Emitter[((A, Int), B)]) {
+        val (a,b) = input
+        emitter.emit(((a, rgen.nextInt(ub)), b))
+      }
+      def cleanup(emitter: Emitter[((A, Int), B)]) {}
     }
-    def cleanup(emitter: Emitter[((A,Int),B)]) {}
+
+    implicit val grouping = new Grouping[(K, Int)] {
+      def groupCompare(a: (K, Int), b: (K, Int)): Int =
+        implicitly[Grouping[K]].groupCompare(a._1, b._1) match {
+          case 0   => implicitly[Ordering[Int]].compare(a._2, b._2)
+          case cmp => cmp
+        }
+    }
+
+    Relational.join(
+      left.flatMap{ case (k, v) => (0 until replicationFactor).map{ i => ((k, i), v) } },
+       right.parallelDo(addRandIntToKey[K, B](replicationFactor,0))
+    )
+    .map{case ((k,_),vs) => (k,vs)}
   }
 }
-
