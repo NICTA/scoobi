@@ -18,8 +18,9 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
   "inputs" - new g1 with factory {
     e1 := MapperInputChannel(pd(load, rt)).inputs === Seq(load, rt)
     e2 := {
-      IdInputChannel(pd(load), gbk(load)).inputs === Seq(load)
-      IdInputChannel(cb(load), gbk(load)).inputs === Seq(load)
+      IdInputChannel(Some(pd(load)), gbk(load)).inputs === Seq(load)
+      IdInputChannel(Some(cb(load)), gbk(load)).inputs === Seq(load)
+      IdInputChannel(None, gbk(load)).inputs           === Seq(load)
     }
   }
 }

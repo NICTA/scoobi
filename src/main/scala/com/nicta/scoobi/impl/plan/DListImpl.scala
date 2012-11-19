@@ -81,6 +81,8 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
     }
     new DListImpl(ParallelDo(comp, UnitDObject.getComp, dofn, DoMapReducer(mwf, mwf, manifestWireFormat[Unit]), Seq[Sink](), Barriers(groupBarrier = true, fuseBarrier = false)))
   }
+
+  override def toString = "\n"+ new ShowNode {}.pretty(comp)
 }
 
 private[scoobi]

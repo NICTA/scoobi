@@ -155,7 +155,7 @@ trait CompNodes {
 
   /** initialize the Kiama attributes */
   def initAttributable[T <: Attributable](t: T): T  =
-  { Attribution.initTree(t); t }
+  { if (t.children == null || !t.children.hasNext) Attribution.initTree(t); t }
 
 }
 object CompNodes extends CompNodes

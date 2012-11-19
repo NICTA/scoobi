@@ -16,18 +16,16 @@ sealed trait MapReducer[A] {
     new TaggedIdentityMapper(tags, manifestWireFormat[Int], grouping[Int], mwf) {
       override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
     }
+
+  def makeTaggedIdentityReducer(tag: Int) = new TaggedIdentityReducer(tag, mwf)
 }
 
-case class SimpleMapReducer[A](mwf: ManifestWireFormat[A]) extends MapReducer[A] { outer =>
-  def makeTaggedReducer(tag: Int) = new TaggedIdentityReducer(tag, mwf)
-}
+case class SimpleMapReducer[A](mwf: ManifestWireFormat[A]) extends MapReducer[A]
 
 case class DoMapReducer[A, B, E](mwfa: ManifestWireFormat[A],
                                  mwfb: ManifestWireFormat[B],
                                  mwfe: ManifestWireFormat[E]) extends MapReducer[B] { outer =>
   def mwf = mwfb
-
-  def makeTaggedIdentityReducer(tag: Int) = new TaggedIdentityReducer(tag, mwf)
 
   def makeTaggedReducer(tag: Int, dofn: EnvDoFn[A, B, E], mwf: ManifestWireFormat[_]) =
     new TaggedReducer(tag, mwf) {
@@ -79,6 +77,16 @@ case class KeyValueMapReducer[K, V](mwfk: ManifestWireFormat[K], gpk: Grouping[K
       emitter.emit((key, values.reduce((v1, v2) => f(v1.asInstanceOf[V], v2.asInstanceOf[V]))))
     }
     def cleanup(env: Any, emitter: Emitter[Any]) {}
+  }
+
+  def makeTaggedReducer(tag: Int, f: (V, V) => V, dofn: EnvDoFn[_,_,_]) = new TaggedReducer(tag, mwf) {
+    def setup(env: Any) { dofn.unsafeSetup(env) }
+    def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
+      dofn.unsafeSetup(env)
+      if (!values.isEmpty)
+        dofn.unsafeProcess(env, (key, values.asInstanceOf[Iterable[V]].reduce(f)), emitter)
+    }
+    def cleanup(env: Any, emitter: Emitter[Any]) { dofn.unsafeCleanup(env, emitter) }
   }
 }
 

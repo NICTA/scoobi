@@ -3,7 +3,9 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.kiama.attribution.Attribution._
+import org.kiama.attribution._
+import Attribution._
+import Attributable._
 
 import core._
 import plan.comp._

@@ -20,14 +20,14 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
   "Mscrs are transformed into mscrs with actual channels" >> {
     "each Mscr must transform its channels to become an executable Mscr" >> new plans {
       transform(Mscr(MapperInputChannel(), GbkOutputChannel(gbkLoad))) ===
-        MscrExec(Set(MapperInputChannelExec(Seq())), Set(GbkOutputChannelExec(gbkExec)))
+        MscrExec(Seq(MapperInputChannelExec(Seq())), Seq(GbkOutputChannelExec(gbkExec)))
     }
     "input channels must be transformed to executable input channels, containing executable nodes" >> {
       "A MapperInputChannel is transformed to a MapperInputChannelExec" >> new plans {
         transform(MapperInputChannel(pdLoad)) === MapperInputChannelExec(Seq(MapperExec(Ref(pdLoad), loadExec)))
       }
       "An IdInputChannel is transformed into a BypassInputChannelExec" >> new plans {
-        transform(IdInputChannel(ld, gbkLoad)) === BypassInputChannelExec(loadExec, gbkExec)
+        transform(IdInputChannel(Some(ld), gbkLoad)) === BypassInputChannelExec(Some(loadExec), gbkExec)
       }
       "A StraightInputChannel is transformed into a StraightInputChannelExec" >> new plans {
         transform(StraightInputChannel(ld)) === StraightInputChannelExec(loadExec)
@@ -54,14 +54,14 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
       val mscrExec = transform(new Mscr(Set(MapperInputChannel()), Set(GbkOutputChannel(gbkLoad): OutputChannel,
                                                                        FlattenOutputChannel(flattenLoad),
                                                                        BypassOutputChannel(pdLoad))))
-      mscrExec.outputChannels.map(tag) === Set(0, 1, 2)
+      mscrExec.outputChannels.map(tag) === Seq(0, 1, 2)
     }
     "inputs must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
       val mscrExec = transform(new Mscr(Set(MapperInputChannel(pdLoad, pdLoad)),
                                         Set(GbkOutputChannel(gbk(pdLoad)): OutputChannel,
                                             FlattenOutputChannel(flatten(pdLoad)))))
 
-      mscrExec.inputChannels.map(tags(mscrExec)) === Set(Map((pdLoad, Set(0, 1))))
+      mscrExec.inputChannels.map(tags(mscrExec)) === Seq(Map((pdLoad, Set(0, 1))))
     }
   }
 
@@ -140,7 +140,7 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
 
         execPlan(pd1, pd2) ===
           Seq(GbkReducerExec(Ref(pd1), GroupByKeyExec(Ref(gbk1), loadExec)),
-            ReducerExec(Ref(pd2), CombineExec(Ref(cb1), loadExec)))
+              GbkReducerExec(Ref(pd2), CombineExec(Ref(cb1), loadExec)))
       }
       "GbkMapper if output is a GroupByKey" >> new plans {
         val pd1 = pd(load)

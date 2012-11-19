@@ -13,7 +13,7 @@ import scala.collection.JavaConversions._
 import org.kiama.attribution.Attribution._
 
 import core._
-import util.Logs._
+import monitor.Loggable._
 import impl.plan._
 import comp._
 import CompNodes._
@@ -54,15 +54,15 @@ case class InMemoryMode() {
     paramAttr { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Load[_]           => saveSinks(computeLoad(n)                                 , n.sinks)
-        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                           , n.sinks)
-        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                           , n.sinks)
-        case n: Combine[_,_]      => saveSinks(computeCombine(n)                              , n.sinks)
-        case n: Flatten[_]        => saveSinks(n.ins.map(_ -> compute(c)).reduce(_++_)        , n.sinks)
-        case n: Materialize[_]    => saveSinks(Seq(n.in -> compute(c))                        , n.sinks)
-        case n: Op[_,_,_]         => saveSinks(Seq(n.unsafeExecute(n.in1 -> computeValue(c),
-          n.in2 -> computeValue(c))) , n.sinks)
-        case n: Return[_]         => saveSinks(Seq(n.in)                                      , n.sinks)
+        case n: Load[_]           => saveSinks(computeLoad(n)                                     , n.sinks)
+        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                               , n.sinks)
+        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)
+        case n: Combine[_,_]      => saveSinks(computeCombine(n)                                  , n.sinks)
+        case n: Flatten[_]        => saveSinks(Vector(n.ins.map(_ -> compute(c)).reduce(_++_):_*) , n.sinks)
+        case n: Materialize[_]    => saveSinks(Vector(n.in -> compute(c))                         , n.sinks)
+        case n: Op[_,_,_]         => saveSinks(Vector(n.unsafeExecute(n.in1 -> computeValue(c),
+                                                                      n.in2 -> computeValue(c)))  , n.sinks)
+        case n: Return[_]         => saveSinks(Vector(n.in)                                       , n.sinks)
       }
     }
 
@@ -89,7 +89,7 @@ case class InMemoryMode() {
     }
 
     vb.result
-  }.debug("computeLoad: "+_)
+  }//.debug("computeLoad")
 
 
   private def computeParallelDo(pd: ParallelDo[_,_,_])(implicit sc: ScoobiConfiguration): Seq[_] = {
@@ -97,10 +97,10 @@ case class InMemoryMode() {
     val emitter = new Emitter[Any] { def emit(v: Any) { vb += v } }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
-    dofn.unsafeExecute(pd.in -> compute(sc), emitter, env)
-    vb.result
+    (pd.in -> compute(sc)).foreach { v => dofn.unsafeExecute(env, v, emitter) }
+    vb.result.debug("computeParallelDo")
 
-  }.debug("computeParallelDo: "+_)
+  }
 
 
   private def computeGroupByKey(gbk: GroupByKey[_,_])(implicit sc: ScoobiConfiguration): Seq[_] = {
@@ -145,16 +145,13 @@ case class InMemoryMode() {
     sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
     /* Concatenate */
-    Vector(sorted.flatMap(_.toSeq map { case (k, kvs) => (k, kvs.map(vs => vs.asInstanceOf[Tuple2[_,_]]._2)) }): _*)
+    Vector(sorted.flatMap(_.toSeq map { case (k, kvs) => (k, kvs.map(vs => vs.asInstanceOf[Tuple2[_,_]]._2)) }): _*).debug("computeGroupByKey")
 
-  }.debug("computeGroupByKey: "+_)
-
-
-  private def computeCombine(combine: Combine[_,_])(implicit sc: ScoobiConfiguration): Seq[_] = {
-    (combine.in -> compute(sc)) map { case (k, vs: Iterable[_]) => (k, combine.unsafeReduce(vs)) }
-  }.debug("computeCombine: "+_)
+  }
 
 
+  private def computeCombine(combine: Combine[_,_])(implicit sc: ScoobiConfiguration): Seq[_] =
+    (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) => (k, combine.unsafeReduce(vs)) }.debug("computeCombine")
 
   def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
     sinks.foreach { sink =>

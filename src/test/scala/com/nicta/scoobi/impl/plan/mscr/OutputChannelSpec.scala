@@ -19,7 +19,7 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
     e1 := GbkOutputChannel(gbk(load).addSink(StringSink())).sinks === Seq(StringSink())
     e2 := {
       val gbk1 = gbk(load)
-      GbkOutputChannel(gbk1).sinks === Seq(gbk1.bridgeStore)
+      GbkOutputChannel(gbk1).sinks === Seq(gbk1.bridgeStore).flatten
     }
   }
 }

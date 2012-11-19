@@ -72,22 +72,22 @@ class InputChannelsSpec extends MscrMakerSpecification {
   }
   "IdInputChannels" >> {
     "we create an IdInputChannel for each GroupByKey input which has no siblings" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      (graph -> descendents).collect { case d if (d -> idInputChannels(gbk(load))).size > 1 => d -> idInputChannels(gbk(load)) }.flatten foreach { channel =>
-        val input = channel.input
-        (input -> siblings) aka show(input) must beEmpty
+      (graph -> descendents).collect { case d if (d -> idInputChannels(gbk(load))).size > 1 => d -> idInputChannels(gbk(load)) }.flatten foreach {
+        case IdInputChannel(Some(input), _) =>  (input -> siblings) aka show(input) must beEmpty
+        case _ => ok
       }
     }
   }
   "MapperInputChannels + IdInputChannels" >> {
     "The input channels of a node are all the mapper input channels for that node + the id input channels" >> new factory {
-      val (l1, l2, rt1, rt2) = (load, load, rt, rt)
-      val (pd1, pd2, pd3) = (pd(l1, rt1), pd(l1, rt1), pd(l2, rt2))
+      val (l1, l2, rt1) = (load, load, rt)
+      // pd1 and pd2 are "related"
+      val (pd1, pd2) = (pd(l1, rt1), pd(l1, rt1))
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(rt1))
       val graph = flatten(gbk1, gbk2, gbk3)
 
-      (graph -> mapperInputChannels)   must have size(1)
-      (graph -> idInputChannels(gbk3)) must have size(1)
-      (graph -> inputChannels(gbk3))   must have size(2)
+      (gbk1  -> mapperInputChannels)   must have size(1)
+      (gbk3  -> idInputChannels(gbk3)) must have size(1)
     }
   }
 

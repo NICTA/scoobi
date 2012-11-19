@@ -151,7 +151,7 @@ case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[S
 
   override val toString = "Flatten ("+id+")"
 
-  def makeTaggedReducer(tag: Int) = mr.makeTaggedReducer(tag)
+  def makeTaggedIdentityReducer(tag: Int) = mr.makeTaggedIdentityReducer(tag)
 }
 object Flatten1 {
   /** extract only the incoming nodes of this flatten */
@@ -164,6 +164,7 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
   type CompNodeType = Combine[K, V]
   type Sh = Arr
 
+  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   def gpk = mr.gpk
@@ -191,8 +192,9 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
     ParallelDo[(K, Iterable[V]), (K, V), Unit](in, Return.unit, dofn, DoMapReducer(manifestWireFormat[(K, Iterable[V])], manifestWireFormat[(K, V)], manifestWireFormat[Unit]))
   }
 
-  def makeTaggedCombiner(tag: Int) = mr.makeTaggedCombiner(tag, f)
-  def makeTaggedReducer(tag: Int)  = mr.makeTaggedReducer(tag, f)
+  def makeTaggedCombiner(tag: Int)                      = mr.makeTaggedCombiner(tag, f)
+  def makeTaggedReducer(tag: Int)                       = mr.makeTaggedReducer(tag, f)
+  def makeTaggedReducer(tag: Int, dofn: EnvDoFn[_,_,_]) = mr.makeTaggedReducer(tag, f, dofn)
 
   def unsafeReduce(values: Iterable[Any]) =
     values.asInstanceOf[Iterable[V]].reduce(f)
@@ -207,6 +209,8 @@ case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: 
 
   type CompNodeType = GroupByKey[K, V]
   type Sh = Arr
+
+  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 

@@ -20,6 +20,7 @@ import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.MapContext
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.RecordReader
+import impl.util.UniqueId
 
 trait Source {
   def inputFormat: Class[_ <: InputFormat[_,_]]

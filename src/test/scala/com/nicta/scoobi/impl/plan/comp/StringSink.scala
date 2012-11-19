@@ -5,18 +5,22 @@ package comp
 
 import com.nicta.scoobi.core._
 import org.apache.hadoop.mapreduce._
+import scala.collection.mutable._
 
-case class StringSink() extends DataSink[String, String, (String, String)] {
+case class StringSink() extends DataSink[String, String, String] {
   def outputFormat: Class[_ <: OutputFormat[String, String]] = classOf[StringOutputFormat]
   def outputKeyClass: Class[String]   = classOf[String]
   def outputValueClass: Class[String] = classOf[String]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
-  def outputConverter: OutputConverter[String, String, (String, String)] = StringOutputConverter()
+  def outputConverter: OutputConverter[String, String, String] = StringOutputConverter()
 }
 
-case class StringOutputConverter() extends OutputConverter[String, String, (String, String)] {
-  def toKeyValue(x: (String, String)): (String, String) = x
+object StringSink {
+  val results: MultiMap[String, String] = new HashMap[String, Set[String]] with MultiMap[String, String]
+}
+case class StringOutputConverter() extends OutputConverter[String, String, String] {
+  def toKeyValue(x: String): (String, String) = ("nokey", x)
 }
 
 case class StringOutputFormat() extends OutputFormat[String, String] {
@@ -26,7 +30,7 @@ case class StringOutputFormat() extends OutputFormat[String, String] {
 }
 
 case class StringRecordWriter() extends RecordWriter[String, String] {
-  def write(key: String, value: String) {}
+  def write(key: String, value: String) { StringSink.results.addBinding(key, value) }
   def close(context: TaskAttemptContext) {}
 }
 

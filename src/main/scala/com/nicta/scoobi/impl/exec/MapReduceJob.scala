@@ -48,7 +48,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   private implicit lazy val logger = LogFactory.getLog("scoobi.Step")
 
   /* Keep track of all the mappers for each input channel. */
-  private[scoobi] val mappers: Map[Source, Set[(Env[_], TaggedMapper)]] = Map.empty
+  private[scoobi] val mappers: Map[(Source, Int), Set[(Env[_], TaggedMapper)]] = Map.empty
   private[scoobi] val combiners: Set[TaggedCombiner[_]] = Set()
   private[scoobi] val reducers: ListBuffer[(scala.collection.Seq[Sink], (Env[_], TaggedReducer))] = new ListBuffer
 
@@ -60,9 +60,9 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
   /** Add an input mapping function to this MapReduce job. */
   def addTaggedMapper(input: Source, env: Option[Env[_]], m: TaggedMapper) = {
     val tm = (env.getOrElse(Env.empty), m)
-
-    if (!mappers.contains(input)) mappers += ((input, Set(tm)))
-    else                          mappers(input) += tm: Unit
+    val inputId = System.identityHashCode(input)
+    if (!mappers.contains((input, inputId))) mappers += (((input, inputId), Set(tm)))
+    else                                     mappers((input, inputId)) += tm: Unit
 
     m.tags.foreach { tag =>
       keyTypes   += ((tag, (m.mfk, m.wfk, m.gpk)))
@@ -159,7 +159,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
    *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
    *       mapper for a given input channel can be used as they all have the same input type */
   private def configureMappers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
-    val mappersList = mappers.toList
+    val mappersList = mappers.toList.map { case ((source, sourceId), mapper) => (source, mapper) }
     ChannelsInputFormat.configureSources(job, jar, mappersList.map(_._1))
 
     val inputChannels: List[((Source, scala.collection.Set[(Env[_], TaggedMapper)]), Int)] = mappersList.zipWithIndex
@@ -211,7 +211,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
      * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mappers.keys.map(_.inputSize).sum
+    val inputBytes: Long = mappers.keys.map(_._1.inputSize).sum
     val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
     val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
     job.setNumReduceTasks(numReducers)

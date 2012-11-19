@@ -69,17 +69,22 @@ trait MscrMaker extends CompNodes {
   lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
     attr {
       case pd: ParallelDo[_,_,_] if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo).filter(isMapper) + pd))
-      case other                                   => other.children.asNodes.flatMap(_ -> mapperInputChannels).toSet
+      case other                                   => other.children.asNodes.filterNot(isGroupByKey).flatMap(_ -> mapperInputChannels).toSet
     }
 
   /**
    * compute the id input channels of a node.
    * An IdInputChannel is a channel for an input node which has no siblings and is connected to a GroupByKey */
   lazy val idInputChannels: GroupByKey[_,_] => CompNode => Set[IdInputChannel] =
-    paramAttr { gbk: GroupByKey[_,_] => { node: CompNode => node match {
+    paramAttr { gbk: GroupByKey[_,_] => {
+      node: CompNode => node match {
       case pd: ParallelDo[_,_,_] if pd -> isMapper       => Set()
-      case n if (n -> isGbkInput) && !(n -> hasSiblings) => Set(IdInputChannel(n, gbk))
-      case other                                         => other.children.asNodes.flatMap(_ -> idInputChannels(gbk)).toSet
+      case n if (n -> isGbkInput)  &&
+               !(n -> hasSiblings) &&
+                parentOpt(n).map(!isGroupByKey).getOrElse(true) => Set(IdInputChannel(Some(n), gbk))
+      case n if (n -> isGbkInput)  &&
+                !(n -> hasSiblings)                      => Set(IdInputChannel(None, gbk))
+      case other                                         => other.children.asNodes.filterNot(isGroupByKey || isFlatten).flatMap(_ -> idInputChannels(gbk)).toSet
     }}}
 
   /** compute the output channels of a node */

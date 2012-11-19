@@ -42,7 +42,7 @@ trait ExecutionPlan extends MscrMaker {
 
   /** rewrite a single Mscr */
   def rewriteSingleMscr = rule {
-    case m @ Mscr(in, out) => MscrExec(in, out)
+    case m @ Mscr(in, out) => MscrExec(in.toSeq, out.toSeq)
   }
 
   /**
@@ -97,21 +97,22 @@ trait ExecutionPlan extends MscrMaker {
 
   /** rewrite one node */
   def rewriteNode: Strategy = attemptSomeTopdown(rule {
-    case n: Materialize[_]       => MaterializeExec(Ref(n), n.in)
-    case n: Load[_]              => LoadExec(Ref(n))
-    case n: Return[_]            => ReturnExec(Ref(n))
-    case n: GroupByKey[_,_]      => GroupByKeyExec(Ref(n), n.in)
-    case n: Combine[_,_]         => CombineExec(Ref(n),    n.in)
-    case n: Op[_,_,_]            => OpExec(Ref(n),         n.in1, n.in2)
-    case n: Flatten[_]           => FlattenExec(Ref(n),    n.ins)
-    case n: ParallelDo[_,_,_]    => n.parent match {
-      case g: GroupByKey[_,_]    => GbkMapperExec(Ref(n), Ref(g), n.in)
+    case n: Materialize[_]                 => MaterializeExec(Ref(n), n.in)
+    case n: Load[_]                        => LoadExec(Ref(n))
+    case n: Return[_]                      => ReturnExec(Ref(n))
+    case n: GroupByKey[_,_]                => GroupByKeyExec(Ref(n), n.in)
+    case n: Combine[_,_]                   => CombineExec(Ref(n),    n.in)
+    case n: Op[_,_,_]                      => OpExec(Ref(n),         n.in1, n.in2)
+    case n: Flatten[_]                     => FlattenExec(Ref(n),    n.ins)
+    case n: ParallelDo[_,_,_]              => n.parent match {
+      case g: GroupByKey[_,_]              => GbkMapperExec(Ref(n), Ref(g), n.in)
+      case fl: Flatten[_] if isGroupByKey(fl.parent.asNode)  => GbkMapperExec(Ref(n), Ref(fl.parent.asInstanceOf[GroupByKey[_,_]]), n.in)
       case _                     => n.in match {
         case i: Load[_]            => MapperExec(Ref(n), i)
         case i: ParallelDo[_,_,_]  => MapperExec(Ref(n), i)
         case i: Flatten[_]         => MapperExec(Ref(n), i)
         case i: GroupByKey[_,_]    => if (n -> isMapper) MapperExec(Ref(n), i) else GbkReducerExec(Ref(n), i)
-        case i: Combine[_,_]       => if (n -> isMapper) MapperExec(Ref(n), i) else ReducerExec(Ref(n), i)
+        case i: Combine[_,_]       => if (n -> isMapper) MapperExec(Ref(n), i) else GbkReducerExec(Ref(n), i)
         case i                     => sys.error("a ParallelDo node can not have an input which is: "+i)
       }
     }

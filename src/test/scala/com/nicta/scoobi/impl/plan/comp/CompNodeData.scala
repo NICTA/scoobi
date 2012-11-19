@@ -16,6 +16,11 @@ import com.nicta.scoobi.io.ConstantStringDataSource
 import application._
 import mapreducer._
 import WireFormat._
+import org.kiama.rewriting.Rewriter._
+import mapreducer.KeyValueMapReducer
+import mapreducer.DoMapReducer
+import mapreducer.SimpleMapReducer
+import mapreducer.KeyValuesMapReducer
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: Specification =>
 
@@ -31,8 +36,8 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
                                    workers      -> arguments.commandLine.int("workers").getOrElse(1))
 
   import Gen._
-  implicit lazy val arbitraryCompNode: Arbitrary[CompNode] = Arbitrary(arbitraryDList.arbitrary.map(_.getComp))
-  implicit lazy val arbitraryDList: Arbitrary[DList[String]] = Arbitrary(Gen.sized(depth => genList(depth).map(_.setComp(c => init(c)).map(_.toString))))
+  implicit lazy val arbitraryCompNode: Arbitrary[CompNode]       = Arbitrary(arbitraryDList.arbitrary.map(_.getComp))
+  implicit lazy val arbitraryDList: Arbitrary[DList[String]]     = Arbitrary(Gen.sized(depth => genList(depth).map(_.setComp(c => init(c)).map(normalize))))
   implicit lazy val arbitraryDObject: Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
 
   /** lists of elements of any type */
@@ -49,7 +54,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
   /** objects of elements with a simple type A */
   def genObject(depth: Int = 1): Gen[DObject[String]] =
     if (depth <= 1) DObjects[String]("start")
-    else            Gen.oneOf(genList(depth - 1).map(l => l.materialize.map(_.toString)),
+    else            Gen.oneOf(genList(depth - 1).map(l => l.materialize.map(normalize)),
                               ^(genObject(depth / 2), genObject(depth / 2))((_ join _)).map(o => o.map(_.toString))).memo
 
   /** lists of elements with a type (K, V) */
@@ -63,9 +68,22 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
   /** lists of elements with a type (K, Iterable[V]) */
   def genList3(depth: Int = 1): Gen[DList[(String, Iterable[String])]] =
-    if (depth <= 1) genList2(1).map(l => l.map { case (k, v) => (k, Seq.fill(2)(v)) })
+    if (depth <= 1) genList2(1).map(l => l.map { case (k, v) => (k, Vector.fill(2)(v)) })
     else            Gen.oneOf(genList2(depth - 1).map(l => l.groupByKey),
                               genList3(depth - 1).map(l => l.map(identity))).memo
+
+
+  /**
+   * rewrite the MscrReducer iterables as vectors to facilitate the comparison
+   */
+  def normalize(result: Any) = rewrite {
+    everywhere(rule {
+      case iterator: Iterator[_] => Vector(iterator.toSeq:_*)
+      case other                 => other
+    })
+  }(result).toString
+
+
 }
 
 /**
@@ -76,7 +94,8 @@ trait CompNodeFactory extends Scope {
   implicit def manifestWireFormatString = manifestWireFormat[String]
   def mapReducer = SimpleMapReducer(manifestWireFormatString)
 
-  def load                                   = Load(ConstantStringDataSource("start"), mapReducer)
+  def loadWith(s: String)                    = Load(ConstantStringDataSource(s), mapReducer)
+  def load                                   = loadWith("start")
   def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A]]), mapReducer)
   def parallelDo(in: CompNode)               = pd(in)
   def rt                                     = Return("", mapReducer)
@@ -100,6 +119,6 @@ trait CompNodeFactory extends Scope {
   }
 
   /** initialize the Kiama attributes of a CompNode */
-  def init[T <: CompNode](t: T): T  = { if (!t.children.hasNext) Attribution.initTree(t); t }
+  def init[T <: CompNode](t: T): T  = CompNodes.initAttributable(t)
 
 }

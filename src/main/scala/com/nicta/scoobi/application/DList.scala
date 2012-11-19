@@ -7,7 +7,7 @@ import io.func.FunctionInput
 import impl.plan.DListImpl
 
 /** This object provides a set of operations to create distributed lists. */
-object DLists {
+trait DLists {
 
   /** Create a distributed list with given elements. */
   def apply[A : ManifestWireFormat](elems: A*): DList[A] = SeqInput.fromSeq(elems)
@@ -36,11 +36,14 @@ object DLists {
 
   /** Create a DList with the same element repeated n times. */
   def fill[A : ManifestWireFormat](n: Int)(a: =>A): DList[A] =
-    DLists(Seq.fill(n)(a):_*)
+    apply(Seq.fill(n)(a):_*)
 
   /** Pimping from generic collection types (i.e. Seq) to a Distributed List */
   implicit def traversableToDList[A : ManifestWireFormat](traversable: Traversable[A]) = new TraversableToDList[A](traversable)
   class TraversableToDList[A : ManifestWireFormat](traversable: Traversable[A]) {
-    def toDList: DList[A] = DLists.apply(traversable.toSeq:_*)
+    def toDList: DList[A] = apply(traversable.toSeq:_*)
   }
 }
+
+object DLists extends DLists
+object DList extends DLists

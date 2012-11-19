@@ -28,6 +28,12 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
         case List(Flatten1(ParallelDo1(ll1) :: ParallelDo1(ll2) :: _))  => (l1 === ll1) and (l2 === ll2)
       }
     }
+    "1.2.1 the Flatten Node must have the same manifest type as the output of the parallel nodes" >> new nodes {
+      optimise(flattenSink, parallelDo(flattens)) must beLike {
+        case List(fl @ Flatten1((pd @ ParallelDo1(ll1)) :: ParallelDo1(ll2) :: _))  =>
+          fl.mr.mwf === pd.mr.mwf
+      }
+    }
     "1.3 A Flatten Node with Flatten inputs must collect all the inner inputs" >> new nodes {
       "input"                                       | "expected"                                    |>
       flatten(l1)                                   ! flatten(l1)                                   |
@@ -51,6 +57,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     "A Combine which doesn't have a GroupByKey as an Input must be transformed to a ParallelDo" >> new nodes {
       "input"                                        | "expected"                                    |
        cb(l1)                                        ! pd(l1)                                        |
+       cb(pd(l1))                                    ! pd(pd(l1))                                    |
        cb(gbk(l1))                                   ! cb(gbk(l1))                                   |> { (input, output) =>
          showStructure(optimise(combineToParDo, input).head) ==== showStructure(output)
        }

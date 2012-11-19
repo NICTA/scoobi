@@ -32,21 +32,22 @@ trait Optimiser extends CompNodes {
    * Flatten nodes which are input to a Parallel do must be transformed to the ParallelDo being replicated in each input
    * of the Flatten node
    *
-   *    in1  in2  in3
+   *    in1[A]  in2[A]  in3[A]
    *      \   |   /
-   *       Flatten
+   *       Flatten[A]
    *          |
-   *    pd @ ParallelDo
+   *    pd @ ParallelDo[A, B]
    *        ====>
-   *    in1  in2  in3
-   *     |    |    |
-   *     pd  pd   pd
-   *      \   |   /
-   *       Flatten
+   *    in1[A]    in2[A]    in3[A]
+   *     |          |        |
+   *     pd[A,B]  pd[A,B]   pd[A]
+   *      \         |       /
+   *           Flatten[B]
    */
-  def flattenSink = everywhere(rule {
-    case p @ ParallelDo(fl @ Flatten1(ins),_,_,_,_,_) => fl.copy(ins = fl.ins.map(i => p.copy(in = i)))
-  })
+  def flattenSink = repeat(sometd(rule {
+    case p @ ParallelDo(fl @ Flatten1(ins),_,_,pmr,_,_) =>
+      fl.copy(ins = fl.ins.map(i => p.copy(in = i)), mr = fl.mr.copy(mwf = pmr.mwf))
+  }))
 
   /**
    * Nested Flattens must be fused

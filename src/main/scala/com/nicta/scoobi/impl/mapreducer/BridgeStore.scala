@@ -67,7 +67,7 @@ case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
   lazy val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
   def inputCheck(implicit sc: ScoobiConfiguration) {}
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-    FileInputFormat.addInputPath(job, new Path(path(sc), "ch*"))
+     FileInputFormat.addInputPath(job, new Path(path(sc), "ch*"))
   }
 
   def inputSize(implicit sc: ScoobiConfiguration): Long = Helper.pathSize(new Path(path, "ch*"))(sc)

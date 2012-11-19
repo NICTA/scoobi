@@ -20,8 +20,7 @@ class SimpleDListsSpec extends NictaSimpleJobs {
   }
 
   "3. groupByKey" >> { implicit sc: SC =>
-    DList((1, "hello"), (1, "world")).groupByKey.run must be_==(Seq((1, Seq("hello", "world")))) or
-                                                          be_==(Seq((1, Seq("world", "hello"))))
+    DList((1, "hello"), (1, "world")).groupByKey.run must haveTheSameElementsAs(Seq((1, Seq("hello", "world"))))
   }
 
   "4. groupByKey + combine" >> { implicit sc: SC =>
@@ -42,7 +41,7 @@ class SimpleDListsSpec extends NictaSimpleJobs {
 
   "8. groupByKey + filter" >> { implicit sc: SC =>
     DList((1, "hello"), (1, "world")).groupByKey.filter { case (k, v) => k >= 1 }.run must
-      be_==(Seq((1, Seq("hello", "world")))) or be_==(Seq((1, Seq("world", "hello"))))
+      haveTheSameElementsAs(Seq((1, Seq("hello", "world"))))
   }
 
   "9. combine + filter + groupBarrier" >> { implicit sc: SC =>

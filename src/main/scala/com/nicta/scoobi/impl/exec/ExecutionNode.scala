@@ -25,8 +25,9 @@ trait MapperExecutionNode extends ExecutionNode {
 }
 
 case class Ref[T <: CompNode](n: T)
-case class LoadExec(load: Ref[Load[_]]) extends ExecutionNode {
+case class LoadExec(load: Ref[Load[_]]) extends MapperExecutionNode {
   def referencedNode = load.n
+  def makeTaggedMapper(tags: Map[CompNode, Set[Int]]): TaggedMapper = referencedNode.mr.makeTaggedIdentityMapper(tags(referencedNode))
 }
 case class GroupByKeyExec(gbk: Ref[GroupByKey[_,_]], n: CompNode) extends ExecutionNode {
   def referencedNode = gbk.n
@@ -34,8 +35,9 @@ case class GroupByKeyExec(gbk: Ref[GroupByKey[_,_]], n: CompNode) extends Execut
 }
 case class CombineExec(cb: Ref[Combine[_,_]], n: CompNode) extends ExecutionNode {
   def referencedNode = cb.n
-  def makeTaggedCombiner(tag: Int) = referencedNode.makeTaggedCombiner(tag)
-  def makeTaggedReducer(tag: Int)  = referencedNode.makeTaggedReducer(tag)
+  def makeTaggedCombiner(tag: Int)                      = referencedNode.makeTaggedCombiner(tag)
+  def makeTaggedReducer(tag: Int)                       = referencedNode.makeTaggedReducer(tag)
+  def makeTaggedReducer(tag: Int, dofn: EnvDoFn[_,_,_]) = referencedNode.makeTaggedReducer(tag, dofn)
 }
 case class FlattenExec(flatten: Ref[Flatten[_]], ins: Seq[CompNode]) extends MapperExecutionNode {
   def referencedNode = flatten.n
@@ -62,24 +64,19 @@ case class GbkMapperExec(pd: Ref[ParallelDo[_,_,_]], gbk: Ref[GroupByKey[_,_]], 
   def referencedNode = pd.n
   def makeTaggedMapper(tags: Map[CompNode, Set[Int]]) = referencedNode.makeTaggedMapper(gbk.n, tags(referencedNode))
 }
-/** specialised ParallelDo to be translated to a Hadoop Reducer class */
-case class ReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends ExecutionNode {
-  def referencedNode = pd.n
-}
 /** specialised ParallelDo to be translated to a Hadoop Reducer class, following a Gbk */
 case class GbkReducerExec(pd: Ref[ParallelDo[_,_,_]], n: CompNode) extends ExecutionNode {
   def referencedNode = pd.n
   def dofn           = referencedNode.dofn
 
   def environment(implicit sc: ScoobiConfiguration) = referencedNode.environment(sc)
-
-  def makeTaggedReducer(tag: Int) = referencedNode.makeTaggedReducer(tag)
+  def makeTaggedReducer(tag: Int)             = referencedNode.makeTaggedReducer(tag)
 }
 
-case class MscrExec(inputs: Set[InputChannel] = Set(), outputs: Set[OutputChannel] = Set()) {
-  def inputChannels:  Set[InputChannelExec]  = inputs. map(_.asInstanceOf[InputChannelExec])
-  def outputChannels: Set[OutputChannelExec] = outputs.map(_.asInstanceOf[OutputChannelExec])
-  def channels: Set[ChannelExec] = inputChannels ++ outputChannels
+case class MscrExec(inputs: Seq[InputChannel] = Seq(), outputs: Seq[OutputChannel] = Seq()) {
+  def inputChannels:  Seq[InputChannelExec]  = inputs. map(_.asInstanceOf[InputChannelExec])
+  def outputChannels: Seq[OutputChannelExec] = outputs.map(_.asInstanceOf[OutputChannelExec])
+  def channels: Seq[ChannelExec] = inputChannels ++ outputChannels
   def mapperInputChannels = inputChannels.collect { case m @ MapperInputChannelExec(_) => m }
 
   def outputContains(node: CompNode) =
@@ -92,7 +89,6 @@ trait ChannelExec {
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
   lazy val sources = {
-    Attribution.initTree(input.referencedNode)
     input.referencedNode match {
       case n: Load[_] => Seq(n.source)
       case n          => n.children.asNodes.flatMap {
@@ -100,7 +96,7 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
                            case other       => other.bridgeStore
                          }.toSeq
     }
-  }.distinct
+  }
 
   def input: ExecutionNode
   def referencedNode = input.referencedNode
@@ -122,17 +118,18 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
     val tags = plan.tags(job.mscrExec)(this)
     mappers.map { mapper =>
       val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
-      sources.foreach(source => job.addTaggedMapper(source, pd.environment(sc), mapper.makeTaggedMapper(tags)))
+      sources.headOption.foreach(source => job.addTaggedMapper(source, pd.environment(sc), mapper.makeTaggedMapper(tags)))
     }
     job
   }
 }
 
-case class BypassInputChannelExec(in: CompNode, gbk: CompNode) extends InputChannelExec {
-  def input = in.asInstanceOf[ExecutionNode]
-  def inputs = Seq(in)
+case class BypassInputChannelExec(in: Option[CompNode], gbk: CompNode) extends InputChannelExec {
+  def input = in.getOrElse(gbk).asInstanceOf[ExecutionNode]
+  def inputs = Seq(input)
 
   def gbkExec = gbk.asInstanceOf[GroupByKeyExec]
+
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
     sources.foreach(source => job.addTaggedMapper(source, None, gbkExec.referencedNode.makeTaggedIdentityMapper(tags(referencedNode))))
@@ -184,11 +181,15 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     // if there is a reducer node, use it as the tagged reducer
     // otherwise use the combiner node if there is one
     // and finally default to the GroupByKey node
-    theReducer.map(r => job.addTaggedReducer(sinks, r.environment(sc), r.makeTaggedReducer(tag))).orElse {
-      theCombiner.map(c => job.addTaggedReducer(sinks, None, c.makeTaggedReducer(tag))).orElse {
-        Some(job.addTaggedReducer(sinks, None, theGroupByKey.makeTaggedReducer(tag)))
+    theCombiner.map { c =>
+      theReducer.map { r =>
+        Some(job.addTaggedReducer(sinks, r.environment(sc), c.makeTaggedReducer(tag, r.dofn)))
+      }.orElse(Some(job.addTaggedReducer(sinks, None, c.makeTaggedReducer(tag))))
+    }.orElse {
+      theReducer.map { r =>
+        Some(job.addTaggedReducer(sinks, r.environment(sc), r.makeTaggedReducer(tag)))
       }
-    }
+    }.getOrElse(job.addTaggedReducer(sinks, None, theGroupByKey.makeTaggedReducer(tag)))
     job
   }
   def environment: Option[CompNode] = theReducer.map(_.referencedNode.env)
@@ -204,7 +205,7 @@ case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag
   def outputs = Seq(out)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
-    job.addTaggedReducer(sinks.toList, None, theFlatten.referencedNode.makeTaggedReducer(tag))
+    job.addTaggedReducer(sinks.toList, None, theFlatten.referencedNode.makeTaggedIdentityReducer(tag))
 
   def environment: Option[CompNode] = None
 }

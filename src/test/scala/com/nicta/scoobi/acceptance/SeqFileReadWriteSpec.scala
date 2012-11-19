@@ -22,7 +22,7 @@ import java.io.IOException
 import Scoobi._
 import testing.NictaSimpleJobs
 import testing.TestFiles
-import application._
+import application.{TextOrdering, BytesOrdering}
 
 class SeqFileReadWriteSpec extends NictaSimpleJobs {
 
