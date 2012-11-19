@@ -36,11 +36,28 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
   }
 
   "test" >> {
-    val rt1 = rt
-    val l1  = new DListImpl(pd(pd(flatten(load, load), rt1), rt1))
 
-    val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
+    /**
+    ParallelDo (382) env: Return (3){
+[error]     in. Flatten (381){
+[error]         +ParallelDo (380) env: Return (3){
+[error]             in. Load (374)
+[error]             env. Return (3)}
+[error]         +ParallelDo (379) env: Return (3){
+[error]             in. Load (373)
+[error]             env. Return (3)}
+[error]     }
+[error]     env. Return (3)}'     */
+
+    val rt1 = rt
+    val gbk2 = gbk(pd(load, rt1))
+    val gbk1 = gbk(pd(cb(gbk2), rt1))
+    val graph  = pd(gbk1, rt1)
+
+    val l1  = new DListImpl(graph)
+
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
+    val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
 
     locally must haveTheSameElementsAs(inMemory)
   }
