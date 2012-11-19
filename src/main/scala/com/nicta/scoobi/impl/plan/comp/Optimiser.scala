@@ -4,7 +4,9 @@ package plan
 package comp
 
 import org.kiama.rewriting.Rewriter._
+import org.apache.commons.logging.LogFactory
 import core._
+import monitor.Loggable._
 
 /**
  * Optimiser for the DComp AST graph
@@ -13,6 +15,7 @@ import core._
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
 trait Optimiser extends CompNodes {
+  implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**
    * Flatten nodes which are input to several other nodes must be duplicated
@@ -25,7 +28,7 @@ trait Optimiser extends CompNodes {
    *    node1      node2
    */
   def flattenSplit = everywhere(rule {
-    case f : Flatten[_] => f.copy()
+    case f : Flatten[_] => f.debug("flattenSplit").copy()
   })
 
   /**
@@ -46,7 +49,7 @@ trait Optimiser extends CompNodes {
    */
   def flattenSink = repeat(sometd(rule {
     case p @ ParallelDo(fl @ Flatten1(ins),_,_,pmr,_,_) =>
-      fl.copy(ins = fl.ins.map(i => p.copy(in = i)), mr = fl.mr.copy(mwf = pmr.mwf))
+      fl.debug("flattenSplit").copy(ins = fl.ins.map(i => p.copy(in = i)), mr = fl.mr.copy(mwf = pmr.mwf))
   }))
 
   /**
@@ -65,7 +68,7 @@ trait Optimiser extends CompNodes {
    * This rule is repeated until nothing can be flattened anymore
    */
   def flattenFuse = repeat(sometd(rule {
-    case fl @ Flatten1(ins) if ins exists isFlatten => fl.copy(ins = fl.ins.flatMap { case Flatten1(nodes) => nodes; case other => List(other) })
+    case fl @ Flatten1(ins) if ins exists isFlatten => fl.debug("flattenFuse").copy(ins = fl.ins.flatMap { case Flatten1(nodes) => nodes; case other => List(other) })
   }))
 
   /**
@@ -73,7 +76,7 @@ trait Optimiser extends CompNodes {
    */
   def combineToParDo = everywhere(rule {
     case c @ Combine(GroupByKey1(_),_,_,_) => c
-    case c: Combine[_,_]                   => c.toParallelDo
+    case c: Combine[_,_]                   => c.debug("combineToParDo").toParallelDo
   })
 
   /**
@@ -88,7 +91,7 @@ trait Optimiser extends CompNodes {
    * This rule is repeated until nothing can be flattened anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,Barriers(_,false)) => p2.fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
+    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,Barriers(_,false)) => p2.debug("parDoFuse").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
   }))
 
   /**
@@ -104,8 +107,8 @@ trait Optimiser extends CompNodes {
    */
   def groupByKeySplit = everywhere(rule {
     // I think that this case is redundant with the flattenSplit rule
-    case g @ GroupByKey1(f: Flatten[_]) => g.copy(in = f.copy())
-    case g: GroupByKey[_,_]             => g.copy()
+    case g @ GroupByKey1(f: Flatten[_]) => g.debug("groupByKeySplit").copy(in = f.copy())
+    case g: GroupByKey[_,_]             => g.debug("groupByKeySplit").copy()
   })
 
   /**
@@ -120,25 +123,26 @@ trait Optimiser extends CompNodes {
    *    node1     node2
    */
   def combineSplit = everywhere(rule {
-    case c: Combine[_,_] => c.copy()
+    case c: Combine[_,_] => c.debug("combineSplit").copy()
   })
 
   /**
    * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
    */
   def parDoFuseBarrier(outputs: Set[CompNode]) = everywhere(rule {
-    case p: ParallelDo[_,_,_] if outputs contains p => p.copy(barriers = p.barriers.copy(fuseBarrier = true))
+    case p: ParallelDo[_,_,_] if outputs contains p => p.copy(barriers = p.debug("pardoFuseBarrier").barriers.copy(fuseBarrier = true))
   })
 
   /**
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Set[CompNode]) =
+    attempt(parDoFuse        ) <*
     attempt(flattenSplit     ) <*
     attempt(flattenSink      ) <*
     attempt(flattenFuse      ) <*
-    attempt(combineToParDo   ) <*
     attempt(parDoFuse        ) <*
+    attempt(combineToParDo   ) <*
     attempt(groupByKeySplit  ) <*
     attempt(combineSplit     ) <*
     attempt(parDoFuseBarrier(outputs))
