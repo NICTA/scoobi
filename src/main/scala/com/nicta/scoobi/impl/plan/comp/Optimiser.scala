@@ -88,10 +88,11 @@ trait Optimiser extends CompNodes {
    *        ====>
    *    pd3 @ ParallelDo
    *
-   * This rule is repeated until nothing can be flattened anymore
+   * This rule is repeated until nothing can be fused anymore
    */
-  def parDoFuse = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,Barriers(_,false)) => p2.debug("parDoFuse").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
+  def parDoFuse(pass: Int) = repeat(sometd(rule {
+    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,Barriers(_,false)) =>
+      p2.debug("parDoFuse - pass "+pass).fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
   }))
 
   /**
@@ -137,14 +138,14 @@ trait Optimiser extends CompNodes {
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Set[CompNode]) =
-    attempt(parDoFuse        ) <*
-    attempt(flattenSplit     ) <*
-    attempt(flattenSink      ) <*
-    attempt(flattenFuse      ) <*
-    attempt(parDoFuse        ) <*
-    attempt(combineToParDo   ) <*
-    attempt(groupByKeySplit  ) <*
-    attempt(combineSplit     ) <*
+    attempt(parDoFuse(pass = 1)   ) <*
+    attempt(flattenSplit          ) <*
+    attempt(flattenSink           ) <*
+    attempt(flattenFuse           ) <*
+    attempt(combineToParDo        ) <*
+    attempt(parDoFuse(pass = 2)   ) <*
+    attempt(groupByKeySplit       ) <*
+    attempt(combineSplit          ) <*
     attempt(parDoFuseBarrier(outputs))
 
   /**

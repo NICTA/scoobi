@@ -13,6 +13,10 @@ class CompNodesSpec extends UnitSpecification {
     val cb1 = cb(load0)
     (cb1 -> inputs) ==== IdSet(load0)
   }
+  "the inputs of a parallelDo only contain the input node, not the environment" >> new nodes {
+    val ld1 = load
+    (pd(ld1) -> inputs) ==== IdSet(ld1)
+  }
   "the ancestors of a node are all its direct parents" >> new nodes {
     (pd1 -> ancestors) ==== IdSet(fl1, mat1)
     (l1 -> ancestors)  ==== IdSet(pd1, fl1, mat1)

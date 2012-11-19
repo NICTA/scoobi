@@ -75,7 +75,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   "3. Successive ParallelDos must be fused" >> prop { (node: CompNode) =>
-    val optimised = optimise(parDoFuse, node).head
+    val optimised = optimise(parDoFuse(pass = 1), node).head
     collectSuccessiveParDos(optimised) must beEmpty
   };p
 
