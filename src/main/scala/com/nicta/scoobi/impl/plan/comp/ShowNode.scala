@@ -108,6 +108,7 @@ trait ShowNode extends MscrMaker with CompNodes {
       case GroupByKey1(in)      => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Materialize1(in)     => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Op1(in1, in2)        => showNode(node, attribute) <> braces (nest (line <> "1. " <> show(in1, attribute) <> line <> "2. " <> show(in2, attribute)))
+      case other                => value(other)
     }
 }
 object ShowNode extends ShowNode
