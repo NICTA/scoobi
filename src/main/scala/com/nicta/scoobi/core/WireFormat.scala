@@ -39,7 +39,10 @@ trait WireFormat[A] {
   def fromWire(in: DataInput): A
 }
 
-case class ManifestWireFormat[A](mf: Manifest[A], wf: WireFormat[A])
+case class ManifestWireFormat[A](mf: Manifest[A], wf: WireFormat[A]) {
+  override def toString = wf.toString
+  def isUnit = toString == "Unit" || toString == "(Unit,Unit)"
+}
 
 object ManifestWireFormat extends LowPriorityManifestWireFormat {
 
@@ -177,10 +180,12 @@ object WireFormat extends WireFormatImplicits {
     /**
      * transform a WireFormat[A] to a WireFormat[B] by providing a bijection A <=> B
      */
-    def adapt[B](f: B => A, g: A => B): WireFormat[B] = new WireFormat[B] {
+    def adapt[B : Manifest](f: B => A, g: A => B): WireFormat[B] = new WireFormat[B] {
       def fromWire(in: DataInput) = g(wf.fromWire(in))
       def toWire(x: B, out: DataOutput) { wf.toWire(f(x), out) }
+      override def toString = implicitly[Manifest[B]].erasure.getSimpleName
     }
+    override def toString = wf.toString
   }
 
   /** Performs a deep copy of an arbitrary object by first serialising then deserialising
@@ -252,6 +257,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
       bIn.readObject.asInstanceOf[T]
     }
+    override def toString = "Any"
   }
 
   /**
@@ -271,6 +277,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       x.readFields(in)
       x
     }
+    override def toString = "Writable["+implicitly[Manifest[T]].erasure.getSimpleName+"]"
   }
   
   /**
@@ -297,6 +304,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       val reader : SpecificDatumReader[T] = new SpecificDatumReader(sch)
       reader.read(null.asInstanceOf[T], decoder)
     }
+    override def toString = "Avro["+implicitly[Manifest[T]].erasure.getSimpleName+"]"
   }
 
 
@@ -307,54 +315,63 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   class UnitWireFormat extends WireFormat[Unit] {
     def toWire(x: Unit, out: DataOutput) {}
     def fromWire(in: DataInput): Unit = ()
+    override def toString = "Unit"
   }
 
   implicit def IntFmt = new IntWireFormat
   class IntWireFormat extends WireFormat[Int] {
     def toWire(x: Int, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): Int = in.readInt()
+    override def toString = "Int"
   }
 
   implicit def IntegerFmt: WireFormat[java.lang.Integer] = new IntegerWireFormat
   class IntegerWireFormat extends WireFormat[java.lang.Integer] {
     def toWire(x: java.lang.Integer, out: DataOutput) { out.writeInt(x) }
     def fromWire(in: DataInput): java.lang.Integer = in.readInt()
+    override def toString = "Integer"
   }
 
   implicit def BooleanFmt = new BooleanWireFormat
   class BooleanWireFormat extends WireFormat[Boolean] {
     def toWire(x: Boolean, out: DataOutput) { out.writeBoolean(x) }
     def fromWire(in: DataInput): Boolean = in.readBoolean()
+    override def toString = "Boolean"
   }
 
   implicit def LongFmt = new LongWireFormat
   class LongWireFormat extends WireFormat[Long] {
     def toWire(x: Long, out: DataOutput) { out.writeLong(x) }
     def fromWire(in: DataInput): Long = in.readLong()
+    override def toString = "Long"
   }
 
   implicit def DoubleFmt = new DoubleWireFormat
   class DoubleWireFormat extends WireFormat[Double] {
     def toWire(x: Double, out: DataOutput) { out.writeDouble(x) }
     def fromWire(in: DataInput): Double = { in.readDouble() }
+    override def toString = "Float"
   }
 
   implicit def FloatFmt = new FloatWireFormat
   class FloatWireFormat extends WireFormat[Float] {
     def toWire(x: Float, out: DataOutput) { out.writeFloat(x) }
     def fromWire(in: DataInput): Float = { in.readFloat() }
+    override def toString = "Float"
   }
 
   implicit def CharFmt = new CharWireFormat
   class CharWireFormat extends WireFormat[Char] {
     def toWire(x: Char, out: DataOutput) { out.writeChar(x) }
     def fromWire(in: DataInput): Char = in.readChar()
+    override def toString = "Char"
   }
 
   implicit def ByteFmt = new ByteWireFormat
   class ByteWireFormat extends WireFormat[Byte] {
     def toWire(x: Byte, out: DataOutput) { out.writeByte(x) }
     def fromWire(in: DataInput): Byte = in.readByte()
+    override def toString = "Byte"
   }
 
   implicit def StringFmt: WireFormat[String] = new StringWireFormat
@@ -378,6 +395,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
         new String(b, "utf-8")
       }
     }
+    override def toString = "String"
   }
 
   /*
@@ -429,6 +447,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       }
       builder.result()
     }
+
+    override def toString = "Traversable["+implicitly[WireFormat[T]]+"]"
   }
 
   /**
@@ -448,6 +468,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
         None
       }
     }
+    override def toString = "Option["+wt+"]"
   }
 
   /*
@@ -468,16 +489,19 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
         Right(x)
       }
     }
+    override def toString = "Either["+wt1+","+wt2+"]"
   }
 
   implicit def LeftFmt[T1, T2](implicit wt1: WireFormat[T1]) = new WireFormat[Left[T1, T2]] {
     def toWire(x: Left[T1, T2], out: DataOutput) = wt1.toWire(x.a, out)
     def fromWire(in: DataInput): Left[T1, T2] = Left[T1, T2](wt1.fromWire(in))
+    override def toString = "Left["+wt1+"]"
   }
 
   implicit def RightFmt[T1, T2](implicit wt1: WireFormat[T2]) = new WireFormat[Right[T1, T2]] {
     def toWire(x: Right[T1, T2], out: DataOutput) = wt1.toWire(x.b, out)
     def fromWire(in: DataInput): Right[T1, T2] = Right[T1, T2](wt1.fromWire(in))
+    override def toString = "Right["+wt1+"]"
   }
 
   /**
@@ -486,6 +510,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   implicit def DateFmt = new WireFormat[java.util.Date] {
     def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
     def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())
+    override def toString = "Date"
   }
 
   /*

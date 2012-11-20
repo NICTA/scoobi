@@ -42,6 +42,7 @@ trait GeneratedWireFormats {
     def gen_raw_args = gen("A%d", ", ")
     def gen_raw_args_lc = gen("a%d", ", ")
     def gen_typed_args = gen("A%d: WireFormat", ", ")
+    def gen_wf_args = gen("implicitly[WireFormat[A%d]]", ", ")
     def gen_toWire = {
       def gen_get_args = gen2(
         "      implicitly[WireFormat[A%d]].toWire(v._%d, out)", "\n")
@@ -60,13 +61,16 @@ trait GeneratedWireFormats {
     }
 """ format (gen_get_args, gen_raw_args_lc)
     }
+    def gen_toString = """    override def toString = "Case%d("+Seq(%s).mkString(",")+")" """ format (numargs, gen_wf_args)
+
 """  class Case%dWireFormat[T, %s](val apply: (%s) => T, val unapply: T => Option[(%s)]) extends WireFormat[T] {
+%s
 %s
 %s
   }
   def mkCaseWireFormat[T, %s](apply: (%s) => T, unapply: T => Option[(%s)]): WireFormat[T] = new Case%dWireFormat(apply, unapply)
 """ format (numargs, gen_typed_args, gen_raw_args, gen_raw_args,
-            gen_toWire, gen_fromWire,
+            gen_toWire, gen_fromWire, gen_toString,
             gen_typed_args, gen_raw_args, gen_raw_args, numargs)
   }
 
@@ -148,6 +152,7 @@ trait GeneratedWireFormats {
 %s
         (%s)
       }
+      override def toString = "("+Seq(%s).mkString(",")+")"
   }
   implicit def Tuple%dFmt[%s](implicit %s): WireFormat[(%s)] = new Tuple%dWireFormat(%s)
 """ format (numargs, gen_raw_args, gen_ClassFmt_args, gen_raw_args,
@@ -156,6 +161,7 @@ trait GeneratedWireFormats {
            gen_raw_args,
            gen_fromWire_guts,
            gen_raw_args_lc_chr,
+           gen_calling_args,
            numargs, gen_raw_args, gen_TupleFmt_args, gen_raw_args, numargs, gen_calling_args)
   }
 }

@@ -77,7 +77,8 @@ case class ParallelDo[A, B, E](in:                CompNode,
     case _                     => false
   }
 
-  override val toString = "ParallelDo ("+id+")" + barriers + " env: " + env
+  override val toString = "ParallelDo ("+id+")" + mr + barriers + " env: " + env
+
   def fuse[C, F](p2: ParallelDo[_, C, F])
                 (implicit mwfc: ManifestWireFormat[C],
                           mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] =
@@ -149,7 +150,7 @@ case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[S
     case _             => false
   }
 
-  override val toString = "Flatten ("+id+")"
+  override val toString = "Flatten ("+id+")"+mr
 
   def makeTaggedIdentityReducer(tag: Int) = mr.makeTaggedIdentityReducer(tag)
 }
@@ -176,7 +177,7 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
     case _               => false
   }
 
-  override val toString = "Combine ("+id+")"
+  override val toString = "Combine ("+id+")"+mr
 
   /**
    * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
@@ -223,7 +224,7 @@ case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: 
     case _                  => false
   }
 
-  override val toString = "GroupByKey ("+id+")"
+  override val toString = "GroupByKey ("+id+")"+mr
 
   def makeTaggedReducer(tag: Int)              = mr.makeTaggedReducer(tag)
   def makeTaggedIdentityMapper(tags: Set[Int]) = mr.makeTaggedIdentityMapper(tags)
@@ -245,7 +246,7 @@ case class Load[A](source: Source, mr: SimpleMapReducer[A], sinks: Seq[Sink] = S
     case l: Load[_] => source == l.source
     case _          => false
   }
-  override val toString = "Load ("+id+")"
+  override val toString = "Load ("+id+")"+mr
 }
 object Load1 {
   def unapply(l: Load[_]): Option[Source] = Some(l.source)
@@ -263,7 +264,7 @@ case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) e
     case r: Return[_] => in == r.in
     case _            => false
   }
-  override val toString = "Return ("+id+")"
+  override val toString = "Return ("+id+")"+mr
 
 }
 object Return {
@@ -285,7 +286,7 @@ case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink
     case mat: Materialize[_] => in == mat.in
     case _                   => false
   }
-  override val toString = "Materialize ("+id+")"
+  override val toString = "Materialize ("+id+")"+mr
 
 }
 object Materialize1 {
@@ -308,7 +309,7 @@ case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleM
 
   def unsafeExecute(a: Any, b: Any): C = f(a.asInstanceOf[A], b.asInstanceOf[B])
 
-  override val toString = "Op ("+id+")"
+  override val toString = "Op ("+id+")"+mr
 }
 object Op1 {
   def unapply(op: Op[_,_,_]): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
