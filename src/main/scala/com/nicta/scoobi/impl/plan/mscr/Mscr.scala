@@ -19,8 +19,8 @@ import core.CompNode
 case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) extends Attributable {
   val id: Int = UniqueId.get
 
-  /** @return the nodes which are inputs to this Mscr */
-  def inputs = inputChannels.toSeq.flatMap(_.inputs) ++ outputChannels.toSeq.flatMap(_.environment)
+  /** @return the nodes which are incomings to this Mscr */
+  def incomings = inputChannels.toSeq.flatMap(_.incomings) ++ outputChannels.toSeq.flatMap(_.environment)
 
   /** it is necessary to override the generated equality method in order to use the vars */
   override def equals(a: Any) = a match {

@@ -65,17 +65,19 @@ trait ExecutionPlan extends MscrMaker {
       case IdInputChannel(in, gbk)         => BypassInputChannelExec(in, gbk)
       case StraightInputChannel(in)        => StraightInputChannelExec(in)
       // output channels
-      case ch @ GbkOutputChannel(g,f,c,r)  => GbkOutputChannelExec(g, f, c, r, ch.sinks)
-      case ch @ FlattenOutputChannel(in)   => FlattenOutputChannelExec(in, ch.sinks)
-      case ch @ BypassOutputChannel(in)    => BypassOutputChannelExec(in, ch.sinks)
+      case ch @ GbkOutputChannel(g,f,c,r)  => GbkOutputChannelExec(g, f, c, r, ch.sinks) -> tag
+      case ch @ FlattenOutputChannel(in)   => FlattenOutputChannelExec(in, ch.sinks)     -> tag
+      case ch @ BypassOutputChannel(in)    => BypassOutputChannelExec(in, ch.sinks)      -> tag
     }
 
   }
 
+  /** tag object to create unique ids on output channels */
+  private lazy val t = Tag()
+
   /** attribute returning a unique tag for an OutputChannel */
-  lazy val tag: OutputChannelExec => Int = {
-    val t = Tag()
-    attr { case out  => out.setTag(t.newTag); out.tag }
+  lazy val tag: OutputChannelExec => OutputChannelExec = {
+    attr { case out  => out.setTag(t.newTag) }
   }
   
   /** attribute returning a unique tag for an OutputChannel */
@@ -88,7 +90,7 @@ trait ExecutionPlan extends MscrMaker {
 
   /** for a given node get the tags of the corresponding output channels */
   private[scoobi] def outputTags(node: CompNode, mscr: MscrExec): Set[Int] = {
-    mscr.outputChannels.collect { case out: OutputChannelExec if (out.outputs diff (node -> outputs).toSeq).nonEmpty => tag(out) }.toSet
+    mscr.outputChannels.collect { case out: OutputChannelExec if (out.outputs diff (node -> outputs).toSeq).nonEmpty => out.tag }.toSet
   }
   /**
    * Nodes rewriting

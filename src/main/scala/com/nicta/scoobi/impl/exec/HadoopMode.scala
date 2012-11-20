@@ -29,12 +29,12 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   def prepare(node: CompNode) = {
     initAttributable(node)
     logger.debug("Raw nodes\n"+pretty(node))
-    logger.debug("Raw graph\n"+showGraph(node))
+ //   logger.debug("Raw graph\n"+showGraph(node))
 
     val optimised = initAttributable(optimise(node))
 
     logger.debug("Optimised nodes\n"+pretty(optimised))
-    logger.debug("Optimised graph\n"+showGraph(optimised))
+//    logger.debug("Optimised graph\n"+showGraph(optimised))
     optimised
   }
 
@@ -56,7 +56,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       case _                => None
     }).getOrElse(execute)
 
-    (node -> usesAsEnvironment).headOption.map(pd => pd.unsafePushEnv(result))
+   (node -> usesAsEnvironment).headOption.map(pd => pd.unsafePushEnv(result))
     result
   }
 
@@ -76,7 +76,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
     lazy val compute: Mscr => Unit = attr { (mscr: Mscr) =>
       // compute first the dependent mscrs
-      mscr.inputs.foreach(_ -> executeNode)
+      mscr.incomings.foreach(_ -> executeNode)
 
       step += 1
       val job = MapReduceJob.create(step, mscr)

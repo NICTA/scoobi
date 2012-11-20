@@ -44,6 +44,12 @@ class GbkMscrsSpec extends MscrMakerSpecification {
       m.groupByKeys.map(_.id) aka show(gbk) must contain(gbk.id)
     }
   }
+  "a Gbk cannot be included in its siblings" >> prop { (gbk: GroupByKey[_,_], ma: MscrAttributes) => import ma._
+    (gbk -> siblings) must not(contain(gbk))
+  }
+  "the siblings of Gbk cannot contain one of its descendents" >> prop { (gbk: GroupByKey[_,_], ma: MscrAttributes) => import ma._
+    (gbk -> siblings) must not(containAnyOf((gbk -> descendents).toSeq))
+  }
   "a ParallelDo must not have the same Mscr as its Materialize environment. See issue #127" in new factory {
     val ld1          = load
     val (pd1, pd2)   = (pd(ld1), pd(ld1))

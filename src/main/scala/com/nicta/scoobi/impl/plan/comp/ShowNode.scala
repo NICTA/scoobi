@@ -15,8 +15,10 @@ trait ShowNode extends MscrMaker with CompNodes {
   val prettyPrinter = new PrettyPrinter {}
   import prettyPrinter._
 
-  /** show the structure without the ids */
-  lazy val showStructure = (n: CompNode) => pretty(n).replaceAll("\\d", "")
+  /** show the structure without the ids or type annotations */
+  lazy val showStructure = (n: CompNode) => pretty(n).
+    replaceAll("\\d", "").          // remove ids
+    replaceAll("\\[[^\\s]+\\]", "") // remove type annotations
   /**
    * Show instance for a CompNode
    */

@@ -88,6 +88,8 @@ trait GeneratedWireFormats {
         x => fmt format (chr(x), chr(x), chr(x), chr(x))) mkString join
     def gen_typed_args = gen("%C <: TT : Manifest : WireFormat", ", ")
     def gen_call_types = gen("%C", ", ")
+    def gen_wireformats = gen("implicitly[WireFormat[%C]]", ",")
+    def gen_toString = """    override def toString = "AbstractWF%d("+Seq(%s).mkString(",")+")" """ format (numargs, gen_wireformats)
     def gen_toWire = {
       def gen_if_else = gen4(
       """if (clazz == implicitly[Manifest[%c]].erasure) {
@@ -114,10 +116,11 @@ trait GeneratedWireFormats {
     }
 """  class Abstract%dWireFormat[TT, %s]() extends WireFormat[TT] {
 %s
+%s
 %s  }
 
   def mkAbstractWireFormat[TT, %s]() = new Abstract%dWireFormat[TT, %s]()
-""" format (numargs, gen_typed_args, gen_toWire, gen_fromWire,
+""" format (numargs, gen_typed_args, gen_toWire, gen_fromWire, gen_toString,
        gen_typed_args, numargs, gen_call_types)
   }
 

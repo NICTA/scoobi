@@ -207,24 +207,27 @@ object WireFormat extends WireFormatImplicits {
 /** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits extends codegen.GeneratedWireFormats {
 
-  class ObjectWireFormat[T](val x: T) extends WireFormat[T] {
+  class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}
     override def fromWire(in: DataInput): T = x
+    override def toString = implicitly[Manifest[T]].erasure.getSimpleName
   }
-  def mkObjectWireFormat[T](x: T): WireFormat[T] = new ObjectWireFormat(x)
+  def mkObjectWireFormat[T : Manifest](x: T): WireFormat[T] = new ObjectWireFormat(x)
 
-  class Case0WireFormat[T](val apply: () => T, val unapply: T => Boolean) extends WireFormat[T] {
+  class Case0WireFormat[T : Manifest](val apply: () => T, val unapply: T => Boolean) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}
     override def fromWire(in: DataInput): T = apply()
+    override def toString = implicitly[Manifest[T]].erasure.getSimpleName
   }
 
-  def mkCaseWireFormat[T](apply: () => T, unapply: T => Boolean): WireFormat[T] = new Case0WireFormat(apply, unapply)
+  def mkCaseWireFormat[T : Manifest](apply: () => T, unapply: T => Boolean): WireFormat[T] = new Case0WireFormat(apply, unapply)
 
   class Case1WireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {
       implicitly[WireFormat[A1]].toWire(unapply(obj).get, out)
     }
     override def fromWire(in: DataInput): T = apply(implicitly[WireFormat[A1]].fromWire(in))
+    override def toString = implicitly[WireFormat[A1]].toString
   }
 
   def mkCaseWireFormat[T, A1: WireFormat](apply: (A1) => T, unapply: T => Option[(A1)]): WireFormat[T] = new Case1WireFormat(apply, unapply)

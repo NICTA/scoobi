@@ -20,8 +20,10 @@ import org.apache.hadoop.io.Text
 
 import testing.NictaSimpleJobs
 import Scoobi._
+import org.specs2.matcher.TerminationMatchers
+import impl.plan.comp.factory
 
-class DListSpec extends NictaSimpleJobs {
+class DListSpec extends NictaSimpleJobs with TerminationMatchers {
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
@@ -43,7 +45,6 @@ class DListSpec extends NictaSimpleJobs {
   tag("issue 117")
   "A complex graph example must not throw an exception" >> { implicit sc: SC =>
 
-
     def simpleJoin[T: ManifestWireFormat, V: ManifestWireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
       (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey.groupBarrier
 
@@ -53,7 +54,7 @@ class DListSpec extends NictaSimpleJobs {
     val q = simpleJoin(simpleJoin(a, b), simpleJoin(c, d))
     val res = simpleJoin(q, simpleJoin(q, e).groupByKey)
 
-    run(res) must not(throwAn[Exception])
+    res.run must haveTheSameElementsAs(res.run(configureForInMemory(ScoobiConfiguration())))
   }
 
   tag("issue 127")
@@ -66,8 +67,8 @@ class DListSpec extends NictaSimpleJobs {
 
     val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
 
-    run(dObjectJoinedToInputGroupedDiff).toString === "Something"
-  }.pendingUntilFixed("fix the Mscr creation")
+    run(dObjectJoinedToInputGroupedDiff) must terminate(sleep = 20.seconds)
+  }
 
   tag("issue 119")
   "joining an object created from random elements and a DList must not crash" >> { implicit sc: SC =>

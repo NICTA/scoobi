@@ -54,7 +54,7 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
       val mscrExec = transform(new Mscr(Set(MapperInputChannel()), Set(GbkOutputChannel(gbkLoad): OutputChannel,
                                                                        FlattenOutputChannel(flattenLoad),
                                                                        BypassOutputChannel(pdLoad))))
-      mscrExec.outputChannels.map(tag) === Seq(0, 1, 2)
+      mscrExec.outputChannels.map(_.tag) === Seq(0, 1, 2)
     }
     "inputs must be tagged with a set of Ints relating the input nodes to the tag of the correspdonding output channel" >> new plans {
       val mscrExec = transform(new Mscr(Set(MapperInputChannel(pdLoad, pdLoad)),

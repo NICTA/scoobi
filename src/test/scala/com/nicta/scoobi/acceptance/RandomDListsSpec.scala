@@ -15,6 +15,7 @@ import org.specs2.specification.gen.{When, Given}
 import org.specs2.specification.Then
 import org.kiama.attribution.Attribution
 import core.DList
+import com.nicta.scoobi.Scoobi._
 
 class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
 
@@ -24,43 +25,10 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
 
     locally must haveTheSameElementsAs(inMemory)
-    Attribution.resetMemo()
 
     "====== EXAMPLE OK ======\n".pp; ok
   }
 
-  "A DList must just work locally" >> prop { (l1: DList[String]) =>
-
-    l1.run(configureForLocal(ScoobiConfiguration()))
-
-    "====== EXAMPLE OK ======\n".pp; ok
-  }
-
-  "test" >> {
-
-    /**
-    ParallelDo (382) env: Return (3){
-[error]     in. Flatten (381){
-[error]         +ParallelDo (380) env: Return (3){
-[error]             in. Load (374)
-[error]             env. Return (3)}
-[error]         +ParallelDo (379) env: Return (3){
-[error]             in. Load (373)
-[error]             env. Return (3)}
-[error]     }
-[error]     env. Return (3)}'     */
-
-    val rt1 = rt
-    val ld1 = load
-    val graph  = op(mt(pd(ld1)), mt(pd(ld1)))
-
-    val l1  = new DListImpl(graph)
-
-    val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
-    val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
-
-    locally must haveTheSameElementsAs(inMemory)
-  }
 }
 
 

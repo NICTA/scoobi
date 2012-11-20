@@ -12,6 +12,7 @@ import core._
 import control._
 import IdSet._
 import Functions._
+import scalaz.Digit._0
 
 /**
  * This trait computes the Mscr for a given nodes graph.
@@ -193,16 +194,18 @@ trait MscrMaker extends CompNodes {
   /**
    * compute the Gbks related to a given Gbk (through some shared input)
    *
-   * This set does not contain the original gbk
+   * This set does not contain the original gbk and cannot be parent of the current gbk
    */
-  lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] =
-    attr {
+  lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] = attr { gbk: GroupByKey[_,_] =>
+    val gbks = gbk match {
       case g @ GroupByKey1(Flatten1(ins))         => (g -> siblings).collect(isAGroupByKey) ++
-                                                      ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
+        ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
       case g @ GroupByKey1(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
-                                                     (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
+        (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
       case g @ GroupByKey1(_)                     => (g -> siblings).collect(isAGroupByKey)
     }
+    gbks.filterNot(g => (g -> parents).contains(gbk))
+  }
 
   /** type synonym to keep the relations between output nodes and datasinks */
   type SinksMap = Map[CompNode, Seq[DataSink[_,_,_]]]

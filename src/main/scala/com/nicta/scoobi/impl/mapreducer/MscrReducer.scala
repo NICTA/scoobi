@@ -60,10 +60,7 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
     val reducer = outputs(channel)._2._2
 
     /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-    val untaggedValues = new Iterable[V2] {
-      def iterator =
-        values.iterator map (_.get(channel).asInstanceOf[V2])
-    }
+    val untaggedValues = new UntaggedValues[V2](channel, values)
 
     /* Do the reduction. */
     val emitter = new Emitter[B] {
@@ -93,4 +90,8 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
 
     channelOutput.close()
   }
+}
+
+case class UntaggedValues[T](channel: Int, values: java.lang.Iterable[TaggedValue]) extends Iterable[T] {
+  lazy val iterator = values.iterator map (_.get(channel).asInstanceOf[T])
 }

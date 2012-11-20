@@ -85,6 +85,10 @@ trait CompNodes {
     case node: CompNode => (node -> parents) collect { case a if (a -> inputs).exists(_ eq node) => a }
   }
 
+  /** compute the outcoming data of a given node: all the outputs + possible environment for a parallelDo */
+  lazy val outgoings : CompNode => SortedSet[CompNode] = attr {
+    case node: CompNode => (node -> parents) collect { case a if (a -> incomings).exists(_ eq node) => a }
+  }
   /**
    *  compute the uses of a given node.
    *  i.e. the outputs of a node + its uses as an environment is parallelDos
@@ -165,7 +169,7 @@ trait CompNodes {
   /** compute all the nodes which use a given node as an environment */
   lazy val usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] =
     attr {
-      case node: CompNode => (node -> uses).collect(isAParallelDo).toSeq.filter(_.env == node)
+      case node: CompNode => (node -> outgoings).collect(isAParallelDo).toSeq.filter(_.env == node)
     }
 
   /** initialize the Kiama attributes */

@@ -16,6 +16,7 @@ import com.nicta.scoobi.io.ConstantStringDataSource
 import application._
 import mapreducer._
 import WireFormat._
+import CompNodes._
 import org.kiama.rewriting.Rewriter._
 import mapreducer.KeyValueMapReducer
 import mapreducer.DoMapReducer
@@ -39,6 +40,9 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
   implicit lazy val arbitraryCompNode: Arbitrary[CompNode]       = Arbitrary(arbitraryDList.arbitrary.map(_.getComp))
   implicit lazy val arbitraryDList: Arbitrary[DList[String]]     = Arbitrary(Gen.sized(depth => genList(depth).map(_.setComp(c => init(c)).map(normalize))))
   implicit lazy val arbitraryDObject: Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
+
+  implicit lazy val groupByKey: Arbitrary[GroupByKey[_,_]] =
+    Arbitrary(arbitraryDList.arbitrary.map(_.map(_.partition(_ > 'a')).groupByKey.getComp.asInstanceOf[GroupByKey[_,_]]))
 
   /** lists of elements of any type */
   def genList(depth: Int = 1): Gen[DList[_]] = Gen.oneOf(genList1(depth), genList2(depth), genList3(depth))
@@ -75,10 +79,12 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
   /**
    * rewrite the MscrReducer iterables as vectors to facilitate the comparison
+   * The elements inside the iterables are also sorted in alphanumeric order because they could be produced in
+   * a different order
    */
   def normalize(result: Any) = rewrite {
     everywhere(rule {
-      case iterator: Iterator[_] => Vector(iterator.toSeq:_*)
+      case iterable: Iterable[_] => Vector(iterable.iterator.toSeq.sortBy(_.toString):_*)
       case other                 => other
     })
   }(result).toString

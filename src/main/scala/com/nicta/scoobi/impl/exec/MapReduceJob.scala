@@ -272,11 +272,11 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
 }
 
 
-object MapReduceJob extends ExecutionPlan {
+object MapReduceJob {
 
   /** Construct a MapReduce job from an MSCR. */
   def create(stepId: Int, mscr: Mscr)(implicit configuration: ScoobiConfiguration): MapReduceJob =
-    new MapReduceJob(stepId, createExecutableMscr(mscr)).configureChannels
+    new MapReduceJob(stepId, new ExecutionPlan {} .createExecutableMscr(mscr)).configureChannels
 }
 
 
