@@ -58,7 +58,7 @@ trait ExecutionPlan extends MscrMaker {
     all(rewriteNodes)       // rewrite the remaining nodes which may be in Options (see GbkOutputChannel)
 
   /** rewrite one channel */
-  lazy val rewriteSingleChannel: Strategy =
+  lazy val rewriteSingleChannel: Strategy = {
     rule {
       // input channels
       case MapperInputChannel(pdos)        => MapperInputChannelExec(pdos.toSeq)
@@ -70,10 +70,12 @@ trait ExecutionPlan extends MscrMaker {
       case ch @ BypassOutputChannel(in)    => BypassOutputChannelExec(in, ch.sinks)
     }
 
+  }
+
   /** attribute returning a unique tag for an OutputChannel */
   lazy val tag: OutputChannelExec => Int = {
     val t = Tag()
-    attr { case _  => t.newTag }
+    attr { case out  => out.setTag(t.newTag); out.tag }
   }
   
   /** attribute returning a unique tag for an OutputChannel */

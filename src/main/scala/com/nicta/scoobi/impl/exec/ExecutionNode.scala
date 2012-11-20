@@ -155,6 +155,8 @@ sealed trait OutputChannelExec extends OutputChannel with ChannelExec {
   def outputs: Seq[CompNode]
   def contains(node: CompNode) = outputs.contains(node)
   def environment: Option[CompNode]
+  def tag: Int
+  def setTag(t: Int): OutputChannelExec
 }
 
 case class GbkOutputChannelExec(groupByKey: CompNode,
@@ -193,6 +195,8 @@ case class GbkOutputChannelExec(groupByKey: CompNode,
     job
   }
   def environment: Option[CompNode] = theReducer.map(_.referencedNode.env)
+  def setTag(t: Int) = copy(tag = t)
+
 }
 
 case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag: Int = 0) extends OutputChannelExec {
@@ -208,6 +212,7 @@ case class FlattenOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag
     job.addTaggedReducer(sinks.toList, None, theFlatten.referencedNode.makeTaggedIdentityReducer(tag))
 
   def environment: Option[CompNode] = None
+  def setTag(t: Int) = copy(tag = t)
 }
 case class BypassOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag: Int = 0) extends OutputChannelExec {
   lazy val theParallelDo = out.asInstanceOf[MapperExec]
@@ -221,5 +226,5 @@ case class BypassOutputChannelExec(out: CompNode, sinks: Seq[Sink] = Seq(), tag:
     job.addTaggedReducer(sinks.toList, None, theParallelDo.referencedNode.makeTaggedIdentityReducer(tag))
 
   def environment: Option[CompNode] = Some(theParallelDo.referencedNode.env)
-
+  def setTag(t: Int) = copy(tag = t)
 }
