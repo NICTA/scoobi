@@ -29,11 +29,10 @@ class BoundedFilterSpec extends NictaSimpleJobs {
       val lower = DObject(1)
       val upper = DObject(4)
 
-      val ys = ((lower, upper) join xs) filter {case ((l, u), x) => x > l && x < u}
-      val total = ys.values.sum
+      val ys = ((lower, upper) join xs).filter { case ((l, u), x) => x > l && x < u }.values
+      val total = ys.sum
 
-      total.run must_== 5
-
+      total.run === 5
     }
 
     "Filtering by average removes all values less than the average" >> { implicit c: SC =>

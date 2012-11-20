@@ -48,12 +48,6 @@ trait EnvDoFn[A, B, E] { outer =>
   def cleanup(env: E, emitter: Emitter[B])
 
   private[scoobi]
-  def unsafeExecute(env: Any, input: Any, emitter: Emitter[Any]) {
-    unsafeSetup(env)
-    unsafeProcess(env, input, emitter)
-    unsafeCleanup(env, emitter)
-  }
-  private[scoobi]
   def unsafeSetup(env: Any) {
     setup(env.asInstanceOf[E])
   }
@@ -77,12 +71,6 @@ trait EnvDoFn[A, B, E] { outer =>
 trait BasicDoFn[A, B] extends DoFn[A, B] {
   def setup() {}
   def cleanup(emitter: Emitter[B]) {}
-
-  private[scoobi]
-  override def unsafeExecute(env: Any, input: Any, emitter: Emitter[Any]) {
-    process(input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
-  }
-
 }
 
 

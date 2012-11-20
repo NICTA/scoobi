@@ -36,7 +36,7 @@ trait CompNodes {
 
   /**
    * syntax enhancement to force the conversion of an iterator of Attributable nodes
-   * (as returned by 'childeren' for example) to a list of CompNodes
+   * (as returned by 'children' for example) to a list of CompNodes
    */
   implicit def asCompNodes(as: Iterator[Attributable]): AsCompNodes = AsCompNodes(as.toSeq)
   implicit def asCompNodes(as: Seq[Attributable]): AsCompNodes = AsCompNodes(as)
@@ -94,7 +94,7 @@ trait CompNodes {
    *  i.e. the outputs of a node + its uses as an environment is parallelDos
    */
   lazy val uses : CompNode => SortedSet[CompNode] = attr {
-    case node: CompNode => (node -> parents) collect { case a if (a -> incomings).exists(_ eq node)=> a }
+    case node: CompNode => (node -> outgoings) collect { case a if (a -> incomings).exists(_ eq node)=> a }
   }
 
   /**

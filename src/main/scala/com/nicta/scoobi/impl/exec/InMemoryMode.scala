@@ -10,7 +10,8 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
-import org.kiama.attribution.Attribution._
+import org.kiama.attribution._
+import Attribution._
 
 import core._
 import monitor.Loggable._
@@ -19,11 +20,13 @@ import comp._
 import CompNodes._
 import WireFormat._
 import ScoobiConfigurationImpl._
-
+import ShowNode._
 /**
  * A fast local mode for execution of Scoobi applications.
  */
 case class InMemoryMode() {
+  Attribution.resetMemo()
+
   implicit lazy val logger = LogFactory.getLog("scoobi.VectorMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {
@@ -39,6 +42,8 @@ case class InMemoryMode() {
   private
   lazy val prepare: ScoobiConfiguration => CompNode => Unit =
     paramAttr { sc: ScoobiConfiguration => { node: CompNode =>
+      logger.debug("nodes\n"+pretty(node))
+      logger.debug("graph\n"+showGraph(node))
       node.sinks.foreach(_.outputCheck(sc))
       node.children.foreach(_.asNode -> prepare(sc))
     }}
@@ -88,8 +93,8 @@ case class InMemoryMode() {
       rr.close()
     }
 
-    vb.result
-  }//.debug("computeLoad")
+    vb.result.debug("computeLoad")
+  }
 
 
   private def computeParallelDo(pd: ParallelDo[_,_,_])(implicit sc: ScoobiConfiguration): Seq[_] = {
@@ -97,7 +102,9 @@ case class InMemoryMode() {
     val emitter = new Emitter[Any] { def emit(v: Any) { vb += v } }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
-    (pd.in -> compute(sc)).foreach { v => dofn.unsafeExecute(env, v, emitter) }
+    dofn.unsafeSetup(env)
+    (pd.in -> compute(sc)).foreach { v => dofn.unsafeProcess(env, v, emitter) }
+    dofn.unsafeCleanup(env, emitter)
     vb.result.debug("computeParallelDo")
 
   }
@@ -151,7 +158,9 @@ case class InMemoryMode() {
 
 
   private def computeCombine(combine: Combine[_,_])(implicit sc: ScoobiConfiguration): Seq[_] =
-    (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) => (k, combine.unsafeReduce(vs)) }.debug("computeCombine")
+    (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) =>
+      (k, combine.unsafeReduce(vs))
+    }.debug("computeCombine")
 
   def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
     sinks.foreach { sink =>
