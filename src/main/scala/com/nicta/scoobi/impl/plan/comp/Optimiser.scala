@@ -92,7 +92,7 @@ trait Optimiser extends CompNodes {
    */
   def parDoFuse(pass: Int) = repeat(sometd(rule {
     case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,Barriers(_,false)) =>
-      p2.debug("parDoFuse - pass "+pass).fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
+      p2.debug("parDoFuse (pass "+pass+") ").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
   }))
 
   /**

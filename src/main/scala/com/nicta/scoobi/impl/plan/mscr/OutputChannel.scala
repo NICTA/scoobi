@@ -53,7 +53,6 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
   lazy val bridgeStore =
      (reducer: Option[CompNode]).
       orElse(combiner  ).
-      orElse(flatten   ).
       getOrElse(groupByKey).bridgeStore
 
   def environment: Option[CompNode] = reducer.map(_.env)

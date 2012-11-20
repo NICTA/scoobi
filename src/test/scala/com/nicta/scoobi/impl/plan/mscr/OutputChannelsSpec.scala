@@ -71,6 +71,21 @@ class OutputChannelsSpec extends MscrMakerSpecification {
         m.reducers aka show(gbk2) must beEmpty
       }
     }
+    "There should be one bridgeStore per GbkOutputChannel" >> {
+      "it is the bridgeStore of the reducer if there is one" >> new factory {
+        val pd1 = pd(load)
+        GbkOutputChannel(gbk(load), reducer = Some(pd1)).bridgeStore === pd1.bridgeStore
+      }
+      "otherwise it is the bridgeStore of the combiner if there is one" >> new factory {
+        val cb1 = cb(load)
+        GbkOutputChannel(gbk(load), combiner = Some(cb1)).bridgeStore === cb1.bridgeStore
+      }
+      "otherwise it is the bridgeStore of the groupByKey if there is one, even if there is a flatten node" >> new factory {
+        val gbk1 = gbk(load)
+        GbkOutputChannel(gbk1).bridgeStore                                === gbk1.bridgeStore
+        GbkOutputChannel(gbk1, flatten = Some(flatten(load))).bridgeStore === gbk1.bridgeStore
+      }
+    }
   }
   "BypassOutputChannels" >> {
     "There must be a BypassOutputChannel for each ParallelDo input having outputs which are not gbks" >> new factory {

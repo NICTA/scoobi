@@ -3,7 +3,7 @@ package acceptance
 
 import impl.plan.comp.{StringSink, CompNodeData}
 import testing.NictaSimpleJobs
-import application.{DLists, ScoobiConfiguration}
+import application.{DList, DLists, ScoobiConfiguration}
 import core.DList
 import impl.plan.DListImpl
 import org.kiama.rewriting.Rewriter._
@@ -14,6 +14,7 @@ import org.specs2.matcher.Matcher
 import org.specs2.specification.gen.{When, Given}
 import org.specs2.specification.Then
 import org.kiama.attribution.Attribution
+import core.DList
 
 class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
 
@@ -49,12 +50,12 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
 [error]     }
 [error]     env. Return (3)}'     */
 
-    val rt1 = rt
-    val gbk2 = gbk(pd(load, rt1))
-    val gbk1 = gbk(pd(cb(gbk2), rt1))
-    val graph  = pd(gbk1, rt1)
+//    val rt1 = rt
+//    val gbk1 = gbk(flatten(pd(load), pd(load)))
+//    val graph  = gbk1
 
-    val l1  = new DListImpl(graph)
+    //val l1  = new DListImpl(graph)
+    val l1 = (DList(("a", "b")) ++ DList(("a", "c"))).groupByKey
 
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
     val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))

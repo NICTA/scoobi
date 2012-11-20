@@ -20,7 +20,11 @@ sealed trait MapReducer[A] {
   def makeTaggedIdentityReducer(tag: Int) = new TaggedIdentityReducer(tag, mwf)
 }
 
-case class SimpleMapReducer[A](mwf: ManifestWireFormat[A]) extends MapReducer[A]
+case class SimpleMapReducer[A](mwf: ManifestWireFormat[A]) extends MapReducer[A] {
+  override def toString =
+    if (mwf.toString == "Unit") ""
+    else                        "["+mwf+"]"
+}
 
 case class DoMapReducer[A, B, E](mwfa: ManifestWireFormat[A],
                                  mwfb: ManifestWireFormat[B],
@@ -58,6 +62,10 @@ case class DoMapReducer[A, B, E](mwfa: ManifestWireFormat[A],
     }
   }
 
+  override def toString =
+    if (mwfe.isUnit) Seq(mwfa, mwfb).mkString("[", ",", "]")
+    else             Seq(mwfa, mwfb, mwfe).mkString("[", ",", "]")
+
 }
 
 case class KeyValueMapReducer[K, V](mwfk: ManifestWireFormat[K], gpk: Grouping[K], mwfv: ManifestWireFormat[V]) extends MapReducer[(K, V)] { outer =>
@@ -87,7 +95,11 @@ case class KeyValueMapReducer[K, V](mwfk: ManifestWireFormat[K], gpk: Grouping[K
         dofn.unsafeProcess(env, (key, values.asInstanceOf[Iterable[V]].reduce(f)), emitter)
     }
     def cleanup(env: Any, emitter: Emitter[Any]) { dofn.unsafeCleanup(env, emitter) }
+
   }
+
+  override def toString = Seq(mwfk, mwfv).mkString("[", ",", "]")
+
 }
 
 case class KeyValuesMapReducer[K, V](mwfk: ManifestWireFormat[K],
@@ -96,7 +108,7 @@ case class KeyValuesMapReducer[K, V](mwfk: ManifestWireFormat[K],
 
   implicit val ((mfk, wfk), (mfv, wfv)) = (decompose(mwfk), decompose(mwfv))
 
-  def mwf = ManifestWireFormat(manifest[(K, Iterable[V])], wireFormat[(K, Iterable[V])])
+  lazy val mwf = ManifestWireFormat(manifest[(K, Iterable[V])], wireFormat[(K, Iterable[V])])
 
   def makeTaggedReducer(tag: Int) = new TaggedReducer(tag, mwf) {
     def setup(env: Any) {}
@@ -107,6 +119,7 @@ case class KeyValuesMapReducer[K, V](mwfk: ManifestWireFormat[K],
   }
   override def makeTaggedIdentityMapper(tags: Set[Int]) = new TaggedIdentityMapper(tags, mwfk, gpk, mwfv)
 
+  override def toString = Seq(mwfk, mwfv).mkString("[", ",", "]")
 }
 
 
