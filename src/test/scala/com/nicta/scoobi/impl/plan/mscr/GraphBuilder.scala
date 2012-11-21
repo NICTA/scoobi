@@ -4,7 +4,6 @@ package plan
 package mscr
 
 import org.kiama.attribution._
-import Attribution._
 import com.github.mdr.ascii.{Box, Diagram, ConnectMode}
 import ConnectMode._
 
@@ -14,7 +13,7 @@ import comp._
 /**
  * This trait builds a CompNode graph from a textual representation
  */
-trait GraphBuilder extends CompNodeFactory {
+trait GraphBuilder extends CompNodeFactory with Attribution {
   /** @return the CompNode that is the root of this diagram */
   def diagramRoot(diagram: String): Option[CompNode] = try {
     val all = Diagram(diagram).allBoxes.map(toABox)

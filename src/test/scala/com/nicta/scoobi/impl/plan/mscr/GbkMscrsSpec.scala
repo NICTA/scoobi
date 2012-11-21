@@ -103,5 +103,9 @@ class GbkMscrsSpec extends MscrMakerSpecification {
     makeMscr(gbk1).reducers aka mscrGraph(gbk1) must_== Set(pd2)
 
   }
+
+  "test" >> new factory {
+    ok
+  }
 }
 

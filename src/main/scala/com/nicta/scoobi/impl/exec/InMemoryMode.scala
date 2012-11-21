@@ -11,7 +11,6 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 import org.kiama.attribution._
-import Attribution._
 
 import core._
 import monitor.Loggable._
@@ -25,7 +24,7 @@ import ShowNode._
 /**
  * A fast local mode for execution of Scoobi applications.
  */
-case class InMemoryMode() {
+case class InMemoryMode() extends Attribution {
 
   implicit lazy val logger = LogFactory.getLog("scoobi.VectorMode")
 

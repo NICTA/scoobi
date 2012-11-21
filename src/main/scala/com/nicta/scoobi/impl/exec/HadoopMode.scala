@@ -4,7 +4,6 @@ package exec
 
 import org.apache.commons.logging.LogFactory
 import org.kiama.attribution._
-import Attribution._
 import Attributable._
 
 import core._
@@ -15,7 +14,7 @@ import ScoobiConfigurationImpl._
 /**
  * Execution of Scoobi applications using Hadoop.
  */
-case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan with ShowNode {
+case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan with ShowNode with Attribution {
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   def execute(list: DList[_]) {
