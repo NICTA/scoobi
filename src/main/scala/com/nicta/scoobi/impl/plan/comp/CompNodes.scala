@@ -149,6 +149,11 @@ trait CompNodes {
       }
     }
 
+  /** @return true if 1 node is parent of the other, or if they are the same node */
+  lazy val isRelatedTo = paramAttr {(other: CompNode) => node: CompNode =>
+    (node -> parents).contains(other) || (other -> parents).contains(node) || (node.id == other.id)
+  }
+
   /** @return an option for the potentially missing parent of a node */
   lazy val parentOpt: CompNode => Option[CompNode] = attr { case n => Option(n.parent).map(_.asNode) }
 

@@ -51,6 +51,8 @@ class CompNodesSpec extends UnitSpecification {
 
     (pd1 -> siblings) ==== IdSet(pd2)
   }
+  endp
+
   "2 gbks are related if" >> {
     "they share the same ParallelDo input" >> new factory {
       val pd1 = pd(load)
@@ -82,6 +84,18 @@ class CompNodesSpec extends UnitSpecification {
       val fl1 = flatten(gbk1, gbk2)
 
       (gbk1 -> relatedGbks) ==== IdSet(gbk2)
+    }
+  }
+  "2 nodes are related if" >> {
+    "one is the parent of the other" >> new factory {
+      val ld1 = load
+      val pd1 = pd(ld1)
+      (pd1 -> isRelatedTo(ld1)) === true
+      (ld1 -> isRelatedTo(pd1)) === true
+    }
+    "one is equal to the other" >> new factory {
+      val pd1 = pd(load)
+      (pd1 -> isRelatedTo(pd1)) === true
     }
   }
   "it is possible to get all the nodes which use a given node as an environment" >> new factory {

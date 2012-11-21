@@ -13,6 +13,7 @@ import control._
 import IdSet._
 import Functions._
 import scalaz.Digit._0
+import java.util.IdentityHashMap
 
 /**
  * This trait computes the Mscr for a given nodes graph.
@@ -37,8 +38,9 @@ trait MscrMaker extends CompNodes {
   lazy val gbkMscr: CompNode => Option[Mscr] = attr {
     case g: GroupByKey[_,_] => {
       val related = (g -> relatedGbks)
-      (g -> baseGbkMscr).map(m => m.addChannels((g -> inputChannels(g))  ++ related.flatMap(_ -> inputChannels(g)),
-                                                (g -> outputChannels) ++ related.flatMap(_ -> outputChannels)))
+      val base = (g -> baseGbkMscr)
+      base.map(m => m.copy().addChannels((g -> inputChannels(g)) ++ related.flatMap(_ -> inputChannels(g)),
+                                         (g -> outputChannels)   ++ related.flatMap(_ -> outputChannels)))
     }
     case other              => None
   }
@@ -70,7 +72,8 @@ trait MscrMaker extends CompNodes {
   lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
     attr {
       case pd: ParallelDo[_,_,_] if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo).filter(isMapper) + pd))
-      case other                                   => other.children.asNodes.filterNot(isGroupByKey).flatMap(_ -> mapperInputChannels).toSet
+      case other                                   => other.children.asNodes.filterNot(isGroupByKey || (other -> parents).contains).
+                                                        flatMap(_ -> mapperInputChannels).toSet
     }
 
   /**
@@ -198,13 +201,14 @@ trait MscrMaker extends CompNodes {
    */
   lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] = attr { gbk: GroupByKey[_,_] =>
     val gbks = gbk match {
-      case g @ GroupByKey1(Flatten1(ins))         => (g -> siblings).collect(isAGroupByKey) ++
+      case g @ GroupByKey1(Flatten1(ins))         =>
+        (g -> siblings).collect(isAGroupByKey) ++
         ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
       case g @ GroupByKey1(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
         (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
       case g @ GroupByKey1(_)                     => (g -> siblings).collect(isAGroupByKey)
     }
-    gbks.filterNot(g => (g -> parents).contains(gbk))
+    gbks.filterNot(_ -> isRelatedTo(gbk))
   }
 
   /** type synonym to keep the relations between output nodes and datasinks */
@@ -228,6 +232,84 @@ trait MscrMaker extends CompNodes {
     // make sure that the parent <-> children relationships are initialized
     ((initAttributable(Optimiser.optimise(node)) -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
   }
-}
 
+  private [scoobi]
+  def circularLazy[T <: AnyRef, U] (init: =>U) (f : T => U) : T => U =
+    new CircularAttributeLazy[T, U](init, f)
+
+  class CircularAttributeLazy[T <: AnyRef,U] (init : =>U, f : T => U) extends (T => U) {
+    private object CircularState {
+      var IN_CIRCLE = false
+      var CHANGE = false
+    }
+
+    /**
+     * Has the value of this attribute for a given tree already been computed?
+     */
+    private val computed = new IdentityHashMap[T,Unit]
+
+    /**
+     * Has the attribute for given tree been computed on this iteration of the
+     * circular evaluation?
+     */
+    private val visited = new IdentityHashMap[T,Unit]
+
+    /**
+     * The memo table for this attribute.
+     */
+    private val memo = new IdentityHashMap[T,U]
+
+    /**
+     * Return the value of the attribute for tree `t`, or the initial value if
+     * no value for `t` has been computed.
+     */
+    private def value (t : T) : U = {
+      val v = memo.get (t)
+      if (v == null)
+        init
+      else
+        v
+    }
+
+    /**
+     * Return the value of this attribute for node `t`.  Essentially Figure 6
+     * from the CRAG paper.
+     */
+    def apply (t : T) : U = {
+      if (computed containsKey t) {
+        value (t)
+      } else if (!CircularState.IN_CIRCLE) {
+        CircularState.IN_CIRCLE = true
+        visited.put (t, ())
+        var u = init
+        do {
+          CircularState.CHANGE = false
+          val newu = f (t)
+          if (u != newu) {
+            CircularState.CHANGE = true
+            u = newu
+          }
+        } while (CircularState.CHANGE)
+        visited.remove (t)
+        computed.put (t, ())
+        memo.put (t, u)
+        CircularState.IN_CIRCLE = false
+        u
+      } else if (! (visited containsKey t)) {
+        visited.put (t, ())
+        var u = value (t)
+        val newu = f (t)
+        if (u != newu) {
+          CircularState.CHANGE = true
+          u = newu
+          memo.put (t, u)
+        }
+        visited.remove (t)
+        u
+      } else
+        value (t)
+    }
+
+  }
+}
 object MscrMaker extends MscrMaker

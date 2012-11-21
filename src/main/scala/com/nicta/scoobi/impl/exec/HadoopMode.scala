@@ -76,7 +76,9 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
     lazy val compute: Mscr => Unit = attr { (mscr: Mscr) =>
       // compute first the dependent mscrs
-      mscr.incomings.foreach(_ -> executeNode)
+      val incomings = mscr.incomings
+      logger.debug("Executing incoming nodes first\n"+incomings.mkString("\n"))
+      incomings.foreach(_ -> executeNode)
 
       step += 1
       val job = MapReduceJob.create(step, mscr)
