@@ -21,11 +21,11 @@ import CompNodes._
 import WireFormat._
 import ScoobiConfigurationImpl._
 import ShowNode._
+
 /**
  * A fast local mode for execution of Scoobi applications.
  */
 case class InMemoryMode() {
-  Attribution.resetMemo()
 
   implicit lazy val logger = LogFactory.getLog("scoobi.VectorMode")
 

@@ -21,9 +21,12 @@ import org.apache.hadoop.io.Text
 import testing.NictaSimpleJobs
 import Scoobi._
 import org.specs2.matcher.TerminationMatchers
-import impl.plan.comp.factory
+import org.specs2.specification.BeforeExample
+import org.kiama.attribution.Attribution
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers {
+
+  sequential
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
