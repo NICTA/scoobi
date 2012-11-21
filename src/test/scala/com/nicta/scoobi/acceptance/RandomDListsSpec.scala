@@ -27,7 +27,7 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
     locally must haveTheSameElementsAs(inMemory)
 
     "====== EXAMPLE OK ======\n".pp; ok
-  }
+  }.set(minTestsOk -> 10)
 
 }
 

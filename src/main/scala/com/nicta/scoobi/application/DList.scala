@@ -2,9 +2,8 @@ package com.nicta.scoobi
 package application
 
 import core._
-import io.seq.SeqInput
-import io.func.FunctionInput
 import impl.plan.DListImpl
+import impl.plan.source._
 
 /** This object provides a set of operations to create distributed lists. */
 trait DLists {

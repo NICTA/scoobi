@@ -64,8 +64,8 @@ case class ParallelDo[A, B, E](in:                CompNode,
   }
 
   def source = in match {
-    case Load1(s) => Some(s)
-    case _        => None
+    case Load1(s)  => Some(s)
+    case _         => None
   }
 
   override lazy val bridgeStore = Some(BridgeStore(mf, wf))

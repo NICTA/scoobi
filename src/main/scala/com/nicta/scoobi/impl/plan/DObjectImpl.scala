@@ -19,8 +19,10 @@ package plan
 
 import core._
 import comp._
+import source.SeqInput
 import WireFormat._
 import mapreducer._
+import core.DList
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
@@ -40,7 +42,7 @@ class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) ex
     new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, DoMapReducer(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
   }
 
-  def toSingleElementDList: DList[A] = (this join new DListImpl(Return.unit)).map(_._1)
+  def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)
 
   def join[B : ManifestWireFormat](o: DObject[B]): DObject[(A, B)] =
     DObjectImpl.tupled2((this, o))
