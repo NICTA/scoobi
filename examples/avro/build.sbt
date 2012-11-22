@@ -8,7 +8,9 @@ scalaVersion := "2.9.2"
 
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
-resolvers += "Radlab Repository" at "http://scads.knowsql.org/nexus/content/groups/public/"
+resolvers ++= Seq("sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
+                  "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
+                  "Radlab Repository" at "http://scads.knowsql.org/nexus/content/groups/public/")
 
 libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.6.0-cdh3-SNAPSHOT",
                             "edu.berkeley.cs" %% "avro-plugin" % "2.1.4-SNAPSHOT")
