@@ -45,23 +45,25 @@ trait CompNodes {
     def asNodes = as.collect { case c: CompNode => c }
   }
 
-  /** return true if a CompNodeis a Flatten */
+  /** return true if a CompNode is a Flatten */
   lazy val isFlatten: CompNode => Boolean = { case f: Flatten[_] => true; case other => false }
-  /** return true if a CompNodeis a ParallelDo */
+  /** return true if a CompNode is a ParallelDo */
   lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo[_,_,_] => true; case other => false }
-  /** return true if a CompNodeis a Load */
+  /** return true if a CompNode is a Load */
   lazy val isLoad: CompNode => Boolean = { case l: Load[_] => true; case other => false }
-  /** return true if a CompNodeis a Flatten */
+  /** return true if a CompNode is a Flatten */
   lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f: Flatten[_] => f }
-  /** return true if a CompNodeis a ParallelDo */
+  /** return true if a CompNode is a Flatten */
+  lazy val isACombine: PartialFunction[Any, Combine[_,_]] = { case c: Combine[_,_] => c }
+  /** return true if a CompNode is a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p: ParallelDo[_,_,_] => p }
-  /** return true if a CompNodeis a GroupByKey */
+  /** return true if a CompNode is a GroupByKey */
   lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey[_,_] => true; case other => false }
-  /** return true if a CompNodeis a GroupByKey */
+  /** return true if a CompNode is a GroupByKey */
   lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk: GroupByKey[_,_] => gbk }
-  /** return true if a CompNodeis a Materialize */
+  /** return true if a CompNode is a Materialize */
   lazy val isMaterialize: CompNode => Boolean = { case m: Materialize[_] => true; case other => false }
-  /** return true if a CompNodeis a Return */
+  /** return true if a CompNode is a Return */
   lazy val isReturn: CompNode => Boolean = { case r: Return[_]=> true; case other => false }
   /** return true if a CompNode is an Op */
   lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }

@@ -87,8 +87,10 @@ trait MscrMaker extends CompNodes {
     val gbks = (gbk -> relatedGbks) + gbk
     // all the flatten nodes of the related group by keys
     val flattens = gbks.flatMap(_ -> inputs).collect(isAFlatten)
-    // accessible inputs from the flattens
-    val ins = flattens.flatMap(_.ins)
+    // all the combine nodes of the related group by keys
+    val combines = gbks.flatMap(_ -> inputs).collect(isACombine)
+    // accessible inputs from the flattens and combines
+    val ins = flattens.flatMap(_.ins) ++ combines
     // id inputs are the one which are not related to any other parallel do
     val relatedPdos = (gbk -> relatedParallelDos)
     ins.filterNot(isParallelDo) ++ ins.collect(isAParallelDo).filterNot(relatedPdos.contains)

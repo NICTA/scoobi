@@ -92,6 +92,7 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
     input.referencedNode match {
       case n: Load[_]         => Seq(n.source)
       case n: GroupByKey[_,_] => Seq(n.bridgeStore).flatten
+      case n: Combine[_,_]    => Seq(n.bridgeStore).flatten
       case n                  => n.children.asNodes.flatMap {
                                    case ld: Load[_] => Some(ld.source)
                                    case other       => other.bridgeStore
