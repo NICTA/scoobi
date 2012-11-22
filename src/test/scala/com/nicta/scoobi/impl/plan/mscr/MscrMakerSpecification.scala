@@ -9,6 +9,7 @@ import org.scalacheck.{Gen, Arbitrary}
 import core._
 import comp._
 import testing.mutable.UnitSpecification
+import org.specs2.ScalaCheck
 
 
 trait MscrMakerSpecification extends UnitSpecification with CompNodeData {

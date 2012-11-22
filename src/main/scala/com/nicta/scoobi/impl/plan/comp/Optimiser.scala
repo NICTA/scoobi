@@ -43,7 +43,7 @@ trait Optimiser extends CompNodes {
    *        ====>
    *    in1[A]    in2[A]    in3[A]
    *     |          |        |
-   *     pd[A,B]  pd[A,B]   pd[A]
+   *     pd[A,B]  pd[A,B]   pd[A,B]
    *      \         |       /
    *           Flatten[B]
    */

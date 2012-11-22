@@ -4,19 +4,17 @@ package plan
 package comp
 
 import scala.collection.immutable.SortedSet
-import org.kiama.attribution.Attribution._
 import org.kiama.attribution.{Attribution, Attributable}
 
 import core._
 import control.Exceptions._
 import collection._
 import IdSet._
-import java.security.GuardedObject
 
 /**
  * General methods for navigating a graph of CompNodes
  */
-trait CompNodes {
+trait CompNodes extends Attribution {
   /** @return a sequence of distinct nodes */
   def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Set[T] =
     nodes.asNodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSet
@@ -94,6 +92,10 @@ trait CompNodes {
   lazy val outgoings : CompNode => SortedSet[CompNode] = attr {
     case node: CompNode => (node -> parents) collect { case a if (a -> incomings).exists(_ eq node) => a }
   }
+
+  /** all inputs and outputs */
+  lazy val inputsOutputs: CompNode => Set[CompNode] = attr { case n => (n -> inputs) ++ (n -> outputs) }
+
   /**
    *  compute the uses of a given node.
    *  i.e. the outputs of a node + its uses as an environment is parallelDos
@@ -238,6 +240,8 @@ trait CompNodes {
   /** initialize the Kiama attributes */
   def initAttributable[T <: Attributable](t: T): T  =
   { if (t.children == null || !t.children.hasNext) Attribution.initTree(t); t }
+
+  type GBK = GroupByKey[_,_]
 
 }
 object CompNodes extends CompNodes
