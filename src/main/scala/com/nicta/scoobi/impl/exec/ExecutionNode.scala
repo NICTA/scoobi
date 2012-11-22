@@ -90,11 +90,12 @@ trait ChannelExec {
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
   lazy val sources = {
     input.referencedNode match {
-      case n: Load[_] => Seq(n.source)
-      case n          => n.children.asNodes.flatMap {
-                           case ld: Load[_] => Some(ld.source)
-                           case other       => other.bridgeStore
-                         }.toSeq
+      case n: Load[_]         => Seq(n.source)
+      case n: GroupByKey[_,_] => Seq(n.bridgeStore).flatten
+      case n                  => n.children.asNodes.flatMap {
+                                   case ld: Load[_] => Some(ld.source)
+                                   case other       => other.bridgeStore
+                                 }.toSeq
     }
   }
 

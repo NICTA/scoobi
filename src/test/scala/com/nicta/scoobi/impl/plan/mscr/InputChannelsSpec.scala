@@ -39,14 +39,15 @@ class InputChannelsSpec extends MscrMakerSpecification {
       }
     }
 
-    "we must create a MapperInputChannel for each 'mapper' ParallelDo" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      parallelDos(graph) foreach { pd =>
-        (pd -> mapperInputChannels).size aka show(graph) must be_==(1).when(pd -> isMapper)
-        (pd -> mapperInputChannels).flatMap(_.parDos).contains(pd)
-      }
+    "we must create a MapperInputChannel for each 'mapper' ParallelDo connected to a group by key" >> new factory {
+      val l1 = load
+      val pd1 = pd(l1)
+      val gbk1 = gbk(pd1)
+      val graph = pd(gbk1)
+      (gbk1 -> mapperInputChannels) must not be empty
     }
     "two mappers in 2 different mapper input channels must not share the same input" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      val inputChannels = parallelDos(graph).flatMap(mapperInputChannels)
+      val inputChannels = gbks(graph).flatMap(mapperInputChannels)
       val independentPdos = inputChannels.map(_.parDos.headOption).flatten.toSeq
       (independentPdos.size must be_<(2)) or {
         val (pdo1, pdo2) = (independentPdos(0), independentPdos(1))
@@ -54,41 +55,32 @@ class InputChannelsSpec extends MscrMakerSpecification {
       }
     }
     "two mappers in the same mapper input channel must share the same input" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      parallelDos(graph).flatMap(mapperInputChannels).collect { case i if i.parDos.size >= 2 => i.parDos } foreach { parDos =>
+      gbks(graph).flatMap(mapperInputChannels).collect { case i if i.parDos.size >= 2 => i.parDos } foreach { parDos =>
         val (pdo1, pdo2) = (parDos.toSeq(0), parDos.toSeq(1))
         (pdo1 -> descendents).intersect(pdo2 -> descendents) aka (pdo1, pdo2).toString must not beEmpty
       }
     }
-    "two parallelDos sharing the same input must be in the same inputChannel" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      distinctPairs(descendents(graph).collect(isAParallelDo)).foreach  { case (pd1, pd2) =>
-        if ((pd1.in eq pd2.in) && (pd1 -> isMapper)) {
-            (pd1 -> mapperInputChannels).flatMap(_.parDos) must contain(pd2)
-        }
-      }
+    "two parallelDos sharing the same input must be in the same mapper inputChannel" >>  new factory {
+      val l1 = load
+      val (pd1, pd2) = (pd(l1), pd(l1))
+      val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
+      val graph = pd(flatten(gbk1, gbk2))
+      (gbk1 -> mapperInputChannels) must have size(1)
+      (gbk1 -> mapperInputChannels).head.parDos must have size(2)
     }
     "two parallelDos sharing the same input must be in the same inputChannel" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
       forall((graph -> mscr).mapperChannels.flatMap(_.parDos)) { pd => isMapper(pd) must beTrue }
     }
   }
-  "IdInputChannels" >> {
-    "we create an IdInputChannel for each GroupByKey input which has no siblings" >> prop { (graph: CompNode, ma: MscrAttributes) => import ma._
-      (graph -> descendents).collect { case d if (d -> idInputChannels(gbk(load))).size > 1 => d -> idInputChannels(gbk(load)) }.flatten foreach {
-        case IdInputChannel(Some(input), _) =>  (input -> siblings) aka show(input) must beEmpty
-        case _ => ok
-      }
-    }
-  }
-  "MapperInputChannels + IdInputChannels" >> {
-    "The input channels of a node are all the mapper input channels for that node + the id input channels" >> new factory {
-      val (l1, l2, rt1) = (load, load, rt)
-      // pd1 and pd2 are "related"
-      val (pd1, pd2) = (pd(l1, rt1), pd(l1, rt1))
-      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(rt1))
-      val graph = flatten(gbk1, gbk2, gbk3)
+  "We must create an IdInputChannel for ParallelDo nodes which are not in the set of related parallel dos" >> new factory {
+    val l1 = load
+    val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load))
+    val gbk1 = gbk(flatten(pd1, pd2, pd3))
+    val graph = flatten(gbk1, pd3)
+    (gbk1 -> idInputChannels) must have size(1)
+    (gbk1 -> idInputChannels).head.gbk.asNode must_== gbk1
+    (gbk1 -> idInputChannels).head.input must_== Some(pd3)
 
-      (gbk1  -> mapperInputChannels)   must have size(1)
-      (gbk3  -> idInputChannels(gbk3)) must have size(1)
-    }
   }
 
 }

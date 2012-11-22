@@ -52,4 +52,11 @@ class SimpleDListsSpec extends NictaSimpleJobs {
   "10. groupByKey + combine + groupByKey" >> { implicit sc: SC =>
     DList((1, "1")).filter(_ => true).groupByKey.combine((a: String, b: String) => a).groupByKey.filter(_ => true).run === Seq((1, Seq("1")))
   }
+  "11. groupByKey(flatten(groupByKey(l1), l1))" >> { implicit sc: SC =>
+    val l0 = DList((1, "a"))
+    val l1 = l0.groupByKey // (1, Iterable("a"))
+    val l2 = l0.map { case (a, b) => (a, Iterable(b)) } // (1, Iterable("a"))
+    val l = (l1 ++ l2).groupByKey // (1, Iterable("a", "a"))
+    l.run must haveTheSameElementsAs(Seq((1, Iterable(Seq("a"), Seq("a")))))
+  }
 }

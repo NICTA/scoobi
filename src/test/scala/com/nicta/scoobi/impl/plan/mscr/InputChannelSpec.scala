@@ -8,7 +8,7 @@ import org.specs2.specification.Groups
 import comp.factory
 import org.specs2.matcher.ThrownExpectations
 
-class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is =
+class   InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is =
 
   "An InputChannel encapsulates CompNodes which are the inputs of a Mscr"^
     "the inputs of an InputChannel are the input nodes of the channel nodes"! g1().e1^

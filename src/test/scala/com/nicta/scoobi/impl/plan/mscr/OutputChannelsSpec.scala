@@ -104,7 +104,7 @@ class OutputChannelsSpec extends MscrMakerSpecification {
       val fl1 = flatten(pd3)
       val (mscr1, mscr2, mscr3) = (makeMscr(gbk1), makeMscr(fl1), mscr(pd4))
       val mscrs = Seq(mscr1, mscr2, mscr3)
-(pd4 -> isReducer) must beFalse
+
       "the channels have been properly created:" + mscrs.mkString("\n", "\n", "") <==> {
         mscr1.gbkOutputChannels     must have size(2)
         mscr1.bypassOutputChannels  must have size(0)

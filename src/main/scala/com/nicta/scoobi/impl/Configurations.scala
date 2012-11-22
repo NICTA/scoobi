@@ -129,7 +129,7 @@ trait Configurations {
     /**
      * @return the value of the configuration for a given key or set it with a default value
      */
-    def getOrSet(key: String, defaultValue: String): String = {
+    def getOrSet(key: String, defaultValue: =>String): String = {
       if (!conf.defines(key)) conf.set(key, defaultValue)
       conf.get(key)
     }

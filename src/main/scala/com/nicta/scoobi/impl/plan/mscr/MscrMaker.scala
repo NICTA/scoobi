@@ -12,8 +12,6 @@ import core._
 import control._
 import IdSet._
 import Functions._
-import scalaz.Digit._0
-import java.util.IdentityHashMap
 
 /**
  * This trait computes the Mscr for a given nodes graph.
@@ -36,12 +34,7 @@ trait MscrMaker extends CompNodes {
 
   /** A gbk mscr is a mscr for a group by key + input and output channels */
   lazy val gbkMscr: CompNode => Option[Mscr] = attr {
-    case g: GroupByKey[_,_] => {
-      val related = (g -> relatedGbks)
-      val base = (g -> baseGbkMscr)
-      base.map(m => m.copy().addChannels((g -> inputChannels(g)) ++ related.flatMap(_ -> inputChannels(g)),
-                                         (g -> outputChannels)   ++ related.flatMap(_ -> outputChannels)))
-    }
+    case g: GroupByKey[_,_] => (g -> baseGbkMscr).map(m => m.copy().addChannels(g -> inputChannels, g -> outputChannels))
     case other              => None
   }
   /** there must be a new Mscr for each related GroupByKey */
@@ -63,37 +56,48 @@ trait MscrMaker extends CompNodes {
   }
 
   /** compute the input channels of a node */
-  lazy val inputChannels =
-    paramAttr { gbk: GroupByKey[_,_] => { n: CompNode =>
-      (n -> mapperInputChannels) ++ (n -> idInputChannels(gbk))
-    }}
+  lazy val inputChannels: GroupByKey[_,_] => Set[InputChannel] = attr { gbk =>
+    (gbk -> mapperInputChannels) ++ (gbk -> idInputChannels)
+  }
 
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
-  lazy val mapperInputChannels: CompNode => Set[MapperInputChannel] =
-    attr {
-      case pd: ParallelDo[_,_,_] if pd -> isMapper => Set(MapperInputChannel((pd -> siblings).collect(isAParallelDo).filter(isMapper) + pd))
-      case other                                   => other.children.asNodes.filterNot(isGroupByKey || (other -> parents).contains).
-                                                        flatMap(_ -> mapperInputChannels).toSet
-    }
+  lazy val mapperInputChannels: GroupByKey[_,_] => Set[MapperInputChannel] = attr { gbk: GroupByKey[_,_] =>
+    (gbk -> relatedParallelDos).groupBy(_.in.id).values.map(pds => MapperInputChannel(pds.toSeq:_*)).toSet
+  }
+
+  /** the set of related paralleldos for a gbk */
+  lazy val relatedParallelDos: GroupByKey[_,_] => Set[ParallelDo[_,_,_]] = attr { gbk: GroupByKey[_,_] =>
+    val gbks = (gbk -> relatedGbks) + gbk
+    // grab all the first parallelDo mapper nodes which accessible from the related gbks
+    val accessibleParallelDos = gbks.flatMap(_ -> descendentsWhileUntil((!isGroupByKey, isParallelDo && isMapper))).collect(isAParallelDo)
+    // filter out all the parallelDos which have some outputs which are not exclusively in the set of related gbks
+    accessibleParallelDos.filterNot(pd => (pd -> ancestors).take(3).forall(o => !gbks.exists(_ == o)))
+  }
 
   /**
    * compute the id input channels of a node.
-   * An IdInputChannel is a channel for an input node which has no siblings and is connected to a GroupByKey */
-  lazy val idInputChannels: GroupByKey[_,_] => CompNode => Set[IdInputChannel] =
-    paramAttr { gbk: GroupByKey[_,_] => {
-      node: CompNode => node match {
-      case pd: ParallelDo[_,_,_] if pd -> isMapper       => Set()
-      case n if (n -> isGbkInput)  &&
-               !(n -> hasSiblings) &&
-                parentOpt(n).map(!isGroupByKey).getOrElse(true) => Set(IdInputChannel(Some(n), gbk))
-      case n if (n -> isGbkInput)  &&
-                !(n -> hasSiblings)                      => Set(IdInputChannel(None, gbk))
-      case other                                         => other.children.asNodes.filterNot(isGroupByKey || isFlatten).flatMap(_ -> idInputChannels(gbk)).toSet
-    }}}
+   * An IdInputChannel is a channel for an input node which has no siblings and is connected to a GroupByKey
+   * via a Flatten node
+   */
+  lazy val idInputChannels: GroupByKey[_,_] => Set[IdInputChannel] = attr { gbk: GroupByKey[_,_] =>
+    (gbk -> idInputs).map(in => IdInputChannel(Some(in), gbk))
+  }
+
+  lazy val idInputs: GroupByKey[_,_] => Set[CompNode] = attr { gbk: GroupByKey[_,_] =>
+    val gbks = (gbk -> relatedGbks) + gbk
+    // all the flatten nodes of the related group by keys
+    val flattens = gbks.flatMap(_ -> inputs).collect(isAFlatten)
+    // accessible inputs from the flattens
+    val ins = flattens.flatMap(_.ins)
+    // id inputs are the one which are not related to any other parallel do
+    val relatedPdos = (gbk -> relatedParallelDos)
+    ins.filterNot(isParallelDo) ++ ins.collect(isAParallelDo).filterNot(relatedPdos.contains)
+  }
 
   /** compute the output channels of a node */
   lazy val outputChannels: CompNode => Set[OutputChannel] = attr {
-    case n => (n -> gbkOutputChannels) ++ (n -> bypassOutputChannels)
+    case g: GroupByKey[_,_] => (g -> relatedGbks + g).flatMap(_ -> gbkOutputChannels)
+    case other              => other -> bypassOutputChannels
   }
 
   /**
@@ -102,7 +106,7 @@ trait MscrMaker extends CompNodes {
    *  - a Combine node if it is the output of the GroupByKey
    *  - a ParallelDo node (called a "reducer") if it is the output of the GroupByKey
    */
-  lazy val gbkOutputChannels: CompNode => Set[GbkOutputChannel] =
+  lazy val gbkOutputChannels: CompNode => Set[OutputChannel] =
     attr {
       case g @ GroupByKey1(in : Flatten[_]) => Set(GbkOutputChannel(g, flatten = Some(in), combiner = g -> combiner, reducer = g -> reducer))
       case g: GroupByKey[_,_]               => Set(GbkOutputChannel(g, combiner = g -> combiner, reducer = g -> reducer))
@@ -113,7 +117,7 @@ trait MscrMaker extends CompNodes {
    * compute a ByPassOutputChannel for:
    * - each related ParallelDo if it has outputs other than Gbks
    */
-  lazy val bypassOutputChannels: CompNode => Set[BypassOutputChannel] =
+  lazy val bypassOutputChannels: CompNode => Set[OutputChannel] =
     attr {
       case pd: ParallelDo[_,_,_] if (pd -> isMapper) &&
                                     (pd -> outputs).exists(isGroupByKey)  &&
@@ -200,15 +204,7 @@ trait MscrMaker extends CompNodes {
    * This set does not contain the original gbk and cannot be parent of the current gbk
    */
   lazy val relatedGbks: GroupByKey[_,_] => SortedSet[GroupByKey[_,_]] = attr { gbk: GroupByKey[_,_] =>
-    val gbks = gbk match {
-      case g @ GroupByKey1(Flatten1(ins))         =>
-        (g -> siblings).collect(isAGroupByKey) ++
-        ins.flatMap(_ -> siblings).flatMap(_ -> outputs).flatMap(out => (out -> outputs) + out).collect(isAGroupByKey)
-      case g @ GroupByKey1(pd: ParallelDo[_,_,_]) => (g -> siblings).collect(isAGroupByKey) ++
-        (pd -> siblings).flatMap(_ -> outputs).collect(isAGroupByKey)
-      case g @ GroupByKey1(_)                     => (g -> siblings).collect(isAGroupByKey)
-    }
-    gbks.filterNot(_ -> isRelatedTo(gbk))
+    (gbk -> descendents).flatMap(_ -> parents).collect(isAGroupByKey).filterNot(_ -> isParentOf(gbk))
   }
 
   /** type synonym to keep the relations between output nodes and datasinks */
@@ -233,83 +229,5 @@ trait MscrMaker extends CompNodes {
     ((initAttributable(Optimiser.optimise(node)) -> descendents) + node).map(mscrOpt).flatten.filterNot(_.isEmpty)
   }
 
-  private [scoobi]
-  def circularLazy[T <: AnyRef, U] (init: =>U) (f : T => U) : T => U =
-    new CircularAttributeLazy[T, U](init, f)
-
-  class CircularAttributeLazy[T <: AnyRef,U] (init : =>U, f : T => U) extends (T => U) {
-    private object CircularState {
-      var IN_CIRCLE = false
-      var CHANGE = false
-    }
-
-    /**
-     * Has the value of this attribute for a given tree already been computed?
-     */
-    private val computed = new IdentityHashMap[T,Unit]
-
-    /**
-     * Has the attribute for given tree been computed on this iteration of the
-     * circular evaluation?
-     */
-    private val visited = new IdentityHashMap[T,Unit]
-
-    /**
-     * The memo table for this attribute.
-     */
-    private val memo = new IdentityHashMap[T,U]
-
-    /**
-     * Return the value of the attribute for tree `t`, or the initial value if
-     * no value for `t` has been computed.
-     */
-    private def value (t : T) : U = {
-      val v = memo.get (t)
-      if (v == null)
-        init
-      else
-        v
-    }
-
-    /**
-     * Return the value of this attribute for node `t`.  Essentially Figure 6
-     * from the CRAG paper.
-     */
-    def apply (t : T) : U = {
-      if (computed containsKey t) {
-        value (t)
-      } else if (!CircularState.IN_CIRCLE) {
-        CircularState.IN_CIRCLE = true
-        visited.put (t, ())
-        var u = init
-        do {
-          CircularState.CHANGE = false
-          val newu = f (t)
-          if (u != newu) {
-            CircularState.CHANGE = true
-            u = newu
-          }
-        } while (CircularState.CHANGE)
-        visited.remove (t)
-        computed.put (t, ())
-        memo.put (t, u)
-        CircularState.IN_CIRCLE = false
-        u
-      } else if (! (visited containsKey t)) {
-        visited.put (t, ())
-        var u = value (t)
-        val newu = f (t)
-        if (u != newu) {
-          CircularState.CHANGE = true
-          u = newu
-          memo.put (t, u)
-        }
-        visited.remove (t)
-        u
-      } else
-        value (t)
-    }
-
-  }
 }
 object MscrMaker extends MscrMaker

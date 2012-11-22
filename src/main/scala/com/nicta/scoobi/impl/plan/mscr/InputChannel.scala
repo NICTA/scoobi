@@ -13,6 +13,8 @@ trait Channel extends Attributable
 
 /** ADT for MSCR input channels. */
 trait InputChannel extends Channel {
+  protected val attributes = new CompNodes {}
+  
   lazy val id: Int = UniqueId.get
   def inputs: Seq[CompNode]
   def incomings: Seq[CompNode] = inputs
@@ -28,8 +30,8 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputC
     case i: MapperInputChannel => i.parDos.map(_.id) == parDos.map(_.id)
     case _                     => false
   }
-  def inputs = parDos.toSeq.map(_.in)
-  override def incomings = parDos.toSeq.flatMap(pd => Seq(pd.in, pd.env))
+  def inputs = parDos.flatMap(pd => attributes.inputs(pd)).toSeq
+  override def incomings = parDos.flatMap(pd => attributes.incomings(pd)).toSeq
 }
 object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
@@ -41,14 +43,12 @@ case class IdInputChannel(input: Option[CompNode], gbk: GroupByKey[_,_]) extends
   }
 
   def inputs = input match {
-    case Some(pd: ParallelDo[_,_,_]) => Seq(pd.in)
-    case Some(cb: Combine[_,_])      => Seq(cb.in)
-    case None                        => Seq(gbk.in)
+    case Some(g: GroupByKey[_,_]) => Seq(g)
+    case other                    => attributes.inputs(input.getOrElse(gbk)).toSeq
   }
   override def incomings = input match {
-    case Some(pd: ParallelDo[_,_,_]) => Seq(pd.in, pd.env)
-    case Some(cb: Combine[_,_])      => Seq(cb.in)
-    case None                        => Seq(gbk.in)
+    case Some(g: GroupByKey[_,_]) => Seq(g)
+    case other                    => attributes.incomings(input.getOrElse(gbk)).toSeq
   }
 }
 case class StraightInputChannel(input: CompNode) extends InputChannel {
@@ -56,8 +56,6 @@ case class StraightInputChannel(input: CompNode) extends InputChannel {
     case i: StraightInputChannel => i.input.id == input.id
     case _                       => false
   }
-  def inputs = input match {
-    case fl: Flatten[_] => fl.ins
-    case _              => Seq()
-  }
+  def inputs = attributes.inputs(input).toSeq
+  override def incomings =  attributes.incomings(input).toSeq
 }

@@ -11,6 +11,7 @@ import core._
 import control.Exceptions._
 import collection._
 import IdSet._
+import java.security.GuardedObject
 
 /**
  * General methods for navigating a graph of CompNodes
@@ -48,6 +49,8 @@ trait CompNodes {
   lazy val isFlatten: CompNode => Boolean = { case f: Flatten[_] => true; case other => false }
   /** return true if a CompNodeis a ParallelDo */
   lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo[_,_,_] => true; case other => false }
+  /** return true if a CompNodeis a Load */
+  lazy val isLoad: CompNode => Boolean = { case l: Load[_] => true; case other => false }
   /** return true if a CompNodeis a Flatten */
   lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f: Flatten[_] => f }
   /** return true if a CompNodeis a ParallelDo */
@@ -115,6 +118,7 @@ trait CompNodes {
 
   /** @return true if a node has siblings */
   lazy val hasSiblings : CompNode => Boolean = attr { case node: CompNode => (node -> siblings).nonEmpty }
+
   /**
    * compute all the descendents of a node
    * They are all the recursive children reachable from this node */
@@ -124,6 +128,54 @@ trait CompNodes {
   private lazy val nonUniqueDescendents : CompNode => Seq[CompNode] =
     attr { case node: CompNode => (node.children.asNodes ++ node.children.asNodes.flatMap(nonUniqueDescendents)) }
 
+  type Predicate = CompNode => Boolean
+  /**
+   * compute all the descendents of a node while some criterion is true
+   */
+  lazy val descendentsWhile: Predicate => CompNode => SortedSet[CompNode] =
+    paramAttr { predicate: Predicate => node: CompNode =>
+      (node -> nonUniqueDescendentsWhile(predicate)).toIdSet
+    }
+
+  private lazy val nonUniqueDescendentsWhile: Predicate => CompNode => Seq[CompNode] =
+    paramAttr { predicate: Predicate =>
+      (node: CompNode) => {
+        val childrenWhile = node.children.asNodes.filter(predicate)
+        childrenWhile ++ childrenWhile.flatMap(nonUniqueDescendentsWhile(predicate))
+      }
+    }
+
+  /**
+   * compute all the descendents of a node until some criterion is true
+   */
+  lazy val descendentsUntil: Predicate => CompNode => SortedSet[CompNode] =
+    paramAttr { predicate: Predicate => node: CompNode =>
+      (node -> nonUniqueDescendentsUntil(predicate)).toIdSet
+    }
+
+  private lazy val nonUniqueDescendentsUntil: Predicate => CompNode => Seq[CompNode] =
+    paramAttr { predicate: Predicate =>
+      (node: CompNode) => {
+        val (childrenWhile, childrenUntil) = node.children.asNodes.span(predicate)
+        val children = childrenWhile ++ childrenUntil.headOption.toSeq
+        children ++ children.flatMap(nonUniqueDescendentsUntil(predicate))
+      }
+    }
+
+  lazy val descendentsWhileUntil: ((Predicate, Predicate)) => CompNode => SortedSet[CompNode] =
+    paramAttr { predicates: ((Predicate, Predicate)) => node: CompNode =>
+      (node -> nonUniqueDescendentsWhileUntil(predicates)).toIdSet
+    }
+
+  private lazy val nonUniqueDescendentsWhileUntil: ((Predicate, Predicate)) => CompNode => Seq[CompNode] =
+    paramAttr { predicates: ((Predicate, Predicate)) =>
+      val (whilePredicate, untilPredicate) = predicates
+      (node: CompNode) => {
+        val (childrenWhile, childrenUntil) = node.children.asNodes.filter(whilePredicate).span(untilPredicate)
+        val children = childrenWhile ++ childrenUntil.headOption.toSeq
+        children ++ children.flatMap(nonUniqueDescendentsWhileUntil(predicates))
+      }
+    }
   /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
   def canReach(n: CompNode): CompNode => Boolean =
     paramAttr { target: CompNode =>
@@ -150,10 +202,14 @@ trait CompNodes {
     }
 
   /** @return true if 1 node is parent of the other, or if they are the same node */
-  lazy val isRelatedTo = paramAttr {(other: CompNode) => node: CompNode =>
-    (node -> parents).contains(other) || (other -> parents).contains(node) || (node.id == other.id)
+  lazy val isParentOf = paramAttr {(other: CompNode) => node: CompNode =>
+    (node -> isStrictParentOf(other)) || (node.id == other.id)
   }
 
+  /** @return true if 1 node is parent of the other, or but not  the same node */
+  lazy val isStrictParentOf = paramAttr {(other: CompNode) => node: CompNode =>
+    (node -> parents).contains(other) || (other -> parents).contains(node)
+  }
   /** @return an option for the potentially missing parent of a node */
   lazy val parentOpt: CompNode => Option[CompNode] = attr { case n => Option(n.parent).map(_.asNode) }
 

@@ -26,6 +26,7 @@ trait MscrMakerSpecification extends UnitSpecification with CompNodeData {
 
 trait MscrAttributes extends MscrMaker with ShowNode with CompNodes {
   def parallelDos(n: CompNode) = (n -> descendents).collect(isAParallelDo)
+  def gbks(n: CompNode) = (n -> descendents).collect(isAGroupByKey)
   override def toString = "<MscrAttributes>"
 }
 

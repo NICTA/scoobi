@@ -7,6 +7,8 @@ import core._
 import mscr.Mscr._
 import comp._
 import collection.IdSet
+import application.{ScoobiConfiguration, DList}
+import testing.NictaSimpleJobs
 
 class GbkMscrsSpec extends MscrMakerSpecification {
 
@@ -102,10 +104,6 @@ class GbkMscrsSpec extends MscrMakerSpecification {
     makeMscr(gbk1).mappers  aka mscrGraph(gbk1) must_== Set(pd1)
     makeMscr(gbk1).reducers aka mscrGraph(gbk1) must_== Set(pd2)
 
-  }
-
-  "test" >> new factory {
-    ok
   }
 }
 
