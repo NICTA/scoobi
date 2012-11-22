@@ -20,7 +20,7 @@ import java.lang.Class
 import org.apache.commons.logging.{Log, LogFactory}
 import org.apache.commons.logging.impl.{SimpleLog, NoOpLog, LogFactoryImpl}
 import HadoopLogFactory._
-
+import Levels._
 /**
  * Log factory used for testing.
  *

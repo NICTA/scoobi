@@ -18,7 +18,7 @@ package application
 
 import HadoopLogFactory._
 import org.specs2.main.CommandLineArguments
-
+import Levels._
 /**
  * This trait defines all the options which can be used to modify the behavior of a Scoobi application
  */
