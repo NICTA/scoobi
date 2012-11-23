@@ -214,12 +214,9 @@ trait CompNodes extends Attribution {
 
   /** @return true if 1 node is parent of the other, or but not  the same node */
   lazy val isStrictParentOf = paramAttr { (other: CompNode) => node: CompNode =>
-    (node -> isAncestorOf(other)) || (other -> isAncestorOf(node))
+    (node -> descendents).contains(other) || (other -> descendents).contains(node)
   }
-  /** @return true if 1 node is ancestor of the other */
-  lazy val isAncestorOf: CompNode => CompNode => Boolean = paramAttr { (other: CompNode) =>  (node: CompNode) =>
-    (node -> incomings).contains(other) || (node -> incomings).exists(_ -> isAncestorOf(other))
-  }
+
   /** @return an option for the potentially missing parent of a node */
   lazy val parentOpt: CompNode => Option[CompNode] = attr { case n => Option(n.parent).map(_.asNode) }
 

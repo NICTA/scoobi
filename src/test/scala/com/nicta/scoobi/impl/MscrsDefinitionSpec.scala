@@ -157,6 +157,13 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
   }
 }
 
+/**
+ * Simple layering algorithm using the Longest path method to assign nodes to layers.
+ *
+ * See here for a good overview: http://www.cs.brown.edu/~rt/gdhandbook/chapters/hierarchical.pdf
+ *
+ * In our case the layers have minimum height and possibly big width which is actually good if we run things in parallel
+ */
 trait Layering extends CompNodes with Attribution with ShowNode {
 
   type T <: CompNode
@@ -166,18 +173,18 @@ trait Layering extends CompNodes with Attribution with ShowNode {
 
   lazy val selected: CompNode => Boolean = attr { case n => selectNode(n) }
   lazy val select: PartialFunction[CompNode, T] = { case n if n -> selected => n.asInstanceOf[T] }
-
   lazy val selectedDescendents: CompNode => Seq[T] = attr { case n => (n -> descendents).toSeq.collect(select) }
-  lazy val selectedChildren: CompNode => Seq[T] = attr { case n => n.children.asNodes.toSeq.collect(select) }
 
   lazy val layers: CompNode => Seq[Layer[T]] = attr { case n =>
     val (leaves, nonLeaves) = selectedDescendents(n).partition(d => selectedDescendents(d).isEmpty)
     Layer.create(leaves) +:
     nonLeaves.groupBy(_ => longestPathTo(leaves)).values.map(Layer.create).toSeq
   }
+
   lazy val longestPathTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
     target.map(t => node -> longestPathToNode(t)).max
   }
+
   lazy val longestPathToNode: CompNode => CompNode => Int = paramAttr { (target: CompNode) => node: CompNode =>
     if (node.id == target.id)                0  // found
     else if (node.children.asNodes.isEmpty) -1 // not found
