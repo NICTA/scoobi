@@ -24,6 +24,13 @@ class CompNodesSpec extends UnitSpecification {
   "a node cannot be a strict parent of itself" >> new nodes {
     (fl1 -> isStrictParentOf(fl1)) === false
   }
+  "two nodes related by a common input are not strict parents" >> new factory {
+    val ld1 = load
+    val (pd1, pd2) = (pd(ld1), pd(ld1))
+    val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
+    (gbk1 -> isStrictParentOf(gbk2)) === false
+    (gbk2 -> isStrictParentOf(gbk1)) === false
+  }
   "the parents of a node are all the nodes having this node in their descendents" >> new nodes {
     (pd1 -> parents) ==== IdSet(fl1, gbk1, mat1)
     (l1 -> parents) ==== IdSet(pd1, fl1, gbk1, mat1)

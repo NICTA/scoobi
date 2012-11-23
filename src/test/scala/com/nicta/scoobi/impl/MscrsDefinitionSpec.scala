@@ -5,17 +5,15 @@ import org.kiama.attribution.Attribution
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Prop._
 import org.specs2._
-import org.specs2.collection.Iterablex._
-import plan.comp.GroupByKey
 import plan.mscr.{IdInputChannel, InputChannel, MapperInputChannel, GbkOutputChannel}
 import specification.Groups
 import matcher.ThrownExpectations
 import plan.comp._
-import core.{DList, CompNode}
+import core._
 import testing.UnitSpecification
+import collection._
 import collection.IdSet._
-import application.DList
-import application.DList
+import scala.collection.immutable.SortedSet
 
 class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations with CompNodeData { def is =
 
@@ -30,7 +28,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       "aggregating the combine node if there is one after the gbk"                       ! g2().e3^
       "aggregating the pd node if there is one after the gbk"                            ! g2().e4^
       "aggregating the combine and pd nodes if they are after the gbk"                   ! g2().e5^
-                                                                                         endp^ section("inputs")^
+                                                                                         endp^
     "Input channels"                                                                     ^
       "GbkOutputChannels have inputs, some of them are Mappers"                          ^
       "all mappers sharing the same input go to the same MapperInputChannel"             ! g3().e1^
@@ -42,18 +40,23 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
                                                                                          end
 
 
-  "topological sort of Gbk layers" - new g1 with definition {
+  "topological sort of Gbk layers" - new g1 with definition { import scalaz.Scalaz._
 
     e1 := prop { layer: Layer[GBK] =>
       val nodes = layer.nodes
-      nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n))) ==== true
-    }.set(minTestsOk -> 10)
 
-    e2 := forAll(genLayerPair) { (pair: (Layer[GBK], Layer[GBK])) =>
-      val (layer1, layer2) = pair
-      (layer1 ==== layer2) or
-      (layer1.nodes.exists(n1 => layer2.nodes.exists(_ -> isStrictParentOf(n1))) ==== true)
-    }.set(minTestsOk -> 20)
+      nodes must not(beEmpty)
+      nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n))) ==== true
+    }.set(minTestsOk -> 100)
+
+    e2 := forAll(genLayerPair) { (pair: (Layer[GBK], Layer[GBK])) => val (layer1, layer2) = pair
+      val pairs = ^(layer1.nodes.toStream, layer2.nodes.toStream)((_,_))
+      val parentChild = pairs.find { case (n1, n2) => !(n1 -> isStrictParentOf(n2)) }
+      lazy val showParentChild = parentChild.collect { case (n1, n2) => (showGraph(n1)+"\n"+showGraph(n2)) }.getOrElse("")
+
+      parentChild aka showParentChild must beNone
+
+    }.set(minTestsOk -> 100, maxDiscarded -> 100)
 
   }
 
@@ -90,8 +93,9 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val ld1 = load
       val (pd1, pd2) = (pd(ld1), pd(ld1))
       val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
-      val layer: Layer[T] = layers(gbk1).head
-      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(layer).toSeq
+      val graph = flatten(gbk1, gbk2)
+      val ls    = Vector(layers(graph):_*)
+      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq
 
       inputChannels must have size(1)
       inputChannels.head.parDos must have size(2)
@@ -115,7 +119,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       else                     layer.nodes.map(showGraph).mkString("\nshowing graphs for layer\n", "\n", "\n")
   }
 
-  trait MscrsDefinition extends CompNodes with TopologicalSort {
+  trait MscrsDefinition extends CompNodes with Layering {
     type T = GBK
 
     def selectNode(n: CompNode) = !Seq(n).collect(isAGroupByKey).isEmpty
@@ -131,13 +135,15 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       }
     }
 
-    lazy val mapperInputChannels: Layer[T] => Set[MapperInputChannel] = attr { case layer =>
-      val mappers = layer.nodes.flatMap(_ -> inputs).flatMap {
+    lazy val mappers: Layer[T] => Seq[ParallelDo[_,_,_]] = attr { case layer =>
+      layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
         case Flatten1(ins)         => ins.collect(isAParallelDo)
         case pd: ParallelDo[_,_,_] => Seq(pd)
       }.filterNot(_ -> isReducer)
+    }
 
-      mappers.groupBy(_.in.id).values.map(pds => MapperInputChannel(pds:_*)).toSet
+    lazy val mapperInputChannels: Layer[T] => Set[MapperInputChannel] = attr { case layer =>
+      mappers(layer).groupBy(_.in.id).values.map(pds => MapperInputChannel(pds:_*)).toSet
     }
 
     lazy val idInputChannels: Layer[T] => Set[IdInputChannel] = attr { case layer =>
@@ -151,9 +157,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
   }
 }
 
-import scalaz.Scalaz._
-
-trait TopologicalSort extends CompNodes with Attribution with ShowNode {
+trait Layering extends CompNodes with Attribution with ShowNode {
 
   type T <: CompNode
 
@@ -161,38 +165,27 @@ trait TopologicalSort extends CompNodes with Attribution with ShowNode {
   def selectNode(n: CompNode): Boolean
 
   lazy val selected: CompNode => Boolean = attr { case n => selectNode(n) }
+  lazy val select: PartialFunction[CompNode, T] = { case n if n -> selected => n.asInstanceOf[T] }
 
-  /**
-   * the set of layers for a given node is defined by:
-   *  all the layers above a target node +
-   *  all the layers below a target node +
-   *  the layer for the current target node if there is one
-   */
-  lazy val layers: CompNode => Set[Layer[T]] = circular(Set[Layer[T]]()) { case n =>
-    (n -> inputsOutputs).flatMap(_ -> layers) ++ (n -> layerOption).toSet
+  lazy val selectedDescendents: CompNode => Seq[T] = attr { case n => (n -> descendents).toSeq.collect(select) }
+  lazy val selectedChildren: CompNode => Seq[T] = attr { case n => n.children.asNodes.toSeq.collect(select) }
+
+  lazy val layers: CompNode => Seq[Layer[T]] = attr { case n =>
+    val (leaves, nonLeaves) = selectedDescendents(n).partition(d => selectedDescendents(d).isEmpty)
+    Layer.create(leaves) +:
+    nonLeaves.groupBy(_ => longestPathTo(leaves)).values.map(Layer.create).toSeq
+  }
+  lazy val longestPathTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
+    target.map(t => node -> longestPathToNode(t)).max
+  }
+  lazy val longestPathToNode: CompNode => CompNode => Int = paramAttr { (target: CompNode) => node: CompNode =>
+    if (node.id == target.id)                0  // found
+    else if (node.children.asNodes.isEmpty) -1 // not found
+    else                                     1 + (node.children.asNodes).map(_ -> longestPathToNode(target)).max
   }
 
-  /**
-   * A layer is defined by all the nodes which have no parent-child relationship in the set of all nodes
-   */
-  lazy val layer: T => Layer[T] = attr {
-    case n => Layer((n -> allNodes).toSeq.filterNot(_ -> isStrictParentOf(n)):_*)
+  case class Layer[T <: CompNode](nodes: SortedSet[T] = IdSet.empty)
+  object Layer {
+    def create[T <: CompNode](ts: Seq[T]) = Layer(collection.IdSet(ts:_*))
   }
-  /**
-   * A layer is only defined on selected nodes
-   */
-  lazy val layerOption: CompNode => Option[Layer[T]] = attr {
-    case n => (n -> selected).option(n.asInstanceOf[T] -> layer)
-  }
-
-  /**
-   * all target nodes in the graph.
-   */
-  lazy val allNodes: CompNode => Set[T] = circular(Set[T]()) {
-    case n =>
-      (n -> selected).option(n.asInstanceOf[T]).toSet ++  // create a set for the current node if selected
-      (n -> inputsOutputs).map(_ -> allNodes).flatten     // add to all other nodes
-  }
-
-  case class Layer[+T](nodes: T*)
 }
