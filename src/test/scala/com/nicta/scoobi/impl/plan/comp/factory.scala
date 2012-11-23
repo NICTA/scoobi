@@ -6,7 +6,12 @@ package comp
 import core.CompNode
 import mscr.MscrAttributes
 
-trait factory extends CompNodeFactory with MscrAttributes with CompNodes {
+trait factory extends nodesFactory with MscrAttributes with ShowNodeMscr {
+  override def show(node: CompNode): String =
+    "SHOWING NODE: "+showNode(node, None)+"\n"+mscrsGraph(init(ancestors(node).headOption.getOrElse(node)))
+}
+
+trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   override def load                                   = init(super.load)
   override def flatten[A](nodes: CompNode*)           = init(super.flatten(nodes:_*))
   override def parallelDo(in: CompNode)               = init(super.parallelDo(in))
@@ -23,8 +28,7 @@ trait factory extends CompNodeFactory with MscrAttributes with CompNodes {
   def optimisation(node: CompNode, optimised: CompNode) =
     if (show(node) != show(optimised)) "INITIAL: \n"+show(node)+"\nOPTIMISED:\n"+show(optimised) else "no optimisation"
 
-  def show(node: CompNode): String =
-    "SHOWING NODE: "+showNode(node, None)+"\n"+mscrsGraph(init(ancestors(node).headOption.getOrElse(node)))
+  def show(node: CompNode): String = "SHOWING NODE: "+showNode(node, None)
 
   /** initialize the Kiama attributes of a CompNode */
   def init[T <: CompNode](t: T): T  = initAttributable(t)

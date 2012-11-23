@@ -67,6 +67,8 @@ trait CompNodes extends Attribution {
   lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }
   /** return true if a CompNode has a cycle in its graph */
   lazy val isCyclic: CompNode => Boolean = (n: CompNode) => tryKo(n -> descendents)
+  /** return true if a CompNode doesn't have a cycle in its graph */
+  lazy val isNotCyclic: CompNode => Boolean = (n: CompNode) => !isCyclic(n)
 
   /** compute the inputs of a given node */
   lazy val inputs : CompNode => SortedSet[CompNode] = attr {
@@ -212,7 +214,11 @@ trait CompNodes extends Attribution {
 
   /** @return true if 1 node is parent of the other, or but not  the same node */
   lazy val isStrictParentOf = paramAttr {(other: CompNode) => node: CompNode =>
-    (node -> parents).contains(other) || (other -> parents).contains(node)
+    (node -> isAncestorOf(other)) || (other -> isAncestorOf(node))
+  }
+  /** @return true if 1 node is ancestor of the other */
+  lazy val isAncestorOf: CompNode => CompNode => Boolean = paramAttr { (node: CompNode) => other: CompNode =>
+    (other -> inputs).contains(node) || (other -> inputs).exists(_ -> isAncestorOf(node))
   }
   /** @return an option for the potentially missing parent of a node */
   lazy val parentOpt: CompNode => Option[CompNode] = attr { case n => Option(n.parent).map(_.asNode) }

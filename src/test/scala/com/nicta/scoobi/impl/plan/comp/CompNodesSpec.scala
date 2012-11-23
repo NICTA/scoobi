@@ -21,6 +21,9 @@ class CompNodesSpec extends UnitSpecification {
     (pd1 -> ancestors) ==== IdSet(fl1, mat1)
     (l1 -> ancestors)  ==== IdSet(pd1, fl1, mat1)
   }
+  "a node cannot be a strict parent of itself" >> new nodes {
+    (fl1 -> isStrictParentOf(fl1)) === false
+  }
   "the parents of a node are all the nodes having this node in their descendents" >> new nodes {
     (pd1 -> parents) ==== IdSet(fl1, gbk1, mat1)
     (l1 -> parents) ==== IdSet(pd1, fl1, gbk1, mat1)

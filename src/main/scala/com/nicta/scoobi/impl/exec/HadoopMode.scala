@@ -14,7 +14,7 @@ import ScoobiConfigurationImpl._
 /**
  * Execution of Scoobi applications using Hadoop.
  */
-case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan with ShowNode with Attribution {
+case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan with ShowNodeMscr with Attribution {
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   def execute(list: DList[_]) {
