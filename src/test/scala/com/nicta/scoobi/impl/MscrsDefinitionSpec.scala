@@ -20,29 +20,30 @@ import control.Functions._
 
 class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations with CompNodeData { def is =
 
-  "The gbks of a graph can be sorted in a topological sort"                              ^
-    "all the nodes in a layer cannot be parent of each other"                            ! g1().e1^
-    "2 different layers have at least 2 nodes parent of each other"                      ! g1().e2^
-                                                                                         endp^
-  "For each layer in the topological sort, we can create Mscrs"                          ^
-    "Output channels"                                                                    ^
-      "each gbk belongs to a GbkOutputChannel"                                           ! g2().e1^
-      "aggregating the flatten node if there is one before the gbk"                      ! g2().e2^
-      "aggregating the combine node if there is one after the gbk"                       ! g2().e3^
-      "aggregating the pd node if there is one after the gbk"                            ! g2().e4^
-      "aggregating the combine and pd nodes if they are after the gbk"                   ! g2().e5^
-                                                                                         endp^
-    "Input channels"                                                                     ^
-      "GbkOutputChannels have inputs, some of them are Mappers"                          ^
-      "all mappers sharing the same input go to the same MapperInputChannel"             ! g3().e1^
-      "other mappers go to an individual MapperInputChannel"                             ! g3().e2^
-      "other Gbk inputs go to an IdInputChannel"                                         ! g3().e3^
-                                                                                         endp^
-    "Mscr creation"                                                                      ^ section("creation")^
-      "output channels must have a unique tag"                                           ! g4().e1^
-      "the set of tags of an input channel must be all the tags of its output channels"  ! g4().e2^
-      "there must be one mscr per set of related tags"                                   ! g4().e3^
-                                                                                         end
+  "The gbks of a graph can be sorted in a topological sort"                                                             ^
+    "all the nodes in a layer cannot be parent of each other"                                                           ! g1().e1^
+    "2 different layers have at least 2 nodes parent of each other"                                                     ! g1().e2^
+                                                                                                                        endp^
+  "For each layer in the topological sort, we can create Mscrs"                                                         ^
+    "Output channels"                                                                                                   ^ section("outputs")^
+      "each gbk belongs to a GbkOutputChannel"                                                                          ! g2().e1^
+      "aggregating the flatten node if there is one before the gbk"                                                     ! g2().e2^
+      "aggregating the combine node if there is one after the gbk"                                                      ! g2().e3^
+      "aggregating the pd node if there is one after the gbk"                                                           ! g2().e4^
+      "aggregating the combine and pd nodes if they are after the gbk"                                                  ! g2().e5^
+      "there is a bypass output channel for each mapper having outputs other than a gbk"                                ! g2().e6^
+                                                                                                                        endp^ section("outputs")^
+    "Input channels"                                                                                                    ^
+      "GbkOutputChannels have inputs, some of them are Mappers"                                                         ^
+      "all mappers sharing the same input go to the same MapperInputChannel"                                            ! g3().e1^
+      "other mappers go to an individual MapperInputChannel"                                                            ! g3().e2^
+      "other Gbk inputs go to an IdInputChannel"                                                                        ! g3().e3^
+                                                                                                                        endp^
+    "Mscr creation"                                                                                                     ^ section("creation")^
+      "output channels must have a unique tag"                                                                          ! g4().e1^
+      "the set of tags of an input channel must be all the tags of its output channels"                                 ! g4().e2^
+      "there must be one mscr per set of related tags"                                                                  ! g4().e3^
+                                                                                                                        end
 
 
   "topological sort of Gbk layers" - new g1 with definition { import scalaz.Scalaz._
@@ -65,7 +66,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
   }
 
-  "Gbk output channels" - new g2 with definition {
+  "Output channels" - new g2 with definition {
 
     e1 := {
       val gbk1 = gbk(load)
@@ -91,6 +92,13 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val cb1 = cb(gbk1)
       val pd1 = pd(cb1)
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1))
+    }
+    e6 := {
+      val pd1 = pd(load)
+      val gbk1 = gbk(pd1)
+      val cb1 = cb(pd1)
+      val graph = flatten(cb1, gbk1)
+      bypassOutputChannels(Layer.create(Seq(gbk1))) === Set(BypassOutputChannel(pd1))
     }
   }
 
@@ -138,7 +146,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       inputChannels(layer1).toSeq.map(_.tags) === Seq(Set(0, 1, 2), Set(0, 1, 2), Set(3))
     }
     e3 := {
-        mscrs(layers(graph).head) must have size(2)
+      mscrs(layers(graph).head) must have size(2)
     }
   }
 
@@ -185,8 +193,20 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     lazy val outputChannels: Layer[T] => Set[OutputChannel] = {
       val tagger = new Tagger()
       attr { case layer =>
-        layer.nodes.map(gbkOutputChannel).map(_.setTag(tagger.newTag))
+        (gbkOutputChannels(layer) ++ bypassOutputChannels(layer)).map(_.setTag(tagger.newTag))
       }
+    }
+
+    lazy val gbkOutputChannels: Layer[T] => Set[OutputChannel] = attr { case layer =>
+      layer.nodes.map(gbkOutputChannel)
+    }
+
+    lazy val bypassOutputChannels: Layer[T] => Set[BypassOutputChannel] = attr { case layer =>
+      layerInputs(layer).collect { case pd: ParallelDo[_,_,_]  =>
+        //if outputs(pd).size > gbkOutputChannels(layer).size
+        println(outputs(pd).size, gbkOutputChannels(layer).size)
+        BypassOutputChannel(pd)
+      }.toSet
     }
 
     lazy val gbkOutputChannel: GBK => GbkOutputChannel = attr { case g  =>

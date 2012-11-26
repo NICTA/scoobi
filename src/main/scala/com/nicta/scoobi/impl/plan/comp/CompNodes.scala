@@ -241,8 +241,12 @@ trait CompNodes extends Attribution {
     }
 
   /** initialize the Kiama attributes */
-  def initAttributable[T <: Attributable](t: T): T  =
-  { if (t.children == null || !t.children.hasNext) Attribution.initTree(t); t }
+  def initAttributable[T <: Attributable](t: T): T  = {
+    if (t.children == null || !t.children.hasNext) {
+      initTree(t)
+    }
+    t
+  }
 
   type GBK = GroupByKey[_,_]
 

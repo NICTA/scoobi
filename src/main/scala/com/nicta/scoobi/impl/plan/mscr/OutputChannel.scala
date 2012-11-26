@@ -17,6 +17,7 @@ trait OutputChannel extends Channel {
   def contains(node: CompNode): Boolean
   def environment: Option[CompNode]
   def tag: Int
+  def setTag(t: Int): OutputChannel
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -26,7 +27,6 @@ trait MscrOutputChannel extends OutputChannel {
   def output: CompNode
   def contains(node: CompNode) = output == node
   def environment: Option[CompNode]
-  def setTag(t: Int): OutputChannel
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             flatten:  Option[Flatten[_]]        = None,
