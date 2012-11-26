@@ -126,15 +126,13 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
   }
 }
 
-case class BypassInputChannelExec(in: Option[CompNode], gbk: CompNode) extends InputChannelExec {
-  def input = in.getOrElse(gbk).asInstanceOf[ExecutionNode]
+case class BypassInputChannelExec(in: CompNode) extends InputChannelExec {
+  def input = in.asInstanceOf[ExecutionNode]
   def inputs = Seq(input)
-
-  def gbkExec = gbk.asInstanceOf[GroupByKeyExec]
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     val tags = plan.tags(job.mscrExec)(this)
-    sources.foreach(source => job.addTaggedMapper(source, None, gbkExec.referencedNode.makeTaggedIdentityMapper(tags(referencedNode))))
+    sources.foreach(source => job.addTaggedMapper(source, None, referencedNode.parent.asInstanceOf[GroupByKey[_,_]].makeTaggedIdentityMapper(tags(referencedNode))))
     job
   }
 }

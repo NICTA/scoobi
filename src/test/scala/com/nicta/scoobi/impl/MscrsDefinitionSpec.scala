@@ -5,7 +5,9 @@ import org.kiama.attribution.Attribution
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Prop._
 import org.specs2._
-import plan.mscr.{IdInputChannel, InputChannel, MapperInputChannel, GbkOutputChannel}
+import plan.mscr._
+import plan.mscr.GbkOutputChannel
+import plan.mscr.IdInputChannel
 import specification.Groups
 import matcher.ThrownExpectations
 import plan.comp._
@@ -14,6 +16,9 @@ import testing.UnitSpecification
 import collection._
 import collection.IdSet._
 import scala.collection.immutable.SortedSet
+import control.Functions._
+import scala.xml.factory.NodeFactory
+import scala.Some
 
 class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations with CompNodeData { def is =
 
@@ -56,11 +61,12 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
       parentChild aka showParentChild must beNone
 
-    }.set(minTestsOk -> 100, maxDiscarded -> 100)
+    }.set(minTestsOk -> 10, maxDiscarded -> 50)
 
   }
 
   "Gbk output channels" - new g2 with definition {
+
     e1 := {
       val gbk1 = gbk(load)
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1)
@@ -88,18 +94,48 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
   }
 
-  "Input channels" - new g3 with definition {
+  "Input channels" - new g3 with definition with simpleGraph {
+
     e1 := {
-      val ld1 = load
-      val (pd1, pd2) = (pd(ld1), pd(ld1))
-      val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
       val graph = flatten(gbk1, gbk2)
-      val ls    = Vector(layers(graph):_*)
+      val ls    = layers(graph)
       val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq
 
       inputChannels must have size(1)
       inputChannels.head.parDos must have size(2)
     }
+
+    e2 := {
+      val graph = flatten(gbk1, gbk2, gbk3)
+      val ls    = layers(graph)
+      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq.sortBy(_.parDos.size).reverse
+
+      inputChannels must have size(2)
+      inputChannels.head.parDos must have size(2)
+      inputChannels.last.parDos must have size(1)
+    }
+
+    e3 := {
+      val graph = flatten(gbk1, gbk2, gbk3, gbk4)
+      val ls    = layers(graph)
+      val channels: Seq[InputChannel] = inputChannels(ls.head).toSeq
+
+      channels must have size(3)
+    }
+  }
+
+  "Mscr creation" - new g4 with definition with simpleGraph {
+    e1 := {
+      val graph = flatten(gbk1, gbk2, gbk3, gbk4)
+      val ls    = layers(graph)
+      (ls.head -> mscrs) must have size(2)
+    }
+  }
+
+  trait simpleGraph extends nodesFactory {
+    val ld1 = load
+    val (pd1, pd2, cb1) = (pd(ld1), pd(ld1), cb(load))
+    val (gbk1, gbk2, gbk3, gbk4) = (gbk(pd1), gbk(pd2), gbk(pd(load)), gbk(cb1))
   }
 
   trait definition extends nodesFactory with MscrsDefinition {
@@ -124,6 +160,10 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
     def selectNode(n: CompNode) = !Seq(n).collect(isAGroupByKey).isEmpty
 
+    lazy val mscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
+      layer.nodes.map(gbkOutputChannel).groupBy(_.inputs).map { case (i, o) => Mscr(i, o) }
+    }
+
     lazy val gbkOutputChannel: GBK => GbkOutputChannel = attr { case g  =>
       val flatten = Seq(g.in).collect(isAFlatten).headOption
 
@@ -135,19 +175,27 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       }
     }
 
-    lazy val mappers: Layer[T] => Seq[ParallelDo[_,_,_]] = attr { case layer =>
-      layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
-        case Flatten1(ins)         => ins.collect(isAParallelDo)
-        case pd: ParallelDo[_,_,_] => Seq(pd)
-      }.filterNot(_ -> isReducer)
+    lazy val inputChannels: Layer[T] => Set[InputChannel] = attr { case layer =>
+      mapperInputChannels(layer) ++ idInputChannels(layer)
+    }
+
+    lazy val idInputChannels: Layer[T] => Set[IdInputChannel] = attr { case layer =>
+      layerInputs(layer).filter(!isParallelDo).map(i => IdInputChannel(i)).toSet
     }
 
     lazy val mapperInputChannels: Layer[T] => Set[MapperInputChannel] = attr { case layer =>
       mappers(layer).groupBy(_.in.id).values.map(pds => MapperInputChannel(pds:_*)).toSet
     }
 
-    lazy val idInputChannels: Layer[T] => Set[IdInputChannel] = attr { case layer =>
-      Set()
+    lazy val mappers: Layer[T] => Seq[ParallelDo[_,_,_]] = attr { case layer =>
+      layerInputs(layer).collect(isAParallelDo).filterNot(_ -> isReducer)
+    }
+
+    lazy val layerInputs: Layer[T] => Seq[CompNode] = attr { case layer =>
+      layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
+        case Flatten1(ins) => ins
+        case other         => Seq(other)
+      }
     }
 
     lazy val isReducer: ParallelDo[_,_,_] => Boolean = attr { case pd =>

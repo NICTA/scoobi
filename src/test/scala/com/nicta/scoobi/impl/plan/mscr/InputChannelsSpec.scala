@@ -78,7 +78,6 @@ class InputChannelsSpec extends MscrMakerSpecification {
     val gbk1 = gbk(flatten(pd1, pd2, pd3))
     val graph = flatten(gbk1, pd3)
     (gbk1 -> idInputChannels) must have size(1)
-    (gbk1 -> idInputChannels).head.gbk.asNode must_== gbk1
     (gbk1 -> idInputChannels).head.input must_== Some(pd3)
 
   }

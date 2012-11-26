@@ -12,7 +12,7 @@ class InputChannelExecSpec extends UnitSpecification {
     new MapperInputChannelExec(Seq(pdExec)).sources === Seq(load.source)
   }
   "A BypassInputChannelExec has a data source which must be the source of the input node of the channel" >> new example {
-    new BypassInputChannelExec(Some(pdExec), gbkExec).sources === Seq(load.source)
+    new BypassInputChannelExec(pdExec).sources === Seq(load.source)
   }
   "A StraightInputChannelExec has a data source which must be the source of the input nodes of the channel" >> new example {
     new StraightInputChannelExec(flattenPdExec).sources === Seq(pdLoad.bridgeStore).flatten
@@ -26,7 +26,7 @@ class InputChannelExecSpec extends UnitSpecification {
     new MapperInputChannelExec(Seq(pdExec)).configure(job).mappers must have size(1)
   }
   "A BypassInputChannelExec must configure a Mapper" >> new example {
-    new BypassInputChannelExec(Some(pdExec), gbkExec).configure(job).mappers must have size(1)
+    new BypassInputChannelExec(pdExec).configure(job).mappers must have size(1)
   }
   "A StraightInputChannelExec must configure a Mapper" >> new example {
     new StraightInputChannelExec(flattenExec).configure(job).mappers must have size(1)

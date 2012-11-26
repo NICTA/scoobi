@@ -27,7 +27,7 @@ class ExecutionPlanSpec extends UnitSpecification { sequential
         transform(MapperInputChannel(pdLoad)) === MapperInputChannelExec(Seq(MapperExec(Ref(pdLoad), loadExec)))
       }
       "An IdInputChannel is transformed into a BypassInputChannelExec" >> new plans {
-        transform(IdInputChannel(Some(ld), gbkLoad)) === BypassInputChannelExec(Some(loadExec), gbkExec)
+        transform(IdInputChannel(ld)) === BypassInputChannelExec(loadExec)
       }
       "A StraightInputChannel is transformed into a StraightInputChannelExec" >> new plans {
         transform(StraightInputChannel(ld)) === StraightInputChannelExec(loadExec)

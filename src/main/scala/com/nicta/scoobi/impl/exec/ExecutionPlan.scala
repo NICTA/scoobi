@@ -62,7 +62,7 @@ trait ExecutionPlan extends MscrMaker {
     rule {
       // input channels
       case MapperInputChannel(pdos)        => MapperInputChannelExec(pdos.toSeq)
-      case IdInputChannel(in, gbk)         => BypassInputChannelExec(in, gbk)
+      case IdInputChannel(in)              => BypassInputChannelExec(in)
       case StraightInputChannel(in)        => StraightInputChannelExec(in)
       // output channels
       case ch @ GbkOutputChannel(g,f,c,r)  => GbkOutputChannelExec(g, f, c, r, ch.sinks) -> tag

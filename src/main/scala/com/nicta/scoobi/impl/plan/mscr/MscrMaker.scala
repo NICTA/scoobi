@@ -80,7 +80,7 @@ trait MscrMaker extends CompNodes {
    * via a Flatten node
    */
   lazy val idInputChannels: GroupByKey[_,_] => Set[IdInputChannel] = attr { gbk: GroupByKey[_,_] =>
-    (gbk -> idInputs).map(in => IdInputChannel(Some(in), gbk))
+    (gbk -> idInputs).map(in => IdInputChannel(in))
   }
 
   lazy val idInputs: GroupByKey[_,_] => Set[CompNode] = attr { gbk: GroupByKey[_,_] =>

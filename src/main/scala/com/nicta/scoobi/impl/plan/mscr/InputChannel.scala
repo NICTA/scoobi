@@ -36,20 +36,15 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputC
 object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
 }
-case class IdInputChannel(input: Option[CompNode], gbk: GroupByKey[_,_]) extends InputChannel {
+case class IdInputChannel(input: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
-    case i: IdInputChannel => i.input.map(_.id).getOrElse(i.gbk.id) == input.map(_.id).getOrElse(gbk.id)
+    case i: IdInputChannel => i.input.id == input.id
     case _                 => false
   }
 
-  def inputs = input match {
-    case Some(g: GroupByKey[_,_]) => Seq(g)
-    case other                    => attributes.inputs(input.getOrElse(gbk)).toSeq
-  }
-  override def incomings = input match {
-    case Some(g: GroupByKey[_,_]) => Seq(g)
-    case other                    => attributes.incomings(input.getOrElse(gbk)).toSeq
-  }
+  def inputs = Seq(input)
+
+  override def incomings = attributes.incomings(input).toSeq
 }
 case class StraightInputChannel(input: CompNode) extends InputChannel {
   override def equals(a: Any) = a match {
