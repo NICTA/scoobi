@@ -17,8 +17,6 @@ import collection._
 import collection.IdSet._
 import scala.collection.immutable.SortedSet
 import control.Functions._
-import scala.xml.factory.NodeFactory
-import scala.Some
 
 class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations with CompNodeData { def is =
 
@@ -40,8 +38,10 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       "other mappers go to an individual MapperInputChannel"                             ! g3().e2^
       "other Gbk inputs go to an IdInputChannel"                                         ! g3().e3^
                                                                                          endp^
-    "Mscr creation"                                                                      ^
-      "GbkOutputChannels sharing the same MapperInputChannels belong to the same Mscr"   ! g4().e4^
+    "Mscr creation"                                                                      ^ section("creation")^
+      "output channels must have a unique tag"                                           ! g4().e1^
+      "the set of tags of an input channel must be all the tags of its output channels"  ! g4().e2^
+      "there must be one mscr per set of related tags"                                   ! g4().e3^
                                                                                          end
 
 
@@ -125,10 +125,20 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
   }
 
   "Mscr creation" - new g4 with definition with simpleGraph {
+    val graph  = flatten(gbk1, gbk2, gbk3, gbk4)
+    val layer1 = layers(graph).head
+
     e1 := {
-      val graph = flatten(gbk1, gbk2, gbk3, gbk4)
-      val ls    = layers(graph)
-      (ls.head -> mscrs) must have size(2)
+      val tags = outputChannels(layer1).map(_.tag)
+      "there are as many tags as output channels on a layer" ==> {
+        tags.toSet must have size(layer1.nodes.size)
+      }
+    }
+    e2 := {
+      inputChannels(layer1).toSeq.map(_.tags) === Seq(Set(0, 1, 2), Set(0, 1, 2), Set(3))
+    }
+    e3 := {
+        mscrs(layers(graph).head) must have size(2)
     }
   }
 
@@ -155,13 +165,28 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       else                     layer.nodes.map(showGraph).mkString("\nshowing graphs for layer\n", "\n", "\n")
   }
 
+  import scalaz.Scalaz._
+  import scalaz.syntax.std.indexedSeq._
+
   trait MscrsDefinition extends CompNodes with Layering {
     type T = GBK
 
     def selectNode(n: CompNode) = !Seq(n).collect(isAGroupByKey).isEmpty
 
     lazy val mscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
-      layer.nodes.map(gbkOutputChannel).groupBy(_.inputs).map { case (i, o) => Mscr(i, o) }
+      val (in, out) = (inputChannels(layer), outputChannels(layer))
+      // groups of input channels having at least one tag in common
+      val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
+
+      // create Mscr for each set of channels with common tags
+      channelsWithCommonTags.map(tags => Mscr(in.filter(i => tags.intersect(i.tags.toSeq).nonEmpty), out.filter(tags.contains)))
+    }
+
+    lazy val outputChannels: Layer[T] => Set[OutputChannel] = {
+      val tagger = new Tagger()
+      attr { case layer =>
+        layer.nodes.map(gbkOutputChannel).map(_.setTag(tagger.newTag))
+      }
     }
 
     lazy val gbkOutputChannel: GBK => GbkOutputChannel = attr { case g  =>
@@ -176,7 +201,9 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
 
     lazy val inputChannels: Layer[T] => Set[InputChannel] = attr { case layer =>
-      mapperInputChannels(layer) ++ idInputChannels(layer)
+      val channels = mapperInputChannels(layer) ++ idInputChannels(layer)
+      val outputs = outputChannels(layer)
+      channels.map(in => in.setTags(outputs.collect { case o if in -> isInputTo(o) => o.tag }))
     }
 
     lazy val idInputChannels: Layer[T] => Set[IdInputChannel] = attr { case layer =>
@@ -198,8 +225,21 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       }
     }
 
+    lazy val isInputTo: OutputChannel => InputChannel => Boolean = paramAttr { (out: OutputChannel) => (in: InputChannel) =>
+      in.outgoings.exists(out.contains)
+    }
+
     lazy val isReducer: ParallelDo[_,_,_] => Boolean = attr { case pd =>
       (pd -> descendents).collect(isAGroupByKey).map(gbkOutputChannel).exists(_.reducer == Some(pd))
+    }
+
+    case class Tagger() {
+      var tag = 0
+      def newTag = {
+        val t = tag
+        tag += 1
+        t
+      }
     }
 
   }

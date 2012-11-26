@@ -47,16 +47,16 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
-  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_]) => p }
+  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_],_) => p }
   /** @return an input channel containing a specific parallelDo */
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
   /** @return all the GroupByKeys of this mscr */
-  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_)            => gbk }
+  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_,_)            => gbk }
   /** @return all the reducers of this mscr */
-  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer))  => reducer }
+  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer),_)  => reducer }
   /** @return all the combiners of this mscr */
-  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_) => combiner }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_,_) => combiner }
   /** @return all the parallelDos of this mscr */
   def parallelDos = mappers ++ reducers
 

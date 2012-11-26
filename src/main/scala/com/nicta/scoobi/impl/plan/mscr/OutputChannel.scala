@@ -16,6 +16,7 @@ trait OutputChannel extends Channel {
   def sinks: Seq[Sink]
   def contains(node: CompNode): Boolean
   def environment: Option[CompNode]
+  def tag: Int
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -25,11 +26,13 @@ trait MscrOutputChannel extends OutputChannel {
   def output: CompNode
   def contains(node: CompNode) = output == node
   def environment: Option[CompNode]
+  def setTag(t: Int): OutputChannel
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
-                            var flatten:  Option[Flatten[_]]        = None,
-                            var combiner: Option[Combine[_,_]]      = None,
-                            var reducer:  Option[ParallelDo[_,_,_]] = None) extends MscrOutputChannel {
+                            flatten:  Option[Flatten[_]]        = None,
+                            combiner: Option[Combine[_,_]]      = None,
+                            reducer:  Option[ParallelDo[_,_,_]] = None,
+                            tag: Int = 0) extends MscrOutputChannel {
 
   override def toString =
     Seq(Some(groupByKey),
@@ -43,6 +46,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case _                   => false
   }
 
+  def setTag(t: Int) = copy(tag = t)
   /** @return the output node of this channel */
   def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
 
@@ -59,21 +63,23 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
 
 }
 
-case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChannel {
+case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends MscrOutputChannel {
   override def equals(a: Any) = a match {
     case o: BypassOutputChannel => o.output.id == output.id
     case _                      => false
   }
+  def setTag(t: Int) = copy(tag = t)
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
 }
 
-case class FlattenOutputChannel(output: Flatten[_]) extends MscrOutputChannel {
+case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOutputChannel {
   override def equals(a: Any) = a match {
     case o: FlattenOutputChannel => o.output.id == output.id
     case _ => false
   }
+  def setTag(t: Int) = copy(tag = t)
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = None

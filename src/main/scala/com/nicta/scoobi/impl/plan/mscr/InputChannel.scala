@@ -17,10 +17,16 @@ trait InputChannel extends Channel {
   
   lazy val id: Int = UniqueId.get
   def inputs: Seq[CompNode]
-  def incomings: Seq[CompNode] = inputs
+  def outputs: Seq[CompNode]
+
+  def incomings: Seq[CompNode]
+  def outgoings: Seq[CompNode]
+
+  def setTags(ts: Set[Int]): InputChannel
+  def tags: Set[Int]
 }
 
-case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputChannel {
+case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int] = Set()) extends InputChannel {
   override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
   def add(pd: ParallelDo[_,_,_]) = {
     parDos = parDos + pd
@@ -30,27 +36,43 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]]) extends InputC
     case i: MapperInputChannel => i.parDos.map(_.id) == parDos.map(_.id)
     case _                     => false
   }
+
   def inputs = parDos.flatMap(pd => attributes.inputs(pd)).toSeq
-  override def incomings = parDos.flatMap(pd => attributes.incomings(pd)).toSeq
+  def incomings = parDos.flatMap(pd => attributes.incomings(pd)).toSeq
+
+  def outputs = parDos.flatMap(pd => attributes.outputs(pd)).toSeq
+  def outgoings = parDos.flatMap(pd => attributes.outgoings(pd)).toSeq
+
+  def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
 }
 object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
 }
-case class IdInputChannel(input: CompNode) extends InputChannel {
+
+case class IdInputChannel(input: CompNode, tags: Set[Int] = Set()) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
   }
 
   def inputs = Seq(input)
+  def incomings = attributes.incomings(input).toSeq
+  def outputs = attributes.outputs(input).toSeq
+  def outgoings = attributes.outgoings(input).toSeq
 
-  override def incomings = attributes.incomings(input).toSeq
+  def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
 }
-case class StraightInputChannel(input: CompNode) extends InputChannel {
+
+case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set()) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
     case _                       => false
   }
+
   def inputs = attributes.inputs(input).toSeq
-  override def incomings =  attributes.incomings(input).toSeq
+  def incomings = attributes.incomings(input).toSeq
+  def outputs = attributes.outputs(input).toSeq
+  def outgoings = attributes.outgoings(input).toSeq
+
+  def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
 }
