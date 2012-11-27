@@ -77,9 +77,10 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
   private def readStore(node: CompNode): Any = {
     node match {
-      case Return1(in)      => in
-      case Materialize1(in) => in.bridgeStore.map(_.readAsIterable).getOrElse(())
-      case other            => other.bridgeStore.map(_.readAsIterable).getOrElse(())
+      case Return1(in)        => in
+      case Materialize1(in)   => in.bridgeStore.map(_.readAsIterable).getOrElse(())
+      case op @ Op1(in1, in2) => op.unsafeExecute(readStore(in1), readStore(in2))
+      case other              => other.bridgeStore.map(_.readAsIterable).getOrElse(())
     }
   }
 
