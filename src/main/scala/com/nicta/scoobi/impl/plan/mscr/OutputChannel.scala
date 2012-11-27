@@ -21,7 +21,9 @@ trait OutputChannel extends Channel {
   def nodes: Seq[CompNode]
   def contains(node: CompNode) = nodes.contains(node)
   def outgoings = nodes.flatMap(attributes.outgoings).toSeq
-  def results: Seq[CompNode] = outgoings.filter(isResult)
+  def incomings = nodes.flatMap(attributes.incomings).toSeq
+  def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
+  def sinkNodes: Seq[CompNode] = outgoings.filter(isSinkNode)
   def environment: Option[CompNode]
   def tag: Int
   def setTag(t: Int): OutputChannel

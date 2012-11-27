@@ -154,23 +154,33 @@ trait MscrsDefinition extends CompNodes with Layering {
     }
   }
 
-  /**
-   * @return the results for all mscrs of a layer
-   */
-  lazy val layerResults: Layer[T] => Seq[CompNode] = attr { case layer =>
-    mscrs(layer).flatMap(mscrResults)
+  /** @return the sources for all mscrs of a layer */
+  lazy val layerSources: Layer[T] => Seq[CompNode] = attr { case layer =>
+    mscrs(layer).flatMap(mscrSourceNodes)
+  }
+
+  /** @return the sinks for all mscrs of a layer */
+  lazy val layerSinks: Layer[T] => Seq[CompNode] = attr { case layer =>
+    mscrs(layer).flatMap(mscrSinkNodes)
   }
 
   /**
-   * @return the nodes which might materialize values for a given layer:
+   * @return the nodes which might materialize input sources for a given layer:
    *
-   * - load or return nodes which are inputs to mscrs
-   * - materialize or op nodes which are outputs of mscrs
+   * - load, return or op nodes which are inputs to mscrs
    *
    */
-  lazy val mscrResults: Mscr => Seq[CompNode] = attr { case mscr =>
-    mscr.inputChannels.toSeq.flatMap(_.results) ++
-    mscr.outputChannels.toSeq.flatMap(_.results)
+  lazy val mscrSourceNodes: Mscr => Seq[CompNode] = attr { case mscr =>
+    mscr.inputChannels.toSeq.flatMap(_.sourceNodes) ++
+    mscr.outputChannels.toSeq.flatMap(_.sourceNodes)
+  }
+
+  /**
+   * @return the nodes which might materialize output values for a given layer:
+   *
+   */
+  lazy val mscrSinkNodes: Mscr => Seq[CompNode] = attr { case mscr =>
+    mscr.outputChannels.toSeq.flatMap(_.sinkNodes)
   }
 
   lazy val isInputTo: OutputChannel => InputChannel => Boolean = paramAttr { (out: OutputChannel) => (in: InputChannel) =>

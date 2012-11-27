@@ -29,7 +29,7 @@ trait InputChannel extends Channel {
   lazy val id: Int = UniqueId.get
   def inputs: Seq[CompNode]
   def outputs: Seq[CompNode]
-  def results: Seq[CompNode] = incomings.filter(isResult)
+  def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
   def incomings: Seq[CompNode]
   def outgoings: Seq[CompNode]
 

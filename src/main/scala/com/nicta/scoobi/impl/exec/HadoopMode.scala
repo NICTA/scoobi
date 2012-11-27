@@ -39,7 +39,6 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   lazy val executeNode: CompNode => Any = attr { node =>
     val graphLayers = (node -> layers)
-    graphLayers.flatMap(layerResults).foreach(load)
     val result = graphLayers.flatMap { layer =>
       Execution(layer).execute
     }.headOption.getOrElse(())
@@ -49,10 +48,8 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   case class Execution(layer: Layer[T])(implicit sc: ScoobiConfiguration) {
     private var step = 0
     def execute: Seq[Any] = {
-      layerResults(layer).collect {
-        case mt @ Materialize1(in) => store(mt, readStore(in))
-        case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(readStore(in1), readStore(in2)))
-      }
+
+      layerSources(layer).foreach(load)
 
       mscrs(layer).foreach { mscr =>
         step += 1
@@ -61,8 +58,8 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
         job.run
       }
 
-      layerResults(layer).collect {
-        case mt @ Materialize1(in) => store(mt, readStore(mt))
+      layerSinks(layer).collect {
+        case mt @ Materialize1(in) => readStore(mt)
       }
     }
 
@@ -71,6 +68,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
+      case mt @ Materialize1(in) => store(mt, readStore(mt))
       case rt @ Return1(in)      => store(rt, in)
       case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(load(in1), load(in2)))
       case ld @ Load1(_)         => store(ld, ())
@@ -84,13 +82,11 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     }
     result
   }
-  private def readStore(node: CompNode): Any = {
+
+  private def readStore(node: CompNode) =
     node match {
-      case Return1(in)        => in
-      case Materialize1(in)   => in.bridgeStore.map(_.readAsIterable).getOrElse(())
-      case op @ Op1(in1, in2) => op.unsafeExecute(readStore(in1), readStore(in2))
-      case other              => other.bridgeStore.map(_.readAsIterable).getOrElse(())
-    }
+      case mt @ Materialize1(in) => in.bridgeStore.map(_.readAsIterable).getOrElse(())
+      case other                 => ()
   }
 
 }
