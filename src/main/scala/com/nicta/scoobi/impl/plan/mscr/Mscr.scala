@@ -48,7 +48,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
-  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_],_) => p }
+  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_],_,_) => p }
   /** @return an input channel containing a specific parallelDo */
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 

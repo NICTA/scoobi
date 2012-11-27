@@ -16,6 +16,7 @@ import scala.Some
 import comp.Combine
 import comp.GroupByKey
 import CompNodes._
+import shapeless.Nat._0
 
 trait Channel extends Attributable {
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
@@ -52,7 +53,7 @@ trait InputChannel extends Channel {
 
 }
 
-case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int] = Set(0)) extends InputChannel {
+case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], gbk: Option[GroupByKey[_,_]] = None, tags: Set[Int] = Set(0)) extends InputChannel {
   override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
   def add(pd: ParallelDo[_,_,_]) = {
     parDos = parDos + pd
@@ -74,7 +75,8 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int]
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     parDos.map { pd =>
-      job.addTaggedMapper(sources.head, pd.environment(sc), pd.makeTaggedMapper(tags))
+      job.addTaggedMapper(sources.head, pd.environment(sc),
+                          gbk.map(g => pd.makeTaggedMapper(g, tags)).getOrElse(pd.makeTaggedMapper(tags)))
     }
     job
   }
@@ -83,7 +85,7 @@ object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
 }
 
-case class IdInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends InputChannel {
+case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None, tags : Set[Int] = Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
@@ -98,7 +100,7 @@ case class IdInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends Inpu
   def nodes: Seq[CompNode] = Seq(input)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
-    sources.foreach(source => job.addTaggedMapper(source, None, input.parent.asInstanceOf[GroupByKey[_,_]].makeTaggedIdentityMapper(tags)))
+    gbk.map(g => sources.foreach(source => job.addTaggedMapper(source, None, g.makeTaggedIdentityMapper(tags))))
     job
   }
 }

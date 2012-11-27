@@ -60,6 +60,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       mscrs(layer).foreach { mscr =>
         step += 1
         val job = MapReduceJob.create(step, mscr)
+        logger.debug("Executing Mscr\n"+mscr)
         job.run
       }
 

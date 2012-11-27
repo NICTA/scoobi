@@ -11,7 +11,7 @@ import core._
 import text.Showx._
 import control.Exceptions._
 
-trait   ShowNodeMscr extends ShowNode with MscrMaker {
+trait ShowNodeMscr extends ShowNode with MscrMaker {
   /**
    * @return an ASCII representation of the nodes graph and their mscr
    *          The mscr of each node is only displayed if it is complete

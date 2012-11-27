@@ -89,7 +89,15 @@ trait MscrsDefinition extends CompNodes with Layering {
   lazy val gbkInputChannels: Layer[T] => Set[InputChannel] = attr { case layer =>
     val channels = mapperInputChannels(layer) ++ idInputChannels(layer)
     val outputs = gbkOutputChannels(layer)
-    channels.map(in => in.setTags(outputs.collect { case o if in -> isInputTo(o) => o.tag }))
+    channels.map { in =>
+      val groupByKey = outputs.collect { case o: GbkOutputChannel => o.groupByKey }.head
+      val inputWithGroupByKey = in match {
+        case i: MapperInputChannel => i.copy(gbk = Some(groupByKey))
+        case i: IdInputChannel     => i.copy(gbk = Some(groupByKey))
+      }
+      val tags = outputs.collect { case o if in -> isInputTo(o) => o.tag }
+      inputWithGroupByKey.setTags(tags)
+    }
   }
 
   lazy val idInputChannels: Layer[T] => Set[IdInputChannel] = attr { case layer =>
