@@ -110,6 +110,8 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
   def referencedNode = input.referencedNode
 
   protected lazy val plan = new ExecutionPlan {}
+  def contains(node: CompNode): Boolean = true
+
 }
 
 /**
@@ -159,8 +161,8 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
 sealed trait OutputChannelExec extends OutputChannel with ChannelExec {
   def sinks: Seq[Sink]
   def outputs: Seq[CompNode]
-  def contains(node: CompNode) = outputs.contains(node)
   def environment: Option[CompNode]
+  def nodes: Seq[CompNode] = Seq()
   def tag: Int
   def setTag(t: Int): OutputChannelExec
 }

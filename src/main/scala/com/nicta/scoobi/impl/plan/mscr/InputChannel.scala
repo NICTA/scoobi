@@ -24,9 +24,10 @@ trait InputChannel extends Channel {
 
   def setTags(ts: Set[Int]): InputChannel
   def tags: Set[Int]
+  def contains(node: CompNode): Boolean
 }
 
-case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int] = Set()) extends InputChannel {
+case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int] = Set(0)) extends InputChannel {
   override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
   def add(pd: ParallelDo[_,_,_]) = {
     parDos = parDos + pd
@@ -44,12 +45,13 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int]
   def outgoings = parDos.flatMap(pd => attributes.outgoings(pd)).toSeq
 
   def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
+  def contains(node: CompNode): Boolean = parDos.toSeq.contains(node)
 }
 object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
 }
 
-case class IdInputChannel(input: CompNode, tags: Set[Int] = Set()) extends InputChannel {
+case class IdInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
@@ -61,9 +63,10 @@ case class IdInputChannel(input: CompNode, tags: Set[Int] = Set()) extends Input
   def outgoings = attributes.outgoings(input).toSeq
 
   def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
+  def contains(node: CompNode): Boolean = input.id == node.id
 }
 
-case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set()) extends InputChannel {
+case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
     case _                       => false
@@ -75,4 +78,5 @@ case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set()) extends
   def outgoings = attributes.outgoings(input).toSeq
 
   def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
+  def contains(node: CompNode): Boolean = input.id == node.id
 }

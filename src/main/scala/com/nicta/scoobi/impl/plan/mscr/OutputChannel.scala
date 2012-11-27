@@ -14,7 +14,9 @@ trait OutputChannel extends Channel {
 
   /** sinks for this output channel */
   def sinks: Seq[Sink]
-  def contains(node: CompNode): Boolean
+  /** @return the nodes which are part of this channel */
+  def nodes: Seq[CompNode]
+  def contains(node: CompNode) = nodes.contains(node)
   def environment: Option[CompNode]
   def tag: Int
   def setTag(t: Int): OutputChannel
@@ -25,7 +27,6 @@ trait MscrOutputChannel extends OutputChannel {
   protected def nodeSinks: Seq[Sink]
   def bridgeStore: Option[Bridge]
   def output: CompNode
-  def contains(node: CompNode) = output == node
   def environment: Option[CompNode]
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
@@ -46,13 +47,12 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case _                   => false
   }
 
+  def nodes: Seq[CompNode] = Seq[CompNode](groupByKey) ++ flatten.toSeq ++ combiner.toSeq ++ reducer.toSeq
   def setTag(t: Int) = copy(tag = t)
   /** @return the output node of this channel */
   def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
 
-  def nodeSinks = groupByKey.sinks ++ flatten.toSeq.map(_.sinks).flatten ++
-                                      combiner.toSeq.map(_.sinks).flatten ++
-                                      reducer.toSeq.map(_.sinks).flatten
+  def nodeSinks = nodes.flatMap(_.sinks)
 
   lazy val bridgeStore =
      (reducer: Option[CompNode]).
@@ -69,6 +69,7 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends 
     case _                      => false
   }
   def setTag(t: Int) = copy(tag = t)
+  def nodes = Seq(output)
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
@@ -79,6 +80,7 @@ case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOu
     case o: FlattenOutputChannel => o.output.id == output.id
     case _ => false
   }
+  def nodes: Seq[CompNode] = Seq(output)
   def setTag(t: Int) = copy(tag = t)
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore

@@ -67,14 +67,23 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
    this
   }
 
+  /** @return true if the node is contained in one of the input channels */
+  def inputContains(node: CompNode) =
+    inputChannels.exists(_.contains(node))
+
   /** @return true if the node is contained in one of the output channels */
   def outputContains(node: CompNode) =
     outputChannels.exists(_.contains(node))
+
+  /** @return true if the node is contained in one of the input or output channels */
+  def contains(node: CompNode) = inputContains(node) || outputContains(node)
 }
 
 object Mscr {
   /** @return a Mscr from a single input and a single output */
-  def apply(input: InputChannel, output: OutputChannel): Mscr = Mscr(Set(input), Set(output))
+  def apply(input: InputChannel, output: OutputChannel): Mscr = Mscr(IdSet(input), Set(output))
+  def apply(input: InputChannel, output: Seq[OutputChannel]): Mscr = Mscr(Set(input), output.toSet)
+  def apply(input: Seq[InputChannel], output: OutputChannel): Mscr = Mscr(input.toSet, Set(output))
 
   /** create an Mscr for related "floating" parallelDos */
   def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Set[ParallelDo[_,_,_]]) = {
