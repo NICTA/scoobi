@@ -39,10 +39,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   lazy val executeNode: CompNode => Any = attr { node =>
     val graphLayers = (node -> layers)
-    graphLayers.flatMap(layerResults).collect {
-      case rt @ Return1(in)      => store(rt, in)
-      case ld @ Load1(_)         => store(ld, ())
-    }
+    graphLayers.flatMap(layerResults).foreach(load)
     val result = graphLayers.flatMap { layer =>
       Execution(layer).execute
     }.headOption.getOrElse(())
@@ -72,8 +69,19 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   }
 
+  private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
+    node match {
+      case rt @ Return1(in)      => store(rt, in)
+      case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(load(in1), load(in2)))
+      case ld @ Load1(_)         => store(ld, ())
+      case other                 => ()
+    }
+  }
+
   private def store(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
-    (node -> usesAsEnvironment).headOption.map(pd => pd.unsafePushEnv(result))
+    (node -> usesAsEnvironment).headOption.map { pd =>
+      pd.unsafePushEnv(result)
+    }
     result
   }
   private def readStore(node: CompNode): Any = {

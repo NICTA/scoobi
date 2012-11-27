@@ -19,7 +19,9 @@ trait MscrsDefinition extends CompNodes with Layering {
 
   /** a floating node is a parallelDo node or a flatten node that's not connected to a gbk node */
   lazy val isFloating: CompNode => Boolean = attr {
-    case pd: ParallelDo[_,_,_] => outputs(pd).collect(isAGroupByKey).isEmpty && outputs(pd).collect(isAFlatten).flatMap(_ -> outputs).collect(isAGroupByKey).isEmpty
+    case pd: ParallelDo[_,_,_] => !isReducer(pd) &&
+                                  outputs(pd).collect(isAGroupByKey).isEmpty &&
+                                  outputs(pd).collect(isAFlatten).flatMap(_ -> outputs).collect(isAGroupByKey).isEmpty
     case fl: Flatten[_]        => outputs(fl).collect(isAGroupByKey).isEmpty
     case other                 => false
   }
