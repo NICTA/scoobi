@@ -19,6 +19,7 @@ import core.CompNode
 case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) extends Attributable {
   val id: Int = UniqueId.get
 
+  def channels = inputChannels.toSeq ++ outputChannels.toSeq
   /** @return the nodes which are incomings to this Mscr */
   def incomings = inputChannels.toSeq.flatMap(_.incomings) ++ outputChannels.toSeq.flatMap(_.environment)
 

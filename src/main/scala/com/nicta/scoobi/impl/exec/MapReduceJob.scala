@@ -41,7 +41,7 @@ import ChannelOutputFormat._
 import monitor.Loggable._
 
 /** A class that defines a single Hadoop MapReduce job. */
-class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
+class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) {
   protected val fileSystems: FileSystems = FileSystems
   import fileSystems._
 
@@ -98,7 +98,7 @@ class MapReduceJob(stepId: Int, val mscrExec: MscrExec = MscrExec()) {
     }
   }
   
-  def configureChannels(implicit configuration: ScoobiConfiguration) = mscrExec.channels.foldRight(this)(_.configure(_))
+  def configureChannels(implicit configuration: ScoobiConfiguration) = mscr.channels.foldRight(this)(_.configure(_))
 
   def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
     FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory)
@@ -276,7 +276,7 @@ object MapReduceJob {
 
   /** Construct a MapReduce job from an MSCR. */
   def create(stepId: Int, mscr: Mscr)(implicit configuration: ScoobiConfiguration): MapReduceJob =
-    new MapReduceJob(stepId, new ExecutionPlan {} .createExecutableMscr(mscr)).configureChannels
+    new MapReduceJob(stepId, mscr).configureChannels
 }
 
 

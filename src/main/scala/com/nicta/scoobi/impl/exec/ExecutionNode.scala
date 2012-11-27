@@ -94,30 +94,18 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
   def outputs = Seq[CompNode]()
   def outgoings = Seq[CompNode]()
 
-  lazy val sources = {
-    input.referencedNode match {
-      case n: Load[_]         => Seq(n.source)
-      case n: GroupByKey[_,_] => Seq(n.bridgeStore).flatten
-      case n: Combine[_,_]    => Seq(n.bridgeStore).flatten
-      case n                  => n.children.asNodes.flatMap {
-                                   case ld: Load[_] => Some(ld.source)
-                                   case other       => other.bridgeStore
-                                 }.toSeq
-    }
-  }
-
   def input: ExecutionNode
   def referencedNode = input.referencedNode
 
   protected lazy val plan = new ExecutionPlan {}
-  def contains(node: CompNode): Boolean = true
+  def nodes = Seq[CompNode]()
 
 }
 
 /**
  * @param nodes: list of related MapperExec nodes
  */
-case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec {
+case class MapperInputChannelExec(override val nodes: Seq[CompNode]) extends InputChannelExec {
   def input  = nodes.head.asInstanceOf[MapperExecutionNode]
   def inputs = nodes
 
@@ -125,11 +113,6 @@ case class MapperInputChannelExec(nodes: Seq[CompNode]) extends InputChannelExec
   def referencedNodes: Seq[CompNode]    = mappers.map(_.referencedNode)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
-    val tags = plan.tags(job.mscrExec)(this)
-    mappers.map { mapper =>
-      val pd = mapper.referencedNode.asInstanceOf[ParallelDo[_,_,_]]
-      sources.headOption.foreach(source => job.addTaggedMapper(source, pd.environment(sc), mapper.makeTaggedMapper(tags)))
-    }
     job
   }
 }
@@ -139,8 +122,6 @@ case class BypassInputChannelExec(in: CompNode) extends InputChannelExec {
   def inputs = Seq(input)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
-    val tags = plan.tags(job.mscrExec)(this)
-    sources.foreach(source => job.addTaggedMapper(source, None, referencedNode.parent.asInstanceOf[GroupByKey[_,_]].makeTaggedIdentityMapper(tags(referencedNode))))
     job
   }
 }
@@ -149,11 +130,6 @@ case class StraightInputChannelExec(in: CompNode) extends InputChannelExec {
   def inputs = Seq(in)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
-    val tags = plan.tags(job.mscrExec)(this)
-    val mapper =  new TaggedIdentityMapper(tags(referencedNode), manifestWireFormat[Int], grouping[Int], referencedNode.asInstanceOf[DComp[_]].mr.mwf) {
-      override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
-    }
-    sources.foreach(source => job.addTaggedMapper(source, None, mapper))
     job
   }
 }

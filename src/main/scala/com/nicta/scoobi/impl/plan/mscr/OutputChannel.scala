@@ -6,10 +6,13 @@ package mscr
 import core._
 import comp._
 import util._
-import mapreducer.BridgeStore
+import CompNodes._
+import exec.MapReduceJob
 
 /** ADT for MSCR output channels. */
 trait OutputChannel extends Channel {
+  protected val attributes = new CompNodes {}
+
   lazy val id: Int = UniqueId.get
 
   /** sinks for this output channel */
@@ -17,9 +20,13 @@ trait OutputChannel extends Channel {
   /** @return the nodes which are part of this channel */
   def nodes: Seq[CompNode]
   def contains(node: CompNode) = nodes.contains(node)
+  def outgoings = nodes.flatMap(attributes.outgoings).toSeq
+  def results: Seq[CompNode] = outgoings.filter(isResult)
   def environment: Option[CompNode]
   def tag: Int
   def setTag(t: Int): OutputChannel
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
+
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -61,6 +68,25 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
 
   def environment: Option[CompNode] = reducer.map(_.env)
 
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob = {
+    combiner.map(c => job.addTaggedCombiner(c.makeTaggedCombiner(tag)))
+
+    // if there is a reducer node, use it as the tagged reducer
+    // otherwise use the combiner node if there is one
+    // and finally default to the GroupByKey node
+    combiner.map { c =>
+      reducer.map { r =>
+        Some(job.addTaggedReducer(sinks, r.environment(sc), c.makeTaggedReducer(tag, r.dofn)))
+      }.orElse(Some(job.addTaggedReducer(sinks, None, c.makeTaggedReducer(tag))))
+    }.orElse {
+      reducer.map { r =>
+        Some(job.addTaggedReducer(sinks, r.environment(sc), r.makeTaggedReducer(tag)))
+      }
+    }.getOrElse(job.addTaggedReducer(sinks, None, groupByKey.makeTaggedReducer(tag)))
+    job
+  }
+
+
 }
 
 case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends MscrOutputChannel {
@@ -73,6 +99,10 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends 
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
+
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
+    job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
+
 }
 
 case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOutputChannel {
@@ -85,6 +115,9 @@ case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOu
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = None
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
+    job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
+
 }
 
 object Channels extends control.ImplicitParameters {

@@ -8,6 +8,7 @@ import org.kiama.attribution.{Attribution, Attributable}
 
 import core._
 import control.Exceptions._
+import control.Functions._
 import collection._
 import IdSet._
 
@@ -63,6 +64,8 @@ trait CompNodes extends Attribution {
   lazy val isMaterialize: CompNode => Boolean = { case m: Materialize[_] => true; case other => false }
   /** return true if a CompNode is a Return */
   lazy val isReturn: CompNode => Boolean = { case r: Return[_]=> true; case other => false }
+  /** return true if a CompNode needs to be persisted */
+  lazy val isResult: CompNode => Boolean = isReturn || isMaterialize || isOp || isLoad
   /** return true if a CompNode is an Op */
   lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }
   /** return true if a CompNode has a cycle in its graph */

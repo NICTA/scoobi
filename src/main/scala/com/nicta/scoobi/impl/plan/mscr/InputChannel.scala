@@ -8,8 +8,18 @@ import core._
 import comp._
 import util.UniqueId
 import collection.IdSet
+import exec.MapReduceJob
+import mapreducer.TaggedIdentityMapper
+import core.WireFormat._
+import comp.Load
+import scala.Some
+import comp.Combine
+import comp.GroupByKey
+import CompNodes._
 
-trait Channel extends Attributable
+trait Channel extends Attributable {
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
+}
 
 /** ADT for MSCR input channels. */
 trait InputChannel extends Channel {
@@ -18,13 +28,28 @@ trait InputChannel extends Channel {
   lazy val id: Int = UniqueId.get
   def inputs: Seq[CompNode]
   def outputs: Seq[CompNode]
-
+  def results: Seq[CompNode] = incomings.filter(isResult)
   def incomings: Seq[CompNode]
   def outgoings: Seq[CompNode]
 
   def setTags(ts: Set[Int]): InputChannel
   def tags: Set[Int]
-  def contains(node: CompNode): Boolean
+  def nodes: Seq[CompNode]
+  def contains(node: CompNode): Boolean = nodes.exists(_.id == node.id)
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
+
+  lazy val sources = {
+    nodes.head match {
+      case n: Load[_]         => Seq(n.source)
+      case n: GroupByKey[_,_] => Seq(n.bridgeStore).flatten
+      case n: Combine[_,_]    => Seq(n.bridgeStore).flatten
+      case n                  => n.children.asNodes.flatMap {
+        case ld: Load[_] => Some(ld.source)
+        case other       => other.bridgeStore
+      }.toSeq
+    }
+  }
+
 }
 
 case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int] = Set(0)) extends InputChannel {
@@ -45,7 +70,14 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], tags: Set[Int]
   def outgoings = parDos.flatMap(pd => attributes.outgoings(pd)).toSeq
 
   def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
-  def contains(node: CompNode): Boolean = parDos.toSeq.contains(node)
+  def nodes: Seq[CompNode] = parDos.toSeq
+
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
+    parDos.map { pd =>
+      job.addTaggedMapper(sources.head, pd.environment(sc), pd.makeTaggedMapper(tags))
+    }
+    job
+  }
 }
 object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
@@ -63,7 +95,12 @@ case class IdInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends Inpu
   def outgoings = attributes.outgoings(input).toSeq
 
   def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
-  def contains(node: CompNode): Boolean = input.id == node.id
+  def nodes: Seq[CompNode] = Seq(input)
+
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
+    sources.foreach(source => job.addTaggedMapper(source, None, input.parent.asInstanceOf[GroupByKey[_,_]].makeTaggedIdentityMapper(tags)))
+    job
+  }
 }
 
 case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends InputChannel {
@@ -78,5 +115,14 @@ case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extend
   def outgoings = attributes.outgoings(input).toSeq
 
   def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
-  def contains(node: CompNode): Boolean = input.id == node.id
+  def nodes: Seq[CompNode] = Seq(input)
+
+  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
+    val mapper =  new TaggedIdentityMapper(tags, manifestWireFormat[Int], grouping[Int], input.asInstanceOf[DComp[_]].mr.mwf) {
+      override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
+    }
+    sources.foreach(source => job.addTaggedMapper(source, None, mapper))
+    job
+  }
+
 }

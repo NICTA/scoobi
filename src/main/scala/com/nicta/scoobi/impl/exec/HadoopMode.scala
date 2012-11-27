@@ -14,7 +14,7 @@ import ScoobiConfigurationImpl._
 /**
  * Execution of Scoobi applications using Hadoop.
  */
-case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrMaker with ExecutionPlan with ShowNodeMscr with Attribution {
+case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
   lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   def execute(list: DList[_]) {
@@ -28,63 +28,60 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   def prepare(node: CompNode) = {
     initAttributable(node)
     logger.debug("Raw nodes\n"+pretty(node))
- //   logger.debug("Raw graph\n"+showGraph(node))
+    logger.debug("Raw graph\n"+showGraph(node))
 
     val optimised = initAttributable(optimise(node))
 
     logger.debug("Optimised nodes\n"+pretty(optimised))
-//    logger.debug("Optimised graph\n"+showGraph(optimised))
+    logger.debug("Optimised graph\n"+showGraph(optimised))
     optimised
   }
 
-  lazy val executeNode: CompNode => Any = attr { node => {
-
-    val result = node match {
-      case mt @ Materialize1(in)            => store(mt, mt.in -> executeNode)
-      case op @ Op1(in1, in2)               => store(op, op.unsafeExecute(in1 -> executeNode, in2 -> executeNode))
-      case rt @ Return1(in)                 => store(rt, in)
-      case ld @ Load1(_)                    => store(ld, ())
-      case other                            => executeMscr(other)
+  lazy val executeNode: CompNode => Any = attr { node =>
+    val graphLayers = (node -> layers)
+    graphLayers.flatMap(layerResults).collect {
+      case rt @ Return1(in)      => store(rt, in)
+      case ld @ Load1(_)         => store(ld, ())
     }
+    val result = graphLayers.flatMap { layer =>
+      Execution(layer).execute
+    }.headOption.getOrElse(())
     result
-  }}
+  }
 
-  private def store(node: CompNode, execute: Any)(implicit sc: ScoobiConfiguration) = {
-    val result = (node match {
-      case Materialize1(in) => in.bridgeStore.map(_.readAsIterable)
-      case _                => None
-    }).getOrElse(execute)
+  case class Execution(layer: Layer[T])(implicit sc: ScoobiConfiguration) {
+    private var step = 0
+    def execute: Seq[Any] = {
+      layerResults(layer).collect {
+        case mt @ Materialize1(in) => store(mt, readStore(in))
+        case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(readStore(in1), readStore(in2)))
+      }
 
+      mscrs(layer).foreach { mscr =>
+        step += 1
+        val job = MapReduceJob.create(step, mscr)
+        job.run
+      }
+
+      layerResults(layer).collect {
+        case mt @ Materialize1(in) => store(mt, readStore(mt))
+      }
+    }
+
+
+  }
+
+  private def store(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
     (node -> usesAsEnvironment).headOption.map(pd => pd.unsafePushEnv(result))
     result
   }
-
-  private def executeMscr(node: CompNode)(implicit sc: ScoobiConfiguration) {
-    val mscr = makeMscr(node)
-    if (mscr.isEmpty) (node.children).asNodes.map(_ -> executeNode)
-    else {
-      logger.debug("Executing Mscr\n"+mscrGraph(node))
-      Execution(mscr).execute
+  private def readStore(node: CompNode): Any = {
+    node match {
+      case Return1(in)      => in
+      case Materialize1(in) => in.bridgeStore.map(_.readAsIterable).getOrElse(())
+      case other            => other.bridgeStore.map(_.readAsIterable).getOrElse(())
     }
   }
 
-  case class Execution(mscr: Mscr) {
-    def execute = mscr -> compute
-
-    private var step = 0
-
-    lazy val compute: Mscr => Unit = attr { (mscr: Mscr) =>
-      // compute first the dependent mscrs
-      val incomings = mscr.incomings
-      logger.debug("Executing incoming nodes first\n"+incomings.mkString("\n"))
-      incomings.foreach(_ -> executeNode)
-
-      step += 1
-      val job = MapReduceJob.create(step, mscr)
-      job.run
-      ()
-    }
-
-  }
 }
 
