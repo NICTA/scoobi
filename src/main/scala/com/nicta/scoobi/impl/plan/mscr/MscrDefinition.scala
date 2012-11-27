@@ -174,7 +174,10 @@ trait MscrsDefinition extends CompNodes with Layering {
   }
 
   lazy val isInputTo: OutputChannel => InputChannel => Boolean = paramAttr { (out: OutputChannel) => (in: InputChannel) =>
-    in.outgoings.exists(out.contains)
+    in.outgoings.exists {
+      case fl: Flatten[_] => out.contains(fl.parent.asNode)
+      case other          => out.contains(other)
+    }
   }
 
   lazy val isReducer: ParallelDo[_,_,_] => Boolean = attr { case pd =>
