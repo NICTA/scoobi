@@ -56,7 +56,7 @@ class TaggedPartitionerClassBuilder
     val getPartitionCode =
       "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
       "switch(tag) {" +
-        (0 to tags.size - 1).map { t =>
+        tags.keys.map { t =>
           "case " + t + ": return grouper" + t + ".partition(((com.nicta.scoobi.impl.rtt.TaggedKey)$1).get(tag), $3);"
         }.mkString +
         "default: return 0;" +

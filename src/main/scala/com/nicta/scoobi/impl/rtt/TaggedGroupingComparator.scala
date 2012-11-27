@@ -73,7 +73,8 @@ class TaggedGroupingComparatorClassBuilder
       "buffer1.reset($1, $2, $3);" +
       "buffer2.reset($4, $5, $6);" +
       (if (tags.size == 1) {
-        genFromObj(0, tags(0)._1)
+        val tag = tags.keys.toSeq(0)
+        genFromObj(tag, tags.values.toSeq(0)._1)
       } else {
         "int tag1 = buffer1.readInt();" +
         "int tag2 = buffer2.readInt();" +

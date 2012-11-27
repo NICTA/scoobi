@@ -94,9 +94,11 @@ class TaggedValueClassBuilder
 
     /* Tagged 'write' method */
     val taggedWriteCode =
-      if (tags.size == 1)
-        "setTag(0);" +
-        toWireCode(0)
+      if (tags.size == 1) {
+        val tag = tags.keys.toSeq(0)
+        "setTag("+tag+");" +
+        toWireCode(tag)
+      }
       else
         "$1.writeInt(tag());" +
         "switch(tag()) {" +
@@ -117,9 +119,11 @@ class TaggedValueClassBuilder
 
     /* Tagged 'readFields' method */
     val taggedReadFieldsCode =
-      if (tags.size == 1)
-        "setTag(0);"+
-        toReadCode(0, classToJavaTypeString(tags(0)._1.erasure))
+      if (tags.size == 1) {
+        val tag = tags.keys.toSeq(0)
+        "setTag("+tag+");"+
+        toReadCode(tag, classToJavaTypeString(tags.values.toSeq(0)._1.erasure))
+      }
       else
         "setTag($1.readInt());" +
         "switch(tag()) {" +
