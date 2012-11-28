@@ -42,7 +42,6 @@ class BoundedFilterSpec extends NictaSimpleJobs {
       val xs = ints.toDList
       val average = (xs.sum, xs.size) map { case (t, s) => t / s }
       val bigger = (average join xs) filter { case (a, x) => x > a }
-
       bigger.values.run.sorted must_== ints.filter(_ > (ints.sum / ints.size))
 
     }

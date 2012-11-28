@@ -286,7 +286,7 @@ case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink
     case mat: Materialize[_] => in == mat.in
     case _                   => false
   }
-  override val toString = "Materialize ("+id+")"+mr
+  override val toString = "Materialize ("+id+")[Iterable"+mr+"]"
 
 }
 object Materialize1 {
@@ -307,7 +307,10 @@ case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleM
     case _            => false
   }
 
-  def unsafeExecute(a: Any, b: Any): C = f(a.asInstanceOf[A], b.asInstanceOf[B])
+  def unsafeExecute(a: Any, b: Any): C = {
+    val result = f(a.asInstanceOf[A], b.asInstanceOf[B])
+    result
+  }
 
   override val toString = "Op ("+id+")"+mr
 }

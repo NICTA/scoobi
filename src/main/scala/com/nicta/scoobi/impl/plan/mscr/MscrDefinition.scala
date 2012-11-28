@@ -11,6 +11,7 @@ import control.Functions._
 import collection.IdSet
 import comp._
 import core._
+import util.UniqueId
 
 trait MscrsDefinition extends CompNodes with Layering {
   type T = CompNode
@@ -21,7 +22,7 @@ trait MscrsDefinition extends CompNodes with Layering {
   lazy val isFloating: CompNode => Boolean = attr {
     case pd: ParallelDo[_,_,_] => !isReducer(pd) &&
                                   outputs(pd).collect(isAGroupByKey).isEmpty &&
-                                  outputs(pd).collect(isAFlatten).flatMap(_ -> outputs).collect(isAGroupByKey).isEmpty
+                                  outputs(pd).collect(isAFlatten).forall(!isFloating)
     case fl: Flatten[_]        => outputs(fl).collect(isAGroupByKey).isEmpty
     case other                 => false
   }
@@ -34,15 +35,18 @@ trait MscrsDefinition extends CompNodes with Layering {
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
     floatingParallelDos(layer).groupBy(_.in.id).values.toSeq.map { pds =>
-      Mscr(MapperInputChannel(pds.toSet), pds.map(BypassOutputChannel(_)))
+      Mscr(MapperInputChannel(pds:_*), pds.map(BypassOutputChannel(_)))
     }
   }
   /** Mscrs for flatten nodes which are not part of a Gbk mscr */
   lazy val flattenMscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
     floatingFlattens(layer).map { fl =>
-      Mscr(fl.ins.map {
-        case pd: ParallelDo[_,_,_] => MapperInputChannel(pd)
-        case other                 => StraightInputChannel(other)
+      Mscr(fl.ins.filter {
+        case pd: ParallelDo[_,_,_] => !isReducer(pd)
+        case other                 => true
+      }.map {
+         case pd: ParallelDo[_,_,_] if !isReducer(pd) => MapperInputChannel(pd)
+         case other                                   => StraightInputChannel(other)
       },
         FlattenOutputChannel(fl))
     }
@@ -167,7 +171,7 @@ trait MscrsDefinition extends CompNodes with Layering {
   /**
    * @return the nodes which might materialize input sources for a given layer:
    *
-   * - load, return or op nodes which are inputs to mscrs
+   * - load, return or op nodes which are inputs to mscr input channels or output channels (for a pd environment for example)
    *
    */
   lazy val mscrSourceNodes: Mscr => Seq[CompNode] = attr { case mscr =>
@@ -226,7 +230,7 @@ trait Layering extends CompNodes with Attribution with ShowNode {
   lazy val layers: CompNode => Seq[Layer[T]] = attr { case n =>
     val (leaves, nonLeaves) = selectedDescendents(n).partition(d => selectedDescendents(d).isEmpty)
     Layer.create(leaves) +:
-      nonLeaves.groupBy(_ => longestPathTo(leaves)).values.map(Layer.create).toSeq.reverse
+      nonLeaves.groupBy(_ => longestPathTo(leaves)).values.map(Layer.create).toSeq
   }
 
   lazy val longestPathTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
@@ -240,8 +244,9 @@ trait Layering extends CompNodes with Attribution with ShowNode {
   }
 
   case class Layer[T <: CompNode](nodes: SortedSet[T] = IdSet.empty) {
+    val id = UniqueId.get
     lazy val gbks = nodes.collect(isAGroupByKey)
-    override def toString = nodes.mkString("Layer(\n", ",\n", ")\n")
+    override def toString = nodes.mkString("Layer("+id+"\n  ", ",\n  ", ")\n")
   }
 
   object Layer {

@@ -5,8 +5,9 @@ import testing.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
 import impl.plan.DListImpl
 import com.nicta.scoobi.impl.plan.comp.factory._
+import impl.plan.comp.CompNodeData
 
-class SimpleDListsSpec extends NictaSimpleJobs {
+class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 
   // for now this spec needs to be sequential otherwise example 8 doesn't pass
   sequential
@@ -58,5 +59,13 @@ class SimpleDListsSpec extends NictaSimpleJobs {
     val l2 = l0.map { case (a, b) => (a, Iterable(b)) } // (1, Iterable("a"))
     val l = (l1 ++ l2).groupByKey // (1, Iterable("a", "a"))
     l.run must haveTheSameElementsAs(Seq((1, Iterable(Seq("a"), Seq("a")))))
+  }
+  "12. 2 parallelDos on a flatten" in { implicit sc: SC =>
+    (DList("hello") ++ DList("world")).materialize.run.toSet === Set("hello", "world")
+  }
+  "13. join + pd + gbk + pd" in { implicit sc: SC =>
+    val list = (DList("a").materialize.map(_.mkString) join DList("b")).groupByKey.map { case (k, v) => (k, v) }
+
+    normalize(list.materialize.run) === "Vector((a,Vector(b)))"
   }
 }

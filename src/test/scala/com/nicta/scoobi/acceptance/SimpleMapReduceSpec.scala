@@ -21,6 +21,7 @@ import testing.NictaSimpleJobs
 import impl.exec.JobExecException
 
 class SimpleMapReduceSpec extends NictaSimpleJobs {
+  sequential
 
   section("issue #25")
   "persisting a file without any transformation must not crash" >> { implicit c: SC =>
