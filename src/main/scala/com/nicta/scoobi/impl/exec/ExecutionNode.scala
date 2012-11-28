@@ -93,7 +93,7 @@ sealed trait InputChannelExec extends InputChannel with ChannelExec {
   def incomings = Seq[CompNode]()
   def outputs = Seq[CompNode]()
   def outgoings = Seq[CompNode]()
-
+  def sources: InputChannel => Set[Source] = (in: InputChannel) => Set()
   def input: ExecutionNode
   def referencedNode = input.referencedNode
 

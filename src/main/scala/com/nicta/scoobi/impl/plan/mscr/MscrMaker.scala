@@ -62,7 +62,7 @@ trait MscrMaker extends CompNodes {
 
   /** the mapper input channel of a node is grouping ParallelDo nodes which are siblings */
   lazy val mapperInputChannels: GroupByKey[_,_] => Set[MapperInputChannel] = attr { gbk: GroupByKey[_,_] =>
-    (gbk -> relatedParallelDos).groupBy(_.in.id).values.map(pds => MapperInputChannel(pds.toSeq:_*)).toSet
+    (gbk -> relatedParallelDos).groupBy(_.in.id).values.map(pds => MapperInputChannel.create(pds.toSeq, (i: InputChannel) => Set())).toSet
   }
 
   /** the set of related paralleldos for a gbk */

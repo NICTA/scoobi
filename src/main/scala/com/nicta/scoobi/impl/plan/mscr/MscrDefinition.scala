@@ -35,7 +35,7 @@ trait MscrsDefinition extends CompNodes with Layering {
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
     floatingParallelDos(layer).groupBy(_.in.id).values.toSeq.map { pds =>
-      Mscr(MapperInputChannel(pds:_*), pds.map(BypassOutputChannel(_)))
+      Mscr(MapperInputChannel.create(pds, sources), pds.map(BypassOutputChannel(_)))
     }
   }
   /** Mscrs for flatten nodes which are not part of a Gbk mscr */
@@ -45,8 +45,8 @@ trait MscrsDefinition extends CompNodes with Layering {
         case pd: ParallelDo[_,_,_] => !isReducer(pd)
         case other                 => true
       }.map {
-         case pd: ParallelDo[_,_,_] if !isReducer(pd) => MapperInputChannel(pd)
-         case other                                   => StraightInputChannel(other)
+         case pd: ParallelDo[_,_,_] if !isReducer(pd) => MapperInputChannel.create(Seq(pd), sources)
+         case other                                   => StraightInputChannel(other, sources)
       },
         FlattenOutputChannel(fl))
     }
@@ -84,10 +84,10 @@ trait MscrsDefinition extends CompNodes with Layering {
       val flatten = Seq(g.in).collect(isAFlatten).headOption
 
       (g -> ancestors).toList match {
-        case (c @ Combine1(_)) :: (p @ ParallelDo1(_)) :: rest => GbkOutputChannel(g, flatten, combiner = Some(c), reducer = Some(p))
-        case (c @ Combine1(_)) :: rest                         => GbkOutputChannel(g, flatten, combiner = Some(c))
-        case (p @ ParallelDo1(_)) :: rest                      => GbkOutputChannel(g, flatten, reducer = Some(p))
-        case _                                                 => GbkOutputChannel(g)
+        case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest => GbkOutputChannel(g, flatten, combiner = Some(c), reducer = Some(p))
+        case (c: Combine[_,_]) :: rest                           => GbkOutputChannel(g, flatten, combiner = Some(c))
+        case (p: ParallelDo[_,_,_]) :: rest                      => GbkOutputChannel(g, flatten, reducer = Some(p))
+        case _                                                   => GbkOutputChannel(g)
       }
     }
   }
@@ -109,11 +109,14 @@ trait MscrsDefinition extends CompNodes with Layering {
   }
 
   lazy val idInputChannels: Layer[T] => Set[IdInputChannel] = attr { case layer =>
-    gbkInputs(layer).filter(!isParallelDo).map(i => IdInputChannel(i)).toSet
+    gbkInputs(layer).filter {
+      case p: ParallelDo[_,_,_] => isReducer(p)
+      case other                => true
+    }.map(i => IdInputChannel(i, sources)).toSet
   }
 
   lazy val mapperInputChannels: Layer[T] => Set[MapperInputChannel] = attr { case layer =>
-    mappers(layer).groupBy(_.in.id).values.map(pds => MapperInputChannel(pds:_*)).toSet
+    mappers(layer).groupBy(_.in.id).values.map(pds => MapperInputChannel.create(pds, sources)).toSet
   }
 
   lazy val mappers: Layer[T] => Seq[ParallelDo[_,_,_]] = attr { case layer =>
@@ -181,6 +184,20 @@ trait MscrsDefinition extends CompNodes with Layering {
     mscr.outputChannels.toSeq.flatMap(_.sourceNodes)
   }
 
+  lazy val sources: InputChannel => Set[Source] = attr { case in =>
+    in.nodes.head match {
+      case n: Load[_]           => Set(n.source)
+      case n: GroupByKey[_,_]   => Set(n.bridgeStore).flatten
+      case n: Combine[_,_]      => Set(n.bridgeStore).flatten
+      case n: ParallelDo[_,_,_] if isReducer(n) => Set(n.bridgeStore).flatten
+      case n                  => n.children.asNodes.flatMap {
+        case ld: Load[_] => Some(ld.source)
+        case other       => other.bridgeStore
+      }.toSet
+    }
+  }
+
+
   /**
    * @return the nodes which might materialize output values for a given layer:
    *
@@ -232,7 +249,7 @@ trait Layering extends CompNodes with Attribution with ShowNode {
   lazy val layers: CompNode => Seq[Layer[T]] = attr { case n =>
     val (leaves, nonLeaves) = selectedDescendents(n).partition(d => selectedDescendents(d).isEmpty)
     Layer.create(leaves) +:
-      nonLeaves.groupBy(_ => longestPathTo(leaves)).values.map(Layer.create).toSeq
+      nonLeaves.groupBy(_ -> longestPathTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer.create(v) }
   }
 
   lazy val longestPathTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>

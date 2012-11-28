@@ -7,6 +7,7 @@ import testing.UnitSpecification
 import org.specs2.specification.Groups
 import comp.factory
 import org.specs2.matcher.ThrownExpectations
+import org.specs2.execute.Pending
 
 class   InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is =
 
@@ -16,7 +17,7 @@ class   InputChannelSpec extends UnitSpecification with Groups with ThrownExpect
     end
 
   "inputs" - new g1 with factory {
-    e1 := MapperInputChannel(pd(load, rt)).inputs === Seq(load)
-    e2 := MapperInputChannel(pd(load, rt)).incomings === Seq(load, rt)
+    e1 := Pending("implement with sources") //MapperInputChannel(pd(load, rt)).inputs === Seq(load)
+    e2 := Pending("implement with sources") //MapperInputChannel(pd(load, rt)).incomings === Seq(load, rt)
   }
 }

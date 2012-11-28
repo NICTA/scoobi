@@ -50,7 +50,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
     val input1 = fromInput(Seq.fill(100)(words1).flatten: _*)
     val input2 = fromInput(Seq.fill(100)(words2).flatten: _*)
 
-    /* The uniques will be interemediate outputs that feed into 'join' which will
+    /* The uniques will be intermediate outputs that feed into 'join' which will
      * be implemented by a separate MSCR.*/
     (unique(input1) join unique(input2)).run must_== Seq(("hello", ("hello", "hello")))
   }

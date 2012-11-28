@@ -48,7 +48,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   /** @return all the input parallel dos of this mscr */
   def mappers = mapperChannels.flatMap(_.parDos)
   /** @return all the input parallel dos of this mscr in id channels */
-  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_],_,_) => p }
+  def idMappers = idChannels.collect { case IdInputChannel(p : ParallelDo[_,_,_],_,_,_) => p }
   /** @return an input channel containing a specific parallelDo */
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
@@ -88,14 +88,12 @@ object Mscr {
 
   /** create an Mscr for related "floating" parallelDos */
   def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Set[ParallelDo[_,_,_]]) = {
-    Mscr(inputChannels  = IdSet(MapperInputChannel(siblings + pd)),
-         outputChannels = (siblings + pd).map(BypassOutputChannel(_)))
+    Mscr(outputChannels = (siblings + pd).map(BypassOutputChannel(_)))
   }
   /** create an Mscr for a "floating" Flatten */
   def floatingFlattenMscr(f: Flatten[_]) = {
     Mscr(outputChannels = IdSet(FlattenOutputChannel(f)),
          inputChannels  = f.ins.map {
-                              case pd: ParallelDo[_,_,_] => MapperInputChannel(pd)
                               case other                 => StraightInputChannel(other)
                           }.toIdSet.asInstanceOf[Set[InputChannel]])
   }
