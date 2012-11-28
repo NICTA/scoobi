@@ -149,7 +149,7 @@ trait DList[A] extends DataSinks {
       emitter.emit(_)
     })
 
-  /**Builds a new distributed list from this list without any duplicate elements. */
+  /** Build a new distributed list from this list without any duplicate elements. */
   def distinct: DList[A] = {
     import scala.collection.mutable.{Set => MSet}
 
@@ -168,9 +168,11 @@ trait DList[A] extends DataSinks {
       }
     }
 
-    /* A Grouping type where sorting is implemented by taking the difference between hash
+    /**
+      * A Grouping type where sorting is implemented by taking the difference between hash
       * codes of the two values. In this case, not concerned with ordering, just that the
-      * same values are grouped together. This Grouping instance will provide that. */
+      * same values are grouped together. This Grouping instance will provide that
+      */
     implicit val grouping = new Grouping[A] {
       def groupCompare(x: A, y: A): Int = (x.hashCode - y.hashCode)
     }

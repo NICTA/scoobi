@@ -56,11 +56,11 @@ trait MscrsDefinition extends CompNodes with Layering {
   lazy val gbkMscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
     val (in, out) = (gbkInputChannels(layer), gbkOutputChannels(layer))
     // groups of input channels having at least one tag in common
-    val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
+    val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.nodesTags intersect i2.nodesTags).nonEmpty)
 
     // create Mscr for each set of channels with common tags
     channelsWithCommonTags.map { taggedInputChannels =>
-      val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
+      val correspondingOutputTags = taggedInputChannels.flatMap(_.nodesTags)
       Mscr(taggedInputChannels.toSet, out.filter(o => correspondingOutputTags.contains(o.tag)).toSet)
     }
   }
@@ -101,7 +101,9 @@ trait MscrsDefinition extends CompNodes with Layering {
         case i: MapperInputChannel => i.copy(gbk = Some(groupByKey))
         case i: IdInputChannel     => i.copy(gbk = Some(groupByKey))
       }
-      val tags = outputs.collect { case o if in -> isInputTo(o) => o.tag }
+      lazy val tags: CompNode => Set[Int] = attr {
+        case node => outputs.collect { case o if node -> isInputTo(o) => o.tag }
+      }
       inputWithGroupByKey.setTags(tags)
     }
   }
@@ -187,8 +189,8 @@ trait MscrsDefinition extends CompNodes with Layering {
     mscr.outputChannels.toSeq.flatMap(_.sinkNodes)
   }
 
-  lazy val isInputTo: OutputChannel => InputChannel => Boolean = paramAttr { (out: OutputChannel) => (in: InputChannel) =>
-    in.outgoings.exists {
+  lazy val isInputTo: OutputChannel => CompNode => Boolean = paramAttr { (out: OutputChannel) => (node: CompNode) =>
+    outgoings(node).exists {
       case fl: Flatten[_] => out.contains(fl.parent.asNode)
       case other          => out.contains(other)
     }

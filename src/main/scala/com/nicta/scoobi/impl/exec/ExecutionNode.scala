@@ -88,8 +88,8 @@ trait ChannelExec {
 }
 
 sealed trait InputChannelExec extends InputChannel with ChannelExec {
-  val tags = Set[Int]()
-  def setTags(tags: Set[Int]) = this
+  def tags: CompNode => Set[Int] = (c: CompNode) => Set[Int]()
+  def setTags(tags: (CompNode) => Set[Int]) = this
   def incomings = Seq[CompNode]()
   def outputs = Seq[CompNode]()
   def outgoings = Seq[CompNode]()

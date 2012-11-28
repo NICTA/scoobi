@@ -44,9 +44,9 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       ()
     }
     attr {
-      case node @ Op1(in1, in2)    => node.unsafeExecute(in1 -> executeNode, in2 -> executeNode)
+      case node @ Op1(in1, in2)    => node.unsafeExecute(in1 -> executeNode, in2 -> executeNode).debug("result for op "+node.id+": ")
       case node @ Return1(in)      => in
-      case node @ Materialize1(in) => executeLayers(node); readStore(node)
+      case node @ Materialize1(in) => executeLayers(node); readStore(node).debug("result for materialize "+node.id+": ")
       case node                    => executeLayers(node)
     }
   }
@@ -76,9 +76,9 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
-      case mt @ Materialize1(in) => store(mt, readStore(mt))
+      case mt @ Materialize1(in) => store(mt, readStore(mt).debug("result for materialize "+mt.id+": "))
       case rt @ Return1(in)      => store(rt, in)
-      case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(load(in1), load(in2)))
+      case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(load(in1), load(in2)).debug("result for op "+op.id+": "))
       case ld @ Load1(_)         => store(ld, ())
       case other                 => ()
     }

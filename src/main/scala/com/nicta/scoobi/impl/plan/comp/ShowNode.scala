@@ -90,7 +90,7 @@ trait ShowNode extends CompNodes {
   def showGraph(node : CompNode) = tryOrElse {
     val graph = Graph((node -> vertices).toList.map(v => showNode(v, None)), (node -> edges).toList.map { case (v1, v2) => showNode(v1, None) -> showNode(v2, None) })
     Layouter.renderGraph(graph)
-  }("cannot represent the node\n"+show(node))
+  }("cannot represent the node "+(if (isCyclic(node)) "(because there is a cycle)" else "")+"\n"+show(node))
 
   /** @return an ASCII representation of the nodes graph + an attribute for each node */
   def showGraph[T](node: CompNode, attribute: CompNode => T) = tryOrElse {

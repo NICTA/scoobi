@@ -33,8 +33,9 @@ trait InputChannel extends Channel {
   def incomings: Seq[CompNode]
   def outgoings: Seq[CompNode]
 
-  def setTags(ts: Set[Int]): InputChannel
-  def tags: Set[Int]
+  def setTags(ts: CompNode => Set[Int]): InputChannel
+  def tags: CompNode => Set[Int]
+  def nodesTags: Set[Int] = nodes.flatMap(tags).toSet
   def nodes: Seq[CompNode]
   def contains(node: CompNode): Boolean = nodes.exists(_.id == node.id)
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
@@ -53,7 +54,7 @@ trait InputChannel extends Channel {
 
 }
 
-case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], gbk: Option[GroupByKey[_,_]] = None, tags: Set[Int] = Set(0)) extends InputChannel {
+case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], gbk: Option[GroupByKey[_,_]] = None, tags: CompNode => Set[Int] = (_:CompNode) => Set(0)) extends InputChannel {
   override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
   def add(pd: ParallelDo[_,_,_]) = {
     parDos = parDos + pd
@@ -70,13 +71,13 @@ case class MapperInputChannel(var parDos: Set[ParallelDo[_,_,_]], gbk: Option[Gr
   def outputs = parDos.flatMap(pd => attributes.outputs(pd)).toSeq
   def outgoings = parDos.flatMap(pd => attributes.outgoings(pd)).toSeq
 
-  def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
+  def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
   def nodes: Seq[CompNode] = parDos.toSeq
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     parDos.map { pd =>
       job.addTaggedMapper(sources.head, pd.environment(sc),
-                          gbk.map(g => pd.makeTaggedMapper(g, tags)).getOrElse(pd.makeTaggedMapper(tags)))
+                          gbk.map(g => pd.makeTaggedMapper(g, tags(pd))).getOrElse(pd.makeTaggedMapper(tags(pd))))
     }
     job
   }
@@ -85,7 +86,7 @@ object MapperInputChannel {
   def apply(pd: ParallelDo[_,_,_]*): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*))
 }
 
-case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None, tags : Set[Int] = Set(0)) extends InputChannel {
+case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None, tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
@@ -96,16 +97,16 @@ case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None, 
   def outputs = attributes.outputs(input).toSeq
   def outgoings = attributes.outgoings(input).toSeq
 
-  def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
+  def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
   def nodes: Seq[CompNode] = Seq(input)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
-    gbk.map(g => sources.foreach(source => job.addTaggedMapper(source, None, g.makeTaggedIdentityMapper(tags))))
+    gbk.map(g => sources.foreach(source => job.addTaggedMapper(source, None, g.makeTaggedIdentityMapper(tags(input)))))
     job
   }
 }
 
-case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extends InputChannel {
+case class StraightInputChannel(input: CompNode, tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
     case _                       => false
@@ -116,11 +117,11 @@ case class StraightInputChannel(input: CompNode, tags: Set[Int] = Set(0)) extend
   def outputs = attributes.outputs(input).toSeq
   def outgoings = attributes.outgoings(input).toSeq
 
-  def setTags(ts: Set[Int]): InputChannel = copy(tags = ts)
+  def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
   def nodes: Seq[CompNode] = Seq(input)
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
-    val mapper =  new TaggedIdentityMapper(tags, manifestWireFormat[Int], grouping[Int], input.asInstanceOf[DComp[_]].mr.mwf) {
+    val mapper =  new TaggedIdentityMapper(tags(input), manifestWireFormat[Int], grouping[Int], input.asInstanceOf[DComp[_]].mr.mwf) {
       override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
     }
     sources.foreach(source => job.addTaggedMapper(source, None, mapper))
