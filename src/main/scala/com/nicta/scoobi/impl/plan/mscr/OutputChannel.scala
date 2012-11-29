@@ -21,8 +21,8 @@ trait OutputChannel extends Channel {
   /** @return the nodes which are part of this channel */
   def nodes: Seq[CompNode]
   def contains(node: CompNode) = nodes.contains(node)
-  def outgoings = nodes.flatMap(attributes.outgoings).toSeq
-  def incomings = nodes.flatMap(attributes.incomings).toSeq
+  def outgoings = nodes.flatMap(attributes.outgoings)
+  def incomings = nodes.flatMap(attributes.incomings)
   def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
   def sinkNodes: Seq[CompNode] = outgoings.filter(isSinkNode)
   def environment: Option[CompNode]

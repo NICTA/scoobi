@@ -56,8 +56,8 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   "11. groupByKey(flatten(groupByKey(l1), l1))" >> { implicit sc: SC =>
     val l0 = DList((1, "a"))
     val l1 = l0.groupByKey // (1, Iterable("a"))
-    val l2 = l0.map { case (a, b) => (a, Iterable(b)) } // (1, Iterable("a"))
-    val l = (l1 ++ l2).groupByKey // (1, Iterable("a", "a"))
+    val l2 = l0.map { case (i, a) => (i, Iterable(a)) } // (1, Iterable("a"))
+    val l = (l1 ++ l2).groupByKey // (1, Iterable(Iterable("a"), Iterable("a")))
     l.run must haveTheSameElementsAs(Seq((1, Iterable(Seq("a"), Seq("a")))))
   }
   "12. 2 parallelDos on a flatten" in { implicit sc: SC =>

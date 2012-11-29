@@ -136,9 +136,9 @@ trait MscrsDefinition extends Layering {
   lazy val gbkInputs: Layer[T] => Seq[CompNode] = attr { case layer =>
     distinctNodes {
       layer.nodes.toSeq.flatMap(_ -> inputs)flatMap {
-        case fl @ Flatten1(ins) if layer.gbks.flatMap(_ -> inputs).contains(fl)    => ins
-        case other              if layer.gbks.flatMap(_ -> inputs).contains(other) => Seq(other)
-        case other                                                                 => Seq()
+        case fl: Flatten[_] if layer.gbks.flatMap(_ -> inputs).contains(fl)    => fl.ins
+        case other          if layer.gbks.flatMap(_ -> inputs).contains(other) => Seq(other)
+        case other                                                             => Seq()
       }
     }
   }

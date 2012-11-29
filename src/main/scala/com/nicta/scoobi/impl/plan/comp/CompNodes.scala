@@ -16,7 +16,7 @@ import collection._
 trait CompNodes extends Attribution {
   /** @return a sequence of distinct nodes */
   def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Seq[T] =
-    nodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSeq
+    Vector(nodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSeq:_*)
 
   /** @return true if a node is the ancestor of another */
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))
@@ -39,7 +39,7 @@ trait CompNodes extends Attribution {
   implicit def asCompNodes(as: Iterator[Attributable]): AsCompNodes = AsCompNodes(as.toSeq)
   implicit def asCompNodes(as: Seq[Attributable]): AsCompNodes = AsCompNodes(as)
   case class AsCompNodes(as: Seq[Attributable]) {
-    def asNodes: Seq[CompNode] = as.collect { case c: CompNode => c }
+    def asNodes: Seq[CompNode] = Vector(as.collect { case c: CompNode => c }:_*)
   }
 
   /** return true if a CompNode is a Flatten */
@@ -176,14 +176,13 @@ trait CompNodes extends Attribution {
     }
   /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
   def canReach(n: CompNode): CompNode => Boolean =
-    paramAttr { target: CompNode =>
-      node: CompNode => descendents(node).contains(target)
+    paramAttr { target: CompNode => node: CompNode =>
+      descendents(node).exists(_.id == target.id)
     }(n)
 
   /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
   lazy val ancestors : CompNode => Seq[CompNode] =
-    circular(Seq[CompNode]()) {
-      case node: CompNode => {
+    attr { case node: CompNode => {
         val p = Option(node.parent).toSeq.asNodes
         p ++ p.flatMap { parent => ancestors(parent) }
       }
@@ -191,10 +190,9 @@ trait CompNodes extends Attribution {
 
   /** compute all the parents of a given node. A node A is parent of a node B if B can be reached from A */
   lazy val parents : CompNode => Seq[CompNode] =
-    circular(Seq[CompNode]()) {
-      case node: CompNode => {
+    attr { case node: CompNode => {
         distinctNodes((node -> ancestors).flatMap { ancestor =>
-          ((ancestor -> descendents) :+ ancestor).filter(canReach(node))
+          (ancestor +: (ancestor -> descendents)).filter(canReach(node))
         })
       }
     }
