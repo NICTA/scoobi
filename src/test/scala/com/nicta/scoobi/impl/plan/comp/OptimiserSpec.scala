@@ -134,7 +134,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   "6. ParallelDos which are outputs of the graph must be marked with a fuseBarrier" >> {
-    "6.1 with a random graph" >> prop { (node: CompNode, outputs: Set[CompNode]) =>
+    "6.1 with a random graph" >> prop { (node: CompNode, outputs: List[CompNode]) =>
       val optimised = optimise(parDoFuseBarrier(outputs), node).head
       // collects the flatten nodes which are leaves. If they are in the outputs set
       // their fuseBarrier must be true

@@ -6,45 +6,13 @@ package comp
 import org.kiama.output.PrettyPrinter
 import scalaz.Show
 import com.github.mdr.ascii.layout._
-import mscr.MscrMaker
 import core._
 import text.Showx._
 import control.Exceptions._
+import mscr.MscrsDefinition
 
-trait ShowNodeMscr extends ShowNode with MscrMaker {
-  /**
-   * @return an ASCII representation of the nodes graph and their mscr
-   *          The mscr of each node is only displayed if it is complete
-   */
-  def mscrsGraph[T](node: CompNode) = {
-    val attributedVertices = (node -> vertices).map(v => (v, showMscr(v))).toMap
-    tryOrElse {
-      val graph = Graph(attributedVertices.values.toList, (node -> edges).toList.map { case (v1, v2) => attributedVertices(v1) -> attributedVertices(v2) }.distinct)
-      Layouter.renderGraph(graph)
-    }("cannot represent the Mscr for\n"+show(node))
-  }
+trait ShowNodeMscr extends ShowNode with MscrsDefinition
 
-  /**
-   * toString representation for a node and its Mscr
-   */
-  def showMscr(n: CompNode) = {
-    val m = n -> mscr
-    n.toString + (if (m.isEmpty) "" else (" -> "+m))
-  }
-
-  /**
-   * Graph box for a single Mscr
-   */
-  def mscrGraph[T](node: CompNode) = {
-    val attributedVertices = Map((node, showMscr(node)))
-    tryOrElse {
-      val graph = Graph(attributedVertices.values.toList, Nil)
-      Layouter.renderGraph(graph)
-    }("cannot represent the Mscr for\n"+show(node))
-  }
-
-
-}
 trait ShowNode extends CompNodes {
   val prettyPrinter = new PrettyPrinter {}
   import prettyPrinter._

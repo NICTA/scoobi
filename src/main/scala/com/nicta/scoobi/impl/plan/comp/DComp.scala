@@ -9,9 +9,8 @@ import util.UniqueId
 import WireFormat._
 import ManifestWireFormat._
 import mapreducer._
-import IdSet._
 import scalaz.Memo._
-import org.apache.hadoop.conf.Configuration
+import scalaz.Equal
 
 /**
  * GADT for distributed list computation graph.
@@ -127,6 +126,7 @@ object ParallelDo {
   private[scoobi]
   def fuseEnv[F : ManifestWireFormat, G : ManifestWireFormat](fExp: CompNode, gExp: CompNode): DComp[(F, G)] =
     Op(fExp, gExp, (f: F, g: G) => (f, g), SimpleMapReducer(manifestWireFormat[(F, G)]))
+
 }
 object ParallelDo1 {
   /** extract only the incoming node of this parallel do */

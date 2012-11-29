@@ -130,14 +130,14 @@ trait Optimiser extends CompNodes {
   /**
    * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
    */
-  def parDoFuseBarrier(outputs: Set[CompNode]) = everywhere(rule {
+  def parDoFuseBarrier(outputs: Seq[CompNode]) = everywhere(rule {
     case p: ParallelDo[_,_,_] if outputs contains p => p.copy(barriers = p.debug("pardoFuseBarrier").barriers.copy(fuseBarrier = true))
   })
 
   /**
    * all the strategies to apply, in sequence
    */
-  def allStrategies(outputs: Set[CompNode]) =
+  def allStrategies(outputs: Seq[CompNode]) =
     attempt(parDoFuse(pass = 1)   ) <*
     attempt(flattenSplit          ) <*
     attempt(flattenSink           ) <*
@@ -151,7 +151,7 @@ trait Optimiser extends CompNodes {
   /**
    * Optimise a set of CompNodes, starting from the set of outputs
    */
-  def optimise(outputs: Set[CompNode]): Set[CompNode] =
+  def optimise(outputs: Seq[CompNode]): Seq[CompNode] =
     rewrite(allStrategies(outputs))(outputs)
 
   /** duplicate the whole graph by copying all nodes */
@@ -172,6 +172,6 @@ trait Optimiser extends CompNodes {
   }
 
   /** optimise just one node which is the output of a graph. Used for testing */
-  private[scoobi] def optimise(node: CompNode): CompNode = optimise(Set(node)).headOption.getOrElse(node)
+  private[scoobi] def optimise(node: CompNode): CompNode = optimise(Seq(node)).headOption.getOrElse(node)
 }
 object Optimiser extends Optimiser

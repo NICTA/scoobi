@@ -8,6 +8,7 @@ import comp._
 import util._
 import CompNodes._
 import exec.MapReduceJob
+import scalaz.Equal
 
 /** ADT for MSCR output channels. */
 trait OutputChannel extends Channel {
@@ -28,7 +29,6 @@ trait OutputChannel extends Channel {
   def tag: Int
   def setTag(t: Int): OutputChannel
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
-
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -57,7 +57,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
   }
 
   def nodes: Seq[CompNode] = Seq[CompNode](groupByKey) ++ flatten.toSeq ++ combiner.toSeq ++ reducer.toSeq
-  def setTag(t: Int) = copy(tag = t)
+  def setTag(t: Int): OutputChannel = copy(tag = t)
   /** @return the output node of this channel */
   def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
 
@@ -122,10 +122,16 @@ case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOu
 
 }
 
+object OutputChannel {
+  implicit def outputChannelEqual = new Equal[OutputChannel] {
+    def equal(a1: OutputChannel, a2: OutputChannel) = a1.id == a2.id
+  }
+}
+
 object Channels extends control.ImplicitParameters {
   /** @return a sequence of distinct mapper input channels */
   def distinct(ins: Seq[MapperInputChannel]): Seq[MapperInputChannel] =
-    ins.map(in => (in.parDos.map(_.id).toSet, in)).toMap.values.toSeq
+    ins.map(in => (in.parDos.map(_.id), in)).toMap.values.toSeq
 
   /** @return a sequence of distinct group by key output channels */
   def distinct(out: Seq[GbkOutputChannel])(implicit p: ImplicitParam): Seq[GbkOutputChannel] =

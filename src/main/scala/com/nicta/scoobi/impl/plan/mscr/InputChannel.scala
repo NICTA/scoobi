@@ -7,16 +7,12 @@ import org.kiama.attribution.Attributable
 import core._
 import comp._
 import util.UniqueId
-import collection.IdSet
 import exec.MapReduceJob
 import mapreducer.TaggedIdentityMapper
 import core.WireFormat._
-import comp.Load
-import scala.Some
-import comp.Combine
 import comp.GroupByKey
 import CompNodes._
-import shapeless.Nat._0
+import scalaz.Equal
 
 trait Channel extends Attributable {
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
@@ -40,11 +36,11 @@ trait InputChannel extends Channel {
   def contains(node: CompNode): Boolean = nodes.exists(_.id == node.id)
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
 
-  def sources: InputChannel => Set[Source]
+  def sources: InputChannel => Seq[Source]
 }
 
-case class MapperInputChannel(parDos: Set[ParallelDo[_,_,_]],
-                              sources: InputChannel => Set[Source],
+case class MapperInputChannel(parDos: Seq[ParallelDo[_,_,_]],
+                              sources: InputChannel => Seq[Source],
                               gbk: Option[GroupByKey[_,_]] = None,
                               tags: CompNode => Set[Int] = (_:CompNode) => Set(0)) extends InputChannel {
   override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
@@ -53,14 +49,14 @@ case class MapperInputChannel(parDos: Set[ParallelDo[_,_,_]],
     case _                     => false
   }
 
-  def inputs = parDos.flatMap(pd => attributes.inputs(pd)).toSeq
-  def incomings = parDos.flatMap(pd => attributes.incomings(pd)).toSeq
+  def inputs = parDos.flatMap(pd => attributes.inputs(pd))
+  def incomings = parDos.flatMap(pd => attributes.incomings(pd))
 
   def outputs = parDos.flatMap(pd => attributes.outputs(pd)).toSeq
-  def outgoings = parDos.flatMap(pd => attributes.outgoings(pd)).toSeq
+  def outgoings = parDos.flatMap(pd => attributes.outgoings(pd))
 
   def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
-  def nodes: Seq[CompNode] = parDos.toSeq
+  def nodes: Seq[CompNode] = parDos
 
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) = {
     parDos.map { pd =>
@@ -71,11 +67,11 @@ case class MapperInputChannel(parDos: Set[ParallelDo[_,_,_]],
   }
 }
 object MapperInputChannel {
-  def create(pd: Seq[ParallelDo[_,_,_]], sources: InputChannel => Set[Source]): MapperInputChannel = new MapperInputChannel(IdSet(pd:_*), sources)
+  def create(pd: Seq[ParallelDo[_,_,_]], sources: InputChannel => Seq[Source]): MapperInputChannel = new MapperInputChannel(pd, sources)
 }
 
 case class IdInputChannel(input: CompNode,
-                          sources: InputChannel => Set[Source] = (in: InputChannel) => Set(),
+                          sources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
                           gbk: Option[GroupByKey[_,_]] = None,
                           tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
@@ -84,9 +80,9 @@ case class IdInputChannel(input: CompNode,
   }
 
   def inputs = Seq(input)
-  def incomings = attributes.incomings(input).toSeq
-  def outputs = attributes.outputs(input).toSeq
-  def outgoings = attributes.outgoings(input).toSeq
+  def incomings = attributes.incomings(input)
+  def outputs = attributes.outputs(input)
+  def outgoings = attributes.outgoings(input)
 
   def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
   def nodes: Seq[CompNode] = Seq(input)
@@ -98,7 +94,7 @@ case class IdInputChannel(input: CompNode,
 }
 
 case class StraightInputChannel(input: CompNode,
-                                sources: InputChannel => Set[Source] = (in: InputChannel) => Set(),
+                                sources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
                                 tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
@@ -121,4 +117,10 @@ case class StraightInputChannel(input: CompNode,
     job
   }
 
+}
+
+object InputChannel {
+  implicit def inputChannelEqual = new Equal[InputChannel] {
+    def equal(a1: InputChannel, a2: InputChannel) = a1.id == a2.id
+  }
 }

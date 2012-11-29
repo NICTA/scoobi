@@ -23,6 +23,7 @@ import org.apache.hadoop.mapreduce.RecordReader
 import impl.util.UniqueId
 
 trait Source {
+  val id = UniqueId.get
   def inputFormat: Class[_ <: InputFormat[_,_]]
   def inputCheck(implicit sc: ScoobiConfiguration)
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)

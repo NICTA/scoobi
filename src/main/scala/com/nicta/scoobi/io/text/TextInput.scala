@@ -126,6 +126,7 @@ object TextInput {
     extends DataSource[LongWritable, Text, A] {
 
     private val inputPaths = paths.map(p => new Path(p))
+    override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
     val inputFormat = classOf[TextInputFormat]
 

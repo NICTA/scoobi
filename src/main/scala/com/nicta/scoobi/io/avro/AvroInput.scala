@@ -60,8 +60,8 @@ object AvroInput extends AvroParsingImplicits {
       def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
     }
     val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
-
       private val inputPaths = paths.map(p => new Path(p))
+      override def toString = "Avro("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
       val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 

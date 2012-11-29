@@ -42,6 +42,8 @@ trait SeqInput {
 
     val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
       val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
+      override def toString = "SeqInput("+id+")"
+
       def inputCheck(implicit sc: ScoobiConfiguration) {}
 
       def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {

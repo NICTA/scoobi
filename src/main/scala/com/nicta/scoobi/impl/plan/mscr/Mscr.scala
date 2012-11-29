@@ -8,7 +8,6 @@ import org.kiama.attribution.Attributable
 import util.UniqueId
 import comp._
 import collection._
-import IdSet._
 import core.CompNode
 
 /**
@@ -16,12 +15,12 @@ import core.CompNode
  * It is a mutable class which is constructed incrementally by using Kiama grammar attributes
  * @see MscrGraph
  */
-case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels: Set[OutputChannel] = Set()) extends Attributable {
+case class Mscr(var inputChannels: Seq[InputChannel] = Seq(), var outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
   val id: Int = UniqueId.get
 
-  def channels = inputChannels.toSeq ++ outputChannels.toSeq
+  def channels = inputChannels ++ outputChannels
   /** @return the nodes which are incomings to this Mscr */
-  def incomings = inputChannels.toSeq.flatMap(_.incomings) ++ outputChannels.toSeq.flatMap(_.environment)
+  def incomings = inputChannels.flatMap(_.incomings) ++ outputChannels.flatMap(_.environment)
 
   /** it is necessary to override the generated equality method in order to use the vars */
   override def equals(a: Any) = a match {
@@ -62,7 +61,7 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
   def parallelDos = mappers ++ reducers
 
   /** simultaneously set the input and output channels of this mscr */
-  def addChannels(in: Set[InputChannel], out: Set[OutputChannel]) = {
+  def addChannels(in: Seq[InputChannel], out: Seq[OutputChannel]) = {
    inputChannels  = (inputChannels ++ in)
    outputChannels = (outputChannels ++ out)
    this
@@ -82,20 +81,20 @@ case class Mscr(var inputChannels: Set[InputChannel] = Set(), var outputChannels
 
 object Mscr {
   /** @return a Mscr from a single input and a single output */
-  def apply(input: InputChannel, output: OutputChannel): Mscr = Mscr(IdSet(input), Set(output))
-  def apply(input: InputChannel, output: Seq[OutputChannel]): Mscr = Mscr(Set(input), output.toSet)
-  def apply(input: Seq[InputChannel], output: OutputChannel): Mscr = Mscr(input.toSet, Set(output))
+  def apply(input: InputChannel, output: OutputChannel): Mscr = Mscr(Seq(input), Seq(output))
+  def apply(input: InputChannel, output: Seq[OutputChannel]): Mscr = Mscr(Seq(input), output)
+  def apply(input: Seq[InputChannel], output: OutputChannel): Mscr = Mscr(input, Seq(output))
 
   /** create an Mscr for related "floating" parallelDos */
-  def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Set[ParallelDo[_,_,_]]) = {
-    Mscr(outputChannels = (siblings + pd).map(BypassOutputChannel(_)))
+  def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Seq[ParallelDo[_,_,_]]) = {
+    Mscr(outputChannels = (siblings :+ pd).map(BypassOutputChannel(_)))
   }
   /** create an Mscr for a "floating" Flatten */
   def floatingFlattenMscr(f: Flatten[_]) = {
-    Mscr(outputChannels = IdSet(FlattenOutputChannel(f)),
+    Mscr(outputChannels = Seq(FlattenOutputChannel(f)),
          inputChannels  = f.ins.map {
                               case other                 => StraightInputChannel(other)
-                          }.toIdSet.asInstanceOf[Set[InputChannel]])
+                          })
   }
   /** @return a new empty Mscr */
   def empty = Mscr()

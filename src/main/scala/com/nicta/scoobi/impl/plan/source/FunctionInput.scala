@@ -38,6 +38,8 @@ trait FunctionInput {
   def fromFunction[A : ManifestWireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
       val inputFormat = classOf[FunctionInputFormat[A]]
+      override def toString = "FunctionInput("+id+")"
+
       def inputCheck(implicit sc: ScoobiConfiguration) {}
 
       def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {

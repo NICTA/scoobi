@@ -131,6 +131,7 @@ object SequenceInput {
     extends DataSource[K, V, A] {
 
     private val inputPaths = paths.map(p => new Path(p))
+    override def toString = "SeqSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
     val inputFormat = classOf[SequenceFileInputFormat[K, V]]
 

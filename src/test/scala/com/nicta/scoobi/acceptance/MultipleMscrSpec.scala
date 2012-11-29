@@ -68,7 +68,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
 
     val expectedGBKs = Seq(("k1",Seq(("k1","v1"))), ("k2",Seq(("k2","v2"))))
 
-    persist(dObjectJoinedToInputGroupedDiff.materialize).toSeq must_== Seq(
+    dObjectJoinedToInputGroupedDiff.run must_== Seq(
         (expectedGBKs, ("v1",Seq(("k1","v1")))),
         (expectedGBKs, ("v2",Seq(("k2","v2")))))
   }
@@ -86,7 +86,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
 
     val expectedGBKs = Seq(("k1",Seq(("k1","v1"))), ("k2",Seq(("k2","v2"))))
 
-    persist(dObjectJoinedToInputGroupedDiff.materialize).toSeq must_== Seq(
+    dObjectJoinedToInputGroupedDiff.run must_== Seq(
         (expectedGBKs, ("v1",Seq(("k1","v1")))),
         (expectedGBKs, ("v2",Seq(("k2","v2")))))
   }

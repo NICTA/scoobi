@@ -68,4 +68,11 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 
     normalize(list.materialize.run) === "Vector((a,Vector(b)))"
   }
+  "14. gbk1 with reducer + gbk2 with output feeding gbk1" >> { implicit sc: SC =>
+    val l0 = DList((1, "a"))
+    val l1 = l0.groupByKey
+    val l2 = l0.groupByKey.materialize
+    val l3 = (l2 join l1).filter(_ => true)
+    normalize(l3.run) === "Vector((Vector((1,Vector(a))),(1,Vector(a))))"
+  }
 }

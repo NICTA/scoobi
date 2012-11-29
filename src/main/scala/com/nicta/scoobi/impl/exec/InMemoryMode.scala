@@ -16,15 +16,13 @@ import core._
 import monitor.Loggable._
 import impl.plan._
 import comp._
-import CompNodes._
 import WireFormat._
 import ScoobiConfigurationImpl._
-import ShowNode._
 
 /**
  * A fast local mode for execution of Scoobi applications.
  */
-case class InMemoryMode() extends Attribution {
+case class InMemoryMode() extends ShowNode {
 
   implicit lazy val logger = LogFactory.getLog("scoobi.VectorMode")
 
@@ -41,6 +39,7 @@ case class InMemoryMode() extends Attribution {
   private
   lazy val prepare: ScoobiConfiguration => CompNode => Unit =
     paramAttr { sc: ScoobiConfiguration => { node: CompNode =>
+      initAttributable(node)
       logger.debug("nodes\n"+pretty(node))
       logger.debug("graph\n"+showGraph(node))
       node.sinks.foreach(_.outputCheck(sc))

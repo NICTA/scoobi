@@ -3,22 +3,20 @@ package impl
 package plan
 package comp
 
-import scala.collection.immutable.SortedSet
 import org.kiama.attribution.{Attribution, Attributable}
 
 import core._
 import control.Exceptions._
 import control.Functions._
 import collection._
-import IdSet._
 
 /**
  * General methods for navigating a graph of CompNodes
  */
 trait CompNodes extends Attribution {
   /** @return a sequence of distinct nodes */
-  def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Set[T] =
-    nodes.asNodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSet
+  def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Seq[T] =
+    nodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSeq
 
   /** @return true if a node is the ancestor of another */
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))
@@ -41,7 +39,7 @@ trait CompNodes extends Attribution {
   implicit def asCompNodes(as: Iterator[Attributable]): AsCompNodes = AsCompNodes(as.toSeq)
   implicit def asCompNodes(as: Seq[Attributable]): AsCompNodes = AsCompNodes(as)
   case class AsCompNodes(as: Seq[Attributable]) {
-    def asNodes = as.collect { case c: CompNode => c }
+    def asNodes: Seq[CompNode] = as.collect { case c: CompNode => c }
   }
 
   /** return true if a CompNode is a Flatten */
@@ -76,38 +74,38 @@ trait CompNodes extends Attribution {
   lazy val isNotCyclic: CompNode => Boolean = (n: CompNode) => !isCyclic(n)
 
   /** compute the inputs of a given node */
-  lazy val inputs : CompNode => SortedSet[CompNode] = attr {
+  lazy val inputs : CompNode => Seq[CompNode] = attr {
     // for a parallel do node just consider the input node, not the environment
-    case pd: ParallelDo[_,_,_]  => IdSet(pd.in)
-    case n                      => n.children.asNodes.toIdSet
+    case pd: ParallelDo[_,_,_]  => Seq(pd.in)
+    case n                      => n.children.asNodes
   }
 
   /** compute the incoming data of a given node: all the inputs + possible environment for a parallelDo */
-  lazy val incomings : CompNode => SortedSet[CompNode] = attr {
-    case n                      => n.children.asNodes.toIdSet
+  lazy val incomings : CompNode => Seq[CompNode] = attr {
+    case n                      => n.children.asNodes
   }
 
   /**
    *  compute the outputs of a given node.
    *  They are all the parents of the node where the parent inputs contain this node.
    */
-  lazy val outputs : CompNode => SortedSet[CompNode] = attr {
+  lazy val outputs : CompNode => Seq[CompNode] = attr {
     case node: CompNode => (node -> parents) collect { case a if (a -> inputs).exists(_ eq node) => a }
   }
 
   /** compute the outcoming data of a given node: all the outputs + possible environment for a parallelDo */
-  lazy val outgoings : CompNode => SortedSet[CompNode] = attr {
+  lazy val outgoings : CompNode => Seq[CompNode] = attr {
     case node: CompNode => (node -> parents) collect { case a if (a -> incomings).exists(_ eq node) => a }
   }
 
   /** all inputs and outputs */
-  lazy val inputsOutputs: CompNode => Set[CompNode] = attr { case n => (n -> inputs) ++ (n -> outputs) }
+  lazy val inputsOutputs: CompNode => Seq[CompNode] = attr { case n => (n -> inputs) ++ (n -> outputs) }
 
   /**
    *  compute the uses of a given node.
    *  i.e. the outputs of a node + its uses as an environment is parallelDos
    */
-  lazy val uses : CompNode => SortedSet[CompNode] = attr {
+  lazy val uses : CompNode => Seq[CompNode] = attr {
     case node: CompNode => (node -> outgoings) collect { case a if (a -> incomings).exists(_ eq node)=> a }
   }
 
@@ -115,53 +113,42 @@ trait CompNodes extends Attribution {
    *  compute the shared input of a given node.
    *  They are all the distinct inputs of a node which are also inputs of another node
    */
-  lazy val sharedInputs : CompNode => SortedSet[CompNode] = attr {
+  lazy val sharedInputs : CompNode => Seq[CompNode] = attr {
     case node: CompNode => ((node -> inputs).collect { case in if (in -> outputs).filterNot(_ eq node).nonEmpty => in })
   }
-
-  /**
-   *  compute the siblings of a given node.
-   *  They are all the nodes which share at least one input with this node
-   */
-  lazy val siblings : CompNode => SortedSet[CompNode] = attr {
-    case node: CompNode => (node -> inputs).flatMap { in => (in -> outputs) }.filterNot(_ eq node)
-  }
-
-  /** @return true if a node has siblings */
-  lazy val hasSiblings : CompNode => Boolean = attr { case node: CompNode => (node -> siblings).nonEmpty }
-
   /**
    * compute all the descendents of a node
    * They are all the recursive children reachable from this node */
-  lazy val descendents : CompNode => SortedSet[CompNode] =
-    attr { case node: CompNode => (node -> nonUniqueDescendents).toIdSet }
-
-  private lazy val nonUniqueDescendents : CompNode => Seq[CompNode] =
-    attr { case node: CompNode => (node.children.asNodes ++ node.children.asNodes.flatMap(nonUniqueDescendents)) }
+  lazy val descendents : CompNode => Seq[CompNode] =
+    attr { case node: CompNode =>
+      val children = node.children.asNodes
+      val childrenDescendents = distinctNodes(children.flatMap(descendents))
+      children ++ childrenDescendents
+    }
 
   type Predicate = CompNode => Boolean
   /**
    * compute all the descendents of a node while some criterion is true
    */
-  lazy val descendentsWhile: Predicate => CompNode => SortedSet[CompNode] =
+  lazy val descendentsWhile: Predicate => CompNode => Seq[CompNode] =
     paramAttr { predicate: Predicate => node: CompNode =>
-      (node -> nonUniqueDescendentsWhile(predicate)).toIdSet
+      node -> nonUniqueDescendentsWhile(predicate)
     }
 
   private lazy val nonUniqueDescendentsWhile: Predicate => CompNode => Seq[CompNode] =
     paramAttr { predicate: Predicate =>
       (node: CompNode) => {
         val childrenWhile = node.children.asNodes.filter(predicate)
-        childrenWhile ++ childrenWhile.flatMap(nonUniqueDescendentsWhile(predicate))
+        childrenWhile ++ distinctNodes(childrenWhile.flatMap(nonUniqueDescendentsWhile(predicate)))
       }
     }
 
   /**
    * compute all the descendents of a node until some criterion is true
    */
-  lazy val descendentsUntil: Predicate => CompNode => SortedSet[CompNode] =
+  lazy val descendentsUntil: Predicate => CompNode => Seq[CompNode] =
     paramAttr { predicate: Predicate => node: CompNode =>
-      (node -> nonUniqueDescendentsUntil(predicate)).toIdSet
+      node -> nonUniqueDescendentsUntil(predicate)
     }
 
   private lazy val nonUniqueDescendentsUntil: Predicate => CompNode => Seq[CompNode] =
@@ -169,13 +156,13 @@ trait CompNodes extends Attribution {
       (node: CompNode) => {
         val (childrenWhile, childrenUntil) = node.children.asNodes.span(predicate)
         val children = childrenWhile ++ childrenUntil.headOption.toSeq
-        children ++ children.flatMap(nonUniqueDescendentsUntil(predicate))
+        children ++ distinctNodes(children.flatMap(nonUniqueDescendentsUntil(predicate)))
       }
     }
 
-  lazy val descendentsWhileUntil: ((Predicate, Predicate)) => CompNode => SortedSet[CompNode] =
+  lazy val descendentsWhileUntil: ((Predicate, Predicate)) => CompNode => Seq[CompNode] =
     paramAttr { predicates: ((Predicate, Predicate)) => node: CompNode =>
-      (node -> nonUniqueDescendentsWhileUntil(predicates)).toIdSet
+      node -> nonUniqueDescendentsWhileUntil(predicates)
     }
 
   private lazy val nonUniqueDescendentsWhileUntil: ((Predicate, Predicate)) => CompNode => Seq[CompNode] =
@@ -183,7 +170,7 @@ trait CompNodes extends Attribution {
       val (whilePredicate, untilPredicate) = predicates
       (node: CompNode) => {
         val (childrenWhile, childrenUntil) = node.children.asNodes.filter(whilePredicate).span(untilPredicate)
-        val children = childrenWhile ++ childrenUntil.headOption.toSeq
+        val children = distinctNodes(childrenWhile ++ childrenUntil.headOption.toSeq)
         children ++ children.flatMap(nonUniqueDescendentsWhileUntil(predicates))
       }
     }
@@ -194,21 +181,21 @@ trait CompNodes extends Attribution {
     }(n)
 
   /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
-  lazy val ancestors : CompNode => SortedSet[CompNode] =
-    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
+  lazy val ancestors : CompNode => Seq[CompNode] =
+    circular(Seq[CompNode]()) {
       case node: CompNode => {
         val p = Option(node.parent).toSeq.asNodes
-        (p ++ p.flatMap { parent => ancestors(parent) }).toIdSet
+        p ++ p.flatMap { parent => ancestors(parent) }
       }
     }
 
   /** compute all the parents of a given node. A node A is parent of a node B if B can be reached from A */
-  lazy val parents : CompNode => SortedSet[CompNode] =
-    circular(IdSet.empty[CompNode]: SortedSet[CompNode]) {
+  lazy val parents : CompNode => Seq[CompNode] =
+    circular(Seq[CompNode]()) {
       case node: CompNode => {
-        (node -> ancestors).flatMap { ancestor =>
-          ((ancestor -> descendents) + ancestor).filter(canReach(node))
-        }
+        distinctNodes((node -> ancestors).flatMap { ancestor =>
+          ((ancestor -> descendents) :+ ancestor).filter(canReach(node))
+        })
       }
     }
 
@@ -228,15 +215,16 @@ trait CompNodes extends Attribution {
   /** compute the vertices starting from a node */
   lazy val vertices : CompNode => Seq[CompNode] =
     circular(Seq[CompNode]()) {
-      case node: CompNode => ((node +: node.children.asNodes.flatMap(n => n -> vertices).toSeq) ++ node.children.asNodes).
-        toIdSet.toSeq // make the vertices unique
+      case node: CompNode =>
+        distinctNodes((node +: node.children.asNodes.flatMap(n => n -> vertices).toSeq) ++ node.children.asNodes) // make the vertices unique
     }
 
   /** compute all the edges which compose this graph */
   lazy val edges : CompNode => Seq[(CompNode, CompNode)] =
     circular(Seq[(CompNode, CompNode)]()) {
-      case node: CompNode => (node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges).toSeq).
-        map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
+      case node: CompNode =>
+        (node.children.asNodes.map(n => node -> n) ++ node.children.asNodes.flatMap(n => n -> edges)).
+           map { case (a, b) => (a.id, b.id) -> (a, b) }.toMap.values.toSeq // make the edges unique
     }
 
   /** compute all the nodes which use a given node as an environment */

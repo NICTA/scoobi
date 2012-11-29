@@ -48,9 +48,9 @@ case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
   /**
    * this value is set by the configuration so as to be unique for this bridge store
    */
-  lazy val id = java.util.UUID.randomUUID.toString
-  lazy val typeName = "BS" + id
-  def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + id)
+  lazy val bridgeStoreId = java.util.UUID.randomUUID.toString
+  lazy val typeName = "BS" + bridgeStoreId
+  def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
 
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
@@ -120,16 +120,16 @@ case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
   }
 
 
-  override def toString = typeName
+  override def toString = typeName+"("+id+")"
 
   override def equals(other: Any) = {
     other match {
-      case bs: BridgeStore[_] => bs.id == this.id
+      case bs: BridgeStore[_] => bs.bridgeStoreId == this.bridgeStoreId
       case _                  => false
     }
   }
 
-  override def hashCode = id.hashCode
+  override def hashCode = bridgeStoreId.hashCode
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,

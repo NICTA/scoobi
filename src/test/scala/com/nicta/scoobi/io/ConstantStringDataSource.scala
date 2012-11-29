@@ -28,6 +28,7 @@ import org.apache.hadoop.io.Writable
 import java.io.{DataOutput, DataInput}
 
 class ConstantStringDataSource(val value: String) extends DataSource[String, String, String] {
+  override def toString = "ConstantString("+id+")"
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
   def inputCheck(implicit sc: ScoobiConfiguration) {}

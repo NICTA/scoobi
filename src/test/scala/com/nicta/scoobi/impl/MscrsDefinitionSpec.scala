@@ -94,7 +94,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val gbk1 = gbk(pd1)
       val cb1 = cb(pd1)
       val graph = flatten(cb1, gbk1)
-      bypassOutputChannels(Layer.create(Seq(gbk1))) === Set(BypassOutputChannel(pd1))
+      bypassOutputChannels(Layer(Seq(gbk1))) === Seq(BypassOutputChannel(pd1))
     }
   }
 
@@ -139,7 +139,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       }
     }
     e2 := {
-      gbkInputChannels(layer1).toSeq.map(_.tags) === Seq(Set(0, 1, 2), Set(0, 1, 2), Set(3))
+      gbkInputChannels(layer1).map(_.tags) === Seq(Set(0, 1, 2), Set(0, 1, 2), Set(3))
     }
     e3 := {
       mscrs(layers(graph).head) must have size(2)
