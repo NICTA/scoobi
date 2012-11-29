@@ -226,7 +226,7 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val hasComputedEnv: ParallelDo[_,_,_] => Boolean = attr { case pd =>
-    isMaterialize(pd.env) || ((pd.env -> inputs).nonEmpty && (pd.env -> inputs).exists(isMaterialize))
+    isMaterialize(pd.env) || isOp(pd.env)
   }
 
   case class Tagger() {

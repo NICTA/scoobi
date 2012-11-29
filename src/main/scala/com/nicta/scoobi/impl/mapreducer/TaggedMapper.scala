@@ -45,7 +45,10 @@ class TaggedIdentityMapper(tags: Set[Int], mwfk: ManifestWireFormat[_], gpk: Gro
   /** setup(env: Unit) */
   def setup(env: Any) {}
   /** map(env: Unit, input: A, emitter: Emitter[(K, V)]) */
-  def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit(input) }
+  def map(env: Any, input: Any, emitter: Emitter[Any]) {
+    emitter.emit(input)
+  }
+
   /** cleanup(env: Unit, emitter: Emitter[(K, V)]) */
   def cleanup(env: Any, emitter: Emitter[Any]) {}
 }

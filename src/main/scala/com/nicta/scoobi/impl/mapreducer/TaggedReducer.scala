@@ -33,7 +33,9 @@ abstract class TaggedReducer(val tag: Int, val mwf: ManifestWireFormat[_]) {
 /** A TaggedReducer that is an identity reducer. */
 class TaggedIdentityReducer(tag: Int, mwf: ManifestWireFormat[_]) extends TaggedReducer(tag, mwf) {
   def setup(env: Any) {}
-  def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any])  { values.foreach(emitter.emit) }
+  def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any])  {
+    values.foreach(emitter.emit)
+  }
   def cleanup(env: Any, emitter: Emitter[Any]) {}
 }
 
