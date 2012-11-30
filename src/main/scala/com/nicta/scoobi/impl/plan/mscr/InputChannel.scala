@@ -23,6 +23,11 @@ trait InputChannel extends Channel {
   protected val attributes = new CompNodes {}
   
   lazy val id: Int = UniqueId.get
+  override def equals(a: Any) = a match {
+    case i: InputChannel => i.id == id
+    case other           => false
+  }
+
   def inputs: Seq[CompNode]
   def outputs: Seq[CompNode]
   def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
@@ -33,7 +38,7 @@ trait InputChannel extends Channel {
   def tags: CompNode => Set[Int]
   def nodesTags: Set[Int] = nodes.flatMap(tags).toSet
   def nodes: Seq[CompNode]
-  def contains(node: CompNode): Boolean = nodes.exists(_.id == node.id)
+  def contains(node: CompNode): Boolean = nodes.contains(node)
   def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
 
   def sources: InputChannel => Seq[Source]

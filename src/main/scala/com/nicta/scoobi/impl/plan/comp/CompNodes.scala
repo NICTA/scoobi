@@ -16,7 +16,7 @@ import collection._
 trait CompNodes extends Attribution {
   /** @return a sequence of distinct nodes */
   def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Seq[T] =
-    Vector(nodes.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSeq:_*)
+    Vector(nodes.toSet.map(_.asInstanceOf[T]):_*)
 
   /** @return true if a node is the ancestor of another */
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))
@@ -90,12 +90,12 @@ trait CompNodes extends Attribution {
    *  They are all the parents of the node where the parent inputs contain this node.
    */
   lazy val outputs : CompNode => Seq[CompNode] = attr {
-    case node: CompNode => (node -> parents) collect { case a if (a -> inputs).exists(_ eq node) => a }
+    case node: CompNode => (node -> parents) collect { case a if (a -> inputs).contains(node) => a }
   }
 
   /** compute the outcoming data of a given node: all the outputs + possible environment for a parallelDo */
   lazy val outgoings : CompNode => Seq[CompNode] = attr {
-    case node: CompNode => (node -> parents) collect { case a if (a -> incomings).exists(_ eq node) => a }
+    case node: CompNode => (node -> parents) collect { case a if (a -> incomings).contains(node) => a }
   }
 
   /** all inputs and outputs */
@@ -106,7 +106,7 @@ trait CompNodes extends Attribution {
    *  i.e. the outputs of a node + its uses as an environment is parallelDos
    */
   lazy val uses : CompNode => Seq[CompNode] = attr {
-    case node: CompNode => (node -> outgoings) collect { case a if (a -> incomings).exists(_ eq node)=> a }
+    case node: CompNode => (node -> outgoings) collect { case a if (a -> incomings).contains(node)=> a }
   }
 
   /**
@@ -114,7 +114,7 @@ trait CompNodes extends Attribution {
    *  They are all the distinct inputs of a node which are also inputs of another node
    */
   lazy val sharedInputs : CompNode => Seq[CompNode] = attr {
-    case node: CompNode => ((node -> inputs).collect { case in if (in -> outputs).filterNot(_ eq node).nonEmpty => in })
+    case node: CompNode => ((node -> inputs).collect { case in if (in -> outputs).filterNot(_ == node).nonEmpty => in })
   }
   /**
    * compute all the descendents of a node
@@ -177,7 +177,7 @@ trait CompNodes extends Attribution {
   /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
   def canReach(n: CompNode): CompNode => Boolean =
     paramAttr { target: CompNode => node: CompNode =>
-      descendents(node).exists(_.id == target.id)
+      descendents(node).contains(target)
     }(n)
 
   /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
@@ -199,7 +199,7 @@ trait CompNodes extends Attribution {
 
   /** @return true if 1 node is parent of the other, or if they are the same node */
   lazy val isParentOf = paramAttr {(other: CompNode) => node: CompNode =>
-    (node -> isStrictParentOf(other)) || (node.id == other.id)
+    (node -> isStrictParentOf(other)) || (node == other)
   }
 
   /** @return true if 1 node is parent of the other, or but not  the same node */

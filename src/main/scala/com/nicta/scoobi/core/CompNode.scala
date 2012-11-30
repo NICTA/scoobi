@@ -11,6 +11,12 @@ trait CompNode extends Attributable {
   def id: Int
   def sinks : Seq[Sink]
   def bridgeStore: Option[Bridge]
+
+  override def equals(a: Any) = a match {
+    case n: CompNode => n.id == id
+    case other       => false
+  }
+
 }
 
 object CompNode {

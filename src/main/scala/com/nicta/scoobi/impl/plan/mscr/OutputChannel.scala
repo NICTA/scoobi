@@ -16,11 +16,16 @@ trait OutputChannel extends Channel {
 
   lazy val id: Int = UniqueId.get
 
+  override def equals(a: Any) = a match {
+    case o: OutputChannel => i.id == id
+    case other => false
+  }
+
   /** sinks for this output channel */
   def sinks: Seq[Sink]
   /** @return the nodes which are part of this channel */
   def nodes: Seq[CompNode]
-  def contains(node: CompNode) = nodes.exists(_.id == node.id)
+  def contains(node: CompNode) = nodes.contains(node)
   def outgoings = nodes.flatMap(attributes.outgoings)
   def incomings = nodes.flatMap(attributes.incomings)
   def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
