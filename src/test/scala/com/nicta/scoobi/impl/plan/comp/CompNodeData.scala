@@ -97,7 +97,9 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 trait CompNodeFactory extends Scope {
 
   implicit def manifestWireFormatString = manifestWireFormat[String]
-  def mapReducer = SimpleMapReducer(manifestWireFormatString)
+  implicit def manifestWireFormatIterableString = manifestWireFormat[Iterable[String]]
+  def mapReducer       = SimpleMapReducer(manifestWireFormatString)
+  def simpleMapReducer = SimpleMapReducer(manifestWireFormatIterableString)
 
   def loadWith(s: String)                    = Load(ConstantStringDataSource(s), mapReducer)
   def load                                   = loadWith("start")
@@ -109,7 +111,7 @@ trait CompNodeFactory extends Scope {
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String)]],
                                                           KeyValuesMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
 
-  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], mapReducer)
+  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], simpleMapReducer)
   def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, mapReducer)
 
   def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =

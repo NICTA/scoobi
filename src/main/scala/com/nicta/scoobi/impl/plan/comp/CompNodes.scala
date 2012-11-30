@@ -16,7 +16,7 @@ import collection._
 trait CompNodes extends Attribution {
   /** @return a sequence of distinct nodes */
   def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Seq[T] =
-    Vector(nodes.toSet.map(_.asInstanceOf[T]):_*)
+    Vector(nodes.toList.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSeq:_*)
 
   /** @return true if a node is the ancestor of another */
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))

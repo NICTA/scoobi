@@ -33,7 +33,7 @@ class Env[E : WireFormat] private (path: Path) {
   /** Store the environment value in the distributed cache. */
   def push(env: E)(implicit configuration: Configuration) {
     val dos = path.getFileSystem(configuration).create(path)
-    implicitly[WireFormat[E]].toWire(env, dos)
+    wf.toWire(env, dos)
     dos.close()
     DistributedCache.addCacheFile(path.toUri, configuration)
   }

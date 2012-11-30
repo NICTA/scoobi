@@ -17,8 +17,8 @@ trait OutputChannel extends Channel {
   lazy val id: Int = UniqueId.get
 
   override def equals(a: Any) = a match {
-    case o: OutputChannel => i.id == id
-    case other => false
+    case o: OutputChannel => o.id == id
+    case other            => false
   }
 
   /** sinks for this output channel */

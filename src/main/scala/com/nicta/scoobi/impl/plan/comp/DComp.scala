@@ -57,7 +57,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
 
   def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
     env match {
-      case e: WithEnvironment[_] => e.unsafePushEnv(result.asInstanceOf[E])(sc)
+      case e: WithEnvironment[_] => e.unsafePushEnv(result)(sc)
       case other                 => ()
     }
   }
@@ -70,11 +70,6 @@ case class ParallelDo[A, B, E](in:                CompNode,
   override lazy val bridgeStore = Some(BridgeStore(mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
-
-  override def equals(a: Any) = a match {
-    case pd: ParallelDo[_,_,_] => in == pd.in && env == pd.env && barriers == pd.barriers
-    case _                     => false
-  }
 
   override val toString = "ParallelDo ("+id+")" + mr + barriers + " env: " + env
 
@@ -219,11 +214,6 @@ case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: 
   val (mwfk, mwfv) = (mr.mwfk, mr.mwfv)
   implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
 
-  override def equals(a: Any) = a match {
-    case g: GroupByKey[_,_] => in == g.in
-    case _                  => false
-  }
-
   override val toString = "GroupByKey ("+id+")"+mr
 
   def makeTaggedReducer(tag: Int)              = mr.makeTaggedReducer(tag)
@@ -242,10 +232,6 @@ case class Load[A](source: Source, mr: SimpleMapReducer[A], sinks: Seq[Sink] = S
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override def equals(a: Any) = a match {
-    case l: Load[_] => source == l.source
-    case _          => false
-  }
   override val toString = "Load ("+id+")"+mr
 }
 object Load1 {
@@ -260,10 +246,6 @@ case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) e
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override def equals(a: Any) = a match {
-    case r: Return[_] => in == r.in
-    case _            => false
-  }
   override val toString = "Return ("+id+")"+mr
 
 }
@@ -275,17 +257,13 @@ object Return1 {
 }
 
 /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A](in: CompNode, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] with WithEnvironment[A] {
+case class Materialize[A](in: CompNode, mr: SimpleMapReducer[Iterable[A]], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
 
   type CompNodeType = Materialize[A]
   type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override def equals(a: Any) = a match {
-    case mat: Materialize[_] => in == mat.in
-    case _                   => false
-  }
   override val toString = "Materialize ("+id+")[Iterable"+mr+"]"
 
 }
@@ -301,11 +279,6 @@ case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleM
   type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
-
-  override def equals(a: Any) = a match {
-    case o: Op[_,_,_] => in1 == o.in1 && in2 == o.in2
-    case _            => false
-  }
 
   def unsafeExecute(a: Any, b: Any): C = {
     val result = f(a.asInstanceOf[A], b.asInstanceOf[B])
@@ -331,7 +304,7 @@ trait WithEnvironment[E] {
   }.asInstanceOf[Env[E]]
 
   def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
-    environment(sc).push(result.asInstanceOf[E])(sc.conf)
+      environment(sc).push(result.asInstanceOf[E])(sc.conf)
   }
 }
 
