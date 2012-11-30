@@ -145,13 +145,14 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   trait nodes extends factory {
-    lazy val (l1, l2) = (load, load)
-    lazy val f1       = flatten(l1)
-    lazy val flattens = flatten(l1, l2)
-    lazy val gbk1     = gbk(l1)
-    lazy val gbkf1    = gbk(f1)
-    lazy val combine1 = cb(l1)
-    lazy val combine2 = cb(l2)
+    lazy val (l1, l2)   = (load, load)
+    lazy val f1         = flatten(l1)
+    lazy val flattens   = flatten(l1, l2)
+    lazy val gbk1       = gbk(l1)
+    lazy val mt1        = mt(gbk1)
+    lazy val gbkf1      = gbk(f1)
+    lazy val combine1   = cb(l1)
+    lazy val combine2   = cb(l2)
   }
   implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
 
@@ -159,7 +160,7 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     case f @ Flatten1(ins) if ins exists isFlatten => f
   }
 
-  def nodesAreDistinct(nodes: CompNode*) = nodes.map(_.id).distinct.size === nodes.size
+  def nodesAreDistinct(nodes: CompNode*) = nodes.distinct.size aka nodes.mkString(", ") must_== nodes.size
 
   def collectFlatten          = collectl { case f : Flatten[_] => f }
   def collectCombine          = collectl { case c @ Combine1(_) => c: CompNode }

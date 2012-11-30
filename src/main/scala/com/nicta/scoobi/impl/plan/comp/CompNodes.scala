@@ -16,7 +16,7 @@ import collection._
 trait CompNodes extends Attribution {
   /** @return a sequence of distinct nodes */
   def distinctNodes[T <: CompNode](nodes: Seq[Attributable]): Seq[T] =
-    Vector(nodes.toList.map(n => (n.asInstanceOf[T].id, n.asInstanceOf[T])).toMap.values.toSeq:_*)
+    Vector(nodes.map(_.asInstanceOf[T]).distinct:_*)
 
   /** @return true if a node is the ancestor of another */
   def isAncestor(n: Attributable, other: Attributable): Boolean = other != null && n != null && !(other eq n) && ((other eq n.parent) || isAncestor(n.parent, other))
@@ -122,8 +122,8 @@ trait CompNodes extends Attribution {
   lazy val descendents : CompNode => Seq[CompNode] =
     attr { case node: CompNode =>
       val children = node.children.asNodes
-      val childrenDescendents = distinctNodes(children.flatMap(descendents))
-      children ++ childrenDescendents
+      val childrenDescendents = children.flatMap(descendents)
+      distinctNodes(children ++ childrenDescendents)
     }
 
   type Predicate = CompNode => Boolean

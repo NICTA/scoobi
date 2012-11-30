@@ -34,8 +34,8 @@ class CompNodesSpec extends UnitSpecification {
     (pd1 -> parents) ==== Seq(fl1, gbk1, mat1)
     (l1 -> parents) ==== Seq(pd1, fl1, gbk1, mat1)
   }
-  "the descendents of a node are the recursive list of all children" >> new nodes {
-    (mat1 -> descendents) ==== Seq(l1, pd1.env, pd1, gbk1, fl1)
+  "the descendents of a node is the recursive list of all children" >> new nodes {
+    (mat1 -> descendents) ==== Seq(fl1, gbk1, pd1, l1, pd1.env)
   }
   "the descendents must be collected along all paths of the graph" >> new factory {
     val ld1 = load
@@ -44,7 +44,7 @@ class CompNodesSpec extends UnitSpecification {
     val fl1 = flatten(gbk1, gbk2)
 
     (gbk1 -> descendents) ==== Seq(pd1, ld1, pd1.env)
-    (fl1-> descendents)   ==== Seq(gbk1, gbk2, pd1, pd2, ld1, pd1.env, pd2.env)
+    (fl1-> descendents)   ==== Seq(gbk1, gbk2, pd1, ld1, pd1.env, pd2, pd2.env)
   }
   "a node can be reached from another one if it is in the list of its descendents" >> new nodes {
     (fl1 -> canReach(l1)) must beTrue

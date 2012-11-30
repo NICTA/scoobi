@@ -108,8 +108,8 @@ trait Optimiser extends CompNodes {
    */
   def groupByKeySplit = everywhere(rule {
     // I think that this case is redundant with the flattenSplit rule
-    case g @ GroupByKey1(f: Flatten[_])                 => g.debug("groupByKeySplit").copy(in = f.copy())
-    case g: GroupByKey[_,_] if (g -> outputs).size > 1  => g.debug("groupByKeySplit").copy()
+    case g @ GroupByKey1(f: Flatten[_]) => g.debug("groupByKeySplit").copy(in = f.copy())
+    case g: GroupByKey[_,_]             => g.debug("groupByKeySplit").copy()
   })
 
   /**

@@ -20,6 +20,7 @@ trait OutputChannel extends Channel {
     case o: OutputChannel => o.id == id
     case other            => false
   }
+  override def hashCode = id.hashCode
 
   /** sinks for this output channel */
   def sinks: Seq[Sink]

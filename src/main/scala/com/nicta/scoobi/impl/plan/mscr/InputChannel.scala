@@ -27,6 +27,7 @@ trait InputChannel extends Channel {
     case i: InputChannel => i.id == id
     case other           => false
   }
+  override def hashCode = id.hashCode
 
   def inputs: Seq[CompNode]
   def outputs: Seq[CompNode]

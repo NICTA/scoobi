@@ -17,6 +17,7 @@ trait CompNode extends Attributable {
     case other       => false
   }
 
+  override def hashCode = id.hashCode
 }
 
 object CompNode {
