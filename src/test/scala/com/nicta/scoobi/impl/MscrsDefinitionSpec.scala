@@ -139,20 +139,20 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       }
     }
     e2 := {
-      gbkInputChannels(layer1).map(_.tags) === Seq(Set(0, 1, 2), Set(0, 1, 2), Set(3))
+      gbkInputChannels(layer1).map(i => i.nodes.flatMap(i.tags)) must haveTheSameElementsAs(Seq(Set(2), Set(0, 1), Set(3)))
     }
     e3 := {
-      mscrs(layers(graph).head) must have size(2)
+      mscrs(layers(graph).head) must have size(3)
     }
     e4 := {
-      val graph2 = flatten(gbk1, gbk2, gbk3, gbk4, pd(load), flatten(load))
+      val graph2 = flatten(gbk1, gbk2, gbk3, gbk4, mt(pd(load)), flatten(load))
       val layer1 = layers(graph2).head
 
       layers(graph2) must have size(1)
-      "there are 4 mscrs in total" ==> { mscrs(layer1) must have size(4) }
+      "there are 5 mscrs in total" ==> { mscrs(layer1) must have size(5) }
       "there is one flatten mscr"  ==> { flattenMscrs(layer1) must have size(1) }
       "there is one pd mscr"       ==> { pdMscrs(layer1) must have size(1) }
-      "there are 2 gbk mscrs"      ==> { gbkMscrs(layer1) must have size(2) }
+      "there are 3 gbk mscrs"      ==> { gbkMscrs(layer1) must have size(3) }
     }
   }
 
