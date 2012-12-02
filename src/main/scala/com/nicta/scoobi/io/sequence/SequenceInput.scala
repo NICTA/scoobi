@@ -29,6 +29,7 @@ import ManifestWireFormat._
 import impl.plan.DListImpl
 import impl.ScoobiConfigurationImpl._
 import impl.io.Helper
+import impl.util.UniqueId
 
 /** Smart functions for materializing distributed lists by loading Sequence files. */
 object SequenceInput {
@@ -129,6 +130,7 @@ object SequenceInput {
   /* Class that abstracts all the common functionality of reading from sequence files. */
   private class SeqSource[K : Manifest, V : Manifest, A : ManifestWireFormat](paths: List[String], converter: InputConverter[K, V, A], checkFileTypes: Boolean)
     extends DataSource[K, V, A] {
+    val id: Int = UniqueId.get
 
     private val inputPaths = paths.map(p => new Path(p))
     override def toString = "SeqSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")

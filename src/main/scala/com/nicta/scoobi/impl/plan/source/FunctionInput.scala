@@ -26,7 +26,7 @@ import Configurations._
 import impl.collection.Seqs._
 import impl.collection.FunctionBoundedLinearSeq
 import plan.DListImpl
-import util.DistCache
+import util.{UniqueId, DistCache}
 import FunctionInput._
 
 /** Smart function for creating a distributed lists from a Scala function. */
@@ -37,6 +37,8 @@ trait FunctionInput {
     * a function that maps list indices to element values. */
   def fromFunction[A : ManifestWireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
+      val id: Int = UniqueId.get
+
       val inputFormat = classOf[FunctionInputFormat[A]]
       override def toString = "FunctionInput("+id+")"
 

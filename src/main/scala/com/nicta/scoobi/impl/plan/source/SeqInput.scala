@@ -25,7 +25,7 @@ import impl._
 import Configurations._
 import impl.collection.Seqs._
 import plan.DListImpl
-import util.DistCache
+import util.{UniqueId, DistCache}
 import SeqInput._
 
 /**
@@ -41,6 +41,8 @@ trait SeqInput {
   def fromSeq[A : ManifestWireFormat](seq: Seq[A]): DList[A] = {
 
     val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
+      val id: Int = UniqueId.get
+
       val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
       override def toString = "SeqInput("+id+")"
 

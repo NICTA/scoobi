@@ -32,6 +32,7 @@ import impl.plan.DListImpl
 import impl.mapreducer.TaggedInputSplit
 import impl.ScoobiConfigurationImpl._
 import impl.io.Helper
+import impl.util.UniqueId
 
 /** Smart functions for materializing distributed lists by loading text files. */
 object TextInput {
@@ -124,6 +125,7 @@ object TextInput {
   /* Class that abstracts all the common functionality of reading from text files. */
   class TextSource[A : ManifestWireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
     extends DataSource[LongWritable, Text, A] {
+    val id: Int = UniqueId.get
 
     private val inputPaths = paths.map(p => new Path(p))
     override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")

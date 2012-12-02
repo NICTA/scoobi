@@ -34,7 +34,6 @@ trait OutputChannel extends Channel {
   def environment: Option[CompNode]
   def tag: Int
   def setTag(t: Int): OutputChannel
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -76,7 +75,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
 
   def environment: Option[CompNode] = reducer.map(_.env)
 
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration): MapReduceJob = {
+  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
     combiner.map(c => job.addTaggedCombiner(c.makeTaggedCombiner(tag)))
 
     // if there is a reducer node, use it as the tagged reducer
@@ -108,8 +107,10 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends 
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
 
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
+  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
     job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
+    job
+  }
 
 }
 
@@ -123,8 +124,10 @@ case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOu
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = None
-  def configure(job: MapReduceJob)(implicit sc: ScoobiConfiguration) =
+  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
     job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
+    job
+  }
 
 }
 

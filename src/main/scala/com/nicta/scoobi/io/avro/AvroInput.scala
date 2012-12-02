@@ -38,6 +38,7 @@ import core._
 import impl.plan.DListImpl
 import impl.ScoobiConfigurationImpl._
 import impl.io.Helper
+import impl.util.UniqueId
 
 /** Smart functions for materializing distributed lists by loading Avro files. */
 object AvroInput extends AvroParsingImplicits {
@@ -60,6 +61,8 @@ object AvroInput extends AvroParsingImplicits {
       def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
     }
     val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
+      val id: Int = UniqueId.get
+
       private val inputPaths = paths.map(p => new Path(p))
       override def toString = "Avro("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 

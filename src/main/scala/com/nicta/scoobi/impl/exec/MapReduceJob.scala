@@ -30,7 +30,7 @@ import scalaz.syntax.all._
 
 import core._
 import plan._
-import mscr.Mscr
+import mscr.{MscrJob, Mscr}
 import rtt._
 import util._
 import reflect.Classes._
@@ -41,7 +41,9 @@ import ChannelOutputFormat._
 import monitor.Loggable._
 
 /** A class that defines a single Hadoop MapReduce job. */
-class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) {
+class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
+  type T = MapReduceJob
+
   protected val fileSystems: FileSystems = FileSystems
   import fileSystems._
 
@@ -58,7 +60,7 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) {
 
 
   /** Add an input mapping function to this MapReduce job. */
-  def addTaggedMapper(input: Source, env: Option[Env[_]], m: TaggedMapper) = {
+  def addTaggedMapper(input: Source, env: Option[Env[_]], m: TaggedMapper): MapReduceJob = {
     val tm = (env.getOrElse(Env.empty), m)
     val inputId = System.identityHashCode(input)
     if (!mappers.contains((input, inputId))) mappers += (((input, inputId), Set(tm)))

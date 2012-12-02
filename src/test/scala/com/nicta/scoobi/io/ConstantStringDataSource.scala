@@ -26,8 +26,11 @@ import testing.TestFiles
 import org.apache.hadoop.io.serializer.WritableSerialization
 import org.apache.hadoop.io.Writable
 import java.io.{DataOutput, DataInput}
+import impl.util.UniqueId
 
 class ConstantStringDataSource(val value: String) extends DataSource[String, String, String] {
+  val id: Int = UniqueId.get
+
   override def toString = "ConstantString("+id+")"
 
   def inputFormat: Class[_ <: InputFormat[String, String]] = classOf[ConstantStringInputFormat]
