@@ -10,9 +10,8 @@ import Rewriter._
 
 import core._
 import testing.mutable.UnitSpecification
-import CompNodes._
 
-class OptimiserSpec extends UnitSpecification with Optimiser with DataTables with CompNodeData {
+class OptimiserSpec extends UnitSpecification with DataTables with CompNodeData {
 
   "1. Nodes must be flattened" >> {
     "1.1 A Flatten Node which is an input to 2 other nodes must be copied to each node" >> new nodes {
@@ -67,14 +66,14 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
         n must beLike { case Combine1(GroupByKey1(_)) => ok }
       }
     }
-    "After optimisation, all the transformed Combines must be ParallelDo" >> prop { (node: CompNode) =>
+    "After optimisation, all the transformed Combines must be ParallelDo" >> prop { (node: CompNode, f: factory) => import f._
       val optimised = optimise(combineToParDo, node).head
       (collectCombine(node).size + collectParallelDo(node).size) ===
       (collectCombineGbk(optimised).size + collectParallelDo(optimised).size)
     }
   }
 
-  "3. Successive ParallelDos must be fused" >> prop { (node: CompNode) =>
+  "3. Successive ParallelDos must be fused" >> prop { (node: CompNode, f: factory) => import f._
     val optimised = optimise(parDoFuse(pass = 1), node).head
     collectSuccessiveParDos(optimised) must beEmpty
   };p
@@ -134,17 +133,17 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
   }
 
   "6. ParallelDos which are outputs of the graph must be marked with a fuseBarrier" >> {
-    "6.1 with a random graph" >> prop { (node: CompNode, outputs: List[CompNode]) =>
-      val optimised = optimise(parDoFuseBarrier(outputs), node).head
+    "6.1 with a random graph" >> prop { (node: CompNode, out: List[CompNode], f: factory) => import f._
+      val optimised = optimise(parDoFuseBarrier(out), node).head
       // collects the flatten nodes which are leaves. If they are in the outputs set
       // their fuseBarrier must be true
-      val inOutputs: Seq[CompNode] = collectParallelDo(optimised).filter(outputs.contains)
+      val inOutputs: Seq[CompNode] = collectParallelDo(optimised).filter(out.contains)
       def fuseBarrier: CompNode => Boolean = { case pd: ParallelDo[_,_,_] => pd.fuseBarrier }
       forall(inOutputs){ pd => pd must beTrue ^^ fuseBarrier }
     }
   }
 
-  trait nodes extends factory {
+  trait nodes extends factory with Optimiser with CompNodes {
     lazy val (l1, l2)   = (load, load)
     lazy val f1         = flatten(l1)
     lazy val flattens   = flatten(l1, l2)
@@ -153,14 +152,15 @@ class OptimiserSpec extends UnitSpecification with Optimiser with DataTables wit
     lazy val gbkf1      = gbk(f1)
     lazy val combine1   = cb(l1)
     lazy val combine2   = cb(l2)
+
+    def collectNestedFlatten = collectl {
+      case f @ Flatten1(ins) if ins exists isFlatten => f
+    }
+    def nodesAreDistinct(nodes: CompNode*) = nodes.distinct.size aka nodes.mkString(", ") must_== nodes.size
   }
+
+
   implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
-
-  def collectNestedFlatten = collectl {
-    case f @ Flatten1(ins) if ins exists isFlatten => f
-  }
-
-  def nodesAreDistinct(nodes: CompNode*) = nodes.distinct.size aka nodes.mkString(", ") must_== nodes.size
 
   def collectFlatten          = collectl { case f : Flatten[_] => f }
   def collectCombine          = collectl { case c @ Combine1(_) => c: CompNode }

@@ -6,7 +6,7 @@ package comp
 import core.CompNode
 import mscr.MscrAttributes
 
-trait factory extends nodesFactory with MscrAttributes with ShowNodeMscr {
+trait factory extends nodesFactory with MscrAttributes with ShowNodeMscr with Optimiser {
   override def show(node: CompNode): String =
     "SHOWING NODE: "+showNode(node, None)
 }
