@@ -101,7 +101,7 @@ trait MscrsDefinition extends Layering {
         case i: MapperInputChannel => i.copy(gbk = Some(groupByKey))
         case i: IdInputChannel     => i.copy(gbk = Some(groupByKey))
       }
-      lazy val tags: CompNode => Set[Int] = attr {
+      lazy val tags: CompNode => Set[Int] = attr("tags") {
         case node => outputs.collect { case o if node -> isInputTo(o) => o.tag }.toSet
       }
       inputWithGroupByKey.setTags(tags)
@@ -277,7 +277,8 @@ trait Layering extends ShowNode {
     val (leaves, nonLeaves) = selectedDescendents(n).partition { d =>
       selectedDescendents(d).isEmpty
     }
-    Layer(leaves) +:
+    val leaf = if (leaves.isEmpty) Seq(select(n)) else Seq()
+    Layer(leaves ++ leaf) +:
       nonLeaves.groupBy(_ -> longestPathTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
   }
 

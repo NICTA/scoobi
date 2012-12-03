@@ -38,10 +38,10 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     }
    
     def newTb() = {
-	  val b = new Array[Byte](1000)
-	  scala.util.Random.nextBytes(b)
-	  ThousandBytes(b)
-	}
+	    val b = new Array[Byte](1000)
+	    scala.util.Random.nextBytes(b)
+	    ThousandBytes(b)
+	  }
     
     // create test data
     val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int], ThousandBytes)] = Seq(
