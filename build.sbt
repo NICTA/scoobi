@@ -59,8 +59,6 @@ publishTo <<= version { v: String =>
 
 publishMavenStyle := true
 
-publishArtifact in Test := false
-
 pomIncludeRepository := { x => false }
 
 pomExtra := (
