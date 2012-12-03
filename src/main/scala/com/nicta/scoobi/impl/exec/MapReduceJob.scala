@@ -264,7 +264,7 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
         sink.outputPath foreach { outDir =>
           fs.mkdirs(outDir)
           val files = outputFiles filter isResultFile(reducer.tag, ix)
-          files foreach copyTo(outDir)
+          files foreach moveTo(outDir)
         }
       }
     }
