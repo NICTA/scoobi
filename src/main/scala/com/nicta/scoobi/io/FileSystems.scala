@@ -118,8 +118,10 @@ trait FileSystems {
   def moveTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = moveTo(new Path(dir))
 
   /** @return a function moving a Path to a given directory */
-  def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) =>
-    fileSystem.rename(f, new Path(dir, f.getName))
+  def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) => {
+    if (fileSystem.exists(f)) fileSystem.rename(f, new Path(dir, f.getName))
+    else                      true
+  }
 
   /** @return a function copying a Path to a given directory */
   def copyTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = copyTo(new Path(dir))
