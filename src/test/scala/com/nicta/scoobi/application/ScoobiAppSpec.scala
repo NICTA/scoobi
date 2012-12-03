@@ -48,24 +48,32 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
     }
     "By default, the job executes on the cluster" >> {
       "however if 'inmemory' is passed, it executes locally" >> new run {
-        app.main(Array("scoobi", "inmemory"))
+        application.main(Array("scoobi", "inmemory"))
         inMemory must beTrue
         onLocal must beFalse
       }
       "however if 'local' is passed, it executes locally" >> new run {
-        app.main(Array("scoobi", "local"))
+        application.main(Array("scoobi", "local"))
         inMemory must beFalse
         onLocal must beTrue
+      }
+      "If the useconfdir argument is used, then the HADOOP_HOME variable is chosen to find the configuration files" >> new run {
+        lazy val execution = application.main(Array("scoobi", "useconfdir"))
+        execution must throwAn[Exception]("The HADOOP_HOME variable is must be set to access the configuration files")
       }
       trait run extends Scope { outer =>
         var inMemory  = false
         var onLocal   = false
         var onCluster = false
-        val app = new ScoobiApp {
-          def run() {}
+        val application = new ScoobiApp {
+          def run() { }
           override def inMemory[T](t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.inMemory = true; t }
           override def onLocal[T] (t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.onLocal = true; t }
           override def onCluster[T] (t: =>T)(implicit configuration: ScoobiConfiguration) = { outer.onCluster = true; t }
+          // simulate the non existence of the HADOOP_HOME variable to test the useconfdir argument
+          override lazy val HADOOP_COMMAND = None
+          override def get(name: String)    = None
+          override def getEnv(name: String) = None
         }
       }
     }
