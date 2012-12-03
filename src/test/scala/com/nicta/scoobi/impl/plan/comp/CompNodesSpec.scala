@@ -52,23 +52,6 @@ class CompNodesSpec extends UnitSpecification {
   "the outputs of a node are all its direct parents" >> new nodes {
     (pd1 -> outputs) ==== Seq(fl1, gbk1)
   }
-  "it is possible to take all the descendents of a node while a predicate is true" >> new factory {
-    val load0 = load
-    val pd1 = pd(load0)
-    val pd2 = pd(load0)
-    val graph = flatten(pd1, pd2)
-
-    (graph -> descendentsWhile(isParallelDo)) must have size(2)
-  }
-  "it is possible to take all the descendents of a node until a predicate becomes true" >> new factory {
-    val load0 = load
-    val pd1 = pd(load0)
-    val pd2 = pd(load0)
-    val graph = flatten(pd1, pd2)
-
-    "the descendents include all children including the first element not matching the predicate" ==>
-    { (graph -> descendentsUntil(isLoad)) must have size(3) }
-  }
   endp
 
   "2 nodes are parentOf if" >> {
