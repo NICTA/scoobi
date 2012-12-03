@@ -3,10 +3,10 @@ package impl
 package plan
 package comp
 
-import org.kiama.rewriting.Rewriter._
 import org.apache.commons.logging.LogFactory
 import core._
 import monitor.Loggable._
+import org.kiama.rewriting.Rewriter
 
 /**
  * Optimiser for the DComp AST graph
@@ -14,7 +14,7 @@ import monitor.Loggable._
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
-trait Optimiser extends CompNodes {
+trait Optimiser extends CompNodes with Rewriter {
   implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**

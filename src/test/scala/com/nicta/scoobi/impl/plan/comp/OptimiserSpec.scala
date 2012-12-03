@@ -6,8 +6,6 @@ package comp
 import org.specs2.matcher.DataTables
 import org.scalacheck.{Gen, Arbitrary, Prop}
 import org.kiama.rewriting._
-import Rewriter._
-
 import core._
 import testing.mutable.UnitSpecification
 
@@ -157,17 +155,10 @@ class OptimiserSpec extends UnitSpecification with DataTables with CompNodeData 
       case f @ Flatten1(ins) if ins exists isFlatten => f
     }
     def nodesAreDistinct(nodes: CompNode*) = nodes.distinct.size aka nodes.mkString(", ") must_== nodes.size
+
   }
 
 
   implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
-
-  def collectFlatten          = collectl { case f : Flatten[_] => f }
-  def collectCombine          = collectl { case c @ Combine1(_) => c: CompNode }
-  def collectCombineGbk       = collectl { case c @ Combine(GroupByKey1(_),_,_,_) => c }
-  def collectParallelDo       = collectl { case p: ParallelDo[_,_,_] => p }
-  def collectSuccessiveParDos = collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,_,Barriers(false,_)) => p }
-  def collectGroupByKey       = collectl { case g @ GroupByKey1(_) => g }
-  def collectGBKFlatten       = collectl { case GroupByKey1(f : Flatten[_]) => f }
 }
 
