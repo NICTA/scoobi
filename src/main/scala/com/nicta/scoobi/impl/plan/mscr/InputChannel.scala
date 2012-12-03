@@ -41,11 +41,12 @@ trait InputChannel extends Channel {
   def nodes: Seq[CompNode]
   def contains(node: CompNode): Boolean = nodes.contains(node)
 
-  def sources: InputChannel => Seq[Source]
+  def allSources: InputChannel => Seq[Source]
+  lazy val sources = allSources(this)
 }
 
 case class MapperInputChannel(parDos: Seq[ParallelDo[_,_,_]],
-                              sources: InputChannel => Seq[Source],
+                              allSources: InputChannel => Seq[Source],
                               gbk: Option[GroupByKey[_,_]] = None,
                               tags: CompNode => Set[Int] = (_:CompNode) => Set(0)) extends InputChannel {
   override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
@@ -65,7 +66,7 @@ case class MapperInputChannel(parDos: Seq[ParallelDo[_,_,_]],
 
   def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
     parDos.map { pd =>
-      job.addTaggedMapper(sources(this).head, pd.environment(sc),
+      job.addTaggedMapper(sources.head, pd.environment(sc),
                           gbk.map(g => pd.makeTaggedMapper(g, tags(pd))).getOrElse(pd.makeTaggedMapper(tags(pd))))
     }
     job
@@ -76,7 +77,7 @@ object MapperInputChannel {
 }
 
 case class IdInputChannel(input: CompNode,
-                          sources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
+                          allSources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
                           gbk: Option[GroupByKey[_,_]] = None,
                           tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
@@ -93,13 +94,13 @@ case class IdInputChannel(input: CompNode,
   def nodes: Seq[CompNode] = Seq(input)
 
   def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    gbk.map(g => sources(this).foreach(source => job.addTaggedMapper(source, None, g.makeTaggedIdentityMapper(tags(input)))))
+    gbk.map(g => sources.foreach(source => job.addTaggedMapper(source, None, g.makeTaggedIdentityMapper(tags(input)))))
     job
   }
 }
 
 case class StraightInputChannel(input: CompNode,
-                                sources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
+                                allSources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
                                 tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: StraightInputChannel => i.input.id == input.id
@@ -118,7 +119,7 @@ case class StraightInputChannel(input: CompNode,
   val mapper =  new TaggedIdentityMapper(tags(input), manifestWireFormat[Int], grouping[Int], input.asInstanceOf[DComp[_]].mr.mwf) {
       override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
     }
-    sources(this).foreach(source => job.addTaggedMapper(source, None, mapper))
+    sources.foreach(source => job.addTaggedMapper(source, None, mapper))
     job
   }
 

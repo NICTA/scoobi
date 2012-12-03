@@ -109,15 +109,16 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
-      ("abcd", List((6.9d, false, "qwerty")), Array(100l, 200l)),
-      ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
+      ("abcd",  List((6.9d,  false, "qwerty")), Array(100l, 200l)),
+      ("efghi", List((9.15d, true,  "dvorak")), Array(9999l, 11111l)))
 
-    val expectedData = testData.map{ t1 =>
+    val expectedData = testData.map { t1 =>
       (t1._1, t1._2.map(t2 => (t2._1, t2._2)))
     }
 
+
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).run
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean)])] = fromAvroFile(filePath)
@@ -156,7 +157,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     dataFileWriter.close()
 
     val loadedTestData: DList[(Long,String,Boolean,Double)] = fromAvroFile(filePath.toString)
-    run(loadedTestData) must_== Seq((50, "some test str", true, 3.7))
+    loadedTestData.run must_== Seq((50, "some test str", true, 3.7))
   }
 
   /**
@@ -169,13 +170,14 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     initialTmpFile
   }
 
-  def createTempFile(prefix: String = "iotest")(implicit sc: SC): String = TestFiles.path(TestFiles.createTempFile(prefix))
+  def createTempFile(prefix: String = "iotest")(implicit sc: SC): String =
+    TestFiles.path(TestFiles.createTempFile(prefix))
 
   val equality = (t1: Any, t2: Any) => (t1, t2) match {
-    case (tt1: Array[_], tt2: Array[_]) => tt1.toSeq == tt2.toSeq
+    case (tt1: Array[_], tt2: Array[_])       => tt1.toSeq == tt2.toSeq
     case (tt1: Iterable[_], tt2: Iterable[_]) => iterablesEqual(tt1, tt2)
-    case (tt1: Product, tt2: Product) => productsEqual(tt1, tt2)
-    case other => t1 == t2
+    case (tt1: Product, tt2: Product)         => productsEqual(tt1, tt2)
+    case other                                => t1 == t2
   }
 
   def productsEqual(t1: Product, t2: Product): Boolean = {

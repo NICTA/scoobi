@@ -69,7 +69,7 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
                 gpk:  Grouping[K],
                 mwfv: ManifestWireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, KeyValueMapReducer(mwfk, gpk, mwfv)))
 
-  def materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, SimpleMapReducer(manifestWireFormat[Iterable[A]])))
+  def materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, SimpleMapReducer(manifestWireFormat[Iterable[A]]), comp.sinks))
 
   def parallelDo[B : ManifestWireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject, dofn)
 

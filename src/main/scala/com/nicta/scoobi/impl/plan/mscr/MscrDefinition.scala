@@ -170,16 +170,25 @@ trait MscrsDefinition extends Layering {
     }
   }
 
-  /** @return the sources for all mscrs of a layer */
-  lazy val layerSources: Layer[T] => Seq[CompNode] = attr("layer sources") { case layer =>
+  /** @return the sources nodes for all mscrs of a layer */
+  lazy val layerSourceNodes: Layer[T] => Seq[CompNode] = attr("layer source nodes") { case layer =>
     distinctNodes(mscrs(layer).flatMap(mscrSourceNodes))
   }
 
-  /** @return the sinks for all mscrs of a layer */
-  lazy val layerSinks: Layer[T] => Seq[CompNode] = attr("layer sinks") { case layer =>
+  /** @return the sources for all mscrs of a layer */
+  lazy val layerSources: Layer[T] => Seq[Source] = attr("layer sources") { case layer =>
+    mscrs(layer).flatMap(_.inputChannels).flatMap(_.sources)
+  }
+
+  /** @return the sinks nodes for all mscrs of a layer */
+  lazy val layerSinkNodes: Layer[T] => Seq[CompNode] = attr("layer sink nodes") { case layer =>
     distinctNodes(mscrs(layer).flatMap(mscrSinkNodes))
   }
 
+  /** @return the sinks for all mscrs of a layer */
+  lazy val layerSinks: Layer[T] => Seq[Sink] = attr("layer sinks") { case layer =>
+    mscrs(layer).flatMap(_.outputChannels).flatMap(_.sinks)
+  }
   /**
    * @return the nodes which might materialize input sources for a given layer:
    *

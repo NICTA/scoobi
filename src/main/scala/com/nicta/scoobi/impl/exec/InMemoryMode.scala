@@ -62,7 +62,7 @@ case class InMemoryMode() extends ShowNode {
         case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)
         case n: Combine[_,_]      => saveSinks(computeCombine(n)                                  , n.sinks)
         case n: Flatten[_]        => saveSinks(Vector(n.ins.map(_ -> compute(c)).reduce(_++_):_*) , n.sinks)
-        case n: Materialize[_]    => saveSinks(Vector(n.in -> compute(c))                         , n.sinks)
+        case n: Materialize[_]    => saveSinks(Vector(n.in -> compute(c))                         , Seq())
         case n: Op[_,_,_]         => saveSinks(Vector(n.unsafeExecute(n.in1 -> computeValue(c),
                                                                       n.in2 -> computeValue(c)))  , n.sinks)
         case n: Return[_]         => saveSinks(Vector(n.in)                                       , n.sinks)
@@ -160,7 +160,7 @@ case class InMemoryMode() extends ShowNode {
       (k, combine.unsafeReduce(vs))
     }.debug("computeCombine")
 
-  def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
+  private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
     sinks.foreach { sink =>
       val job = new MapReduceJob(stepId = 1).configureJob(sc)(new Job(new Configuration(sc)))
 

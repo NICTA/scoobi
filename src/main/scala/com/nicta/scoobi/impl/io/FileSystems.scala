@@ -103,7 +103,7 @@ trait FileSystems {
   def isLocal(implicit configuration: ScoobiConfiguration) = fileSystem.isInstanceOf[LocalFileSystem]
 
   /** @return a function moving a Path to a given directory */
-  def moveTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = moveTo(new Path(dir))
+  def moveTo(dir: String)(implicit sc: ScoobiConfiguration): Path => Boolean = moveTo(new Path(dirPath(dir)))
 
   /** @return a function moving a Path to a given directory */
   def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) => {
