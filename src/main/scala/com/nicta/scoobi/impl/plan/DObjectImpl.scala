@@ -48,7 +48,9 @@ class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) ex
     DObjectImpl.tupled2((this, o))
 }
 
-object UnitDObject extends DObjectImpl[Unit](Return.unit)
+object UnitDObject {
+  def newInstance = new DObjectImpl[Unit](Return.unit)
+}
 
 private[scoobi]
 object DObjectImpl {

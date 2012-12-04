@@ -71,7 +71,7 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
 
   def materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, SimpleMapReducer(manifestWireFormat[Iterable[A]]), comp.sinks))
 
-  def parallelDo[B : ManifestWireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject, dofn)
+  def parallelDo[B : ManifestWireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject.newInstance, dofn)
 
   def groupBarrier: DList[A] = {
     val dofn = new DoFn[A, A] {
@@ -79,7 +79,7 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
       def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
       def cleanup(emitter: Emitter[A]) {}
     }
-    new DListImpl(ParallelDo(comp, UnitDObject.getComp, dofn, DoMapReducer(mwf, mwf, manifestWireFormat[Unit]), Seq[Sink](), Barriers(groupBarrier = true, fuseBarrier = false)))
+    new DListImpl(ParallelDo(comp, UnitDObject.newInstance.getComp, dofn, DoMapReducer(mwf, mwf, manifestWireFormat[Unit]), Seq[Sink](), Barriers(groupBarrier = true, fuseBarrier = false)))
   }
 
   override def toString = "\n"+ new ShowNode {}.pretty(comp)
@@ -91,7 +91,7 @@ object DListImpl {
     new DListImpl[A](
       ParallelDo[A, A, Unit](
         Load(source, SimpleMapReducer(manifestWireFormat[A])),
-        UnitDObject.getComp,
+        UnitDObject.newInstance.getComp,
         new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
         DoMapReducer(manifestWireFormat[A], manifestWireFormat[A], manifestAndWireFormat(implicitly[Manifest[Unit]], wireFormat[Unit]))))
   }

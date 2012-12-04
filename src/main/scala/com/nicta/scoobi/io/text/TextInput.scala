@@ -141,7 +141,7 @@ object TextInput {
       }
     }
 
-    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = {
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 

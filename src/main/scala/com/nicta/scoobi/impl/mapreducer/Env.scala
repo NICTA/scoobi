@@ -41,7 +41,11 @@ class Env[E : WireFormat] private (path: Path) {
   /** Get an environment value from the distributed cache. */
   def pull(implicit configuration: Configuration): E = {
     val cacheFiles = DistributedCache.getCacheFiles(configuration)
-    val cacheFile = new Path(cacheFiles.filter(_.toString == path.toString)(0).toString)
+    val cacheFilePaths = cacheFiles.filter(_.toString == path.toString)
+    val cacheFilePath  = cacheFilePaths.headOption.
+                         getOrElse(throw new Exception("\nno cache files contain the path: "+path+cacheFiles.mkString(" (\n  ", ",\n  ", ")")))
+
+    val cacheFile = new Path(cacheFilePath.toString)
     val dis = cacheFile.getFileSystem(configuration).open(cacheFile)
     val obj: E = implicitly[WireFormat[E]].fromWire(dis)
     dis.close()
