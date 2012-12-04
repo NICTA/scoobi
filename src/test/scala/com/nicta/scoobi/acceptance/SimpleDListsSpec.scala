@@ -9,9 +9,6 @@ import impl.plan.comp.CompNodeData
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 
-  // for now this spec needs to be sequential otherwise example 8 doesn't pass
-  sequential
-
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
   }
