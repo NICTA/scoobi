@@ -15,7 +15,7 @@ import core.CompNode
  * It is a mutable class which is constructed incrementally by using Kiama grammar attributes
  * @see MscrGraph
  */
-case class Mscr(var inputChannels: Seq[InputChannel] = Seq(), var outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
+case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
   val id: Int = UniqueId.get
 
   def channels = inputChannels ++ outputChannels
@@ -61,11 +61,8 @@ case class Mscr(var inputChannels: Seq[InputChannel] = Seq(), var outputChannels
   def parallelDos = mappers ++ reducers
 
   /** simultaneously set the input and output channels of this mscr */
-  def addChannels(in: Seq[InputChannel], out: Seq[OutputChannel]) = {
-   inputChannels  = (inputChannels ++ in)
-   outputChannels = (outputChannels ++ out)
-   this
-  }
+  def addChannels(in: Seq[InputChannel], out: Seq[OutputChannel]) =
+    copy(inputChannels  = (inputChannels ++ in), outputChannels = (outputChannels ++ out))
 
   /** @return true if the node is contained in one of the input channels */
   def inputContains(node: CompNode) =
