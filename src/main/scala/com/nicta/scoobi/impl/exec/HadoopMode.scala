@@ -42,13 +42,13 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     def executeLayers(node: CompNode) {
       val graphLayers = (node -> layers)
       logger.debug("Executing layers\n"+graphLayers.mkString("\n"))
-      graphLayers.map(layer => Execution(layer).execute).debug("Results: ")
+      graphLayers.map(layer => Execution(layer).execute)
     }
 
     attr("executeNode") {
       case node @ Op1(in1, in2)    => node.unsafeExecute(in1 -> executeNode, in2 -> executeNode).debug("result for op "+node.id+": ")
       case node @ Return1(in)      => in
-      case node @ Materialize1(in) => executeLayers(node); readNodeStore(node).debug("result for materialize "+node.id+": ")
+      case node @ Materialize1(in) => executeLayers(node); readNodeStore(node)
       case node                    => executeLayers(node)
     }
   }
@@ -85,7 +85,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
-      case mt @ Materialize1(in) => store(mt, readNodeStore(mt).debug("result for materialize "+mt.id+": "))
+      case mt @ Materialize1(in) => store(mt, readNodeStore(mt))
       case rt @ Return1(in)      => store(rt, in)
       case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(load(in1), load(in2)).debug("result for op "+op.id+": "))
       case ld @ Load1(_)         => store(ld, ())
