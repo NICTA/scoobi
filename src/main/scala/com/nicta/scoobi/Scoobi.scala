@@ -46,6 +46,7 @@ trait Persist {
   /* Persisting */
   def persist[A](o: DObject[A])(implicit sc: ScoobiConfiguration): A = Persister.persist(o)
   def persist[A](list: DList[A])(implicit sc: ScoobiConfiguration): Unit = Persister.persist(list)
+  def persist[A](ps: Persistent*)(implicit sc: ScoobiConfiguration): Unit = Persister.persist(ps)
   val Persister = com.nicta.scoobi.application.Persister
 
   implicit def persistableList[A](list: DList[A]): PersistableList[A] = new PersistableList(list)

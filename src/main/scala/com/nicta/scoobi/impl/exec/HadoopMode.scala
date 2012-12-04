@@ -17,6 +17,10 @@ import mapreducer.BridgeStore
 case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
   implicit lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
+  def execute(node: CompNode) {
+    executeNode(prepare(node))
+  }
+
   def execute(list: DList[_]) {
     executeNode(prepare(list.getComp))
   }

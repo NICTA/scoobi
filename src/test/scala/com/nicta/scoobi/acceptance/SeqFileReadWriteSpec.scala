@@ -20,7 +20,7 @@ import org.apache.hadoop.io._
 import java.io.IOException
 
 import Scoobi._
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import testing.TestFiles
 import application.Orderings._
 

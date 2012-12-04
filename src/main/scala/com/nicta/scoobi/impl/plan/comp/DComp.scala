@@ -291,6 +291,11 @@ object Op1 {
   def unapply(op: Op[_,_,_]): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
 }
 
+case class Root(ins: Seq[CompNode]) extends CompNode {
+  val id = UniqueId.get
+  lazy val sinks = Seq()
+  lazy val bridgeStore = None
+}
 
 trait WithEnvironment[E] {
   def wf: WireFormat[_]

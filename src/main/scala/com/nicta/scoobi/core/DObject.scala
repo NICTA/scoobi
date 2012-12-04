@@ -17,13 +17,12 @@ package com.nicta.scoobi
 package core
 
 /* A wrapper around an object that is part of the graph of a distributed computation.*/
-trait DObject[A] {
+trait DObject[A] extends Persistent {
+  type C <: CompNode
+
   implicit def mwf: ManifestWireFormat[A]
   implicit def mf = mwf.mf
   implicit def wf = mwf.wf
-
-  private[scoobi]
-  def getComp: CompNode
 
   /**Create a new distributed object by apply a function to this distributed object. */
   def map[B : ManifestWireFormat](f: A => B): DObject[B]

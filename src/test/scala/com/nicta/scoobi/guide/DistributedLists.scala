@@ -133,7 +133,7 @@ val top10ints: DList[Int] = ints.parallelDo(new DoFn[Int, Int] {
 
 ```
 
-Whilst the `parallelDo` and `DoFn` APIs provide greater flexibility, it is best practcie to use the collections-style APIs where possible.
+Whilst the `parallelDo` and `DoFn` APIs provide greater flexibility, it is best practice to use the collections-style APIs where possible.
 
 
 ### Grouping

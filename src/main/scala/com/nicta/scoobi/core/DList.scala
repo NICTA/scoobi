@@ -31,7 +31,7 @@ import impl.plan.comp.DComp
  * - combine: a parallel 'reduce' operation
  * - materialize: transforms a distributed list into a non-distributed list
  */
-trait DList[A] extends DataSinks {
+trait DList[A] extends DataSinks with Persistent {
   type T = DList[A]
 
   type C <: CompNode
@@ -277,3 +277,9 @@ trait DataSinks {
   def compress: T = compressWith(new GzipCodec)
 }
 
+trait Persistent {
+  type C <: CompNode
+
+  private[scoobi]
+  def getComp: C
+}

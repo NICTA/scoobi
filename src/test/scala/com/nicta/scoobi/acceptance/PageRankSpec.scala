@@ -19,6 +19,7 @@ package acceptance
 import java.io.File
 import Scoobi._
 import testing._
+import mutable.NictaSimpleJobs
 
 import lib.Relational._
 import core.WireFormat

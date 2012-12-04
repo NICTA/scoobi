@@ -21,9 +21,19 @@ import org.apache.commons.logging.LogFactory
 import core._
 import Mode._
 import impl.exec._
+import impl.plan.comp.{Root, Flatten}
+import impl.mapreducer.SimpleMapReducer
 
 object Persister {
   lazy val logger = LogFactory.getLog("scoobi.Persister")
+
+  def persist[A](ps: Seq[Persistent])(implicit sc: ScoobiConfiguration) {
+    val asOne = Root(ps.map(_.getComp))
+    sc.mode match {
+      case InMemory        => InMemoryMode().execute(asOne)
+      case Local | Cluster => HadoopMode()  .execute(asOne)
+    }
+  }
 
   def persist[A](list: DList[A])(implicit sc: ScoobiConfiguration) {
     sc.mode match {

@@ -2,8 +2,9 @@ package com.nicta.scoobi
 package application
 
 import Scoobi._
-import testing.{NictaHadoop, TempFiles}
-import testing.mutable.SimpleJobs
+import testing.mutable.NictaHadoop
+import testing.TempFiles
+import testing.SimpleJobs
 import testing.TestFiles._
 
 class PersisterSpec extends NictaHadoop with SimpleJobs {

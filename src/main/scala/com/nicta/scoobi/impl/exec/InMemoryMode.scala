@@ -26,13 +26,16 @@ case class InMemoryMode() extends ShowNode {
   implicit lazy val logger = LogFactory.getLog("scoobi.InMemoryMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {
-    list.getComp -> prepare(sc)
-    list.getComp -> compute(sc)
+    execute(list.getComp)
   }
 
-  def execute(o: DObject[_])(implicit sc: ScoobiConfiguration) = {
-    o.getComp -> prepare(sc)
-    o.getComp -> computeValue(sc)
+  def execute(o: DObject[_])(implicit sc: ScoobiConfiguration): Any = {
+    execute(o.getComp)
+  }
+
+  def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
+    node -> prepare(sc)
+    node -> computeValue(sc)
   }
 
   private
@@ -57,6 +60,7 @@ case class InMemoryMode() extends ShowNode {
     paramAttr { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
+        case n: Root              => saveSinks(Vector(n.ins.map(_ -> compute(c)).reduce(_++_):_*) , n.sinks)
         case n: Load[_]           => saveSinks(computeLoad(n)                                     , n.sinks)
         case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                               , n.sinks)
         case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)

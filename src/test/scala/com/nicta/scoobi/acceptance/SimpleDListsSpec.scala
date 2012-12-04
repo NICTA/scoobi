@@ -1,7 +1,7 @@
 package com.nicta.scoobi
 package acceptance
 
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
 import impl.plan.DListImpl
 import com.nicta.scoobi.impl.plan.comp.factory._

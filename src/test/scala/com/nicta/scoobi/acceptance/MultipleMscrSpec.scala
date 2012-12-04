@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 
 class MultipleMscrSpec extends NictaSimpleJobs {
 
@@ -109,10 +109,10 @@ class MultipleMscrSpec extends NictaSimpleJobs {
       z.materialize
     }
 
-    val (r0, r1) = persist(s(0), s(1))
-
-    (r0.head must_== (1, 1))
-    (r1.head must_== (1, 1))
+    val (r0, r1) = (s(0), s(1))
+    persist(r0, r1)
+    (r0.run.head must_== (1, 1))
+    (r1.run.head must_== (1, 1))
   }
 
   "Gbks with 'cross-over' dependencies are placed in seperate MSCRs." >> { implicit c: SC =>
@@ -130,9 +130,9 @@ class MultipleMscrSpec extends NictaSimpleJobs {
       z.materialize
     }
 
-    val (r0, r1) = persist(s(0), s(1))
-
-    (r0.head must_== (1, 1))
-    (r1.head must_== (1, 1))
+    val (r0, r1) = (s(0), s(1))
+    persist(r0, r1)
+    (r0.run.head must_== (1, 1))
+    (r1.run.head must_== (1, 1))
   }
 }

@@ -20,7 +20,7 @@ import scalaz._
 import Scalaz._
 import org.specs2.matcher.Matcher
 
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 
 class NumberPartitionerSpec extends NictaSimpleJobs {
 

@@ -2,7 +2,7 @@ package com.nicta.scoobi
 package acceptance
 
 import impl.plan.comp.{StringSink, CompNodeData}
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import application.{DList, DLists, ScoobiConfiguration}
 import core.DList
 import impl.plan.DListImpl

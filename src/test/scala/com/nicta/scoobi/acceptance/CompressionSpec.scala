@@ -7,8 +7,8 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.compress.GzipCodec
 import org.specs2.matcher.Matcher
-
-import testing.{TestFiles, TempFiles, NictaSimpleJobs}
+import testing.mutable.NictaSimpleJobs
+import testing.{TestFiles, TempFiles}
 import impl.io.FileSystems
 
 import impl.control.Exceptions._

@@ -28,7 +28,7 @@ import org.specs2.ScalaCheck
 import org.scalacheck.Gen
 import org.scalacheck.Prop
 
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import lib.{DMatrix, LinearAlgebra}
 import Scoobi._
 

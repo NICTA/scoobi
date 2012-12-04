@@ -22,7 +22,8 @@ import org.apache.avro.generic.{GenericDatumWriter, GenericRecord, GenericData}
 import org.apache.avro.file.DataFileWriter
 
 import Scoobi._
-import testing.{NictaSimpleJobs, TestFiles}
+import testing.mutable.NictaSimpleJobs
+import testing.TestFiles
 import impl.exec.JobExecException
 import application.ScoobiConfiguration._
 

@@ -26,9 +26,10 @@ import core.DList
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
-class DObjectImpl[A](comp: CompNode)(implicit val mwf: ManifestWireFormat[A]) extends DObject[A] {
+class DObjectImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) extends DObject[A] {
+  type C = DComp[A]
 
-  def getComp: CompNode = comp
+  def getComp: C = comp
 
   def map[B : ManifestWireFormat](f: A => B): DObject[B] =
     new DObjectImpl(Op(comp, Return.unit, (a: A, any: Any) => f(a), SimpleMapReducer(manifestWireFormat[B])))

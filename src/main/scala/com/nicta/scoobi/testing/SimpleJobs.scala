@@ -15,7 +15,6 @@
  */
 package com.nicta.scoobi
 package testing
-package mutable
 
 import application._
 import core._

@@ -1,7 +1,8 @@
 package com.nicta.scoobi
 package application
 
-import testing.mutable.{SimpleJobs, HadoopSpecification}
+import testing.SimpleJobs
+import testing.mutable.HadoopSpecification
 import Scoobi._
 import impl.plan.comp._
 

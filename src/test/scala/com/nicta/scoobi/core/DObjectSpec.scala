@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package core
 
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import Scoobi._
 
 class DObjectSpec extends NictaSimpleJobs {

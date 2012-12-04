@@ -18,7 +18,7 @@ package core
 
 import org.apache.hadoop.io.Text
 
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import Scoobi._
 import org.specs2.matcher.TerminationMatchers
 import org.specs2.specification.BeforeExample
