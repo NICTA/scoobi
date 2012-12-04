@@ -10,7 +10,6 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
-import org.kiama.attribution._
 
 import core._
 import monitor.Loggable._
@@ -24,7 +23,7 @@ import ScoobiConfigurationImpl._
  */
 case class InMemoryMode() extends ShowNode {
 
-  implicit lazy val logger = LogFactory.getLog("scoobi.VectorMode")
+  implicit lazy val logger = LogFactory.getLog("scoobi.InMemoryMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {
     list.getComp -> prepare(sc)
@@ -40,6 +39,7 @@ case class InMemoryMode() extends ShowNode {
   lazy val prepare: ScoobiConfiguration => CompNode => Unit =
     paramAttr { sc: ScoobiConfiguration => { node: CompNode =>
       initAttributable(node)
+      resetMemo()
       logger.debug("nodes\n"+pretty(node))
       logger.debug("graph\n"+showGraph(node))
       node.sinks.foreach(_.outputCheck(sc))

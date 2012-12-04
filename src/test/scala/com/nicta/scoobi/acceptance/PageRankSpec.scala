@@ -20,11 +20,10 @@ import java.io.File
 import Scoobi._
 import testing._
 
-import PageRank._
 import lib.Relational._
 import core.WireFormat
 
-class PageRankSpec extends NictaSimpleJobs {
+class PageRankSpec extends PageRank {
 
   "Web pages can be ranked according to their number of incoming and outcoming links" >> { implicit sc: SC =>
     val graph =
@@ -38,18 +37,18 @@ class PageRankSpec extends NictaSimpleJobs {
                          "3, www.notfound.org").collect { case AnInt(id) :: url :: _ => (id, url.trim) }
 
     getPageRanks(urls, graph).run === Seq(
-      ("www.google.com" -> 0.5f),
-      ("www.specs2.org" -> 7/12f),
+      ("www.google.com"   -> 0.5f),
+      ("www.specs2.org"   -> 7/12f),
       ("www.notfound.org" -> 0.75f))
   }
 }
 
-object PageRank {
+trait PageRank extends NictaSimpleJobs {
   val Node = """^(\d+): (.*)$""".r
 
   def initialise[K : ManifestWireFormat](input: DList[(K, Seq[K])]) = {
     implicit val (mf, wf) = WireFormat.decompose[K]
-    input map { case (url, links) => (url, (1f, 0f, links)) }
+    input.map { case (url, links) => (url, (1f, 0f, links)) }
   }
 
   def update[K : ManifestWireFormat : Grouping](prev: DList[(K, (Float, Float, Seq[K]))], d: Float) = {
@@ -66,38 +65,43 @@ object PageRank {
     }
   }
 
-  def latestRankings(outputDir: String, i: Int)
+  /** @return the rankings for each page after iteration i, simply by reading an Avro file into a DList */
+  def getLatestRankings(outputDir: String, i: Int)
                     (implicit configuration: ScoobiConfiguration): DList[(Int, (Float, Float, Seq[Int]))] =
     fromAvroFile(TestFiles.path(outputDir+"/"+i))
 
-  def iterateOnce(i : Int)(outputDir: String, graph: DList[(Int, Seq[Int])])
+  def calculateRankings(i : Int)(outputDir: String, graph: DList[(Int, Seq[Int])])
                  (implicit configuration: ScoobiConfiguration): Float = {
-    val curr = if (i == 0) initialise(graph) else latestRankings(outputDir, i)
-    val next = update(curr, 0.5f)
+    val currentRankings = if (i == 0) initialise(graph) else getLatestRankings(outputDir, i)
+    val next = update(currentRankings, 0.5f)
     val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max
-    persist(next.toAvroFile(outputFile(outputDir, i + 1)))
-    persist(maxDelta)
+
+    next.toAvroFile(outputFile(outputDir, i + 1)).run
+    maxDelta.run
   }
 
-  /**
-   * create an output file name and register it for deletion at the end of the program
-   */
+  /** create an output file name and register it for deletion at the end of the program  */
   def outputFile(dir: String, i: Int)(implicit configuration: ScoobiConfiguration) = {
     val path = TestFiles.path(dir+"/"+i)
     TestFiles.registerFile(new File(path))
     path
   }
 
+  /**
+   * @return the page ranks given:
+   *         - the list of pages with their ids
+   *         - the graph of their relationships
+   */
   def getPageRanks(urls: DList[(Int, String)], graph: DList[(Int, Seq[Int])])(implicit configuration: ScoobiConfiguration) = {
     var i = 0
     var delta = 10.0f
     val outputDir = TestFiles.createTempDir("test.iterated").getPath
 
     while (delta > 1.0f) {
-      delta = iterateOnce(i)(outputDir, graph)(configuration)
+      delta = calculateRankings(i)(outputDir, graph)
       i += 1
     }
-    val pageRanks = latestRankings(outputDir, i).map { case (id, (pr, _, _)) => (id, pr) }
+    val pageRanks = getLatestRankings(outputDir, i).map { case (id, (pr, _, _)) => (id, pr) }
 
     join(urls, pageRanks).values
   }

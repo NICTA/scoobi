@@ -48,8 +48,8 @@ trait Optimiser extends CompNodes with Rewriter {
    *           Flatten[B]
    */
   def flattenSink = repeat(sometd(rule {
-    case p @ ParallelDo(fl @ Flatten1(ins),_,_,pmr,_,_) =>
-      fl.debug("flattenSplit").copy(ins = fl.ins.map(i => p.copy(in = i)), mr = fl.mr.copy(mwf = pmr.mwf))
+    case p @ ParallelDo(fl @ Flatten1(ins),_,_,pmr,sinks,_) =>
+      fl.debug("flattenSplit").copy(ins = fl.ins.map(i => p.copy(in = i)), mr = fl.mr.copy(mwf = pmr.mwf), sinks = sinks)
   }))
 
   /**
