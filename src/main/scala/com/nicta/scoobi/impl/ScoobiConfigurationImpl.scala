@@ -258,6 +258,12 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
 
   /** @return the file system for this configuration, either a local or a remote one */
   def fileSystem = FileSystems.fileSystem(this)
+
+  private lazy val persister = new Persister(this)
+  def persist[A](ps: Seq[Persistent]) = persister.persist(ps)
+  def persist[A](list: DList[A])      = persister.persist(list)
+  def persist[A](o: DObject[A]): A    = persister.persist(o)
+
 }
 
 object ScoobiConfigurationImpl {

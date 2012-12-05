@@ -23,23 +23,7 @@ import core._
  * This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.
  * All data is written to temporary files and is deleted after usage.
  */
-trait SimpleJobs { outer =>
-
-  implicit def asRunnableDList[T](list: DList[T]) = new RunnableDList(list)
-  case class RunnableDList[T](list: DList[T]) {
-    def run(implicit configuration: ScoobiConfiguration) = outer.run(list)
-  }
-
-  implicit def asRunnableDObject[T](o: DObject[T]) = new RunnableDObject(o)
-  case class RunnableDObject[T](o: DObject[T]) {
-    def run(implicit configuration: ScoobiConfiguration) = outer.run(o)
-  }
-
-  def run[T](list: =>DList[T])(implicit configuration: ScoobiConfiguration): Seq[T] =
-    Vector(run(list.materialize).toSeq:_*)
-
-  def run[T](o: DObject[T])(implicit configuration: ScoobiConfiguration): T =
-    Persister.persist(o)
+trait SimpleJobs extends Persist { outer =>
 
   /**
    * @return a simple job from a list of strings (for the input file) and the current configuration

@@ -17,8 +17,8 @@ package com.nicta.scoobi
 package guide
 
 class LoadAndPersist extends ScoobiPage { def is = "Loading and persisting data".title^
-                                                                                                                        """
-`DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with `fromTextFile(...)` and `persist(toTextFile(...))`. The former is an example of *loading* data and the latter is an example of *persisting* data.
+  """
+`DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the [WordCount example](Application.html) we simply use in memory data and we print out the result of the computatinos. However the data used by Hadoop jobs is generally *loaded* from files and the results *persisted* to files. Let's see how to specify this.
 
 ### Loading
 
@@ -85,26 +85,78 @@ Here, the pattern will only match if the `id` (and `age`) field(s) can be conver
 
 *Persisting* is the mechanism Scoobi uses for specifying that the result of executing the computational graph associated with a `DList` object is to be associated with a particular data file on HDFS. There are two parts to persisting:
 
-1. Calling `persist`, which bundles all `DList` objects being persisted;
-2. Specifying how each `DList` object is to be persisted.
+1. Specifying how a `DList` object is to be persisted by using the numerous `toXXX` methods available (`toTextFile`, `toAvroFile`,...)
+2. Persisting the `DList`(s) by calling `persist`
 
-Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
+This is an example of persisting a single `DList`:
 
     val rankings: DList[(String, Int)] = ...
 
-    persist(toTextFile(rankings, "hdfs://path/to/output"))
+    persist(rankings.toTextFile("hdfs://path/to/output"))
 
-`persist` can of course bundle together more than one `DList`. For example:
+And now with several `DLists`:
 
     val rankings: DList[(String, Int)] = ...
     val rankings_reverse: DList[(Int, String)] = rankings map { swap }
     val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) => (ranking, items.head) }
 
-    persist(toTextFile(rankings,         "hdfs://path/to/output"),
-            toTextFile(rankings_reverse, "hdfs://path/to/output-reverse"),
-            toTextFile(rankings_example, "hdfs://path/to/output-example"))
+    persist(rankings.        toTextFile("hdfs://path/to/output"),
+            rankings_reverse.toTextFile("hdfs://path/to/output-reverse"),
+            rankings_example.toTextFile("hdfs://path/to/output-example"))
 
 As mentioned previously, `persist` is the trigger for executing the computational graph associated with its `DList` objects. By bundling `DList` objects together, `persist` is able to determine computations that are shared by those outputs and ensure that they are only performed once.
-                                                                                                                        """^
+
+#### DObjects
+
+`DObjects` are results of distributed computations and can be accessed in memory with the `run` method:
+
+    val list: DList[Int]  = DList(1, 2, 3)
+
+    // the sum of all values
+    val sum: DObject[Int] = list.sum
+
+    // execute the computation graph and collect the result
+    println(sum.run)
+
+The call to `run` above is equivalent to calling `persist` on the `DObject` to execute the computation, then collecting the result. If you call:
+
+    persist(sum)
+    sum.run
+
+then the first `persist` executes the computation and `run` merely retrieves the result.
+
+Similarly, if you want to access the value of a `DList` after computation, you can call `run` on that list:
+
+     val list: DList[Int]  = DList(1, 2, 3)
+
+     // returns Seq(1, 2, 3)
+     list.run
+
+The code above is merely a shorthand for:
+
+      val list: DList[Int]  = DList(1, 2, 3)
+
+      val materializedList = list.materialize
+      // returns Seq(1, 2, 3)
+      materializedList.run
+
+Finally, when you have several `DObjects` and `DLists` which are part of the same computation graph, you can persist them all at once:
+
+     val list: DList[Int]    = DList(1, 2, 3)
+     val plusOne: DList[Int] = list.map(_ + 1)
+
+     // the sum of all values
+     val sum: DObject[Int] = list.sum
+     // the max of all values
+     val max: DObject[Int] = list.max
+
+    // execute the computation graph for the 2 DObjects and one DList
+    persist(sum, max, plusOne)
+
+    // collect results
+    // (6, 3, Seq(2, 3, 4))
+    (sum.run, max.run, plusOne.run)
+
+  """^
                                                                                                                         end
 }

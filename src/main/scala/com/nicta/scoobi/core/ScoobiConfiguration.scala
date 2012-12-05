@@ -59,6 +59,11 @@ trait ScoobiConfiguration {
   def deleteWorkingDirectory: Boolean
 
   def fileSystem: FileSystem
+
+  def persist[A](ps: Seq[Persistent])
+  def persist[A](list: DList[A])
+  def persist[A](o: DObject[A]): A
+
 }
 
 object Mode extends Enumeration {

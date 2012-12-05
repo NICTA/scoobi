@@ -32,7 +32,7 @@ object WordCount extends ScoobiApp {
       .groupByKey
       .combine((a: Int, b: Int) => a + b).materialize
 
-    println(persist(frequencies).toList.sorted)
+    println(frequencies.run.sorted)
   }
 
   /** @return a Seq of strings where each key has been duplicated a number of times indicated by the value */

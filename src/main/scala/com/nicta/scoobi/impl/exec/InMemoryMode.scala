@@ -34,38 +34,38 @@ case class InMemoryMode() extends ShowNode {
   }
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
+    initAttributable(node)
+    logger.debug("nodes\n"+pretty(node))
+    logger.debug("graph\n"+showGraph(node))
+
     node -> prepare(sc)
     node -> computeValue(sc)
   }
 
   private
   lazy val prepare: ScoobiConfiguration => CompNode => Unit =
-    paramAttr { sc: ScoobiConfiguration => { node: CompNode =>
-      initAttributable(node)
-      resetMemo()
-      logger.debug("nodes\n"+pretty(node))
-      logger.debug("graph\n"+showGraph(node))
+    paramAttr("prepare") { sc: ScoobiConfiguration => { node: CompNode =>
       node.sinks.foreach(_.outputCheck(sc))
       node.children.foreach(_.asNode -> prepare(sc))
     }}
 
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
-    paramAttr { sc: ScoobiConfiguration => (n: CompNode) =>
+    paramAttr("computeValue") { sc: ScoobiConfiguration => (n: CompNode) =>
       (n -> compute(sc)).head
     }
 
   private
   lazy val compute: ScoobiConfiguration => CompNode => Seq[_] =
-    paramAttr { sc: ScoobiConfiguration => (n: CompNode) =>
+    paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Root              => saveSinks(Vector(n.ins.map(_ -> compute(c)).reduce(_++_):_*) , n.sinks)
+        case n: Root              => saveSinks(Vector(n.ins.map(_ -> computeValue(c)):_*)         , n.sinks)
         case n: Load[_]           => saveSinks(computeLoad(n)                                     , n.sinks)
         case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                               , n.sinks)
         case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)
         case n: Combine[_,_]      => saveSinks(computeCombine(n)                                  , n.sinks)
-        case n: Flatten[_]        => saveSinks(Vector(n.ins.map(_ -> compute(c)).reduce(_++_):_*) , n.sinks)
+        case n: Flatten[_]        => saveSinks(Vector(n.ins.flatMap(_ -> compute(c)):_*)          , n.sinks)
         case n: Materialize[_]    => saveSinks(Vector(n.in -> compute(c))                         , Seq())
         case n: Op[_,_,_]         => saveSinks(Vector(n.unsafeExecute(n.in1 -> computeValue(c),
                                                                       n.in2 -> computeValue(c)))  , n.sinks)

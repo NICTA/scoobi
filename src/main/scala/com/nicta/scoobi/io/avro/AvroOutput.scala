@@ -35,9 +35,9 @@ object AvroOutput {
 
 
   /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
-  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false): DListPersister[B] = {
-    new DListPersister(dl, avroSink(path, overwrite))
-  }
+  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) =
+    dl.addSink(avroSink(path, overwrite))
+
   def avroSink[B : AvroSchema](path: String, overwrite: Boolean = false) = {
     val sch = implicitly[AvroSchema[B]]
     val converter = new OutputConverter[AvroKey[sch.AvroType], NullWritable, B] {

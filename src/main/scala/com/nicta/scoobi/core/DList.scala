@@ -224,6 +224,8 @@ trait DList[A] extends DataSinks with Persistent {
 
       def cleanup(emitter: Emitter[A]) {
         if (!first) emitter.emit(acc)
+        acc = null.asInstanceOf[A]
+        first = true
       }
     })
 
