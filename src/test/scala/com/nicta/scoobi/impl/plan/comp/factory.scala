@@ -15,6 +15,7 @@ trait factory extends nodesFactory with MscrAttributes with ShowNodeMscr with Op
 trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   override def load                                   = init(super.load)
   override def flatten[A](nodes: CompNode*)           = init(super.flatten(nodes:_*))
+  override def root(nodes: CompNode*)                 = init(super.root(nodes:_*))
   override def parallelDo(in: CompNode)               = init(super.parallelDo(in))
   override def rt                                     = init(super.rt)
   override def cb(in: CompNode)                       = init(super.cb(in))

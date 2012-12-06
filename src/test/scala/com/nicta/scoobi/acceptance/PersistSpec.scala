@@ -5,7 +5,6 @@ import testing.mutable.NictaSimpleJobs
 import core.ScoobiConfiguration
 import Scoobi._
 import testing.TempFiles
-import collection.mutable.ListBuffer
 
 class PersistSpec extends NictaSimpleJobs {
 
@@ -36,7 +35,7 @@ class PersistSpec extends NictaSimpleJobs {
   endp
 
   "2 materialized lists with a common ancestor" >> {
-    "when we only want one list, only the computations for that list must be done" >> { implicit sc: ScoobiConfiguration =>
+    "when we only want one list, only the computations for that list must be executed" >> { implicit sc: ScoobiConfiguration =>
       val l1 = DList(1, 2, 3).map(_ * 10)
       val l2 = l1.map(_ + 1 )
       val l3 = l1.map(i => { failure("l3 must not be computed"); i + 2 })
@@ -49,9 +48,10 @@ class PersistSpec extends NictaSimpleJobs {
 
     "when we want both lists, the shared computation must be computed only once" >> { implicit sc: ScoobiConfiguration =>
       val l1 = DList(1, 2, 3).map(_ * 10)
-      val l2 = l1.map(_ + 1 )
+      val l2 = l1.map(_ + 1)
+
+      var processedNumber = 0
       val doFn = new BasicDoFn[Int, Int] {
-        var processedNumber = 0
         def process(input: Int, emitter: Emitter[Int]) {
           processedNumber += 1
           if (processedNumber > 3) failure("too many computations")
@@ -60,12 +60,22 @@ class PersistSpec extends NictaSimpleJobs {
       }
       val l3 = l1.parallelDo(doFn)
 
-
       "the list l1 has been computed only once" ==> {
         persist(l2, l3) must not(throwAn[Exception])
         (l2.run, l3.run) === (Seq(11, 21, 31), Seq(12, 22, 32))
       }
     }
+    "when we iterate with several computations" >> { implicit sc: ScoobiConfiguration =>
+      var list: DList[(Int, Int)] = DList((1, 1))
+
+      list.map(_._1).run
+      list = list.groupByKey.map(x => (1, 1))
+      list.map(_._1).run
+      list = list.groupByKey.map(x => (1, 1))
+      list.map(_._1).run
+      ok
+    }
+
   }
   end
 

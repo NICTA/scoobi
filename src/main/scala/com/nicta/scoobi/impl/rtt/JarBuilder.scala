@@ -48,7 +48,7 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
     jar.foreach(addJar(_))
   }
 
-  /** Add a class that has been loaded and is contained in some exising JAR. */
+  /** Add a class that has been loaded and is contained in some existing JAR. */
   def addClass(clazz: Class[_]) {
     findContainingJar(clazz).foreach(addJarEntries(_, (filePath(clazz) == _.getName)))
   }

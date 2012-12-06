@@ -104,6 +104,7 @@ trait CompNodeFactory extends Scope {
   def loadWith(s: String)                    = Load(ConstantStringDataSource(s), mapReducer)
   def load                                   = loadWith("start")
   def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A]]), mapReducer)
+  def root(nodes: CompNode*)                 = Root(nodes)
   def parallelDo(in: CompNode)               = pd(in)
   def rt                                     = Return("", mapReducer)
   def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,

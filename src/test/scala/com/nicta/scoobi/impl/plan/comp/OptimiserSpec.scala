@@ -140,6 +140,12 @@ class OptimiserSpec extends UnitSpecification with DataTables with CompNodeData 
       forall(inOutputs){ pd => pd must beTrue ^^ fuseBarrier }
     }
   }
+//  "7. One parallelDo node shared with 2 other parallelDo nodes must fuse into one parallelDo node and 2 Project Nodes" >> new nodes {
+//    val pd1 = pd(load)
+//    val (pd2, pd3) = (pd(pd1), pd(pd1))
+//
+//    optimise(fuseSharedParDo(flatten(root(pd2, pd3))))
+//  }
 
   trait nodes extends factory with Optimiser with CompNodes {
     lazy val (l1, l2)   = (load, load)

@@ -29,7 +29,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     executeNode(prepare(o.getComp))
   }
 
-  def prepare(node: CompNode) = {
+  lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
     initAttributable(node)
     logger.debug("Raw nodes\n"+pretty(node))
     logger.debug("Raw graph\n"+showGraph(node))
@@ -44,7 +44,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     def executeLayers(node: CompNode) {
       val graphLayers = (node -> layers)
       logger.debug("Executing layers\n"+graphLayers.mkString("\n"))
-      graphLayers.map(layer => Execution(layer).execute)
+      graphLayers.map(executeLayer)
     }
 
     attr("executeNode") {
@@ -55,7 +55,11 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     }
   }
 
-  case class Execution(layer: Layer[T])(implicit sc: ScoobiConfiguration) {
+  private lazy val executeLayer: Layer[T] => Any = attr("executeLayer") { case layer =>
+    Execution(layer).execute
+  }
+
+  case class Execution(layer: Layer[T]) {
 
     def execute: Seq[Any] = {
       logger.debug("Executing layer\n"+layer)
@@ -96,7 +100,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   private def store(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
-    (node -> usesAsEnvironment).headOption.map { pd =>
+    usesAsEnvironment(node).map { pd =>
       pd.unsafePushEnv(result)
     }
     result

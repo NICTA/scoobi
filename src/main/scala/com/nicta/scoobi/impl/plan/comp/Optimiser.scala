@@ -135,6 +135,23 @@ trait Optimiser extends CompNodes with Rewriter {
   })
 
   /**
+   * Shared ParallelDos must be fused
+   *
+   *            pd1 @ ParallelDo[A, B, E1]
+   *                   /               \
+   *    pd2 @ ParallelDo[B, D, E2]   pd3 @ ParallelDo[B, F, E3]
+   *                        ====>
+   *
+   *            pd4 @ ParallelDo[A, (D, F), (E1, E2, E3))
+   *            /               \
+   *    pr1 @ Projection[(D, F), D]       pr2 @ Project[(D, F), F]
+   *
+   * This rule is repeated until nothing can be fused anymore
+   */
+//  def fuseSharedParDo = everywhere(rule {
+//    case pd: ParallelDo[_,_,_] if  => pd//.fuse(outputs(pd)).debug("fuseSharedParDo")
+//  })
+  /**
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Seq[CompNode]) =
@@ -167,11 +184,20 @@ trait Optimiser extends CompNodes with Rewriter {
   }))(node)
 
   /** apply one strategy to a list of Nodes. Used for testing */
-  private[scoobi] def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
+  private[scoobi]
+  def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
     rewrite(strategy)(nodes).toList
   }
 
-  /** optimise just one node which is the output of a graph. Used for testing */
-  private[scoobi] def optimise(node: CompNode): CompNode = optimise(Seq(node)).headOption.getOrElse(node)
+  /**
+   * optimise just one node which is the output of a graph.
+   *
+   * It is very import to duplicate the whole graph first to avoid execution information to become attached to the original
+   * nodes. Because if the main graph is augmented, the execution information we want to retrieve (like which nodes are using
+   * another node as an environment) may change.
+   */
+  private[scoobi]
+  def optimise(node: CompNode): CompNode =
+    optimise(Seq(duplicate(node))).headOption.getOrElse(node)
 }
 object Optimiser extends Optimiser

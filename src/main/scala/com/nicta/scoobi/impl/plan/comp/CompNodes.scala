@@ -147,8 +147,12 @@ trait CompNodes extends Attribution {
   }
 
   /** compute all the nodes which use a given node as an environment */
-  lazy val usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] = attr("usesAsEnvironment") {
-    case node: CompNode => (node -> outgoings).collect(isAParallelDo).toSeq.filter(_.env == node)
+  def usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] = //attr("usesAsEnvironment")
+  { case node: CompNode =>
+    val out = (node -> outgoings)
+    val pds = out.collect(isAParallelDo)
+      val r = pds.toSeq.filter(_.env == node)
+    r
   }
 
   /** initialize the Kiama attributes but only if they haven't been set before */
