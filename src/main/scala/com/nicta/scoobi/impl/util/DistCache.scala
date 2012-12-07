@@ -25,6 +25,9 @@ import com.thoughtworks.xstream.io.xml.StaxDriver
 
 import Configurations._
 import ScoobiConfigurationImpl._
+import com.thoughtworks.xstream.converters.SingleValueConverter
+import com.thoughtworks.xstream.converters.reflection.ReflectionConverter
+import java.io.OutputStream
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialize objects to XML strings and then send out via Hadoop's
@@ -32,6 +35,8 @@ import ScoobiConfigurationImpl._
 object DistCache {
 
   private val xstream = new XStream(new StaxDriver())
+  xstream.omitField(classOf[Configuration], "classLoader")
+  xstream.omitField(classOf[Configuration], "CACHE_CLASSES")
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */
@@ -54,12 +59,15 @@ object DistCache {
     /* Serialize */
     val path = mkPath(conf, tag)
     val dos = path.getFileSystem(conf).create(path)
-    conf.withoutClassLoader { c =>
-      try { xstream.toXML(obj, dos) }
-      finally { dos.close()  }
-    }
+    serialize(conf, obj, dos)
     action(path)
   }
+
+  def serialize(conf: Configuration, obj: Any, out: OutputStream) {
+    try { xstream.toXML(obj, out) }
+    finally { out.close()  }
+  }
+
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
   def pullObject[T](conf: Configuration, tag: String): Option[T] = {
