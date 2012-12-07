@@ -67,16 +67,6 @@ class ConfigurationsSpec extends UnitSpecification{
     }
   }
 
-  "it is possible to temporarily use a configuration without its classLoader" >> {
-    val conf = configuration("a" -> "1")
-    val cl = getClass.getClassLoader
-    conf.setClassLoader(cl)
-    conf.withoutClassLoader { c: Configuration =>
-      c.getClassLoader must beNull
-    }
-    conf.getClassLoader must beTheSameAs(cl)
-  }
-
   def beTheSameAs(other: Configuration): Matcher[Configuration] = (c: Configuration) =>
     (c.show == other.show, c.show+"\n\nis not the same as\n\n"+other.show)
 }
