@@ -37,7 +37,7 @@ import util.UniqueId
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
+case class BridgeStore[A](bridgeStoreId: String, mf: Manifest[_], wf: WireFormat[_])
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 
@@ -48,10 +48,6 @@ case class BridgeStore[A](mf: Manifest[_], wf: WireFormat[_])
   /** rtClass will be created at runtime as part of building the MapReduce job. */
   lazy val rtClass = ScoobiWritable(typeName, mf, wf)
 
-  /**
-   * this value is set by the configuration so as to be unique for this bridge store
-   */
-  lazy val bridgeStoreId = java.util.UUID.randomUUID.toString
   lazy val typeName = "BS" + bridgeStoreId
   def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
 

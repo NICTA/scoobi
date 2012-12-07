@@ -17,16 +17,16 @@ import mapreducer.BridgeStore
 case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
   implicit lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
-  def execute(node: CompNode) {
-    executeNode(prepare(node))
+  def execute(list: DList[_]): Unit = {
+    execute(list.getComp)
   }
 
-  def execute(list: DList[_]) {
-    executeNode(prepare(list.getComp))
+  def execute(o: DObject[_]): Any = {
+    execute(o.getComp)
   }
 
-  def execute(o: DObject[_]) = {
-    executeNode(prepare(o.getComp))
+  def execute(node: CompNode): Any = {
+    executeNode((node, prepare(node)))
   }
 
   lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
@@ -40,18 +40,19 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     optimised
   }
 
-  lazy val executeNode: CompNode => Any = {
-    def executeLayers(node: CompNode) {
+  lazy val executeNode: ((CompNode, CompNode)) => Any = {
+    def executeLayers(original: CompNode, node: CompNode) {
       val graphLayers = (node -> layers)
       logger.debug("Executing layers\n"+graphLayers.mkString("\n"))
       graphLayers.map(executeLayer)
+      markAsExecuted(original)
     }
 
     attr("executeNode") {
-      case node @ Op1(in1, in2)    => node.unsafeExecute(in1 -> executeNode, in2 -> executeNode).debug("result for op "+node.id+": ")
-      case node @ Return1(in)      => in
-      case node @ Materialize1(in) => executeLayers(node); readNodeStore(node)
-      case node                    => executeLayers(node)
+      case (original, node @ Op1(in1, in2)   ) => node.unsafeExecute(executeNode((original, in1)), executeNode((original, in2))).debug("result for op "+node.id+": ")
+      case (original, node @ Return1(in)     ) => in
+      case (original, node @ Materialize1(in)) => executeLayers(original, node); readNodeStore(node)
+      case (original, node                   ) => executeLayers(original, node)
     }
   }
 
@@ -82,12 +83,19 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
         logger.debug("Executing Mscr\n"+mscr)
         job.run
       }
-
       sinks.debug("Layer sinks: ").map(readStore).toSeq
     }
 
 
   }
+
+  /**
+   * do not select nodes which have already been computed
+   */
+  override def selectNode(n: CompNode) =
+    !hasBeenExecuted(n) && super.selectNode(n)
+
+  private def markAsExecuted(node: CompNode) = (node +: descendents(node)).map(executed)
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {

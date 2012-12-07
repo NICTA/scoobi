@@ -11,6 +11,7 @@ import ManifestWireFormat._
 import mapreducer._
 import scalaz.Memo._
 import scalaz.Equal
+import java.util.UUID._
 
 /**
  * GADT for distributed list computation graph.
@@ -39,6 +40,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
                                dofn:              EnvDoFn[A, B, E],
                                mr:                DoMapReducer[A, B, E],
                                sinks:             Seq[Sink] = Seq(),
+                               bridgeStoreId:     String = randomUUID.toString,
                                barriers:          Barriers = Barriers()) extends DComp[B] {
 
   type CompNodeType = ParallelDo[A, B, E]
@@ -67,7 +69,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
     case _         => None
   }
 
-  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -99,6 +101,7 @@ object ParallelDo {
     new ParallelDo(pd1.in, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
                    DoMapReducer(mwfa, mwfc, manifestWireFormat[(E, F)]),
                    pd1.sinks ++ pd2.sinks,
+                   pd1.bridgeStoreId,
                    Barriers(pd1.groupBarrier || pd2.groupBarrier, pd2.fuseBarrier))
   }
 
@@ -131,12 +134,12 @@ object ParallelDo1 {
 
 /** The Flatten node type specifies the building of a DComp that contains all the elements from
  * one or more existing DLists of the same type. */
-case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
+case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[A] {
 
   type CompNodeType = Flatten[A]
   type Sh = Arr
 
-  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -155,12 +158,12 @@ object Flatten1 {
 }
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
-case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq()) extends DComp[(K, V)] {
+case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, V)] {
 
   type CompNodeType = Combine[K, V]
   type Sh = Arr
 
-  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   def gpk = mr.gpk
@@ -201,12 +204,12 @@ object Combine1 {
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
  * key-value DComp by key. */
-case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq()) extends DComp[(K, Iterable[V])] {
+case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, Iterable[V])] {
 
   type CompNodeType = GroupByKey[K, V]
   type Sh = Arr
 
-  override lazy val bridgeStore = Some(BridgeStore(mf, wf))
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -264,7 +267,7 @@ case class Materialize[A](in: CompNode, mr: SimpleMapReducer[Iterable[A]], sinks
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "Materialize ("+id+")[Iterable"+mr+"]"
+  override val toString = "Materialize ("+id+")["+mr+"]"
 
 }
 object Materialize1 {

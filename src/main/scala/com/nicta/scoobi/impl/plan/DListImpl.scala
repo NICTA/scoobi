@@ -79,7 +79,11 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
       def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
       def cleanup(emitter: Emitter[A]) {}
     }
-    new DListImpl(ParallelDo(comp, UnitDObject.newInstance.getComp, dofn, DoMapReducer(mwf, mwf, manifestWireFormat[Unit]), Seq[Sink](), Barriers(groupBarrier = true, fuseBarrier = false)))
+    new DListImpl(ParallelDo(comp, UnitDObject.newInstance.getComp,
+                  dofn,
+                  DoMapReducer(mwf, mwf, manifestWireFormat[Unit]),
+                  Seq[Sink](),
+                  barriers = Barriers(groupBarrier = true, fuseBarrier = false)))
   }
 
   override def toString = "\n"+ new ShowNode {}.pretty(comp)

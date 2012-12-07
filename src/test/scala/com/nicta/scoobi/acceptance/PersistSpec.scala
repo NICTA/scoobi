@@ -2,9 +2,8 @@ package com.nicta.scoobi
 package acceptance
 
 import testing.mutable.NictaSimpleJobs
-import core.ScoobiConfiguration
-import Scoobi._
 import testing.TempFiles
+import Scoobi._
 
 class PersistSpec extends NictaSimpleJobs {
 

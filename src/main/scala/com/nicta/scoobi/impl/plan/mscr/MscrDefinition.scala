@@ -277,7 +277,7 @@ trait Layering extends ShowNode {
     val (leaves, nonLeaves) = selectedDescendents(n).partition { d =>
       selectedDescendents(d).isEmpty
     }
-    val leaf = if (leaves.isEmpty) Seq(select(n)) else Seq()
+    val leaf = if (leaves.isEmpty && selectNode(n)) Seq(select(n)) else Seq()
     Layer(leaves ++ leaf) +:
       nonLeaves.groupBy(_ -> longestPathTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
   }

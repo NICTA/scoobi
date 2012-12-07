@@ -85,7 +85,7 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     }
   }
 
-  lazy val aBridgeStore = BridgeStore[String](manifest[String], wireFormat[String])
+  lazy val aBridgeStore = BridgeStore[String]("id", manifest[String], wireFormat[String])
 
   def scoobiArgs = Seq[String]()
 }
