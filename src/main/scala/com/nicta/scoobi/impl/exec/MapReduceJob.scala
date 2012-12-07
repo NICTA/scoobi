@@ -382,7 +382,7 @@ class TaskDetailsLogger(job: Job) {
         taskCompEvent.getTaskStatus match {
           case OBSOLETE  => logger.debug(taskAttempt + " was made obsolete." + moreInfo)
           case FAILED    => logger.info(taskAttempt + " failed! " + "Trying again." + moreInfo)
-          case KILLED    => logger.info(taskAttempt + " was killed!" + moreInfo)
+          case KILLED    => logger.debug(taskAttempt + " was killed!" + moreInfo)
           case TIPFAILED => logger.error("Task '" + taskAttemptId.getTaskID + "' failed!" + moreInfo)
           case _ =>
         }
