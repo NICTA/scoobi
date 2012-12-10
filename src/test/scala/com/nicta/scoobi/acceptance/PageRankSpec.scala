@@ -16,13 +16,14 @@
 package com.nicta.scoobi
 package acceptance
 
-import java.io.File
 import Scoobi._
 import testing._
 import mutable.NictaSimpleJobs
 
 import lib.Relational._
 import core.WireFormat
+import annotation.tailrec
+import com.github.mdr.ascii.Edge
 
 class PageRankSpec extends PageRank {
 
@@ -47,64 +48,55 @@ class PageRankSpec extends PageRank {
 trait PageRank extends NictaSimpleJobs {
   val Node = """^(\d+): (.*)$""".r
 
-  def initialise[K : ManifestWireFormat](input: DList[(K, Seq[K])]) = {
+  /** a Vertice is described as a page id and a list of incoming links */
+  type Vertice[K] = (K, Seq[K])
+  /** a Graph is described as a list of vertices */
+  type Graph[K] = DList[Vertice[K]]
+  /** a Score is: the current page rank, the previous page rank and the list of incoming links */
+  type Score[K] =  (Float, Float, Seq[K])
+  /** a Ranking is the association of: a vertice and a score */
+  type Ranking[K] = (K, Score[K])
+  /** list of Rankings */
+  type Rankings[K] = DList[Ranking[K]]
+
+  /** initialise the vertices of the graph with default scores */
+  def initialise[K : ManifestWireFormat](inputs: Graph[K]): Rankings[K] = {
     implicit val (mf, wf) = WireFormat.decompose[K]
-    input.map { case (url, links) => (url, (1f, 0f, links)) }
+    inputs.map { case (url, links) => (url, (1f, 0f, links)) }
   }
 
-  def update[K : ManifestWireFormat : Grouping](prev: DList[(K, (Float, Float, Seq[K]))], d: Float) = {
+  /** @return the page rank for each url */
+  def getPageRanks(urls: DList[(Int, String)], graph: Graph[Int])(implicit configuration: ScoobiConfiguration) = {
+    val (_, rankings) = calculateRankings(10.0f, initialise[Int](graph))
+    val pageRanks = rankings.map { case (id, (pr,_,_)) => (id, pr) }
+    (urls join pageRanks).values
+  }
+
+  /** @return new rankings */
+  def updateRankings[K : ManifestWireFormat : Grouping](previous: DList[Ranking[K]], d: Float = 0.5f) = {
     implicit val (mf, wf) = WireFormat.decompose[K]
 
-    val outbound = prev flatMap { case (url, (pr, _, links)) => links.map((_, pr / links.size)) }
+    val outbound = previous flatMap { case (_, (pageRank, _, links)) => links.map(link => (link, pageRank / links.size)) }
 
-    (prev coGroup outbound) map { case (url, (prev_data, outbound_mass)) =>
-      val new_pr = (1 - d) + d * outbound_mass.sum
-      prev_data.toList match {
-        case (old_pr, _, links) :: _ => (url, (new_pr, old_pr, links))
-        case _                       => (url, (new_pr, 0f,     Nil))
-      }
+    (previous coGroup outbound) map { case (url, (prevData, outboundMass)) =>
+      val newPageRank = (1 - d) + d * outboundMass.sum
+      (url, prevData.headOption.map { case (oldPageRank, _, links) => (newPageRank, oldPageRank, links) }.getOrElse((newPageRank, 0f, Nil)))
     }
-  }
-
-  /** @return the rankings for each page after iteration i, simply by reading an Avro file into a DList */
-  def getLatestRankings(outputDir: String, i: Int)
-                    (implicit configuration: ScoobiConfiguration): DList[(Int, (Float, Float, Seq[Int]))] =
-    fromAvroFile(TestFiles.path(outputDir+"/"+i))
-
-  def calculateRankings(i : Int)(outputDir: String, graph: DList[(Int, Seq[Int])])
-                 (implicit configuration: ScoobiConfiguration): Float = {
-    val currentRankings = if (i == 0) initialise(graph) else getLatestRankings(outputDir, i)
-    val next = update(currentRankings, 0.5f)
-    val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max
-
-    next.toAvroFile(outputFile(outputDir, i + 1)).run
-    maxDelta.run
-  }
-
-  /** create an output file name and register it for deletion at the end of the program  */
-  def outputFile(dir: String, i: Int)(implicit configuration: ScoobiConfiguration) = {
-    val path = TestFiles.path(dir+"/"+i)
-    TestFiles.registerFile(new File(path))
-    path
   }
 
   /**
-   * @return the page ranks given:
-   *         - the list of pages with their ids
-   *         - the graph of their relationships
+   * @param delta maximum observed value between a new score and an old score
+   * @param previous previous set of rankings
+   * @return a new delta and new set of rankings
    */
-  def getPageRanks(urls: DList[(Int, String)], graph: DList[(Int, Seq[Int])])(implicit configuration: ScoobiConfiguration) = {
-    var i = 0
-    var delta = 10.0f
-    val outputDir = TestFiles.createTempDir("test.iterated").getPath
-
-    while (delta > 1.0f) {
-      delta = calculateRankings(i)(outputDir, graph)
-      i += 1
+  @tailrec
+  private def calculateRankings(delta: Float, previous: Rankings[Int])
+                       (implicit configuration: ScoobiConfiguration): (Float, Rankings[Int]) = {
+    if (delta <= 1.0f) (delta, previous)
+    else {
+      val next = updateRankings(previous)
+      val maxDelta = next.map { case (_, (n, o, _)) => math.abs(n - o) }.max
+      calculateRankings(maxDelta.run, next)
     }
-    val pageRanks = getLatestRankings(outputDir, i).map { case (id, (pr, _, _)) => (id, pr) }
-
-    join(urls, pageRanks).values
   }
 }
-
