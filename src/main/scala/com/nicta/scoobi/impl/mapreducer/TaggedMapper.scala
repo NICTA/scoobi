@@ -20,7 +20,7 @@ package mapreducer
 import core._
 import util.UniqueInt
 
-/** A wrapper for a 'map' function tagged for a specific output channel. */
+/** A wrapper for a 'map' function tagged for specific output channels */
 abstract class TaggedMapper(val tags: Set[Int], mwfk: ManifestWireFormat[_], val gpk: Grouping[_], mwfv: ManifestWireFormat[_]) {
 
   def mfk = mwfk.mf
