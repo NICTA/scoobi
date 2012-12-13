@@ -81,38 +81,20 @@ trait ClassBuilder {
     ctClass.addMethod(setterMethod)
   }
 
-  /* A class that allows up to store an Object */
+  /* A class that allows up to store an Object and its var name */
   private case class ObjectLookup() {
 
-    private val data = new java.util.HashMap[ObjectWrapper, String]()
+    private val data = new java.util.IdentityHashMap[AnyRef, String]()
 
-    case class ObjectWrapper(data: AnyRef) {
-       override def equals(other: Any): Boolean = {
-
-         if (data.isInstanceOf[AnyRef] && other.isInstanceOf[ObjectWrapper])
-           data.asInstanceOf[AnyRef] eq other.asInstanceOf[ObjectWrapper].data
-         else
-           false
-       }
-       override def hashCode(): Int = java.lang.System.identityHashCode(data)
-    }
-
-    def add(o: AnyRef, varName: String) {
-      data.put(ObjectWrapper(o), varName)
-    }
-
-    def hasObject(o: AnyRef): Boolean = {
-      data.containsKey(ObjectWrapper(o))
-    }
-
-    def getObjectVarName(o: AnyRef): String = data.get(ObjectWrapper(o))
-
+    def add(o: AnyRef, varName: String) { data.put(o, varName) }
+    def hasObject(o: AnyRef): Boolean = data.containsKey(o)
+    def getObjectVarName(o: AnyRef): String = data.get(o)
   }
 
   /* Creates a java function (as a string) that returns a reconstructed version of model */
   private def makeTypeClassModel(model: AnyRef): StringBuilder = {
 
-   val lookup = ObjectLookup()
+    val lookup = ObjectLookup()
     val sb = new StringBuilder()
     sb ++= "{ java.lang.reflect.Field modifiersField = java.lang.reflect.Field.class.getDeclaredField(\"modifiers\"); "
     sb ++= "modifiersField.setAccessible(true); "
