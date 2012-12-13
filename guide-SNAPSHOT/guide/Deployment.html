@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Deployment.html">Deployment</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="687237759">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
+                       <div class="col1"><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="1470495900">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
 <ul>
   <li><a href="https://github.com/sbt/sbt-assembly">Sbt assembly</a></li>
   <li><a href="http://maven.apache.org/plugins/maven-assembly-plugin/usage.html">Maven assembly</a></li>
@@ -126,8 +126,8 @@ resolvers ++= Seq(&quot;nicta's avro&quot; at &quot;http://nicta.github.com/scoo
 $ hadoop WordCount &lt;args&gt;
 </code></pre><a name="Troubleshooting"><h3>Troubleshooting</h3></a><p>You might get some <code class="prettyprint">ClassNotFoundException</code> on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi &quot;job jar&quot; that is distributed to the cluster node by turning off the dependency uploading mechanism (see the <a href="Application.html">Application</a> page):</p><p><code class="prettyprint">$ hadoop WordCount &lt;args&gt; scoobi nolibjars</code></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="351413341"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1136666635"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="519079052"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="736457699"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -137,7 +137,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="953712306"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1259545470"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -151,7 +151,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1824816020"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1619358690"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
@@ -165,7 +165,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="373043469"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1783325294"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -197,7 +197,7 @@ $ hadoop WordCount &lt;args&gt;
             
           </li></ul>
           </li></ul>
-          </li><li id="1429487606"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1734381999"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -209,7 +209,7 @@ $ hadoop WordCount &lt;args&gt;
             
           </li></ul>
           </li></ul>
-          </li><li id="1536532984"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1144993508"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -217,7 +217,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1436063860"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1554188085"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -233,7 +233,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1410778790"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="1797829499"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -255,7 +255,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1993355562"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="461749363"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -283,7 +283,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="687237759"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1470495900"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -299,7 +299,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1447205815"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1825704215"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -307,7 +307,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1806225705"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1771899043"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -321,7 +321,7 @@ $ hadoop WordCount &lt;args&gt;
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['351413341','687237759'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['519079052','1470495900'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
