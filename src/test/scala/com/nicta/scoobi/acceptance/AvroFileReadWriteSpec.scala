@@ -29,15 +29,31 @@ import org.apache.avro.{AvroTypeException, Schema}
 import org.apache.avro.generic.{GenericDatumWriter, GenericRecord, GenericData}
 import org.apache.avro.file.DataFileWriter
 
+case class ThousandBytes(data: Array[Byte]) {
+  assert(data.length == 1000)
+}
+
 class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
-  skipAll
+  "Reading (Int, Seq[(Float, String)], Map[String, Int], ThousandBytes) Avro file" >> { implicit sc: SC =>
 
-  "Reading (Int, Seq[(Float, String)], Map[String, Int]) Avro file" >> { implicit sc: SC =>
+    implicit def tbwf = mkCaseWireFormat(ThousandBytes, ThousandBytes.unapply _)
+    implicit def tbf = new AvroFixed[ThousandBytes] {
+      def length = 1000
+      def toArray(t: ThousandBytes) = t.data
+      def fromArray(arr: Array[Byte]) = ThousandBytes(arr)
+    }
+   
+    def newTb() = {
+	  val b = new Array[Byte](1000)
+	  scala.util.Random.nextBytes(b)
+	  ThousandBytes(b)
+	}
+    
     // create test data
-    val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int])] = Seq(
-      (1, Seq((3.4f, "abc")), Map("a" -> 5, "b" -> 6)),
-      (2, Seq((5.1f, "def")), Map("c" -> 7, "d" -> 8)))
+    val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int], ThousandBytes)] = Seq(
+      (1, Seq((3.4f, "abc")), Map("a" -> 5, "b" -> 6), newTb()),
+      (2, Seq((5.1f, "def")), Map("c" -> 7, "d" -> 8), newTb()))
 
     // store test data in an avro file
     val tmpAvroFile = createTempAvroFile(testData.toDList)
@@ -92,7 +108,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(List(filePath), false)
-    loadedTestData.run must throwA[JobExecException]
+    loadedTestData.run must (if (sc.isInMemory) throwAn[AvroTypeException] else throwA[JobExecException])
   }
 
   "Reading a subset of fields that have been written" >> { implicit sc: SC =>

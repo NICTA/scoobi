@@ -87,7 +87,7 @@ Your first instinct might be to *move* the information to the key, e.g. make the
 
 Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need to provide a `Grouping` object for. Our goal is to make sure that two keys with the same FirstName evaluate to being the same, so `groupCompare` and `partition` should only consider the FirstName part. However, `sortCompare` should put everything in the correct order (so it should consider both parts).
 
-    implicit val grouping = new Grouping[(FirstName, LastName)] {
+    val grouping = new Grouping[(FirstName, LastName)] {
 
       override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {
         // This function says what reducer this particular 'key' should go to. We must override the
@@ -129,7 +129,9 @@ Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need 
 
     }
 
-Now calling `bigKey.groupByKey` will work as intended, with all lastNames arriving in order.
+Now calling `bigKey.groupByKeyWith(grouping)` will work as intended, with all lastNames arriving in order. Note, that instead
+  of explicitly passing in `grouping` it's possible to use implicits and the plain `groupByKey`, just becareful the correct one
+  is being picked up.
 
                                                                                                                         """
 }

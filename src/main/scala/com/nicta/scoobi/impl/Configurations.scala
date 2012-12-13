@@ -28,6 +28,18 @@ import collection.Maps._
 trait Configurations {
 
   /**
+   * List of Scoobi properties which are stored in the Hadoop configuration object
+   */
+  val JOB_ID                             = "scoobi.jobid"
+  val PROGRESS_TIME                      = "scoobi.progress.time"
+  val JOB_NAME                           = "scoobi.jobname"
+  val SCOOBI_MODE                        = "scoobi.mode"
+  val UPLOADED_LIBJARS                   = "scoobi.uploadedlibjars"
+  val MAPREDUCE_REDUCERS_MIN             = "scoobi.mapreduce.reducers.min"
+  val MAPREDUCE_REDUCERS_MAX             = "scoobi.mapreduce.reducers.max"
+  val MAPREDUCE_REDUCERS_BYTESPERREDUCER = "scoobi.mapreduce.reducers.bytesperreducer"
+
+  /**
    * This conversion transforms a Configuration, seen as an Iterable[Map.Entry[String, String]]
    * to a Map[String, String] or a mutable.Map[String, String]
    *
@@ -114,24 +126,21 @@ trait Configurations {
       value
     }
 
-    /** @return the scoobi work directory */
-    def workingDirectory = conf.get("scoobi.workdir")
+    /**
+     * @return the value of the configuration for a given key or set it with a default value
+     */
+    def getOrSet(key: String, defaultValue: String): String = {
+      if (!conf.defines(key)) conf.set(key, defaultValue)
+      conf.get(key)
+    }
+
+    /**
+     * @return true if a key is defined
+     */
+    def defines(key: String) = Option(conf.get(key)).isDefined
 
     /** @return a string with all the key/values, one per line */
     def show = conf.getValByRegex(".*").entrySet().mkString("\n")
-
-    /**
-     * execute a function with a configuration having no classLoader.
-     *
-     * The classLoader is set back on the configuration after f has been executed.
-     * This is used during the serialization of objects to avoid the classLoader to be inadvertently serialized
-     */
-    def withoutClassLoader[T](f: Configuration => T): T = {
-      val classLoader = conf.getClassLoader
-      conf.setClassLoader(null)
-      try { f(conf) }
-      finally { conf.setClassLoader(classLoader) }
-    }
 
   }
 

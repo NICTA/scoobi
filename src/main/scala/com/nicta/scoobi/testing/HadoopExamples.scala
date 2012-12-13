@@ -69,7 +69,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
-    def outside = new ScoobiConfiguration
+    def outside = ScoobiConfiguration()
     override def apply[R <% Result](a: ScoobiConfiguration => R) = {
       changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(a) })
     }

@@ -18,23 +18,29 @@ package io
 package avro
 
 import java.util.UUID
-import java.util.{Map => JMap}
+import java.util.{ Map => JMap }
 import org.apache.avro.Schema
 import org.apache.avro.io.parsing.Symbol
-import org.apache.avro.generic.GenericData
-import org.apache.avro.util.Utf8
+import org.apache.avro.generic.{ GenericContainer, GenericData }
+import org.apache.avro.specific.{ SpecificRecord, SpecificData }
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
 import core._
 
-
 /** Defines the Avro schema for a given Scala type. */
 trait AvroSchema[A] {
   type AvroType
-  val schema: Schema
+  def schema: Schema
   def fromAvro(x: AvroType): A
   def toAvro(x: A): AvroType
+}
+
+/** Provide an implicit of this, if your type is a fixed. Then a FixedSchema can kick-in */
+trait AvroFixed[T] {
+  def length: Int
+  def toArray(t: T): Array[Byte]
+  def fromArray(t: Array[Byte]): T
 }
 
 object AvroSchema {
@@ -76,12 +82,11 @@ object AvroSchema {
   }
 
   implicit def StringSchema = new AvroSchema[String] {
-    type AvroType = Utf8
+    type AvroType = String
     val schema: Schema = Schema.create(Schema.Type.STRING)
-    def fromAvro(x: Utf8): String = x.toString
-    def toAvro(x: String): Utf8 = new Utf8(x)
+    def fromAvro(x: String): String = x
+    def toAvro(x: String): String = x
   }
-
 
   /* Traversable type AvroSchema type class instances. */
   implicit def TraversableSchema[CC[X] <: Traversable[X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, T, CC[T]]) = new AvroSchema[CC[T]] {
@@ -89,10 +94,9 @@ object AvroSchema {
 
     val schema: Schema = Schema.createArray(sch.schema)
 
-    val b: Builder[T, CC[T]] = bf()
 
     def fromAvro(array: GenericData.Array[sch.AvroType]): CC[T] = {
-      b.clear()
+      val b: Builder[T, CC[T]] = bf()
       array.iterator.foreach { x => b += sch.fromAvro(x) }
       b.result()
     }
@@ -101,24 +105,40 @@ object AvroSchema {
       new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
   }
 
+  object FixedCounter extends com.nicta.scoobi.impl.util.UniqueInt {}
+
+  implicit def FixedSchema[T](implicit fxd: AvroFixed[T]) = new AvroSchema[T]  {
+    private val id = FixedCounter.get
+    type AvroType = GenericData.Fixed
+    val schema: Schema = Schema.createFixed("anonfixed" + id, "", " ", fxd.length)
+    def fromAvro(data: GenericData.Fixed) = {
+      val bytes = data.bytes();
+      require(bytes.length == fxd.length)
+      fxd.fromArray(bytes)
+    }
+    def toAvro(data: T): GenericData.Fixed = {
+      val bytes = fxd.toArray(data)
+      require(bytes.length == fxd.length)
+      new GenericData.Fixed(schema, bytes)
+    }
+  }
 
   /* Map-like types AvroSchema type class instances. */
   implicit def MapSchema[CC[String, X] <: Map[String, X], T](implicit sch: AvroSchema[T], bf: CanBuildFrom[_, (String, T), CC[String, T]]) = new AvroSchema[CC[String, T]] {
-    type AvroType = JMap[Utf8, sch.AvroType]
+    type AvroType = JMap[String, sch.AvroType]
 
     val schema: Schema = Schema.createMap(sch.schema)
 
     val b: Builder[(String, T), CC[String, T]] = bf()
 
-    def fromAvro(xs: JMap[Utf8, sch.AvroType]): CC[String, T] = {
+    def fromAvro(xs: AvroType): CC[String, T] = {
       b.clear()
       xs.foreach { case (s, v) => b += (s.toString -> sch.fromAvro(v)) }
       b.result()
     }
 
-    def toAvro(xs: CC[String, T]): JMap[Utf8, sch.AvroType] = xs map { case (k, v) => (new Utf8(k), (sch.toAvro(v))) }
+    def toAvro(xs: CC[String, T]): AvroType = xs map { case (k, v) => k -> sch.toAvro(v) }
   }
-
 
   /* AvroSchema type class instance for Arrays. */
   implicit def ArraySchema[T](implicit mf: Manifest[T], sch: AvroSchema[T]) = new AvroSchema[Array[T]] {
@@ -132,9 +152,8 @@ object AvroSchema {
       new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
   }
 
-
   /* Tuple types AvroSchema type class instances. */
-  implicit def Tuple2Schema[T1 : AvroSchema, T2 : AvroSchema] = new AvroSchema[(T1, T2)] {
+  implicit def Tuple2Schema[T1: AvroSchema, T2: AvroSchema] = new AvroSchema[(T1, T2)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -156,7 +175,7 @@ object AvroSchema {
     }
   }
 
-  implicit def Tuple3Schema[T1 : AvroSchema, T2 : AvroSchema, T3 : AvroSchema] = new AvroSchema[(T1, T2, T3)] {
+  implicit def Tuple3Schema[T1: AvroSchema, T2: AvroSchema, T3: AvroSchema] = new AvroSchema[(T1, T2, T3)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -181,7 +200,7 @@ object AvroSchema {
     }
   }
 
-  implicit def Tuple4Schema[T1 : AvroSchema, T2 : AvroSchema, T3 : AvroSchema, T4 : AvroSchema] = new AvroSchema[(T1, T2, T3, T4)] {
+  implicit def Tuple4Schema[T1: AvroSchema, T2: AvroSchema, T3: AvroSchema, T4: AvroSchema] = new AvroSchema[(T1, T2, T3, T4)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -209,7 +228,7 @@ object AvroSchema {
     }
   }
 
-  implicit def Tuple5Schema[T1 : AvroSchema, T2 : AvroSchema, T3 : AvroSchema, T4 : AvroSchema, T5 : AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5)] {
+  implicit def Tuple5Schema[T1: AvroSchema, T2: AvroSchema, T3: AvroSchema, T4: AvroSchema, T5: AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -240,7 +259,7 @@ object AvroSchema {
     }
   }
 
-  implicit def Tuple6Schema[T1 : AvroSchema, T2 : AvroSchema, T3 : AvroSchema, T4 : AvroSchema, T5 : AvroSchema, T6 : AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5, T6)] {
+  implicit def Tuple6Schema[T1: AvroSchema, T2: AvroSchema, T3: AvroSchema, T4: AvroSchema, T5: AvroSchema, T6: AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5, T6)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -274,7 +293,7 @@ object AvroSchema {
     }
   }
 
-  implicit def Tuple7Schema[T1 : AvroSchema, T2 : AvroSchema, T3 : AvroSchema, T4 : AvroSchema, T5 : AvroSchema, T6 : AvroSchema, T7 : AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5, T6, T7)] {
+  implicit def Tuple7Schema[T1: AvroSchema, T2: AvroSchema, T3: AvroSchema, T4: AvroSchema, T5: AvroSchema, T6: AvroSchema, T7: AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5, T6, T7)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -311,7 +330,7 @@ object AvroSchema {
     }
   }
 
-  implicit def Tuple8Schema[T1 : AvroSchema, T2 : AvroSchema, T3 : AvroSchema, T4 : AvroSchema, T5 : AvroSchema, T6 : AvroSchema, T7 : AvroSchema, T8 : AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5, T6, T7, T8)] {
+  implicit def Tuple8Schema[T1: AvroSchema, T2: AvroSchema, T3: AvroSchema, T4: AvroSchema, T5: AvroSchema, T6: AvroSchema, T7: AvroSchema, T8: AvroSchema] = new AvroSchema[(T1, T2, T3, T4, T5, T6, T7, T8)] {
     type AvroType = GenericData.Record
 
     val sch1 = implicitly[AvroSchema[T1]]
@@ -351,6 +370,17 @@ object AvroSchema {
     }
   }
 
+  /* Actual Avro Generic/SpecificRecord support */
+  implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
+    val sclass = r.erasure.asInstanceOf[Class[T]]
+    def schema: Schema = try { sclass.newInstance().getSchema }
+    catch {
+      case _: Throwable => sys.error("Could not construct a: " + r + " does it have a no-argument constructor?")
+    }
+    type AvroType = T
+    def fromAvro(x: T): T = x
+    def toAvro(x: T): T = x
+  }
 
   /* Helper methods. */
   private def mkRecordSchema(ss: List[AvroSchema[_]]): Schema = {
@@ -369,18 +399,19 @@ trait AvroParsingImplicits {
 
 class EnhancedSymbol(sym: Symbol) extends AvroParsingImplicits {
 
-  /** Pull out any ErrorAction Symbols.
-    *
-    * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
-    *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
-    *       in union branches that may never be followed because the data isn't in that format.
-    */
+  /**
+   * Pull out any ErrorAction Symbols.
+   *
+   * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
+   *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
+   *       in union branches that may never be followed because the data isn't in that format.
+   */
   def getErrors: List[Symbol.ErrorAction] = {
     sym match {
       case errSym: Symbol.ErrorAction => List(errSym)
       case otherSym: Symbol => Option(sym.production).map {
-            _.filterNot(_ == sym).toList.flatMap(_.getErrors)
-          }.getOrElse(Nil)
+        _.filterNot(_ == sym).toList.flatMap(_.getErrors)
+      }.getOrElse(Nil)
     }
   }
 }

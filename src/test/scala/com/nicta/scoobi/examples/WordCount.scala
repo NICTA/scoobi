@@ -1,4 +1,4 @@
-/**
+  /**
  * Copyright 2011,2012 National ICT Australia Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import Scoobi._
  * `test:run-main com.nicta.scoobi.examples.WordCount`
  */
 object WordCount extends ScoobiApp {
+
   def run() {
     // Firstly we load up all the (new-line-separated) words into a DList
     val lines: DList[String] =

@@ -21,7 +21,16 @@ import java.io._
 import impl.slow
 import org.apache.hadoop.io.Writable
 import collection.generic.CanBuildFrom
-import collection.mutable.{ ListBuffer, Builder }
+import collection.mutable.{ListBuffer, Builder}
+import org.apache.avro.io.EncoderFactory
+import com.nicta.scoobi.io.avro.AvroSchema
+import org.apache.avro.mapred.{AvroKey, AvroWrapper}
+import org.apache.avro.hadoop.io.AvroSerialization
+import org.apache.hadoop.io.serializer.{Serializer, Deserializer}
+import org.apache.avro.reflect.ReflectDatumWriter
+import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
+import org.apache.avro.io.DecoderFactory
+import collection.mutable.ArrayBuffer
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
@@ -117,6 +126,33 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       x
     }
   }
+  
+  /**
+   * Avro types
+   */
+   implicit def AvroFmt[T <: SpecificRecordBase : Manifest : AvroSchema] = new AvroWireFormat[T]
+  class AvroWireFormat[T <: SpecificRecordBase : Manifest : AvroSchema] extends WireFormat[T] {
+    def toWire(x : T, out : DataOutput) {
+      val sch = implicitly[AvroSchema[T]].schema
+      val bytestream = new ByteArrayOutputStream()
+      val encoder = EncoderFactory.get.directBinaryEncoder(bytestream, null)
+      val writer : SpecificDatumWriter[T] = new SpecificDatumWriter(sch)
+      writer.write(x,encoder)
+      val outbytes = bytestream.toByteArray()
+      out.writeInt(outbytes.size)
+      out.write(outbytes)
+    }
+    def fromWire(in : DataInput) : T = {
+      val sch = implicitly[AvroSchema[T]].schema
+      val size = in.readInt
+      val bytes : Array[Byte] = new Array[Byte](size)
+      in.readFully(bytes)
+      val decoder = DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(bytes), null)
+      val reader : SpecificDatumReader[T] = new SpecificDatumReader(sch)
+      reader.read(null.asInstanceOf[T], decoder)
+    }
+  }
+
 
   /**
    * "Primitive" types.
@@ -295,4 +331,11 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     def toWire(x: java.util.Date, out: DataOutput) = out.writeLong(x.getTime)
     def fromWire(in: DataInput): java.util.Date = new java.util.Date(in.readLong())
   }
+
+  /*
+   * Shapeless tagged types.
+   */
+  import shapeless.TypeOperators._
+  implicit def taggedTypeWireFormat[T : WireFormat, U]: WireFormat[T @@ U] =
+    implicitly[WireFormat[T]].asInstanceOf[WireFormat[T @@ U]]
 }

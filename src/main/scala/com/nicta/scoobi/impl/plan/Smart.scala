@@ -173,7 +173,7 @@ object Smart {
 
     override val toString = "Load" + id
 
-    val toVerboseString = toString
+    lazy val toVerboseString = toString
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -224,7 +224,7 @@ object Smart {
 
     override val toString = "ParallelDo" + id + (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
 
-    val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -383,7 +383,7 @@ object Smart {
 
     override val toString = "GroupByKey" + id
 
-    val toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -467,7 +467,7 @@ object Smart {
 
     override val toString = "Combine" + id
 
-    val toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -572,7 +572,7 @@ object Smart {
 
     override val toString = "Flatten" + id
 
-    val toVerboseString = toString + "([" + ins.map(_.toVerboseString).mkString(",") + "])"
+    lazy val toVerboseString = toString + "([" + ins.map(_.toVerboseString).mkString(",") + "])"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -642,7 +642,7 @@ object Smart {
 
     override val toString = "Materialize" + id
 
-    val toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
     // Optimisation
     // ~~~~~~~~~~~~
@@ -687,7 +687,7 @@ object Smart {
 
     override val toString = "Op" + id
 
-    val toVerboseString = toString + "[" + in1.toVerboseString + "," + in2.toVerboseString + "]"
+    lazy val toVerboseString = toString + "[" + in1.toVerboseString + "," + in2.toVerboseString + "]"
 
 
     // Optimisation
@@ -730,8 +730,11 @@ object Smart {
 
     override val toString = "Return" + id
 
-    val toVerboseString = toString + "(" + x.toString + ")"
-
+    /**
+     * we don't represent the value contained in this Return node because it is potentially very large
+     * and could trigger and OutOfMemoryError
+     */
+    lazy val toVerboseString = toString
 
     // Optimisation
     // ~~~~~~~~~~~~

@@ -18,6 +18,11 @@ package application
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
+import org.apache.commons.logging.LogFactory
+import sys.process._
+import impl.monitor.Loggable._
+import java.io.File
+import impl.control.SystemProperties
 
 /**
  * This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
@@ -27,11 +32,15 @@ import org.apache.hadoop.fs.Path
  * object because it wouldn't be possible to remove them afterwards.
  *
  */
-trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
+trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with SystemProperties {
+  private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiAppConfiguration")
 
-  lazy val HADOOP_HOME = sys.env.get("HADOOP_HOME").orElse(sys.props.get("HADOOP_HOME"))
+  protected lazy val HADOOP_HOME =
+    getEnv("HADOOP_HOME").
+      orElse(get("HADOOP_HOME")).
+      getOrElse(throw new Exception("The HADOOP_HOME variable is must be set to access the configuration files"))
 
-  lazy val HADOOP_CONF_DIR = HADOOP_HOME.map(_+"/conf/")
+  protected lazy val HADOOP_COMMAND = "which hadoop".lines_!.headOption
 
   /** default configuration */
   implicit def configuration: ScoobiConfiguration = {
@@ -40,12 +49,18 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs {
   }
 
   def configurationFromConfigurationDirectory = {
-    HADOOP_CONF_DIR.map { dir =>
-      val conf = new Configuration
-      conf.addResource(new Path(dir+"core-site.xml"))
-      conf.addResource(new Path(dir+"mapred-site.xml"))
-      conf.addResource(new Path(dir+"hdfs-site.xml"))
-      conf
-    }.getOrElse(new Configuration)
+    val hadoopHomeDir =
+      HADOOP_COMMAND.map(_.replaceAll("/bin/hadoop$", "").debug("got the hadoop directory from the hadoop executable")).
+        getOrElse(HADOOP_HOME.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")))
+
+    val conf = new Configuration
+    Seq("conf", "etc").map(d => hadoopHomeDir+"/"+d+"/").foreach { dir =>
+      Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
+        if (new File(dir+r).exists) {
+          conf.addResource(new Path(dir+r).debug("adding the properties file:"))
+        }
+      }
+    }
+    conf
   }
 }
