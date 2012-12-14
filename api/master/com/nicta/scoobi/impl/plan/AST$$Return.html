@@ -389,13 +389,17 @@
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
         <span class="name">toVerboseString</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Return" class="extype" href="">Return</a> → <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a></dd></dl></div>
+      <p class="shortcomment cmt">we don't represent the value contained in this Return node because it is potentially very large
+and could trigger and OutOfMemoryError
+</p><div class="fullcomment"><div class="comment cmt"><p>we don't represent the value contained in this Return node because it is potentially very large
+and could trigger and OutOfMemoryError
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.AST.Return" class="extype" href="">Return</a> → <a name="com.nicta.scoobi.impl.plan.AST.Node" class="extype" href="AST$$Node.html">Node</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
