@@ -85,7 +85,7 @@ The Scoobi application can now be compiled and run using sbt:
 
 ```
 > sbt compile
-> sbt run-main mypackage.myapp.WordCount input-files output
+> sbt run-main 'mypackage.myapp.WordCount input-files output'
 ```
 
 Your Hadoop configuration will automatically get picked up, and all relevant JARs will be made available.
