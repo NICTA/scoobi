@@ -148,7 +148,7 @@ object FunctionInput {
     private var ix = split.start
     private var x: A = _
 
-    def initialise(split: InputSplit, context: TaskAttemptContext) = {}
+    def initialize(split: InputSplit, context: TaskAttemptContext) = {}
 
     def getCurrentKey(): NullWritable = NullWritable.get
 
