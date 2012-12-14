@@ -79,6 +79,13 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
         }
       }
     }
+    "The run method can be used to persist DLists and DObjects in a ScoobiApp" >> {
+      "this code compiles" ==> {
+        new ScoobiApp {
+          def run() = run(DList(1, 2, 3))
+        }; ok
+      }
+    }
   }
 
   tag("issue 163")
