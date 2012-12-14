@@ -14,7 +14,7 @@ class Persister(sc: ScoobiConfiguration) {
   private val inMemoryMode = InMemoryMode()
   private val hadoopMode   = HadoopMode()
 
-  def persist[A](ps: Seq[Persistent]) {
+  def persist[A](ps: Seq[Persistent[_]]) {
     val asOne = Root(ps.map(_.getComp))
     sc.mode match {
       case InMemory        => inMemoryMode.execute(asOne)

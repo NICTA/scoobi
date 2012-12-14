@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package core
 
 /* A wrapper around an object that is part of the graph of a distributed computation.*/
-trait DObject[A] extends Persistent {
+trait DObject[A] extends Persistent[A] {
   type C <: CompNode
 
   implicit def mwf: ManifestWireFormat[A]

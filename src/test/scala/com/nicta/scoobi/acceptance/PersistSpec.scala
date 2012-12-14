@@ -93,4 +93,12 @@ class PersistSpec extends NictaSimpleJobs {
     // collect results
     (sum.run, max.run, plusOne.run) === (6, 3, Vector(2, 3, 4))
   }
+
+  "A tuple containing 2 objects and a list" >> { implicit sc: ScoobiConfiguration =>
+    val list: DList[Int]    = DList(1, 2, 3)
+    val plusOne: DList[Int] = list.map(_ + 1)
+
+    // execute the computation graph for the 2 DObjects and one DList
+    run(list.sum, list.max, plusOne) === (6, 3, Vector(2, 3, 4))
+  }
 }

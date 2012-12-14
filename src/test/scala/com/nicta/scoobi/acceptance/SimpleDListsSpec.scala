@@ -74,4 +74,12 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     normalize(l1.run) === "Vector((1,Vector(a)))"
     normalize(l3.run) === "Vector((Vector(b),(1,Vector(a))))"
   }
+  "15. " >> { implicit sc: SC =>
+    val words = DList("apple", "orchard", "banana", "cat", "dancer")
+    val letters = DList('a' -> 1, 'o' -> 4)
+
+    val grouped = words.groupBy(word => word.headOption.getOrElse('X'))
+    letters.joinFullOuter(grouped).run.pp must not(throwAn[Exception])
+  }
+
 }
