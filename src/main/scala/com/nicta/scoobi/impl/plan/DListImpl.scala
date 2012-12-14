@@ -60,7 +60,7 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
                 mV:   Manifest[V],
                 wtV:  WireFormat[V]): DList[(K, V)] = new DListImpl(Smart.Combine(comp, f))
 
-  def materialize: DObject[Iterable[A]] = new DObjectImpl(Smart.Materialize(comp))
+  def materialise: DObject[Iterable[A]] = new DObjectImpl(Smart.Materialise(comp))
 
   def groupBarrier: DList[A] = {
     val dofn = new DoFn[A, A] {

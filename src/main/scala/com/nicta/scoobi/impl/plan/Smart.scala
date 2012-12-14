@@ -637,10 +637,10 @@ object Smart {
   }
 
 
-  /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-  case class Materialize[A : Manifest : WireFormat](in: DComp[A, Arr]) extends DComp[Iterable[A], Exp] {
+  /** The Materialise node type specifies the conversion of an Arr DComp to an Exp DComp. */
+  case class Materialise[A : Manifest : WireFormat](in: DComp[A, Arr]) extends DComp[Iterable[A], Exp] {
 
-    override val toString = "Materialize" + id
+    override val toString = "Materialise" + id
 
     lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
 
@@ -649,7 +649,7 @@ object Smart {
     def justCopy(copied: CopyTable, cf: CopyFn[_,_]): (DComp[Iterable[A], Exp], CopyTable, Boolean) = {
       val cfA = cf.asInstanceOf[CopyFn[A, Arr]]
       val (inUpd, copiedUpd, b) = cfA(in, copied)
-      val mat = Materialize(inUpd)
+      val mat = Materialise(inUpd)
       (mat, copiedUpd + (this -> mat), b)
     }
 
@@ -657,7 +657,7 @@ object Smart {
     // Conversion
     // ~~~~~~~~~~
     def convertNew(ci: ConvertInfo): AST.Node[Iterable[A], Exp] = {
-      val node = AST.Materialize(in.convert(ci))
+      val node = AST.Materialise(in.convert(ci))
       ci.envMap += (node -> Env(implicitly[WireFormat[Iterable[A]]], ci.conf))
       insert(ci, node)
     }
@@ -665,13 +665,13 @@ object Smart {
     def convertNew2[K : Manifest : WireFormat : Grouping,
                     V : Manifest : WireFormat]
                     (ci: ConvertInfo): AST.Node[(K,V), Exp] with KVLike[K,V] =
-      sys.error("Materialize can not be in an input to a GroupByKey")
+      sys.error("Materialise can not be in an input to a GroupByKey")
 
     def convertParallelDo[B : Manifest : WireFormat,
                           E : Manifest : WireFormat]
         (ci: ConvertInfo,
          pd: ParallelDo[Iterable[A], B, E])
-      : AST.Node[B, Arr] = sys.error("Materialize can not be an input to ParallelDo")
+      : AST.Node[B, Arr] = sys.error("Materialise can not be an input to ParallelDo")
   }
 
 
@@ -861,7 +861,7 @@ object Smart {
       case GroupByKey(in)               => List(in)
       case Combine(in, _)               => List(in)
       case Flatten(ins)                 => ins
-      case Materialize(in)              => List(in)
+      case Materialise(in)              => List(in)
       case Op(in1, in2, f)              => List(in1, in2)
       case Return(_)                    => Nil
     }
@@ -895,9 +895,9 @@ object Smart {
     }
   }
 
-  def getMaterialize(d: DComp[_, _ <: Shape]): Option[Materialize[_]] = {
+  def getMaterialise(d: DComp[_, _ <: Shape]): Option[Materialise[_]] = {
     d match {
-      case m@Materialize(_) => Some(m)
+      case m@Materialise(_) => Some(m)
       case _                => None
     }
   }
@@ -906,7 +906,7 @@ object Smart {
   def isFlatten(d: DComp[_, _ <: Shape]):     Boolean = getFlatten(d).isDefined
   def isGroupByKey(d: DComp[_, _ <: Shape]):  Boolean = getGroupByKey(d).isDefined
   def isCombine(d: DComp[_, _ <: Shape]):     Boolean = getCombine(d).isDefined
-  def isMaterialize(d: DComp[_, _ <: Shape]): Boolean = getMaterialize(d).isDefined
+  def isMaterialise(d: DComp[_, _ <: Shape]): Boolean = getMaterialise(d).isDefined
 
 
   /*

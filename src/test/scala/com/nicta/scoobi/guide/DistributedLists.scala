@@ -21,7 +21,7 @@ class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
 
 ### Introduction
 
-Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterized by a type and they provide methods that can be used to produce new `DList` objects, often parameterized by higher-order functions. For example:
+Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterised by a type and they provide methods that can be used to produce new `DList` objects, often parameterised by higher-order functions. For example:
 
 ```scala
 // Converting a List[Int] to a List[String] keeping only evens
@@ -73,7 +73,7 @@ The second task is to compute a `DList` of word counts given all the lines of te
 
 3. A `groupByKey` is performed on the `(String, Int)` distributed collection. `groupByKey` has no direct counterpart in `List` (although there is a `groupBy` defined on `DList`s). `groupByKey` must be called on a key-value `DList` object else the program will not type check. The effect of `groupByKey` is to collect all distributed collection values with the same key. In this case the `DList` object is of type `(String, Int)` so a new `DList` object will be returned of type `(String, Iterable[Int])`. That is, the counts for the same words will be grouped together.
 
-4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterized by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
+4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterised by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
 
 The final task is to take the `counts` object, which represents counts for each word, and *persist* it.  In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`. Note that `toTextFile` is used within `persist`. Although not demonstrated in this example, `persist` takes a variable number of arguments, each of which specifies what `DList` is being persisted and how.
 

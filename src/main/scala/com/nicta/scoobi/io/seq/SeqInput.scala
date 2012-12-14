@@ -41,7 +41,7 @@ import impl.collection.BoundedLinearSeq
  * Function for creating a distributed lists from a scala.collection.Seq
  *
  * The code is very similar to the FunctionInput code but it was impossible to refactor due to the impossibility to
- * parameterize InputFormat with values (only classes can be declared in a DataSource)
+ * parameterise InputFormat with values (only classes can be declared in a DataSource)
  */
 object SeqInput {
   lazy val logger = LogFactory.getLog("scoobi.SeqInput")
