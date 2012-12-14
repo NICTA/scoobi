@@ -273,6 +273,7 @@ class MapReduceJob(stepId: Int) {
           fs.mkdirs(outDir)
           val files = outputFiles filter isResultFile(reducer.tag, ix)
           files foreach moveTo(outDir)
+          logger.info("Save output of job to '"+outDir.toString()+"'")
         }
       }
     }
