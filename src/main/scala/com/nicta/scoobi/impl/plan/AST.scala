@@ -75,7 +75,7 @@ object AST {
 
     override def toString = "Mapper" + id
 
-    def toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -109,7 +109,7 @@ object AST {
 
     override def toString = "GbkMapper" + id
 
-    def toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
   }
 
 
@@ -149,7 +149,7 @@ object AST {
 
     override def toString = "Combiner" + id
 
-    def toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -174,7 +174,7 @@ object AST {
 
     override def toString = "GbkReducer" + id
 
-    def toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
   }
 
 
@@ -196,7 +196,7 @@ object AST {
 
     override def toString = "Reducer" + id
 
-    def toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + env.toVerboseString + "," + in.toVerboseString + ")"
   }
 
 
@@ -205,7 +205,7 @@ object AST {
     override def toString = "Load" + id
 
     def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A, Unit] = new TaggedIdentityReducer(tag)
-    def toVerboseString = toString
+    lazy val toVerboseString = toString
   }
 
 
@@ -215,7 +215,7 @@ object AST {
 
     def mkTaggedReducer(tag: Int): TaggedReducer[Int, A, A, Unit] = new TaggedIdentityReducer(tag)
 
-    def toVerboseString = toString + "(" + ins.map(_.toVerboseString).mkString("[", ",", "]") + ")"
+    lazy val toVerboseString = toString + "(" + ins.map(_.toVerboseString).mkString("[", ",", "]") + ")"
   }
 
 
@@ -235,17 +235,17 @@ object AST {
 
     override def toString = "GroupByKey" + id
 
-    def toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
   /** */
-  case class Materialize[A : Manifest : WireFormat](in : Node[A, Arr]) extends Node[Iterable[A], Exp] {
+  case class Materialise[A : Manifest : WireFormat](in : Node[A, Arr]) extends Node[Iterable[A], Exp] {
 
 
-    override def toString = "Materialize" + id
+    override def toString = "Materialise" + id
 
-    def toVerboseString = toString + "(" + in.toVerboseString + ")"
+    lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
 
 
@@ -261,7 +261,7 @@ object AST {
 
     override def toString = "Op" + id
 
-    def toVerboseString = toString + "[" + in1.toVerboseString + "," + in2.toVerboseString + "]"
+    lazy val toVerboseString = toString + "[" + in1.toVerboseString + "," + in2.toVerboseString + "]"
   }
 
 
@@ -271,7 +271,11 @@ object AST {
 
     override def toString = "Return" + id
 
-    def toVerboseString = toString + "(" + x.toString + ")"
+    /**
+     * we don't represent the value contained in this Return node because it is potentially very large
+     * and could trigger and OutOfMemoryError
+     */
+    lazy val toVerboseString = toString
   }
 
 
@@ -292,7 +296,7 @@ object AST {
           case GroupByKey(n)        => visitOnce(n, f, visited + node); f(node)
           case Flatten(ns)          => ns.foreach{visitOnce(_, f, visited + node)}; f(node)
           case Load()               => f(node)
-          case Materialize(n)       => visitOnce(n, f, visited + node); f(node)
+          case Materialise(n)       => visitOnce(n, f, visited + node); f(node)
           case Op(n1, n2, _)        => visitOnce(n1, f, visited + node); visitOnce(n2, f, visited + node); f(node)
           case Return(_)            => f(node)
         }

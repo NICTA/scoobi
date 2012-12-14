@@ -30,7 +30,7 @@ object WordCount extends ScoobiApp {
     val frequencies = lines.flatMap(_.split(" "))
       .map(word => (word, 1))
       .groupByKey
-      .combine((a: Int, b: Int) => a + b).materialize
+      .combine((a: Int, b: Int) => a + b).materialise
 
     println(persist(frequencies).toList.sorted)
   }

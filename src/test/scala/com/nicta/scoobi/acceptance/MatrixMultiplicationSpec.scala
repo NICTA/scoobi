@@ -88,7 +88,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
     fromDelimitedInput(m.map(entry => entry.row + "," + entry.col + "," + entry.value).toSeq: _*).collect { case AnInt(r) :: AnInt(c) :: ADouble(v) :: _ => ((r, c), v) }
 
   def toEntrySet[V](m: DMatrix[Int, V])(implicit conf: ScoobiConfiguration, valV: Manifest[V], wfmtV: WireFormat[V]) =
-    Set[MatrixEntry[V]]() ++ Scoobi.persist(m.materialize).collect { case ((r, c), v) if v != 0 => MatrixEntry[V](r, c, v) }
+    Set[MatrixEntry[V]]() ++ Scoobi.persist(m.materialise).collect { case ((r, c), v) if v != 0 => MatrixEntry[V](r, c, v) }
 
   def toIntEntrySet(m: FieldMatrix[BigReal]): Set[MatrixEntry[Int]] = {
 

@@ -216,7 +216,7 @@ object VectorMode {
   }
 
   private def computeExp[A](comp: Smart.DComp[A, Exp])(implicit conf: ScoobiConfiguration): A = comp match {
-    case Materialize(in)    => computeArr(in).toIterable
+    case Materialise(in)    => computeArr(in).toIterable
     case Op(in1, in2, f)    => f(computeExp(in1), computeExp(in2))
     case Return(x)          => x
   }

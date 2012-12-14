@@ -49,14 +49,14 @@ trait SimpleJobs { outer =>
   }
 
   def run[T](list: =>DList[T])(implicit configuration: ScoobiConfiguration): Seq[T] =
-    Vector(Persister.persist(list.materialize).toSeq:_*)
+    Vector(Persister.persist(list.materialise).toSeq:_*)
 
   def run[T, S](list1: DList[T], list2: DList[S])(implicit configuration: ScoobiConfiguration): (Seq[T], Seq[S]) =
-    Persister.persist((list1.materialize, list2.materialize)).bimap((_.toSeq), (_.toSeq))
+    Persister.persist((list1.materialise, list2.materialise)).bimap((_.toSeq), (_.toSeq))
 
   def run[T](lists: Seq[DList[T]])(implicit configuration: ScoobiConfiguration): Seq[Seq[T]] =
     // E.T. I don't know how to avoid the asInstanceOf here :-(
-    Persister.persist(lists.map(_.materialize)).asInstanceOf[Seq[Iterable[T]]].map(_.toSeq)
+    Persister.persist(lists.map(_.materialise)).asInstanceOf[Seq[Iterable[T]]].map(_.toSeq)
 
   def run[T](o: DObject[T])(implicit configuration: ScoobiConfiguration): T =
     Persister.persist(o)

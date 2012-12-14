@@ -240,7 +240,7 @@ object Persister extends LowImplicitsPersister {
       case GroupByKey(in)               => addLoads(set, in)
       case Combine(in, _)               => addLoads(set, in)
       case Flatten(ins)                 => ins.foldLeft(set) { case (s, in) => addLoads(s, in) }
-      case Materialize(in)              => addLoads(set, in)
+      case Materialise(in)              => addLoads(set, in)
       case Op(in1, in2, f)              => { val s1 = addLoads(set, in1); addLoads(s1, in2) }
       case Return(_)                    => set
     }

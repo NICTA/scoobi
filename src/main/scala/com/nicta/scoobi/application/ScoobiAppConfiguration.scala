@@ -25,7 +25,7 @@ import java.io.File
 import impl.control.SystemProperties
 
 /**
- * This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
+ * This trait provides a ScoobiConfiguration object initialised with the configuration files found in the
  * $HADOOP_HOME/conf directory.
  *
  * If the ScoobiArgs indicates a local execution the configuration files are not added to the Hadoop configuration

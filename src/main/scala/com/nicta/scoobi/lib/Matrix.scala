@@ -32,7 +32,7 @@ case class DVector[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFormat
 
 object InMemVector {
   def fromDList[Elem: Manifest: WireFormat: Ordering, T: WireFormat: Manifest](in: DList[(Elem, T)]): InMemVector[Elem, T] =
-    InMemVector(in.materialize.map(xs => xs.toMap))
+    InMemVector(in.materialise.map(xs => xs.toMap))
 
 }
 
@@ -50,7 +50,7 @@ case class InMemVector[Elem: Manifest: WireFormat: Ordering, T: Manifest: WireFo
 
 object InMemDenseVector {
   def fromDList[T: WireFormat: Manifest](in: DList[(Int, T)], zero: T): InMemDenseVector[T] =
-    InMemDenseVector(in.materialize.map(xs => {
+    InMemDenseVector(in.materialise.map(xs => {
       val buff = scala.collection.mutable.ArrayBuffer[T]()
 
       xs.foreach {

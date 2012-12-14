@@ -142,18 +142,6 @@ trait Configurations {
     /** @return a string with all the key/values, one per line */
     def show = conf.getValByRegex(".*").entrySet().mkString("\n")
 
-    /**
-     * execute a function with a configuration having no classLoader.
-     *
-     * The classLoader is set back on the configuration after f has been executed.
-     * This is used during the serialization of objects to avoid the classLoader to be inadvertently serialized
-     */
-    def withoutClassLoader[T](f: Configuration => T): T = {
-      val classLoader = conf.getClassLoader
-      conf.setClassLoader(null)
-      try { f(conf) }
-      finally { conf.setClassLoader(classLoader) }
-    }
   }
 
   /**
