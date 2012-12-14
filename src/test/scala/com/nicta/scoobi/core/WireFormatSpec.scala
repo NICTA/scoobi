@@ -52,11 +52,11 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     serializationIsOkFor[(Int, String)]
     serializationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
     serializationIsOkFor[Seq[Int]]
-    "but a null traversable cannot be serialized" >> {
+    "but a null traversable cannot be serialised" >> {
       implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
     } lt;
     serializationIsOkFor[Map[Int, String]]
-    "but a null map cannot be serialized" >> {
+    "but a null map cannot be serialised" >> {
       implicitly[WireFormat[Map[Int, String]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
     } lt;
     serializationIsOkFor[Array[Int]]
@@ -88,7 +88,7 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
       serializationIsOkFor[WritableDoubleStringInt]
 
       "this method is (much) more efficient than the default one" >> prop {x: WritableDoubleStringInt =>
-        serialize(x).length must be_<(serialize(x.toDefault)(AnythingFmt[DefaultDoubleStringInt]).length)
+        serialise(x).length must be_<(serialise(x.toDefault)(AnythingFmt[DefaultDoubleStringInt]).length)
       }
     }
     "for a nested case class" >> {
@@ -98,7 +98,7 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
       serializationIsOkFor[WritableStringNested]
 
       "this method is (much) more efficient than the default one" >> prop { x: WritableStringNested =>
-          serialize(x).length must be_<(serialize(x.toDefault)(AnythingFmt[DefaultStringNested]).length)
+          serialise(x).length must be_<(serialise(x.toDefault)(AnythingFmt[DefaultStringNested]).length)
       }
     }
 
@@ -126,18 +126,18 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
   }
 
   def serializationIsOkFor[T: WireFormat : Arbitrary : Manifest] =
-    implicitly[Manifest[T]].erasure.getSimpleName + " serializes correctly" >>
+    implicitly[Manifest[T]].erasure.getSimpleName + " serialises correctly" >>
       forAll(implicitly[Arbitrary[T]].arbitrary)((t: T) => serializationIsOkWith[T](t))
 
-  def serializationIsOkWith[T: WireFormat](x: T): Boolean = deserialize[T](serialize(x)) must_== x
+  def serializationIsOkWith[T: WireFormat](x: T): Boolean = deserialise[T](serialise(x)) must_== x
 
-  def serialize[T: WireFormat](obj: T): Array[Byte] = {
+  def serialise[T: WireFormat](obj: T): Array[Byte] = {
     val bs = new ByteArrayOutputStream
     implicitly[WireFormat[T]].toWire(obj, new DataOutputStream(bs))
     bs.toByteArray
   }
 
-  def deserialize[T: WireFormat](raw: Array[Byte]): T = {
+  def deserialise[T: WireFormat](raw: Array[Byte]): T = {
     val bais = new ByteArrayInputStream(raw)
     implicitly[WireFormat[T]].fromWire(new DataInputStream(bais))
   }

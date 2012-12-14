@@ -25,7 +25,7 @@ package text
 private[scoobi]
 trait Plural {
 
-  /**@return a Noun object which can be pluralized */
+  /**@return a Noun object which can be pluralised */
   implicit def noun(s: String) = Noun(s)
 
   case class Noun(s: String) {
@@ -38,21 +38,21 @@ trait Plural {
     def bePlural(v: Long) = if (v > 1) s + "are" else s + "is"
   }
 
-  /**@return a Quantity which can be applied to a string to pluralize it */
+  /**@return a Quantity which can be applied to a string to pluralise it */
   implicit def quantity(i: Int) = Quantity(i)
 
   case class Quantity(i: Int) {
-    /**@return a pluralized string describing this quantity */
+    /**@return a pluralised string describing this quantity */
     def qty(s: String) = i.toString + " " + s.plural(i)
 
     /**
-     * @return a Option with a pluralized string describing this quantity if it is
+     * @return a Option with a pluralised string describing this quantity if it is
      *         greater than 0
      */
     def optQty(s: String): Option[String] = if (i > 0) Some(qty(s)) else None
 
     /**
-     * @return a Option with a non-pluralized string describing this quantity if it is
+     * @return a Option with a non-pluralised string describing this quantity if it is
      *         greater than 0
      */
     def optInvariantQty(s: String): Option[String] = if (i > 0) Some(i.toString + " " + s) else None

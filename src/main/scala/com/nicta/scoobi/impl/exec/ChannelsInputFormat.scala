@@ -240,9 +240,9 @@ class TaggedInputSplit
     inputFormatClass = Class.forName(inputFormatClassName).asInstanceOf[Class[_ <: InputFormat[_,_]]]
 
     val factory: SerializationFactory = new SerializationFactory(conf)
-    val deserializer: Deserializer[InputSplit] = factory.getDeserializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
-    deserializer.open(in.asInstanceOf[DataInputStream])
-    inputSplit = deserializer.deserialize(inputSplit)
+    val deserialiser: Deserializer[InputSplit] = factory.getDeserializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
+    deserialiser.open(in.asInstanceOf[DataInputStream])
+    inputSplit = deserialiser.deserialize(inputSplit)
   }
 
   def write(out: DataOutput) {
@@ -251,9 +251,9 @@ class TaggedInputSplit
     Text.writeString(out, inputFormatClass.getName)
 
     val factory: SerializationFactory = new SerializationFactory(conf)
-    val serializer: Serializer[InputSplit] = factory.getSerializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
-    serializer.open(out.asInstanceOf[DataOutputStream])
-    serializer.serialize(inputSplit)
+    val serialiser: Serializer[InputSplit] = factory.getSerializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
+    serialiser.open(out.asInstanceOf[DataOutputStream])
+    serialiser.serialize(inputSplit)
   }
 
   def getConf: Configuration = conf

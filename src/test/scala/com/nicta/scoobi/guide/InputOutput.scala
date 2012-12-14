@@ -435,7 +435,7 @@ The core role of a `DataSource` is to provide a mechanism for taking the key-val
  * The `InputFormat` class will produce key-value records of type `K`-`V`
  * `inputConverter` specifies an `InputConverter` object
  * The `InputConverter` object implments `fromKeyValue` which converts a key of type `K` and a value of type `V` (as produced by the `InputFormat`) to a value of type `A`
- * Calling `fromSource` with this `DataSource` object will produce a `DList` parmaterized on type `A`
+ * Calling `fromSource` with this `DataSource` object will produce a `DList` parameterised on type `A`
 
 The other methods that must be implemented in the `DataSource` trait provide hooks for configuration and giving Scoobi some visibility of the data source:
 

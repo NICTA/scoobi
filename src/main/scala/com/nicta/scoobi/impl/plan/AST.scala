@@ -240,10 +240,10 @@ object AST {
 
 
   /** */
-  case class Materialize[A : Manifest : WireFormat](in : Node[A, Arr]) extends Node[Iterable[A], Exp] {
+  case class Materialise[A : Manifest : WireFormat](in : Node[A, Arr]) extends Node[Iterable[A], Exp] {
 
 
-    override def toString = "Materialize" + id
+    override def toString = "Materialise" + id
 
     lazy val toVerboseString = toString + "(" + in.toVerboseString + ")"
   }
@@ -296,7 +296,7 @@ object AST {
           case GroupByKey(n)        => visitOnce(n, f, visited + node); f(node)
           case Flatten(ns)          => ns.foreach{visitOnce(_, f, visited + node)}; f(node)
           case Load()               => f(node)
-          case Materialize(n)       => visitOnce(n, f, visited + node); f(node)
+          case Materialise(n)       => visitOnce(n, f, visited + node); f(node)
           case Op(n1, n2, _)        => visitOnce(n1, f, visited + node); visitOnce(n2, f, visited + node); f(node)
           case Return(_)            => f(node)
         }

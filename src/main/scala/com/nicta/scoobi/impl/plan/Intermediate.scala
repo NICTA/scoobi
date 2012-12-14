@@ -447,13 +447,13 @@ object Intermediate {
 
     /*
      * Checks whether a given node is an output from this MSCR and is input to another MSCR
-     * or a Materialize node.
+     * or a Materialise node.
      * The parameter @mscrs@ may or may not include this MSCR
      */
     def connectsToOtherNode(d: DComp[_, _ <: Shape], mscrs: Iterable[MSCR], g: DGraph) =
       !hasInput(d) &&
       hasOutput(d) &&
-      (mscrs.exists(_.hasInput(d)) || g.succs.get(d).map(_.exists(isMaterialize(_))).getOrElse(false))
+      (mscrs.exists(_.hasInput(d)) || g.succs.get(d).map(_.exists(isMaterialise(_))).getOrElse(false))
 
     def convert(ci: ConvertInfo): CMSCR = {
       val cInputChannels:  Set[CInputChannel]  = inputChannels.map{_.convert(ci)}
@@ -596,7 +596,7 @@ object Intermediate {
           case gbk@GroupByKey(in)         => Set(gbk) ++ dependentGbks(in)
           case Combine(in, _)             => dependentGbks(in)
           case Flatten(ins)               => ins.map(dependentGbks(_).toList).flatten.toSet
-          case Materialize(in)            => dependentGbks(in)
+          case Materialise(in)            => dependentGbks(in)
           case Op(in1, in2, _)            => dependentGbks(in1) ++ dependentGbks(in2)
           case Return(_)                  => Set.empty
         }
@@ -716,13 +716,13 @@ object Intermediate {
         maybeOC.getOrElse(oc)
       }
 
-      /** Follow predecessors up the graph finding any related GroupByKey nodes after any Materialize nodes */
-      def hasMaterializedPredWithRelatedPreds(node: DComp[_, _ <: Shape], foundMaterialize: Boolean = false): Boolean = {
+      /** Follow predecessors up the graph finding any related GroupByKey nodes after any Materialise nodes */
+      def hasMaterialisedPredWithRelatedPreds(node: DComp[_, _ <: Shape], foundMaterialise: Boolean = false): Boolean = {
         g.preds.get(node).map(_.exists(_ match {
-          case a if(isGroupByKey(a))  => (foundMaterialize && (related.gbks.contains(a) ||
-                                          hasMaterializedPredWithRelatedPreds(a, foundMaterialize)))
-          case a if(isMaterialize(a)) => hasMaterializedPredWithRelatedPreds(a, true)
-          case a                      => hasMaterializedPredWithRelatedPreds(a, foundMaterialize)
+          case a if(isGroupByKey(a))  => (foundMaterialise && (related.gbks.contains(a) ||
+                                          hasMaterialisedPredWithRelatedPreds(a, foundMaterialise)))
+          case a if(isMaterialise(a)) => hasMaterialisedPredWithRelatedPreds(a, true)
+          case a                      => hasMaterialisedPredWithRelatedPreds(a, foundMaterialise)
         })).getOrElse(false)
       }
 
@@ -732,12 +732,12 @@ object Intermediate {
             for { d_                      <- getSingleSucc(d)
                   reducer                 <- getParallelDo(d_)
                   hasNoSuccessors         <- Some(!g.succs.get(reducer).isDefined)
-                  hasDepPredecssors       <- Some(hasMaterializedPredWithRelatedPreds(reducer))
-                  hasMaterializeSucessor  <- Some(g.succs.get(reducer).map(_.exists(isMaterialize(_))).getOrElse(false))
+                  hasDepPredecssors       <- Some(hasMaterialisedPredWithRelatedPreds(reducer))
+                  hasMaterialiseSucessor  <- Some(g.succs.get(reducer).map(_.exists(isMaterialise(_))).getOrElse(false))
                   hasGroupBarrier         <- Some(reducer.groupBarrier)
                   hasFuseBarrier          <- Some(reducer.fuseBarrier)
 
-            } yield (if ((hasNoSuccessors || hasMaterializeSucessor || hasGroupBarrier || hasFuseBarrier) && !hasDepPredecssors) { oc.addReducer(reducer) } else { oc })
+            } yield (if ((hasNoSuccessors || hasMaterialiseSucessor || hasGroupBarrier || hasFuseBarrier) && !hasDepPredecssors) { oc.addReducer(reducer) } else { oc })
           maybeOC.getOrElse(oc)
         }
 

@@ -34,21 +34,21 @@ Scoobi provides the distributed object abstraction as a solution for these cases
 
 After computing a `DList` on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a `DList` with relatively few entires, *relative* meaning the entries could fit into the memory of a single machine.
 
-To bring the contents of such a `DList` on to the client, you can use the `materialize` method:
+To bring the contents of such a `DList` on to the client, you can use the `materialise` method:
 
 ```scala
 val xs: DList[Int] = ...
-val ys: DObject[Iterable[Int]] = persist(xs.materialize)
+val ys: DObject[Iterable[Int]] = persist(xs.materialise)
 // do something on the client
 val zs: Iterable[Int] = ys map { .... }
 ```
 
-The `DList` `materialize` method applied to a `DList[A]` will return a `DObject[Iterable[A]]`. Persisting the `DObject` will force it, and its dependencies, to be computed, and returin an `Iterable[A]`. The `Iterable` can then be used as the basis for client-based computations.
+The `DList` `materialise` method applied to a `DList[A]` will return a `DObject[Iterable[A]]`. Persisting the `DObject` will force it, and its dependencies, to be computed, and returin an `Iterable[A]`. The `Iterable` can then be used as the basis for client-based computations.
 
 
 ### Reduction operations
 
-In addition to `materialize`, the `DList` trait implements a series or *reduction operators* which all return `DObjects`. For example, `sum` can be applied to any `DList` of `Numeric` types and returns a `DObject` - a delayed computation of the sum of all elements in the `DList`:
+In addition to `materialise`, the `DList` trait implements a series or *reduction operators* which all return `DObjects`. For example, `sum` can be applied to any `DList` of `Numeric` types and returns a `DObject` - a delayed computation of the sum of all elements in the `DList`:
 
 ```scala
 val floats: DList[Float] = ...

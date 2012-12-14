@@ -27,7 +27,7 @@ import application.ScoobiConfiguration._
 import java.io.OutputStream
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
-  * XStream to serialize objects to XML strings and then send out via Hadoop's
+  * XStream to serialise objects to XML strings and then send out via Hadoop's
   * distributed cache. Two APIs are provided for pushing and pulling objects. */
 object DistCache {
 
@@ -36,7 +36,7 @@ object DistCache {
   xstream.omitField(classOf[Configuration], "CACHE_CLASSES")
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
-    * serialized object. */
+    * serialised object. */
   private def mkPath(configuration: Configuration, tag: String): Path = {
     val scratchDir = new Path(configuration.workingDirectory, "dist-objs")
     new Path(scratchDir, tag)
@@ -44,23 +44,23 @@ object DistCache {
 
   /** Distribute an object to be available for tasks in the current job. */
   def pushObject[T](conf: Configuration, obj: T, tag: String) {
-    serialize[T](conf, obj, tag) { path =>
+    serialise[T](conf, obj, tag) { path =>
       DistributedCache.addCacheFile(path.toUri, conf)
     }
   }
 
   /**
-   * serialize an object to a path
+   * serialise an object to a path
    */
-  def serialize[T](conf: Configuration, obj: T, tag: String)(action: Path => Unit) {
-    /* Serialize */
+  def serialise[T](conf: Configuration, obj: T, tag: String)(action: Path => Unit) {
+    /* Serialise */
     val path = mkPath(conf, tag)
     val dos = path.getFileSystem(conf).create(path)
-    serialize(conf, obj, dos)
+    serialise(conf, obj, dos)
     action(path)
   }
 
-  def serialize(conf: Configuration, obj: Any, out: OutputStream) {
+  def serialise(conf: Configuration, obj: Any, out: OutputStream) {
     try { xstream.toXML(obj, out) }
     finally { out.close()  }
   }
@@ -71,14 +71,14 @@ object DistCache {
     val path = mkPath(conf, tag)
     val cacheFiles = DistributedCache.getCacheFiles(conf)
     cacheFiles.find(_.toString == path.toString).flatMap { uri =>
-      deserialize(conf)(new Path(uri.toString))
+      deserialise(conf)(new Path(uri.toString))
     }
   }
 
   /**
-   * deserialize an object from a path file
+   * deserialise an object from a path file
    */
-  def deserialize[T](conf: Configuration) = (path: Path) => {
+  def deserialise[T](conf: Configuration) = (path: Path) => {
     val dis = path.getFileSystem(conf).open(path)
     try {
       Some(xstream.fromXML(dis).asInstanceOf[T])

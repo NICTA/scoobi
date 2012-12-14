@@ -58,11 +58,11 @@ See the [install instructions](${SCOOBI_GUIDE_OFFICIAL_DIR}Quick%20Start.html#In
  * Strong typing - the APIs are strongly typed so as to catch more errors at compile time, a
  major improvement over standard Hadoop MapReduce where type-based run-time errors often occur
 
- * Ability to parameterize with rich [data types](${SCOOBI_GUIDE_OFFICIAL_DIR}Data%20Types.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterized by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
+ * Ability to parameterise with rich [data types](${SCOOBI_GUIDE_OFFICIAL_DIR}Data%20Types.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterised by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
  * Support for multiple types of I/O - currently built-in support for [text](${SCOOBI_GUIDE_OFFICIAL_DIR}Input%20and%20Output.html#Text+files), [Sequence](${SCOOBI_GUIDE_OFFICIAL_DIR}Input%20and%20Output.html#Sequence+files) and [Avro](${SCOOBI_GUIDE_OFFICIAL_DIR}Input%20and%20Output.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${SCOOBI_GUIDE_OFFICIAL_DIR}Input%20and%20Output.html#Custom+sources+and+sinks)
 
- * Optimization across library boundaries - the optimizer and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
+ * Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 
  * It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and consise syntax that makes developing Hadoop applications very productive
 
