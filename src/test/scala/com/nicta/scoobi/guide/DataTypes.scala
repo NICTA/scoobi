@@ -22,7 +22,7 @@ class DataTypes extends ScoobiPage { def is = "Data Types".title^
   """
 ### Standard types
 
-We've seen in many of the examples that it's possible for `DList` objects to be parameterized by normal Scala primitive (*value*) types. Not surprisingly, Scoobi supports `DList` objects that are parameterized by any of the Scala primitive types:
+We've seen in many of the examples that it's possible for `DList` objects to be parameterised by normal Scala primitive (*value*) types. Not surprisingly, Scoobi supports `DList` objects that are parameterised by any of the Scala primitive types:
 
     val x: DList[Byte] = ...
     val x: DList[Char] = ...
@@ -34,7 +34,7 @@ And as we've also see, although not a primitive, Scoobi supports `DList`s of `St
 
     val x: DList[String] = ...
 
-Some of the examples also use `DList` objects that are parameterized by a pair (Scala [`Tuple2`](http://www.scala-lang.org/api/current/scala/Tuple2.html) type). In fact, Scoobi supports `DList` objects that are parameterized by Scala tuples up to arity 8, and in addition, supports arbitrary nesting:
+Some of the examples also use `DList` objects that are parameterised by a pair (Scala [`Tuple2`](http://www.scala-lang.org/api/current/scala/Tuple2.html) type). In fact, Scoobi supports `DList` objects that are parameterised by Scala tuples up to arity 8, and in addition, supports arbitrary nesting:
 
     val x: DList[(Int, String)] = ...
     val x: DList[(String, Long)] = ...
@@ -42,7 +42,7 @@ Some of the examples also use `DList` objects that are parameterized by a pair (
     val x: DList[(Int, (String, String), Int, (Long, Long, Long))] = ...
     val x: DList[(Int, (String, (Long, Long)), Char)] = ...
 
-Finally, Scoobi also supports `DList` objects that are parameterized by the Scala [`Option`](http://www.scala-lang.org/api/rc/scala/Option.html)
+Finally, Scoobi also supports `DList` objects that are parameterised by the Scala [`Option`](http://www.scala-lang.org/api/rc/scala/Option.html)
 and [`Either`](http://www.scala-lang.org/api/current/scala/Either.html) types, which can also be combined with any of the `Tuple` and primitive types:
 
     val x: Option[Int] = ...
@@ -54,7 +54,7 @@ and [`Either`](http://www.scala-lang.org/api/current/scala/Either.html) types, w
     val x: Either[Long, Either[String, Int]] = ...
     val x: Either[Int, Option[Long]] = ...
 
-Notice that in all these cases, the `DList` object is parameterized by a *standard* Scala type and not some wrapper type. This is really convenient. It means, for example, that the use of a higher-order function like `map` can directly call any of the methods associated with those types. In contrast, programming MapReduce jobs directly using Hadoop's API requires that all types implement the [`Writable`](http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/io/Writable.html) interface, resulting in the use of wrapper types such as `IntWritable` rather than just `int`. Of course the reason for this is that `Writable` specifies methods for serialization and deserialization of data within the Hadoop framework. However, given that `DList` objects eventually result in code that is executed by the Hadoop framework, how is serialization and deserialization specified?
+Notice that in all these cases, the `DList` object is parameterised by a *standard* Scala type and not some wrapper type. This is really convenient. It means, for example, that the use of a higher-order function like `map` can directly call any of the methods associated with those types. In contrast, programming MapReduce jobs directly using Hadoop's API requires that all types implement the [`Writable`](http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/io/Writable.html) interface, resulting in the use of wrapper types such as `IntWritable` rather than just `int`. Of course the reason for this is that `Writable` specifies methods for serialization and deserialization of data within the Hadoop framework. However, given that `DList` objects eventually result in code that is executed by the Hadoop framework, how is serialization and deserialization specified?
 
 ### Custom types
 
@@ -66,7 +66,7 @@ Scoobi requires that the type parameterizing a `DList` object has an implementat
 
 If the compiler cannot find a `WireFormat` implementation for the type parameterizing a specific `DList` object, that code will not compile.  Implementations of `WireFormat` specify serialization and deserialization in their `toWire` and `fromWire` methods, which end up finding their way into `Writable`'s `write` and `readFields` methods.
 
-To make life easy, the [`WireFormat`](${SCOOBI_API_PAGE}#com.nicta.scoobi.WireFormat$) object includes `WireFormat` implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with `DList` objects and that set can include types that already exist, maybe even in some other compilation unit.  So long as a type has a `WireFormat` implementation, it can parameterize a `DList`. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with `DList[Tick]` objects. We can do that if we write a `WireFormat` implementation for `Tick`:
+To make life easy, the [`WireFormat`](${SCOOBI_API_PAGE}#com.nicta.scoobi.WireFormat$) object includes `WireFormat` implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with `DList` objects and that set can include types that already exist, maybe even in some other compilation unit.  So long as a type has a `WireFormat` implementation, it can parameterise a `DList`. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with `DList[Tick]` objects. We can do that if we write a `WireFormat` implementation for `Tick`:
 
     case class Tick(val date: Int, val symbol: String, val price: Double)
 
@@ -120,7 +120,7 @@ Being able to have `DList` objects of custom types is a huge productivity boost.
 
     val ticks: DList[Tick] = ...  /* Amazingly, still OK */
 
-Of course, this will also extend to other case classes as long as they have `WireFormat` implementations. Thus, it's possible to have nested case classes that can parameterize `DList` objects:
+Of course, this will also extend to other case classes as long as they have `WireFormat` implementations. Thus, it's possible to have nested case classes that can parameterise `DList` objects:
 
     case class PriceAttr(price: Double, high_low: (Double, Double))
     implicit val priceAttrFmt = mkCaseWireFormat(PriceAttr, PriceAttr.unapply _)
@@ -145,7 +145,7 @@ Temporarily, during your development, you can import a default WireFormat instan
 
      val timestamps: DList[Timestamps] = ...  /* Compiles OK */
 
-The `AnythingFmt` is a `WireFormat` using Java serialization to serialize/deserialize the objects. It is however very ineffecient so it is not provided as an implicit conversion, you need to explicitely import it to be able to use it.
+The `AnythingFmt` is a `WireFormat` using Java serialization to serialise/deserialise the objects. It is however very ineffecient so it is not provided as an implicit conversion, you need to explicitely import it to be able to use it.
 
   """
 }

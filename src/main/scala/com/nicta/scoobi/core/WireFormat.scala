@@ -249,10 +249,10 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
    */
   private[scoobi] case class TraversableWireFormat[T: WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
     def toWire(x: CC, out: DataOutput) = {
-      require(x != null, "Cannot serialize a null Traversable. Consider using an empty collection, or an Option[Traversable]")
+      require(x != null, "Cannot serialise a null Traversable. Consider using an empty collection, or an Option[Traversable]")
       // The "naive" approach for persisting a Traversable would be to persist the number of elements, then the
       // elements themselves. However, if this Traversable is an Iterator, taking the size will consume the whole iterator
-      // and the elements will not be serialized.
+      // and the elements will not be serialised.
       //
       // So the strategy here is to only persist 1000 elements at the time, bringing them into memory to know their size
       // and iterate on them. We signal the end of all the "chunks" by persisting an empty iterator which will have a size

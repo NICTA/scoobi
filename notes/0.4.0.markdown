@@ -19,7 +19,7 @@
 
  * New [website](http://nicta.github.com/scoobi) and [User Guide](http://nicta.github.com/scoobi/guide/User%20Guide.html#User+Guide)
  * Lots of bug fixes
- * Improvements in optimizer
+ * Improvements in optimiser
  * MSCR now imposes less overhead on objects that need no fusion
  * Join/coGroup API cleaned up, and performance improved
  * Better support for other filesystems such as S3
