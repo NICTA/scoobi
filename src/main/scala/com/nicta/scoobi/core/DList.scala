@@ -289,10 +289,12 @@ object DList {
     new DListImpl(source)
 
   /** Concatenate all distributed lists into a single distributed list. */
+  @deprecated("Use the DList ++ method instead.", "0.7.0")
   def concat[A : Manifest : WireFormat](xs: DList[A], xss: List[DList[A]]): DList[A] =
     xs ++ (xss: _*)
 
   /** Concatenate all distributed lists into a single distributed list. */
+  @deprecated("Use the DList ++ method instead.", "0.7.0")
   def concat[A : Manifest : WireFormat](xs: DList[A], xss: DList[A]*): DList[A] = concat(xs, xss.toList)
 
   /** Create a distributed list containing values of a given function over a range of
