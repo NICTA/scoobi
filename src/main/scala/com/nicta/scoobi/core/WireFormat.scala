@@ -477,7 +477,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /*
    * Either types.
    */
-  implicit def EitherFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new WireFormat[Either[T1, T2]] {
+  implicit def EitherFmt[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) = new EitherWireFormat[T1, T2]
+  class EitherWireFormat[T1, T2](implicit wt1: WireFormat[T1], wt2: WireFormat[T2]) extends WireFormat[Either[T1, T2]] {
     def toWire(x: Either[T1, T2], out: DataOutput) = x match {
       case Left(x) => { out.writeBoolean(true); wt1.toWire(x, out) }
       case Right(x) => { out.writeBoolean(false); wt2.toWire(x, out) }

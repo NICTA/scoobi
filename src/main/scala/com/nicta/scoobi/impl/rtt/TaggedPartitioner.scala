@@ -49,11 +49,11 @@ class TaggedPartitionerClassBuilder
 
     tags.foreach { case (t, (_, _, grp)) =>
       /* 'grouperN' - Grouping type class field for each tagged-type. */
-      addTypeClassModel(grp, "grouper" + t)
+      addGroupingField(grp, "grouper" + t)
     }
 
-    /* 'getPartition' - do hash partitioning on the key value that is tagged. */
-    val getPartitionCode =
+    /** 'getPartition' - do hash partitioning on the key value that is tagged. */
+    lazy val getPartitionCode =
       "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
       "switch(tag) {" +
         tags.keys.map { t =>
@@ -61,14 +61,8 @@ class TaggedPartitionerClassBuilder
         }.mkString +
         "default: return 0;" +
       "}"
-    val getPartitionMethod = CtNewMethod.make(CtClass.intType,
-                                              "getPartition",
-                                              Array(pool.get("java.lang.Object"),
-                                                    pool.get("java.lang.Object"),
-                                                    CtClass.intType),
-                                              Array(),
-                                              "{" + getPartitionCode + "}",
-                                              ctClass)
-    ctClass.addMethod(getPartitionMethod)
+
+    addMethod("int", "getPartition", Array("java.lang.Object", "java.lang.Object", "int"),
+              "{" + getPartitionCode + "}")
   }
 }

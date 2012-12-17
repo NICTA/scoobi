@@ -46,19 +46,19 @@ class TaggedKeyClassBuilder
 
   override def extendClass: Class[_] = classOf[TaggedKey]
 
-  override def build = {
+  override def build() {
 
     /* TaggedKey sub-classes are super-classes of TaggedValue sub-classes. */
-    super.build
+    super.build()
 
     tags.foreach { case (t, (m, _, grp)) =>
       /* 'grouperN' - Grouping type class field for each tagged-type. */
-      addTypeClassModel(grp, "grouper" + t)
+      addGroupingField(grp, "grouper" + t)
     }
 
     /* 'compareTo' - perform comparison on tags first then, if equal, perform
      * comparison on selected tagged value using 'grouperN'. */
-    val compareToCode =
+    lazy val compareToCode =
       className + " tk = (" + className + ")$1;" +
       "if (tk.tag() == this.tag()) {" +
         "switch(this.tag()) {" +
@@ -72,12 +72,6 @@ class TaggedKeyClassBuilder
       "} else {" +
         "return this.tag() - tk.tag();" +
       "}"
-    val compareToMethod = CtNewMethod.make(CtClass.intType,
-                                           "compareTo",
-                                           Array(pool.get("java.lang.Object")),
-                                           Array(),
-                                           "{" + compareToCode + "}",
-                                           ctClass)
-    ctClass.addMethod(compareToMethod)
+    addMethod("int", "compareTo", Array("java.lang.Object"), "{" + compareToCode + "}")
   }
 }

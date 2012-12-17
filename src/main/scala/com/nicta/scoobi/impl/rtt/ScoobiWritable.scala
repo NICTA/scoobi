@@ -59,35 +59,17 @@ class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: WireFormat[_]
 
   def extendClass: Class[_] = classOf[ScoobiWritable[_]]
 
-  def build = {
+  def build() {
     /* Deal with WireFormat type class. */
-    addTypeClassModel(wt, "writer")
+    addWireFormatField(wt, "writer")
 
     /* 'write' - method to override from Writable */
-    val writeMethod = CtNewMethod.make(CtClass.voidType,
-                                       "write",
-                                       Array(pool.get("java.io.DataOutput")),
-                                       Array(),
-                                       "writer.toWire(" + toObject("get()", m) + ", $1);",
-                                       ctClass)
-    ctClass.addMethod(writeMethod)
+    addMethod("void", "write", parameters = Array("java.io.DataOutput"), "writer.toWire(" + toObject("get()", m) + ", $1);")
 
     /* 'readFields' = method to override from Writable */
-    val readFieldsMethod = CtNewMethod.make(CtClass.voidType,
-                                            "readFields",
-                                            Array(pool.get("java.io.DataInput")),
-                                            Array(),
-                                            "set(" + fromObject("writer.fromWire($1)", m) + ");",
-                                            ctClass)
-    ctClass.addMethod(readFieldsMethod)
+    addMethod("void", "readFields", parameters = Array("java.io.DataInput"), "set(" + fromObject("writer.fromWire($1)", m) + ");")
 
     /* 'toString' = method to override from Writable */
-    val toStringMethod = CtNewMethod.make(pool.get("java.lang.String"),
-                                          "toString",
-                                          Array(),
-                                          Array(),
-                                          "return get().toString();",
-                                          ctClass)
-    ctClass.addMethod(toStringMethod)
+    addMethod("java.lang.String", "toString", Array(), "return get().toString();")
   }
 }

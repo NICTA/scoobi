@@ -49,15 +49,13 @@ class TaggedGroupingComparatorClassBuilder
 
     tags.foreach { case (t, (_, wt, grp)) =>
       /* 'writerN' - WireFormat type class field for each tagged-type. */
-      addTypeClassModel(wt, "writer" + t)
+      addWireFormatField(wt, "writer" + t)
       /* 'grouperN' - Grouping type class field for each tagged-type. */
-      addTypeClassModel(grp, "grouper" + t)
+      addGroupingField(grp, "grouper" + t)
     }
 
     def addBufferField(name: String) = {
-      val dibClassName = "org.apache.hadoop.io.DataInputBuffer"
-      ctClass.addField(new CtField(pool.get(dibClassName), name, ctClass),
-                       CtField.Initializer.byExpr("new " + dibClassName + "();"))
+      addField("org.apache.hadoop.io.DataInputBuffer", name, "new org.apache.hadoop.io.DataInputBuffer();")
     }
     addBufferField("buffer1")
     addBufferField("buffer2")
@@ -69,7 +67,7 @@ class TaggedGroupingComparatorClassBuilder
       "return grouper" + t + ".groupCompare(" +fromObject("(" + classToJavaTypeString(m.erasure) + ")writer" + t + ".fromWire(buffer1)", m) + ", " +
         fromObject("(" + classToJavaTypeString(m.erasure) + ")writer" + t + ".fromWire(buffer2)", m) + ");"
 
-    val compareCode =
+    lazy val compareCode =
       "buffer1.reset($1, $2, $3);" +
       "buffer2.reset($4, $5, $6);" +
       (if (tags.size == 1) {
@@ -91,17 +89,7 @@ class TaggedGroupingComparatorClassBuilder
       })
 
 
-    val compareMethod = CtNewMethod.make(CtClass.intType,
-                                         "compare",
-                                         Array(pool.get("byte[]"),
-                                               CtClass.intType,
-                                               CtClass.intType,
-                                               pool.get("byte[]"),
-                                               CtClass.intType,
-                                               CtClass.intType),
-                                         Array(),
-                                         "{" + compareCode + "}",
-                                         ctClass)
-    ctClass.addMethod(compareMethod)
+    addMethod("int", "compare", Array("byte[]", "int", "int", "byte[]", "int", "int"),
+              "{" + compareCode + "}")
   }
 }

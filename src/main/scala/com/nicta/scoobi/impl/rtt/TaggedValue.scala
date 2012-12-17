@@ -47,53 +47,41 @@ class TaggedValueClassBuilder
 
   def extendClass: Class[_] = classOf[TaggedValue]
 
-  def build {
+  def build() {
 
     tags.foreach { case (tag, (m, wt)) =>
       /* 'valueN' - fields for each tagged-type. */
-      val valueField = new CtField(pool.get(m.erasure.getName), "value" + tag, ctClass)
-      valueField.setModifiers(Modifier.PRIVATE)
-      ctClass.addField(valueField)
+      addPrivateField(m.erasure.getName, "value" + tag)
 
       /* 'writerN' - WireFormat type class field for each tagged-type. */
-      addTypeClassModel(wt, "writer" + tag)
+      addWireFormatField(wt, "writer" + tag)
     }
 
     /* Tagged 'get' method */
-    val taggedGetCode =
+    lazy val taggedGetCode =
       "switch($1) {" +
        tags.map { case (t, (m, _)) =>
         "case " + t + ": return " + fromObject("value" + t, m) + ";"
        }.mkString +
        "default: return null; }"
-    val getMethod = CtNewMethod.make(pool.get("java.lang.Object"),
-                                     "get",
-                                     Array(CtClass.intType),
-                                     Array(),
-                                     "{" + taggedGetCode + "}",
-                                     ctClass)
-    ctClass.addMethod(getMethod)
+
+    addMethod("java.lang.Object", "get", parameters = Array("int"), "{" + taggedGetCode + "}")
 
     /* Tagged 'set' method */
-    val taggedSetCode =
+    lazy val taggedSetCode =
       "setTag($1);" +
       "switch($1) {" +
          tags.map { case (t, (m, _)) =>
           "case " + t + ": value" + t + " = (" + classToJavaTypeString(m.erasure)  + ")" + toObject("$2", m) + "; break;"
          }.mkString +
       "default: break; }"
-    val setMethod = CtNewMethod.make(CtClass.voidType,
-                                     "set",
-                                     Array(CtClass.intType, pool.get("java.lang.Object")),
-                                     Array(),
-                                     "{" + taggedSetCode + "}",
-                                     ctClass)
-    ctClass.addMethod(setMethod)
 
-    def toWireCode(t: Int) = "writer" + t + ".toWire(value" + t + ", $1);";
+    addMethod("void", "set", Array("int", "java.lang.Object"), "{" + taggedSetCode + "}")
+
+    def toWireCode(t: Int) = "writer" + t + ".toWire(value" + t + ", $1);"
 
     /* Tagged 'write' method */
-    val taggedWriteCode =
+    lazy val taggedWriteCode =
       if (tags.size == 1) {
         val tag = tags.keys.toSeq(0)
         "setTag("+tag+");" +
@@ -107,13 +95,7 @@ class TaggedValueClassBuilder
         }.mkString +
         "default: break; }"
 
-    val writeMethod = CtNewMethod.make(CtClass.voidType,
-                                       "write",
-                                       Array(pool.get("java.io.DataOutput")),
-                                       Array(),
-                                       "{" + taggedWriteCode + "}",
-                                       ctClass)
-    ctClass.addMethod(writeMethod)
+    addMethod("void", "write", Array("java.io.DataOutput"), "{" + taggedWriteCode + "}")
 
     def toReadCode(t: Int, name: String) = "value" + t + " = (" + name + ")writer" + t + ".fromWire($1);"
 
@@ -133,12 +115,6 @@ class TaggedValueClassBuilder
         }.mkString +
         "default: break; }"
 
-    val readFieldsMethod = CtNewMethod.make(CtClass.voidType,
-                                            "readFields",
-                                            Array(pool.get("java.io.DataInput")),
-                                            Array(),
-                                            "{" + taggedReadFieldsCode + "}",
-                                            ctClass)
-    ctClass.addMethod(readFieldsMethod)
+    addMethod("void", "readFields", Array("java.io.DataInput"), "{" + taggedReadFieldsCode + "}")
   }
 }
