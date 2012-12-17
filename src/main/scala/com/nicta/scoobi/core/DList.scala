@@ -80,7 +80,7 @@ trait DList[A] {
    * by the client. */
   def materialise: DObject[Iterable[A]]
 
-  /**Mark that all DList preceeding transformations up to the first groupByKey must be within
+  /**Mark that all DList preceding transformations up to the first groupByKey must be within
    * the same Map-Reduce job. */
   def groupBarrier: DList[A]
 
