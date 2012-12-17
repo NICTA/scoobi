@@ -192,7 +192,7 @@ trait DList[A] {
     x => (kf(x), x)
   }
 
-  /**Create a distribued list containing just the keys of a key-value distributed list. */
+  /**Create a distributed list containing just the keys of a key-value distributed list. */
   def keys[K, V]
   (implicit ev: A <:< (K, V),
    mK: Manifest[K],
@@ -201,7 +201,7 @@ trait DList[A] {
    wtV: WireFormat[V])
   : DList[K] = map(ev(_)._1)
 
-  /**Create a distribued list containing just the values of a key-value distributed list. */
+  /**Create a distributed list containing just the values of a key-value distributed list. */
   def values[K, V]
   (implicit ev: A <:< (K, V),
    mK: Manifest[K],
