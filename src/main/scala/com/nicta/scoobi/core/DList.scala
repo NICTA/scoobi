@@ -226,11 +226,8 @@ trait DList[A] {
       def setup() {}
 
       def process(input: A, emitter: Emitter[A]) = {
-        if (first) {
-          acc = input; first = false
-        } else {
-          acc = op(acc, input)
-        }
+        acc = if(first) input else op(acc, input)
+        first = false
       }
 
       def cleanup(emitter: Emitter[A]) {
