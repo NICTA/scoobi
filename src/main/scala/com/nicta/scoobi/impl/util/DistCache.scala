@@ -31,13 +31,13 @@ object DistCache {
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialized object. */
-  private def mkPath(configuration: Configuration, tag: String): Path = {
+  def mkPath(configuration: Configuration, tag: String): Path = {
     val scratchDir = new Path(configuration.workingDirectory, "dist-objs")
     new Path(scratchDir, tag)
   }
 
   /** Distribute an object to be available for tasks in the current job. */
-  def pushObject[T](conf: Configuration, obj: T, tag: String) {
+  def pushObject[T](conf: Configuration, obj: T, tag: String): Path = {
     serialise[T](conf, obj, tag) { path =>
       DistributedCache.addCacheFile(path.toUri, conf)
     }
@@ -46,12 +46,13 @@ object DistCache {
   /**
    * serialize an object to a path
    */
-  def serialise[T](conf: Configuration, obj: T, tag: String)(action: Path => Unit) {
+  def serialise[T](conf: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
     /* Serialize */
     val path = mkPath(conf, tag)
     val dos = path.getFileSystem(conf).create(path)
     Serialiser.serialise(obj, dos)
     action(path)
+    path
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
