@@ -52,15 +52,21 @@ trait MetadataTaggedWritable extends MetadataWireFormats {
   def get(t: Int) = values(t)
   def set(t: Int, value: =>Any) {
     setTag(t)
-    values(t) = value
+    setValue(value)
+  }
+
+  def setValue(value: =>Any) {
+    values(tag) = value
   }
 
   def write(out: DataOutput) {
+    out.writeInt(tag)
     wireFormat(tag).toWire(get(tag), out)
   }
 
   def readFields(in: DataInput) {
-    set(tags(0), wireFormat(tag).fromWire(in))
+    setTag(in.readInt)
+    setValue(wireFormat(tag).fromWire(in))
   }
 
 }
