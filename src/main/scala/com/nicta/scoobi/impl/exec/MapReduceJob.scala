@@ -55,8 +55,8 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
   private[scoobi] val reducers: ListBuffer[(scala.collection.Seq[Sink], (Env[_], TaggedReducer))] = new ListBuffer
 
   /* The types that will be combined together to form (K2, V2). */
-  private val keyTypes: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])] = Map.empty
-  private val valueTypes: Map[Int, (Manifest[_], WireFormat[_])] = Map.empty
+  private val keyTypes:   Map[Int, (WireFormat[_], Grouping[_])] = Map.empty
+  private val valueTypes: Map[Int, Tuple1[WireFormat[_]]] = Map.empty
 
 
   /** Add an input mapping function to this MapReduce job. */
@@ -67,8 +67,8 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
     else                                     mappers((input, inputId)) += tm: Unit
 
     m.tags.foreach { tag =>
-      keyTypes   += ((tag, (m.mfk, m.wfk, m.gpk)))
-      valueTypes += ((tag, (m.mfv, m.wfv)))
+      keyTypes   += ((tag, (m.wfk, m.gpk)))
+      valueTypes += ((tag, Tuple1(m.wfv)))
     }
     this
   }
@@ -309,7 +309,7 @@ class TaskDetailsLogger(job: Job) {
   private var startIdx = 0
 
   /** Paginate through the TaskCompletionEvent's, logging details about completed tasks */
-  def logTaskCompletionDetails(): Unit = {
+  def logTaskCompletionDetails() {
     Iterator.continually(job.getTaskCompletionEvents(startIdx)).takeWhile(!_.isEmpty).foreach { taskCompEvents =>
       taskCompEvents foreach { taskCompEvent =>
         val taskAttemptId = taskCompEvent.getTaskAttemptId

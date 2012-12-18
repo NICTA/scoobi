@@ -17,79 +17,40 @@ package com.nicta.scoobi
 package impl
 package rtt
 
-import org.apache.hadoop.io.RawComparator
+import org.apache.hadoop.io.{DataInputBuffer, RawComparator}
 import javassist._
 import core._
 
 /** Custom GroupingComparator for tagged keys. */
-abstract class TaggedGroupingComparator extends RawComparator[TaggedKey]
-
+trait TaggedGroupingComparator extends RawComparator[TaggedKey]
 
 /** Companion object for dynamically constructing a subclass of TaggedGroupingComparator. */
 object TaggedGroupingComparator {
-
-  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])]) : RuntimeClass = {
-    val builder = new TaggedGroupingComparatorClassBuilder(name, tags)
-    builder.toRuntimeClass
-  }
+  def apply(name: String, tags: Map[Int, (WireFormat[_], Grouping[_])]) : RuntimeClass =
+    MetadataClassBuilder[MetadataTaggedGroupingComparator](name, tags).toRuntimeClass
 }
 
+abstract class MetadataTaggedGroupingComparator extends TaggedGroupingComparator with MetadataWireFormats with MetadataGroupings {
+  val (buffer1, buffer2) = (new DataInputBuffer, new DataInputBuffer)
 
-/** Class for building TaggedGroupingComparator classes at runtime. */
-class TaggedGroupingComparatorClassBuilder
-    (name: String,
-     tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])])
-  extends ClassBuilder {
+  /**
+   * implementation of the compare method, using the keys tags
+   * If the tags are different we compare the tags. If they are the same we using the grouping instance for the
+   * current tag
+   */
+  def compare(key1: TaggedKey, key2: TaggedKey) =
+    if (key1.tag == key2.tag) grouping(key1.tag).groupCompare(key1.get(key1.tag), key2.get(key1.tag))
+    else                      key1.tag - key2.tag
 
-  def className = name
+  /**
+   * implementation of the compare method, with buffers
+   */
+  def compare(b1: Array[Byte], s1: Int, l1: Int, b2: Array[Byte], s2: Int, l2: Int) = {
+    buffer1.reset(b1, s1, l1)
+    buffer2.reset(b2, s2, l2)
 
-  def extendClass: Class[_] = classOf[TaggedGroupingComparator]
-
-  def build {
-
-    tags.foreach { case (t, (_, wt, grp)) =>
-      /* 'writerN' - WireFormat type class field for each tagged-type. */
-      addWireFormatField(wt, "writer" + t)
-      /* 'grouperN' - Grouping type class field for each tagged-type. */
-      addGroupingField(grp, "grouper" + t)
-    }
-
-    def addBufferField(name: String) = {
-      addField("org.apache.hadoop.io.DataInputBuffer", name, "new org.apache.hadoop.io.DataInputBuffer();")
-    }
-    addBufferField("buffer1")
-    addBufferField("buffer2")
-
-    /* 'compare' - if the tags are the same for the two TaggedKeys, use the Grouping's
-     * groupCompare method to compare the two keys. */
-
-    def genFromObj(t: Int, m: Manifest[_])=
-      "return grouper" + t + ".groupCompare(" +fromObject("(" + classToJavaTypeString(m.erasure) + ")writer" + t + ".fromWire(buffer1)", m) + ", " +
-        fromObject("(" + classToJavaTypeString(m.erasure) + ")writer" + t + ".fromWire(buffer2)", m) + ");"
-
-    lazy val compareCode =
-      "buffer1.reset($1, $2, $3);" +
-      "buffer2.reset($4, $5, $6);" +
-      (if (tags.size == 1) {
-        val tag = tags.keys.toSeq(0)
-        genFromObj(tag, tags.values.toSeq(0)._1)
-      } else {
-        "int tag1 = buffer1.readInt();" +
-        "int tag2 = buffer2.readInt();" +
-        "if (tag1 == tag2) {" +
-          "switch(tag1) {" +
-            tags.map { case (t, (m, _, _)) =>
-              "case " + t + ": " +genFromObj(t, m)
-            } .mkString +
-            "default: return 0;" +
-          "}" +
-        "} else {" +
-          "return tag1 - tag2;" +
-        "}"
-      })
-
-
-    addMethod("int", "compare", Array("byte[]", "int", "int", "byte[]", "int", "int"),
-              "{" + compareCode + "}")
+    val (tag1, tag2) = if (tags.size == 1) (tags(0), tags(0)) else (buffer1.readInt, buffer2.readInt)
+    if (tag1 == tag2) grouping(tag1).groupCompare(wireFormat(tag1).fromWire(buffer1), wireFormat(tag1).fromWire(buffer2))
+    else              tag1 - tag2
   }
 }

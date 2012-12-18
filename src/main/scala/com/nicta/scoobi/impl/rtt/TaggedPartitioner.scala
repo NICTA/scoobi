@@ -22,47 +22,20 @@ import javassist._
 import core._
 
 /** Custom partitioner for tagged key-values. */
-abstract class TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
-
+trait TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
 
 /** Companion object for dynamically constructing a subclass of TaggedPartitioner. */
 object TaggedPartitioner {
+  def apply(name: String, tags: Map[Int, (WireFormat[_], Grouping[_])]): RuntimeClass =
+    MetadataClassBuilder[MetadataTaggedPartitioner](name, tags).toRuntimeClass
+}
 
-  def apply(name: String, tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])]): RuntimeClass = {
-    val builder = new TaggedPartitionerClassBuilder(name, tags)
-    builder.toRuntimeClass
+/**
+ * This partitioner uses the grouping of the current key tag and partitions based on the key value
+ */
+abstract class MetadataTaggedPartitioner extends TaggedPartitioner with MetadataWireFormats with MetadataGroupings {
+  def getPartition(key: TaggedKey, value: TaggedValue, numPartitions: Int): Int = {
+    grouping(key.tag).partition(key.get(key.tag), numPartitions)
   }
 }
 
-
-/** Class for building TaggedPartitioner classes at runtime. */
-class TaggedPartitionerClassBuilder
-    (name: String,
-     tags: Map[Int, (Manifest[_], WireFormat[_], Grouping[_])])
-  extends ClassBuilder {
-
-  def className = name
-
-  def extendClass: Class[_] = classOf[TaggedPartitioner]
-
-  def build {
-
-    tags.foreach { case (t, (_, _, grp)) =>
-      /* 'grouperN' - Grouping type class field for each tagged-type. */
-      addGroupingField(grp, "grouper" + t)
-    }
-
-    /** 'getPartition' - do hash partitioning on the key value that is tagged. */
-    lazy val getPartitionCode =
-      "int tag = ((com.nicta.scoobi.impl.rtt.TaggedKey)$1).tag();" +
-      "switch(tag) {" +
-        tags.keys.map { t =>
-          "case " + t + ": return grouper" + t + ".partition(((com.nicta.scoobi.impl.rtt.TaggedKey)$1).get(tag), $3);"
-        }.mkString +
-        "default: return 0;" +
-      "}"
-
-    addMethod("int", "getPartition", Array("java.lang.Object", "java.lang.Object", "int"),
-              "{" + getPartitionCode + "}")
-  }
-}
