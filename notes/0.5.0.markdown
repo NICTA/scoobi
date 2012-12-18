@@ -30,7 +30,7 @@
  * [issue 127](https://github.com/NICTA/scoobi/issues/127): StackOverflowError with a groupBy and DObject
  * [issue 137](https://github.com/NICTA/scoobi/issues/137): infinite loop on DList.concat
  * [issue 139](https://github.com/NICTA/scoobi/issues/139): suppress redundant
- * null strings can now be serialized
+ * null strings can now be serialised
  * and numerous other important fixes, not necessarily created as issues on Github
 
 ------ 

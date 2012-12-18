@@ -44,6 +44,8 @@ object AvroExample extends ScoobiApp {
     case class Person(var name: String, var awesomeness: Int)
       extends AvroRecord
 
+    implicit val personFmt = mkCaseWireFormat(Person, Person.unapply _)
+
     val p = new Person("Eric", 10)
 
     // There are also WireFormat's available, so there's no problem doing all the cool stuff

@@ -5,6 +5,7 @@ project/boot/
 examples/*.iml
 src/main/*.iml
 .idea/
+.idea_modules/
 
 .jvmopts
 pgp.sbt

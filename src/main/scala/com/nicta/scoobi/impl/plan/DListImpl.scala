@@ -41,7 +41,7 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
   def parallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(Smart.ParallelDo(comp, env.getComp, dofn))
 
-  def ++(ins: DList[A]*): DList[A] = new DListImpl(Smart.Flatten(List(comp) ::: ins.map(_.getComp).toList))
+  def ++(ins: DList[A]*): DList[A] = new DListImpl(Smart.Flatten(comp :: ins.map(_.getComp).toList))
 
   def groupByKey[K, V]
       (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
@@ -60,7 +60,7 @@ class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A,
                 mV:   Manifest[V],
                 wtV:  WireFormat[V]): DList[(K, V)] = new DListImpl(Smart.Combine(comp, f))
 
-  def materialize: DObject[Iterable[A]] = new DObjectImpl(Smart.Materialize(comp))
+  def materialise: DObject[Iterable[A]] = new DObjectImpl(Smart.Materialise(comp))
 
   def groupBarrier: DList[A] = {
     val dofn = new DoFn[A, A] {

@@ -272,7 +272,8 @@ class MapReduceJob(stepId: Int) {
         sink.outputPath foreach { outDir =>
           fs.mkdirs(outDir)
           val files = outputFiles filter isResultFile(reducer.tag, ix)
-          files foreach copyTo(outDir)
+          files foreach moveTo(outDir)
+          logger.info("Save output of job to: "+outDir)
         }
       }
     }
@@ -382,7 +383,7 @@ class TaskDetailsLogger(job: Job) {
         taskCompEvent.getTaskStatus match {
           case OBSOLETE  => logger.debug(taskAttempt + " was made obsolete." + moreInfo)
           case FAILED    => logger.info(taskAttempt + " failed! " + "Trying again." + moreInfo)
-          case KILLED    => logger.info(taskAttempt + " was killed!" + moreInfo)
+          case KILLED    => logger.debug(taskAttempt + " was killed!" + moreInfo)
           case TIPFAILED => logger.error("Task '" + taskAttemptId.getTaskID + "' failed!" + moreInfo)
           case _ =>
         }

@@ -70,14 +70,14 @@ object Executor {
     val matTable = mscrGraph.matTable
     val environments = mscrGraph.environments
 
-    /* Initialize compute table with all input (Load) nodes. */
+    /* Initialise compute table with all input (Load) nodes. */
     val computeTable: MSet[(AST.Node[_, _ <: Shape], Option[_])] = MSet.empty
     AST.eachNode(outputs.map(_.node).toSet) {
       case n@AST.Load() => computeTable += (n -> None)
       case _            => Unit
     }
 
-    /* Initialize reference counts of all intermediate data (i.e. BridgeStores). */
+    /* Initialise reference counts of all intermediate data (i.e. BridgeStores). */
     val mscrBridges: List[BridgeStore[_]] = mscrs.toList flatMap (_.inputChannels) collect {
       case BypassInputChannel(bs@BridgeStore(), _) => bs
       case MapperInputChannel(bs@BridgeStore(), _) => bs
@@ -108,7 +108,7 @@ object Executor {
     case AST.GroupByKey(_)        => executeArr(node, st)
     case AST.Flatten(_)           => executeArr(node, st)
     case AST.Load()               => executeArr(node, st)
-    case AST.Materialize(_)       => executeExp(node, st)._2
+    case AST.Materialise(_)       => executeExp(node, st)._2
     case AST.Op(_, _, _)          => executeExp(node, st)._2
     case AST.Return(_)            => executeExp(node, st)._2
   }
@@ -162,7 +162,7 @@ object Executor {
 
     /* Compute a single Exp node. */
     def operate[E](node: AST.Node[E, _ <: Shape], st: ExecState): (E, ExecState) = node match {
-      case AST.Materialize(in)  => {
+      case AST.Materialise(in)  => {
         logger.debug("Executing " + node)
         val st1 = executeOnce(in, st)
         val exp: Iterable[E] = st.matTable(in).asInstanceOf[BridgeStore[E]].readAsIterable(st.conf)
