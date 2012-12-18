@@ -99,19 +99,6 @@ trait DList[A] {
     parallelDo(dofn)
   }
   
-   /** Group the values of a distributed list with key-value elements by key. And explicitly
-       take the grouping that should be used. This is best used when you're doing things like
-       secondary sorts, or groupings with strange logic (like making sure None's / nulls are
-       sprayed across all reducers.. */
-  def groupByKeyWith[K, V](grpK: Grouping[K])(implicit ev: Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
-    mK: Manifest[K],
-    wtK: WireFormat[K],
-    mV: Manifest[V],
-    wtV: WireFormat[V]): DList[(K, Iterable[V])] = {
-    implicit def grping = grpK
-    groupByKey
-  }
-
   /**For each element of the distributed list produce zero or more elements by
    * applying a specified function. The resulting collection of elements form a
    * new distributed list. */
@@ -141,10 +128,6 @@ trait DList[A] {
     basicParallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) {
       emitter.emit(pf(input))
     })
-
-  /**Group the values of a distributed list according to some discriminator function. */
-  def groupBy[K: Manifest : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
-    map(x => (f(x), x)).groupByKey
 
   /**Partitions this distributed list into a pair of distributed lists according to some
    * predicate. The first distributed list consists of elements that satisfy the predicate
@@ -185,6 +168,30 @@ trait DList[A] {
     }
 
     parallelDo(dropCached).groupByKey.map(_._1)
+  }
+
+  /**Group the values of a distributed list according to some discriminator function. */
+  def groupBy[K: Manifest : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
+    map(x => (f(x), x)).groupByKey
+
+  /** Group the values of a distributed list with key-value elements by key. And explicitly
+    * take the grouping that should be used. This is best used when you're doing things like
+    * secondary sorts, or groupings with strange logic (like making sure None's / nulls are
+    * sprayed across all reducers. */
+  def groupByKeyWith[K, V](grpK: Grouping[K])(implicit ev: Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
+    mK: Manifest[K],
+    wtK: WireFormat[K],
+    mV: Manifest[V],
+    wtV: WireFormat[V]): DList[(K, Iterable[V])] = {
+    implicit def grping = grpK
+    groupByKey
+  }
+
+  /** Group the value of a distributed list according to some discriminator function
+    * and some grouping function. */
+  def groupWith[K](f: A => K)(grpK: Grouping[K])(implicit mK: Manifest[K], wtK: WireFormat[K]): DList[(K, Iterable[A])] = {
+    implicit def grping = grpK
+    map(x => (f(x), x)).groupByKey
   }
 
   /**Create a new distributed list that is keyed based on a specified function. */
