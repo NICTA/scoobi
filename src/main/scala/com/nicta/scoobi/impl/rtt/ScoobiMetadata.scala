@@ -6,6 +6,7 @@ import scalaz.Memo
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import util.DistCache
+import core.ScoobiConfiguration
 
 /**
  * This object stores and retrieves metadata from the Distributed cache.
@@ -14,7 +15,7 @@ import util.DistCache
  */
 object ScoobiMetadata {
 
-  def saveMetadata(metadataTag: String, metadata: Any): Path = DistCache.pushObject(new Configuration, metadata, metadataTag)
+  def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = DistCache.pushObject(sc.configuration, metadata, metadataTag)
 
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
   def metadata(path: String): Any = Memo.mutableHashMapMemo[String, Any]{ path: String =>

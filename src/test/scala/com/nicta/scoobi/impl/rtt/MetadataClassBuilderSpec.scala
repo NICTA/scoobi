@@ -18,9 +18,9 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
     val builder = new MetadataClassBuilder[MetadataScoobiWritable]("specificName", wf[String])
 
     normalise(builder.toString) ===
-      """|class specificName extends com.nicta.scoobi.impl.rtt.AbstractScoobiWritable {
+      """|class specificName extends com.nicta.scoobi.impl.rtt.MetadataScoobiWritable {
          |  java.lang.String metadataPath () {
-         |    return "...scoobi.class.specificName";
+         |    return "...scoobi.metadata.specificName";
          |  }
          |}
       """.stripMargin.trim
@@ -122,5 +122,8 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   def mf[T : Manifest]   = implicitly[Manifest[T]]
   def wf[T : WireFormat] = implicitly[WireFormat[T]]
   def gp[T : Grouping]   = implicitly[Grouping[T]]
+
+  implicit val sc: ScoobiConfiguration = new ScoobiConfigurationImpl
+
 }
 

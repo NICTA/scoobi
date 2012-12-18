@@ -17,13 +17,9 @@ package com.nicta.scoobi
 package impl
 package rtt
 
+import java.io.{DataInput, DataOutput}
 import org.apache.hadoop.io._
-import javassist._
-import scala.collection.mutable.{Map => MMap}
 import core._
-import impl.util.DistCache
-import org.apache.hadoop.conf.Configuration
-import java.io.{DataInput, DataOutput, File}
 
 /** The super-class of all "value" types used in Hadoop jobs. */
 abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>
@@ -35,20 +31,23 @@ abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>
 
 /** Constructs a ScoobiWritable, with some metadata (a WireFormat) retrieved from the distributed cache */
 object ScoobiWritable {
-
-  def apply(name: String, wt: WireFormat[_]): RuntimeClass = writables(new NamedWritable(name) {
-    def wireFormat = wt
+  def apply(name: String, wf: WireFormat[_])(implicit sc: ScoobiConfiguration): RuntimeClass = writables(new NamedWritable(name) {
+    def wireFormat = wf
+    def configuration = sc
   })
 
+  def apply[A](name: String, witness: A)(implicit sc: ScoobiConfiguration, wf: WireFormat[A]): RuntimeClass =
+    apply(name, wf)
+
+  /** this case class is just used to hold the name and make sure that equality is based on the name only in the memo map */
   private abstract case class NamedWritable(name: String) {
     def wireFormat: WireFormat[_]
+    def configuration: ScoobiConfiguration
   }
   private lazy val writables = scalaz.Memo.mutableHashMapMemo[NamedWritable, RuntimeClass] { case nwt: NamedWritable =>
-    MetadataClassBuilder[MetadataScoobiWritable](nwt.name, nwt.wireFormat).toRuntimeClass
+    MetadataClassBuilder[MetadataScoobiWritable](nwt.name, nwt.wireFormat)(nwt.configuration, implicitly[Manifest[MetadataScoobiWritable]]).toRuntimeClass
   }
 
-  def apply[A : WireFormat](name: String, witness: A): RuntimeClass =
-    apply(name, implicitly[WireFormat[A]])
 }
 
 abstract class MetadataScoobiWritable extends ScoobiWritable[Any] {

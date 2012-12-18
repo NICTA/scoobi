@@ -46,7 +46,8 @@ case class BridgeStore[A](bridgeStoreId: String, mf: Manifest[_], wf: WireFormat
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  lazy val rtClass = ScoobiWritable(typeName, wf)
+  def rtClass(implicit sc: ScoobiConfiguration = new ScoobiConfigurationImpl) =
+    scalaz.Memo.mutableHashMapMemo((name: String) => ScoobiWritable(typeName, wf)).apply(typeName)
 
   lazy val typeName = "BS" + bridgeStoreId
   def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)

@@ -20,7 +20,7 @@ package rtt
 import java.io._
 import javassist._
 
-import core.{Grouping, WireFormat}
+import core.{ScoobiConfiguration, Grouping, WireFormat}
 import scala.collection.mutable
 import org.apache.hadoop.io.DataInputBuffer
 import org.apache.hadoop.fs.Path
@@ -49,7 +49,7 @@ import impl.util.DistCache
  *  serialise/deserialise values
  *
  */
-case class MetadataClassBuilder[T : Manifest](className: String, metaData: Any) {
+case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc: ScoobiConfiguration, mf: Manifest[T]) {
 
   /** string value showing the generated class source code */
   override lazy val toString = {
@@ -70,7 +70,7 @@ case class MetadataClassBuilder[T : Manifest](className: String, metaData: Any) 
   /** The compile-time representation of the class once built. */
   private lazy val builtCtClass = { build; ctClass }
 
-  private def build {
+  private def build(implicit sc: ScoobiConfiguration) {
     val metadataPath = ScoobiMetadata.saveMetadata("scoobi.metadata."+className, metaData)
     addMethod("java.lang.String", "metadataPath", "return \""+metadataPath+"\";")
   }

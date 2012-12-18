@@ -18,10 +18,7 @@ package impl
 package rtt
 
 import org.apache.hadoop.io.WritableComparable
-import javassist._
 import core._
-import impl.util.DistCache
-import org.apache.hadoop.conf.Configuration
 
 /**
  * A tagged value for Hadoop keys. Specifically this will be a K2 type so must
@@ -31,7 +28,7 @@ trait TaggedKey extends Tagged with WritableComparable[TaggedKey]
 
 /** Companion object for dynamically constructing a subclass of TaggedKey. */
 object TaggedKey {
-  def apply(name: String, tags: Map[Int, (WireFormat[_], Grouping[_])]): RuntimeClass =
+  def apply(name: String, tags: Map[Int, (WireFormat[_], Grouping[_])])(implicit sc: ScoobiConfiguration): RuntimeClass =
     MetadataClassBuilder[MetadataTaggedKey](name, tags).toRuntimeClass
 }
 

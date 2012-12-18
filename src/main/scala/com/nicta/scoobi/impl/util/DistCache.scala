@@ -52,7 +52,7 @@ object DistCache {
     val dos = path.getFileSystem(conf).create(path)
     Serialiser.serialise(obj, dos)
     action(path)
-    path
+    new Path(new Path(path.getFileSystem(conf).getUri), path)
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
