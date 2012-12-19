@@ -8,8 +8,8 @@ import org.kiama.attribution.{Attribution, Attributable}
 import core._
 import control.Exceptions._
 import control.Functions._
-import collection._
-
+import scalaz.Scalaz._
+import scalaz.std.vector._
 /**
  * General methods for navigating a graph of CompNodes
  */
@@ -90,12 +90,12 @@ trait CompNodes extends Attribution {
    *  They are all the parents of the node where the parent inputs contain this node.
    */
   lazy val outputs : CompNode => Seq[CompNode] = attr("outputs") {
-    case node: CompNode => (node -> parents) collect { case a if (a -> inputs).contains(node) => a }
+    case node: CompNode => (node -> parents).toSeq collect { case a if (a -> inputs).contains(node) => a }
   }
 
   /** compute the outcoming data of a given node: all the outputs + possible environment for a parallelDo */
   lazy val outgoings : CompNode => Seq[CompNode] = attr("outgoings") {
-    case node: CompNode => (node -> parents) collect { case a if (a -> incomings).contains(node) => a }
+    case node: CompNode => (node -> parents).toSeq collect { case a if (a -> incomings).contains(node) => a }
   }
 
   /**
@@ -107,11 +107,6 @@ trait CompNodes extends Attribution {
     distinctNodes(children ++ childrenDescendents)
   }
 
-  /** @return a function returning true if one node can be reached from another, i.e. it is in the list of its descendents */
-  def canReach(n: CompNode): CompNode => Boolean = paramAttr("canReach") { target: CompNode => node: CompNode =>
-    descendents(node).contains(target)
-  }(n)
-
   /** compute the ancestors of a node, that is all the direct parents of this node up to a root of the graph */
   lazy val ancestors : CompNode => Seq[CompNode] = attr("ancestors") { case node: CompNode =>
     val p = Option(node.parent).toSeq.asNodes
@@ -119,10 +114,21 @@ trait CompNodes extends Attribution {
   }
 
   /** compute all the parents of a given node. A node A is parent of a node B if B can be reached from A */
-  lazy val parents : CompNode => Seq[CompNode] = attr("parents") { case node: CompNode =>
-    distinctNodes((node -> ancestors).flatMap { ancestor =>
-      (ancestor +: (ancestor -> descendents)).filter(canReach(node))
-    })
+  lazy val parents : CompNode => Set[CompNode] = attr("parents") { case node: CompNode =>
+    (uses(node) ++ uses(node).flatMap(_ -> parents)).toSet
+  }
+
+  lazy val uses : CompNode => Set[CompNode] = attr("uses") { case node: CompNode =>
+    usesTable(node -> root).getOrElse(node, Set())
+  }
+
+  lazy val usesTable : CompNode => Map[CompNode, Set[CompNode]] = attr("usesTable") { case node: CompNode =>
+    Vector((node.children.asNodes):_*).foldMap((child: CompNode) => usesTable(child) |+| Map(child -> Set(node)))
+  }
+
+  lazy val root : CompNode => CompNode = attr("root") { case node: CompNode =>
+    if (node.parent == null) node
+    else                     node.parent.asNode -> root
   }
 
   /** @return true if 1 node is parent of the other, or if they are the same node */

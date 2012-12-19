@@ -4,8 +4,9 @@ package plan
 package comp
 
 import testing.mutable.UnitSpecification
+import org.specs2.specification.AllExpectations
 
-class CompNodesSpec extends UnitSpecification {
+class CompNodesSpec extends UnitSpecification with AllExpectations {
 
   "the inputs of a node are its children" >> new nodes {
     val load0 = load
@@ -31,8 +32,9 @@ class CompNodesSpec extends UnitSpecification {
     (gbk2 -> isStrictParentOf(gbk1)) === false
   }
   "the parents of a node are all the nodes having this node in their descendents" >> new nodes {
-    (pd1 -> parents) ==== Seq(fl1, gbk1, mat1)
-    (l1 -> parents) ==== Seq(pd1, fl1, gbk1, mat1)
+    (fl1 -> parents) ==== Set(mat1)
+    (pd1 -> parents) ==== Set(fl1, gbk1, mat1)
+    (l1 -> parents)  ==== Set(pd1, fl1, gbk1, mat1)
   }
   "the descendents of a node is the recursive list of all children" >> new nodes {
     (mat1 -> descendents) ==== Seq(fl1, gbk1, pd1, l1, pd1.env)
@@ -45,9 +47,6 @@ class CompNodesSpec extends UnitSpecification {
 
     (gbk1 -> descendents) ==== Seq(pd1, ld1, pd1.env)
     (fl1-> descendents)   ==== Seq(gbk1, gbk2, pd1, ld1, pd1.env, pd2, pd2.env)
-  }
-  "a node can be reached from another one if it is in the list of its descendents" >> new nodes {
-    (fl1 -> canReach(l1)) must beTrue
   }
   "the outputs of a node are all its direct parents" >> new nodes {
     (pd1 -> outputs) ==== Seq(fl1, gbk1)
@@ -75,9 +74,24 @@ class CompNodesSpec extends UnitSpecification {
 }
 
 trait nodes extends factory {
+  /**
+   *       ld
+   *       /
+   *      pd1
+   *      /  \
+   *    gbk1  \
+   *      \    \
+   *      flatten1
+   *        |
+   *       mat1
+   */
   lazy val l1   = load
   lazy val pd1  = pd(l1)
   lazy val gbk1 = gbk(pd1)
   lazy val fl1  = flatten(gbk1, pd1)
-  lazy val mat1 = mt(fl1)
+  lazy val mat1 = {
+    val root = mt(fl1)
+    initTree(root)
+    root
+  }
 }
