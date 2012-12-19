@@ -60,12 +60,14 @@ trait MetadataTaggedWritable extends MetadataWireFormats {
   }
 
   def write(out: DataOutput) {
-    out.writeInt(tag)
+    // if there are more than one tag, write the tag to the output stream
+    if (tags.size > 1) out.writeInt(tag)
     wireFormat(tag).toWire(get(tag), out)
   }
 
   def readFields(in: DataInput) {
-    setTag(in.readInt)
+    // if there are more than one tag, read the tag from the input stream
+    setTag(if (tags.size > 1) in.readInt else tags(0))
     setValue(wireFormat(tag).fromWire(in))
   }
 

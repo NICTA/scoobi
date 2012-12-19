@@ -48,6 +48,7 @@ abstract class MetadataTaggedGroupingComparator extends TaggedGroupingComparator
     buffer1.reset(b1, s1, l1)
     buffer2.reset(b2, s2, l2)
 
+    // if there's only one tag, it is not written to the input stream
     val (tag1, tag2) = if (tags.size == 1) (tags(0), tags(0)) else (buffer1.readInt, buffer2.readInt)
     if (tag1 == tag2) grouping(tag1).groupCompare(wireFormat(tag1).fromWire(buffer1), wireFormat(tag1).fromWire(buffer2))
     else              tag1 - tag2
