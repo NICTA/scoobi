@@ -103,23 +103,29 @@ trait CompNodeFactory extends Scope {
 
   def loadWith(s: String)                    = Load(ConstantStringDataSource(s), mapReducer)
   def load                                   = loadWith("start")
-  def flatten[A](nodes: CompNode*)           = Flatten(nodes.toList.map(_.asInstanceOf[DComp[A]]), mapReducer)
-  def aRoot(nodes: CompNode*)                 = Root(nodes)
-  def parallelDo(in: CompNode)               = pd(in)
+  def aRoot(nodes: CompNode*)                = Root(nodes)
   def rt                                     = Return("", mapReducer)
   def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,
                                                                        KeyValueMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String)]],
                                                           KeyValuesMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
-
   def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], simpleMapReducer)
+
   def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, mapReducer)
 
-  def pd(in: CompNode, env: CompNode = rt, groupBarrier: Boolean = false, fuseBarrier: Boolean = false) =
-    ParallelDo[String, String, String](in.asInstanceOf[DComp[String]], env.asInstanceOf[DComp[String]], fn,
-                                     DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
-                                     java.util.UUID.randomUUID().toString,
-                                     Barriers(groupBarrier, fuseBarrier))
+  def parallelDo(in: CompNode)               = pd(in)
+
+  def pd(ins: CompNode*): ParallelDo[String, String, String] =
+    ParallelDo[String, String, String](ins.map(_.asInstanceOf[DComp[String]]), rt.asInstanceOf[DComp[String]], fn,
+    DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
+    java.util.UUID.randomUUID().toString)
+
+  def pd(in: CompNode, env: CompNode, groupBarrier: Boolean = false, fuseBarrier: Boolean = false): ParallelDo[String, String, String] =
+    ParallelDo[String, String, String](Seq(in).map(_.asInstanceOf[DComp[String]]), env.asInstanceOf[DComp[String]], fn,
+      DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
+      java.util.UUID.randomUUID().toString,
+      Barriers(groupBarrier, fuseBarrier)
+    )
 
   lazy val fn = new EnvDoFn[String, String, String] {
     def setup(env: String) {}

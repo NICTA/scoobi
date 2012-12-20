@@ -44,10 +44,10 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
   def setComp(f: DComp[A] => DComp[A]) = new DListImpl[A](f(comp))(mwf)
 
   def parallelDo[B : ManifestWireFormat, E : ManifestWireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(ParallelDo[A, B, E](comp, env.getComp, dofn,
+    new DListImpl(ParallelDo[A, B, E](Seq(comp), env.getComp, dofn,
                                       DoMapReducer(manifestWireFormat[A], manifestWireFormat[B], manifestWireFormat[E])))
 
-  def ++(ins: DList[A]*): DList[A] = new DListImpl[A](Flatten[A](comp +: ins.map(_.getComp).toList, SimpleMapReducer(manifestWireFormat[A])))
+  def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
 
   def groupByKey[K, V]
       (implicit ev:   A <:< (K, V),
@@ -79,7 +79,7 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
       def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
       def cleanup(emitter: Emitter[A]) {}
     }
-    new DListImpl(ParallelDo(comp, UnitDObject.newInstance.getComp,
+    new DListImpl(ParallelDo(Seq(comp), UnitDObject.newInstance.getComp,
                   dofn,
                   DoMapReducer(mwf, mwf, manifestWireFormat[Unit]),
                   Seq[Sink](),
@@ -91,10 +91,11 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
 
 private[scoobi]
 object DListImpl {
-  def apply[A : ManifestWireFormat](source: DataSource[_,_, A]) =  {
+  def apply[A : ManifestWireFormat](source: DataSource[_,_, A]): DListImpl[A] = apply(Seq(Load(source, SimpleMapReducer(manifestWireFormat[A]))))
+  def apply[A : ManifestWireFormat](ins: Seq[CompNode]): DListImpl[A] =  {
     new DListImpl[A](
       ParallelDo[A, A, Unit](
-        Load(source, SimpleMapReducer(manifestWireFormat[A])),
+        ins,
         UnitDObject.newInstance.getComp,
         new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
         DoMapReducer(manifestWireFormat[A], manifestWireFormat[A], manifestAndWireFormat(implicitly[Manifest[Unit]], wireFormat[Unit]))))

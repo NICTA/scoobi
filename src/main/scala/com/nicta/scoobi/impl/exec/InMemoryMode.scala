@@ -65,7 +65,6 @@ case class InMemoryMode() extends ShowNode {
         case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                               , n.sinks)
         case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)
         case n: Combine[_,_]      => saveSinks(computeCombine(n)                                  , n.sinks)
-        case n: Flatten[_]        => saveSinks(Vector(n.ins.flatMap(_ -> compute(c)):_*)          , n.sinks)
         case n: Materialize[_]    => saveSinks(Vector(n.in -> compute(c))                         , Seq())
         case n: Op[_,_,_]         => saveSinks(Vector(n.unsafeExecute(n.in1 -> computeValue(c),
                                                                       n.in2 -> computeValue(c)))  , n.sinks)
@@ -105,7 +104,7 @@ case class InMemoryMode() extends ShowNode {
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
     dofn.unsafeSetup(env)
-    (pd.in -> compute(sc)).foreach { v => dofn.unsafeProcess(env, v, emitter) }
+    (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.unsafeProcess(env, v, emitter) }
     dofn.unsafeCleanup(env, emitter)
     vb.result.debug("computeParallelDo")
 

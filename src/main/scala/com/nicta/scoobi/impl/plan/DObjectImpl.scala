@@ -40,7 +40,7 @@ class DObjectImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) ex
       def process(env: A, input: B, emitter: Emitter[(A, B)]) { emitter.emit((env, input)) }
       def cleanup(env: A, emitter: Emitter[(A, B)]) {}
     }
-    new DListImpl(ParallelDo[B, (A, B), A](list.getComp, comp, dofn, DoMapReducer(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
+    new DListImpl(ParallelDo[B, (A, B), A](Seq(list.getComp), comp, dofn, DoMapReducer(manifestWireFormat[B], manifestWireFormat[(A, B)], manifestWireFormat[A])))
   }
 
   def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)

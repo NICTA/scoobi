@@ -17,7 +17,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
    */
   lazy val inputs : CompNode => Seq[CompNode] = attr("inputs") {
     // for a parallel do node just consider the input node, not the environment
-    case pd: ParallelDo[_,_,_]  => Seq(pd.in)
+    case pd: ParallelDo[_,_,_]  => pd.ins
     case n                      => incomings(n)
   }
 
@@ -49,15 +49,13 @@ object CompNodes extends CompNodes
  * This functions can be used to filter or collect specific nodes in collections
  */
 trait CollectFunctions {
-  /** return true if a CompNode is a Flatten */
-  lazy val isFlatten: CompNode => Boolean = { case f: Flatten[_] => true; case other => false }
   /** return true if a CompNode is a ParallelDo */
   lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo[_,_,_] => true; case other => false }
   /** return true if a CompNode is a Load */
   lazy val isLoad: CompNode => Boolean = { case l: Load[_] => true; case other => false }
-  /** return true if a CompNode is a Flatten */
-  lazy val isAFlatten: PartialFunction[Any, Flatten[_]] = { case f: Flatten[_] => f }
-  /** return true if a CompNode is a Flatten */
+  /** return true if a CompNode is a Load */
+  lazy val isALoad: PartialFunction[CompNode, Load[_]] = { case l: Load[_] => l }
+  /** return true if a CompNode is a Combine */
   lazy val isACombine: PartialFunction[Any, Combine[_,_]] = { case c: Combine[_,_] => c }
   /** return true if a CompNode is a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p: ParallelDo[_,_,_] => p }
@@ -76,3 +74,4 @@ trait CollectFunctions {
   /** return true if a CompNode is an Op */
   lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }
 }
+object CollectFunctions extends CollectFunctions

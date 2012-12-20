@@ -27,11 +27,10 @@ trait ShowNode extends CompNodes {
   implicit lazy val showCompNode: Show[CompNode] = new Show[CompNode] {
     override def shows(n: CompNode) = (n.toString + (n match {
       case Op1(in1, in2)    => Seq(in1, in2).showString("[","]")
-      case Flatten1(ins)    => ins.showString("[","]")
       case Materialize1(in) => parens(pretty(in))
       case GroupByKey1(in)  => parens(pretty(in))
       case Combine1(in)     => parens(pretty(in))
-      case ParallelDo1(in)  => parens(pretty(in))
+      case ParallelDo1(ins) => ins.showString("[","]")
       case Load1(_)         => ""
       case Return1(_)       => ""
     }))
@@ -74,15 +73,14 @@ trait ShowNode extends CompNodes {
    */
   private def show[T](node: CompNode, attribute: Option[CompNode => T] = None): Doc =
     node match {
-      case Load1(_)             => value(showNode(node, attribute))
-      case Flatten1(ins)        => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line)
-      case pd @ ParallelDo1(in) => showNode(node, attribute) <> braces (nest (line <> "in. " <> show(in, attribute) <> line <> "env. " <> show(pd.env, attribute)))
-      case Return1(_)           => value(showNode(node, attribute))
-      case Combine1(in)         => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case GroupByKey1(in)      => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Materialize1(in)     => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Op1(in1, in2)        => showNode(node, attribute) <> braces (nest (line <> "1. " <> show(in1, attribute) <> line <> "2. " <> show(in2, attribute)))
-      case other                => value(other)
+      case Load1(_)              => value(showNode(node, attribute))
+      case pd @ ParallelDo1(ins) => showNode(node, attribute) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i, attribute)), line <> "+")) <> line <> "env. " <> show(pd.env, attribute))
+      case Return1(_)            => value(showNode(node, attribute))
+      case Combine1(in)          => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case GroupByKey1(in)       => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Materialize1(in)      => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Op1(in1, in2)         => showNode(node, attribute) <> braces (nest (line <> "1. " <> show(in1, attribute) <> line <> "2. " <> show(in2, attribute)))
+      case other                 => value(other)
     }
 }
 object ShowNode extends ShowNode

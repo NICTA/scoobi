@@ -18,34 +18,19 @@ trait MscrsDefinition extends Layering {
   /** a floating node is a parallelDo node or a flatten node that's not connected to a gbk node */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo[_,_,_] => !isReducer(pd) &&
-                                  outputs(pd).collect(isAGroupByKey).isEmpty &&
-                                  outputs(pd).collect(isAFlatten).forall(!isFloating)
-    case fl: Flatten[_]        => outputs(fl).collect(isAGroupByKey).isEmpty
+                                  outputs(pd).collect(isAGroupByKey).isEmpty
     case other                 => false
   }
 
   /** all the mscrs for a given layer */
   lazy val mscrs: Layer[T] => Seq[Mscr] = attr("mscrs") { case layer =>
-    gbkMscrs(layer) ++ pdMscrs(layer) ++ flattenMscrs(layer)
+    gbkMscrs(layer) ++ pdMscrs(layer)
   }
 
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
-    Vector(floatingParallelDos(layer).groupBy(_.in.id).values.toSeq:_*).map { pds =>
+    Vector(floatingParallelDos(layer).groupBy(_.ins.head.id).values.toSeq:_*).map { pds =>
       Mscr(MapperInputChannel.create(pds, sources), pds.map(BypassOutputChannel(_)))
-    }
-  }
-  /** Mscrs for flatten nodes which are not part of a Gbk mscr */
-  lazy val flattenMscrs: Layer[T] => Seq[Mscr] = attr("flatten mscrs") { case layer =>
-    floatingFlattens(layer).map { fl =>
-      Mscr(fl.ins.filter {
-        case pd: ParallelDo[_,_,_] => !isReducer(pd)
-        case other                 => true
-      }.map {
-         case pd: ParallelDo[_,_,_] if !isReducer(pd) => MapperInputChannel.create(Seq(pd), sources)
-         case other                                   => StraightInputChannel(other, sources)
-      },
-        FlattenOutputChannel(fl))
     }
   }
 
@@ -78,13 +63,13 @@ trait MscrsDefinition extends Layering {
   }
   lazy val gbkOutputChannel: GroupByKey[_,_] => GbkOutputChannel = {
     attr("gbk output channel") { case g  =>
-      val flatten = Seq(g.in).collect(isAFlatten).headOption
+//      val flatten = Seq(g.in).collect(isAFlatten).headOption
 
       val gbkAncestors = (g -> parents).toList
       gbkAncestors match {
-        case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, combiner = Some(c), reducer = Some(p))
-        case (p: ParallelDo[_,_,_]) :: rest                      if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, reducer = Some(p))
-        case (c: Combine[_,_]) :: rest                                                 => GbkOutputChannel(g, flatten, combiner = Some(c))
+//        case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, combiner = Some(c), reducer = Some(p))
+//        case (p: ParallelDo[_,_,_]) :: rest                      if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, reducer = Some(p))
+//        case (c: Combine[_,_]) :: rest                                                 => GbkOutputChannel(g, flatten, combiner = Some(c))
         case _                                                                         => GbkOutputChannel(g)
       }
     }
@@ -114,7 +99,7 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val mapperInputChannels: Layer[T] => Seq[MapperInputChannel] = attr("mapper input channels") { case layer =>
-    mappers(layer).groupBy(_.in.id).values.toSeq.map(pds => MapperInputChannel.create(pds, sources))
+    mappers(layer).groupBy(_.ins.head.id).values.toSeq.map(pds => MapperInputChannel.create(pds, sources))
   }
 
   lazy val mappers: Layer[T] => Seq[ParallelDo[_,_,_]] = attr("parallelDo mappers") { case layer =>
@@ -123,7 +108,6 @@ trait MscrsDefinition extends Layering {
 
   lazy val layerInputs: Layer[T] => Seq[CompNode] = attr("layer inputs") { case layer =>
     layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
-      case Flatten1(ins) => ins
       case other         => Seq(other)
     }.distinct
   }
@@ -131,15 +115,12 @@ trait MscrsDefinition extends Layering {
   /** collect all input nodes to the gbks of this layer */
   lazy val gbkInputs: Layer[T] => Seq[CompNode] = attr("gbk inputs") { case layer =>
     layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
-      case fl: Flatten[_] if layer.gbks.flatMap(_ -> inputs).contains(fl)    => fl.ins
       case other          if layer.gbks.flatMap(_ -> inputs).contains(other) => Seq(other)
       case other                                                             => Seq()
     }.distinct
   }
 
   lazy val floatingParallelDos: Layer[T] => Seq[ParallelDo[_,_,_]] = floatingNodes(isAParallelDo)
-
-  lazy val floatingFlattens: Layer[T] => Seq[Flatten[_]] = floatingNodes(isAFlatten)
 
   def floatingNodes[N <: CompNode](pf: PartialFunction[CompNode, N]): Layer[T] => Seq[N] = attr("floating nodes") { case layer =>
     layer.nodes.collect(pf).filter(isFloating).toSeq
@@ -155,11 +136,7 @@ trait MscrsDefinition extends Layering {
    */
   lazy val layerNodes: Layer[T] => Seq[CompNode] = attr("layer nodes") { case layer =>
     gbkOutputChannels(layer).flatMap(_.nodes) ++
-    layer.gbks.flatMap {
-      case GroupByKey1(flatten @ Flatten1(ins)) => flatten +: ins
-      case GroupByKey1(pd: ParallelDo[_,_,_])   => Seq(pd)
-      case GroupByKey1(other)                   => Seq()
-    }.distinct
+    layer.gbks.filter { case GroupByKey1(pd: ParallelDo[_,_,_]) => true }.distinct
   }
 
   /** @return the sources nodes for all mscrs of a layer */
@@ -217,7 +194,6 @@ trait MscrsDefinition extends Layering {
 
   lazy val isInputTo: OutputChannel => CompNode => Boolean = paramAttr("is a node input to an output channel") { (out: OutputChannel) => (node: CompNode) =>
     outgoings(node).exists {
-      case fl: Flatten[_] => parent(fl).map(out.contains).getOrElse(false)
       case other          => out.contains(other)
     }
   }

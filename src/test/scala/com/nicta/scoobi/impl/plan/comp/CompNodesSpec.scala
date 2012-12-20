@@ -28,7 +28,7 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
   }
 
   "the outputs of a node are all the nodes using it, but not using it as an environment" >> new nodes {
-    (pd1 -> outputs) ==== Seq(gbk1, fl1)
+    (pd1 -> outputs) ==== Seq(gbk1, pds1)
   }
   endp
 
@@ -44,6 +44,6 @@ trait nodes extends factory {
   lazy val l1   = load
   lazy val pd1  = pd(l1)
   lazy val gbk1 = gbk(pd1)
-  lazy val fl1  = flatten(gbk1, pd1)
-  lazy val mat1 = mt(fl1)
+  lazy val pds1 = pd(gbk1, pd1)
+  lazy val mat1 = mt(pds1)
 }

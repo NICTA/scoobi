@@ -21,11 +21,10 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
   "For each layer in the topological sort, we can create Mscrs"                                                         ^
     "Output channels"                                                                                                   ^ section("outputs")^
       "each gbk belongs to a GbkOutputChannel"                                                                          ! g2().e1^
-      "aggregating the flatten node if there is one before the gbk"                                                     ! g2().e2^
-      "aggregating the combine node if there is one after the gbk"                                                      ! g2().e3^
-      "aggregating the pd node if there is one after the gbk"                                                           ! g2().e4^
-      "aggregating the combine and pd nodes if they are after the gbk"                                                  ! g2().e5^
-      "there is a bypass output channel for each mapper having outputs other than a gbk"                                ! g2().e6^
+      "aggregating the combine node if there is one after the gbk"                                                      ! g2().e2^
+      "aggregating the pd node if there is one after the gbk"                                                           ! g2().e3^
+      "aggregating the combine and pd nodes if they are after the gbk"                                                  ! g2().e4^
+      "there is a bypass output channel for each mapper having outputs other than a gbk"                                ! g2().e5^
                                                                                                                         endp^ section("outputs")^
     "Input channels"                                                                                                    ^
       "GbkOutputChannels have inputs, some of them are Mappers"                                                         ^
@@ -37,8 +36,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       "output channels must have a unique tag"                                                                          ! g4().e1^
       "the set of tags of an input channel must be all the tags of its output channels"                                 ! g4().e2^
       "there must be one mscr per set of related tags"                                                                  ! g4().e3^
-      "the mscrs are all the gbk mscrs on the layer + the mscrs for parallel do nodes which are not in a gbk mscr"+
-      "+ the mscrs for flatten nodes which are not in a gbk mscr"                                                       ! g4().e4^
+      "the mscrs are all the gbk mscrs on the layer + the mscrs for parallel do nodes which are not in a gbk mscr"      ! g4().e4^
                                                                                                                         end
 
 
@@ -69,31 +67,26 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1)
     }
     e2 := {
-      val fl1 = flatten(load)
-      val gbk1 = gbk(fl1)
-      (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, flatten = Some(fl1))
-    }
-    e3 := {
       val gbk1 = gbk(load)
       val cb1 = cb(gbk1)
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, combiner = Some(cb1))
     }
-    e4 := {
+    e3 := {
       val gbk1 = gbk(load)
       val pd1 = pd(gbk1)
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, reducer = Some(pd1))
     }
-    e5 := {
+    e4 := {
       val gbk1 = gbk(load)
       val cb1 = cb(gbk1)
       val pd1 = pd(cb1)
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1))
     }
-    e6 := {
+    e5 := {
       val pd1 = pd(load)
       val gbk1 = gbk(pd1)
       val cb1 = cb(pd1)
-      val graph = flatten(cb1, gbk1)
+      val graph = pd(cb1, gbk1)
       bypassOutputChannels(Layer(Seq(gbk1))) === Seq(BypassOutputChannel(pd1))
     }
   }
@@ -101,7 +94,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
   "Input channels" - new g3 with definition with simpleGraph {
 
     e1 := {
-      val graph = flatten(gbk1, gbk2)
+      val graph = pd(gbk1, gbk2)
       val ls    = layers(graph)
       val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq
 
@@ -110,7 +103,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
 
     e2 := {
-      val graph = flatten(gbk1, gbk2, gbk3)
+      val graph = pd(gbk1, gbk2, gbk3)
       val ls    = layers(graph)
       val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq.sortBy(_.parDos.size).reverse
 
@@ -120,7 +113,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
 
     e3 := {
-      val graph = flatten(gbk1, gbk2, gbk3, gbk4)
+      val graph = pd(gbk1, gbk2, gbk3, gbk4)
       val ls    = layers(graph)
       val channels: Seq[InputChannel] = gbkInputChannels(ls.head).toSeq
 
@@ -129,7 +122,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
   }
 
   "Mscr creation" - new g4 with definition with simpleGraph {
-    lazy val graph  = flatten(gbk1, gbk2, gbk3, gbk4)
+    lazy val graph  = pd(gbk1, gbk2, gbk3, gbk4)
     lazy val layer1 = layers(graph).head
 
     e1 := {
@@ -145,12 +138,11 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       mscrs(layers(graph).head) must have size(3)
     }
     e4 := {
-      val graph2 = flatten(gbk1, gbk2, gbk3, gbk4, mt(pd(load)), flatten(load))
+      val graph2 = pd(gbk1, gbk2, gbk3, gbk4, mt(pd(load)))
       val layer1 = layers(graph2).head
 
       layers(graph2) must have size(1)
-      "there are 5 mscrs in total" ==> { mscrs(layer1) must have size(5) }
-      "there is one flatten mscr"  ==> { flattenMscrs(layer1) must have size(1) }
+      "there are 5 mscrs in total" ==> { mscrs(layer1) must have size(4) }
       "there is one pd mscr"       ==> { pdMscrs(layer1) must have size(1) }
       "there are 3 gbk mscrs"      ==> { gbkMscrs(layer1) must have size(3) }
     }

@@ -38,8 +38,6 @@ case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[Ou
   def mapperChannels = inputChannels.collect { case c : MapperInputChannel => c }
   /** @return all the id channels */
   def idChannels = inputChannels.collect { case c: IdInputChannel => c }
-  /** @return all the flatten channels */
-  def flattenOutputChannels = outputChannels.collect { case c: FlattenOutputChannel => c }
   /** @return all the gbk output channels */
   def gbkOutputChannels = outputChannels.collect { case c: GbkOutputChannel => c }
   /** @return all the bypass output channels */
@@ -52,11 +50,11 @@ case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[Ou
   def inputChannelFor(m: ParallelDo[_,_,_]) = mapperChannels.find(_.parDos.contains(m))
 
   /** @return all the GroupByKeys of this mscr */
-  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_,_)            => gbk }
+  def groupByKeys = outputChannels.collect { case GbkOutputChannel(gbk,_,_,_)            => gbk }
   /** @return all the reducers of this mscr */
-  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,_,Some(reducer),_)  => reducer }
+  def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,Some(reducer),_)  => reducer }
   /** @return all the combiners of this mscr */
-  def combiners   = outputChannels.collect { case GbkOutputChannel(_,_,Some(combiner),_,_) => combiner }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_,_) => combiner }
   /** @return all the parallelDos of this mscr */
   def parallelDos = mappers ++ reducers
 
@@ -86,21 +84,12 @@ object Mscr {
   def floatingParallelDosMscr(pd: ParallelDo[_,_,_], siblings: Seq[ParallelDo[_,_,_]]) = {
     Mscr(outputChannels = (siblings :+ pd).map(BypassOutputChannel(_)))
   }
-  /** create an Mscr for a "floating" Flatten */
-  def floatingFlattenMscr(f: Flatten[_]) = {
-    Mscr(outputChannels = Seq(FlattenOutputChannel(f)),
-         inputChannels  = f.ins.map {
-                              case other                 => StraightInputChannel(other)
-                          })
-  }
   /** @return a new empty Mscr */
   def empty = Mscr()
   /** @return true if a Mscr is created for GroupByKeys */
   def isGbkMscr: Mscr => Boolean = (_:Mscr).groupByKeys.nonEmpty
   /** @return true if a Mscr is created for floating parallel dos */
   def isParallelDoMscr: Mscr => Boolean = (_:Mscr).bypassOutputChannels.nonEmpty
-  /** @return true if a Mscr is created for floating flattens */
-  def isFlattenMscr: Mscr => Boolean = (_:Mscr).flattenOutputChannels.nonEmpty
 
 }
 

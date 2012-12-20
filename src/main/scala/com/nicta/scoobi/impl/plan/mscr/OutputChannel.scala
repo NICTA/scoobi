@@ -44,14 +44,12 @@ trait MscrOutputChannel extends OutputChannel {
   def environment: Option[CompNode]
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
-                            flatten:  Option[Flatten[_]]        = None,
                             combiner: Option[Combine[_,_]]      = None,
                             reducer:  Option[ParallelDo[_,_,_]] = None,
                             tag: Int = 0) extends MscrOutputChannel {
 
   override def toString =
     Seq(Some(groupByKey),
-        flatten .map(n => "flatten  = "+n.toString),
         combiner.map(n => "combiner = "+n.toString),
         reducer .map(n => "reducer  = "+n.toString)
     ).flatten.mkString("GbkOutputChannel(", ", ", ")")
@@ -61,10 +59,10 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case _                   => false
   }
 
-  def nodes: Seq[CompNode] = Seq[CompNode](groupByKey) ++ flatten.toSeq ++ combiner.toSeq ++ reducer.toSeq
+  def nodes: Seq[CompNode] = Seq[CompNode](groupByKey) ++ combiner.toSeq ++ reducer.toSeq
   def setTag(t: Int): OutputChannel = copy(tag = t)
   /** @return the output node of this channel */
-  def output = reducer.map(r => r: CompNode).orElse(combiner).orElse(flatten).getOrElse(groupByKey)
+  def output = reducer.map(r => r: CompNode).orElse(combiner).getOrElse(groupByKey)
 
   def nodeSinks = nodes.flatMap(_.sinks)
 
@@ -107,23 +105,6 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends 
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
 
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
-    job
-  }
-
-}
-
-case class FlattenOutputChannel(output: Flatten[_], tag: Int = 0) extends MscrOutputChannel {
-  override def equals(a: Any) = a match {
-    case o: FlattenOutputChannel => o.output.id == output.id
-    case _ => false
-  }
-  def nodes: Seq[CompNode] = Seq(output)
-  def setTag(t: Int) = copy(tag = t)
-  def nodeSinks = output.sinks
-  lazy val bridgeStore = output.bridgeStore
-  def environment: Option[CompNode] = None
   def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
     job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
     job

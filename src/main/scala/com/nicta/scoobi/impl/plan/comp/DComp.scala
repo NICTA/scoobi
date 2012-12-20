@@ -12,6 +12,7 @@ import mapreducer._
 import scalaz.Memo._
 import scalaz.Equal
 import java.util.UUID._
+import CollectFunctions._
 
 /**
  * GADT for distributed list computation graph.
@@ -35,7 +36,7 @@ sealed trait DComp[+A] extends CompNode {
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
  * all elements of an existing DComp and concatenating the results. */
-case class ParallelDo[A, B, E](in:                CompNode,
+case class ParallelDo[A, B, E](ins:               Seq[CompNode],
                                env:               CompNode,
                                dofn:              EnvDoFn[A, B, E],
                                mr:                DoMapReducer[A, B, E],
@@ -64,10 +65,7 @@ case class ParallelDo[A, B, E](in:                CompNode,
     }
   }
 
-  def source = in match {
-    case Load1(s)  => Some(s)
-    case _         => None
-  }
+  def source = ins.collect(isALoad).headOption
 
   override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
 
@@ -98,7 +96,7 @@ object ParallelDo {
                  mwfc: ManifestWireFormat[C],
                  mwfe: ManifestWireFormat[E],
                  mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] = {
-    new ParallelDo(pd1.in, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
+    new ParallelDo(pd1.ins, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
                    DoMapReducer(mwfa, mwfc, manifestWireFormat[(E, F)]),
                    pd1.sinks ++ pd2.sinks,
                    pd1.bridgeStoreId,
@@ -128,29 +126,9 @@ object ParallelDo {
 }
 object ParallelDo1 {
   /** extract only the incoming node of this parallel do */
-  def unapply(node: ParallelDo[_,_,_]): Option[CompNode] = Some(node.in)
+  def unapply(node: ParallelDo[_,_,_]): Option[Seq[CompNode]] = Some(node.ins)
 }
 
-
-/** The Flatten node type specifies the building of a DComp that contains all the elements from
- * one or more existing DLists of the same type. */
-case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[A] {
-
-  type CompNodeType = Flatten[A]
-  type Sh = Arr
-
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
-
-  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
-
-  override val toString = "Flatten ("+id+")"+mr
-
-  def makeTaggedIdentityReducer(tag: Int) = mr.makeTaggedIdentityReducer(tag)
-}
-object Flatten1 {
-  /** extract only the incoming nodes of this flatten */
-  def unapply(fl: Flatten[_]): Option[Seq[CompNode]] = Some(fl.ins)
-}
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
 case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, V)] {
@@ -178,7 +156,7 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
       }
     }
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo[(K, Iterable[V]), (K, V), Unit](in, Return.unit, dofn, DoMapReducer(manifestWireFormat[(K, Iterable[V])], manifestWireFormat[(K, V)], manifestWireFormat[Unit]))
+    ParallelDo[(K, Iterable[V]), (K, V), Unit](Seq(in), Return.unit, dofn, DoMapReducer(manifestWireFormat[(K, Iterable[V])], manifestWireFormat[(K, V)], manifestWireFormat[Unit]))
   }
 
   def makeTaggedCombiner(tag: Int)                      = mr.makeTaggedCombiner(tag, f)
