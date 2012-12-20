@@ -18,6 +18,69 @@ trait Optimiser extends CompNodes with Rewriter {
   implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**
+   * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
+   */
+  def combineToParDo = everywhere(rule {
+    case c @ Combine(GroupByKey1(_),_,_,_,_) => c
+    case c: Combine[_,_]                     => c.debug("combineToParDo").toParallelDo
+  })
+
+  /**
+   * Nested ParallelDos must be fused
+   *
+   *    pd1 @ ParallelDo
+   *          |
+   *    pd2 @ ParallelDo
+   *        ====>
+   *    pd3 @ ParallelDo
+   *
+   * This rule is repeated until nothing can be fused anymore
+   */
+  def parDoFuse(pass: Int) = repeat(sometd(rule {
+    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,_,Barriers(_,false)) if !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
+      p2.debug("parDoFuse (pass "+pass+") ").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
+  }))
+
+  /**
+   * A GroupByKey which is an input to several nodes must be copied.
+   *
+   *       GroupByKey
+   *        /     \
+   *     node1   node2
+   *         ====>
+   *  GroupByKey1  GroupByKey2
+   *     |             |
+   *    node1        node2
+   */
+  def groupByKeySplit = everywhere(rule {
+    // I think that this case is redundant with the flattenSplit rule
+    case g @ GroupByKey1(f: Flatten[_]) => updateCopy(g, g.debug("groupByKeySplit").copy(in = f.copy()))
+    case g: GroupByKey[_,_]             => updateCopy(g, g.debug("groupByKeySplit").copy())
+  })
+
+  /**
+   * A Combine which is an input to several nodes must be copied.
+   *
+   *        Combine
+   *        /     \
+   *     node1   node2
+   *         ====>
+   *   Combine1  Combine2
+   *     |          |
+   *    node1     node2
+   */
+  def combineSplit = everywhere(rule {
+    case c: Combine[_,_] => c.debug("combineSplit").copy()
+  })
+
+  /**
+   * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
+   */
+  def parDoFuseBarrier(outputs: Seq[CompNode]) = everywhere(rule {
+    case p: ParallelDo[_,_,_] if (outputs contains p) && !hasBeenExecuted(p) => p.copy(barriers = p.debug("pardoFuseBarrier").barriers.copy(fuseBarrier = true))
+  })
+
+  /**
    * Flatten nodes which are input to several other nodes must be duplicated
    *        Flatten1
    *        /     \
@@ -71,68 +134,6 @@ trait Optimiser extends CompNodes with Rewriter {
     case fl @ Flatten1(ins) if ins exists isFlatten => fl.debug("flattenFuse").copy(ins = fl.ins.flatMap { case Flatten1(nodes) => nodes; case other => List(other) })
   }))
 
-  /**
-   * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
-   */
-  def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_,_,_) => c
-    case c: Combine[_,_]                     => c.debug("combineToParDo").toParallelDo
-  })
-
-  /**
-   * Nested ParallelDos must be fused
-   *
-   *    pd1 @ ParallelDo
-   *          |
-   *    pd2 @ ParallelDo
-   *        ====>
-   *    pd3 @ ParallelDo
-   *
-   * This rule is repeated until nothing can be fused anymore
-   */
-  def parDoFuse(pass: Int) = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,_,Barriers(_,false)) if false => //!hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
-      p2.debug("parDoFuse (pass "+pass+") ").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
-  }))
-
-  /**
-   * A GroupByKey which is an input to several nodes must be copied.
-   *
-   *       GroupByKey
-   *        /     \
-   *     node1   node2
-   *         ====>
-   *  GroupByKey1  GroupByKey2
-   *     |             |
-   *    node1        node2
-   */
-  def groupByKeySplit = everywhere(rule {
-    // I think that this case is redundant with the flattenSplit rule
-    case g @ GroupByKey1(f: Flatten[_]) => updateCopy(g, g.debug("groupByKeySplit").copy(in = f.copy()))
-    case g: GroupByKey[_,_]             => updateCopy(g, g.debug("groupByKeySplit").copy())
-  })
-
-  /**
-   * A Combine which is an input to several nodes must be copied.
-   *
-   *        Combine
-   *        /     \
-   *     node1   node2
-   *         ====>
-   *   Combine1  Combine2
-   *     |          |
-   *    node1     node2
-   */
-  def combineSplit = everywhere(rule {
-    case c: Combine[_,_] => c.debug("combineSplit").copy()
-  })
-
-  /**
-   * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
-   */
-  def parDoFuseBarrier(outputs: Seq[CompNode]) = everywhere(rule {
-    case p: ParallelDo[_,_,_] if (outputs contains p) && !hasBeenExecuted(p) => p.copy(barriers = p.debug("pardoFuseBarrier").barriers.copy(fuseBarrier = true))
-  })
 
   /**
    * Shared ParallelDos must be fused

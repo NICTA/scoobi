@@ -46,7 +46,7 @@ case class InMemoryMode() extends ShowNode {
   lazy val prepare: ScoobiConfiguration => CompNode => Unit =
     paramAttr("prepare") { sc: ScoobiConfiguration => { node: CompNode =>
       node.sinks.foreach(_.outputCheck(sc))
-      node.children.foreach(_.asNode -> prepare(sc))
+      children(node).foreach(_ -> prepare(sc))
     }}
 
   private

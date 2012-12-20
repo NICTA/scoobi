@@ -143,11 +143,6 @@ case class Flatten[A](ins: List[CompNode], mr: SimpleMapReducer[A], sinks: Seq[S
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override def equals(a: Any) = a match {
-    case f: Flatten[_] => ins == f.ins
-    case _             => false
-  }
-
   override val toString = "Flatten ("+id+")"+mr
 
   def makeTaggedIdentityReducer(tag: Int) = mr.makeTaggedIdentityReducer(tag)
@@ -169,11 +164,6 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
   def gpk = mr.gpk
   val (mwfk, mwfv) = (mr.mwfk, mr.mwfv)
   implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
-
-  override def equals(a: Any) = a match {
-    case c: Combine[_,_] => in == c.in
-    case _               => false
-  }
 
   override val toString = "Combine ("+id+")"+mr
 

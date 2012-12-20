@@ -48,7 +48,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val nodes = layer.nodes
 
       nodes must not(beEmpty)
-      nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n))) ==== true
+      nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n)))
     }.set(minTestsOk -> 100)
 
     e2 := forAll(genLayerPair) { (pair: (Layer[CompNode], Layer[CompNode])) => val (layer1, layer2) = pair

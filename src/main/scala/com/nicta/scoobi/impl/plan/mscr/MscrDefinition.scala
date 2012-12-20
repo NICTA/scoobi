@@ -3,7 +3,6 @@ package impl
 package plan
 package mscr
 
-import org.kiama.attribution.Attribution
 import scala.collection.immutable.Set
 import scalaz.Scalaz._
 import scalaz.syntax.std.indexedSeq._
@@ -13,7 +12,6 @@ import core._
 import util.UniqueId
 
 trait MscrsDefinition extends Layering {
-  type T = CompNode
 
   def selectNode(n: CompNode) = isAGroupByKey.isDefinedAt(n) || (n -> isFloating)
 
@@ -82,7 +80,7 @@ trait MscrsDefinition extends Layering {
     attr("gbk output channel") { case g  =>
       val flatten = Seq(g.in).collect(isAFlatten).headOption
 
-      val gbkAncestors = (g -> ancestors).toList
+      val gbkAncestors = (g -> parents).toList
       gbkAncestors match {
         case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, combiner = Some(c), reducer = Some(p))
         case (p: ParallelDo[_,_,_]) :: rest                      if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, reducer = Some(p))
@@ -124,23 +122,19 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val layerInputs: Layer[T] => Seq[CompNode] = attr("layer inputs") { case layer =>
-    distinctNodes {
-      layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
-        case Flatten1(ins) => ins
-        case other         => Seq(other)
-      }
-    }
+    layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
+      case Flatten1(ins) => ins
+      case other         => Seq(other)
+    }.distinct
   }
 
   /** collect all input nodes to the gbks of this layer */
   lazy val gbkInputs: Layer[T] => Seq[CompNode] = attr("gbk inputs") { case layer =>
-    distinctNodes {
-      layer.nodes.toSeq.flatMap(_ -> inputs)flatMap {
-        case fl: Flatten[_] if layer.gbks.flatMap(_ -> inputs).contains(fl)    => fl.ins
-        case other          if layer.gbks.flatMap(_ -> inputs).contains(other) => Seq(other)
-        case other                                                             => Seq()
-      }
-    }
+    layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
+      case fl: Flatten[_] if layer.gbks.flatMap(_ -> inputs).contains(fl)    => fl.ins
+      case other          if layer.gbks.flatMap(_ -> inputs).contains(other) => Seq(other)
+      case other                                                             => Seq()
+    }.distinct
   }
 
   lazy val floatingParallelDos: Layer[T] => Seq[ParallelDo[_,_,_]] = floatingNodes(isAParallelDo)
@@ -160,19 +154,17 @@ trait MscrsDefinition extends Layering {
    * - the combine, flatten and reducer nodes after the gbk
    */
   lazy val layerNodes: Layer[T] => Seq[CompNode] = attr("layer nodes") { case layer =>
-    distinctNodes {
-      gbkOutputChannels(layer).flatMap(_.nodes) ++
-      layer.gbks.flatMap {
-        case GroupByKey1(flatten @ Flatten1(ins)) => flatten +: ins
-        case GroupByKey1(pd: ParallelDo[_,_,_])   => Seq(pd)
-        case GroupByKey1(other)                   => Seq()
-      }
-    }
+    gbkOutputChannels(layer).flatMap(_.nodes) ++
+    layer.gbks.flatMap {
+      case GroupByKey1(flatten @ Flatten1(ins)) => flatten +: ins
+      case GroupByKey1(pd: ParallelDo[_,_,_])   => Seq(pd)
+      case GroupByKey1(other)                   => Seq()
+    }.distinct
   }
 
   /** @return the sources nodes for all mscrs of a layer */
   lazy val layerSourceNodes: Layer[T] => Seq[CompNode] = attr("layer source nodes") { case layer =>
-    distinctNodes(mscrs(layer).flatMap(mscrSourceNodes))
+    mscrs(layer).flatMap(mscrSourceNodes).distinct
   }
 
   /** @return the sources for all mscrs of a layer */
@@ -182,7 +174,7 @@ trait MscrsDefinition extends Layering {
 
   /** @return the sinks nodes for all mscrs of a layer */
   lazy val layerSinkNodes: Layer[T] => Seq[CompNode] = attr("layer sink nodes") { case layer =>
-    distinctNodes(mscrs(layer).flatMap(mscrSinkNodes))
+    mscrs(layer).flatMap(mscrSinkNodes).distinct
   }
 
   /** @return the sinks for all mscrs of a layer */
@@ -198,7 +190,7 @@ trait MscrsDefinition extends Layering {
   lazy val mscrSourceNodes: Mscr => Seq[CompNode] = attr("mscr source nodes") { case mscr =>
     val inputChannelsSources = mscr.inputChannels.flatMap(_.sourceNodes)
     val outputChannelsSources = mscr.outputChannels.flatMap(_.sourceNodes)
-    distinctNodes(inputChannelsSources ++ outputChannelsSources)
+    (inputChannelsSources ++ outputChannelsSources).distinct
   }
 
   lazy val sources: InputChannel => Seq[Source] = attr("input channel sources") { case in =>
@@ -207,7 +199,7 @@ trait MscrsDefinition extends Layering {
       case n: GroupByKey[_,_]   => Seq(n.bridgeStore).flatten
       case n: Combine[_,_]      => Seq(n.bridgeStore).flatten
       case n: ParallelDo[_,_,_] if isReducer(n) => Seq(n.bridgeStore).flatten
-      case n                  => n.children.asNodes.flatMap {
+      case n                  => children(n).flatMap {
         case ld: Load[_] => Some(ld.source)
         case other       => other.bridgeStore
       }
@@ -220,12 +212,12 @@ trait MscrsDefinition extends Layering {
    *
    */
   lazy val mscrSinkNodes: Mscr => Seq[CompNode] = attr("mscr sink nodes") { case mscr =>
-    distinctNodes(mscr.outputChannels.toSeq.flatMap(_.sinkNodes))
+    mscr.outputChannels.toSeq.flatMap(_.sinkNodes).distinct
   }
 
   lazy val isInputTo: OutputChannel => CompNode => Boolean = paramAttr("is a node input to an output channel") { (out: OutputChannel) => (node: CompNode) =>
     outgoings(node).exists {
-      case fl: Flatten[_] => out.contains(fl.parent.asNode)
+      case fl: Flatten[_] => parent(fl).map(out.contains).getOrElse(false)
       case other          => out.contains(other)
     }
   }
@@ -287,9 +279,9 @@ trait Layering extends ShowNode {
   }
 
   lazy val longestPathToNode: CompNode => CompNode => Int = paramAttr("longestPathToNodeFromOneNode") { (target: CompNode) => node: CompNode =>
-    if (node.id == target.id)                0  // found
-    else if (node.children.asNodes.isEmpty) -1 // not found
-    else                                     1 + (node.children.asNodes).map(_ -> longestPathToNode(target)).max
+    if (node.id == target.id)        0  // found
+    else if (children(node).isEmpty) -1 // not found
+    else                             1 + children(node).map(_ -> longestPathToNode(target)).max
   }
 
   /**
