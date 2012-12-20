@@ -39,7 +39,7 @@ import org.apache.hadoop.fs.Path
 class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
   private val taskContexts: MMap[(Int, Int), TaskAttemptContext] = MMap.empty
-  private val recordWriters: MMap[(Int, Int), RecordWriter[_,_]] = MMap.empty
+  private val recordWriters: MMap[(Int, Int), (RecordWriter[_,_], TaskAttemptContext)] = MMap.empty
 
 
   /** Write a value out on multiple outputs of a given output channel.*/
@@ -50,7 +50,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
   }
 
   /** Close all opened output channels. */
-  def close() = recordWriters.values foreach { _.close(context) }
+  def close() = recordWriters.values foreach { case (rw, context) => rw.close(context) }
 
   private def getContext(channel: Int, output: Int): TaskAttemptContext = {
     /* The following trick leverages the instantiation of a record writer via
@@ -87,7 +87,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
                      .asInstanceOf[OutputFormat[_,_]]
                      .getRecordWriter(taskContext)
 
-    recordWriters.getOrElseUpdate((channel, output), mkRecordWriter)
+    recordWriters.getOrElseUpdate((channel, output), (mkRecordWriter, taskContext))._1
   }
 }
 
