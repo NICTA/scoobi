@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.exec.DistCache</title>
+          <title>com.nicta.scoobi.impl.util.Serialiser</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
@@ -14,9 +14,9 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.exec" class="extype" href="package.html">exec</a></p>
-        <h1>DistCache</h1>
+        <a title="Go to companion" href="Serialiser.html"><img src="../../../../../lib/object_to_trait_big.png" /></a>
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.util" class="extype" href="package.html">util</a></p>
+        <h1><a title="Go to companion" href="Serialiser.html">Serialiser</a></h1>
       </div>
 
       <h4 class="signature" id="signature">
@@ -25,15 +25,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">DistCache</span><span class="result"> extends AnyRef</span>
+        <span class="name">Serialiser</span><span class="result"> extends <a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Faciliate making an object available to all tasks (mappers, reducers, etc). Use
-XStream to serialise objects to XML strings and then send out via Hadoop's
-distributed cache. Two APIs are provided for pushing and pulling objects.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -47,7 +45,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.DistCache" class="in"><span>DistCache</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.util.Serialiser" class="in"><span>Serialiser</span></li><li name="com.nicta.scoobi.impl.util.Serialiser" class="in"><span>Serialiser</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -152,19 +150,18 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#deserialise" data-isabs="false">
-      <a id="deserialise[T](Configuration):(Path) ⇒ Option[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.Serialiser#deserialise" data-isabs="false">
+      <a id="deserialise(InputStream):AnyRef"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deserialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Option" class="extype">Option</span>[T]</span>
+        <span class="name">deserialise</span><span class="params">(<span name="in">in: <span name="java.io.InputStream" class="extype">InputStream</span></span>)</span><span class="result">: AnyRef</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">deserialise an object from a path file
-</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -204,6 +201,18 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.Serialiser#fromByteArray" data-isabs="false">
+      <a id="fromByteArray(Array[Byte]):AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromByteArray</span><span class="params">(<span name="in">in: <span name="scala.Array" class="extype">Array</span>[<span name="scala.Byte" class="extype">Byte</span>]</span>)</span><span class="result">: AnyRef</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -240,19 +249,6 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#mkPath" data-isabs="false">
-      <a id="mkPath(Configuration,String):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkPath</span><span class="params">(<span name="configuration">configuration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Make a local filesystem path based on a 'tag' to temporarily store the
-serialized object.</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -289,44 +285,18 @@ serialized object.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pullObject" data-isabs="false">
-      <a id="pullObject[T](Configuration,String):Option[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.Serialiser#serialise" data-isabs="false">
+      <a id="serialise(Any,OutputStream):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[T]</span>
+        <span class="name">serialise</span><span class="params">(<span name="obj">obj: <span name="scala.Any" class="extype">Any</span></span>, <span name="out">out: <span name="java.io.OutputStream" class="extype">OutputStream</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
-the current job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pushObject" data-isabs="false">
-      <a id="pushObject[T](Configuration,T,String):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#serialise" data-isabs="false">
-      <a id="serialise[T](Configuration,T,String)((Path) ⇒ Unit):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">serialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="params">(<span name="action">action: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">serialise an object to a path
-</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -339,6 +309,18 @@ the current job.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.util.Serialiser#toByteArray" data-isabs="false">
+      <a id="toByteArray(Any):Array[Byte]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toByteArray</span><span class="params">(<span name="obj">obj: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Array" class="extype">Array</span>[<span name="scala.Byte" class="extype">Byte</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -403,7 +385,9 @@ the current job.</p>
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.impl.util.Serialiser" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.util.Serialiser" class="extype" href="Serialiser.html">Serialiser</a></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

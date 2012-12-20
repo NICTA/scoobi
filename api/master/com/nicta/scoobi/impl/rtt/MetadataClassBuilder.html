@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.exec.DistCache</title>
+          <title>com.nicta.scoobi.impl.rtt.MetadataClassBuilder</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
@@ -12,28 +12,30 @@
       <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.exec" class="extype" href="package.html">exec</a></p>
-        <h1>DistCache</h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.rtt" class="extype" href="package.html">rtt</a></p>
+        <h1>MetadataClassBuilder</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">DistCache</span><span class="result"> extends AnyRef</span>
+        <span class="name">MetadataClassBuilder</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="className">className: String</span>, <span name="metaData">metaData: <span name="scala.Any" class="extype">Any</span></span>, <span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="mf">mf: Manifest[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Faciliate making an object available to all tasks (mappers, reducers, etc). Use
-XStream to serialise objects to XML strings and then send out via Hadoop's
-distributed cache. Two APIs are provided for pushing and pulling objects.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A class for building a class extending T at run-time.</p><p>The purpose is to create a unique class which, when instantiated, will be able to perform the operations described in
+T, while using some metadata object serialised to the distributed cache</p><p>It takes:</p><ul><li>a type T which is going to be the parent of the generated class</li><li>the className (which must be unique for the class to build)</li><li>some metadata for the class (like a Map from tags to WireFormats, if it's a TaggedValue)</li></ul><p> The metadata is distributed to the cache and a &quot;metadataPath&quot; method is added to the built class so that it can be retrieved.</p><p> For example, a TaggedValue is a class, defined for several tags, which is able to read/write values of different types (described by their WireFormats),
+ with one type per tag. A concrete instance of that class will have a unique name, TV92, and will provide a method returning the
+ path of the distributed cache file containing all WireFormats per tags.</p><p> The TaggedKey class then retrieves the map with the help of the ScoobiMetadata class and can use the wireformats to
+ serialise/deserialise values</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -47,7 +49,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.DistCache" class="in"><span>DistCache</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="in"><span>MetadataClassBuilder</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.Product" class="in"><span>Product</span></li><li name="scala.Equals" class="in"><span>Equals</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -57,7 +59,22 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
 
       <div id="template">
         <div id="allMembers">
-        
+        <div class="members" id="constructors">
+              <h3>Instance Constructors</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#this" data-isabs="false">
+      <a id="this:MetadataClassBuilder[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MetadataClassBuilder</span><span class="params">(<span name="className">className: String</span>, <span name="metaData">metaData: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="mf">mf: Manifest[T]</span>)</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -137,6 +154,30 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#canEqual" data-isabs="false">
+      <a id="canEqual(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">canEqual</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → Equals</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#className" data-isabs="false">
+      <a id="className:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">className</span><span class="result">: String</span>
+      </span>
+      </h4>
+      
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -152,19 +193,6 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#deserialise" data-isabs="false">
-      <a id="deserialise[T](Configuration):(Path) ⇒ Option[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deserialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Option" class="extype">Option</span>[T]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">deserialise an object from a path file
-</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -177,7 +205,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#equals" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -188,7 +216,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → Equals → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -216,7 +244,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -227,7 +255,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -240,19 +268,18 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#mkPath" data-isabs="false">
-      <a id="mkPath(Configuration,String):Path"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#metaData" data-isabs="false">
+      <a id="metaData:Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">mkPath</span><span class="params">(<span name="configuration">configuration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="name">metaData</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Make a local filesystem path based on a 'tag' to temporarily store the
-serialized object.</p>
+      
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -289,44 +316,54 @@ serialized object.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pullObject" data-isabs="false">
-      <a id="pullObject[T](Configuration,String):Option[T]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#productArity" data-isabs="false">
+      <a id="productArity:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[T]</span>
+        <span class="name">productArity</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
-the current job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pushObject" data-isabs="false">
-      <a id="pushObject[T](Configuration,T,String):Path"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#productElement" data-isabs="false">
+      <a id="productElement(Int):Any"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="name">productElement</span><span class="params">(<span name="arg0">arg0: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#serialise" data-isabs="false">
-      <a id="serialise[T](Configuration,T,String)((Path) ⇒ Unit):Path"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="scala.Product#productIterator" data-isabs="false">
+      <a id="productIterator:Iterator[Any]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">serialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="params">(<span name="action">action: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="name">productIterator</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">serialise an object to a path
-</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#productPrefix" data-isabs="false">
+      <a id="productPrefix:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">productPrefix</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → Product</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -339,18 +376,42 @@ the current job.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
-      <a id="toString():String"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#toClass" data-isabs="false">
+      <a id="toClass:Class[_]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+        <span class="name">toClass</span><span class="result">: Class[_]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the java class</p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#toRuntimeClass" data-isabs="false">
+      <a id="toRuntimeClass:RuntimeClass"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toRuntimeClass</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="RuntimeClass.html">RuntimeClass</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Compile the definition and code for the class.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder#toString" data-isabs="false">
+      <a id="toString:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="result">: String</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">string value showing the generated class source code</p><div class="fullcomment"><div class="comment cmt"><p>string value showing the generated class source code</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataClassBuilder" class="extype" href="">MetadataClassBuilder</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -399,11 +460,37 @@ the current job.</p>
     </li></ol>
             </div>
 
-        
+        <div class="values members" id="values">
+              <h3>Deprecated Value Members</h3>
+              <ol><li visbl="pub" name="scala.Product#productElements" data-isabs="false">
+      <a id="productElements:Iterator[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 2.8.0) use productIterator instead">productElements</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.8.0)</i> use productIterator instead</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="scala.Serializable" class="parent">
+              <h3>Inherited from <span name="scala.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="java.io.Serializable" class="parent">
+              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
+            </div><div name="scala.Product" class="parent">
+              <h3>Inherited from <span name="scala.Product" class="extype">Product</span></h3>
+            </div><div name="scala.Equals" class="parent">
+              <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

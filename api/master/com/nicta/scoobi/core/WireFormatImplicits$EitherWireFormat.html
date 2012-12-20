@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.core.WireFormat</title>
+          <title>com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -14,33 +14,24 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="WireFormat$.html"><img src="../../../../lib/trait_to_object_big.png" /></a>
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a></p>
-        <h1><a title="Go to companion" href="WireFormat$.html">WireFormat</a></h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a>.<a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="WireFormatImplicits.html">WireFormatImplicits</a></p>
+        <h1>EitherWireFormat</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">WireFormat</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <span class="name">EitherWireFormat</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="result"> extends <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[<span name="scala.Either" class="extype">Either</span>[T1, T2]]</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Type-class for sending types across the Hadoop wire.</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@implicitNotFound</span><span class="args">(<span>
-      
-      <span name="&quot;Cannot find WireFormat type class for ${A}&quot;" class="defval">...</span>
-    </span>)</span>
-              
-        </dd></dl><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract10WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract10WireFormat.html">Abstract10WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract11WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract11WireFormat.html">Abstract11WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract12WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract12WireFormat.html">Abstract12WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract13WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract13WireFormat.html">Abstract13WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract14WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract14WireFormat.html">Abstract14WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract15WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract15WireFormat.html">Abstract15WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract16WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract16WireFormat.html">Abstract16WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract17WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract17WireFormat.html">Abstract17WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract18WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract18WireFormat.html">Abstract18WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract19WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract19WireFormat.html">Abstract19WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract20WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract20WireFormat.html">Abstract20WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract21WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract21WireFormat.html">Abstract21WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract22WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract22WireFormat.html">Abstract22WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract2WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract2WireFormat.html">Abstract2WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract3WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract3WireFormat.html">Abstract3WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract4WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract4WireFormat.html">Abstract4WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract5WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract5WireFormat.html">Abstract5WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract6WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract6WireFormat.html">Abstract6WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract7WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract7WireFormat.html">Abstract7WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract8WireFormat.html">Abstract8WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract9WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract9WireFormat.html">Abstract9WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" class="extype" href="WireFormatImplicits$AvroWireFormat.html">AvroWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.Case0WireFormat" class="extype" href="WireFormatImplicits$Case0WireFormat.html">Case0WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case10WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case10WireFormat.html">Case10WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case11WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case11WireFormat.html">Case11WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case12WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case12WireFormat.html">Case12WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case13WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case13WireFormat.html">Case13WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case14WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case14WireFormat.html">Case14WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case15WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case15WireFormat.html">Case15WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case16WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case16WireFormat.html">Case16WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case17WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case17WireFormat.html">Case17WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case18WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case18WireFormat.html">Case18WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case19WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case19WireFormat.html">Case19WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.Case1WireFormat" class="extype" href="WireFormatImplicits$Case1WireFormat.html">Case1WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case20WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case20WireFormat.html">Case20WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case21WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case21WireFormat.html">Case21WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case22WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case22WireFormat.html">Case22WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case2WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case2WireFormat.html">Case2WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case3WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case3WireFormat.html">Case3WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case4WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case4WireFormat.html">Case4WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case5WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case5WireFormat.html">Case5WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case6WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case6WireFormat.html">Case6WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case7WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case7WireFormat.html">Case7WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case8WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case8WireFormat.html">Case8WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case9WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case9WireFormat.html">Case9WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" class="extype" href="WireFormatImplicits$EitherWireFormat.html">EitherWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.ObjectWireFormat" class="extype" href="WireFormatImplicits$ObjectWireFormat.html">ObjectWireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple10WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple10WireFormat.html">Tuple10WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple11WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple11WireFormat.html">Tuple11WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple12WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple12WireFormat.html">Tuple12WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple13WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple13WireFormat.html">Tuple13WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple14WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple14WireFormat.html">Tuple14WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple15WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple15WireFormat.html">Tuple15WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple16WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple16WireFormat.html">Tuple16WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple17WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple17WireFormat.html">Tuple17WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple18WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple18WireFormat.html">Tuple18WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple19WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple19WireFormat.html">Tuple19WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple20WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple20WireFormat.html">Tuple20WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple21WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple21WireFormat.html">Tuple21WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple22WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple22WireFormat.html">Tuple22WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple2WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple2WireFormat.html">Tuple2WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple3WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple3WireFormat.html">Tuple3WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple4WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple4WireFormat.html">Tuple4WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple5WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple5WireFormat.html">Tuple5WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple6WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple6WireFormat.html">Tuple6WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple7WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple7WireFormat.html">Tuple7WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple8WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple8WireFormat.html">Tuple8WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple9WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple9WireFormat.html">Tuple9WireFormat</a></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[<span name="scala.Either" class="extype">Either</span>[T1, T2]], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -54,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.WireFormat" class="in"><span>WireFormat</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" class="in"><span>EitherWireFormat</span></li><li name="com.nicta.scoobi.core.WireFormat" class="in"><span>WireFormat</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -64,41 +55,29 @@
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
-
-        <div class="values members" id="values">
-              <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#fromWire" data-isabs="true">
-      <a id="fromWire(DataInput):A"></a>
+        <div class="members" id="constructors">
+              <h3>Instance Constructors</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat#this" data-isabs="false">
+      <a id="this:EitherWireFormat[T1, T2]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
+        <span class="modifier"></span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">fromWire</span><span class="params">(<span name="in">in: <span name="java.io.DataInput" class="extype">DataInput</span></span>)</span><span class="result">: A</span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#toWire" data-isabs="true">
-      <a id="toWire(A,DataOutput):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toWire</span><span class="params">(<span name="x">x: A</span>, <span name="out">out: <span name="java.io.DataOutput" class="extype">DataOutput</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">EitherWireFormat</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="wt1">wt1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T1]</span>, <span name="wt2">wt2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[T2]</span>)</span>
       </span>
       </h4>
       
     </li></ol>
             </div>
 
+        
+
+        
+
         <div class="values members" id="values">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li visbl="pub" name="scala.AnyRef#!=" data-isabs="false">
       <a id="!=(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -225,6 +204,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat#fromWire" data-isabs="false">
+      <a id="fromWire(DataInput):Either[T1, T2]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromWire</span><span class="params">(<span name="in">in: <span name="java.io.DataInput" class="extype">DataInput</span></span>)</span><span class="result">: <span name="scala.Either" class="extype">Either</span>[T1, T2]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" class="extype" href="">EitherWireFormat</a> → <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -321,6 +312,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat#toWire" data-isabs="false">
+      <a id="toWire(Either[T1, T2],DataOutput):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toWire</span><span class="params">(<span name="x">x: <span name="scala.Either" class="extype">Either</span>[T1, T2]</span>, <span name="out">out: <span name="java.io.DataOutput" class="extype">DataOutput</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" class="extype" href="">EitherWireFormat</a> → <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -373,7 +376,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.core.WireFormat" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[<span name="scala.Either" class="extype">Either</span>[T1, T2]]</h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
