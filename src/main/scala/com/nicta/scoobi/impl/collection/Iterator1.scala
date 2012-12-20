@@ -99,7 +99,7 @@ trait Iterator1[+A] extends TraversableOnce[A] {
    * A non-empty iterator always has a definite size.
    */
   def hasDefiniteSize: Boolean =
-    true
+    false
 
   /**
    * A non-empty iterator is never traversable again.
@@ -293,6 +293,26 @@ trait Iterator1[+A] extends TraversableOnce[A] {
       Some(first)
     else
       rest find p
+
+  /**
+   * Produces an iterator containing cumulative results of applying the operator going left to right.
+   */
+  def scanLeft[B](z: B)(op: (B, A) => B): Iterator1[B] =
+    toIterator.scan1Left(z)(op)
+
+  /**
+   * Produces an iterator containing cumulative results of applying the operator going left to right, starting at head.
+   */
+  def scanLeft1[AA >: A](op: (AA, A) => AA): Iterator1[AA] = {
+    var acc: AA = first
+    val b = new scala.collection.mutable.ListBuffer[AA]
+    foreach { x =>
+      acc = op(acc, x)
+      b += acc
+    }
+
+    first +:: b.iterator
+  }
 
   /**
    * Return the index (starting at 0) of the first element in the iterator satisfying the given predicate or -1 if no such element exists.

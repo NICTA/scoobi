@@ -206,6 +206,26 @@ trait Iterable1[+A] {
     tail.foldLeft[AA](head)(op)
 
   /**
+   * Produces an iterable containing cumulative results of applying the operator going left to right.
+   */
+  def scanLeft[B](z: B)(op: (B, A) => B): Iterable1[B] =
+    toIterable.scan1Left(z)(op)
+
+  /**
+   * Produces an iterable containing cumulative results of applying the operator going left to right, starting at head.
+   */
+  def scanLeft1[AA >: A](op: (AA, A) => AA): Iterable1[AA] = {
+    var acc: AA = head
+    val b = new scala.collection.mutable.ListBuffer[AA]
+    foreach { x =>
+      acc = op(acc, x)
+      b += acc
+    }
+
+    head +:: b
+  }
+
+  /**
    * Take at most the given number of elements from the front of the iterable.
    */
   def take(n: Int): Iterable[A] =
@@ -313,7 +333,7 @@ object Iterable1 {
       }
 
     /**
-     * Produces an iterator containing cumulative results of applying the operator going left to right.
+     * Produces an iterable containing cumulative results of applying the operator going left to right.
      */
     def scan1Left[B](z: B)(op: (B, A) => B): Iterable1[B] = {
       val h = z
@@ -366,7 +386,7 @@ object Iterable1 {
   def iterate[A](start: A)(f: A => A): Iterable1[A] =
     start +:: (new Iterable[A] {
       def iterator =
-        Iterator.iterate(start)(f)
+        Iterator.iterate(f(start))(f)
     })
 
   /**
