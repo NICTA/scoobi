@@ -57,6 +57,7 @@ trait ScoobiConfiguration {
 
   def deleteScoobiDirectory: Boolean
   def deleteWorkingDirectory: Boolean
+  def deleteTemporaryOutputDirectory: Boolean
 
   def fileSystem: FileSystem
 

@@ -25,7 +25,6 @@ import org.apache.hadoop.mapreduce.Reducer
 import org.apache.hadoop.mapreduce.Partitioner
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.io.RawComparator
-import scala.collection.mutable._
 import scalaz.syntax.all._
 
 import core._
@@ -39,51 +38,52 @@ import mapreducer._
 import ScoobiConfigurationImpl._
 import ChannelOutputFormat._
 import monitor.Loggable._
+import org.apache.hadoop.fs.Path
 
 /** A class that defines a single Hadoop MapReduce job. */
-class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
+case class MapReduceJob(stepId: Int,
+                        mappers:   MscrMappers   = MscrMappers(),
+                        reducers:  MscrReducers  = MscrReducers(),
+                        combiners: MscrCombiners = MscrCombiners(),
+                        keyTypes: KeyTypes       = KeyTypes(),
+                        valueTypes: ValueTypes   = ValueTypes(),
+                        mscr: Mscr               = Mscr()) extends MscrJob {
+
   type T = MapReduceJob
 
-  protected val fileSystems: FileSystems = FileSystems
-  import fileSystems._
+  implicit protected val fileSystems: FileSystems = FileSystems
 
   private implicit lazy val logger = LogFactory.getLog("scoobi.Step")
 
-  /* Keep track of all the mappers for each input channel. */
-  private[scoobi] val mappers: Map[(Source, Int), Set[(Env[_], TaggedMapper)]] = Map.empty
-  private[scoobi] val combiners: Set[TaggedCombiner[_]] = Set()
-  private[scoobi] val reducers: ListBuffer[(scala.collection.Seq[Sink], (Env[_], TaggedReducer))] = new ListBuffer
-
-  /* The types that will be combined together to form (K2, V2). */
-  private val keyTypes:   Map[Int, (WireFormat[_], Grouping[_])] = Map.empty
-  private val valueTypes: Map[Int, Tuple1[WireFormat[_]]] = Map.empty
-
-
   /** Add an input mapping function to this MapReduce job. */
-  def addTaggedMapper(input: Source, env: Option[Env[_]], m: TaggedMapper): MapReduceJob = {
-    val tm = (env.getOrElse(Env.empty), m)
-    val inputId = System.identityHashCode(input)
-    if (!mappers.contains((input, inputId))) mappers += (((input, inputId), Set(tm)))
-    else                                     mappers((input, inputId)) += tm: Unit
+  def addTaggedMapper(inputs: Seq[Source], env: Option[Env[_]], mapper: TaggedMapper): MapReduceJob =
+    inputs.foldLeft(this) { (job, input) => job.addTaggedMapper(input, env, mapper) }
 
-    m.tags.foreach { tag =>
-      keyTypes   += ((tag, (m.wfk, m.gpk)))
-      valueTypes += ((tag, Tuple1(m.wfv)))
-    }
-    this
-  }
+  def addTaggedMapper(input: Source, env: Option[Env[_]], mapper: TaggedMapper): MapReduceJob =
+    addMapper(input, env, mapper).addTaggedTypes(mapper)
+
+  def addMapper(input: Source, env: Option[Env[_]], mapper: TaggedMapper): MapReduceJob =
+    copy(mappers = mappers.add(input, env.getOrElse(Env.empty), mapper))
+
+ def addTaggedTypes(mapper: TaggedMapper) =
+   mapper.tags.foldLeft(this) { (job, tag) =>
+     job.addKeyType  (tag,  mapper.wfk, mapper.gpk).
+         addValueType(tag,  mapper.wfv)
+   }
+
+ def addKeyType(tag: Int, wf: WireFormat[_], gp: Grouping[_]) =
+   copy(keyTypes = keyTypes.add(tag, wf, gp))
+
+ def addValueType(tag: Int, wf: WireFormat[_]) =
+   copy(valueTypes = valueTypes.add(tag, wf))
 
   /** Add a combiner function to this MapReduce job. */
-  def addTaggedCombiner[V](c: TaggedCombiner[_]) = {
-    combiners += c
-    this
-  }
+  def addTaggedCombiner[V](combiner: TaggedCombiner[_]) =
+    copy(combiners = combiners.add(combiner))
 
   /** Add an output reducing function to this MapReduce job. */
-  def addTaggedReducer(outputs: scala.collection.Seq[Sink], env: Option[Env[_]], r: TaggedReducer) = {
-    reducers += ((outputs, (env.getOrElse(Env.empty), r)))
-    this
-  }
+  def addTaggedReducer(outputs: Seq[Sink], env: Option[Env[_]], reducer: TaggedReducer) =
+    copy(reducers = reducers.add(outputs, env.getOrElse(Env.empty), reducer))
 
   /** Take this MapReduce job and run it on Hadoop. */
   def run(implicit configuration: ScoobiConfiguration) {
@@ -139,19 +139,19 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
   private def configureKeysAndValues(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     val id = UniqueId.get
 
-    val tkRtClass = TaggedKey("TK" + id, keyTypes.toMap)
+    val tkRtClass = TaggedKey("TK" + id, keyTypes.types)
     jar.addRuntimeClass(tkRtClass)
     job.setMapOutputKeyClass(tkRtClass.clazz)
 
-    val tvRtClass = TaggedValue("TV" + id, valueTypes.toMap)
+    val tvRtClass = TaggedValue("TV" + id, valueTypes.types)
     jar.addRuntimeClass(tvRtClass)
     job.setMapOutputValueClass(tvRtClass.clazz)
 
-    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.toMap)
+    val tpRtClass = TaggedPartitioner("TP" + id, keyTypes.types)
     jar.addRuntimeClass(tpRtClass)
     job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
 
-    val tgRtClass = TaggedGroupingComparator("TG" + id, keyTypes.toMap)
+    val tgRtClass = TaggedGroupingComparator("TG" + id, keyTypes.types)
     jar.addRuntimeClass(tgRtClass)
     job.setGroupingComparatorClass(tgRtClass.clazz.asInstanceOf[Class[_ <: RawComparator[_]]])
   }
@@ -161,14 +161,9 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
    *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
    *       mapper for a given input channel can be used as they all have the same input type */
   private def configureMappers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
-    val mappersList = mappers.toList.map { case ((source, sourceId), mapper) => (source, mapper) }
-    ChannelsInputFormat.configureSources(job, jar, mappersList.map(_._1))
+    ChannelsInputFormat.configureSources(job, jar, mappers.sources)
 
-    val inputChannels: List[((Source, scala.collection.Set[(Env[_], TaggedMapper)]), Int)] = mappersList.zipWithIndex
-    val inputs: scala.collection.Map[Int, (InputConverter[_, _, _], scala.collection.Set[(Env[_], TaggedMapper)])] =
-      scala.collection.Map(inputChannels.map { case ((source, ms), ix) => (ix, (source.inputConverter, scala.collection.Set(ms.toSeq:_*))) }:_*)
-
-    DistCache.pushObject(job.getConfiguration, inputs, "scoobi.mappers")
+    DistCache.pushObject(job.getConfiguration, mappers.inputs, "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
   }
 
@@ -178,8 +173,7 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
    *   - use distributed cache to push all combine code out */
   private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     if (!combiners.isEmpty) {
-      val combinerMap: scala.collection.Map[Int, TaggedCombiner[_]] = scala.collection.Map(combiners.map(tc => (tc.tag, tc)).toSeq:_*)
-      DistCache.pushObject(job.getConfiguration, combinerMap, "scoobi.combiners")
+      DistCache.pushObject(job.getConfiguration, combiners.combinersByTag, "scoobi.combiners")
       job.setCombinerClass(classOf[MscrCombiner[_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
   }
@@ -189,22 +183,10 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
    *       a BridgeStore and add to JAR
    *     - add a named output for each output channel */
   private def configureReducers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
-    reducers.foreach { case (sinks, (_, reducer)) =>
-      sinks foreach {
-        case bs : BridgeStore[_] =>  jar.addRuntimeClass(bs.rtClass)
-        case _                   => {}
-      }
-      sinks.zipWithIndex.foreach { case (sink, ix) =>
-        ChannelOutputFormat.addOutputChannel(sink.configureCompression(job), reducer.tag, ix, sink)
-      }
-    }
+    reducers.configureBridgeStore(jar)
+    reducers.configureOutputChannel(job)
 
-    val outputs: scala.collection.Map[Int, (scala.collection.Seq[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer))] =
-      scala.collection.Map(reducers.map { case (sinks, reducer) =>
-        (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer))
-      }:_*)
-
-    DistCache.pushObject(job.getConfiguration, outputs, "scoobi.reducers")
+    DistCache.pushObject(job.getConfiguration, reducers.outputs, "scoobi.reducers")
     job.setReducerClass(classOf[MscrReducer[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 
@@ -213,7 +195,7 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
      * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
      * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
      * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mappers.keys.map(_._1.inputSize).sum
+    val inputBytes: Long = mappers.sources.map(_.inputSize).sum
     val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
     val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
     job.setNumReduceTasks(numReducers)
@@ -254,10 +236,52 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
   }
 
   private[scoobi] def collectOutputs(implicit configuration: ScoobiConfiguration) = (job: Job) => {
-    val fs = configuration.fileSystem
-
     /* Move named file-based sinks to their correct output paths. */
-    val outputFiles = listPaths(configuration.temporaryOutputDirectory)
+    reducers.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory))
+    configuration.deleteTemporaryOutputDirectory
+    job
+  }
+}
+
+case class KeyTypes(types: Map[Int, (WireFormat[_], Grouping[_])] = Map()) {
+  def add(tag: Int, wf: WireFormat[_], gp: Grouping[_]) =
+    copy(types = types + (tag -> (wf, gp)))
+}
+case class ValueTypes(types: Map[Int, Tuple1[WireFormat[_]]] = Map()) {
+  def add(tag: Int, wf: WireFormat[_]) =
+    copy(types = types + (tag -> Tuple1(wf)))
+}
+case class MscrMappers(mappers: Map[Source, Set[(Env[_], TaggedMapper)]] = Map().withDefaultValue(Set())) {
+  def add(input: Source, env: Env[_], mapper: TaggedMapper) =
+    copy(mappers = mappers + (input -> (mappers(input) + ((env, mapper)))))
+
+  def sources = mappers.keys.toSeq
+  def inputs  = Map(mappers.zipWithIndex.toSeq.map { case ((source, ms), i) => (i, (source.inputConverter, ms)) }:_*)
+
+}
+case class MscrReducers(reducers: Set[(Seq[Sink], (Env[_], TaggedReducer))] = Set()) {
+  def add(sinks: Seq[Sink], env: Env[_], reducer: TaggedReducer) =
+    copy(reducers = reducers + (sinks -> (env, reducer)))
+
+  def sinks = reducers.flatMap(_._1)
+
+  def configureBridgeStore(jar: JarBuilder) {
+    sinks collect { case bs : BridgeStore[_] => jar.addRuntimeClass(bs.rtClass) }
+  }
+
+  def configureOutputChannel(job: Job)(implicit sc: ScoobiConfiguration) {
+    reducers foreach { case (sinks, (_, reducer)) =>
+      sinks.zipWithIndex.foreach { case (sink, i) =>
+        ChannelOutputFormat.addOutputChannel(sink.configureCompression(job), reducer.tag, i, sink)
+      }
+    }
+  }
+
+  lazy val outputs = Map(reducers.toSeq.map { case (sinks, reducer) => (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer)) }:_*)
+
+  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
+    val fs = configuration.fileSystem
+    import fileSystems._
 
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks.zipWithIndex.foreach { case (sink, ix) =>
@@ -268,9 +292,13 @@ class MapReduceJob(stepId: Int, val mscr: Mscr = Mscr()) extends MscrJob {
         }
       }
     }
-    fs.delete(configuration.temporaryOutputDirectory, true)
-    job
   }
+}
+
+case class MscrCombiners(combiners: Set[TaggedCombiner[_]] = Set()) {
+  def add(combiner: TaggedCombiner[_]) = copy(combiners = combiners + combiner)
+  def isEmpty = combiners.isEmpty
+  def combinersByTag: Map[Int, TaggedCombiner[_]] = Map(combiners.toSeq.map(tc => (tc.tag, tc)):_*)
 }
 
 
@@ -278,7 +306,7 @@ object MapReduceJob {
 
   /** Construct a MapReduce job from an MSCR. */
   def create(stepId: Int, mscr: Mscr)(implicit configuration: ScoobiConfiguration): MapReduceJob =
-    new MapReduceJob(stepId, mscr).configureChannels
+    new MapReduceJob(stepId, mscr = mscr).configureChannels
 }
 
 

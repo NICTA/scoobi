@@ -63,13 +63,12 @@ trait MscrsDefinition extends Layering {
   }
   lazy val gbkOutputChannel: GroupByKey[_,_] => GbkOutputChannel = {
     attr("gbk output channel") { case g  =>
-//      val flatten = Seq(g.in).collect(isAFlatten).headOption
 
-      val gbkAncestors = (g -> parents).toList
-      gbkAncestors match {
-//        case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, combiner = Some(c), reducer = Some(p))
-//        case (p: ParallelDo[_,_,_]) :: rest                      if !hasComputedEnv(p) => GbkOutputChannel(g, flatten, reducer = Some(p))
-//        case (c: Combine[_,_]) :: rest                                                 => GbkOutputChannel(g, flatten, combiner = Some(c))
+      val gbkParents = (g -> parents).toList
+      gbkParents match {
+        case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if !hasComputedEnv(p) => GbkOutputChannel(g, combiner = Some(c), reducer = Some(p))
+        case (p: ParallelDo[_,_,_]) :: rest                      if !hasComputedEnv(p) => GbkOutputChannel(g, reducer = Some(p))
+        case (c: Combine[_,_]) :: rest                                                 => GbkOutputChannel(g, combiner = Some(c))
         case _                                                                         => GbkOutputChannel(g)
       }
     }

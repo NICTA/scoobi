@@ -66,7 +66,7 @@ case class MapperInputChannel(parDos: Seq[ParallelDo[_,_,_]],
 
   def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
     parDos.map { pd =>
-      job.addTaggedMapper(sources.head, pd.environment(sc),
+      job.addTaggedMapper(sources, pd.environment(sc),
                           gbk.map(g => pd.makeTaggedMapper(g, tags(pd))).getOrElse(pd.makeTaggedMapper(tags(pd))))
     }
     job
@@ -94,7 +94,7 @@ case class IdInputChannel(input: CompNode,
   def nodes: Seq[CompNode] = Seq(input)
 
   def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    gbk.map(g => sources.foreach(source => job.addTaggedMapper(source, None, g.makeTaggedIdentityMapper(tags(input)))))
+    gbk.map(g => job.addTaggedMapper(sources, None, g.makeTaggedIdentityMapper(tags(input))))
     job
   }
 }
@@ -119,7 +119,7 @@ case class StraightInputChannel(input: CompNode,
   val mapper =  new TaggedIdentityMapper(tags(input), manifestWireFormat[Int], grouping[Int], input.asInstanceOf[DComp[_]].mr.mwf) {
       override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
     }
-    sources.foreach(source => job.addTaggedMapper(source, None, mapper))
+    job.addTaggedMapper(sources, None, mapper)
     job
   }
 

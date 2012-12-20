@@ -253,8 +253,9 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   lazy val temporaryOutputDirectory: Path = new Path(workingDirectory, "tmp-out")
   lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
-  def deleteScoobiDirectory  = fs.delete(scoobiDirectory, true)
-  def deleteWorkingDirectory = fs.delete(workingDirectory, true)
+  def deleteScoobiDirectory          = fs.delete(scoobiDirectory, true)
+  def deleteWorkingDirectory         = fs.delete(workingDirectory, true)
+  def deleteTemporaryOutputDirectory = fs.delete(temporaryOutputDirectory, true)
 
   /** @return the file system for this configuration, either a local or a remote one */
   def fileSystem = FileSystems.fileSystem(this)

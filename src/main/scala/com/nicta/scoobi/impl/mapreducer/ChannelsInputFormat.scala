@@ -80,12 +80,12 @@ object ChannelsInputFormat {
    * - configure the input channel for each source
    *
    */
-  def configureSources(job: Job, jar: JarBuilder, sources: List[Source])(implicit sc: ScoobiConfiguration) = {
+  def configureSources(job: Job, jar: JarBuilder, sources: Seq[Source])(implicit sc: ScoobiConfiguration) = {
     configureChannelsInputFormat(job) |>
       configureSourcesChannels(jar, sources)
   }
 
-  private def configureSourcesChannels(jar: JarBuilder, sources: List[Source])(implicit sc: ScoobiConfiguration) = (initial: Configuration) => {
+  private def configureSourcesChannels(jar: JarBuilder, sources: Seq[Source])(implicit sc: ScoobiConfiguration) = (initial: Configuration) => {
     sources.zipWithIndex.foldLeft(initial) { case (conf, (source, channel)) =>
       conf |>
         configureSourceRuntimeClass(jar, source) |>
