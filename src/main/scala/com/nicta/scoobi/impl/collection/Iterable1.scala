@@ -17,6 +17,8 @@ package com.nicta.scoobi
 package impl
 package collection
 
+import scalaz._, Scalaz._
+
 /**
  * A non-empty iterable contains at least one element. Consequences include:
  *
@@ -96,10 +98,16 @@ trait Iterable1[+A] {
   }
 
   /**
-   * Runs the iterable sequence effect (`flatMap`) of functions on this iterable.
+   * Runs the iterable sequence effect (`flatMap`) of functions on this iterable. Synonym for `<*>:`.
+   */
+  def ap[B](f: Iterable1[A => B]): Iterable1[B] =
+    f flatMap (map(_))
+
+  /**
+   * Runs the iterable sequence effect (`flatMap`) of functions on this iterable. Synonym for `ap`.
    */
   def <*>:[B](f: Iterable1[A => B]): Iterable1[B] =
-    f flatMap (map(_))
+    ap(f)
 
   /**
    * Zip this iterable with the given iterable to produce an iterable of pairs.
@@ -401,9 +409,13 @@ object Iterable1 {
   def from(start: Int, step: Int): Iterable1[Int] =
     iterate(start)(_ + step)
 
-  implicit def Iterable1WireFormat[A: core.WireFormat]: core.WireFormat[Iterable1[A]] = {
-    val is = implicitly[core.WireFormat[Iterable[A]]]
-    val i  = implicitly[core.WireFormat[A]]
-    i *** is xmap (e => e._1 +:: e._2, (q: Iterable1[A]) => (q.head, q.tail))
-  }
+  /**
+   * A lens that views the head of the iterable.
+   */
+  def headL[A]: Iterable1[A] @> A =
+    Lens(i => Store(h => h +:: i.tail, i.head))
+
+  implicit def Iterable1WireFormat[A: core.WireFormat]: core.WireFormat[Iterable1[A]] =
+    implicitly[core.WireFormat[(A, Iterable[A])]] xmap
+      (e => e._1 +:: e._2, (q: Iterable1[A]) => (q.head, q.tail))
 }

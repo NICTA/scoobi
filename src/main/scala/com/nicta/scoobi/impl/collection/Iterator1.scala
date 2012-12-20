@@ -170,10 +170,16 @@ trait Iterator1[+A] extends TraversableOnce[A] {
     flatMap(I1)
 
   /**
-   * Runs the iterator sequence effect (`flatMap`) of functions on this iterator.
+   * Runs the iterator sequence effect (`flatMap`) of functions on this iterator. Synonym for `<*>:`.
+   */
+  def ap[B](f: Iterator1[A => B]): Iterator1[B] =
+    f flatMap (map(_))
+
+  /**
+   * Runs the iterator sequence effect (`flatMap`) of functions on this iterator. Synonym for `ap`.
    */
   def <*>:[B](f: Iterator1[A => B]): Iterator1[B] =
-    f flatMap (map(_))
+    ap(f)
 
   /**
    * Return an iterator with only the elements satisfying the predicate.
