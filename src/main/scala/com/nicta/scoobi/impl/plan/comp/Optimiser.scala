@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory
 import core._
 import monitor.Loggable._
 import org.kiama.rewriting.Rewriter
+import collection.+:
 
 /**
  * Optimiser for the DComp AST graph
@@ -14,7 +15,7 @@ import org.kiama.rewriting.Rewriter
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
-trait Optimiser extends CompNodes with Rewriter {
+trait   Optimiser extends CompNodes with Rewriter {
   implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**
@@ -37,7 +38,7 @@ trait Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse(pass: Int) = repeat(sometd(rule {
-    case p1 @ ParallelDo(p2: ParallelDo[_,_,_],_,_,_,_,_,Barriers(_,false)) if !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
+    case p1 @ ParallelDo((p2 @ ParallelDo1(_)) +: rest,_,_,_,_,_,Barriers(_,false)) if rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
       p2.debug("parDoFuse (pass "+pass+") ").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
   }))
 

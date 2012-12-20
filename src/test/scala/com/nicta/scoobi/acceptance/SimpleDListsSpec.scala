@@ -79,7 +79,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val letters = DList('a' -> 1, 'o' -> 4)
 
     val grouped = words.groupBy(word => word.headOption.getOrElse('X'))
-    letters.joinFullOuter(grouped).run.pp must not(throwAn[Exception])
+    letters.joinFullOuter(grouped).run must not(throwAn[Exception])
   }
 
 }
