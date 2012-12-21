@@ -31,29 +31,44 @@ import org.apache.avro.reflect.ReflectDatumWriter
 import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
 import org.apache.avro.io.DecoderFactory
 import collection.mutable.ArrayBuffer
+import scalaz._, Scalaz._
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
 trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
-}
 
-object WireFormat extends WireFormatImplicits {
+  /**
+   * Map a pair of functions on this exponential functor to produce a new wire format.
+   */
+  def xmap[B](f: A => B, g: B => A): WireFormat[B] =
+    new WireFormat[B] {
+      def toWire(x: B, out: DataOutput) =
+        WireFormat.this.toWire(g(x), out)
 
-  // extend WireFormat with useful methods
-  implicit def wireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
-
-  case class WireFormatX[A](wf: WireFormat[A]) {
-    /**
-     * transform a WireFormat[A] to a WireFormat[B] by providing a bijection A <=> B
-     */
-    def adapt[B](f: B => A, g: A => B): WireFormat[B] = new WireFormat[B] {
-      def fromWire(in: DataInput) = g(wf.fromWire(in))
-      def toWire(x: B, out: DataOutput) { wf.toWire(f(x), out) }
+      def fromWire(in: DataInput) =
+        f(WireFormat.this.fromWire(in))
     }
+
+  /**
+   * Produce a wire format on products from this wire format and the given wire format. Synonym for `***`.
+   */
+  def product[B](b: WireFormat[B]): WireFormat[(A, B)] = {
+    implicit val WA: WireFormat[A] = this
+    implicit val WB: WireFormat[B] = b
+    implicitly[WireFormat[(A, B)]]
   }
+
+  /**
+   * Produce a wire format on products from this wire format and the given wire format. Synonym for `product`.
+   */
+  def ***[B](b: WireFormat[B]): WireFormat[(A, B)] =
+    product(b)
+
 }
+
+object WireFormat extends WireFormatImplicits
 
 /** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits extends codegen.GeneratedWireFormats {
@@ -242,7 +257,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
 
   /* Arrays */
   implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
-    new TraversableWireFormat(new ListBuffer[T]) adapt ((a: Array[T]) => a.toList, (s: List[T]) => s.toArray)
+    new TraversableWireFormat(new ListBuffer[T]) xmap ((s: List[T]) => s.toArray, (a: Array[T]) => a.toList)
 
   /**
    * This class is used to create a WireFormat for Traversables, Maps and Arrays

@@ -400,4 +400,10 @@ object Iterable1 {
    */
   def from(start: Int, step: Int): Iterable1[Int] =
     iterate(start)(_ + step)
+
+  implicit def Iterable1WireFormat[A: core.WireFormat]: core.WireFormat[Iterable1[A]] = {
+    val is = implicitly[core.WireFormat[Iterable[A]]]
+    val i  = implicitly[core.WireFormat[A]]
+    i *** is xmap (e => e._1 +:: e._2, (q: Iterable1[A]) => (q.head, q.tail))
+  }
 }
