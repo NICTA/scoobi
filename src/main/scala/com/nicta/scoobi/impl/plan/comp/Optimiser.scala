@@ -15,7 +15,7 @@ import collection.+:
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
-trait   Optimiser extends CompNodes with Rewriter {
+trait Optimiser extends CompNodes with Rewriter {
   implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**
@@ -27,7 +27,7 @@ trait   Optimiser extends CompNodes with Rewriter {
   })
 
   /**
-   * Nested ParallelDos must be fused
+   * Nested ParallelDos must be fused but only if pd1 is not used anywhere else
    *
    *    pd1 @ ParallelDo
    *          |
@@ -38,16 +38,9 @@ trait   Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse(pass: Int) = repeat(sometd(rule {
-    case p1 @ ParallelDo((p2 @ ParallelDo1(_)) +: rest,_,_,_,_,_,Barriers(_,false)) if rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
-      p2.debug("parDoFuse (pass "+pass+") ").fuse(p1)(p1.mwf.asInstanceOf[ManifestWireFormat[Any]], p1.mwfe)
+    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_) if uses(p1).isEmpty && rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
+      p1.debug("parDoFuse (pass "+pass+") ").fuse(p2)(p2.mwf.asInstanceOf[ManifestWireFormat[Any]], p2.mwfe)
   }))
-
-  /**
-   * A ParallelDo which is in the list of outputs must be marked with a fuseBarrier
-   */
-  def parDoFuseBarrier(outputs: Seq[CompNode]) = everywhere(rule {
-    case p: ParallelDo[_,_,_] if (outputs contains p) && !hasBeenExecuted(p) => p.copy(barriers = p.debug("pardoFuseBarrier").barriers.copy(fuseBarrier = true))
-  })
 
   /**
    * all the strategies to apply, in sequence
@@ -55,8 +48,7 @@ trait   Optimiser extends CompNodes with Rewriter {
   def allStrategies(outputs: Seq[CompNode]) =
     attempt(parDoFuse(pass = 1)      ) <*
     attempt(combineToParDo           ) <*
-    attempt(parDoFuse(pass = 2)      ) <*
-    attempt(parDoFuseBarrier(outputs))
+    attempt(parDoFuse(pass = 2)      )
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs

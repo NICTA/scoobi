@@ -73,19 +73,6 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
 
   def parallelDo[B : ManifestWireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject.newInstance, dofn)
 
-  def groupBarrier: DList[A] = {
-    val dofn = new DoFn[A, A] {
-      def setup() {}
-      def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
-      def cleanup(emitter: Emitter[A]) {}
-    }
-    new DListImpl(ParallelDo(Seq(comp), UnitDObject.newInstance.getComp,
-                  dofn,
-                  DoMapReducer(mwf, mwf, manifestWireFormat[Unit]),
-                  Seq[Sink](),
-                  barriers = Barriers(groupBarrier = true, fuseBarrier = false)))
-  }
-
   override def toString = "\n"+ new ShowNode {}.pretty(comp)
 }
 

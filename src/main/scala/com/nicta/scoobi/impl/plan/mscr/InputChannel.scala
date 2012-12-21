@@ -8,20 +8,28 @@ import core._
 import comp._
 import util.UniqueId
 import exec.MapReduceJob
-import mapreducer.TaggedIdentityMapper
+import mapreducer.{TaggedReducer, TaggedMapper, TaggedIdentityMapper}
 import core.WireFormat._
 import comp.GroupByKey
 import CompNodes._
 import scalaz.Equal
+import org.apache.hadoop.mapreduce.Mapper
+import org.apache.hadoop.conf.Configuration
 
-trait Channel extends Attributable {
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T
+trait Channel extends Attributable
+
+case class InputChannels(channels: Seq[InputChannel]) {
+  def channel(n: Int) = channels(n)
 }
-
-/** ADT for MSCR input channels. */
+case class OutputChannels(channels: Seq[OutputChannel]) {
+  def channel(n: Int) = channels(n)
+  def setup(implicit configuration: Configuration) { channels.foreach(_.setup) }
+  def cleanup = channels.foreach(_.cleanup)
+}
+/**
+ * ADT for MSCR input channels
+ */
 trait InputChannel extends Channel {
-  protected val attributes = new CompNodes {}
-  
   lazy val id: Int = UniqueId.get
   override def equals(a: Any) = a match {
     case i: InputChannel => i.id == id
@@ -29,51 +37,63 @@ trait InputChannel extends Channel {
   }
   override def hashCode = id.hashCode
 
-  def inputs: Seq[CompNode]
-  def outputs: Seq[CompNode]
-  def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
-  def incomings: Seq[CompNode]
-  def outgoings: Seq[CompNode]
+  def keyTypes: KeyTypes
+  def valueTypes: ValueTypes
 
-  def setTags(ts: CompNode => Set[Int]): InputChannel
-  def tags: CompNode => Set[Int]
-  def nodesTags: Set[Int] = nodes.flatMap(tags).toSet
-  def nodes: Seq[CompNode]
-  def contains(node: CompNode): Boolean = nodes.contains(node)
-
-  def allSources: InputChannel => Seq[Source]
-  lazy val sources = allSources(this)
+  def setup()
+  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)
+  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)()
 }
 
-case class MapperInputChannel(parDos: Seq[ParallelDo[_,_,_]],
-                              allSources: InputChannel => Seq[Source],
-                              gbk: Option[GroupByKey[_,_]] = None,
-                              tags: CompNode => Set[Int] = (_:CompNode) => Set(0)) extends InputChannel {
-  override def toString = "MapperInputChannel([" + parDos.mkString(", ") + "])"
+case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
+
+  override def toString = "MapperInputChannel("+sourceNode+")"
+
   override def equals(a: Any) = a match {
-    case i: MapperInputChannel => i.parDos.map(_.id) == parDos.map(_.id)
+    case i: MapperInputChannel => i.sourceNode.id == sourceNode.id
     case _                     => false
   }
 
-  def inputs = parDos.flatMap(pd => attributes.inputs(pd))
-  def incomings = parDos.flatMap(pd => attributes.incomings(pd))
+  /** must contains source, one per channel, exec code and output tags */
+  def makeTaggedMapper = TaggedMapper(source)
+  def taggedOutputs = outputs.map(TaggedOutput())
 
-  def outputs = parDos.flatMap(pd => attributes.outputs(pd)).toSeq
-  def outgoings = parDos.flatMap(pd => attributes.outgoings(pd))
+  def setup {
+  //  mappers.foreach(mapper.setup())
+  }
 
-  def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
-  def nodes: Seq[CompNode] = parDos
-
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    parDos.map { pd =>
-      job.addTaggedMapper(sources, pd.environment(sc),
-                          gbk.map(g => pd.makeTaggedMapper(g, tags(pd))).getOrElse(pd.makeTaggedMapper(tags(pd))))
+  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+    val v: A = converter.fromKeyValue(context, key, value)
+    mappers foreach { mapper =>
+      val emitter = new Emitter[(K2, V2)] {
+        def emit(x: (K2, V2)) {
+          mapper.tags.foreach { tag =>
+            tk.set(tag, x._1)
+            tv.set(tag, x._2)
+            context.write(tk, tv)
+          }
+        }
+      }
+      mapper.map(v, emitter.asInstanceOf[Emitter[Any]])
     }
-    job
+  }
+  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+    mappers foreach { case (env, mapper: TaggedMapper) =>
+      val emitter = new Emitter[(K2, V2)] {
+        def emit(x: (K2, V2)) {
+          mapper.tags.foreach { tag =>
+            tk.set(tag, x._1)
+            tv.set(tag, x._2)
+            context.write(tk, tv)
+          }
+        }
+      }
+      mapper.cleanup(env, emitter.asInstanceOf[Emitter[Any]])
+    }
   }
 }
 object MapperInputChannel {
-  def create(pd: Seq[ParallelDo[_,_,_]], sources: InputChannel => Seq[Source]): MapperInputChannel = new MapperInputChannel(pd, sources)
+  def create(sourceNode: CompNode): MapperInputChannel = new MapperInputChannel(sourceNode)
 }
 
 case class IdInputChannel(input: CompNode,
@@ -92,11 +112,6 @@ case class IdInputChannel(input: CompNode,
 
   def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
   def nodes: Seq[CompNode] = Seq(input)
-
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    gbk.map(g => job.addTaggedMapper(sources, None, g.makeTaggedIdentityMapper(tags(input))))
-    job
-  }
 }
 
 case class StraightInputChannel(input: CompNode,
@@ -114,14 +129,6 @@ case class StraightInputChannel(input: CompNode,
 
   def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
   def nodes: Seq[CompNode] = Seq(input)
-
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-  val mapper =  new TaggedIdentityMapper(tags(input), manifestWireFormat[Int], grouping[Int], input.asInstanceOf[DComp[_]].mr.mwf) {
-      override def map(env: Any, input: Any, emitter: Emitter[Any]) { emitter.emit((RollingInt.get, input)) }
-    }
-    job.addTaggedMapper(sources, None, mapper)
-    job
-  }
 
 }
 

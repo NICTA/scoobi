@@ -49,5 +49,7 @@ class TaggedInputSplit(private var conf: Configuration,
 
   def getConf: Configuration = conf
   def setConf(conf: Configuration) { this.conf = conf }
+
+  override def toString = inputSplit+" (on channel:"+channel+")"
 }
 

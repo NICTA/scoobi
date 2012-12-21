@@ -13,6 +13,7 @@ import scalaz.Memo._
 import scalaz.Equal
 import java.util.UUID._
 import CollectFunctions._
+import org.apache.hadoop.conf.Configuration
 
 /**
  * GADT for distributed list computation graph.
@@ -41,8 +42,7 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
                                dofn:              EnvDoFn[A, B, E],
                                mr:                DoMapReducer[A, B, E],
                                sinks:             Seq[Sink] = Seq(),
-                               bridgeStoreId:     String = randomUUID.toString,
-                               barriers:          Barriers = Barriers()) extends DComp[B] {
+                               bridgeStoreId:     String = randomUUID.toString) extends DComp[B] {
 
   type CompNodeType = ParallelDo[A, B, E]
   type Sh = Arr
@@ -50,10 +50,13 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
   def mwfe = mr.mwfe
   def wfe  = mwfe.wf
 
-  def groupBarrier = barriers.groupBarrier
-  def fuseBarrier = barriers.fuseBarrier
+  def setup(implicit configuration: Configuration) { dofn.setup(environment) }
+  def reduce[K, V, B](key: K, values: UntaggedValues[V], emitter: Emitter[B])(implicit configuration: Configuration) {
+    dofn.process(environment, (key, values), emitter)
+  }
+  def cleanup(implicit configuration: Configuration) { dofn.cleanup(environment) }
 
-  def environment(sc: ScoobiConfiguration): Option[Env[E]] = env match {
+  def environment(implicit sc: ScoobiConfiguration): Option[Env[E]] = env match {
     case e: WithEnvironment[_] => Some(e.environment(sc).asInstanceOf[Env[E]])
     case other                 => None
   }
@@ -71,7 +74,7 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "ParallelDo ("+id+")" + mr + barriers + " env: " + env
+  override val toString = "ParallelDo ("+id+")" + mr + " env: " + env
 
   def fuse[C, F](p2: ParallelDo[_, C, F])
                 (implicit mwfc: ManifestWireFormat[C],
@@ -83,10 +86,6 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
   def makeTaggedMapper(gbk: GroupByKey[_,_],tags: Set[Int]) = mr.makeTaggedMapper(tags, dofn, gbk.mwfk, gbk.gpk, gbk.mwfv)
   def makeTaggedMapper(tags: Set[Int])                      = mr.makeTaggedMapper(tags, dofn, mwf)
 }
-case class Barriers(groupBarrier: Boolean = false, fuseBarrier: Boolean = false) {
-  override def toString = (if (groupBarrier) "*" else "") + (if (fuseBarrier) "%" else "")
-}
-
 object ParallelDo {
 
   private[scoobi]
@@ -99,8 +98,7 @@ object ParallelDo {
     new ParallelDo(pd1.ins, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
                    DoMapReducer(mwfa, mwfc, manifestWireFormat[(E, F)]),
                    pd1.sinks ++ pd2.sinks,
-                   pd1.bridgeStoreId,
-                   Barriers(pd1.groupBarrier || pd2.groupBarrier, pd2.fuseBarrier))
+                   pd1.bridgeStoreId)
   }
 
   /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
@@ -186,9 +184,6 @@ case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: 
   implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
 
   override val toString = "GroupByKey ("+id+")"+mr
-
-  def makeTaggedReducer(tag: Int)              = mr.makeTaggedReducer(tag)
-  def makeTaggedIdentityMapper(tags: Set[Int]) = mr.makeTaggedIdentityMapper(tags)
 }
 object GroupByKey1 {
   def unapply(gbk: GroupByKey[_,_]): Option[CompNode] = Some(gbk.in)

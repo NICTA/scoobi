@@ -24,28 +24,22 @@ import scala.collection.JavaConversions._
 import core._
 import rtt._
 import util.DistCache
+import plan.mscr.OutputChannels
 
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue, K3, V3] {
 
   lazy val logger = LogFactory.getLog("scoobi.ReduceTask")
 
-  private type Reducers = Map[Int, (List[(Int, OutputConverter[_,_,_])], (Env[_], TaggedReducer))]
-  private var outputs: Reducers = _
-  private var envs: Map[Int, _] = _
+  private var outputChannels: OutputChannels = _
   private var channelOutput: ChannelOutputFormat = _
 
-  override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) = {
-    outputs = DistCache.pullObject[Reducers](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
+  override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) {
+    outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
     channelOutput = new ChannelOutputFormat(context)
 
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
-
-    envs = outputs map { case (ix, (_, (env, _))) => (ix, env.pull(context.getConfiguration)) }
-
-    outputs foreach { case (ix, (_, (_, reducer: TaggedReducer))) =>
-      reducer.setup(envs(ix).asInstanceOf[E])
-    }
+    outputChannels.setup(context.getConfiguration)
   }
 
   override def reduce(key: TaggedKey,
@@ -54,44 +48,18 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
 
     /* Get the right output value type and output directory for the current channel,
      * specified by the key's tag. */
-    val channel = key.tag
-    val converters = outputs(channel)._1.asInstanceOf[List[(Int, OutputConverter[K3, V3, B])]]
-    val env = envs(channel).asInstanceOf[E]
-    val reducer = outputs(channel)._2._2
-
+    val outputChannel = outputChannels.channel(key.tag)
     /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-    val untaggedValues = new UntaggedValues[V2](channel, values)
-
-    /* Do the reduction. */
-    val emitter = new Emitter[B] {
-      def emit(x: B)  {
-        converters foreach { case (ix, converter) =>
-          channelOutput.write(channel, ix, converter.toKeyValue(x))
-        }
-      }
-    }
-    reducer.reduce(env, key.get(channel).asInstanceOf[K2], untaggedValues, emitter.asInstanceOf[Emitter[Any]])
+    val untaggedValues = new UntaggedValues[V2](key.tag, values)
+    outputChannel.reduce(key, untaggedValues)
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) {
-    /* Cleanup for all output channels. */
-    outputs foreach { case (channel, (converters, (_, reducer: TaggedReducer))) =>
-
-      val emitter = new Emitter[B] {
-        def emit(x: B) {
-          converters foreach { case (ix, converter: OutputConverter[_,_,_]) =>
-            channelOutput.write(channel, ix, converter.toKeyValue(x))
-          }
-        }
-      }
-
-      reducer.cleanup(envs(channel), emitter.asInstanceOf[Emitter[Any]])
-    }
-
+    outputChannels.cleanup(context)
     channelOutput.close()
   }
 }
 
-case class UntaggedValues[T](channel: Int, values: java.lang.Iterable[TaggedValue]) extends Iterable[T] {
-  lazy val iterator = values.iterator map (_.get(channel).asInstanceOf[T])
+case class UntaggedValues[T](tag: Int, values: java.lang.Iterable[TaggedValue]) extends Iterable[T] {
+  lazy val iterator = values.iterator map (_.get(tag).asInstanceOf[T])
 }

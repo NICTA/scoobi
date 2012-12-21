@@ -49,6 +49,10 @@ trait GraphNodes extends Attribution {
     usesTable(node -> root).getOrElse(node, Set())
   }
 
+  /** true if a node is used at most once */
+  lazy val isUsedAtMostOnce : T => Boolean =
+    attr("isUsedAtMostOnce") { case node => uses(node).size <= 1 }
+
   /** a Map of all the nodes which are using a given node */
   private lazy val usesTable : T => Map[T, Set[T]] = attr("usesTable") { case node =>
     Vector(children(node):_*).foldMap((child: T) => usesTable(child) |+| Map(child -> Set(node)))

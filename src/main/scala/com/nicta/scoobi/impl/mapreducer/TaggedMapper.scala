@@ -19,23 +19,27 @@ package mapreducer
 
 import core._
 import util.UniqueInt
+import org.apache.hadoop.conf.Configuration
 
-/** A wrapper for a 'map' function tagged for specific output channels */
-abstract class TaggedMapper(val tags: Set[Int], mwfk: ManifestWireFormat[_], val gpk: Grouping[_], mwfv: ManifestWireFormat[_]) {
-
+case class TaggedOutput(tag: Int, mwfk: ManifestWireFormat[_], gpk: Option[Grouping[_]], mwfv: ManifestWireFormat[_]) {
   def mfk = mwfk.mf
   def wfk = mwfk.wf
   def mfv = mwfv.mf
   def wfv = mwfv.wf
+}
+
+/**
+ * A Mapper taking its input from a single channel (i.e. a single source) and outputting values to different tags
+ */
+abstract class TaggedMapper(source: Source) {
 
   object RollingInt extends UniqueInt
 
-  /** setup(env: E) */
-  def setup(env: Any)
-  /** map(env: E, input: A, emitter: Emitter[(K, V)]) */
-  def map(env: Any, input: Any, emitter: Emitter[Any])
-  /** cleanup(env: E, emitter: Emitter[(K, V)]) */
-  def cleanup(env: Any, emitter: Emitter[Any])
+  def setup(implicit configuration: Configuration)
+  /** map(input: A, emitter: Emitter[(K, V)]) */
+  def map(input: Any, emitter: Emitter[Any])(implicit configuration: Configuration)
+  /** cleanup(emitter: Emitter[(K, V)]) */
+  def cleanup(emitter: Emitter[Any])(implicit configuration: Configuration)
 }
 
 

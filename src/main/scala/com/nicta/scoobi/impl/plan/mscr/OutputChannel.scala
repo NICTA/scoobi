@@ -9,11 +9,13 @@ import util._
 import CompNodes._
 import exec.MapReduceJob
 import scalaz.Equal
+import impl.io.FileSystems
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.conf.Configuration
+import rtt.TaggedKey
+import mapreducer.UntaggedValues
 
-/** ADT for MSCR output channels. */
 trait OutputChannel extends Channel {
-  protected val attributes = new CompNodes {}
-
   lazy val id: Int = UniqueId.get
 
   override def equals(a: Any) = a match {
@@ -31,9 +33,14 @@ trait OutputChannel extends Channel {
   def incomings = nodes.flatMap(attributes.incomings)
   def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
   def sinkNodes: Seq[CompNode] = outgoings.filter(isSinkNode)
-  def environment: Option[CompNode]
   def tag: Int
   def setTag(t: Int): OutputChannel
+
+  def setup(implicit configuration: Configuration)
+  def reduce()
+  def cleanup
+  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
+
 }
 
 trait MscrOutputChannel extends OutputChannel {
@@ -41,12 +48,47 @@ trait MscrOutputChannel extends OutputChannel {
   protected def nodeSinks: Seq[Sink]
   def bridgeStore: Option[Bridge]
   def output: CompNode
-  def environment: Option[CompNode]
+
+  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
+    lazy val outputs = Map(reducers.toSeq.map { case (sinks, reducer) => (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer)) }:_*)
+
+    val fs = configuration.fileSystem
+    import fileSystems._
+
+    reducers.foreach { case (sinks, (_, reducer)) =>
+      sinks.zipWithIndex.foreach { case (sink, ix) =>
+        sink.outputPath foreach { outDir =>
+          fs.mkdirs(outDir)
+          val files = outputFiles filter isResultFile(reducer.tag, ix)
+          files foreach moveTo(outDir)
+        }
+      }
+    }
+  }
+
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             combiner: Option[Combine[_,_]]      = None,
                             reducer:  Option[ParallelDo[_,_,_]] = None,
                             tag: Int = 0) extends MscrOutputChannel {
+
+  def setup(implicit configuration: Configuration) { reducer.foreach(_.setup) }
+
+  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V])(implicit configuration: Configuration) {
+    val emitter = new Emitter[B] {
+      def emit(x: B)  {
+        sinks.zipWithIndex foreach { case (sink, i) =>
+          channelOutput.write(tag, i, sink.outputConverter.toKeyValue(x))
+        }
+      }
+    }
+    reducer.map(_.reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)).getOrElse(emitter.emit((key.get(tag), untaggedValues)))
+  }
+
+  def cleanup(implicit configuration: Configuration) {
+    groupByKey.cleanup(configuration)
+    reducer.foreach(_.cleanup(configuration))
+  }
 
   override def toString =
     Seq(Some(groupByKey),
@@ -70,28 +112,6 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
      (reducer: Option[CompNode]).
       orElse(combiner  ).
       getOrElse(groupByKey).bridgeStore
-
-  def environment: Option[CompNode] = reducer.map(_.env)
-
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    combiner.map(c => job.addTaggedCombiner(c.makeTaggedCombiner(tag)))
-
-    // if there is a reducer node, use it as the tagged reducer
-    // otherwise use the combiner node if there is one
-    // and finally default to the GroupByKey node
-    combiner.map { c =>
-      reducer.map { r =>
-        Some(job.addTaggedReducer(sinks, r.environment(sc), c.makeTaggedReducer(tag, r.dofn)))
-      }.orElse(Some(job.addTaggedReducer(sinks, None, c.makeTaggedReducer(tag))))
-    }.orElse {
-      reducer.map { r =>
-        Some(job.addTaggedReducer(sinks, r.environment(sc), r.makeTaggedReducer(tag)))
-      }
-    }.getOrElse(job.addTaggedReducer(sinks, None, groupByKey.makeTaggedReducer(tag)))
-    job
-  }
-
-
 }
 
 case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends MscrOutputChannel {
@@ -104,12 +124,6 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends 
   def nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   def environment: Option[CompNode] = Some(output.env)
-
-  def configure[T <: MscrJob](job: T)(implicit sc: ScoobiConfiguration): T = {
-    job.addTaggedReducer(sinks.toList, None, output.makeTaggedIdentityReducer(tag))
-    job
-  }
-
 }
 
 object OutputChannel {

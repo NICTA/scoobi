@@ -120,12 +120,10 @@ trait CompNodeFactory extends Scope {
     DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
     java.util.UUID.randomUUID().toString)
 
-  def pd(in: CompNode, env: CompNode, groupBarrier: Boolean = false, fuseBarrier: Boolean = false): ParallelDo[String, String, String] =
+  def pd(in: CompNode, env: CompNode): ParallelDo[String, String, String] =
     ParallelDo[String, String, String](Seq(in).map(_.asInstanceOf[DComp[String]]), env.asInstanceOf[DComp[String]], fn,
       DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
-      java.util.UUID.randomUUID().toString,
-      Barriers(groupBarrier, fuseBarrier)
-    )
+      java.util.UUID.randomUUID().toString)
 
   lazy val fn = new EnvDoFn[String, String, String] {
     def setup(env: String) {}

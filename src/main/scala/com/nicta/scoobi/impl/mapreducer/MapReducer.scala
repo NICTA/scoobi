@@ -5,6 +5,7 @@ package mapreducer
 import core._
 import ManifestWireFormat._
 import WireFormat._
+import org.apache.hadoop.conf.Configuration
 
 sealed trait MapReducer[A] {
 
@@ -31,6 +32,12 @@ case class DoMapReducer[A, B, E](mwfa: ManifestWireFormat[A],
                                  mwfe: ManifestWireFormat[E]) extends MapReducer[B] { outer =>
   def mwf = mwfb
 
+  def setup(env: Any) { dofn.setup(env.asInstanceOf[E]) }
+  def reduce(env: Any, key: Any, values: Iterable[Any], emitter: Emitter[Any]) {
+    dofn.process(env.asInstanceOf[E], (key, values).asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
+  }
+  def cleanup(env: Any, emitter: Emitter[Any]) { dofn.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]]) }
+
   def makeTaggedReducer(tag: Int, dofn: EnvDoFn[A, B, E], mwf: ManifestWireFormat[_]) =
     new TaggedReducer(tag, mwf) {
       def setup(env: Any) { dofn.setup(env.asInstanceOf[E]) }
@@ -41,24 +48,24 @@ case class DoMapReducer[A, B, E](mwfa: ManifestWireFormat[A],
       def cleanup(env: Any, emitter: Emitter[Any]) { dofn.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]]) }
     }
 
-  def makeTaggedMapper(tags: Set[Int], dofn: EnvDoFn[A, B, E], mwf: ManifestWireFormat[_]) = new TaggedMapper(tags, manifestWireFormat[Int], grouping[Int], mwf) {
-    def setup(env: Any) { dofn.setup(env.asInstanceOf[E]) }
-    def map(env: Any, input: Any, emitter: Emitter[Any]) {
+  def makeTaggedMapper(tags: Set[Int], env: Env[E], dofn: EnvDoFn[A, B, E], mwf: ManifestWireFormat[_]) = new TaggedMapper(tags, manifestWireFormat[Int], grouping[Int], mwf) {
+    def setup(implicit configuration: Configuration) { dofn.setup(env.pull) }
+    def map(input: Any, emitter: Emitter[Any])(implicit configuration: Configuration) {
       val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
-      dofn.process(env.asInstanceOf[E], input.asInstanceOf[A], e.asInstanceOf[Emitter[B]])
+      dofn.process(env.pull, input.asInstanceOf[A], e.asInstanceOf[Emitter[B]])
     }
-    def cleanup(env: Any, emitter: Emitter[Any]) {
+    def cleanup(emitter: Emitter[Any])(implicit configuration: Configuration) {
       val e = new Emitter[B] { def emit(b: B) { emitter.emit((RollingInt.get, b)) } }
-      dofn.cleanup(env.asInstanceOf[E], e.asInstanceOf[Emitter[B]])
+      dofn.cleanup(env.pull, e.asInstanceOf[Emitter[B]])
     }
   }
-  def makeTaggedMapper(tags: Set[Int], dofn: EnvDoFn[A, B, E], mwfk: ManifestWireFormat[_], gpk: Grouping[_], mwfv: ManifestWireFormat[_]) = new TaggedMapper(tags, mwfk, gpk, mwfv) {
-    def setup(env: Any) { dofn.setup(env.asInstanceOf[E]) }
-    def map(env: Any, input: Any, emitter: Emitter[Any]) {
-      dofn.process(env.asInstanceOf[E], input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
+  def makeTaggedMapper(tags: Set[Int], env: Env[E], dofn: EnvDoFn[A, B, E], mwfk: ManifestWireFormat[_], gpk: Grouping[_], mwfv: ManifestWireFormat[_]) = new TaggedMapper(tags, mwfk, gpk, mwfv) {
+    def setup(implicit configuration: Configuration) { dofn.setup(env.asInstanceOf[E]) }
+    def map(input: Any, emitter: Emitter[Any])(implicit configuration: Configuration) {
+      dofn.process(env.pull, input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
     }
-    def cleanup(env: Any, emitter: Emitter[Any]) {
-      dofn.cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
+    def cleanup(emitter: Emitter[Any])(implicit configuration: Configuration) {
+      dofn.cleanup(env.pull, emitter.asInstanceOf[Emitter[B]])
     }
   }
 

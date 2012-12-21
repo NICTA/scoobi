@@ -37,17 +37,6 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
     collectSuccessiveParDos(optimised) must beEmpty
   };p
 
-  "5. ParallelDos which are outputs of the graph must be marked with a fuseBarrier" >> {
-    "5.1 with a random graph" >> prop { (node: CompNode, out: List[CompNode], f: factory) => import f._
-      val optimised = optimise(parDoFuseBarrier(out), node).head
-      // collects the flatten nodes which are leaves. If they are in the outputs set
-      // their fuseBarrier must be true
-      val inOutputs: Seq[CompNode] = collectParallelDo(optimised).filter(out.contains)
-      def fuseBarrier: CompNode => Boolean = { case pd: ParallelDo[_,_,_] => pd.fuseBarrier }
-      forall(inOutputs){ pd => pd must beTrue ^^ fuseBarrier }
-    }
-  }
-
   trait nodes extends factory with Optimiser with CompNodes {
     lazy val (l1, l2)   = (load, load)
     lazy val pd1        = pd(l1)

@@ -22,16 +22,18 @@ import scala.collection.JavaConversions._
 
 import rtt._
 import util.DistCache
+import plan.mscr.{OutputChannel, OutputChannels}
+import plan.comp.Combine
 
 /** Hadoop Combiner class for an MSCR. */
 class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
 
-  private type Combiners = Map[Int, TaggedCombiner[_]]
+  private type Combiners = Map[Int, Combine[_,_]]
   private var combiners: Combiners = _
   private var tv: TaggedValue = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
-    combiners = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
+    outputChannels = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 
@@ -43,7 +45,7 @@ class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagge
 
     if (combiners.contains(tag)) {
       /* Only perform combining if one is available for this tag. */
-      val combiner = combiners(tag).asInstanceOf[TaggedCombiner[V2]]
+      val combiner = combiners(tag).asInstanceOf[Combine[V2, V2]]
 
       /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
       val untaggedValues = new Iterable[V2] { def iterator = values.iterator map (_.get(tag).asInstanceOf[V2]) }

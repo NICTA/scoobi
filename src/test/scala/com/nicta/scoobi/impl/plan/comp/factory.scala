@@ -22,9 +22,7 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   override def op(in1: CompNode, in2: CompNode)                     = init(super.op(in1, in2))
   override def parallelDo(in: CompNode)                             = init(super.parallelDo(in))
   override def pd(ins: CompNode*): ParallelDo[String,String,String] = init(super.pd(ins:_*))
-  override def pd(in: CompNode, env: CompNode,
-                  groupBarrier: Boolean = false,
-                  fuseBarrier: Boolean = false): ParallelDo[String,String,String] = init(super.pd(in, env, groupBarrier, fuseBarrier))
+  override def pd(in: CompNode, env: CompNode): ParallelDo[String,String,String] = init(super.pd(in, env))
 
   /** show before and after the optimisation */
   def optimisation(node: CompNode, optimised: CompNode) =
@@ -40,7 +38,7 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   def collectCombine          = rewriter.collectl { case c @ Combine1(_) => c: CompNode }
   def collectCombineGbk       = rewriter.collectl { case c @ Combine(GroupByKey1(_),_,_,_,_) => c }
   def collectParallelDo       = rewriter.collectl { case p: ParallelDo[_,_,_] => p }
-  def collectSuccessiveParDos = rewriter.collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,_,_,Barriers(false,_)) => p }
+  def collectSuccessiveParDos = rewriter.collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,_,_) => p }
   def collectGroupByKey       = rewriter.collectl { case g @ GroupByKey1(_) => g }
 
 }

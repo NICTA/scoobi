@@ -77,10 +77,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * by the client. */
   def materialize: DObject[Iterable[A]]
 
-  /**Mark that all DList preceeding transformations up to the first groupByKey must be within
-   * the same Map-Reduce job. */
-  def groupBarrier: DList[A]
-
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Derived functionality (return DLists).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

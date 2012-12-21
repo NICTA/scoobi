@@ -42,8 +42,8 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
       haveTheSameElementsAs(Seq((1, Seq("hello", "world"))))
   }
 
-  "9. combine + filter + groupBarrier" >> { implicit sc: SC =>
-    DList((1, Seq("hello", "world")), (2, Seq("universe"))).combine((_:String)+(_:String)).filter { case (k, v) => k >= 1 }.groupBarrier.run.toSet must
+  "9. combine + filter" >> { implicit sc: SC =>
+    DList((1, Seq("hello", "world")), (2, Seq("universe"))).combine((_:String)+(_:String)).filter { case (k, v) => k >= 1 }.run.toSet must
       be_==(Set((1, "helloworld"), (2, "universe"))) or
       be_==(Set((1, "worldhello"), (2, "universe")))
   }

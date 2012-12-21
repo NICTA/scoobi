@@ -40,8 +40,8 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
   }
 
   tag("issue 117")
-  "A groupByKey with barrier followed by a groupByKey must be ok" >> { implicit sc: SC =>
-    val list = DList.tabulate(5)((n: Int) => ("hello" -> "world")).groupByKey.groupBarrier.groupByKey
+  "A groupByKey followed by a groupByKey must be ok" >> { implicit sc: SC =>
+    val list = DList.tabulate(5)((n: Int) => ("hello" -> "world")).groupByKey.groupByKey
     run(list).toString.split(", ").filter { case w => w contains "world" } must have size(5)
   }
 
@@ -49,7 +49,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
   "A complex graph example must not throw an exception" >> { implicit sc: SC =>
 
     def simpleJoin[T: ManifestWireFormat, V: ManifestWireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
-      (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey.groupBarrier
+      (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey
 
     val data = DList((12 -> 13), (14 -> 15), (13 -> 55))
     val (a, b, c, d, e) = (data, data, data, data, data)

@@ -8,7 +8,8 @@ import org.kiama.attribution.Attributable
 import util.UniqueId
 import comp._
 import collection._
-import core.CompNode
+import core.{Grouping, WireFormat, CompNode}
+import scalaz.Scalaz._
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
@@ -17,6 +18,12 @@ import core.CompNode
  */
 case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
   val id: Int = UniqueId.get
+
+  lazy val keyTypes   = KeyTypes(inputChannels.map(_.keyTypes).foldMap)
+  lazy val valueTypes = ValueTypes(inputChannels.map(_.valueTypes).foldMap)
+  lazy val sources    = inputChannels.flatMap(_.sources).distinct
+  lazy val sinks      = outputChannels.flatMap(_.sinks).distinct
+
 
   def channels = inputChannels ++ outputChannels
   /** @return the nodes which are incomings to this Mscr */
@@ -55,6 +62,8 @@ case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[Ou
   def reducers    = outputChannels.collect { case GbkOutputChannel(_,_,Some(reducer),_)  => reducer }
   /** @return all the combiners of this mscr */
   def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_,_) => combiner }
+  /** @return all the combiners of this mscr by tag */
+  def combinersByTag  = Map(outputChannels.collect { case out @ GbkOutputChannel(_,Some(combiner),_,_) => (out.tag, combiner) }: _*)
   /** @return all the parallelDos of this mscr */
   def parallelDos = mappers ++ reducers
 
@@ -92,4 +101,15 @@ object Mscr {
   def isParallelDoMscr: Mscr => Boolean = (_:Mscr).bypassOutputChannels.nonEmpty
 
 }
+
+case class KeyTypes(types: Map[Int, (WireFormat[_], Grouping[_])] = Map()) {
+  def add(tag: Int, wf: WireFormat[_], gp: Grouping[_]) =
+    copy(types = types + (tag -> (wf, gp)))
+}
+case class ValueTypes(types: Map[Int, Tuple1[WireFormat[_]]] = Map()) {
+  def add(tag: Int, wf: WireFormat[_]) =
+    copy(types = types + (tag -> Tuple1(wf)))
+}
+
+
 
