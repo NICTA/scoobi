@@ -51,7 +51,7 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
     val outputChannel = outputChannels.channel(key.tag)
     /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
     val untaggedValues = new UntaggedValues[V2](key.tag, values)
-    outputChannel.reduce(key, untaggedValues)
+    outputChannel.reduce(key, untaggedValues, channelOutput)(configuration)
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) {

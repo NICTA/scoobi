@@ -23,14 +23,13 @@ trait MscrsDefinition extends Layering {
   }
 
   /** all the mscrs for a given layer */
-  lazy val mscrs: Layer[T] => Seq[Mscr] = attr("mscrs") { case layer =>
-    gbkMscrs(layer) ++ pdMscrs(layer)
-  }
+  lazy val mscrs: Layer[T] => Seq[Mscr] =
+    attr("mscrs") { case layer => gbkMscrs(layer) ++ pdMscrs(layer) }
 
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
-    Vector(floatingParallelDos(layer).groupBy(_.ins.head.id).values.toSeq:_*).map { pds =>
-      Mscr(MapperInputChannel.create(pds, sources), pds.map(BypassOutputChannel(_)))
+    floatingParallelDos(layer).groupBy(_.ins.head.id).map { case (sourceNode, pds) =>
+      Mscr(MapperInputChannel(sourceNode), pds.map(BypassOutputChannel(_)))
     }
   }
 
@@ -38,20 +37,19 @@ trait MscrsDefinition extends Layering {
   lazy val gbkMscrs: Layer[T] => Seq[Mscr] = attr("gbk mscrs") { case layer =>
     val (in, out) = (gbkInputChannels(layer), gbkOutputChannels(layer))
     // groups of input channels having at least one tag in common
-    val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.nodesTags intersect i2.nodesTags).nonEmpty)
+    val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
 
     // create Mscr for each set of channels with common tags
     channelsWithCommonTags.map { taggedInputChannels =>
-      val correspondingOutputTags = taggedInputChannels.flatMap(_.nodesTags)
+      val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
       Mscr(taggedInputChannels, out.filter(o => correspondingOutputTags.contains(o.tag)))
     }
   }
 
   /** create a gbk output channel for each gbk in the layer */
   lazy val gbkOutputChannels: Layer[T] => Seq[OutputChannel] = {
-    val tagger = new Tagger()
     attr("gbk output channels") { case layer =>
-      layer.gbks.map(gbkOutputChannel).map(_.setTag(tagger.newTag))
+      layer.gbks.map(gbk => gbkOutputChannel(gbk))
     }
   }
 
@@ -61,33 +59,19 @@ trait MscrsDefinition extends Layering {
       BypassOutputChannel(pd)
     }
   }
-  lazy val gbkOutputChannel: GroupByKey[_,_] => GbkOutputChannel = {
-    attr("gbk output channel") { case g  =>
 
-      val gbkParents = (g -> parents).toList
-      gbkParents match {
-        case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if isUsedAtMostOnce(p) && !hasComputedEnv(p) => GbkOutputChannel(g, combiner = Some(c), reducer = Some(p))
-        case (p: ParallelDo[_,_,_]) :: rest                      if isUsedAtMostOnce(p) && !hasComputedEnv(p) => GbkOutputChannel(g, reducer = Some(p))
-        case (c: Combine[_,_]) :: rest                                                                        => GbkOutputChannel(g, combiner = Some(c))
-        case _                                                                                                => GbkOutputChannel(g)
-      }
+  private def gbkOutputChannel(gbk: GroupByKey[_,_]): GbkOutputChannel = {
+    val gbkParents = (gbk -> parents).toList
+    gbkParents match {
+      case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if isUsedAtMostOnce(p) && !hasComputedEnv(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
+      case (p: ParallelDo[_,_,_]) :: rest                      if isUsedAtMostOnce(p) && !hasComputedEnv(p) => GbkOutputChannel(gbk, reducer = Some(p))
+      case (c: Combine[_,_]) :: rest                                                                        => GbkOutputChannel(gbk, combiner = Some(c))
+      case _                                                                                                => GbkOutputChannel(gbk)
     }
   }
 
   lazy val gbkInputChannels: Layer[T] => Seq[InputChannel] = attr("gbk input channels") { case layer =>
-    val channels = Vector(mapperInputChannels(layer) ++ idInputChannels(layer):_*)
-    val outputs = gbkOutputChannels(layer)
-    channels.map { in =>
-      val groupByKey = outputs.collect { case o: GbkOutputChannel => o.groupByKey }.head
-      val inputWithGroupByKey = in match {
-        case i: MapperInputChannel => i.copy(gbk = Some(groupByKey))
-        case i: IdInputChannel     => i.copy(gbk = Some(groupByKey))
-      }
-      lazy val tags: CompNode => Set[Int] = attr("tags") {
-        case node => outputs.collect { case o if node -> isInputTo(o) => o.tag }.toSet
-      }
-      inputWithGroupByKey.setTags(tags)
-    }
+    mapperInputChannels(layer) ++ idInputChannels(layer)
   }
 
   lazy val idInputChannels: Layer[T] => Seq[IdInputChannel] = attr("id input channels") { case layer =>
@@ -98,7 +82,7 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val mapperInputChannels: Layer[T] => Seq[MapperInputChannel] = attr("mapper input channels") { case layer =>
-    layerSourceNodes(layer).map(MapperInputChannel.create)
+    layerSourceNodes(layer).map(MapperInputChannel(_))
   }
 
   lazy val mappers: Layer[T] => Seq[ParallelDo[_,_,_]] = attr("parallelDo mappers") { case layer =>
@@ -152,28 +136,12 @@ trait MscrsDefinition extends Layering {
 
   /** @return the sources for all mscrs of a layer */
   lazy val layerSources: Layer[T] => Seq[Source] = attr("layer sources") { case layer =>
-    mscrs(layer).flatMap(_.inputChannels).flatMap(_.sources)
-  }
-
-  /** @return the sinks nodes for all mscrs of a layer */
-  lazy val layerSinkNodes: Layer[T] => Seq[CompNode] = attr("layer sink nodes") { case layer =>
-    mscrs(layer).flatMap(mscrSinkNodes).distinct
+    mscrs(layer).flatMap(_.sources).distinct
   }
 
   /** @return the sinks for all mscrs of a layer */
   lazy val layerSinks: Layer[T] => Seq[Sink] = attr("layer sinks") { case layer =>
-    mscrs(layer).flatMap(_.outputChannels).flatMap(_.sinks)
-  }
-  /**
-   * @return the nodes which might materialize input sources for a given layer:
-   *
-   * - load, return or op nodes which are inputs to mscr input channels or output channels (for a pd environment for example)
-   *
-   */
-  lazy val mscrSourceNodes: Mscr => Seq[CompNode] = attr("mscr source nodes") { case mscr =>
-    val inputChannelsSources = mscr.inputChannels.flatMap(_.sourceNodes)
-    val outputChannelsSources = mscr.outputChannels.flatMap(_.sourceNodes)
-    (inputChannelsSources ++ outputChannelsSources).distinct
+    mscrs(layer).flatMap(_.sinks).distinct
   }
 
   lazy val sources: InputChannel => Seq[Source] = attr("input channel sources") { case in =>
@@ -190,14 +158,6 @@ trait MscrsDefinition extends Layering {
   }
 
 
-  /**
-   * @return the nodes which might materialize output values for a given layer:
-   *
-   */
-  lazy val mscrSinkNodes: Mscr => Seq[CompNode] = attr("mscr sink nodes") { case mscr =>
-    mscr.outputChannels.toSeq.flatMap(_.sinkNodes).distinct
-  }
-
   lazy val isInputTo: OutputChannel => CompNode => Boolean = paramAttr("is a node input to an output channel") { (out: OutputChannel) => (node: CompNode) =>
     outgoings(node).exists { case other => out.contains(other) }
   }
@@ -211,19 +171,6 @@ trait MscrsDefinition extends Layering {
   lazy val hasComputedEnv: ParallelDo[_,_,_] => Boolean = attr("hasComputedEnv") { case pd =>
     isMaterialize(pd.env) || isOp(pd.env)
   }
-
-  /**
-   * create a new tag each time the newTag method is invoked
-   */
-  case class Tagger() {
-    var tag = 0
-    def newTag = {
-      val t = tag
-      tag += 1
-      t
-    }
-  }
-
 }
 
 /**

@@ -13,7 +13,7 @@ import impl.io.FileSystems
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import rtt.TaggedKey
-import mapreducer.UntaggedValues
+import mapreducer.{ChannelOutputFormat, UntaggedValues}
 
 trait OutputChannel extends Channel {
   lazy val id: Int = UniqueId.get
@@ -24,22 +24,24 @@ trait OutputChannel extends Channel {
   }
   override def hashCode = id.hashCode
 
-  /** sinks for this output channel */
   def sinks: Seq[Sink]
-  /** @return the nodes which are part of this channel */
-  def nodes: Seq[CompNode]
-  def contains(node: CompNode) = nodes.contains(node)
-  def outgoings = nodes.flatMap(attributes.outgoings)
-  def incomings = nodes.flatMap(attributes.incomings)
-  def sourceNodes: Seq[CompNode] = incomings.filter(isSourceNode)
-  def sinkNodes: Seq[CompNode] = outgoings.filter(isSinkNode)
   def tag: Int
-  def setTag(t: Int): OutputChannel
 
   def setup(implicit configuration: Configuration)
-  def reduce()
-  def cleanup
-  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
+  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
+  def cleanup(implicit configuration: Configuration)
+  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
+    val fs = configuration.fileSystem
+    import fileSystems._
+
+    sinks.zipWithIndex.foreach { case (sink, i) =>
+      sink.outputPath foreach { outDir =>
+        fs.mkdirs(outDir)
+        val files = outputFiles filter isResultFile(tag, i)
+        files foreach moveTo(outDir)
+      }
+    }
+  }
 
 }
 
@@ -47,34 +49,15 @@ trait MscrOutputChannel extends OutputChannel {
   def sinks = bridgeStore.toSeq ++ nodeSinks
   protected def nodeSinks: Seq[Sink]
   def bridgeStore: Option[Bridge]
-  def output: CompNode
-
-  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
-    lazy val outputs = Map(reducers.toSeq.map { case (sinks, reducer) => (reducer._2.tag, (sinks.map(_.outputConverter).zipWithIndex.map(_.swap), reducer)) }:_*)
-
-    val fs = configuration.fileSystem
-    import fileSystems._
-
-    reducers.foreach { case (sinks, (_, reducer)) =>
-      sinks.zipWithIndex.foreach { case (sink, ix) =>
-        sink.outputPath foreach { outDir =>
-          fs.mkdirs(outDir)
-          val files = outputFiles filter isResultFile(reducer.tag, ix)
-          files foreach moveTo(outDir)
-        }
-      }
-    }
-  }
-
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             combiner: Option[Combine[_,_]]      = None,
-                            reducer:  Option[ParallelDo[_,_,_]] = None,
-                            tag: Int = 0) extends MscrOutputChannel {
+                            reducer:  Option[ParallelDo[_,_,_]] = None) extends MscrOutputChannel {
 
+  def tag = groupByKey.id
   def setup(implicit configuration: Configuration) { reducer.foreach(_.setup) }
 
-  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V])(implicit configuration: Configuration) {
+  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     val emitter = new Emitter[B] {
       def emit(x: B)  {
         sinks.zipWithIndex foreach { case (sink, i) =>
@@ -101,12 +84,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case _                   => false
   }
 
-  def nodes: Seq[CompNode] = Seq[CompNode](groupByKey) ++ combiner.toSeq ++ reducer.toSeq
-  def setTag(t: Int): OutputChannel = copy(tag = t)
-  /** @return the output node of this channel */
-  def output = reducer.map(r => r: CompNode).orElse(combiner).getOrElse(groupByKey)
-
-  def nodeSinks = nodes.flatMap(_.sinks)
+  lazy val sinks = nodes.flatMap(_.sinks) :+ bridgeStore
 
   lazy val bridgeStore =
      (reducer: Option[CompNode]).
@@ -114,16 +92,34 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
       getOrElse(groupByKey).bridgeStore
 }
 
-case class BypassOutputChannel(output: ParallelDo[_,_,_], tag: Int = 0) extends MscrOutputChannel {
+case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChannel {
   override def equals(a: Any) = a match {
     case o: BypassOutputChannel => o.output.id == output.id
     case _                      => false
   }
-  def setTag(t: Int) = copy(tag = t)
-  def nodes = Seq(output)
-  def nodeSinks = output.sinks
+  def tag = output.id
+  def sinks = output.sinks :+ bridgeStore
   lazy val bridgeStore = output.bridgeStore
-  def environment: Option[CompNode] = Some(output.env)
+
+  def setup(implicit configuration: Configuration) { output.setup }
+
+  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    val emitter = new Emitter[B] {
+      def emit(x: B)  {
+        sinks.zipWithIndex foreach { case (sink, i) =>
+          channelOutput.write(tag, i, sink.outputConverter.toKeyValue(x))
+        }
+      }
+    }
+    output.reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)
+  }
+
+  def cleanup(implicit configuration: Configuration) {
+    groupByKey.cleanup(configuration)
+    reducer.foreach(_.cleanup(configuration))
+  }
+
+
 }
 
 object OutputChannel {

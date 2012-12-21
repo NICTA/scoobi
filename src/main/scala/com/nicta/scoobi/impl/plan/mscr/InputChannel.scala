@@ -15,6 +15,7 @@ import CompNodes._
 import scalaz.Equal
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.conf.Configuration
+import org.kiama.rewriting.Rewriter
 
 trait Channel extends Attributable
 
@@ -40,12 +41,14 @@ trait InputChannel extends Channel {
   def keyTypes: KeyTypes
   def valueTypes: ValueTypes
 
-  def setup()
-  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)
-  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)()
+  // seq of tags that this channel leads to
+  def tags: Seq[Int]
+  def setup(implicit configuration: Configuration)
+  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration)
+  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration)
 }
 
-case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
+case class MapperInputChannel(sourceNode: CompNode) extends InputChannel with Rewriter {
 
   override def toString = "MapperInputChannel("+sourceNode+")"
 
@@ -54,15 +57,25 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     case _                     => false
   }
 
-  /** must contains source, one per channel, exec code and output tags */
-  def makeTaggedMapper = TaggedMapper(source)
-  def taggedOutputs = outputs.map(TaggedOutput())
+  /** collect all the tags accessible from this source node */
+  lazy val tags = keyTypes.tags
 
-  def setup {
-  //  mappers.foreach(mapper.setup())
+  lazy val keyTypes: KeyTypes = {
+    var types = KeyTypes()
+    rewrite(sometd(query { case g: GroupByKey[_,_] => types = types.add(g.id, g.mwfk.wf, g.gpk) }))(sourceNode)
+    types
+  }
+  lazy val valueTypes: ValueTypes = {
+    var types = ValueTypes()
+    rewrite(sometd(query { case g: GroupByKey[_,_] => types = types.add(g.id, g.mwfv.wf) }))(sourceNode)
+    types
   }
 
-  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+  def setup(implicit configuration: Configuration) {
+    rewrite(sometd(query { case pd: ParallelDo[_,_,_] => pd.setup(configuration) }))(sourceNode)
+  }
+
+  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration) {
     val v: A = converter.fromKeyValue(context, key, value)
     mappers foreach { mapper =>
       val emitter = new Emitter[(K2, V2)] {
@@ -77,7 +90,8 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
       mapper.map(v, emitter.asInstanceOf[Emitter[Any]])
     }
   }
-  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+
+  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration) {
     mappers foreach { case (env, mapper: TaggedMapper) =>
       val emitter = new Emitter[(K2, V2)] {
         def emit(x: (K2, V2)) {
@@ -92,44 +106,14 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     }
   }
 }
-object MapperInputChannel {
-  def create(sourceNode: CompNode): MapperInputChannel = new MapperInputChannel(sourceNode)
-}
 
-case class IdInputChannel(input: CompNode,
-                          allSources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
-                          gbk: Option[GroupByKey[_,_]] = None,
-                          tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
+case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None) extends InputChannel {
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
   }
 
-  def inputs = Seq(input)
-  def incomings = attributes.incomings(input)
-  def outputs = attributes.outputs(input)
-  def outgoings = attributes.outgoings(input)
-
-  def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
-  def nodes: Seq[CompNode] = Seq(input)
-}
-
-case class StraightInputChannel(input: CompNode,
-                                allSources: InputChannel => Seq[Source] = (in: InputChannel) => Seq(),
-                                tags: CompNode => Set[Int] = (c: CompNode) => Set(0)) extends InputChannel {
-  override def equals(a: Any) = a match {
-    case i: StraightInputChannel => i.input.id == input.id
-    case _                       => false
-  }
-
-  def inputs = attributes.inputs(input).toSeq
-  def incomings = attributes.incomings(input).toSeq
-  def outputs = attributes.outputs(input).toSeq
-  def outgoings = attributes.outgoings(input).toSeq
-
-  def setTags(ts: CompNode => Set[Int]): InputChannel = copy(tags = ts)
-  def nodes: Seq[CompNode] = Seq(input)
-
+  def tags = Seq(gbk.map(_.id).getOrElse(input.id))
 }
 
 object InputChannel {
