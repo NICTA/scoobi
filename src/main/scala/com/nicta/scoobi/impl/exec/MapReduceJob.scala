@@ -270,7 +270,7 @@ class MapReduceJob(stepId: Int) {
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks.zipWithIndex.foreach { case (sink, ix) =>
         sink.outputPath foreach { outDir =>
-          fs.mkdirs(outDir)
+          FileSystem.get(outDir.toUri, configuration).mkdirs(outDir)
           val files = outputFiles filter isResultFile(reducer.tag, ix)
           files foreach moveTo(outDir)
           logger.info("Save output of job to: "+outDir)
