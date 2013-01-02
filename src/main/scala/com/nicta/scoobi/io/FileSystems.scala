@@ -23,6 +23,8 @@ import application._
 import ScoobiConfiguration._
 import org.apache.commons.logging.LogFactory
 import impl.monitor.Loggable._
+import java.net.URI
+
 /**
  *
  */
@@ -119,23 +121,13 @@ trait FileSystems {
 
   /** @return a function moving a Path to a given directory */
   def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) => {
-    !fileSystem.exists(f) || {
-      val from = fileSystem.getUri
-      val to = FileSystem.get(dir.toUri, sc.configuration).getUri
-      val foreign = !from.getScheme.equalsIgnoreCase(to.getScheme) || !from.getHost.equalsIgnoreCase(to.getHost)
+    !(fileSystem.exists(f)) || {
+      val from = fileSystem
+      val to = FileSystem.get(dir.toUri, sc.configuration)
 
-      if (!foreign) {
-        fileSystem.rename(f, new Path(dir, f.getName))
-      } else {
-        val deleteSource = true
-        val overwrite = false
-        FileUtil.copy(
-          FileSystem.get(f.toUri, sc.configuration), f,
-          FileSystem.get(dir.toUri, sc.configuration), new Path(dir, f.getName),
-          deleteSource, overwrite,
-          sc.configuration
-        )
-      }
+      if (sameFileSystem(from, to)) fileSystem.rename(f, new Path(dir, f.getName))
+      else                          FileUtil.copy(from, f, to, new Path(dir, f.getName),
+                                                  true /* deleteSource */, false /* overwrite */, sc.configuration)
     }
   }
 
@@ -151,6 +143,16 @@ trait FileSystems {
 
   /** @return the file status of a file */
   def fileStatus(path: Path)(implicit sc: ScoobiConfiguration) = fileSystem.getFileStatus(path)
+
+  /** @return true if the 2 fileSystems are the same */
+  def sameFileSystem(from: FileSystem, to: FileSystem): Boolean = sameFileSystem(from.getUri, to.getUri)
+
+  /** @return true if the 2 uri are one the same host with the same scheme */
+  def sameFileSystem(from: URI, to: URI): Boolean = {
+    def equalIgnoreCase(from: String, to: String) = (from == null && to == null) || from.equalsIgnoreCase(to)
+    (equalIgnoreCase(from.getHost, to.getHost) && equalIgnoreCase(from.getScheme, to.getScheme))
+  }
+
 }
 
 private [scoobi]
