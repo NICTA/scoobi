@@ -57,8 +57,8 @@ class MapReduceJob(stepId: Int) {
   private val reducers: MList[(List[_ <: DataSink[_,_,_]], (Env[_], TaggedReducer[_,_,_,_]))] = MList.empty
 
   /* The types that will be combined together to form (K2, V2). */
-  private val keyTypes: MMap[Int, (Manifest[_], WireFormat[_], Grouping[_])] = MMap.empty
-  private val valueTypes: MMap[Int, (Manifest[_], WireFormat[_])] = MMap.empty
+  private val keyTypes:   MMap[Int, (WireFormat[_], Grouping[_])] = MMap.empty
+  private val valueTypes: MMap[Int, Tuple1[WireFormat[_]]] = MMap.empty
 
 
   /** Add an input mapping function to this MapReduce job. */
@@ -69,8 +69,8 @@ class MapReduceJob(stepId: Int) {
     else                          mappers(input) += tm : Unit   // This annotation is required due to a bug in Scala
 
     m.tags.foreach { tag =>
-      keyTypes   += (tag -> (m.mK, m.wtK, m.grpK))
-      valueTypes += (tag -> (m.mV, m.wtV))
+      keyTypes   += (tag -> (m.wtK, m.grpK))
+      valueTypes += (tag -> Tuple1(m.wtV))
     }
   }
 
@@ -194,7 +194,7 @@ class MapReduceJob(stepId: Int) {
             case Some(rtc) => jar.addRuntimeClass(rtc)
             case None      => {
               /* NOTE: must do this before calling addOutputChannel */
-              val rtClass = ScoobiWritable(bs.typeName, reducer.mB, reducer.wtB)
+              val rtClass = ScoobiWritable(bs.typeName, reducer.wtB)
               jar.addRuntimeClass(rtClass)
               bs.rtClass = Some(rtClass)
             }
@@ -270,7 +270,7 @@ class MapReduceJob(stepId: Int) {
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks.zipWithIndex.foreach { case (sink, ix) =>
         sink.outputPath foreach { outDir =>
-          fs.mkdirs(outDir)
+          FileSystem.get(outDir.toUri, configuration).mkdirs(outDir)
           val files = outputFiles filter isResultFile(reducer.tag, ix)
           files foreach moveTo(outDir)
           logger.info("Save output of job to: "+outDir)
@@ -373,7 +373,7 @@ class TaskDetailsLogger(job: Job) {
   private var startIdx = 0
 
   /** Paginate through the TaskCompletionEvent's, logging details about completed tasks */
-  def logTaskCompletionDetails(): Unit = {
+  def logTaskCompletionDetails() {
     Iterator.continually(job.getTaskCompletionEvents(startIdx)).takeWhile(!_.isEmpty).foreach { taskCompEvents =>
       taskCompEvents foreach { taskCompEvent =>
         val taskAttemptId = taskCompEvent.getTaskAttemptId

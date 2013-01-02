@@ -119,8 +119,24 @@ trait FileSystems {
 
   /** @return a function moving a Path to a given directory */
   def moveTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) => {
-    if (fileSystem.exists(f)) fileSystem.rename(f, new Path(dir, f.getName))
-    else                      true
+    !fileSystem.exists(f) || {
+      val from = fileSystem.getUri
+      val to = FileSystem.get(dir.toUri, sc.configuration).getUri
+      val foreign = !from.getScheme.equalsIgnoreCase(to.getScheme) || !from.getHost.equalsIgnoreCase(to.getHost)
+
+      if (!foreign) {
+        fileSystem.rename(f, new Path(dir, f.getName))
+      } else {
+        val deleteSource = true
+        val overwrite = false
+        FileUtil.copy(
+          FileSystem.get(f.toUri, sc.configuration), f,
+          FileSystem.get(dir.toUri, sc.configuration), new Path(dir, f.getName),
+          deleteSource, overwrite,
+          sc.configuration
+        )
+      }
+    }
   }
 
   /** @return a function copying a Path to a given directory */
