@@ -18,7 +18,7 @@ package core
 
 import java.lang.Comparable
 import annotation.implicitNotFound
-
+import scalaz.{Ordering => SOrdering}
 
 /** Specify the way in which key-values are "shuffled". Used by 'groupByKey' in
  * 'DList'. */
@@ -29,11 +29,12 @@ trait Grouping[K] {
 
   /** Specifies the order in which grouped values are presented to a Reducer
    * task, for a given partition. */
-  def sortCompare(x: K, y: K): Int = groupCompare(x, y)
+  def sortCompare(x: K, y: K): SOrdering = groupCompare(x, y)
 
   /** Specifies how values, for a given partition, are grouped together in
    * a given partition. */
-  def groupCompare(x: K, y: K): Int
+  def groupCompare(x: K, y: K): SOrdering
+
 }
 
 object Grouping extends GroupingImplicits
@@ -44,13 +45,14 @@ trait GroupingImplicits {
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
   implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
-    def groupCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
+    def groupCompare(x: T, y: T) =
+      SOrdering.fromInt(implicitly[Ordering[T]].compare(x, y))
   }
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
   implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
-    def groupCompare(x: T, y: T): Int = x.compareTo(y)
+    def groupCompare(x: T, y: T) = SOrdering.fromInt(x.compareTo(y))
   }
 
   /** Instances for Shapeless tagged types. */

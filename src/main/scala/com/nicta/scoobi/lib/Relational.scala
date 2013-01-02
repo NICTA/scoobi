@@ -21,6 +21,8 @@ import scala.collection.mutable.ArrayBuffer
 import scala.Right
 import scala.Left
 import core._
+import scalaz.{Ordering => SOrdering}
+import scalaz.Ordering._
 
 case class Relational[K: Manifest: WireFormat: Grouping, A: Manifest: WireFormat](
   left: DList[(K, A)]) {
@@ -228,16 +230,16 @@ object Relational {
       override def partition(key: (K, Boolean), num: Int): Int =
         implicitly[Grouping[K]].partition(key._1, num)
 
-      override def groupCompare(a: (K, Boolean), b: (K, Boolean)): Int =
+      override def groupCompare(a: (K, Boolean), b: (K, Boolean)) =
         implicitly[Grouping[K]].groupCompare(a._1, b._1)
 
-      override def sortCompare(a: (K, Boolean), b: (K, Boolean)): Int = {
+      override def sortCompare(a: (K, Boolean), b: (K, Boolean)) = {
         val n = implicitly[Grouping[K]].sortCompare(a._1, b._1)
-        if (n != 0)
+        if (n != EQ)
           n
         else (a._2, b._2) match {
-          case (true, false) => -1
-          case (false, true) => 1
+          case (true, false) => LT
+          case (false, true) => GT
           case _ => n
         }
       }
@@ -272,12 +274,11 @@ object Relational {
       def cleanup(emitter: Emitter[((A, Int), B)]) {}
     }
 
+    import scalaz._, Scalaz._
+
     implicit val grouping = new Grouping[(K, Int)] {
-      def groupCompare(a: (K, Int), b: (K, Int)): Int =
-        implicitly[Grouping[K]].groupCompare(a._1, b._1) match {
-          case 0   => implicitly[Ordering[Int]].compare(a._2, b._2)
-          case cmp => cmp
-        }
+      def groupCompare(a: (K, Int), b: (K, Int)) =
+        implicitly[Grouping[K]].groupCompare(a._1, b._1) |+| a._2 ?|? b._2
     }
 
     Relational.join(

@@ -19,8 +19,9 @@ package acceptance
 import Scoobi._
 import testing.NictaSimpleJobs
 import application.ScoobiConfiguration
-
+import scalaz.Order
 import SecondarySort._
+import scalaz.syntax.OrderOps
 
 class SecondarySortSpec extends NictaSimpleJobs {
   "We can do a secondary sort by using a Grouping on the key" >> { implicit sc: ScoobiConfiguration =>
@@ -53,22 +54,16 @@ object SecondarySort {
   type FirstName = String
   type LastName = String
 
+  import scalaz._, Scalaz._
+
   val grouping: Grouping[(FirstName, LastName)] = new Grouping[(FirstName, LastName)] {
 
     override def partition(key: (FirstName, LastName), howManyReducers: Int): Int =
       implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)
-
-    override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
-      val firstNameOrdering = groupCompare(a, b)
-      firstNameOrdering match  {
-        case 0 => a._2.compareTo(b._2)
-        case x => x
-      }
-    }
-
-    override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
-      a._1.compareTo(b._1)
-    }
-
+    override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)) =
+      groupCompare(a, b) |+| a._2 ?|? b._2
+    override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)) =
+      a._1 ?|? b._1
   }
+
 }

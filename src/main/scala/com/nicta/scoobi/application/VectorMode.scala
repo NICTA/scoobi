@@ -27,7 +27,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
-import scalaz.{Scalaz, State, Memo, Ordering => _}
+import scalaz.{Scalaz, State, Memo, Ordering => SOrdering}
 import Scalaz._
 
 import core._
@@ -170,7 +170,7 @@ object VectorMode {
     val grouped: IndexedSeq[Map[K, Vector[(K, V)]]] = partitions map { (kvs: Vector[(K, V)]) =>
 
       val vbMap = kvs.foldLeft(Map.empty: Map[K, VectorBuilder[(K, V)]]) { case (bins, (k, v)) =>
-        bins.find(kkvs => grp.groupCompare(kkvs._1, k) == 0) match {
+        bins.find(kkvs => grp.groupCompare(kkvs._1, k) == SOrdering.EQ) match {
           case Some((kk, vb)) => bins.updated(kk, vb += ((k, v)))
           case None           => { val vb = new VectorBuilder[(K, V)](); bins + (k -> (vb += ((k, v)))) }
         }
@@ -183,7 +183,7 @@ object VectorMode {
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
     /* Sorting */
-    val ord = new Ordering[K] { def compare(x: K, y: K): Int = grp.sortCompare(x, y) }
+    val ord = new Ordering[K] { def compare(x: K, y: K): Int = grp.sortCompare(x, y).toInt }
 
     val sorted: IndexedSeq[Map[K, Vector[(K, V)]]] = grouped map { (kvMap: Map[K, Vector[(K, V)]]) =>
       kvMap map { case (k, kvs) => (k, kvs.sortBy(_._1)(ord)) }

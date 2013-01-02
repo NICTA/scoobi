@@ -45,7 +45,7 @@ trait MetadataGroupings extends TaggedMetadata {
  */
 abstract class MetadataTaggedKey extends TaggedKey with MetadataTaggedWritable with MetadataGroupings {
   def compareTo(other: TaggedKey): Int = other match {
-    case tk: MetadataTaggedKey if tk.tag == tag => grouping(tag).sortCompare(get(tag), tk.get(tag))
+    case tk: MetadataTaggedKey if tk.tag == tag => grouping(tag).sortCompare(get(tag), tk.get(tag)).toInt
     case tk: MetadataTaggedKey                  => tag - tk.tag
     case _                                      => 0
   }
