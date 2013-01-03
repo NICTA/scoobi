@@ -1,0 +1,5 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Tue Nov 06 08:47:28 EST 2012
+avro-mapred-1.7.3-SNAPSHOT.jar>=
+avro-mapred-1.7.3-SNAPSHOT-hadoop2.jar>=
+avro-mapred-1.7.3-SNAPSHOT.pom>=

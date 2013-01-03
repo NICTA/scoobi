@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.apache.avro</groupId>
+  <artifactId>avro-parent</artifactId>
+  <version>1.7.3-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <lastUpdated>20121105214718</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.7.3-SNAPSHOT</value>
+        <updated>20121105214718</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
