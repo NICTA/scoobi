@@ -39,7 +39,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       "the mscrs are all the gbk mscrs on the layer + the mscrs for parallel do nodes which are not in a gbk mscr"      ! g4().e4^
                                                                                                                         end
 
-
+/*
   "layering of Gbk layers" - new g1 with definition { import scalaz.Scalaz._
 
     e1 := prop { layer: Layer[CompNode] =>
@@ -82,13 +82,6 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val pd1 = pd(cb1)
       (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1))
     }
-    e5 := {
-      val pd1 = pd(load)
-      val gbk1 = gbk(pd1)
-      val cb1 = cb(pd1)
-      val graph = pd(cb1, gbk1)
-      bypassOutputChannels(Layer(Seq(gbk1))) === Seq(BypassOutputChannel(pd1))
-    }
   }
 
   "Input channels" - new g3 with definition with simpleGraph {
@@ -99,17 +92,14 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq
 
       inputChannels must have size(1)
-      inputChannels.head.parDos must have size(2)
     }
 
     e2 := {
       val graph = pd(gbk1, gbk2, gbk3)
       val ls    = layers(graph)
-      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq.sortBy(_.parDos.size).reverse
+      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq.reverse
 
       inputChannels must have size(2)
-      inputChannels.head.parDos must have size(2)
-      inputChannels.last.parDos must have size(1)
     }
 
     e3 := {
@@ -130,9 +120,6 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       "there are as many tags as output channels on a layer" ==> {
         tags.toSet must have size(layer1.gbks.size)
       }
-    }
-    e2 := {
-      gbkInputChannels(layer1).map(i => i.nodes.flatMap(i.tags)) must haveTheSameElementsAs(Seq(Set(2), Set(0, 1), Set(3)))
     }
     e3 := {
       mscrs(layers(graph).head) must have size(3)
@@ -170,6 +157,6 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       if (layer.nodes.isEmpty) "empty layer - shouldn't happen"
       else                     layer.nodes.map(showGraph).mkString("\nshowing graphs for layer\n", "\n", "\n")
   }
-
+*/
 }
 

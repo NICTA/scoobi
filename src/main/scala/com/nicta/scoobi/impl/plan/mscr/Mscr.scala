@@ -12,16 +12,16 @@ import scalaz.Scalaz._
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
- * It is a mutable class which is constructed incrementally by using Kiama grammar attributes
  * @see MscrGraph
  */
 case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
   val id: Int = UniqueId.get
 
-  lazy val keyTypes   = KeyTypes(inputChannels.map(_.keyTypes).foldMap)
-  lazy val valueTypes = ValueTypes(inputChannels.map(_.valueTypes).foldMap)
-  lazy val sources    = inputChannels.flatMap(_.sources).distinct
+  lazy val keyTypes   = KeyTypes(Map(inputChannels.flatMap(_.keyTypes.types):_*))
+  lazy val valueTypes = ValueTypes(Map(inputChannels.flatMap(_.valueTypes.types):_*))
+  lazy val sources    = inputChannels.map(_.source).distinct
   lazy val sinks      = outputChannels.flatMap(_.sinks).distinct
+  lazy val inputNodes = (inputChannels.flatMap(_.inputNodes) ++ outputChannels.flatMap(_.inputNodes)).distinct
 
   override def toString =
     Seq(id.toString,
@@ -29,9 +29,9 @@ case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[Ou
         if (outputChannels.isEmpty) "" else outputChannels.mkString("  outputs: ",  "\n           ", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")\n")
 
   /** @return all the combiners of this mscr */
-  def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_,_) => combiner }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_) => combiner }
   /** @return all the combiners of this mscr by tag */
-  def combinersByTag  = Map(outputChannels.collect { case out @ GbkOutputChannel(_,Some(combiner),_,_) => (out.tag, combiner) }: _*)
+  def combinersByTag  = Map(outputChannels.collect { case out @ GbkOutputChannel(_,Some(combiner),_) => (out.tag, combiner) }: _*)
 
   /** simultaneously set the input and output channels of this mscr */
   def addChannels(in: Seq[InputChannel], out: Seq[OutputChannel]) =
@@ -51,11 +51,6 @@ object Mscr {
   }
   /** @return a new empty Mscr */
   def empty = Mscr()
-  /** @return true if a Mscr is created for GroupByKeys */
-  def isGbkMscr: Mscr => Boolean = (_:Mscr).groupByKeys.nonEmpty
-  /** @return true if a Mscr is created for floating parallel dos */
-  def isParallelDoMscr: Mscr => Boolean = (_:Mscr).bypassOutputChannels.nonEmpty
-
 }
 
 case class KeyTypes(types: Map[Int, (WireFormat[_], Grouping[_])] = Map()) {
@@ -64,6 +59,7 @@ case class KeyTypes(types: Map[Int, (WireFormat[_], Grouping[_])] = Map()) {
     copy(types = types + (tag -> (wf, gp)))
 }
 case class ValueTypes(types: Map[Int, Tuple1[WireFormat[_]]] = Map()) {
+  def tags = types.keys.toSeq
   def add(tag: Int, wf: WireFormat[_]) =
     copy(types = types + (tag -> Tuple1(wf)))
 }

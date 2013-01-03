@@ -42,7 +42,7 @@ class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, Tagged
 
   override def setup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
 
-    mappers = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels())
+    inputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 
@@ -50,7 +50,7 @@ class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, Tagged
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
     logger.info("Input is " + inputSplit)
     inputChannel = inputChannels.channel(inputSplit.channel)
-    inputChannel.setup()
+    inputChannel.setup(context)
 
   }
 

@@ -53,12 +53,12 @@ trait EnvDoFn[A, B, E] { outer =>
   }
 
   private[scoobi]
-  def unsafeProcess(env: Any, input: Any, emitter: Emitter[Any]) {
+  def unsafeProcess[R](env: Any, input: Any, emitter: Emitter[R]) {
     process(env.asInstanceOf[E], input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
   }
 
   private[scoobi]
-  def unsafeCleanup(env: Any, emitter: Emitter[Any]) {
+  def unsafeCleanup[R](env: Any, emitter: Emitter[R]) {
     cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
   }
 }

@@ -9,12 +9,12 @@ scalaVersion := "2.9.2"
 
 libraryDependencies ++= Seq(
   "javassist" % "javassist" % "3.12.1.GA",
-  "org.apache.avro" % "avro-mapred" % "1.7.3-SNAPSHOT",
-  "org.apache.avro" % "avro" % "1.7.3-SNAPSHOT",
+  "org.apache.avro" % "avro-mapred" % "1.7.3",
+  "org.apache.avro" % "avro" % "1.7.3",
   "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1",
   "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1",
   "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
-  "com.googlecode.kiama" %% "kiama" % "1.4.0-B5",
+  "com.googlecode.kiama" %% "kiama" % "1.4.0",
   "com.github.mdr" %% "ascii-graphs" % "0.0.2",
   "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
   "org.specs2" %% "specs2" % "1.12.4-SNAPSHOT" % "optional",

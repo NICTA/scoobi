@@ -35,7 +35,7 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) {
-    outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(Map())
+    outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(OutputChannels(Seq()))
     channelOutput = new ChannelOutputFormat(context)
 
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
@@ -48,14 +48,15 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
 
     /* Get the right output value type and output directory for the current channel,
      * specified by the key's tag. */
-    val outputChannel = outputChannels.channel(key.tag)
+    outputChannels.channel(key.tag) foreach { channel =>
     /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-    val untaggedValues = new UntaggedValues[V2](key.tag, values)
-    outputChannel.reduce(key, untaggedValues, channelOutput)(configuration)
+      val untaggedValues = new UntaggedValues[V2](key.tag, values)
+      channel.reduce(key, untaggedValues, channelOutput)(context.getConfiguration)
+    }
   }
 
   override def cleanup(context: HReducer[TaggedKey, TaggedValue, K3, V3]#Context) {
-    outputChannels.cleanup(context)
+    outputChannels.cleanup(channelOutput)(context.getConfiguration)
     channelOutput.close()
   }
 }

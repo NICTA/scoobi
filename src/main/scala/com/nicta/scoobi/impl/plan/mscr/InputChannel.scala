@@ -6,16 +6,19 @@ package mscr
 import org.kiama.attribution.Attributable
 import core._
 import comp._
-import util.UniqueId
-import exec.MapReduceJob
-import mapreducer.{TaggedReducer, TaggedMapper, TaggedIdentityMapper}
+import util.{UniqueInt, UniqueId}
+import exec.{InMemoryMode, MapReduceJob}
+import mapreducer.{ChannelOutputFormat, TaggedMapper}
 import core.WireFormat._
 import comp.GroupByKey
-import CompNodes._
 import scalaz.Equal
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.conf.Configuration
 import org.kiama.rewriting.Rewriter
+import scala.collection.immutable.VectorBuilder
+import rtt.{TaggedValue, TaggedKey}
+import control.Functions._
+import CollectFunctions._
 
 trait Channel extends Attributable
 
@@ -23,9 +26,9 @@ case class InputChannels(channels: Seq[InputChannel]) {
   def channel(n: Int) = channels(n)
 }
 case class OutputChannels(channels: Seq[OutputChannel]) {
-  def channel(n: Int) = channels(n)
+  def channel(n: Int) = channels.find(c => c.tag == n)
   def setup(implicit configuration: Configuration) { channels.foreach(_.setup) }
-  def cleanup = channels.foreach(_.cleanup)
+  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) { channels.foreach(_.cleanup(channelOutput)) }
 }
 /**
  * ADT for MSCR input channels
@@ -40,15 +43,18 @@ trait InputChannel extends Channel {
 
   def keyTypes: KeyTypes
   def valueTypes: ValueTypes
-
+  def source: Source
+  def inputNodes: Seq[CompNode]
   // seq of tags that this channel leads to
   def tags: Seq[Int]
-  def setup(implicit configuration: Configuration)
-  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration)
-  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration)
+  def setup[K1, V1](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)
+  def map[K1, V1, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)
+  def cleanup[K1, V1, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)
 }
 
-case class MapperInputChannel(sourceNode: CompNode) extends InputChannel with Rewriter {
+case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
+  private object rollingInt extends UniqueInt
+  private val nodes = new CompNodes {}
 
   override def toString = "MapperInputChannel("+sourceNode+")"
 
@@ -58,53 +64,91 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel with Re
   }
 
   /** collect all the tags accessible from this source node */
-  lazy val tags = keyTypes.tags
+  lazy val tags = if (groupByKeys.isEmpty) valueTypes.tags else keyTypes.tags
 
-  lazy val keyTypes: KeyTypes = {
-    var types = KeyTypes()
-    rewrite(sometd(query { case g: GroupByKey[_,_] => types = types.add(g.id, g.mwfk.wf, g.gpk) }))(sourceNode)
-    types
-  }
-  lazy val valueTypes: ValueTypes = {
-    var types = ValueTypes()
-    rewrite(sometd(query { case g: GroupByKey[_,_] => types = types.add(g.id, g.mwfv.wf) }))(sourceNode)
-    types
+  lazy val source = sourceNode match {
+    case n: Load[_]           => n.source
+    case n: Op[_,_,_]         => n.bridgeStore.get
+    case n: GroupByKey[_,_]   => n.bridgeStore.get
+    case n: Combine[_,_]      => n.bridgeStore.get
+    case n: ParallelDo[_,_,_] => n.bridgeStore.get
   }
 
-  def setup(implicit configuration: Configuration) {
-    rewrite(sometd(query { case pd: ParallelDo[_,_,_] => pd.setup(configuration) }))(sourceNode)
+  lazy val inputNodes = Seq(sourceNode) ++ mappers.map(_.env)
+
+  lazy val keyTypes: KeyTypes =
+    if (groupByKeys.isEmpty) lastMappers.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
+    else                     groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.mwfk.wf, cur.gpk) }
+
+  lazy val valueTypes: ValueTypes =
+    if (groupByKeys.isEmpty) lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
+    else                     groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.mwfv.wf) }
+
+  lazy val groupByKeys: Seq[GroupByKey[_,_]] = groupByKeysUses(sourceNode)
+  lazy val groupByKeysUses: CompNode => Seq[GroupByKey[_,_]] = nodes.attr { case node =>
+    val (gbks, nonGbks) = nodes.uses(node).partition(isGroupByKey)
+    gbks.collect(isAGroupByKey).toSeq ++ nonGbks.flatMap(groupByKeysUses)
   }
 
-  def map[K1, V1, A, TaggedKey, TaggedValue, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration) {
-    val v: A = converter.fromKeyValue(context, key, value)
-    mappers foreach { mapper =>
-      val emitter = new Emitter[(K2, V2)] {
-        def emit(x: (K2, V2)) {
-          mapper.tags.foreach { tag =>
-            tk.set(tag, x._1)
-            tv.set(tag, x._2)
-            context.write(tk, tv)
-          }
-        }
+  private lazy val lastMappers: Seq[CompNode] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]))
+
+  lazy val mappers: Seq[ParallelDo[_,_,_]] = mappersUses(sourceNode)
+  lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = nodes.attr { case node =>
+    val (pds, _) = nodes.uses(node).partition(isParallelDo)
+    pds.collect(isAParallelDo).toSeq ++ pds.filter(pd => isParallelDo(pd.parent[CompNode])).flatMap(mappersUses)
+  }
+
+  private var tk: TaggedKey = _
+  private var tv: TaggedValue = _
+
+  def setup[K1, V1](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+    tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
+    tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
+  }
+
+  private def valueEmitter[K1, V1](context: Mapper[K1,V1,TaggedKey,TaggedValue]#Context) = new Emitter[Any] {
+    def emit(x: Any) {
+      tags.foreach { tag =>
+        tk.set(tag, rollingInt.get)
+        tv.set(tag, x)
+        context.write(tk, tv)
       }
-      mapper.map(v, emitter.asInstanceOf[Emitter[Any]])
     }
   }
 
-  def cleanup[K1, V1, TaggedKey, TaggedValue, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context)(implicit configuration: Configuration) {
-    mappers foreach { case (env, mapper: TaggedMapper) =>
-      val emitter = new Emitter[(K2, V2)] {
-        def emit(x: (K2, V2)) {
-          mapper.tags.foreach { tag =>
-            tk.set(tag, x._1)
-            tv.set(tag, x._2)
-            context.write(tk, tv)
-          }
-        }
+  private def keyValueEmitter[K1, V1](context: Mapper[K1,V1,TaggedKey,TaggedValue]#Context) = new Emitter[(Any, Any)] {
+    def emit(x: (Any, Any)) {
+      tags.foreach { tag =>
+        tk.set(tag, x._1)
+        tv.set(tag, x._2)
+        context.write(tk, tv)
       }
-      mapper.cleanup(env, emitter.asInstanceOf[Emitter[Any]])
     }
   }
+
+  def map[K1, V1, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+    implicit val configuration = context.getConfiguration
+    implicit val sc = ScoobiConfigurationImpl(configuration)
+    val emitter = if (groupByKeys.isEmpty) valueEmitter(context) else keyValueEmitter(context)
+
+    lazy val computeMappers: CompNode => Any = nodes.attr("computeMappers") {
+      case GroupByKey1(mapper: ParallelDo[_,_,_]) => computeMappers(mapper)
+      case node if node == sourceNode             => source.inputConverter.asInstanceOf[InputConverter[K1, V1, Any]].fromKeyValue(context, key, value)
+      case mapper: ParallelDo[_,_,_]              =>
+        val mappedValue = if (mapper.ins.size == 1) computeMappers(mapper.ins.head) else mapper.ins.map(computeMappers)
+        if (nodes.uses(mapper).forall(isParallelDo)) {
+          val vb = new VectorBuilder[Any]
+          mapper.unsafeMap(mappedValue, new Emitter[Any] { def emit(v: Any) { vb += v } })
+          vb
+        }
+        else mapper.unsafeMap(mappedValue, emitter)
+    }
+    lastMappers foreach computeMappers
+    if (lastMappers.isEmpty)
+      emitter.emit(source.inputConverter.asInstanceOf[InputConverter[K1, V1, (Any, Any)]].fromKeyValue(context, key, value))
+  }
+
+  def cleanup[K1, V1, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {}
 }
 
 case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None) extends InputChannel {
@@ -112,8 +156,25 @@ case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None) 
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
   }
+  lazy val source = input match {
+    case n: Load[_]           => n.source
+    case n: GroupByKey[_,_]   => n.bridgeStore.get
+    case n: Combine[_,_]      => n.bridgeStore.get
+    case n: ParallelDo[_,_,_] => n.bridgeStore.get
+  }
+  lazy val inputNodes = input match {
+    case n: ParallelDo[_,_,_] => Seq(n, n.env)
+    case n                    => Seq(n)
+  }
+
+  lazy val keyTypes: KeyTypes = KeyTypes()
+  lazy val valueTypes: ValueTypes = ValueTypes().add(input.id, input.wf)
 
   def tags = Seq(gbk.map(_.id).getOrElse(input.id))
+
+  def setup[K1, V1](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {}
+  def map[K1, V1, K2, V2](key: K1, value: V1, context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {}
+  def cleanup[K1, V1, K2, V2](context: Mapper[K1, V1, TaggedKey, TaggedValue]#Context) {}
 }
 
 object InputChannel {

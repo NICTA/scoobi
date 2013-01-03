@@ -11,6 +11,9 @@ trait CompNode extends Attributable {
   def id: Int
   def sinks : Seq[Sink]
   def bridgeStore: Option[Bridge]
+  def mwf: ManifestWireFormat[_]
+  def mf = mwf.mf
+  def wf = mwf.wf
 
   override def equals(a: Any) = a match {
     case n: CompNode => n.id == id

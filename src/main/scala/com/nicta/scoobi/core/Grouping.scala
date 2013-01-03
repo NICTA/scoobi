@@ -45,7 +45,9 @@ trait Grouping[K] {
   def unsafeGroupCompare(x: Any, y: Any): Int = groupCompare(x.asInstanceOf[K], y.asInstanceOf[K])
 }
 
-object Grouping extends GroupingImplicits
+object Grouping extends GroupingImplicits {
+  def all[K] = new Grouping[K] { def groupCompare(x: K, y: K) = 0 }
+}
 
 /** Implicit definitions of Grouping instances for common types. */
 trait GroupingImplicits {

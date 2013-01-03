@@ -33,7 +33,7 @@ class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagge
   private var tv: TaggedValue = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
-    outputChannels = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
+    combiners = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 

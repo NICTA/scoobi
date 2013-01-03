@@ -14,7 +14,7 @@ import scalaz.Equal
 import java.util.UUID._
 import CollectFunctions._
 import org.apache.hadoop.conf.Configuration
-
+import ScoobiConfigurationImpl._
 /**
  * GADT for distributed list computation graph.
  */
@@ -22,12 +22,9 @@ sealed trait DComp[+A] extends CompNode {
   lazy val id = UniqueId.get
 
   type CompNodeType <: DComp[A]
-  type Sh <: Shape
 
   def mr: MapReducer[_]
   def mwf: ManifestWireFormat[_] = mr.mwf
-  def mf = mwf.mf
-  def wf = mwf.wf
 
   def sinks: Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
@@ -45,20 +42,25 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
                                bridgeStoreId:     String = randomUUID.toString) extends DComp[B] {
 
   type CompNodeType = ParallelDo[A, B, E]
-  type Sh = Arr
 
   def mwfe = mr.mwfe
   def wfe  = mwfe.wf
 
-  def setup(implicit configuration: Configuration) { dofn.setup(environment) }
-  def reduce[K, V, B](key: K, values: UntaggedValues[V], emitter: Emitter[B])(implicit configuration: Configuration) {
-    dofn.process(environment, (key, values), emitter)
+  def setup(implicit configuration: Configuration) { dofn.setup(environment(ScoobiConfigurationImpl(configuration)).pull) }
+  def unsafeMap[R](value: Any, emitter: Emitter[R])(implicit sc: ScoobiConfiguration) {
+    val env = environment.pull(sc.configuration)
+    dofn.unsafeSetup(env)
+    dofn.unsafeProcess(env, value, emitter)
+    dofn.unsafeCleanup(env, emitter)
   }
-  def cleanup(implicit configuration: Configuration) { dofn.cleanup(environment) }
+  def reduce[K, V](key: K, values: UntaggedValues[V], emitter: Emitter[B])(implicit configuration: Configuration) {
+    dofn.process(environment(ScoobiConfigurationImpl(configuration)).pull, (key, values).asInstanceOf[A], emitter)
+  }
+  def cleanup(emitter: Emitter[B])(implicit configuration: Configuration) { dofn.cleanup(environment(ScoobiConfigurationImpl(configuration)).pull, emitter) }
 
-  def environment(implicit sc: ScoobiConfiguration): Option[Env[E]] = env match {
-    case e: WithEnvironment[_] => Some(e.environment(sc).asInstanceOf[Env[E]])
-    case other                 => None
+  def environment(implicit sc: ScoobiConfiguration): Env[E] = env match {
+    case e: WithEnvironment[_] => e.environment(sc).asInstanceOf[Env[E]]
+    case other                 => Env[E](mr.mwfe.wf)
   }
 
   def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
@@ -81,10 +83,6 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
                           mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] =
           ParallelDo.fuse[A, C, E, F](this, p2)(mr.mwfa, mwfc, mr.mwfe, mwff)
 
-  def makeTaggedIdentityReducer(tag: Int)                   = mr.makeTaggedIdentityReducer(tag)
-  def makeTaggedReducer(tag: Int)                           = mr.makeTaggedReducer(tag, dofn, mwf)
-  def makeTaggedMapper(gbk: GroupByKey[_,_],tags: Set[Int]) = mr.makeTaggedMapper(tags, dofn, gbk.mwfk, gbk.gpk, gbk.mwfv)
-  def makeTaggedMapper(tags: Set[Int])                      = mr.makeTaggedMapper(tags, dofn, mwf)
 }
 object ParallelDo {
 
@@ -132,7 +130,6 @@ object ParallelDo1 {
 case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, V)] {
 
   type CompNodeType = Combine[K, V]
-  type Sh = Arr
 
   override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -143,6 +140,7 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
 
   override val toString = "Combine ("+id+")"+mr
 
+  def combine = f
   /**
    * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
    */
@@ -157,10 +155,6 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
     ParallelDo[(K, Iterable[V]), (K, V), Unit](Seq(in), Return.unit, dofn, DoMapReducer(manifestWireFormat[(K, Iterable[V])], manifestWireFormat[(K, V)], manifestWireFormat[Unit]))
   }
 
-  def makeTaggedCombiner(tag: Int)                      = mr.makeTaggedCombiner(tag, f)
-  def makeTaggedReducer(tag: Int)                       = mr.makeTaggedReducer(tag, f)
-  def makeTaggedReducer(tag: Int, dofn: EnvDoFn[_,_,_]) = mr.makeTaggedReducer(tag, f, dofn)
-
   def unsafeReduce(values: Iterable[Any]) =
     values.asInstanceOf[Iterable[V]].reduce(f)
 }
@@ -173,7 +167,6 @@ object Combine1 {
 case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, Iterable[V])] {
 
   type CompNodeType = GroupByKey[K, V]
-  type Sh = Arr
 
   override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
 
@@ -184,6 +177,7 @@ case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: 
   implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
 
   override val toString = "GroupByKey ("+id+")"+mr
+
 }
 object GroupByKey1 {
   def unapply(gbk: GroupByKey[_,_]): Option[CompNode] = Some(gbk.in)
@@ -194,7 +188,6 @@ object GroupByKey1 {
 case class Load[A](source: Source, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
 
   type CompNodeType = Load[A]
-  type Sh = Arr
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -208,7 +201,6 @@ object Load1 {
 case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] with WithEnvironment[A] {
 
   type CompNodeType = Return[A]
-  type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -226,7 +218,6 @@ object Return1 {
 case class Materialize[A](in: CompNode, mr: SimpleMapReducer[Iterable[A]], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
 
   type CompNodeType = Materialize[A]
-  type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -242,7 +233,6 @@ object Materialize1 {
 case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleMapReducer[C], sinks: Seq[Sink] = Seq()) extends DComp[C] with WithEnvironment[C] {
 
   type CompNodeType = Op[A, B, C]
-  type Sh = Exp
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
@@ -261,6 +251,7 @@ case class Root(ins: Seq[CompNode]) extends CompNode {
   val id = UniqueId.get
   lazy val sinks = Seq()
   lazy val bridgeStore = None
+  def mwf: ManifestWireFormat[_] = manifestWireFormat[Unit]
 }
 
 trait WithEnvironment[E] {

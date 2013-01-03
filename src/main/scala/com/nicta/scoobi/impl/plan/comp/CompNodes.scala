@@ -70,7 +70,9 @@ trait CollectFunctions {
   /** return true if a CompNode needs to be persisted */
   lazy val isSinkNode: CompNode => Boolean = isMaterialize
   /** return true if a CompNode needs to be loaded */
-  lazy val isSourceNode: CompNode => Boolean = isReturn || isMaterialize || isOp || isLoad
+  lazy val isValueNode: CompNode => Boolean = isReturn || isComputedValueNode
+  /** return true if a CompNode needs to be computed */
+  lazy val isComputedValueNode: CompNode => Boolean = isMaterialize || isOp
   /** return true if a CompNode is an Op */
   lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }
 }

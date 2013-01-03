@@ -65,25 +65,22 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     def execute: Seq[Any] = {
       logger.debug("Executing layer\n"+layer)
 
-      val sources = layerSources(layer)
-      logger.debug("Checking sources for layer "+layer.id+"\n"+sources.mkString("\n"))
-      sources.foreach(_.inputCheck)
-
-      val sourceNodes = layerSourceNodes(layer)
-      logger.debug("Loading sources nodes for layer "+layer.id+"\n"+sourceNodes.mkString("\n"))
-      sourceNodes.foreach(load)
-
-      val sinks = layerSinks(layer)
-      logger.debug("Checking the outputs for layer "+layer.id+"\n"+sinks.mkString("\n"))
-      sinks.foreach(_.outputCheck)
-
-      logger.debug("Executing the Mscrs for layer "+layer.id+"\n")
       mscrs(layer).zipWithIndex.foreach { case (mscr, step) =>
+
+        logger.debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
+        mscr.sources.foreach(_.inputCheck)
+
+        logger.debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
+        mscr.sinks.foreach(_.outputCheck)
+
+        logger.debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
+        mscr.inputNodes.foreach(load)
+
         val job = MapReduceJob.create(step, mscr)
         logger.debug("Executing Mscr\n"+mscr)
         job.run
       }
-      sinks.debug("Layer sinks: ").map(readStore).toSeq
+      layerSinks(layer).debug("Layer sinks: ").map(readStore).toSeq
     }
 
 
@@ -99,15 +96,14 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
-      case mt @ Materialize1(in) => store(mt, readNodeStore(mt))
-      case rt @ Return1(in)      => store(rt, in)
-      case op @ Op1(in1, in2)    => store(op, op.unsafeExecute(load(in1), load(in2)).debug("result for op "+op.id+": "))
-      case ld @ Load1(_)         => store(ld, ())
-      case other                 => ()
+      case rt @ Return1(in)      => pushEnv(rt, in)
+      case op @ Op1(in1, in2)    => pushEnv(op, op.unsafeExecute(load(in1), load(in2)).debug("result for op "+op.id+": "))
+      case ld @ Load1(_)         => pushEnv(ld, ())
+      case other                 => pushEnv(other, readNodeStore(other))
     }
   }
 
-  private def store(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
+  private def pushEnv(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
     usesAsEnvironment(node).map { pd =>
       pd.unsafePushEnv(result)
     }

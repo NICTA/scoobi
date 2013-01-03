@@ -44,15 +44,15 @@ abstract class TaggedMapper(source: Source) {
 
 
 /** A TaggedMapper that is an identity mapper. */
-class TaggedIdentityMapper(tags: Set[Int], mwfk: ManifestWireFormat[_], gpk: Grouping[_], mwfv: ManifestWireFormat[_]) extends TaggedMapper(tags, mwfk, gpk, mwfv) {
+class TaggedIdentityMapper(source: Source) extends TaggedMapper(source) {
 
   /** setup(env: Unit) */
-  def setup(env: Any) {}
+  def setup(implicit configuration: Configuration) {}
   /** map(env: Unit, input: A, emitter: Emitter[(K, V)]) */
-  def map(env: Any, input: Any, emitter: Emitter[Any]) {
+  def map(input: Any, emitter: Emitter[Any])(implicit configuration: Configuration) {
     emitter.emit(input)
   }
 
   /** cleanup(env: Unit, emitter: Emitter[(K, V)]) */
-  def cleanup(env: Any, emitter: Emitter[Any]) {}
+  def cleanup(emitter: Emitter[Any])(implicit configuration: Configuration) {}
 }

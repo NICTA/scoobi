@@ -66,3 +66,4 @@ trait InputConverter[K, V, A] {
   type InputContext = MapContext[K, V, _, _]
   def fromKeyValue(context: InputContext, key: K, value: V): A
 }
+

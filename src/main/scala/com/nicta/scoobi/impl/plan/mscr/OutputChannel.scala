@@ -14,6 +14,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import rtt.TaggedKey
 import mapreducer.{ChannelOutputFormat, UntaggedValues}
+import ChannelOutputFormat._
 
 trait OutputChannel extends Channel {
   lazy val id: Int = UniqueId.get
@@ -25,11 +26,13 @@ trait OutputChannel extends Channel {
   override def hashCode = id.hashCode
 
   def sinks: Seq[Sink]
+  def inputNodes: Seq[CompNode]
+
   def tag: Int
 
   def setup(implicit configuration: Configuration)
   def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
-  def cleanup(implicit configuration: Configuration)
+  def cleanup[K, V, B](channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
   def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
     val fs = configuration.fileSystem
     import fileSystems._
@@ -57,20 +60,26 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
   def tag = groupByKey.id
   def setup(implicit configuration: Configuration) { reducer.foreach(_.setup) }
 
-  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    val emitter = new Emitter[B] {
-      def emit(x: B)  {
-        sinks.zipWithIndex foreach { case (sink, i) =>
-          channelOutput.write(tag, i, sink.outputConverter.toKeyValue(x))
-        }
+  def createEmitter[K, V, B](channelOutput: ChannelOutputFormat) = new Emitter[B] {
+    def emit(x: B)  {
+      sinks.zipWithIndex foreach { case (sink, i) =>
+        channelOutput.write(tag, i, sink.outputConverter.asInstanceOf[OutputConverter[K, V, B]].toKeyValue(x))
       }
     }
-    reducer.map(_.reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)).getOrElse(emitter.emit((key.get(tag), untaggedValues)))
   }
 
-  def cleanup(implicit configuration: Configuration) {
-    groupByKey.cleanup(configuration)
-    reducer.foreach(_.cleanup(configuration))
+  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    val emitter: Emitter[B] = createEmitter(channelOutput)
+    reducer.map(_.asInstanceOf[ParallelDo[(K, V), B, _]].reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)).getOrElse {
+      combiner.map(c => emitter.emit((key.get(tag), c.unsafeReduce(untaggedValues)).asInstanceOf[B])).getOrElse {
+        emitter.emit((key.get(tag), untaggedValues).asInstanceOf[B])
+      }
+    }
+  }
+
+  def cleanup[K, V, B](channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    val emitter: Emitter[B] = createEmitter(channelOutput)
+    reducer.foreach(_.asInstanceOf[ParallelDo[(K, V), B, _]].cleanup(emitter)(configuration))
   }
 
   override def toString =
@@ -84,7 +93,8 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case _                   => false
   }
 
-  lazy val sinks = nodes.flatMap(_.sinks) :+ bridgeStore
+  lazy val nodeSinks = groupByKey.sinks ++ combiner.toSeq.flatMap(_.sinks) ++ reducer.toSeq.flatMap(_.sinks)
+  lazy val inputNodes = reducer.toSeq.map(_.env)
 
   lazy val bridgeStore =
      (reducer: Option[CompNode]).
@@ -98,28 +108,27 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChan
     case _                      => false
   }
   def tag = output.id
-  def sinks = output.sinks :+ bridgeStore
+  lazy val nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
+  lazy val inputNodes = Seq(output.env)
 
   def setup(implicit configuration: Configuration) { output.setup }
 
-  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    val emitter = new Emitter[B] {
-      def emit(x: B)  {
-        sinks.zipWithIndex foreach { case (sink, i) =>
-          channelOutput.write(tag, i, sink.outputConverter.toKeyValue(x))
-        }
+  def createEmitter[K, V, B](channelOutput: ChannelOutputFormat) = new Emitter[B] {
+    def emit(x: B)  {
+      sinks.zipWithIndex foreach { case (sink, i) =>
+        channelOutput.write(tag, i, sink.outputConverter.asInstanceOf[OutputConverter[K, V, B]].toKeyValue(x))
       }
     }
-    output.reduce(key.get(tag).asInstanceOf[K], untaggedValues, emitter)
   }
 
-  def cleanup(implicit configuration: Configuration) {
-    groupByKey.cleanup(configuration)
-    reducer.foreach(_.cleanup(configuration))
+  def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    implicit val sc = ScoobiConfigurationImpl(configuration)
+    val emitter: Emitter[Any] = createEmitter(channelOutput)
+    untaggedValues foreach emitter.emit
   }
 
-
+  def cleanup[K, V, B](channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {}
 }
 
 object OutputChannel {
@@ -131,7 +140,7 @@ object OutputChannel {
 object Channels extends control.ImplicitParameters {
   /** @return a sequence of distinct mapper input channels */
   def distinct(ins: Seq[MapperInputChannel]): Seq[MapperInputChannel] =
-    ins.map(in => (in.parDos.map(_.id), in)).toMap.values.toSeq
+    ins.map(in => (in.sourceNode.id, in)).toMap.values.toSeq
 
   /** @return a sequence of distinct group by key output channels */
   def distinct(out: Seq[GbkOutputChannel])(implicit p: ImplicitParam): Seq[GbkOutputChannel] =
