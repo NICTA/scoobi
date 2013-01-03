@@ -14,15 +14,15 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="TaggedKey$.html"><img src="../../../../../lib/trait_to_object_big.png" /></a>
+        <a title="Go to companion" href="TaggedKey$.html"><img src="../../../../../lib/class_to_object_big.png" /></a>
         <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.rtt" class="extype" href="package.html">rtt</a></p>
         <h1><a title="Go to companion" href="TaggedKey$.html">TaggedKey</a></h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
         <span class="name">TaggedKey</span><span class="result"> extends <a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="Tagged.html">Tagged</a> with <span name="org.apache.hadoop.io.WritableComparable" class="extype">WritableComparable</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="">TaggedKey</a>]</span>
@@ -30,13 +30,9 @@
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A tagged value for Hadoop keys. Specifically this will be a K2 type so must
-implement the WritableComparable interface
-</p></div><div class="toggleContainer block">
+implement the WritableComparable interface.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span name="org.apache.hadoop.io.WritableComparable" class="extype">WritableComparable</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="">TaggedKey</a>], <span name="java.lang.Comparable" class="extype">Comparable</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="">TaggedKey</a>], <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span>, <a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="Tagged.html">Tagged</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.rtt.MetadataTaggedKey" class="extype" href="MetadataTaggedKey.html">MetadataTaggedKey</a></div>
         </div></div>
     
 
@@ -60,7 +56,34 @@ implement the WritableComparable interface
 
       <div id="template">
         <div id="allMembers">
-        
+        <div class="members" id="constructors">
+              <h3>Instance Constructors</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedKey#this" data-isabs="false">
+      <a id="this:TaggedKey"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">TaggedKey</span><span class="params">()</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.TaggedKey#this" data-isabs="false">
+      <a id="this:TaggedKey"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">TaggedKey</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -106,14 +129,14 @@ implement the WritableComparable interface
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.Tagged#set" data-isabs="true">
-      <a id="set(Int,⇒ Any):Unit"></a>
+      <a id="set(Int,Any):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">set</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="x">x: ⇒ <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">set</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="x">x: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="Tagged.html">Tagged</a></dd></dl></div>
@@ -343,7 +366,7 @@ implement the WritableComparable interface
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setTag</span><span class="params">(<span name="tag1">tag1: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setTag</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="Tagged.html">Tagged</a></dd></dl></div>
@@ -359,18 +382,6 @@ implement the WritableComparable interface
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.Tagged#tag" data-isabs="false">
-      <a id="tag:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tag</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="Tagged.html">Tagged</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">

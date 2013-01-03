@@ -29,7 +29,7 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Constructs a ScoobiWritable, with some metadata (a WireFormat) retrieved from the distributed cache</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Constructs a subclass of ScoobiWritable dynamically.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
@@ -124,26 +124,26 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ScoobiWritable#apply" data-isabs="false">
-      <a id="apply[A](String,A)(ScoobiConfiguration,WireFormat[A]):RuntimeClass"></a>
+      <a id="apply[A](String,A)(Manifest[A],WireFormat[A]):RuntimeClass"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="name">name: String</span>, <span name="witness">witness: A</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>, <span name="wf">wf: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="RuntimeClass.html">RuntimeClass</a></span>
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="name">name: String</span>, <span name="witness">witness: A</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="m">m: Manifest[A]</span>, <span name="wt">wt: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="RuntimeClass.html">RuntimeClass</a></span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ScoobiWritable#apply" data-isabs="false">
-      <a id="apply(String,com.nicta.scoobi.core.WireFormat[_])(ScoobiConfiguration):RuntimeClass"></a>
+      <a id="apply(String,Manifest[_],com.nicta.scoobi.core.WireFormat[_]):RuntimeClass"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="name">name: String</span>, <span name="wf">wf: com.nicta.scoobi.core.WireFormat[_]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="../../application/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="RuntimeClass.html">RuntimeClass</a></span>
+        <span class="name">apply</span><span class="params">(<span name="name">name: String</span>, <span name="m">m: Manifest[_]</span>, <span name="wt">wt: com.nicta.scoobi.core.WireFormat[_]</span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="RuntimeClass.html">RuntimeClass</a></span>
       </span>
       </h4>
       
@@ -159,6 +159,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.ScoobiWritable#builtClasses" data-isabs="false">
+      <a id="builtClasses:Map[String, RuntimeClass]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">builtClasses</span><span class="result">: <span name="scala.collection.mutable.Map" class="extype">Map</span>[String, <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="RuntimeClass.html">RuntimeClass</a>]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
