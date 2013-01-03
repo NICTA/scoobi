@@ -43,6 +43,18 @@ trait Grouping[K] {
   def groupOrder: Order[K] =
     Order.order(groupCompare(_, _))
 
+  /** Interface to `scala.Ordering` on `sortCompare` */
+  val sortOrdering: Ordering[K] =
+    new Ordering[K] {
+      def compare(x: K, y: K): Int = sortCompare(x, y).toInt
+    }
+
+  /** Interface to `scala.Ordering` on `groupCompare` */
+  val groupOrdering: Ordering[K] =
+    new Ordering[K] {
+      def compare(x: K, y: K): Int = groupCompare(x, y).toInt
+    }
+
   /** Map on this grouping contravariantly. */
   def contramap[L](f: L => K): Grouping[L] =
     new Grouping[L] {
