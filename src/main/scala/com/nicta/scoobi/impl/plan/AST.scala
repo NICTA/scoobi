@@ -127,7 +127,7 @@ object AST {
     }
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, (K, V), Unit](tag)(mK, wtK, grpK, mV, wtV, mKV, wtKV, implicitly[Manifest[Unit]], implicitly[WireFormat[Unit]]) {
-      def setup(env: Unit) = {}
+      def setup(env: Unit) {}
       def reduce(env: Unit, key: K, values: Iterable[V], emitter: Emitter[(K, V)]) = {
         emitter.emit((key, values.reduce(f)))
       }
@@ -139,12 +139,11 @@ object AST {
         (tag: Int, dofn: EnvDoFn[(K, V), B, E])
         (implicit mB: Manifest[B], wtB: WireFormat[B], mE: Manifest[E], wtE: WireFormat[E]) =
       new TaggedReducer[K, V, B, E](tag)(mK, wtK, grpK, mV, wtV, mB, wtB, mE, wtE) {
-        def setup(env: E) = dofn.setup(env)
-        def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]) = {
-          dofn.setup(env)
+        def setup(env: E) { dofn.setup(env) }
+        def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]) {
           dofn.process(env, (key, values.reduce(f)), emitter)
         }
-        def cleanup(env: E, emitter: Emitter[B]) = dofn.cleanup(env, emitter)
+        def cleanup(env: E, emitter: Emitter[B]) { dofn.cleanup(env, emitter) }
       }
 
     override def toString = "Combiner" + id
@@ -164,12 +163,11 @@ object AST {
     extends Node[B, Arr] with ReducerLike[K, V, B, E] {
 
     def mkTaggedReducer(tag: Int) = new TaggedReducer[K, V, B, E](tag) {
-      def setup(env: E) = dofn.setup(env)
+      def setup(env: E) { dofn.setup(env) }
       def reduce(env: E, key: K, values: Iterable[V], emitter: Emitter[B]) = {
-        dofn.setup(env)
         dofn.process(env, (key, values), emitter)
       }
-      def cleanup(env: E, emitter: Emitter[B]) = dofn.cleanup(env, emitter)
+      def cleanup(env: E, emitter: Emitter[B]) { dofn.cleanup(env, emitter) }
     }
 
     override def toString = "GbkReducer" + id

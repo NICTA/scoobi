@@ -18,9 +18,9 @@ package impl
 package rtt
 
 import org.apache.hadoop.io._
-import javassist._
-import scala.collection.mutable.{Map => MMap}
 import core._
+import java.io.{DataInput, DataOutput}
+import application.ScoobiConfiguration
 
 /** The super-class of all "value" types used in Hadoop jobs. */
 abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>
@@ -30,64 +30,42 @@ abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>
 }
 
 
-/** Constructs a subclass of ScoobiWritable dynamically. */
+/** Constructs a ScoobiWritable, with some metadata (a WireFormat) retrieved from the distributed cache */
 object ScoobiWritable {
 
-  val builtClasses: MMap[String, RuntimeClass] = MMap.empty
+  def apply(name: String, wf: WireFormat[_])(implicit sc: ScoobiConfiguration): RuntimeClass = writables(new NamedWritable(name) {
+    def wireFormat = wf
+    def configuration = sc
+  })
 
-  def apply(name: String, m: Manifest[_], wt: WireFormat[_]): RuntimeClass = {
-    if (!builtClasses.contains(name)) {
-      val builder = new ScoobiWritableClassBuilder(name, m, wt)
-      builtClasses += (name -> builder.toRuntimeClass)
-    }
+  def apply[A](name: String, witness: A)(implicit sc: ScoobiConfiguration, wf: WireFormat[A]): RuntimeClass =
+    apply(name, wf)
 
-    builtClasses(name)
+  /** this case class is just used to hold the name and make sure that equality is based on the name only in the memo map */
+  private abstract case class NamedWritable(name: String) {
+    def wireFormat: WireFormat[_]
+    def configuration: ScoobiConfiguration
+  }
+  private lazy val writables = scalaz.Memo.mutableHashMapMemo[NamedWritable, RuntimeClass] { case nwt: NamedWritable =>
+    MetadataClassBuilder[MetadataScoobiWritable](nwt.name, nwt.wireFormat)(nwt.configuration, implicitly[Manifest[MetadataScoobiWritable]]).toRuntimeClass
   }
 
-  def apply[A](name: String, witness: A)(implicit m: Manifest[A], wt: WireFormat[A]): RuntimeClass = {
-    apply(name, m, wt)
-  }
 }
 
+abstract class MetadataScoobiWritable extends ScoobiWritable[Any] {
 
-/** A ScoobiWritable subclass is constructed based on a WireFormat typeclass
-  * model implicit parameter. Using this model object, the Hadoop Writable methods
-  * 'write' and 'readFields' can be generated. */
-class ScoobiWritableClassBuilder(name: String, m: Manifest[_], wt: WireFormat[_]) extends ClassBuilder {
+  def metadataPath: String
 
-  def className = name
+  lazy val wireFormat = ScoobiMetadata.metadata(metadataPath).asInstanceOf[WireFormat[Any]]
 
-  def extendClass: Class[_] = classOf[ScoobiWritable[_]]
-
-  def build = {
-    /* Deal with WireFormat type class. */
-    addTypeClassModel(wt, "writer")
-
-    /* 'write' - method to override from Writable */
-    val writeMethod = CtNewMethod.make(CtClass.voidType,
-                                       "write",
-                                       Array(pool.get("java.io.DataOutput")),
-                                       Array(),
-                                       "writer.toWire(" + toObject("get()", m) + ", $1);",
-                                       ctClass)
-    ctClass.addMethod(writeMethod)
-
-    /* 'readFields' = method to override from Writable */
-    val readFieldsMethod = CtNewMethod.make(CtClass.voidType,
-                                            "readFields",
-                                            Array(pool.get("java.io.DataInput")),
-                                            Array(),
-                                            "set(" + fromObject("writer.fromWire($1)", m) + ");",
-                                            ctClass)
-    ctClass.addMethod(readFieldsMethod)
-
-    /* 'toString' = method to override from Writable */
-    val toStringMethod = CtNewMethod.make(pool.get("java.lang.String"),
-                                          "toString",
-                                          Array(),
-                                          Array(),
-                                          "return get().toString();",
-                                          ctClass)
-    ctClass.addMethod(toStringMethod)
+  def write(out: DataOutput) {
+    wireFormat.toWire(get, out)
   }
+
+  def readFields(in: DataInput) {
+    set(wireFormat.fromWire(in))
+  }
+
+  override def toString = get.toString
 }
+

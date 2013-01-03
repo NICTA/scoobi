@@ -33,7 +33,7 @@ import impl.plan.Smart.Flatten
 import scala.Some
 import impl.plan.Smart.Combine
 import impl.plan.Smart.GroupByKey
-import impl.plan.Smart.Materialize
+import impl.plan.Smart.Materialise
 import impl.plan.Smart.ParallelDo
 import impl.plan.Smart.Op
 import application.DListPersister
