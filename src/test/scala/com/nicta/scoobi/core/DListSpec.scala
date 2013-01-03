@@ -71,7 +71,7 @@ class DListSpec extends NictaSimpleJobs {
     val aa = DList(1 to 5)
     val bb = DList(6 to 10)
 
-    DList.concat(aa, bb).run.sorted must_== (1 to 10).toSeq
+    (aa ++ bb).run.sorted must_== (1 to 10).toSeq
   }
   
   
