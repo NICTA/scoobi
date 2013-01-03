@@ -68,6 +68,18 @@ trait Grouping[K] {
         Grouping.this.groupCompare(x, y) |+| q.groupCompare(x, y)
     }
 
+  /** Construct grouping for secondary sort. */
+  def secondarySort[L](q: Grouping[L]): Grouping[(K, L)] =
+    new Grouping[(K, L)] {
+      override def partition(key: (K, L), num: Int): Int =
+        Grouping.this.partition(key._1, num)
+      override def sortCompare(x: (K, L), y: (K, L)): SOrdering =
+        groupCompare(x, y) |+| q.groupCompare(x._2, y._2)
+      def groupCompare(x: (K, L), y: (K, L)): SOrdering =
+        Grouping.this.groupCompare(x._1, y._1)
+    }
+
+
 }
 
 object Grouping extends GroupingImplicits with GroupingFunctions
@@ -104,6 +116,7 @@ trait GroupingFunctions {
       def groupCompare(x: K, y: K): SOrdering =
         Monoid[SOrdering].zero
     }
+
 }
 
 /** Implicit definitions of Grouping instances for common types. */
