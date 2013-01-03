@@ -44,13 +44,13 @@ trait Grouping[K] {
     Order.order(groupCompare(_, _))
 
   /** Interface to `scala.Ordering` on `sortCompare` */
-  val sortOrdering: Ordering[K] =
+  def sortOrdering: Ordering[K] =
     new Ordering[K] {
       def compare(x: K, y: K): Int = sortCompare(x, y).toInt
     }
 
   /** Interface to `scala.Ordering` on `groupCompare` */
-  val groupOrdering: Ordering[K] =
+  def groupOrdering: Ordering[K] =
     new Ordering[K] {
       def compare(x: K, y: K): Int = groupCompare(x, y).toInt
     }

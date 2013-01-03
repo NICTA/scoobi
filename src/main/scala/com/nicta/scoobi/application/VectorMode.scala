@@ -182,11 +182,8 @@ object VectorMode {
     logger.debug("grouped:")
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
-    /* Sorting */
-    val ord = new Ordering[K] { def compare(x: K, y: K): Int = grp.sortCompare(x, y).toInt }
-
     val sorted: IndexedSeq[Map[K, Vector[(K, V)]]] = grouped map { (kvMap: Map[K, Vector[(K, V)]]) =>
-      kvMap map { case (k, kvs) => (k, kvs.sortBy(_._1)(ord)) }
+      kvMap map { case (k, kvs) => (k, kvs.sortBy(_._1)(grp.sortOrdering)) }
     }
 
     logger.debug("sorted:")
