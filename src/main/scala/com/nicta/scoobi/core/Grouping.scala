@@ -35,6 +35,14 @@ trait Grouping[K] {
    * a given partition. */
   def groupCompare(x: K, y: K): SOrdering
 
+  /** Interface to `scalaz.Order` on `sortCompare` */
+  def sortOrder: Order[K] =
+    Order.order(sortCompare(_, _))
+
+  /** Interface to `scalaz.Order` on `groupCompare` */
+  def groupOrder: Order[K] =
+    Order.order(groupCompare(_, _))
+
   /** Map on this grouping contravariantly. */
   def contramap[L](f: L => K): Grouping[L] =
     new Grouping[L] {
