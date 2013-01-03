@@ -42,14 +42,16 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
 
   /** Write a value out on multiple outputs of a given output channel.*/
-  def write[K, V](channel: Int, output: Int, kv: (K, V)) = {
+  def write[K, V](channel: Int, output: Int, kv: (K, V)) {
     val taskContext = getContext(channel, output)
     val recordWriter = getRecordWriter(taskContext, channel, output).asInstanceOf[RecordWriter[K, V]]
     recordWriter.write(kv._1, kv._2)
   }
 
-  /** Close all opened output channels. */
-  def close() = recordWriters.values foreach { _.close(context) }
+  /** Close all opened output channels, using the task attempt context of each RecordWriter */
+  def close() {
+    recordWriters foreach { case ((channel, output), writer) => writer.close(getContext(channel, output)) }
+  }
 
   private def getContext(channel: Int, output: Int): TaskAttemptContext = {
     /* The following trick leverages the instantiation of a record writer via
