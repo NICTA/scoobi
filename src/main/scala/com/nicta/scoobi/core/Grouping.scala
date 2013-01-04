@@ -19,6 +19,7 @@ package core
 import java.lang.Comparable
 import annotation.implicitNotFound
 import scalaz.{Ordering => SOrdering, _}, Scalaz._
+import scalaz.Ordering.{LT, EQ, GT}
 
 /** Specify the way in which key-values are "shuffled". Used by 'groupByKey' in
  * 'DList'. */
@@ -54,6 +55,30 @@ trait Grouping[K] {
     new Ordering[K] {
       def compare(x: K, y: K): Int = groupCompare(x, y).toInt
     }
+
+  /** Does sort compare produce equal elements? */
+  def isSortEqual(k1: K, k2: K): Boolean =
+    sortCompare(k1, k2) == EQ
+
+  /** Does group compare produce equal elements? */
+  def isGroupEqual(k1: K, k2: K): Boolean =
+    groupCompare(k1, k2) == EQ
+
+  /** Does sort compare produce the first less than the second? */
+  def isSortLessThan(k1: K, k2: K): Boolean =
+    sortCompare(k1, k2) == LT
+
+  /** Does group compare produce the first less than the second? */
+  def isGroupLessThan(k1: K, k2: K): Boolean =
+    groupCompare(k1, k2) == LT
+
+  /** Does sort compare produce the first greater than the second? */
+  def isSortGreaterThan(k1: K, k2: K): Boolean =
+    sortCompare(k1, k2) == GT
+
+  /** Does group compare produce the first greater than the second? */
+  def isGroupGreaterThan(k1: K, k2: K): Boolean =
+    groupCompare(k1, k2) == GT
 
   /** Map on this grouping contravariantly. */
   def contramap[L](f: L => K): Grouping[L] =
