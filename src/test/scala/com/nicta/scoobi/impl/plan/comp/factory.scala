@@ -36,9 +36,9 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   val rewriter = new Rewriter {}
 
   def collectCombine          = rewriter.collectl { case c @ Combine1(_) => c: CompNode }
-  def collectCombineGbk       = rewriter.collectl { case c @ Combine(GroupByKey1(_),_,_,_,_) => c }
+  def collectCombineGbk       = rewriter.collectl { case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c }
   def collectParallelDo       = rewriter.collectl { case p: ParallelDo[_,_,_] => p }
-  def collectSuccessiveParDos = rewriter.collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,_,_) => p }
+  def collectSuccessiveParDos = rewriter.collectl { case p @ ParallelDo(ParallelDo1(_),_,_,_,_,_,_,_) => p }
   def collectGroupByKey       = rewriter.collectl { case g @ GroupByKey1(_) => g }
 
 }

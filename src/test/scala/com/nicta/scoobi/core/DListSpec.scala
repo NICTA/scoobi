@@ -48,7 +48,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
   tag("issue 117")
   "A complex graph example must not throw an exception" >> { implicit sc: SC =>
 
-    def simpleJoin[T: ManifestWireFormat, V: ManifestWireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
+    def simpleJoin[T: WireFormat, V: WireFormat](a: DList[(Int, T)], b: DList[(Int, V)]) =
       (a.map(x => (x._1, x._1)) ++ b.map(x => (x._1, x._1))).groupByKey
 
     val data = DList((12 -> 13), (14 -> 15), (13 -> 55))
@@ -93,8 +93,8 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
   }
 
   "DLists can be made covariant" >> {
-    implicit def mwfa: ManifestWireFormat[A] = null.asInstanceOf[ManifestWireFormat[A]]
-    implicit def mwfb: ManifestWireFormat[B] = null.asInstanceOf[ManifestWireFormat[B]]
+    implicit def mwfa: WireFormat[A] = null.asInstanceOf[WireFormat[A]]
+    implicit def mwfb: WireFormat[B] = null.asInstanceOf[WireFormat[B]]
     //import CovariantDList._
     class A
     class B extends A

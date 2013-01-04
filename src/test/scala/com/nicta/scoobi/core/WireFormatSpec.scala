@@ -120,7 +120,7 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
 
   }
 
-  def serializationIsOkFor[T: WireFormat : Arbitrary : Manifest] =
+  def serializationIsOkFor[T : WireFormat : Manifest : Arbitrary] =
     implicitly[Manifest[T]].erasure.getSimpleName + " serializes correctly" >>
       forAll(implicitly[Arbitrary[T]].arbitrary)((t: T) => serializationIsOkWith[T](t))
 

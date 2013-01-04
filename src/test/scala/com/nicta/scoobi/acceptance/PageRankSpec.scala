@@ -60,8 +60,7 @@ trait PageRank extends NictaSimpleJobs {
   type Rankings[K] = DList[Ranking[K]]
 
   /** initialise the vertices of the graph with default scores */
-  def initialise[K : ManifestWireFormat](inputs: Graph[K]): Rankings[K] = {
-    implicit val (mf, wf) = WireFormat.decompose[K]
+  def initialise[K : WireFormat](inputs: Graph[K]): Rankings[K] = {
     inputs.map { case (url, links) => (url, (1f, 0f, links)) }
   }
 
@@ -73,9 +72,7 @@ trait PageRank extends NictaSimpleJobs {
   }
 
   /** @return new rankings */
-  def updateRankings[K : ManifestWireFormat : Grouping](previous: DList[Ranking[K]], d: Float = 0.5f) = {
-    implicit val (mf, wf) = WireFormat.decompose[K]
-
+  def updateRankings[K : WireFormat : Grouping](previous: DList[Ranking[K]], d: Float = 0.5f) = {
     val outbound = previous flatMap { case (_, (pageRank, _, links)) => links.map(link => (link, pageRank / links.size)) }
 
     (previous coGroup outbound) map { case (url, (prevData, outboundMass)) =>

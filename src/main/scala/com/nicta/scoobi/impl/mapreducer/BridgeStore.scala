@@ -37,7 +37,7 @@ import util.UniqueId
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](bridgeStoreId: String, mf: Manifest[_], wf: WireFormat[_])
+case class BridgeStore[A](bridgeStoreId: String, wf: WireFormat[_])
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 

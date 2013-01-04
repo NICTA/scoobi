@@ -8,7 +8,7 @@ import core._
 import comp._
 import util.{UniqueInt, UniqueId}
 import exec.{InMemoryMode, MapReduceJob}
-import mapreducer.{ChannelOutputFormat, TaggedMapper}
+import mapreducer.{ChannelOutputFormat}
 import core.WireFormat._
 import comp.GroupByKey
 import scalaz.Equal
@@ -78,11 +78,11 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
 
   lazy val keyTypes: KeyTypes =
     if (groupByKeys.isEmpty) lastMappers.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
-    else                     groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.mwfk.wf, cur.gpk) }
+    else                     groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk.wf, cur.gpk) }
 
   lazy val valueTypes: ValueTypes =
     if (groupByKeys.isEmpty) lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
-    else                     groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.mwfv.wf) }
+    else                     groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv.wf) }
 
   lazy val groupByKeys: Seq[GroupByKey[_,_]] = groupByKeysUses(sourceNode)
   lazy val groupByKeysUses: CompNode => Seq[GroupByKey[_,_]] = nodes.attr { case node =>

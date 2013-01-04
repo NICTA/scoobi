@@ -25,11 +25,12 @@ import comp._
 import mapreducer._
 import collection.Seqs._
 import WireFormat._
-import ManifestWireFormat._
+import WireFormat._
+import com.nicta.scoobi.core
 
 /** An implementation of the DList trait that builds up a DAG of computation nodes. */
 private[scoobi]
-class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) extends DList[A] {
+class DListImpl[A](comp: DComp[A])(implicit val wf: WireFormat[A]) extends DList[A] {
 
   type C = DComp[A]
 
@@ -41,51 +42,47 @@ class DListImpl[A](comp: DComp[A])(implicit val mwf: ManifestWireFormat[A]) exte
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
     setComp((c: DComp[A]) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
 
-  def setComp(f: DComp[A] => DComp[A]) = new DListImpl[A](f(comp))(mwf)
+  def setComp(f: DComp[A] => DComp[A]) = new DListImpl[A](f(comp))(wf)
 
-  def parallelDo[B : ManifestWireFormat, E : ManifestWireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
+  def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo[A, B, E](Seq(comp), env.getComp, dofn,
-                                      DoMapReducer(manifestWireFormat[A], manifestWireFormat[B], manifestWireFormat[E])))
+                                      wireFormat[A], wireFormat[B], wireFormat[E]))
 
   def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
 
   def groupByKey[K, V]
       (implicit ev:   A <:< (K, V),
-                mwfk: ManifestWireFormat[K],
+                wfk: WireFormat[K],
                 gpk:  Grouping[K],
-                mwfv: ManifestWireFormat[V]): DList[(K, Iterable[V])] = {
-    implicit val mfk = mwfk.mf
-    implicit val mfv = mwfv.mf
-    implicit val wfk = mwfk.wf
-    implicit val wfv = mwfv.wf
+                wfv: WireFormat[V]): DList[(K, Iterable[V])] = {
 
-    new DListImpl(GroupByKey(comp, KeyValuesMapReducer(mwfk, gpk, mwfv)))(manifestAndWireFormat[(K, Iterable[V])])
+    new DListImpl(GroupByKey(comp, wfk, gpk, wfv))(wireFormat[(K, Iterable[V])])
   }
 
   def combine[K, V]
       (f: (V, V) => V)
       (implicit ev:   A <:< (K,Iterable[V]),
-                mwfk: ManifestWireFormat[K],
+                wfk: WireFormat[K],
                 gpk:  Grouping[K],
-                mwfv: ManifestWireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, KeyValueMapReducer(mwfk, gpk, mwfv)))
+                wfv: WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, wfk, gpk, wfv))
 
-  lazy val materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, SimpleMapReducer(manifestWireFormat[Iterable[A]]), comp.sinks))
+  lazy val materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, wireFormat[Iterable[A]], comp.sinks))
 
-  def parallelDo[B : ManifestWireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject.newInstance, dofn)
+  def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject.newInstance, dofn)
 
   override def toString = "\n"+ new ShowNode {}.pretty(comp)
 }
 
 private[scoobi]
 object DListImpl {
-  def apply[A : ManifestWireFormat](source: DataSource[_,_, A]): DListImpl[A] = apply(Seq(Load(source, SimpleMapReducer(manifestWireFormat[A]))))
-  def apply[A : ManifestWireFormat](ins: Seq[CompNode]): DListImpl[A] =  {
+  def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = new DListImpl(Load(source, wf))
+  def apply[A](ins: Seq[CompNode])(implicit wf: WireFormat[A]): DListImpl[A] =  {
     new DListImpl[A](
       ParallelDo[A, A, Unit](
         ins,
         UnitDObject.newInstance.getComp,
         new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
-        DoMapReducer(manifestWireFormat[A], manifestWireFormat[A], manifestAndWireFormat(implicitly[Manifest[Unit]], wireFormat[Unit]))))
+        wf, wf, wireFormat[Unit]))
   }
 
 }

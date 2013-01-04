@@ -37,7 +37,7 @@ class SecondarySortSpec extends NictaSimpleJobs {
 
     val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a => ((a._1, a._2), a._2))
 
-    bigKey.groupByKeyWith(grouping).map { case ((first, _), lasts) => (first, lasts.mkString(",")) }.run.sortBy(_._1).mkString === Seq(
+    bigKey.groupByKeyWith(secondary).map { case ((first, _), lasts) => (first, lasts.mkString(",")) }.run.sortBy(_._1).mkString === Seq(
       "(Bat,Man)",
       "(John,Kennedy)",
       "(Leonardo,Da Vinci,De Capro)",
@@ -51,7 +51,7 @@ object SecondarySort {
   type FirstName = String
   type LastName = String
 
-  val grouping: Grouping[(FirstName, LastName)] = new Grouping[(FirstName, LastName)] {
+  val secondary: Grouping[(FirstName, LastName)] = new Grouping[(FirstName, LastName)] {
 
     override def partition(key: (FirstName, LastName), howManyReducers: Int): Int =
       implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)

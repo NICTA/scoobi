@@ -20,20 +20,18 @@ package core
 trait DObject[A] extends Persistent[A] {
   type C <: CompNode
 
-  implicit def mwf: ManifestWireFormat[A]
-  implicit def mf = mwf.mf
-  implicit def wf = mwf.wf
+  implicit def wf: WireFormat[A]
 
   /**Create a new distributed object by apply a function to this distributed object. */
-  def map[B : ManifestWireFormat](f: A => B): DObject[B]
+  def map[B : WireFormat](f: A => B): DObject[B]
 
   /**Create a new distributed list by replicating the value of this distributed object
    * to every element within the provided distributed list. */
-  def join[B : ManifestWireFormat](list: DList[B]): DList[(A, B)]
-  def join[B : ManifestWireFormat](o: DObject[B]): DObject[(A, B)]
+  def join[B : WireFormat](list: DList[B]): DList[(A, B)]
+  def join[B : WireFormat](o: DObject[B]): DObject[(A, B)]
 
   def toSingleElementDList: DList[A]
-  def toDList[B](implicit ev: A <:< Iterable[B], mwfb: ManifestWireFormat[B]): DList[B] = toSingleElementDList.flatMap(x => x)
+  def toDList[B](implicit ev: A <:< Iterable[B], wfb: WireFormat[B]): DList[B] = toSingleElementDList.flatMap(x => x)
 }
 
 

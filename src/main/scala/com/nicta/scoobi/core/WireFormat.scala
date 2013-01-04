@@ -31,144 +31,13 @@ import org.apache.avro.io.DecoderFactory
 import collection.mutable.ArrayBuffer
 
 import annotation.implicitNotFound
+import collection.mutable
 
 /**Type-class for sending types across the Hadoop wire. */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
 trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
-}
-
-case class ManifestWireFormat[A](mf: Manifest[A], wf: WireFormat[A]) {
-  override def toString = wf.toString
-  def isUnit = toString == "Unit" || toString == "(Unit,Unit)"
-}
-
-object ManifestWireFormat extends LowPriorityManifestWireFormat {
-
-  implicit def pairManifestWireFormat[T1 : ManifestWireFormat,
-                                      T2 : ManifestWireFormat]: ManifestWireFormat[(T1, T2)] = {
-    implicit val ((mf1, wf1), (mf2, wf2)) = (
-      WireFormat.decompose[T1],
-      WireFormat.decompose[T2])
-    ManifestWireFormat(manifest             [(T1, T2)],
-                       WireFormat.wireFormat[(T1, T2)])
-  }
-
-  implicit def manifestWireFormat3[T1 : ManifestWireFormat,
-                                   T2 : ManifestWireFormat,
-                                   T3 : ManifestWireFormat]: ManifestWireFormat[(T1, T2, T3)] = {
-    implicit val ((mf1, wf1), (mf2, wf2), (mf3, wf3)) = (
-      WireFormat.decompose[T1],
-      WireFormat.decompose[T2],
-      WireFormat.decompose[T3])
-    ManifestWireFormat(manifest             [(T1, T2, T3)],
-                       WireFormat.wireFormat[(T1, T2, T3)])
-  }
-
-  implicit def manifestWireFormat4[T1 : ManifestWireFormat,
-                                   T2 : ManifestWireFormat,
-                                   T3 : ManifestWireFormat,
-                                   T4 : ManifestWireFormat]: ManifestWireFormat[(T1, T2, T3, T4)] = {
-    implicit val ((mf1, wf1), (mf2, wf2), (mf3, wf3), (mf4, wf4)) = (
-      WireFormat.decompose[T1],
-      WireFormat.decompose[T2],
-      WireFormat.decompose[T3],
-      WireFormat.decompose[T4])
-    ManifestWireFormat(manifest             [(T1, T2, T3, T4)],
-                       WireFormat.wireFormat[(T1, T2, T3, T4)])
-  }
-
-implicit def manifestWireFormat5[T1 : ManifestWireFormat,
-                                   T2 : ManifestWireFormat,
-                                   T3 : ManifestWireFormat,
-                                   T4 : ManifestWireFormat,
-                                   T5 : ManifestWireFormat]: ManifestWireFormat[(T1, T2, T3, T4, T5)] = {
-  implicit val ((mf1, wf1), (mf2, wf2), (mf3, wf3), (mf4, wf4), (mf5, wf5)) = (
-    WireFormat.decompose[T1],
-    WireFormat.decompose[T2],
-    WireFormat.decompose[T3],
-    WireFormat.decompose[T4],
-    WireFormat.decompose[T5])
-  ManifestWireFormat(manifest             [(T1, T2, T3, T4, T5)],
-                     WireFormat.wireFormat[(T1, T2, T3, T4, T5)])
-
-}
-
-  implicit def manifestWireFormat6[T1 : ManifestWireFormat,
-                                   T2 : ManifestWireFormat,
-                                   T3 : ManifestWireFormat,
-                                   T4 : ManifestWireFormat,
-                                   T5 : ManifestWireFormat,
-                                   T6 : ManifestWireFormat]: ManifestWireFormat[(T1, T2, T3, T4, T5, T6)] = {
-    implicit val ((mf1, wf1), (mf2, wf2), (mf3, wf3), (mf4, wf4), (mf5, wf5), (mf6, wf6)) = (
-      WireFormat.decompose[T1],
-      WireFormat.decompose[T2],
-      WireFormat.decompose[T3],
-      WireFormat.decompose[T4],
-      WireFormat.decompose[T5],
-      WireFormat.decompose[T6])
-    ManifestWireFormat(manifest             [(T1, T2, T3, T4, T5, T6)],
-                       WireFormat.wireFormat[(T1, T2, T3, T4, T5, T6)])
-  }
-
-  implicit def manifestWireFormat7[T1 : ManifestWireFormat,
-                                   T2 : ManifestWireFormat,
-                                   T3 : ManifestWireFormat,
-                                   T4 : ManifestWireFormat,
-                                   T5 : ManifestWireFormat,
-                                   T6 : ManifestWireFormat,
-                                   T7 : ManifestWireFormat]: ManifestWireFormat[(T1, T2, T3, T4, T5, T6, T7)] = {
-    implicit val ((mf1, wf1), (mf2, wf2), (mf3, wf3), (mf4, wf4), (mf5, wf5), (mf6, wf6), (mf7, wf7)) = (
-      WireFormat.decompose[T1],
-      WireFormat.decompose[T2],
-      WireFormat.decompose[T3],
-      WireFormat.decompose[T4],
-      WireFormat.decompose[T5],
-      WireFormat.decompose[T6],
-      WireFormat.decompose[T7])
-    ManifestWireFormat(manifest             [(T1, T2, T3, T4, T5, T6, T7)],
-                       WireFormat.wireFormat[(T1, T2, T3, T4, T5, T6, T7)])
-
-  }
-
-
-  implicit def manifestWireFormat8[T1 : ManifestWireFormat,
-                                   T2 : ManifestWireFormat,
-                                   T3 : ManifestWireFormat,
-                                   T4 : ManifestWireFormat,
-                                   T5 : ManifestWireFormat,
-                                   T6 : ManifestWireFormat,
-                                   T7 : ManifestWireFormat,
-                                   T8 : ManifestWireFormat]: ManifestWireFormat[(T1, T2, T3, T4, T5, T6, T7, T8)] = {
-    implicit val ((mf1, wf1), (mf2, wf2), (mf3, wf3), (mf4, wf4), (mf5, wf5), (mf6, wf6), (mf7, wf7), (mf8, wf8)) = (
-      WireFormat.decompose[T1],
-      WireFormat.decompose[T2],
-      WireFormat.decompose[T3],
-      WireFormat.decompose[T4],
-      WireFormat.decompose[T5],
-      WireFormat.decompose[T6],
-      WireFormat.decompose[T7],
-      WireFormat.decompose[T8])
-    ManifestWireFormat(manifest             [(T1, T2, T3, T4, T5, T6, T7, T8)],
-                       WireFormat.wireFormat[(T1, T2, T3, T4, T5, T6, T7, T8)])
-
-  }
-
-
-}
-
-trait LowPriorityManifestWireFormat {
-  implicit def manifestAndWireFormat[A](implicit mf: Manifest[A], wf: WireFormat[A]) =
-    ManifestWireFormat(mf, wf)
-}
-
-object ManifestWireFormatDecompose {
-  implicit def manifestWireFormatToManifest[A](implicit mwf: ManifestWireFormat[A]): Manifest[A] =
-    mwf.mf
-
-  implicit def manifestWireFormatToWireFormat[A](implicit mwf: ManifestWireFormat[A]): WireFormat[A] =
-    mwf.wf
 }
 
 object WireFormat extends WireFormatImplicits {
@@ -200,11 +69,8 @@ object WireFormat extends WireFormatImplicits {
   def manifest[A](implicit mf: Manifest[A]): Manifest[A] = mf
   def grouping[A](implicit gp: Grouping[A]): Grouping[A] = gp
   def wireFormat[A](implicit wf: WireFormat[A]): WireFormat[A] = wf
-  def manifestWireFormat[A](implicit mwf: ManifestWireFormat[A]) = mwf
-  def decompose[A](implicit mwf: ManifestWireFormat[A]) = (mwf.mf, mwf.wf)
-}
 
-/** Implicit definitions of WireFormat instances for common types. */
+}
 trait WireFormatImplicits extends codegen.GeneratedWireFormats {
 
   class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
@@ -266,7 +132,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * Hadoop Writable types.
    */
-  implicit def WritableFmt[T <: Writable: Manifest] = new WireFormat[T] {
+  implicit def WritableFmt[T <: Writable : Manifest] = new WireFormat[T] {
     def toWire(x: T, out: DataOutput) { x.write(out) }
     def fromWire(in: DataInput): T = {
 
@@ -286,7 +152,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   /**
    * Avro types
    */
-   implicit def AvroFmt[T <: SpecificRecordBase : Manifest : AvroSchema] = new AvroWireFormat[T]
+  implicit def AvroFmt[T <: SpecificRecordBase : Manifest : AvroSchema] = new AvroWireFormat[T]
   class AvroWireFormat[T <: SpecificRecordBase : Manifest : AvroSchema] extends WireFormat[T] {
     def toWire(x : T, out : DataOutput) {
       val sch = implicitly[AvroSchema[T]].schema
@@ -418,13 +284,13 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     new TraversableWireFormat(bf())
 
   /* Arrays */
-  implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
+  implicit def ArrayFmt[T : WireFormat : Manifest]: WireFormat[Array[T]] =
     new TraversableWireFormat(new ListBuffer[T]) adapt ((a: Array[T]) => a.toList, (s: List[T]) => s.toArray)
 
   /**
    * This class is used to create a WireFormat for Traversables, Maps and Arrays
    */
-  private[scoobi] case class TraversableWireFormat[T: WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
+  private[scoobi] case class TraversableWireFormat[T : WireFormat, CC <: Traversable[T]](builder: Builder[T, CC]) extends WireFormat[CC] {
     def toWire(x: CC, out: DataOutput) = {
       require(x != null, "Cannot serialize a null Traversable. Consider using an empty collection, or an Option[Traversable]")
       // The "naive" approach for persisting a Traversable would be to persist the number of elements, then the

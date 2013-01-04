@@ -16,10 +16,6 @@ import application._
 import WireFormat._
 import CompNodes._
 import org.kiama.rewriting.Rewriter._
-import mapreducer.KeyValueMapReducer
-import mapreducer.DoMapReducer
-import mapreducer.SimpleMapReducer
-import mapreducer.KeyValuesMapReducer
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: FragmentsBuilder =>
 
@@ -96,33 +92,28 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  */
 trait CompNodeFactory extends Scope {
 
-  implicit def manifestWireFormatString = manifestWireFormat[String]
-  implicit def manifestWireFormatIterableString = manifestWireFormat[Iterable[String]]
-  def mapReducer       = SimpleMapReducer(manifestWireFormatString)
-  def simpleMapReducer = SimpleMapReducer(manifestWireFormatIterableString)
-
-  def loadWith(s: String)                    = Load(ConstantStringDataSource(s), mapReducer)
+  def loadWith(s: String)                    = Load(ConstantStringDataSource(s), wireFormat[String])
   def load                                   = loadWith("start")
   def aRoot(nodes: CompNode*)                = Root(nodes)
-  def rt                                     = Return("", mapReducer)
+  def rt                                     = Return("", wireFormat[String])
   def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,
-                                                                       KeyValueMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
+                                                                       wireFormat[String], grouping[String], wireFormat[String])
   def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String)]],
-                                                          KeyValuesMapReducer(manifestWireFormat[String], grouping[String], manifestWireFormat[String]))
-  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], simpleMapReducer)
+                                                          wireFormat[String], grouping[String], wireFormat[String])
+  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], wireFormat[Iterable[String]])
 
-  def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, mapReducer)
+  def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, wireFormat[String])
 
   def parallelDo(in: CompNode)               = pd(in)
 
   def pd(ins: CompNode*): ParallelDo[String, String, String] =
     ParallelDo[String, String, String](ins.map(_.asInstanceOf[DComp[String]]), rt.asInstanceOf[DComp[String]], fn,
-    DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
+    wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
     java.util.UUID.randomUUID().toString)
 
   def pd(in: CompNode, env: CompNode): ParallelDo[String, String, String] =
     ParallelDo[String, String, String](Seq(in).map(_.asInstanceOf[DComp[String]]), env.asInstanceOf[DComp[String]], fn,
-      DoMapReducer(manifestWireFormat[String], manifestWireFormat[String], manifestWireFormat[String]), Seq(),
+      wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
       java.util.UUID.randomUUID().toString)
 
   lazy val fn = new EnvDoFn[String, String, String] {

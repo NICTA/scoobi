@@ -1,13 +1,13 @@
 package com.nicta.scoobi
 package lib
 
-import core.{DList, Grouping, ManifestWireFormat}
+import core.{DList, Grouping, WireFormat}
 import org.apache.hadoop.io._
 
 trait Library {
   /* lib stuff */
 
-  implicit def dlistToRelational[K: ManifestWireFormat: Grouping, A: ManifestWireFormat](dl: DList[(K, A)]): com.nicta.scoobi.lib.Relational[K,A] = com.nicta.scoobi.lib.Relational(dl)
+  implicit def dlistToRelational[K: WireFormat: Grouping, A: WireFormat](dl: DList[(K, A)]): com.nicta.scoobi.lib.Relational[K,A] = com.nicta.scoobi.lib.Relational(dl)
   implicit def relationalToDList[K, A](r: com.nicta.scoobi.lib.Relational[K, A]): DList[(K,A)] = r.left
 
   import com.nicta.scoobi.lib.DVector
@@ -17,7 +17,7 @@ trait Library {
   import com.nicta.scoobi.lib.InMemVector
   import com.nicta.scoobi.lib.DMatrix
 
-  implicit def dlistToDVector[Elem: ManifestWireFormat: Ordering, V: ManifestWireFormat: Ordering](v: DList[(Elem, V)]) = DVector(v)
+  implicit def dlistToDVector[Elem: WireFormat: Ordering, V: WireFormat: Ordering](v: DList[(Elem, V)]) = DVector(v)
   implicit def dvectorToDList[Elem, V](v: DVector[Elem, V]) = v.data
 
   implicit def inMemDenseVectorToDObject[T](in: InMemDenseVector[T]) = in.data
@@ -25,31 +25,31 @@ trait Library {
   /**
    * Note this is an expensive conversion (it adds an extra map-reduce job), try save the result to reuse if applicable
    */
-  implicit def dlistToRowWiseWithMapReduceJob[E : ManifestWireFormat : Ordering, T : ManifestWireFormat](m: DMatrix[E, T]): DRowWiseMatrix[E, T] =
+  implicit def dlistToRowWiseWithMapReduceJob[E : WireFormat : Ordering, T : WireFormat](m: DMatrix[E, T]): DRowWiseMatrix[E, T] =
     DRowWiseMatrix(m.map { case ((r, c), v) => (r, (c, v)) }.groupByKey)
 
-  implicit def dlistToRowWise[Elem: ManifestWireFormat: Ordering, T: ManifestWireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DRowWiseMatrix[Elem, T] =
+  implicit def dlistToRowWise[Elem: WireFormat: Ordering, T: WireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DRowWiseMatrix[Elem, T] =
     DRowWiseMatrix(m)
 
-  implicit def rowWiseToDList[Elem: ManifestWireFormat: Ordering, T: ManifestWireFormat](m: DRowWiseMatrix[Elem, T]) = m.data
+  implicit def rowWiseToDList[Elem: WireFormat: Ordering, T: WireFormat](m: DRowWiseMatrix[Elem, T]) = m.data
 
 
-  implicit def dlistToDMatrix[Elem: ManifestWireFormat: Ordering, Value: ManifestWireFormat](
+  implicit def dlistToDMatrix[Elem: WireFormat: Ordering, Value: WireFormat](
                                                                                               v: DList[((Elem, Elem), Value)]): DMatrix[Elem, Value] =
     DMatrix[Elem, Value](v)
 
-  implicit def dmatrixToDlist[Elem: ManifestWireFormat: Ordering, Value: ManifestWireFormat](v: DMatrix[Elem, Value]): DList[((Elem, Elem), Value)] = v.data
+  implicit def dmatrixToDlist[Elem: WireFormat: Ordering, Value: WireFormat](v: DMatrix[Elem, Value]): DList[((Elem, Elem), Value)] = v.data
 
   /**
    * Note this is an expensive conversion (it adds an extra map-reduce job), try save the result to reuse if applicable.
    */
-  implicit def dlistToColWiseWithMapReduceJob[Elem: ManifestWireFormat: Ordering, T: ManifestWireFormat](m: DMatrix[Elem, T]): DColWiseMatrix[Elem, T] =
+  implicit def dlistToColWiseWithMapReduceJob[Elem: WireFormat: Ordering, T: WireFormat](m: DMatrix[Elem, T]): DColWiseMatrix[Elem, T] =
     DColWiseMatrix(m.map { case ((r, c), v) => (c, (r, v)) }.groupByKey)
 
-  implicit def dlistToColWise[Elem : ManifestWireFormat: Ordering, T : ManifestWireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DColWiseMatrix[Elem, T] =
+  implicit def dlistToColWise[Elem : WireFormat: Ordering, T : WireFormat](m: DList[(Elem, Iterable[(Elem, T)])]): DColWiseMatrix[Elem, T] =
     DColWiseMatrix(m)
 
-  implicit def colWiseToDList[Elem : ManifestWireFormat: Ordering, T : ManifestWireFormat](m: DColWiseMatrix[Elem, T]) = m.data
+  implicit def colWiseToDList[Elem : WireFormat: Ordering, T : WireFormat](m: DColWiseMatrix[Elem, T]) = m.data
 
 
   implicit def inMemVectorToDObject[Elem, T](in: InMemVector[Elem, T]) = in.data

@@ -1,7 +1,8 @@
 package com.nicta.scoobi
 package application
 
-import core.ManifestWireFormat
+import core.WireFormat
+import WireFormat._
 
 /**
  * This trait provides way to create DLists from files
@@ -18,12 +19,12 @@ trait InputsOutputs {
 
   def fromTextFile(paths: String*) = TextInput.fromTextFile(paths: _*)
   def fromTextFile(paths: List[String]) = TextInput.fromTextFile(paths)
-  def fromDelimitedTextFile[A : ManifestWireFormat]
+  def fromDelimitedTextFile[A : WireFormat]
   (path: String, sep: String = "\t")
   (extractFn: PartialFunction[List[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
 
-  implicit def listToTextFile[A : Manifest](list: core.DList[A]): ListToTextFile[A] = new ListToTextFile[A](list)
-  case class ListToTextFile[A : Manifest](list: core.DList[A]) {
+  implicit def listToTextFile[A](list: core.DList[A]): ListToTextFile[A] = new ListToTextFile[A](list)
+  case class ListToTextFile[A](list: core.DList[A]) {
     def toTextFile(path: String, overwrite: Boolean = false) = list.addSink(TextOutput.textFileSink(path, overwrite))
   }
   def toTextFile[A : Manifest](dl: core.DList[A], path: String, overwrite: Boolean = false) = TextOutput.toTextFile(dl, path, overwrite)
@@ -35,14 +36,16 @@ trait InputsOutputs {
   type SeqSchema[A] = com.nicta.scoobi.io.sequence.SeqSchema[A]
 
   import org.apache.hadoop.io.Writable
-  def convertKeyFromSequenceFile[K : ManifestWireFormat : SeqSchema](paths: String*): core.DList[K] = SequenceInput.convertKeyFromSequenceFile(paths: _*)
-  def convertKeyFromSequenceFile[K : ManifestWireFormat : SeqSchema](paths: List[String], checkKeyType: Boolean = true): core.DList[K] = SequenceInput.convertKeyFromSequenceFile(paths, checkKeyType)
-  def convertValueFromSequenceFile[V : ManifestWireFormat : SeqSchema](paths: String*): core.DList[V] = SequenceInput.convertValueFromSequenceFile(paths: _*)
-  def convertValueFromSequenceFile[V : ManifestWireFormat : SeqSchema](paths: List[String], checkValueType: Boolean = true): core.DList[V] = SequenceInput.convertValueFromSequenceFile(paths, checkValueType)
-  def convertFromSequenceFile[K : ManifestWireFormat : SeqSchema, V : ManifestWireFormat : SeqSchema](paths: String*): core.DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths: _*)
-  def convertFromSequenceFile[K : ManifestWireFormat : SeqSchema, V : ManifestWireFormat : SeqSchema](paths: List[String], checkKeyValueTypes: Boolean = true): core.DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths, checkKeyValueTypes)
-  def fromSequenceFile[K <: Writable : ManifestWireFormat, V <: Writable : ManifestWireFormat](paths: String*): core.DList[(K, V)] = SequenceInput.fromSequenceFile(paths: _*)
-  def fromSequenceFile[K <: Writable : ManifestWireFormat, V <: Writable : ManifestWireFormat](paths: List[String], checkKeyValueTypes: Boolean = true): core.DList[(K, V)] = SequenceInput.fromSequenceFile(paths, checkKeyValueTypes)
+  def convertKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): core.DList[K] = SequenceInput.convertKeyFromSequenceFile(paths: _*)
+  def convertKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: List[String], checkKeyType: Boolean = true): core.DList[K] = SequenceInput.convertKeyFromSequenceFile(paths, checkKeyType)
+  def convertValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DList[V] = SequenceInput.convertValueFromSequenceFile(paths: _*)
+  def convertValueFromSequenceFile[V : WireFormat : SeqSchema](paths: List[String], checkValueType: Boolean = true): core.DList[V] = SequenceInput.convertValueFromSequenceFile(paths, checkValueType)
+  def convertFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths: _*)
+  def convertFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: List[String], checkKeyValueTypes: Boolean = true): core.DList[(K, V)] = SequenceInput.convertFromSequenceFile(paths, checkKeyValueTypes)(wireFormat[K], implicitly[SeqSchema[K]], wireFormat[V], implicitly[SeqSchema[V]])
+  def fromSequenceFile[K <: Writable : WireFormat : Manifest, V <: Writable : WireFormat : Manifest](paths: String*): core.DList[(K, V)] =
+    SequenceInput.fromSequenceFile(paths: _*)(wireFormat[K], implicitly[Manifest[K]],  wireFormat[V], implicitly[Manifest[V]])
+  def fromSequenceFile[K <: Writable : WireFormat : Manifest, V <: Writable : WireFormat : Manifest](paths: List[String], checkKeyValueTypes: Boolean = true): core.DList[(K, V)] =
+    SequenceInput.fromSequenceFile(paths, checkKeyValueTypes)(wireFormat[K], implicitly[Manifest[K]],  wireFormat[V], implicitly[Manifest[V]])
 
   def convertKeyToSequenceFile[K : SeqSchema](dl: core.DList[K], path: String, overwrite: Boolean = false) = SequenceOutput.convertKeyToSequenceFile(dl, path, overwrite)
   def convertValueToSequenceFile[V : SeqSchema](dl: core.DList[V], path: String, overwrite: Boolean = false) = SequenceOutput.convertValueToSequenceFile(dl, path, overwrite)
@@ -82,8 +85,8 @@ trait InputsOutputs {
   type AvroSchema[A] = com.nicta.scoobi.io.avro.AvroSchema[A]
   type AvroFixed[A] = com.nicta.scoobi.io.avro.AvroFixed[A]
 
-  def fromAvroFile[A : ManifestWireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)
-  def fromAvroFile[A : ManifestWireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)(wireFormat[A], implicitly[AvroSchema[A]])
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)(wireFormat[A], implicitly[AvroSchema[A]])
 
   implicit def listToAvroFile[A : AvroSchema](list: core.DList[A]): ListToAvroFile[A] = new ListToAvroFile[A](list)
   case class ListToAvroFile[A : AvroSchema](list: core.DList[A]) {

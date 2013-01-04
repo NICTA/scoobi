@@ -119,7 +119,6 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   // remove unnecessary noise for doing a string comparison
   def normalise(string: String) = string.trim.replaceAll("return \".+scoobi", "return \"...scoobi")
 
-  def mf[T : Manifest]   = implicitly[Manifest[T]]
   def wf[T : WireFormat] = implicitly[WireFormat[T]]
   def gp[T : Grouping]   = implicitly[Grouping[T]]
 

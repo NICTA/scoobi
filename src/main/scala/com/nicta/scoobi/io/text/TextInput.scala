@@ -82,7 +82,7 @@ object TextInput {
   /** Create a distributed list from a text file that is a number of fields delimited
     * by some separator. Use an extractor function to pull out the required fields to
     * create the distributed list. */
-  def fromDelimitedTextFile[A : ManifestWireFormat]
+  def fromDelimitedTextFile[A : WireFormat]
       (path: String, sep: String = "\t")
       (extractFn: PartialFunction[List[String], A])
     : DList[A] = {
@@ -123,7 +123,7 @@ object TextInput {
 
 
   /* Class that abstracts all the common functionality of reading from text files. */
-  class TextSource[A : ManifestWireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
+  class TextSource[A : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
     extends DataSource[LongWritable, Text, A] {
     val id: Int = UniqueId.get
 

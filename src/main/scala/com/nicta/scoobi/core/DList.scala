@@ -42,9 +42,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   private[scoobi]
   def setComp(f: C => C): DList[A]
 
-  implicit def mwf: ManifestWireFormat[A]
-  implicit def mf: Manifest[A]   = mwf.mf
-  implicit def wf: WireFormat[A] = mwf.wf
+  implicit def wf: WireFormat[A]
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.
@@ -53,7 +51,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Apply a specified function to "chunks" of elements from the distributed list to produce
    * zero or more output elements. The resulting output elements from the many "chunks" form
    * a new distributed list. */
-  def parallelDo[B : ManifestWireFormat, E: ManifestWireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B]
+  def parallelDo[B : WireFormat, E: WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B]
 
   /**Concatenate one or more distributed lists to this distributed list. */
   def ++(ins: DList[A]*): DList[A]
@@ -61,17 +59,17 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Group the values of a distributed list with key-value elements by key. */
   def groupByKey[K, V]
   (implicit ev: A <:< (K, V),
-   mwk:  ManifestWireFormat[K],
+   wk:  WireFormat[K],
    gpk:  Grouping[K],
-   mwv:  ManifestWireFormat[V]): DList[(K, Iterable[V])]
+   wv:  WireFormat[V]): DList[(K, Iterable[V])]
 
   /**Apply an associative function to reduce the collection of values to a single value in a
    * key-value-collection distributed list. */
   def combine[K, V](f: (V, V) => V)
   (implicit ev: A <:< (K, Iterable[V]),
-   mwk:  ManifestWireFormat[K],
+   wk:  WireFormat[K],
    gpk:  Grouping[K],
-   mwv:  ManifestWireFormat[V]): DList[(K, V)]
+   wv:  WireFormat[V]): DList[(K, V)]
 
   /**Turn a distributed list into a normal, non-distributed collection that can be accessed
    * by the client. */
@@ -81,9 +79,9 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   // Derived functionality (return DLists).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  def parallelDo[B : ManifestWireFormat](dofn: DoFn[A, B]): DList[B]
+  def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B]
 
-  private def basicParallelDo[B : ManifestWireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
+  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
     val dofn = new BasicDoFn[A, B] {
       def process(input: A, emitter: Emitter[B]) {
         proc(input, emitter)
@@ -96,13 +94,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
        take the grouping that should be used. This is best used when you're doing things like
        secondary sorts, or groupings with strange logic (like making sure None's / nulls are
        sprayed across all reducers.. */
-  def groupByKeyWith[K, V](grouping: Grouping[K])(implicit ev: A <:< (K, V), mwfk: ManifestWireFormat[K], mwfv: ManifestWireFormat[V]): DList[(K, Iterable[V])] =
-    groupByKey(ev, mwfk, grouping, mwfv)
+  def groupByKeyWith[K, V](grouping: Grouping[K])(implicit ev: A <:< (K, V), wfk: WireFormat[K], wfv: WireFormat[V]): DList[(K, Iterable[V])] =
+    groupByKey(ev, wfk, grouping, wfv)
 
   /**For each element of the distributed list produce zero or more elements by
    * applying a specified function. The resulting collection of elements form a
    * new distributed list. */
-  def flatMap[B: ManifestWireFormat](f: A => Iterable[B]): DList[B] =
+  def flatMap[B: WireFormat](f: A => Iterable[B]): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => f(input).foreach {
       emitter.emit(_)
     })
@@ -110,7 +108,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**For each element of the distributed list produce a new element by applying a
    * specified function. The resulting collection of elements form a new
    * distributed list. */
-  def map[B: ManifestWireFormat](f: A => B): DList[B] =
+  def map[B: WireFormat](f: A => B): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => emitter.emit(f(input)))
 
   /**Keep elements from the distributed list that pass a specified predicate function. */
@@ -124,13 +122,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /**Build a new DList by applying a partial function to all elements of this DList on
    * which the function is defined. */
-  def collect[B: ManifestWireFormat](pf: PartialFunction[A, B]): DList[B] =
+  def collect[B: WireFormat](pf: PartialFunction[A, B]): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) {
       emitter.emit(pf(input))
     })
 
   /**Group the values of a distributed list according to some discriminator function. */
-  def groupBy[K: ManifestWireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
+  def groupBy[K: WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
     map(x => (f(x), x)).groupByKey
 
   /**Partitions this distributed list into a pair of distributed lists according to some
@@ -177,22 +175,22 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   }
 
   /**Create a new distributed list that is keyed based on a specified function. */
-  def by[K: ManifestWireFormat](kf: A => K): DList[(K, A)] = map {
+  def by[K: WireFormat](kf: A => K): DList[(K, A)] = map {
     x => (kf(x), x)
   }
 
   /**Create a distribued list containing just the keys of a key-value distributed list. */
   def keys[K, V]
   (implicit ev: A <:< (K, V),
-   mwk:  ManifestWireFormat[K],
-   mwv:  ManifestWireFormat[V])
+   mwk:  WireFormat[K],
+   mwv:  WireFormat[V])
   : DList[K] = map(ev(_)._1)
 
   /**Create a distribued list containing just the values of a key-value distributed list. */
   def values[K, V]
   (implicit ev: A <:< (K, V),
-   mwk:  ManifestWireFormat[K],
-   mwv:  ManifestWireFormat[V])
+   mwk:  WireFormat[K],
+   mwv:  WireFormat[V])
   : DList[V] = map(ev(_)._2)
 
 

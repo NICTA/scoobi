@@ -22,8 +22,8 @@ trait Optimiser extends CompNodes with Rewriter {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_,_,_) => c
-    case c: Combine[_,_]                     => c.debug("combineToParDo").toParallelDo
+    case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c
+    case c: Combine[_,_]                         => c.debug("combineToParDo").toParallelDo
   })
 
   /**
@@ -38,8 +38,8 @@ trait Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse(pass: Int) = repeat(sometd(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_) if uses(p1).isEmpty && rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
-      p1.debug("parDoFuse (pass "+pass+") ").fuse(p2)(p2.mwf.asInstanceOf[ManifestWireFormat[Any]], p2.mwfe)
+    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_,_) if uses(p1).isEmpty && rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
+      p1.debug("parDoFuse (pass "+pass+") ").fuse(p2)(p2.wf.asInstanceOf[WireFormat[Any]], p2.wfe)
   }))
 
   /**

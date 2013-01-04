@@ -20,7 +20,7 @@ import java.io.File
 import org.apache.hadoop.fs.{Path, FileSystem}
 import scala.io.Source
 import Scoobi._
-import core.ManifestWireFormat
+import core.WireFormat
 import impl.io.FileSystems
 
 import impl.ScoobiConfigurationImpl._
@@ -98,13 +98,13 @@ object TestFiles extends TestFiles
 import TestFiles._
 
 class InputTestFile[S](ls: Seq[String], mapping: String => S)
-                      (implicit configuration: ScoobiConfiguration, m: ManifestWireFormat[S]) {
+                      (implicit configuration: ScoobiConfiguration, m: WireFormat[S]) {
 
   lazy val file = createTempFile("test.input")
 
   def inputLines = fromTextFile(TempFiles.writeLines(file, ls, isRemote))
-  def map[T : ManifestWireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
-  def collect[T : ManifestWireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
+  def map[T : WireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
+  def collect[T : WireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
   def lines: DList[S] = inputLines.map(mapping)
 }
 

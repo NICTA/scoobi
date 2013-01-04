@@ -23,29 +23,29 @@ import scala.Left
 import core._
 import core.WireFormat._
 
-case class Relational[K : ManifestWireFormat: Grouping, A : ManifestWireFormat](left: DList[(K, A)]) {
+case class Relational[K : WireFormat: Grouping, A : WireFormat](left: DList[(K, A)]) {
   /** Perform an equijoin with another distributed lists. */
-  def join[B : ManifestWireFormat](right: DList[(K, B)]): DList[(K, (A, B))] = Relational.join(left, right)
+  def join[B : WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] = Relational.join(left, right)
 
   /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in this dlist for a value on the right dlist, it will
    * return none.
    */
-  def joinRight[B : ManifestWireFormat](right: DList[(K, B)]): DList[(K, (Option[A], B))] = Relational.joinRight(left, right)
+  def joinRight[B : WireFormat](right: DList[(K, B)]): DList[(K, (Option[A], B))] = Relational.joinRight(left, right)
 
   /**
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[A]
    * as when there is no value in this dlist for a value on the right dlist, it will
    * return none.
    */
-  def joinLeft[B : ManifestWireFormat](right: DList[(K, B)]): DList[(K, (A, Option[B]))] = Relational.joinLeft(left, right)
+  def joinLeft[B : WireFormat](right: DList[(K, B)]): DList[(K, (A, Option[B]))] = Relational.joinLeft(left, right)
 
   /**
    * Perform a full outer-join of two distributed lists. The default function specifies how
    * to construct a A or B when there is none. Note at least one of the A or B should exist
    */
-  def joinFullOuter[B : ManifestWireFormat, V : ManifestWireFormat](
+  def joinFullOuter[B : WireFormat, V : WireFormat](
     right: DList[(K, B)],
     hasLeft: (K, A) => V,
     hasRight: (K, B) => V,
@@ -55,18 +55,18 @@ case class Relational[K : ManifestWireFormat: Grouping, A : ManifestWireFormat](
    * Perform a full outer-join of two distributed lists. Note how it returns an Option[A] and Option[B], but it
    * shouldn't be possible for both to be None.
    */
-  def joinFullOuter[B : ManifestWireFormat](
+  def joinFullOuter[B : WireFormat](
     right: DList[(K, B)]): DList[(K, (Option[A], Option[B]))] = Relational.joinFullOuter(left, right)
 
   /** Perform a co-group with another distributed lists */
-  def coGroup[B : ManifestWireFormat](right: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = Relational.coGroup(left, right)
+  def coGroup[B : WireFormat](right: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = Relational.coGroup(left, right)
 
 }
 
 object Relational {
 
   /** Perform an equijoin of two (2) distributed lists. */
-  def join[K : ManifestWireFormat : Grouping, A : ManifestWireFormat, B : ManifestWireFormat](
+  def join[K : WireFormat : Grouping, A : WireFormat, B : WireFormat](
       left: DList[(K, A)],
       right: DList[(K, B)]): DList[(K, (A, B))] = joinWith(left, right)(innerJoin)
 
@@ -75,12 +75,9 @@ object Relational {
    * as when there is no value in the left dlist (d1) for a value on the right dlist (d2), it will
    * return none.
    */
-  def joinRight[K : ManifestWireFormat : Grouping, A : ManifestWireFormat, B : ManifestWireFormat](
+  def joinRight[K : WireFormat : Grouping, A : WireFormat, B : WireFormat](
       left: DList[(K, A)],
       right: DList[(K, B)]): DList[(K, (Option[A], B))] = {
-    val (mwfk, mwfa, mwfb) = (manifestWireFormat[K], manifestWireFormat[A], manifestWireFormat[B])
-    implicit val (mfk, mfa, mfb, wfk, wfa, wfb) = (mwfk.mf, mwfa.mf, mwfb.mf, mwfk.wf, mwfa.wf, mwfb.wf)
-
     joinWith(left, right)(rightOuterJoin)
   }
 
@@ -88,14 +85,11 @@ object Relational {
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[B]
    * for when there is no value in the right dlist (d1).
    */
-  def joinLeft[K : ManifestWireFormat : Grouping,
-               A : ManifestWireFormat,
-               B : ManifestWireFormat](
+  def joinLeft[K : WireFormat : Grouping,
+               A : WireFormat,
+               B : WireFormat](
         left: DList[(K, A)],
         right: DList[(K, B)]): DList[(K, (A, Option[B]))] = {
-    val (mwfk, mwfa, mwfb) = (manifestWireFormat[K], manifestWireFormat[A], manifestWireFormat[B])
-    implicit val (mfk, mfa, mfb, wfk, wfa, wfb) = (mwfk.mf, mwfa.mf, mwfb.mf, mwfk.wf, mwfa.wf, mwfb.wf)
-
     joinRight(right, left).map(v => (v._1, v._2.swap))
   }
 
@@ -103,10 +97,10 @@ object Relational {
    * Perform a full outer-join of two distributed lists. The default function specifies how
    * to construct a A or B when there is none
    */
-  def joinFullOuter[K : ManifestWireFormat : Grouping,
-                    A : ManifestWireFormat,
-                    B : ManifestWireFormat,
-                    V : ManifestWireFormat](
+  def joinFullOuter[K : WireFormat : Grouping,
+                    A : WireFormat,
+                    B : WireFormat,
+                    V : WireFormat](
     l: DList[(K, A)],
     r: DList[(K, B)],
     hasLeft: (K, A) => V,
@@ -117,14 +111,11 @@ object Relational {
    * Perform a full outer-join of two distributed lists. The default function specifies how
    * to construct a A or B when there is none
    */
-  def joinFullOuter[K : ManifestWireFormat : Grouping,
-                    A : ManifestWireFormat,
-                    B : ManifestWireFormat](
+  def joinFullOuter[K : WireFormat : Grouping,
+                    A : WireFormat,
+                    B : WireFormat](
     l: DList[(K, A)],
     r: DList[(K, B)]): DList[(K, (Option[A], Option[B]))] = {
-    val (mwfk, mwfa, mwfb) = (manifestWireFormat[K], manifestWireFormat[A], manifestWireFormat[B])
-    implicit val (mfk, mfa, mfb, wfk, wfa, wfb) = (mwfk.mf, mwfa.mf, mwfb.mf, mwfk.wf, mwfa.wf, mwfb.wf)
-
     joinFullOuter(l, r,
       (k: K, a: A) => (Some(a), None),
       (k: K, b: B) => (None, Some(b)),
@@ -135,22 +126,16 @@ object Relational {
    * Perform a left outer-join of two (2) distributed lists. Note the return type of Option[B]
    * for when there is no value in the right dlist (d1).
    */
-  def outerJoin[K : ManifestWireFormat: Grouping,
-                A : ManifestWireFormat,
-                B : ManifestWireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, Option[B]))] = {
-    val (mwfk, mwfa, mwfb) = (manifestWireFormat[K], manifestWireFormat[A], manifestWireFormat[B])
-    implicit val (mfk, mfa, mfb, wfk, wfa, wfb) = (mwfk.mf, mwfa.mf, mwfb.mf, mwfk.wf, mwfa.wf, mwfb.wf)
-
+  def outerJoin[K : WireFormat: Grouping,
+                A : WireFormat,
+                B : WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (A, Option[B]))] = {
     joinRight(d2, d1).map(v => (v._1, v._2.swap))
   }
 
   /** Perform a co-group of two (2) distributed lists */
-  def coGroup[K : ManifestWireFormat: Grouping,
-              A : ManifestWireFormat,
-              B : ManifestWireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = {
-    val (mwfk, mwfa, mwfb) = (manifestWireFormat[K], manifestWireFormat[A], manifestWireFormat[B])
-    implicit val (mfk, mfa, mfb, wfk, wfa, wfb) = (mwfk.mf, mwfa.mf, mwfb.mf, mwfk.wf, mwfa.wf, mwfb.wf)
-
+  def coGroup[K : WireFormat: Grouping,
+              A : WireFormat,
+              B : WireFormat](d1: DList[(K, A)], d2: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = {
     val d1s: DList[(K, Either[A, B])] = d1 map { case (k, a1) => (k, Left(a1)) }
     val d2s: DList[(K, Either[A, B])] = d2 map { case (k, a2) => (k, Right(a2)) }
 
@@ -230,16 +215,12 @@ object Relational {
   }
 
   /** Perform a join of two distributed lists using a specified join-predicate, and a type. */
-  private def joinWith[K : ManifestWireFormat : Grouping,
-                       A : ManifestWireFormat,
-                       B : ManifestWireFormat,
-                       V : ManifestWireFormat](
+  private def joinWith[K : WireFormat : Grouping,
+                       A : WireFormat,
+                       B : WireFormat,
+                       V : WireFormat](
     d1: DList[(K, A)],
     d2: DList[(K, B)])(dofn: BasicDoFn[((K, Boolean), Iterable[Either[A, B]]), (K, V)]): DList[(K, V)] = {
-
-    val (mwfk, mwfa, mwfb, mwfv) = (manifestWireFormat[K], manifestWireFormat[A], manifestWireFormat[B], manifestWireFormat[V])
-    implicit val (mfk, mfa, mfb, mfv, wfk, wfa, wfb, wfv) = (mwfk.mf, mwfa.mf, mwfb.mf, mwfv.mf, mwfk.wf, mwfa.wf, mwfb.wf, mwfv.wf)
-
 
     /* Map left and right DLists to be of the same type. Label the left as 'true' and the
      * right as 'false'. Note the hack cause DList doesn't yet have the co/contravariance. */

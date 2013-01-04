@@ -24,10 +24,9 @@ object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with 
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
-  type ManifestWireFormat[A] = com.nicta.scoobi.core.ManifestWireFormat[A]
   val DList = DLists
   type DList[A] = com.nicta.scoobi.core.DList[A]
-  implicit def traversableToDList[A : ManifestWireFormat](trav: Traversable[A]) = DList.traversableToDList(trav)
+  implicit def traversableToDList[A : Manifest : WireFormat](trav: Traversable[A]) = DList.traversableToDList(trav)
 
   val DObject = DObjects
   type DObject[A] = com.nicta.scoobi.core.DObject[A]

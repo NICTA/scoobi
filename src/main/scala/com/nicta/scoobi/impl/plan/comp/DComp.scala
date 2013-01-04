@@ -7,7 +7,7 @@ import core._
 import collection._
 import util.UniqueId
 import WireFormat._
-import ManifestWireFormat._
+import WireFormat._
 import mapreducer._
 import scalaz.Memo._
 import scalaz.Equal
@@ -23,8 +23,7 @@ sealed trait DComp[+A] extends CompNode {
 
   type CompNodeType <: DComp[A]
 
-  def mr: MapReducer[_]
-  def mwf: ManifestWireFormat[_] = mr.mwf
+  def wf: WireFormat[_]
 
   def sinks: Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
@@ -34,17 +33,18 @@ sealed trait DComp[+A] extends CompNode {
 
 /** The ParallelDo node type specifies the building of a DComp as a result of applying a function to
  * all elements of an existing DComp and concatenating the results. */
-case class ParallelDo[A, B, E](ins:               Seq[CompNode],
+case class ParallelDo[A, B, E](
+                               ins:               Seq[CompNode],
                                env:               CompNode,
                                dofn:              EnvDoFn[A, B, E],
-                               mr:                DoMapReducer[A, B, E],
+                               implicit val wfa:  WireFormat[A],
+                               implicit val wfb:  WireFormat[B],
+                               implicit val wfe:  WireFormat[E],
                                sinks:             Seq[Sink] = Seq(),
                                bridgeStoreId:     String = randomUUID.toString) extends DComp[B] {
 
   type CompNodeType = ParallelDo[A, B, E]
-
-  def mwfe = mr.mwfe
-  def wfe  = mwfe.wf
+  lazy val wf = wfb
 
   def setup(implicit configuration: Configuration) { dofn.setup(environment(ScoobiConfigurationImpl(configuration)).pull) }
   def unsafeMap[R](value: Any, emitter: Emitter[R])(implicit sc: ScoobiConfiguration) {
@@ -60,7 +60,7 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
 
   def environment(implicit sc: ScoobiConfiguration): Env[E] = env match {
     case e: WithEnvironment[_] => e.environment(sc).asInstanceOf[Env[E]]
-    case other                 => Env[E](mr.mwfe.wf)
+    case other                 => Env[E](wfe)
   }
 
   def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
@@ -72,29 +72,24 @@ case class ParallelDo[A, B, E](ins:               Seq[CompNode],
 
   def source = ins.collect(isALoad).headOption
 
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "ParallelDo ("+id+")" + mr + " env: " + env
+  override val toString = "ParallelDo ("+id+")[" + (wfa, wfb, wfe) + "] env: " + env
 
   def fuse[C, F](p2: ParallelDo[_, C, F])
-                (implicit mwfc: ManifestWireFormat[C],
-                          mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] =
-          ParallelDo.fuse[A, C, E, F](this, p2)(mr.mwfa, mwfc, mr.mwfe, mwff)
+                (implicit wfc: WireFormat[C],
+                          wff: WireFormat[F]): ParallelDo[A, C, (E, F)] =
+          ParallelDo.fuse[A, C, E, F](this, p2)(wfa, wfc, wireFormat[E], wireFormat[F])
 
 }
 object ParallelDo {
 
   private[scoobi]
-  def fuse[A, C, E, F](pd1: ParallelDo[A, _, E], pd2: ParallelDo[_, C, F])
-                (implicit
-                 mwfa: ManifestWireFormat[A],
-                 mwfc: ManifestWireFormat[C],
-                 mwfe: ManifestWireFormat[E],
-                 mwff: ManifestWireFormat[F]): ParallelDo[A, C, (E, F)] = {
+  def fuse[A : WireFormat, C : WireFormat, E : WireFormat, F : WireFormat](pd1: ParallelDo[A, _, E], pd2: ParallelDo[_, C, F]): ParallelDo[A, C, (E, F)] = {
     new ParallelDo(pd1.ins, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
-                   DoMapReducer(mwfa, mwfc, manifestWireFormat[(E, F)]),
+                   wireFormat[A], wireFormat[C], wireFormat[(E, F)],
                    pd1.sinks ++ pd2.sinks,
                    pd1.bridgeStoreId)
   }
@@ -116,8 +111,8 @@ object ParallelDo {
 
   /** Create a new environment by forming a tuple from two separate evironments.*/
   private[scoobi]
-  def fuseEnv[F : ManifestWireFormat, G : ManifestWireFormat](fExp: CompNode, gExp: CompNode): DComp[(F, G)] =
-    Op(fExp, gExp, (f: F, g: G) => (f, g), SimpleMapReducer(manifestWireFormat[(F, G)]))
+  def fuseEnv[F : WireFormat, G : WireFormat](fExp: CompNode, gExp: CompNode): DComp[(F, G)] =
+    Op(fExp, gExp, (f: F, g: G) => (f, g), wireFormat[(F, G)])
 
 }
 object ParallelDo1 {
@@ -127,18 +122,18 @@ object ParallelDo1 {
 
 /** The Combine node type specifies the building of a DComp as a result of applying an associative
  * function to the values of an existing key-values DComp. */
-case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, V)] {
+case class Combine[K , V](in: CompNode, f: (V, V) => V,
+                          implicit val wfk: WireFormat[K],
+                          implicit val gpk: Grouping[K],
+                          implicit val wfv: WireFormat[V],
+                          sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, V)] {
 
   type CompNodeType = Combine[K, V]
 
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
-
-  def gpk = mr.gpk
-  val (mwfk, mwfv) = (mr.mwfk, mr.mwfv)
-  implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
-
-  override val toString = "Combine ("+id+")"+mr
+  lazy val wf = wireFormat[(K, V)]
+  override val toString = "Combine ("+id+")["+(wfk, wfv)+"]"
 
   def combine = f
   /**
@@ -152,7 +147,7 @@ case class Combine[K, V](in: CompNode, f: (V, V) => V, mr: KeyValueMapReducer[K,
       }
     }
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo[(K, Iterable[V]), (K, V), Unit](Seq(in), Return.unit, dofn, DoMapReducer(manifestWireFormat[(K, Iterable[V])], manifestWireFormat[(K, V)], manifestWireFormat[Unit]))
+    ParallelDo[(K, Iterable[V]), (K, V), Unit](Seq(in), Return.unit, dofn, wireFormat[(K, Iterable[V])], wireFormat[(K, V)], wireFormat[Unit])
   }
 
   def unsafeReduce(values: Iterable[Any]) =
@@ -164,19 +159,18 @@ object Combine1 {
 
 /** The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
  * key-value DComp by key. */
-case class GroupByKey[K, V](in: CompNode, mr: KeyValuesMapReducer[K, V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, Iterable[V])] {
+case class GroupByKey[K, V](in: CompNode,
+                            implicit val wfk: WireFormat[K],
+                            implicit val gpk: Grouping[K],
+                            implicit val wfv: WireFormat[V], sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends DComp[(K, Iterable[V])] {
 
   type CompNodeType = GroupByKey[K, V]
-
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, mf, wf))
+  lazy val wf = wireFormat[(K, Iterable[V])]
+  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  def gpk = mr.gpk
-  val (mwfk, mwfv) = (mr.mwfk, mr.mwfv)
-  implicit val (mfk, mfv, wfk, wfv) = (mwfk.mf, mwfv.mf, mwfk.wf, mwfv.wf)
-
-  override val toString = "GroupByKey ("+id+")"+mr
+  override val toString = "GroupByKey ("+id+")["+(wfk, wfv)+"]"
 
 }
 object GroupByKey1 {
@@ -185,43 +179,43 @@ object GroupByKey1 {
 
 /** The Load node type specifies the creation of a DComp from some source other than another DComp.
  * A DataSource object specifies how the loading is performed. */
-case class Load[A](source: Source, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
+case class Load[A](source: Source, wf: WireFormat[A], sinks: Seq[Sink] = Seq()) extends DComp[A] {
 
   type CompNodeType = Load[A]
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "Load ("+id+")"+mr
+  override val toString = "Load ("+id+")["+wf+"]"
 }
 object Load1 {
   def unapply(l: Load[_]): Option[Source] = Some(l.source)
 }
 
 /** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A](in: A, mr: SimpleMapReducer[A], sinks: Seq[Sink] = Seq()) extends DComp[A] with WithEnvironment[A] {
+case class Return[A](in: A, wf: WireFormat[A], sinks: Seq[Sink] = Seq()) extends DComp[A] with WithEnvironment[A] {
 
   type CompNodeType = Return[A]
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "Return ("+id+")"+mr
+  override val toString = "Return ("+id+")["+wf+"]"
 
 }
 object Return {
-  def unit = Return((), SimpleMapReducer(manifestWireFormat[Unit]))
+  def unit = Return((), wireFormat[Unit])
 }
 object Return1 {
   def unapply(ret: Return[_]): Option[_] = Some(ret.in)
 }
 
 /** The Materialize node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialize[A](in: CompNode, mr: SimpleMapReducer[Iterable[A]], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
+case class Materialize[A](in: CompNode, wf: WireFormat[Iterable[A]], sinks: Seq[Sink] = Seq()) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
 
   type CompNodeType = Materialize[A]
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "Materialize ("+id+")["+mr+"]"
+  override val toString = "Materialize ("+id+")["+wf+"]"
 
 }
 object Materialize1 {
@@ -230,7 +224,8 @@ object Materialize1 {
 
 /** The Op node type specifies the building of Exp DComp by applying a function to the values
  * of two other Exp DComp nodes. */
-case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleMapReducer[C], sinks: Seq[Sink] = Seq()) extends DComp[C] with WithEnvironment[C] {
+case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C,
+                       wf: WireFormat[C], sinks: Seq[Sink] = Seq()) extends DComp[C] with WithEnvironment[C] {
 
   type CompNodeType = Op[A, B, C]
 
@@ -241,7 +236,7 @@ case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, mr: SimpleM
     result
   }
 
-  override val toString = "Op ("+id+")"+mr
+  override val toString = "Op ("+id+")["+wf+"]"
 }
 object Op1 {
   def unapply(op: Op[_,_,_]): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
@@ -251,7 +246,7 @@ case class Root(ins: Seq[CompNode]) extends CompNode {
   val id = UniqueId.get
   lazy val sinks = Seq()
   lazy val bridgeStore = None
-  def mwf: ManifestWireFormat[_] = manifestWireFormat[Unit]
+  def wf: WireFormat[_] = wireFormat[Unit]
 }
 
 trait WithEnvironment[E] {

@@ -27,6 +27,7 @@ import impl.collection.Seqs._
 import plan.DListImpl
 import util.{UniqueId, DistCache}
 import SeqInput._
+import WireFormat._
 
 /**
  * Function for creating a distributed lists from a scala.collection.Seq
@@ -38,7 +39,7 @@ trait SeqInput {
   lazy val logger = LogFactory.getLog("scoobi.SeqInput")
 
   /** Create a distributed list of a specified length whose elements are coming from a scala collection */
-  def fromSeq[A : ManifestWireFormat](seq: Seq[A]): DList[A] = {
+  def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] = {
 
     val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
       val id: Int = UniqueId.get
@@ -57,7 +58,6 @@ trait SeqInput {
          * This is why we need to look for keys by regular expression in order to find the maximum value to increment
          */
         val id = job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)
-        import ManifestWireFormatDecompose._
         DistCache.pushObject(job.getConfiguration, seq.map(toByteArray(_, implicitly[WireFormat[A]].toWire(_: A, _: DataOutput))), seqProperty(id))
       }
 
@@ -67,11 +67,11 @@ trait SeqInput {
         def fromKeyValue(context: InputContext, k: NullWritable, v: Array[Byte]) = v
       }
     }
-    DListImpl(source).map(a => fromByteArray[A](a)(ManifestWireFormatDecompose.manifestWireFormatToWireFormat[A]))
+    DListImpl(source).map(a => fromByteArray[A](a))
   }
 
-  private def fromByteArray[A : WireFormat](barr: Array[Byte]): A = {
-    implicitly[WireFormat[A]].fromWire(new ObjectInputStream(new ByteArrayInputStream(barr)))
+  private def fromByteArray[A](barr: Array[Byte])(implicit wf: WireFormat[A]): A = {
+    wf.fromWire(new ObjectInputStream(new ByteArrayInputStream(barr)))
   }
 }
 
