@@ -54,7 +54,7 @@ trait InputChannel extends Channel {
 
 case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   private object rollingInt extends UniqueInt
-  private val nodes = new CompNodes {}
+  private val nodes = new MscrsDefinition {}
   import nodes._
 
   override def toString = "MapperInputChannel("+sourceNode+")"
@@ -88,7 +88,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   lazy val groupByKeys: Seq[GroupByKey[_,_]] = groupByKeysUses(sourceNode)
   lazy val groupByKeysUses: CompNode => Seq[GroupByKey[_,_]] = attr { case node =>
     val (gbks, nonGbks) = nodes.uses(node).partition(isGroupByKey)
-    gbks.collect(isAGroupByKey).toSeq ++ nonGbks.flatMap(groupByKeysUses)
+    gbks.collect(isAGroupByKey).toSeq ++ nonGbks.filterNot(isMaterialize).flatMap(groupByKeysUses)
   }
 
   lazy val lastMappers: Seq[ParallelDo[_,_,_]] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]))
@@ -96,7 +96,9 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   lazy val mappers: Seq[ParallelDo[_,_,_]] = mappersUses(sourceNode)
   lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = attr { case node =>
     val (pds, _) = nodes.uses(node).partition(isParallelDo)
-    pds.collect(isAParallelDo).toSeq ++ pds.filter(pd => isParallelDo(pd.parent[CompNode])).flatMap(mappersUses)
+    pds.collect(isAParallelDo).toSeq ++ pds.filter { pd =>
+      isParallelDo(pd.parent[CompNode]) && !pd.parent.asInstanceOf[ParallelDo[_,_,_]].ins.collect(isAParallelDo).exists(nodes.isReducer)
+    }.flatMap(mappersUses)
   }
 
   private var tk: TaggedKey = _

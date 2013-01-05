@@ -18,7 +18,8 @@ trait MscrsDefinition extends Layering {
 
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
-    case pd: ParallelDo[_,_,_] => transitiveUses(pd).collect(isAGroupByKey).isEmpty && !isReducer(pd) && pd.ins.forall(!isFloating)
+    case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
+                                   !isReducer(pd) && pd.ins.forall(!isFloating)
     case other                 => false
   }
 

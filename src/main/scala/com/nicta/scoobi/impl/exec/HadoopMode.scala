@@ -66,6 +66,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       logger.debug("Executing layer\n"+layer)
 
       mscrs(layer).zipWithIndex.foreach { case (mscr, step) =>
+        logger.debug("Executing Mscr\n"+mscr)
 
         logger.debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
         mscr.sources.foreach(_.inputCheck)
@@ -77,7 +78,6 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
         mscr.inputNodes.foreach(load)
 
         val job = MapReduceJob.create(step, mscr)
-        logger.debug("Executing Mscr\n"+mscr)
         job.run
       }
       layerSinks(layer).debug("Layer sinks: ").map(readStore).toSeq

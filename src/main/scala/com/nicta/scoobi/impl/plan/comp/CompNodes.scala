@@ -27,7 +27,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
 
   /** compute all the nodes which use a given node as an environment */
   def usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] = attr("usesAsEnvironment") { case node =>
-    transitiveUses(node).collect(isAParallelDo).toSeq
+    uses(node).collect { case pd: ParallelDo[_,_,_] if pd.env == node => pd }.toSeq
   }
 
 }
