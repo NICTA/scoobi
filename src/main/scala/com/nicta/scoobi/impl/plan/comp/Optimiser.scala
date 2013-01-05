@@ -38,7 +38,7 @@ trait Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse(pass: Int) = repeat(sometd(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_,_) if uses(p1).isEmpty && rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
+    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
       p1.debug("parDoFuse (pass "+pass+") ").fuse(p2)(p2.wf.asInstanceOf[WireFormat[Any]], p2.wfe)
   }))
 
@@ -109,6 +109,6 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   private[scoobi]
   def optimise(node: CompNode): CompNode =
-    optimise(Seq(duplicate(node))).headOption.getOrElse(node)
+    optimise(Seq(initAttributable(duplicate(node)))).headOption.getOrElse(node)
 }
 object Optimiser extends Optimiser

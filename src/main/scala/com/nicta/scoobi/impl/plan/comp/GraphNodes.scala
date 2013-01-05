@@ -12,6 +12,7 @@ import control.Exceptions._
  * generic functions for a nodes graph
  */
 trait GraphNodes extends Attribution {
+
   type T <: Attributable
 
   /** compute the parent of a node */
@@ -24,7 +25,10 @@ trait GraphNodes extends Attribution {
 
   /** the root of the graph, computed from a given node */
   lazy val root : T => T = 
-    attr("root") { case node => parent(node).map(root).getOrElse(node) }
+    attr("root") {
+      case node =>
+        parent(node).map(root).getOrElse(node)
+    }
   
   /**
    * compute all the descendents of a node

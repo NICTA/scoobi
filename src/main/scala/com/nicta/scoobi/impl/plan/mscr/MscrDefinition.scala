@@ -18,7 +18,7 @@ trait MscrsDefinition extends Layering {
 
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
-    case pd: ParallelDo[_,_,_] => transitiveUses(pd).collect(isAGroupByKey).isEmpty && !isReducer(pd)
+    case pd: ParallelDo[_,_,_] => transitiveUses(pd).collect(isAGroupByKey).isEmpty && !isReducer(pd) && pd.ins.forall(!isFloating)
     case other                 => false
   }
 
@@ -28,21 +28,30 @@ trait MscrsDefinition extends Layering {
 
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
-    floatingParallelDos(layer).groupBy(_.ins.head).map { case (sourceNode, pds) =>
-      Mscr(MapperInputChannel(sourceNode), pds.map(BypassOutputChannel(_)))
-    }.toSeq
+    val in = floatingParallelDos(layer).flatMap(_.ins).map(MapperInputChannel(_))
+    val out = in.flatMap(_.lastMappers.map(BypassOutputChannel(_))).distinct
+    makeMscrs(in, out)
   }
 
   /** Mscrs for mscrs built around gbk nodes */
   lazy val gbkMscrs: Layer[T] => Seq[Mscr] = attr("gbk mscrs") { case layer =>
-    val (in, out) = (mapperInputChannels(layer), gbkOutputChannels(layer))
-    // groups of input channels having at least one tag in common
-    val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
+    makeMscrs(mapperInputChannels(layer), gbkOutputChannels(layer))
+  }
 
-    // create Mscr for each set of channels with common tags
-    channelsWithCommonTags.map { taggedInputChannels =>
-      val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
-      Mscr(taggedInputChannels, out.filter(o => correspondingOutputTags.contains(o.tag)))
+  /**
+   * make Mscrs by grouping input channels when their output go to the same output channel
+   */
+  private def makeMscrs(in: Seq[InputChannel], out: Seq[OutputChannel]): Seq[Mscr] = {
+    if (out.isEmpty) Seq()
+    else {
+      // groups of input channels having at least one tag in common
+      val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
+
+      // create Mscr for each set of channels with common tags
+      channelsWithCommonTags.map { taggedInputChannels =>
+        val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
+        Mscr(taggedInputChannels, out.filter(o => correspondingOutputTags.contains(o.tag)))
+      }
     }
   }
 
@@ -75,8 +84,7 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val layerInputs: Layer[T] => Seq[CompNode] = attr("layer inputs") { case layer =>
-    layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {
-      case other         => Seq(other)
+    layer.nodes.toSeq.flatMap(_ -> inputs).flatMap {       case other         => Seq(other)
     }.distinct
   }
 

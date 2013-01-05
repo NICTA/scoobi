@@ -25,21 +25,9 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   lazy val incomings : CompNode => Seq[CompNode] =
     attr("incomings") { case n => children(n) }
 
-  /**
-   *  compute the outgoings (opposite of incomings) of a given node, which are all the nodes using a given one.
-   *  alias for "uses"
-   */
-  lazy val outgoings : CompNode => Seq[CompNode] =
-    attr("outgoings") { case node => uses(node).toSeq }
-
-  /** compute the outcoming data of a given node: all the outgoings but not any node using this node as an environment */
-  lazy val outputs : CompNode => Seq[CompNode] = attr("outputs") {
-    case node => outgoings(node) filter (n => inputs(n).contains(node))
-  }
-
   /** compute all the nodes which use a given node as an environment */
   def usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] = attr("usesAsEnvironment") { case node =>
-    (outgoings(node) diff outputs(node)).collect(isAParallelDo)
+    transitiveUses(node).collect(isAParallelDo).toSeq
   }
 
 }

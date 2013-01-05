@@ -92,6 +92,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
     case o: GbkOutputChannel => o.groupByKey.id == groupByKey.id
     case _                   => false
   }
+  override def hashCode = groupByKey.id.hashCode
 
   lazy val nodeSinks = groupByKey.sinks ++ combiner.toSeq.flatMap(_.sinks) ++ reducer.toSeq.flatMap(_.sinks)
   lazy val inputNodes = reducer.toSeq.map(_.env)
@@ -107,6 +108,8 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChan
     case o: BypassOutputChannel => o.output.id == output.id
     case _                      => false
   }
+  override def hashCode = output.id.hashCode
+
   def tag = output.id
   lazy val nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore

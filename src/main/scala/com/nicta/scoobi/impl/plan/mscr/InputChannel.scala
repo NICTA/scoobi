@@ -3,7 +3,7 @@ package impl
 package plan
 package mscr
 
-import org.kiama.attribution.Attributable
+import org.kiama.attribution.{Attribution, Attributable}
 import core._
 import comp._
 import util.{UniqueInt, UniqueId}
@@ -55,6 +55,7 @@ trait InputChannel extends Channel {
 case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   private object rollingInt extends UniqueInt
   private val nodes = new CompNodes {}
+  import nodes._
 
   override def toString = "MapperInputChannel("+sourceNode+")"
 
@@ -85,15 +86,15 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     else                     groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv.wf) }
 
   lazy val groupByKeys: Seq[GroupByKey[_,_]] = groupByKeysUses(sourceNode)
-  lazy val groupByKeysUses: CompNode => Seq[GroupByKey[_,_]] = nodes.attr { case node =>
+  lazy val groupByKeysUses: CompNode => Seq[GroupByKey[_,_]] = attr { case node =>
     val (gbks, nonGbks) = nodes.uses(node).partition(isGroupByKey)
     gbks.collect(isAGroupByKey).toSeq ++ nonGbks.flatMap(groupByKeysUses)
   }
 
-  private lazy val lastMappers: Seq[CompNode] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]))
+  lazy val lastMappers: Seq[ParallelDo[_,_,_]] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]))
 
   lazy val mappers: Seq[ParallelDo[_,_,_]] = mappersUses(sourceNode)
-  lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = nodes.attr { case node =>
+  lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = attr { case node =>
     val (pds, _) = nodes.uses(node).partition(isParallelDo)
     pds.collect(isAParallelDo).toSeq ++ pds.filter(pd => isParallelDo(pd.parent[CompNode])).flatMap(mappersUses)
   }
@@ -131,17 +132,21 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     implicit val sc = ScoobiConfigurationImpl(configuration)
     val emitter = if (groupByKeys.isEmpty) valueEmitter(context) else keyValueEmitter(context)
 
-    lazy val computeMappers: CompNode => Any = nodes.attr("computeMappers") {
-      case GroupByKey1(mapper: ParallelDo[_,_,_]) => computeMappers(mapper)
+    lazy val computeMappers: CompNode => Any = attr("computeMappers") {
       case node if node == sourceNode             => source.inputConverter.asInstanceOf[InputConverter[K1, V1, Any]].fromKeyValue(context, key, value)
       case mapper: ParallelDo[_,_,_]              =>
-        val mappedValue = if (mapper.ins.size == 1) computeMappers(mapper.ins.head) else mapper.ins.map(computeMappers)
+        val mappedValue = computeMappers {
+          if (mapper.ins.size == 1) mapper.ins.head
+          else                      mapper.ins.filter(n => nodes.transitiveUses(sourceNode).contains(n) || (sourceNode == n)).head
+        }
+
         if (nodes.uses(mapper).forall(isParallelDo)) {
           val vb = new VectorBuilder[Any]
           mapper.unsafeMap(mappedValue, new Emitter[Any] { def emit(v: Any) { vb += v } })
-          vb
+          vb.result.head
         }
         else mapper.unsafeMap(mappedValue, emitter)
+      case _                                       => ()
     }
     lastMappers foreach computeMappers
     if (lastMappers.isEmpty)

@@ -27,9 +27,6 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
     (pd(ld1) -> inputs) ==== Seq(ld1)
   }
 
-  "the outputs of a node are all the nodes using it, but not using it as an environment" >> new nodes {
-    (pd1 -> outputs) ==== Seq(gbk1, pds1)
-  }
   endp
 
   "it is possible to get all the nodes which use a given node as an environment" >> new factory {
