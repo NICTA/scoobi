@@ -27,7 +27,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
-import scalaz.{Scalaz, State, Memo, Ordering => SOrdering}
+import scalaz.{Scalaz, State, Endo, Memo, Ordering => SOrdering}
 import Scalaz._
 
 import core._
@@ -49,8 +49,7 @@ object VectorMode {
     Eval.Vector(0)
   }
 
-
-  def executeDListPersister[A, K, V](x: DListPersister[A], conf: ScoobiConfiguration): State[Eval.ST, Unit] = State({
+  def executeDListPersisterE[A, K, V](x: DListPersister[A], conf: ScoobiConfiguration): Endo[Eval.ST] = Endo({
     case Eval.Vector(st) => {
       val vec = computeArr(x.dlist.getComp)(conf)
 
@@ -82,11 +81,13 @@ object VectorMode {
       oc.commitTask(taskContext)
       oc.commitJob(job)
 
-      (Eval.Vector(0), ())
+      Eval.Vector(0)
     }
     case _ => sys.error("something went wrong")
   })
 
+  def executeDListPersister[A, K, V](x: DListPersister[A], conf: ScoobiConfiguration): State[Eval.ST, Unit] =
+    State(s => (executeDListPersisterE(x, conf)(s), ()))
 
   def executeDObject[A](x: DObject[A], conf: ScoobiConfiguration): State[Eval.ST, A] = State({
     case Eval.Vector(st) => (Eval.Vector(0), computeExp(x.getComp)(conf))
@@ -96,13 +97,13 @@ object VectorMode {
 
   private def computeLoad[K, V, A](load: Load[A])(implicit conf: ScoobiConfiguration): Vector[A] = {
 
-    /* Perorms a deep copy of an arbitrary object by first serialising then deserialising
+    /* Performs a deep copy of an arbitrary object by first serialising then deserialising
      * it via its WireFormat. */
-    def wireFormatCopy[A : WireFormat](x: A): A = {
+    def wireFormatCopy(x: A)(implicit w: WireFormat[A]): A = {
       import java.io._
       val byteArrOs = new ByteArrayOutputStream()
       implicitly[WireFormat[A]].toWire(x, new DataOutputStream(byteArrOs))
-      implicitly[WireFormat[A]].fromWire(new DataInputStream(new ByteArrayInputStream(byteArrOs.toByteArray())))
+      implicitly[WireFormat[A]].fromWire(new DataInputStream(new ByteArrayInputStream(byteArrOs.toByteArray)))
     }
 
     val vb = new VectorBuilder[A]()
@@ -121,8 +122,8 @@ object VectorMode {
 
       rr.initialize(split, taskContext)
       while (rr.nextKeyValue()) {
-        val k = rr.getCurrentKey()
-        val v = rr.getCurrentValue()
+        val k = rr.getCurrentKey
+        val v = rr.getCurrentValue
         val a = source.inputConverter.fromKeyValue(mapContext, k, v)
         vb += wireFormatCopy(a)(load.wtA)
       }
@@ -167,23 +168,21 @@ object VectorMode {
     partitions.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
     /* Grouping values */
-    val grouped: IndexedSeq[Map[K, Vector[(K, V)]]] = partitions map { (kvs: Vector[(K, V)]) =>
-
-      val vbMap = kvs.foldLeft(Map.empty: Map[K, VectorBuilder[(K, V)]]) { case (bins, (k, v)) =>
-        bins.find(kkvs => grp.groupCompare(kkvs._1, k) == SOrdering.EQ) match {
-          case Some((kk, vb)) => bins.updated(kk, vb += ((k, v)))
-          case None           => { val vb = new VectorBuilder[(K, V)](); bins + (k -> (vb += ((k, v)))) }
+    val grouped: IndexedSeq[Map[K, Vector[(K, V)]]] =
+      partitions map { (kvs: Vector[(K, V)]) =>
+        val vbMap = kvs.foldLeft(Map.empty[K, VectorBuilder[(K, V)]]) {
+          case (bins, kv@(k, _)) =>
+            bins + ((bins.find(kkvs => grp.isGroupEqual(kkvs._1, k)) getOrElse ((k, (new VectorBuilder[(K, V)]())))) :-> (_ += kv))
         }
-      }
 
-      vbMap map { case (k, vb) => (k, vb.result()) }
+        vbMap map { case (k, vb) => (k, vb.result()) }
     }
 
     logger.debug("grouped:")
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
     val sorted: IndexedSeq[Map[K, Vector[(K, V)]]] = grouped map { (kvMap: Map[K, Vector[(K, V)]]) =>
-      kvMap map { case (k, kvs) => (k, kvs.sortBy(_._1)(grp.sortOrdering)) }
+      kvMap map (_ :-> (_.sortBy(_._1)(grp.sortOrdering)))
     }
 
     logger.debug("sorted:")
@@ -198,7 +197,7 @@ object VectorMode {
 
   private def computeCombine[K, V](combine: Combine[K, V])(implicit conf: ScoobiConfiguration): Vector[(K, V)] = {
     val in: Vector[(K, Iterable[V])] = computeArr(combine.in)
-    val vec = in map { case (k, vs) => (k, vs.reduce(combine.f)) }
+    val vec = in map (_ :-> (_.reduce(combine.f)))
     logger.debug("computeCombine: " + vec)
     vec
   }
