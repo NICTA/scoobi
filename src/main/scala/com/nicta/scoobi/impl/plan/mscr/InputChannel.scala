@@ -91,7 +91,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     gbks.collect(isAGroupByKey).toSeq ++ nonGbks.filterNot(isMaterialize).flatMap(groupByKeysUses)
   }
 
-  lazy val lastMappers: Seq[ParallelDo[_,_,_]] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]))
+  lazy val lastMappers: Seq[ParallelDo[_,_,_]] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]) && mappers.contains(m.parent[CompNode]))
 
   lazy val mappers: Seq[ParallelDo[_,_,_]] = mappersUses(sourceNode)
   lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = attr { case node =>
