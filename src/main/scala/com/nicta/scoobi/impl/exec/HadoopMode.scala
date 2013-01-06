@@ -34,7 +34,8 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     logger.debug("Raw nodes\n"+pretty(node))
     logger.debug("Raw graph\n"+showGraph(node))
 
-    val optimised = initAttributable(optimise(node))
+    val optimised = reinitAttributable(optimise(node))
+    resetMemo()
     logger.debug("Optimised nodes\n"+pretty(optimised))
     logger.debug("Optimised graph\n"+showGraph(optimised))
     optimised

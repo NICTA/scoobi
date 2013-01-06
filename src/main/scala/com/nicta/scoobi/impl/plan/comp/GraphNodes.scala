@@ -99,11 +99,10 @@ trait GraphNodes extends Attribution {
 
   /** initialize the Kiama attributes but only if they haven't been set before */
   protected def initAttributable[A <: Attributable](a: A): A  = {
-    if (a.children == null || !a.children.hasNext) {
-      initTree(a)
-    }
-    a
+    if (a.children == null || !a.children.hasNext) reinitAttributable(a)
+    else                                           a
   }
+  protected def reinitAttributable[A <: Attributable](a: A): A  = { initTree(a); a }
 
 }
 

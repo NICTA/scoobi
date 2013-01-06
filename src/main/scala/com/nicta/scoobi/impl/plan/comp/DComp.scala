@@ -53,7 +53,7 @@ case class ParallelDo[A, B, E](
     dofn.unsafeProcess(env, value, emitter)
     dofn.unsafeCleanup(env, emitter)
   }
-  def reduce[K, V](key: K, values: UntaggedValues[V], emitter: Emitter[B])(implicit configuration: Configuration) {
+  def unsafeReduce(key: Any, values: Any, emitter: Emitter[B])(implicit configuration: Configuration) {
     dofn.process(environment(ScoobiConfigurationImpl(configuration)).pull, (key, values).asInstanceOf[A], emitter)
   }
   def cleanup(emitter: Emitter[B])(implicit configuration: Configuration) { dofn.cleanup(environment(ScoobiConfigurationImpl(configuration)).pull, emitter) }

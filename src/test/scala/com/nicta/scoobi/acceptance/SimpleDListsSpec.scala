@@ -63,7 +63,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   "13. join + pd + gbk + pd" in { implicit sc: SC =>
     val list = (DList("a").materialize.map(_.mkString) join DList("b")).groupByKey.map { case (k, v) => (k, v) }
 
-    normalize(list.materialize.run) === "Vector((a,Vector(b)))"
+    normalise(list.materialize.run) === "Vector((a,Vector(b)))"
   }
   "14. gbk1 with reducer + gbk2 with output feeding gbk1" >> { implicit sc: SC =>
     val l0 = DList((1, "a"))
@@ -71,15 +71,25 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val l2 = l0.groupByKey.map { case (i, as) => "b" }.materialize
     val l3 = (l2 join l1).filter(_ => true)
 
-    normalize(l1.run) === "Vector((1,Vector(a)))"
-    normalize(l3.run) === "Vector((Vector(b),(1,Vector(a))))"
+    normalise(l1.run) === "Vector((1,Vector(a)))"
+    normalise(l3.run) === "Vector((Vector(b),(1,Vector(a))))"
   }
-  "15. " >> { implicit sc: SC =>
+  "15. 2 flattened parallelDos + gbk + reducer" >> { implicit sc: SC =>
+    val (l1, l2) = (DList((1, "hello")), DList((1, "world")))
+    val l3 = (l1 ++ l2).groupByKey.filter(_ => true).filter(_ => true)
+    normalise(l3.run) === "Vector((1,Vector(hello, world)))"
+  }
+  "16. joinFullOuter" >> { implicit sc: SC =>
     val words = DList("apple", "orchard", "banana", "cat", "dancer")
     val letters = DList('a' -> 1, 'o' -> 4)
 
     val grouped = words.groupBy(word => word.headOption.getOrElse('X'))
-    letters.joinFullOuter(grouped).run must not(throwAn[Exception])
+    normalise(letters.joinFullOuter(grouped).run) ===
+      "Vector((a,(None,Some(Vector(apple)))), (b,(None,Some(Vector(banana)))), (c,(None,Some(Vector(cat)))), (d,(None,Some(Vector(dancer)))), (o,(None,Some(Vector(orchard)))))"
+  }
+  "17. parallelDo + gbk + combine + parallelDo + gbk + reducer" >> { implicit sc: SC =>
+    val l1 = DList((1, "hello")).groupByKey.combine((_:String)+(_:String)).map(_ => (1, "hello")).groupByKey.filter(_ => true)
+    normalise(l1.run) === "Vector((1,Vector(hello)))"
   }
 
 }

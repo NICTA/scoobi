@@ -32,7 +32,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
     import Gen._
     implicit lazy val arbitraryCompNode: Arbitrary[CompNode]       = Arbitrary(arbitraryDList.arbitrary.map(_.getComp))
-    implicit lazy val arbitraryDList: Arbitrary[DList[String]]     = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalize))))
+    implicit lazy val arbitraryDList: Arbitrary[DList[String]]     = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalise))))
     implicit lazy val arbitraryDObject: Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
 
     implicit lazy val groupByKey: Arbitrary[GroupByKey[_,_]] =
@@ -52,7 +52,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
     /** objects of elements with a simple type A */
     def genObject(depth: Int = 1): Gen[DObject[String]] =
       if (depth <= 1) DObjects[String]("start")
-      else            Gen.oneOf(genList(depth - 1).map(l => l.materialize.map(normalize)),
+      else            Gen.oneOf(genList(depth - 1).map(l => l.materialize.map(normalise)),
                                 ^(genObject(depth / 2), genObject(depth / 2))((_ join _)).map(o => o.map(_.toString))).memo
 
     /** lists of elements with a type (K, V) */
@@ -76,7 +76,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
      * The elements inside the iterables are also sorted in alphanumeric order because they could be produced in
      * a different order
      */
-    def normalize(result: Any) = rewrite {
+    def normalise(result: Any) = rewrite {
       everywherebu(rule {
         case iterable: Iterable[_] => Vector(iterable.iterator.toSeq.sortBy(_.toString):_*)
         case other                 => other
