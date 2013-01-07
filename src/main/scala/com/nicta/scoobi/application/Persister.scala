@@ -47,6 +47,30 @@ trait Persister[In] {
   type Out
   def apply(in: In, conf: ScoobiConfiguration): Out
 
+  def map[Out2](f: Out => Out2): Persister[In] =
+    new Persister[In] {
+      type Out = Out2
+
+      def apply(in: In, conf: ScoobiConfiguration) =
+        f(Persister.this apply (in, conf))
+    }
+
+  def contramap[In2](f: In2 => In): Persister[In2] =
+    new Persister[In2] {
+      type Out = Persister.this.Out
+
+      def apply(in: In2, conf: ScoobiConfiguration) =
+        Persister.this apply (f(in), conf)
+    }
+
+  def ***[In2](p: Persister[In2]): Persister[(In, In2)] =
+    new Persister[(In, In2)] {
+      type Out = (Persister.this.Out, p.Out)
+      def apply(in: (In, In2), conf: ScoobiConfiguration) =
+        (Persister.this apply (in._1, conf), p apply (in._2, conf))
+
+    }
+
 }
 
 /** Persister type class instances for tuples. */
