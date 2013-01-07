@@ -44,6 +44,7 @@ trait InputChannel extends Channel {
   def keyTypes: KeyTypes
   def valueTypes: ValueTypes
   def source: Source
+  def sourceNode: CompNode
   def inputNodes: Seq[CompNode]
   // seq of tags that this channel leads to
   def tags: Seq[Int]
@@ -97,7 +98,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = attr { case node =>
     val (pds, _) = nodes.uses(node).partition(isParallelDo)
     pds.collect(isAParallelDo).toSeq ++ pds.filter { pd =>
-      isParallelDo(pd.parent[CompNode]) && !pd.parent.asInstanceOf[ParallelDo[_,_,_]].ins.collect(isAParallelDo).exists(nodes.isReducer)
+      (isParallelDo && !isFloating)(pd.parent[CompNode]) && !pd.parent.asInstanceOf[ParallelDo[_,_,_]].ins.collect(isAParallelDo).exists(nodes.isReducer)
     }.flatMap(mappersUses)
   }
 
@@ -159,6 +160,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
 }
 
 case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None) extends InputChannel {
+  val sourceNode = input
   override def equals(a: Any) = a match {
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false

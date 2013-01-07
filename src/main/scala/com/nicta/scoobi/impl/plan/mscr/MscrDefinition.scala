@@ -19,7 +19,7 @@ trait MscrsDefinition extends Layering {
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
-                                   !isReducer(pd) && descendents(pd).forall(!isFloating)
+                                   !isReducer(pd) && (descendents(pd).forall(!isFloating) || descendents(pd.env).exists(isGroupByKey))
     case other                 => false
   }
 
@@ -51,7 +51,8 @@ trait MscrsDefinition extends Layering {
       // create Mscr for each set of channels with common tags
       channelsWithCommonTags.map { taggedInputChannels =>
         val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
-        Mscr(taggedInputChannels, out.filter(o => correspondingOutputTags.contains(o.tag)))
+        val outputChannels = out.filter(o => correspondingOutputTags.contains(o.tag))
+        Mscr(taggedInputChannels, if (outputChannels.isEmpty) taggedInputChannels.map(_.sourceNode).collect { case pd: ParallelDo[_,_,_] => BypassOutputChannel(pd) } else outputChannels)
       }
     }
   }
