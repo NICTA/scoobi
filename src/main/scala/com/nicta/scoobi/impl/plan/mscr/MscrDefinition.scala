@@ -19,7 +19,7 @@ trait MscrsDefinition extends Layering {
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
-                                   !isReducer(pd) && pd.ins.forall(!isFloating)
+                                   !isReducer(pd) && descendents(pd).forall(!isFloating)
     case other                 => false
   }
 
@@ -122,10 +122,11 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val isReducer: ParallelDo[_,_,_] => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1(GroupByKey1(_)) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd)
-    case pd @ ParallelDo1(GroupByKey1(_) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd)
+    case pd @ ParallelDo1(Combine1((gbk: GroupByKey[_,_])) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !isMaterialize(pd.env)
+    case pd @ ParallelDo1((gbk: GroupByKey[_,_]) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !isMaterialize(pd.env)
     case _                                                  => false
   }
+
 }
 
 /**
@@ -147,6 +148,11 @@ trait Layering extends ShowNode {
 
   lazy val selectedDescendents: CompNode => Seq[T] = attr("selected descendents") { case n =>
     (n -> descendents).collect(select)
+  }
+
+  /** @return the layer that a selected node is in. None if this is not a selected node */
+  lazy val layer: CompNode => Option[Layer[T]] = attr("layer") { case n =>
+    layers(root(n)).find(_.nodes.contains(n))
   }
 
   lazy val layers: CompNode => Seq[Layer[T]] = attr("layers") { case n =>
