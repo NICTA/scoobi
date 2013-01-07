@@ -62,5 +62,5 @@ class MscrReducer[K2, V2, B, E, K3, V3] extends HReducer[TaggedKey, TaggedValue,
 }
 
 case class UntaggedValues[T](tag: Int, values: java.lang.Iterable[TaggedValue]) extends Iterable[T] {
-  lazy val iterator = values.iterator map (_.get(tag).asInstanceOf[T])
+  def iterator = values.iterator map (_.get(tag).asInstanceOf[T])
 }

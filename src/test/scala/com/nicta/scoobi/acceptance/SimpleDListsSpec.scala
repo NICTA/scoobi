@@ -8,6 +8,7 @@ import com.nicta.scoobi.impl.plan.comp.factory._
 import impl.plan.comp.CompNodeData
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
+  sequential
 
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
@@ -83,9 +84,9 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val words = DList("apple", "orchard", "banana", "cat", "dancer")
     val letters = DList('a' -> 1, 'o' -> 4)
 
-    val grouped = words.groupBy(word => word.headOption.getOrElse('X'))
+    val grouped = words.groupBy(word => word.head)
     normalise(letters.joinFullOuter(grouped).run) ===
-      "Vector((a,(None,Some(Vector(apple)))), (b,(None,Some(Vector(banana)))), (c,(None,Some(Vector(cat)))), (d,(None,Some(Vector(dancer)))), (o,(None,Some(Vector(orchard)))))"
+      "Vector((a,(Some(1),Some(Vector(apple)))), (b,(None,Some(Vector(banana)))), (c,(None,Some(Vector(cat)))), (d,(None,Some(Vector(dancer)))), (o,(Some(4),Some(Vector(orchard)))))"
   }
   "17. parallelDo + gbk + combine + parallelDo + gbk + reducer" >> { implicit sc: SC =>
     val l1 = DList((1, "hello")).groupByKey.combine((_:String)+(_:String)).map(_ => (1, "hello")).groupByKey.filter(_ => true)
@@ -105,7 +106,23 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   }
   "20. nested parallelDos" >> { implicit sc: ScoobiConfiguration =>
     def list1 = new DListImpl[String](load).map(_.partition(_ > 'a')).map(_.toString)
-    normalise(list1.run) === "Vector(strt)"
+    normalise(list1.run) === "Vector((strt,a))"
+  }
+  "21. more nested parallelDos" >> { implicit sc: ScoobiConfiguration =>
+    def list1 = new DListImpl[String](load).map(_.partition(_ > 'a'))
+    val (l1, l2) = (list1, list1)
+    normalise((l1 ++ l2).filter(_ => true).run) === "Vector((strt,a), (strt,a))"
+  }
+  "22. parallelDo + combine" >> { implicit sc: ScoobiConfiguration =>
+    val (l1, l2) = (new DListImpl[String](load).map(_.partition(_ > 'a')), new DListImpl[String](load).map(_.partition(_ > 'a')))
+    val l3 = l1.map { case (k, v) => (k, Seq.fill(2)(v)) }.combine((_:String) ++ (_:String))
+    val l4 = (l2 ++ l3).map(_.toString)
+    normalise(l4.run) === "Vector((strt,a), (strt,aa))"
+  }
+  "23. (pd + pd) + gbk + reducer" >> { implicit sc: ScoobiConfiguration =>
+    def list = new DListImpl[String](pd(load, load))
+    val l3 = list.filter(_ => true).filter(_ => true)
+    normalise(l3.run) === "Vector(start, start)"
   }
 
 }

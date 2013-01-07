@@ -92,7 +92,9 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     gbks.collect(isAGroupByKey).toSeq ++ nonGbks.filterNot(isMaterialize).flatMap(groupByKeysUses)
   }
 
-  lazy val lastMappers: Seq[ParallelDo[_,_,_]] = mappers.filterNot(m => isParallelDo(m.parent[CompNode]) && mappers.contains(m.parent[CompNode]))
+  lazy val lastMappers: Seq[ParallelDo[_,_,_]] =
+    if (mappers.size <= 1) mappers
+    else                   mappers.filterNot(m => isParallelDo(m.parent[CompNode]) && mappers.contains(m.parent[CompNode]))
 
   lazy val mappers: Seq[ParallelDo[_,_,_]] = mappersUses(sourceNode)
   lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = attr { case node =>
@@ -143,7 +145,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
           else                      mapper.ins.filter(n => nodes.transitiveUses(sourceNode).contains(n) || (sourceNode == n)).head
         }
 
-        if (nodes.uses(mapper).forall(isParallelDo)) {
+        if (mappers.size > 1 && nodes.uses(mapper).forall(isParallelDo && !isFloating)) {
           val vb = new VectorBuilder[Any]
           mapper.unsafeMap(mappedValue, new Emitter[Any] { def emit(v: Any) { vb += v } })
           vb.result.head

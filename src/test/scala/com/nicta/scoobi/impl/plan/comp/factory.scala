@@ -22,7 +22,7 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   override def op(in1: CompNode, in2: CompNode)                     = init(super.op(in1, in2))
   override def parallelDo(in: CompNode)                             = init(super.parallelDo(in))
   override def pd(ins: CompNode*): ParallelDo[String,String,String] = init(super.pd(ins:_*))
-  override def pd(in: CompNode, env: CompNode): ParallelDo[String,String,String] = init(super.pd(in, env))
+  override def pdWithEnv(in: CompNode, env: CompNode): ParallelDo[String,String,String] = init(super.pdWithEnv(in, env))
 
   /** show before and after the optimisation */
   def optimisation(node: CompNode, optimised: CompNode) =

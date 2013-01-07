@@ -18,14 +18,14 @@ import core.DList
 import com.nicta.scoobi.Scoobi._
 
 class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
-
+  sequential
   "A DList must return an equivalent result, whether it's executed in memory or locally" >> prop { (l1: DList[String]) =>
     compareExecutions(l1)
   }.set(minTestsOk -> 40)
 
   def compareExecutions(l1: DList[String]) = {
-    val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
+    val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
 
     locally must haveTheSameElementsAs(inMemory)
 

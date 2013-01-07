@@ -20,8 +20,13 @@ trait MscrsDefinition extends Layering {
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
                                    !isReducer(pd) &&
-                                  (!descendentsUntil(isMaterialize)(pd).exists(isFloating) || descendents(pd.env).exists(isGroupByKey))
+                                  (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey))
     case other                 => false
+  }
+
+  private def isInsideMapper(pd: ParallelDo[_,_,_]) = {
+    val pdDescendents = descendentsUntil(isMaterialize)(pd).collect(isAParallelDo)
+    !pdDescendents.isEmpty && pdDescendents.forall(isFloating)
   }
 
   /** all the mscrs for a given layer */
