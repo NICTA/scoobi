@@ -28,27 +28,17 @@ package control
  */
 private[scoobi]
 trait Exceptions {
-  /**
-   * this implicit avoids having to pass a function when no effect is desired on the Exception being thrown (on the tryo method for example)
-   */
-  private val noExceptionHandler = (e: Exception) => ()
 
   /**
    * try to evaluate an expression, returning an Option
-   *
-   * A function Exception => Unit can be used as a side-effect to print the exception
-   * to the console for example.
    *
    * The 'tryo' name comes from the lift project: http://liftweb.net
    *
    * @return None if there is an exception, or Some(value)
    */
-  def tryo[T](a: =>T)(implicit handler: Exception => Unit = noExceptionHandler): Option[T] = {
+  def tryo[T](a: =>T): Option[T] = {
     try { Some(a) }
-    catch { case e: Exception => {
-      handler(e)
-      None
-    }}
+    catch { case e: Exception => None }
   }
   /**
    * try to evaluate an expression, returning a value T
