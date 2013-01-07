@@ -69,8 +69,8 @@ The Exceptions trait provides functional ways to catch exceptions and deal with 
 
   def boom = { error("boom"); "a" }
 
-  def tryo1 = tryo("a") must_== Some("a")
-  def tryo2 = tryo(boom) must_== None
+  def tryo1 = tryo("a") must_== Right("a")
+  def tryo2 = tryo(boom).right.toOption must_== None
 
   def tryOr1 = tryOr("a")((e:Exception) => e.getMessage) must_== "a"
   def tryOr2 = tryOr(boom)((e:Exception) => "bang") must_== "bang"

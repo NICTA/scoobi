@@ -121,7 +121,7 @@ trait Configurations {
      * @see FunctionInput
      */
     def incrementRegex(key: String, keyRegex: String): Int = synchronized {
-      val value = conf.getValByRegex(keyRegex).values().toList.map(s => tryo(s.toInt)).flatten.sorted.lastOption.getOrElse(0) + 1
+      val value = conf.getValByRegex(keyRegex).values().toList.map(s => tryo(s.toInt).right.toOption).flatten.sorted.lastOption.getOrElse(0) + 1
       conf.setInt(key, value)
       value
     }
