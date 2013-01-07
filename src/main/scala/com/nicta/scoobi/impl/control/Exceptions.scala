@@ -31,7 +31,7 @@ trait Exceptions {
   /**
    * this implicit avoids having to pass a function when no effect is desired on the Exception being thrown (on the tryo method for example)
    */
-  implicit def implicitUnit[T](t: T) {}
+  private val noExceptionHandler = (e: Exception) => ()
 
   /**
    * try to evaluate an expression, returning an Option
@@ -43,10 +43,10 @@ trait Exceptions {
    *
    * @return None if there is an exception, or Some(value)
    */
-  def tryo[T](a: =>T)(implicit f: Exception => Unit): Option[T] = {
+  def tryo[T](a: =>T)(implicit handler: Exception => Unit = noExceptionHandler): Option[T] = {
     try { Some(a) }
     catch { case e: Exception => {
-      f(e)
+      handler(e)
       None
     }}
   }
@@ -56,8 +56,8 @@ trait Exceptions {
    * If the expression throws an Exception a function f is used to return a value
    * of the expected type.
    */
-  def tryOr[T](a: =>T)(implicit f: Exception => T): T = {
-    trye(a)(f).fold(identity, identity)
+  def tryOr[T](a: =>T)(implicit handler: Exception => T): T = {
+    trye(a)(handler).fold(identity, identity)
   }
   /**
    * try to evaluate an expression, returning a value T
