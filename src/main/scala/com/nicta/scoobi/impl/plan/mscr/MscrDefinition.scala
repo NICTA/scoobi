@@ -19,7 +19,8 @@ trait MscrsDefinition extends Layering {
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
-                                   !isReducer(pd) && (descendents(pd).forall(!isFloating) || descendents(pd.env).exists(isGroupByKey))
+                                   !isReducer(pd) &&
+                                  (!descendentsUntil(isMaterialize)(pd).exists(isFloating) || descendents(pd.env).exists(isGroupByKey))
     case other                 => false
   }
 
@@ -63,13 +64,6 @@ trait MscrsDefinition extends Layering {
       layer.gbks.map(gbk => gbkOutputChannel(gbk))
     }
   }
-
-//  /** create a bypass output channel for each parallel do which is an input of a layer but having outputs outside of the layer */
-//  lazy val bypassOutputChannels: Layer[T] => Seq[OutputChannel] = attr("bypass output channels") { case layer =>
-//    layerInputs(layer).collect { case pd: ParallelDo[_,_,_] if outputs(pd).filterNot(layerNodes(layer).contains).nonEmpty =>
-//      BypassOutputChannel(pd)
-//    }
-//  }
 
   private def gbkOutputChannel(gbk: GroupByKey[_,_]): GbkOutputChannel = {
     val gbkParents = (gbk -> parents).toList

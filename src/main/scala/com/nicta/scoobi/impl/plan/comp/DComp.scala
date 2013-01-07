@@ -76,7 +76,7 @@ case class ParallelDo[A, B, E](
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "ParallelDo ("+id+")[" + (wfa, wfb, wfe) + "] env: " + env
+  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, wfe).mkString(",") + "] env: " + env
 
   def fuse[C, F](p2: ParallelDo[_, C, F])
                 (implicit wfc: WireFormat[C],
@@ -133,7 +133,7 @@ case class Combine[K , V](in: CompNode, f: (V, V) => V,
   override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
   lazy val wf = wireFormat[(K, V)]
-  override val toString = "Combine ("+id+")["+(wfk, wfv)+"]"
+  override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
   def combine = f
   /**
@@ -170,7 +170,7 @@ case class GroupByKey[K, V](in: CompNode,
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  override val toString = "GroupByKey ("+id+")["+(wfk, wfv)+"]"
+  override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
 }
 object GroupByKey1 {

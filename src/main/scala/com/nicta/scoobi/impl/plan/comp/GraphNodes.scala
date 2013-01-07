@@ -38,6 +38,10 @@ trait GraphNodes extends Attribution {
     (children(node) ++ children(node).flatMap(descendents)).distinct
   }
 
+  lazy val descendentsUntil: (T => Boolean) => T => Seq[T] = paramAttr("descendentsUntil") { (predicate: (T => Boolean)) => (node: T) =>
+    children(node).filterNot(predicate) ++ children(node).filterNot(predicate).flatMap(descendentsUntil(predicate)).distinct
+  }
+
   /** compute the parents of a node, that is all the chain of parents from this node up to the root of the graph */
   lazy val parents : T => Seq[T] = attr("parents") { case node =>
     val p = parent(node).toSeq
