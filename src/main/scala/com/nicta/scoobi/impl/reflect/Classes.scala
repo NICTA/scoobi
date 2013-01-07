@@ -97,10 +97,14 @@ trait Classes {
 
   private def loadClassOption[T](name: String): Option[Class[T]] =
     Seq(getClass.getClassLoader, ClassLoader.getSystemClassLoader).view.map { loader =>
-      tryo(loader.loadClass(name).asInstanceOf[Class[T]]){ e =>
-        e.debug(ex => "could not load class "+name+" with classloader "+loader+" because "+e.getMessage)
-        Option(e.getCause).foreach(_.debug(c => "caused by "+c.getMessage))
-        e.getStackTrace.foreach(st => st.debug(""))
+      trye(loader.loadClass(name).asInstanceOf[Class[T]]) match {
+        case Right(r) => Some(r)
+        case Left(e)  => {
+          e.debug(ex => "could not load class "+name+" with classloader "+loader+" because "+e.getMessage)
+          Option(e.getCause).foreach(_.debug(c => "caused by "+c.getMessage))
+          e.getStackTrace.foreach(st => st.debug(""))
+          None
+        }
       }
     }.flatten.headOption
 }
