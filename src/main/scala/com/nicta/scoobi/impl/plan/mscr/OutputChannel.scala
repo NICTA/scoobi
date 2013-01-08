@@ -13,6 +13,7 @@ import org.apache.hadoop.conf.Configuration
 import rtt.TaggedKey
 import mapreducer.{ChannelOutputFormat, UntaggedValues}
 import ChannelOutputFormat._
+import org.apache.hadoop.io.compress.CompressionCodec
 
 trait OutputChannel extends Channel {
   lazy val id: Int = UniqueId.get
@@ -58,9 +59,10 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
   def tag = groupByKey.id
   def setup(implicit configuration: Configuration) { reducer.foreach(_.setup) }
 
-  def createEmitter[K, V, B](channelOutput: ChannelOutputFormat) = new Emitter[B] {
+  def createEmitter[K, V, B](channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new Emitter[B] {
     def emit(x: B)  {
       sinks.zipWithIndex foreach { case (sink, i) =>
+        sink.configureCompression(configuration)
         channelOutput.write(tag, i, sink.outputConverter.asInstanceOf[OutputConverter[K, V, B]].toKeyValue(x))
       }
     }
@@ -116,9 +118,10 @@ case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChan
 
   def setup(implicit configuration: Configuration) { output.setup }
 
-  def createEmitter[K, V, B](channelOutput: ChannelOutputFormat) = new Emitter[B] {
+  def createEmitter[K, V, B](channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new Emitter[B] {
     def emit(x: B)  {
       sinks.zipWithIndex foreach { case (sink, i) =>
+        sink.configureCompression(configuration)
         channelOutput.write(tag, i, sink.outputConverter.asInstanceOf[OutputConverter[K, V, B]].toKeyValue(x))
       }
     }

@@ -147,7 +147,7 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr()) {
 
     mscr.outputChannels.foreach { out =>
       out.sinks.zipWithIndex.foreach { case (sink, i) =>
-        ChannelOutputFormat.addOutputChannel(sink.configureCompression(job), out.tag, i, sink)
+        ChannelOutputFormat.addOutputChannel(job, out.tag, i, sink)
       }
     }
 

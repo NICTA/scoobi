@@ -173,7 +173,7 @@ case class InMemoryMode() extends ShowNode {
       job.setOutputKeyClass(sink.outputKeyClass)
       job.setOutputValueClass(sink.outputValueClass)
       job.getConfiguration.set("mapreduce.output.basename", "ch0out0")  // Attempting to be consistent
-      sink.configureCompression(job)
+      sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
       val tid = new TaskAttemptID()

@@ -8,6 +8,7 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.conf.Configuration
 
 /* An output store from a MapReduce job. */
 trait DataSink[K, V, B] extends Sink { outer =>
@@ -38,16 +39,16 @@ trait DataSink[K, V, B] extends Sink { outer =>
     def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = outer.outputConfigure(job)
     def outputConverter: OutputConverter[K, V, B]                   = outer.outputConverter
     /** configure the job so that the output is compressed */
-    override def configureCompression(job: Job) = {
-      job.getConfiguration.set("mapred.output.compress", "true")
-      job.getConfiguration.set("mapred.output.compression.type", compressionType.toString())
-      job.getConfiguration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
-      job
+    override def configureCompression(configuration: Configuration) = {
+      configuration.set("mapred.output.compress", "true")
+      configuration.set("mapred.output.compression.type", compressionType.toString())
+      configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
+      this
     }
   }
 
   /** configure the compression for a given job */
-  def configureCompression(job: Job) = job
+  def configureCompression(configuration: Configuration) = this
 
   /** @return the output path of this sink */
   def outputPath(implicit sc: ScoobiConfiguration) = {
@@ -75,14 +76,17 @@ trait Sink {
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
   def outputConverter: OutputConverter[_,_,_]
   def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): Sink
-  def configureCompression(job: Job): Job
+  def configureCompression(configuration: Configuration): Sink
   def outputPath(implicit sc: ScoobiConfiguration): Option[Path]
 
   def compress = compressWith(new GzipCodec)
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = outputCompression(codec)
 
-  private[scoobi] def isCompressed =
-    configureCompression(new Job).getConfiguration.getBoolean("mapred.output.compress", false)
+  private[scoobi] def isCompressed = {
+    val configuration = new Configuration
+    configureCompression(configuration)
+    configuration.getBoolean("mapred.output.compress", false)
+  }
 
   private [scoobi]
   def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_])
