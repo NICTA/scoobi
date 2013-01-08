@@ -124,5 +124,10 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val l3 = list.filter(_ => true).filter(_ => true)
     normalise(l3.run) === "Vector(start, start)"
   }
+  "24. join on a gbk" >> { implicit sc: ScoobiConfiguration =>
+    val l1 = DList("hello").materialize
+    val l2 = l1 join DList("a" -> "b").groupByKey.map(_.toString)
+    normalise(l2.run) === "Vector((Vector(hello),(a,Vector(b))))"
+  }
 
 }

@@ -19,7 +19,7 @@ trait MscrsDefinition extends Layering {
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
                                    !isReducer(pd) &&
-                                  (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey))
+                                  (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
     case other                 => false
   }
 
@@ -27,6 +27,9 @@ trait MscrsDefinition extends Layering {
     val pdDescendents = descendentsUntil(isMaterialize)(pd).collect(isAParallelDo)
     !pdDescendents.isEmpty && pdDescendents.forall(isFloating)
   }
+
+  private def hasMaterialisedEnv(pd: ParallelDo[_,_,_]) =
+    descendentsUntil(isGroupByKey || isParallelDo)(pd.env).exists(isMaterialize)
 
   /** all the mscrs for a given layer */
   lazy val mscrs: Layer[T] => Seq[Mscr] =
@@ -127,8 +130,8 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val isReducer: ParallelDo[_,_,_] => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey[_,_])) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !isMaterialize(pd.env)
-    case pd @ ParallelDo1((gbk: GroupByKey[_,_]) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !isMaterialize(pd.env)
+    case pd @ ParallelDo1(Combine1((gbk: GroupByKey[_,_])) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd @ ParallelDo1((gbk: GroupByKey[_,_]) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
     case _                                                  => false
   }
 

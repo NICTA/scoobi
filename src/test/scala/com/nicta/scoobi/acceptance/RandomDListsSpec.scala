@@ -21,7 +21,7 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
   sequential
   "A DList must return an equivalent result, whether it's executed in memory or locally" >> prop { (l1: DList[String]) =>
     compareExecutions(l1)
-  }.set(minTestsOk -> 40)
+  }.set(minTestsOk -> 100)
 
   def compareExecutions(l1: DList[String]) = {
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
