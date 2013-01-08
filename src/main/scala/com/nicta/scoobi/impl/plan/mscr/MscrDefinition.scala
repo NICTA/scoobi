@@ -34,7 +34,13 @@ trait MscrsDefinition extends Layering {
 
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
-    val in = floatingParallelDos(layer).flatMap(_.ins).map(MapperInputChannel(_))
+    // make a first pass to get the first source nodes
+    val in1 = floatingParallelDos(layer).flatMap(_.ins).map(MapperInputChannel(_))
+    // get the possible other source nodes for "inner mappers"
+    val allMappers = in1.flatMap(_.mappers)
+    val allPotentialSources = allMappers.flatMap(_.ins)
+    val sources = allPotentialSources.filterNot(allMappers.contains)
+    val in = sources.map(MapperInputChannel(_))
     val out = in.flatMap(_.lastMappers.map(BypassOutputChannel(_))).distinct
     makeMscrs(in, out)
   }

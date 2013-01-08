@@ -27,6 +27,13 @@ trait Optimiser extends CompNodes with Rewriter {
   })
 
   /**
+   * add a simple parallelDo node if a Load goes directly to a Materialise, to allow the creation of at least a simple Mscr
+   */
+  def materialiseLoad = everywhere(rule {
+    case mt @ Materialize(ld: Load[_], _, _) => mt.debug("materialiseLoad").copy(in = ParallelDo.create(ld)(ld.wf))
+  })
+
+  /**
    * Nested ParallelDos must be fused but only if pd1 is not used anywhere else
    *
    *    pd1 @ ParallelDo
@@ -47,6 +54,7 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   def allStrategies(outputs: Seq[CompNode]) =
     attempt(parDoFuse(pass = 1)      ) <*
+    attempt(materialiseLoad          ) <*
     attempt(combineToParDo           ) <*
     attempt(parDoFuse(pass = 2)      )
 

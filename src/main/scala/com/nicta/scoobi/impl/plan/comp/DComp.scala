@@ -114,6 +114,14 @@ object ParallelDo {
   def fuseEnv[F : WireFormat, G : WireFormat](fExp: CompNode, gExp: CompNode): DComp[(F, G)] =
     Op(fExp, gExp, (f: F, g: G) => (f, g), wireFormat[(F, G)])
 
+  private[scoobi]
+  def create[A](ins: CompNode*)(implicit wf: WireFormat[A]) =
+    ParallelDo[A, A, Unit](
+      ins,
+      UnitDObject.newInstance.getComp,
+      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
+      wf, wf, wireFormat[Unit])
+
 }
 object ParallelDo1 {
   /** extract only the incoming node of this parallel do */

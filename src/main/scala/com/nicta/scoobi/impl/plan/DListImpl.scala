@@ -76,13 +76,5 @@ class DListImpl[A](comp: DComp[A])(implicit val wf: WireFormat[A]) extends DList
 private[scoobi]
 object DListImpl {
   def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = new DListImpl(Load(source, wf))
-  def apply[A](ins: Seq[CompNode])(implicit wf: WireFormat[A]): DListImpl[A] =  {
-    new DListImpl[A](
-      ParallelDo[A, A, Unit](
-        ins,
-        UnitDObject.newInstance.getComp,
-        new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
-        wf, wf, wireFormat[Unit]))
-  }
-
+  def apply[A](ins: Seq[CompNode])(implicit wf: WireFormat[A]): DListImpl[A] =  new DListImpl[A](ParallelDo.create(ins:_*)(wf))
 }

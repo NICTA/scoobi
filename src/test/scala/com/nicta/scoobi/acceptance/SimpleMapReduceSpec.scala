@@ -24,16 +24,16 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
   sequential
 
   section("issue #25")
-  "persisting a file without any transformation must not crash" >> { implicit c: SC =>
+  "persisting a file without any transformation must not crash" >> { implicit sc: SC =>
     fromInput("first", "example").run must_== Seq("first", "example")
   }
-  "persisting a file with a simple map must not crash" >> { implicit c: SC =>
+  "persisting a file with a simple map must not crash" >> { implicit sc: SC =>
     fromInput("second", "example").map(_.size).run must_== Seq(6, 7)
   }
   section("issue #25")
 
   tag("issue #83")
-  "Concatenating multiple DLists results in a single DList with all elements" >> { implicit c: SC =>
+  "Concatenating multiple DLists results in a single DList with all elements" >> { implicit sc: SC =>
 
     val xs = (1 to 4).toList
     val ys = (5 to 8).toList
@@ -42,30 +42,30 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
   }
 
   section("issue #60")
-  "Persisting an empty list shouldn't fail" >> { implicit c: SC =>
+  "Persisting an empty list shouldn't fail" >> { implicit sc: SC =>
     val list = DList[String]()
     list.run must beEmpty
   }
-  "Persisting a DList which becomes empty after filtering shouldn't fail" >> { implicit c: SC =>
+  "Persisting a DList which becomes empty after filtering shouldn't fail" >> { implicit sc: SC =>
     val list = DList(1 -> "one", 2 -> "two", 3 -> "three").filter(_ => false).groupByKey.groupByKey
     list.run must beEmpty
   }
   section("issue #60")
 
   tag("issue #75")
-  "Concatenating to an empty list shouldn't fail" >> { implicit c: SC =>
+  "Concatenating to an empty list shouldn't fail" >> { implicit sc: SC =>
     val list = DList[String]() ++ fromInput("hello", "world")
     list.run must_== Seq("hello", "world")
   }
 
   tag("issue #105")
-  "Fail M/R job when task fails" >> { implicit c: SC =>
+  "Fail M/R job when task fails" >> { implicit sc: SC =>
      fromInput("hello", "world").
-        map[String](_ => throw new RuntimeException("forcing a failure in the mapper")).run must throwA[JobExecException].unless(c.isInMemory)
+        map[String](_ => throw new RuntimeException("forcing a failure in the mapper")).run must throwA[JobExecException].unless(sc.isInMemory)
   }
 
-  "We can materialize a DList with more than 1 reducer" >> { implicit c: SC =>
-    c.setMinReducers(2)
+  "We can materialize a DList with more than 1 reducer" >> { implicit sc: SC =>
+    sc.setMinReducers(2)
     val xs = (1 to 10).toList
     xs.toDList.run.sorted must_== xs.toSeq
   }
