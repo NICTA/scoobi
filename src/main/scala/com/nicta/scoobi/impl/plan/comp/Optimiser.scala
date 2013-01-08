@@ -45,7 +45,7 @@ trait Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse(pass: Int) = repeat(sometd(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty && !hasBeenExecuted(p1) && !hasBeenExecuted(p2) =>
+    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty =>
       p1.debug("parDoFuse (pass "+pass+") ").fuse(p2)(p2.wf.asInstanceOf[WireFormat[Any]], p2.wfe)
   }))
 
@@ -66,43 +66,14 @@ trait Optimiser extends CompNodes with Rewriter {
 
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
-    case n: Op[_,_,_]         => updateCopy(n, n.copy())
-    case n: Materialize[_]    => updateCopy(n, n.copy())
-    case n: GroupByKey[_,_]   => updateCopy(n, n.copy())
-    case n: Combine[_,_]      => updateCopy(n, n.copy())
-    case n: ParallelDo[_,_,_] => updateCopy(n, n.copy())
-    case n: Load[_]           => updateCopy(n, n.copy())
-    case n: Return[_]         => updateCopy(n, n.copy())
+    case n: Op[_,_,_]         => n.copy()
+    case n: Materialize[_]    => n.copy()
+    case n: GroupByKey[_,_]   => n.copy()
+    case n: Combine[_,_]      => n.copy()
+    case n: ParallelDo[_,_,_] => n.copy()
+    case n: Load[_]           => n.copy()
+    case n: Return[_]         => n.copy()
   }))(node)
-
-  /** mark the original node as 'optimised' and return the copy of the node */
-  private def updateCopy(original: CompNode, copy: CompNode) = {
-    if (executed.hasBeenComputedAt(original))
-      executed(copy)
-    copy
-  }
-
-  override protected def dup[T <: Product] (t : T, children : Array[AnyRef]) : T = {
-    t match {
-      case original: CompNode => {
-        val duplicated = super.dup(t, children)
-        updateCopy(original, duplicated.asInstanceOf[CompNode])
-        duplicated
-      }
-      case other => super.dup(t, children)
-    }
-  }
-
-  /**
-   * simple attribute to mark a node as executed
-   * By calling executed.hasBeenComputed(node) we can know if a node has been optimised or not, hence executed afterwards
-   */
-  protected lazy val executed: CachedAttribute[CompNode, CompNode] = attr("executed") { case n: CompNode => n }
-
-  /** @return true if a node has been executed */
-  protected def hasBeenExecuted(n: CompNode): Boolean = {
-    executed.hasBeenComputedAt(n)
-  }
 
   /** apply one strategy to a list of Nodes. Used for testing */
   private[scoobi]

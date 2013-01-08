@@ -47,7 +47,6 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       val graphLayers = (node -> layers)
       logger.debug("Executing layers\n"+graphLayers.mkString("\n"))
       graphLayers.map(executeLayer)
-      //markAsExecuted(original)
     }
 
     attr("executeNode") {
@@ -96,18 +95,6 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     }
 
 
-  }
-
-  /**
-   * do not select nodes which have already been computed
-   */
-  override def selectNode(n: CompNode) =
-    !hasBeenExecuted(n) && super.selectNode(n)
-
-  private def markAsExecuted(node: CompNode): this.type = {
-    node.bridgeStore.filter(hasBeenFilled).foreach(_ => executed(node))
-    descendents(node).map(markAsExecuted)
-    this
   }
 
   private lazy val filledBridge: CachedAttribute[String, String] = attr("filled bridge")(identity)
