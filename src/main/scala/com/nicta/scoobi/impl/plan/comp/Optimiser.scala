@@ -111,6 +111,6 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   private[scoobi]
   def optimise(node: CompNode): CompNode =
-    optimise(Seq(initAttributable(duplicate(node)))).headOption.getOrElse(node)
+    optimise(Seq(reinitAttributable(duplicate(node)))).headOption.getOrElse(node)
 }
 object Optimiser extends Optimiser

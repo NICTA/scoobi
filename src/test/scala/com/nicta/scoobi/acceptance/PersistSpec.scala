@@ -9,22 +9,22 @@ class PersistSpec extends NictaSimpleJobs {
 
   "There are many ways to execute computations with DLists or DObjects".txt
 
-  "a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: ScoobiConfiguration =>
+  "1. a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: ScoobiConfiguration =>
     val resultFile = TempFiles.createTempFile("test")
     val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
 
     list.persist
     resultFile must exist
   }
-  "a single DObject" >> { implicit sc: ScoobiConfiguration =>
+  "2. a single DObject" >> { implicit sc: ScoobiConfiguration =>
     val o1 = DList(1, 2, 3).sum
     o1.run === 6
   }
-  "a list, materialized" >> { implicit sc: ScoobiConfiguration =>
+  "3. a list, materialized" >> { implicit sc: ScoobiConfiguration =>
     val list = DList(1, 2, 3)
     list.run === Seq(1, 2, 3)
   }
-  "a list, having a sink and also materialized" >> { implicit sc: ScoobiConfiguration =>
+  "4. a list, having a sink and also materialized" >> { implicit sc: ScoobiConfiguration =>
     val resultFile = TempFiles.createTempFile("test")
     val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
 
@@ -33,8 +33,8 @@ class PersistSpec extends NictaSimpleJobs {
   }
   endp
 
-  "2 materialized lists with a common ancestor" >> {
-    "when we only want one list, only the computations for that list must be executed" >> { implicit sc: ScoobiConfiguration =>
+  "5. 2 materialized lists with a common ancestor" >> {
+    "5.1 when we only want one list, only the computations for that list must be executed" >> { implicit sc: ScoobiConfiguration =>
       val l1 = DList(1, 2, 3).map(_ * 10)
       val l2 = l1.map(_ + 1 )
       val l3 = l1.map(i => { failure("l3 must not be computed"); i + 2 })
@@ -45,7 +45,7 @@ class PersistSpec extends NictaSimpleJobs {
       }
     }
 
-    "when we want both lists, the shared computation must be computed only once" >> { implicit sc: ScoobiConfiguration =>
+    "5.2 when we want both lists, the shared computation must be computed only once" >> { implicit sc: ScoobiConfiguration =>
       val l1 = DList(1, 2, 3).map(_ * 10)
       val l2 = l1.map(_ + 1)
 
@@ -64,7 +64,7 @@ class PersistSpec extends NictaSimpleJobs {
         (l2.run, l3.run) === (Seq(11, 21, 31), Seq(12, 22, 32))
       }
     }
-    "when we iterate with several computations" >> { implicit sc: ScoobiConfiguration =>
+    "5.3 when we iterate with several computations" >> { implicit sc: ScoobiConfiguration =>
       var list: DList[(Int, Int)] = DList((1, 1))
 
       list.map(_._1).run
@@ -78,7 +78,7 @@ class PersistSpec extends NictaSimpleJobs {
   }
   end
 
-  "2 objects and a list" >> { implicit sc: ScoobiConfiguration =>
+  "6. 2 objects and a list" >> { implicit sc: ScoobiConfiguration =>
     val list: DList[Int]    = DList(1, 2, 3)
     val plusOne: DList[Int] = list.map(_ + 1)
 
@@ -94,7 +94,7 @@ class PersistSpec extends NictaSimpleJobs {
     (sum.run, max.run, plusOne.run) === (6, 3, Vector(2, 3, 4))
   }
 
-  "A tuple containing 2 objects and a list" >> { implicit sc: ScoobiConfiguration =>
+  "7. A tuple containing 2 objects and a list" >> { implicit sc: ScoobiConfiguration =>
     val list: DList[Int]    = DList(1, 2, 3)
     val plusOne: DList[Int] = list.map(_ + 1)
 

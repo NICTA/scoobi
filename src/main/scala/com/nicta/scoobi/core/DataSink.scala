@@ -89,6 +89,7 @@ trait Sink {
 }
 
 trait Bridge extends Source with Sink {
+  def bridgeStoreId: String
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
 }
 

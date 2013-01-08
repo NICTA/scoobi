@@ -35,7 +35,8 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     logger.debug("Raw graph\n"+showGraph(node))
 
     val optimised = reinitAttributable(optimise(node))
-    resetMemo()
+    reinitUses
+
     logger.debug("Optimised nodes\n"+pretty(optimised))
     logger.debug("Optimised graph\n"+showGraph(optimised))
     optimised
@@ -46,7 +47,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       val graphLayers = (node -> layers)
       logger.debug("Executing layers\n"+graphLayers.mkString("\n"))
       graphLayers.map(executeLayer)
-      markAsExecuted(original)
+      //markAsExecuted(original)
     }
 
     attr("executeNode") {
@@ -64,23 +65,33 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   case class Execution(layer: Layer[T]) {
 
     def execute: Seq[Any] = {
-      logger.debug("Executing layer\n"+layer)
+      val bridgeStores = layerSinks(layer).collect { case bs: Bridge => bs }
+      if (bridgeStores.forall(hasBeenFilled)) {
+        logger.debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
+      } else {
+        logger.debug("Executing layer\n"+layer)
 
-      mscrs(layer).zipWithIndex.foreach { case (mscr, step) =>
-        logger.debug("Executing Mscr\n"+mscr)
+        mscrs(layer).zipWithIndex.foreach { case (mscr, step) =>
+          if (mscr.bridgeStores.forall(hasBeenFilled)) {
+            logger.debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
+          } else {
+            logger.debug("Executing Mscr\n"+mscr)
 
-        logger.debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
-        mscr.sources.foreach(_.inputCheck)
+            logger.debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
+            mscr.sources.foreach(_.inputCheck)
 
-        logger.debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
-        mscr.sinks.foreach(_.outputCheck)
+            logger.debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
+            mscr.sinks.foreach(_.outputCheck)
 
-        logger.debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
-        mscr.inputNodes.foreach(load)
+            logger.debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
+            mscr.inputNodes.foreach(load)
 
-        val job = MapReduceJob.create(step, mscr)
-        job.run
+            val job = MapReduceJob.create(step, mscr)
+            job.run
+          }
+        }
       }
+      bridgeStores.map(bs => filledBridge(bs.bridgeStoreId))
       layerSinks(layer).debug("Layer sinks: ").map(readStore).toSeq
     }
 
@@ -94,17 +105,15 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     !hasBeenExecuted(n) && super.selectNode(n)
 
   private def markAsExecuted(node: CompNode): this.type = {
-    if (node.bridgeStore.forall(hasBeenFilled)) {
-      executed(node)
-      descendents(node).map(markAsExecuted)
-    }
+    node.bridgeStore.filter(hasBeenFilled).foreach(_ => executed(node))
+    descendents(node).map(markAsExecuted)
     this
   }
 
-  private lazy val filledBridge: CachedAttribute[Bridge, Bridge] = attr("filled bridge") { case b: Bridge => b }
+  private lazy val filledBridge: CachedAttribute[String, String] = attr("filled bridge")(identity)
 
   private def hasBeenFilled(b: Bridge): Boolean = {
-    filledBridge.hasBeenComputedAt(b)
+    filledBridge.hasBeenComputedAt(b.bridgeStoreId)
   }
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
@@ -129,7 +138,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   private lazy val readStore: Sink => Any = attr("readStore") {
-    case bs: BridgeStore[_] => readBridgeStore(filledBridge(bs))
+    case bs: BridgeStore[_] => readBridgeStore(bs)
     case other              => ()
   }
 

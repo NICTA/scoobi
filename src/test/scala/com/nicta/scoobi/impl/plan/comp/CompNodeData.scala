@@ -14,7 +14,6 @@ import core._
 import com.nicta.scoobi.io.ConstantStringDataSource
 import application._
 import WireFormat._
-import CompNodes._
 import org.kiama.rewriting.Rewriter._
 
 trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: FragmentsBuilder =>

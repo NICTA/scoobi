@@ -6,8 +6,6 @@ package mscr
 import core._
 import comp._
 import util._
-import CompNodes._
-import exec.MapReduceJob
 import scalaz.Equal
 import impl.io.FileSystems
 import org.apache.hadoop.fs.Path

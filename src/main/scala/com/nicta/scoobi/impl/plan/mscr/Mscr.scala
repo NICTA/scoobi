@@ -7,7 +7,7 @@ import org.kiama.attribution.Attributable
 
 import util.UniqueId
 import comp._
-import core.{Grouping, WireFormat}
+import core.{Bridge, Grouping, WireFormat}
 import scalaz.Scalaz._
 
 /**
@@ -21,6 +21,7 @@ case class Mscr(inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[Ou
   lazy val valueTypes = ValueTypes(Map(inputChannels.flatMap(_.valueTypes.types):_*))
   lazy val sources    = inputChannels.map(_.source).distinct
   lazy val sinks      = outputChannels.flatMap(_.sinks).distinct
+  lazy val bridgeStores = sinks.collect { case bs: Bridge => bs }
   lazy val inputNodes = (inputChannels.flatMap(_.inputNodes) ++ outputChannels.flatMap(_.inputNodes)).distinct
 
   override def toString =
