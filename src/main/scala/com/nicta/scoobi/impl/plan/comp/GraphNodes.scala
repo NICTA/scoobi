@@ -25,9 +25,8 @@ trait GraphNodes extends Attribution {
 
   /** the root of the graph, computed from a given node */
   lazy val root : T => T = 
-    attr("root") {
-      case node =>
-        parent(node).map(root).getOrElse(node)
+    attr("root") { case node =>
+      parent(node).map(root).getOrElse(node)
     }
   
   /**

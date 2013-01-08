@@ -92,7 +92,9 @@ trait Optimiser extends CompNodes with Rewriter {
   protected lazy val executed: CachedAttribute[CompNode, CompNode] = attr("executed") { case n: CompNode => n }
 
   /** @return true if a node has been executed */
-  protected def hasBeenExecuted(n: CompNode) = executed.hasBeenComputedAt(n)
+  protected def hasBeenExecuted(n: CompNode): Boolean = {
+    executed.hasBeenComputedAt(n)
+  }
 
   /** apply one strategy to a list of Nodes. Used for testing */
   private[scoobi]

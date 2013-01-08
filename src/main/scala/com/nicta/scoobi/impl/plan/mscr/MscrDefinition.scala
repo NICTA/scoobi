@@ -3,7 +3,6 @@ package impl
 package plan
 package mscr
 
-import scala.collection.immutable.Set
 import scalaz.Scalaz._
 import scalaz.syntax.std.indexedSeq._
 import control.Functions._

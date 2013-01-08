@@ -24,7 +24,6 @@ sealed trait DComp[+A] extends CompNode {
   type CompNodeType <: DComp[A]
 
   def wf: WireFormat[_]
-
   def sinks: Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
   def updateSinks(f: Seq[Sink] => Seq[Sink]): CompNodeType
@@ -44,6 +43,7 @@ case class ParallelDo[A, B, E](
                                bridgeStoreId:     String = randomUUID.toString) extends DComp[B] {
 
   type CompNodeType = ParallelDo[A, B, E]
+
   lazy val wf = wfb
 
   def setup(implicit configuration: Configuration) { dofn.setup(environment(ScoobiConfigurationImpl(configuration)).pull) }
@@ -91,7 +91,7 @@ object ParallelDo {
     new ParallelDo(pd1.ins, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
                    wireFormat[A], wireFormat[C], wireFormat[(E, F)],
                    pd1.sinks ++ pd2.sinks,
-                   pd1.bridgeStoreId)
+                   pd2.bridgeStoreId)
   }
 
   /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */

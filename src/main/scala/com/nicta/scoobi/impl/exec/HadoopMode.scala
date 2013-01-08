@@ -93,7 +93,19 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   override def selectNode(n: CompNode) =
     !hasBeenExecuted(n) && super.selectNode(n)
 
-  private def markAsExecuted(node: CompNode) = (node +: descendents(node)).map(executed)
+  private def markAsExecuted(node: CompNode): this.type = {
+    if (node.bridgeStore.forall(hasBeenFilled)) {
+      executed(node)
+      descendents(node).map(markAsExecuted)
+    }
+    this
+  }
+
+  private lazy val filledBridge: CachedAttribute[Bridge, Bridge] = attr("filled bridge") { case b: Bridge => b }
+
+  private def hasBeenFilled(b: Bridge): Boolean = {
+    filledBridge.hasBeenComputedAt(b)
+  }
 
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
@@ -117,7 +129,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   private lazy val readStore: Sink => Any = attr("readStore") {
-    case bs: BridgeStore[_] => readBridgeStore(bs)
+    case bs: BridgeStore[_] => readBridgeStore(filledBridge(bs))
     case other              => ()
   }
 
