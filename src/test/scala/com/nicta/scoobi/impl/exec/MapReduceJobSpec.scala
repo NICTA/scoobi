@@ -2,16 +2,11 @@ package com.nicta.scoobi
 package impl
 package exec
 
-import org.apache.hadoop.fs.{Path, FileSystem}
-import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.fs.Path
 import org.specs2.mock.Mockito
 import org.specs2.specification.Outside
-
-import core._
 import rtt.JarBuilder
-import impl.io.FileSystems
 
-import mapreducer.TaggedReducer
 import testing.mutable.UnitSpecification
 import application.ScoobiConfiguration
 import core.ScoobiConfiguration
