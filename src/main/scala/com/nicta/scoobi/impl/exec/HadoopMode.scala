@@ -30,7 +30,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
-    initAttributable(node)
+    reinitAttributable(node)
     logger.debug("Raw nodes\n"+pretty(node))
     logger.debug("Raw graph\n"+showGraph(node))
 

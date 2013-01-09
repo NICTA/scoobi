@@ -23,16 +23,18 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
      */
     import scalaz.Scalaz._
 
-    override def defaultValues = Map(minTestsOk   -> arguments.commandLine.int("mintestsok").getOrElse(1000),
-      maxSize      -> arguments.commandLine.int("maxsize").getOrElse(8),
-      minSize      -> arguments.commandLine.int("minsize").getOrElse(1),
+    override def defaultValues = Map(
+      minTestsOk   -> arguments.commandLine.int("mintestsok").  getOrElse(1000),
+      maxSize      -> arguments.commandLine.int("maxsize").     getOrElse(8),
+      minSize      -> arguments.commandLine.int("minsize").     getOrElse(1),
       maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(50),
-      workers      -> arguments.commandLine.int("workers").getOrElse(1))
+      workers      -> arguments.commandLine.int("workers").     getOrElse(1))
 
     import Gen._
-    implicit lazy val arbitraryCompNode: Arbitrary[CompNode]       = Arbitrary(arbitraryDList.arbitrary.map(_.getComp))
-    implicit lazy val arbitraryDList: Arbitrary[DList[String]]     = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalise))))
-    implicit lazy val arbitraryDObject: Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
+    implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinitAttributable))
+
+    implicit lazy val arbitraryDList:    Arbitrary[DList[String]]   = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalise))))
+    implicit lazy val arbitraryDObject:  Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
 
     implicit lazy val groupByKey: Arbitrary[GroupByKey[_,_]] =
       Arbitrary(arbitraryDList.arbitrary.map(_.map(_.partition(_ > 'a')).groupByKey.getComp.asInstanceOf[GroupByKey[_,_]]))

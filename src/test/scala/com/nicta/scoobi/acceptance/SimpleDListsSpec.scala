@@ -8,7 +8,6 @@ import com.nicta.scoobi.impl.plan.comp.factory._
 import impl.plan.comp.CompNodeData
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
-  sequential
 
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
@@ -129,5 +128,4 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val l2 = l1 join DList("a" -> "b").groupByKey.map(_.toString)
     normalise(l2.run) === "Vector((Vector(hello),(a,Vector(b))))"
   }
-
 }

@@ -1,27 +1,15 @@
 package com.nicta.scoobi
 package acceptance
 
-import impl.plan.comp.{StringSink, CompNodeData}
+import impl.plan.comp._
 import testing.mutable.NictaSimpleJobs
-import application.{DList, DLists, ScoobiConfiguration}
+import application.ScoobiConfiguration
 import core.DList
-import impl.plan.DListImpl
-import org.kiama.rewriting.Rewriter._
-import impl.plan.mscr.Mscr
-import impl.mapreducer.MscrReducer
-import org.specs2.Specification
-import org.specs2.matcher.Matcher
-import org.specs2.specification.gen.{When, Given}
-import org.specs2.specification.Then
-import org.kiama.attribution.Attribution
-import core.DList
-import com.nicta.scoobi.Scoobi._
 
 class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
-  sequential
   "A DList must return an equivalent result, whether it's executed in memory or locally" >> prop { (l1: DList[String]) =>
     compareExecutions(l1)
-  }.set(minTestsOk -> 100)
+  }.set(minTestsOk -> 20)
 
   def compareExecutions(l1: DList[String]) = {
     val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
