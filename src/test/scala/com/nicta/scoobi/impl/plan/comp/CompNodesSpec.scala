@@ -31,7 +31,7 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
 
   "it is possible to get all the nodes which use a given node as an environment" >> new factory {
     val mt1 = mt(load)
-    val pd1 = pd(load, mt1)
+    val pd1 = pdWithEnv(load, mt1)
 
     (mt1 -> usesAsEnvironment) === Seq(pd1)
   }
