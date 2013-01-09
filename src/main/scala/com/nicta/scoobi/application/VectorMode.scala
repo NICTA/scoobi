@@ -160,40 +160,49 @@ object VectorMode {
     val partitions: IndexedSeq[Vector[(K, V)]] = {
       val numPart = 10    // TODO - set this based on input size? or vary it randomly?
       val vbs = IndexedSeq.fill(numPart)(new VectorBuilder[(K, V)]())
-      in foreach { case kv@(k, _) => val p = grp.partition(k, numPart); vbs(p) += kv }
+      in foreach { case kv@(k, _) =>
+        val p = grp.partition(k, numPart)
+        vbs(p) += kv
+      }
       vbs map { _.result() }
     }
 
     logger.debug("partitions:")
     partitions.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
-    /* Grouping values */
-    val grouped: IndexedSeq[Map[K, Vector[(K, V)]]] =
-      partitions map { (kvs: Vector[(K, V)]) =>
-        val vbMap = kvs.foldLeft(Map.empty[K, VectorBuilder[(K, V)]]) {
-          case (bins, kv@(k, _)) =>
-            bins + ((bins.find(kkvs => grp.isGroupEqual(kkvs._1, k)) getOrElse ((k, (new VectorBuilder[(K, V)]())))) :-> (_ += kv))
-        }
-
-        vbMap map { case (k, vb) => (k, vb.result()) }
+    val sorted: IndexedSeq[Vector[(K, V)]] = partitions map { (v: Vector[(K, V)]) =>
+      v.sortBy(_._1)(grp.sortOrdering)
     }
+    logger.debug("sorted:")
+    sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+
+    val grouped: IndexedSeq[Vector[(K, Vector[V])]] =
+      sorted map { kvs =>
+        val vbMap = kvs.foldLeft(Vector.empty: Vector[(K, VectorBuilder[(K, V)])]) { case (groups, kv@(k, _)) =>
+          groups.lastOption.filter { case (g, _) => grp.isGroupEqual(g, k) } match {
+            case Some((_, q)) => {
+              q += kv
+              groups
+            }
+            case None =>
+              groups :+ {
+                val vb = new VectorBuilder[(K, V)]()
+                vb += kv
+                (k, vb)
+              }
+          }
+        }
+        vbMap map (_ :-> (_.result().map(_._2)))
+      }
 
     logger.debug("grouped:")
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
-    val sorted: IndexedSeq[Map[K, Vector[(K, V)]]] = grouped map { (kvMap: Map[K, Vector[(K, V)]]) =>
-      kvMap map (_ :-> (_.sortBy(_._1)(grp.sortOrdering)))
-    }
-
-    logger.debug("sorted:")
-    sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
-
     /* Concatenate */
-    val vec = Vector(sorted.flatMap(_ map { case (k, kvs) => (k, kvs.map(_._2).toIterable) }): _*)
+    val vec = Vector(grouped.flatten: _*)
     logger.debug("computeGroupByKey: " + vec)
     vec
   }
-
 
   private def computeCombine[K, V](combine: Combine[K, V])(implicit conf: ScoobiConfiguration): Vector[(K, V)] = {
     val in: Vector[(K, Iterable[V])] = computeArr(combine.in)
