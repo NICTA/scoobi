@@ -100,7 +100,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   lazy val mappersUses: CompNode => Seq[ParallelDo[_,_,_]] = attr { case node =>
     val (pds, _) = nodes.uses(node).partition(isParallelDo)
     pds.collect(isAParallelDo).toSeq ++ pds.filter { pd =>
-      (isParallelDo && !isFloating)(pd.parent[CompNode]) && !pd.parent.asInstanceOf[ParallelDo[_,_,_]].ins.collect(isAParallelDo).exists(nodes.isReducer)
+      (isParallelDo && !isFloating)(pd.parent[CompNode])
     }.flatMap(mappersUses)
   }
 
@@ -137,8 +137,8 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     implicit val sc = ScoobiConfigurationImpl(configuration)
     val emitter = if (groupByKeys.isEmpty) valueEmitter(context) else keyValueEmitter(context)
 
-    lazy val computeMappers: CompNode => Any = attr("computeMappers") {
-      case node if node == sourceNode             => source.inputConverter.asInstanceOf[InputConverter[K1, V1, Any]].fromKeyValue(context, key, value)
+    def computeMappers(node: CompNode): Any = node match {
+      case n if n == sourceNode => source.inputConverter.asInstanceOf[InputConverter[K1, V1, Any]].fromKeyValue(context, key, value)
       case mapper: ParallelDo[_,_,_]              =>
         val mappedValue = computeMappers {
           if (mapper.ins.size == 1) mapper.ins.head

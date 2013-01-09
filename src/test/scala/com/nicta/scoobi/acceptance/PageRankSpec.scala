@@ -38,7 +38,7 @@ class PageRankSpec extends PageRank {
                          "2, www.specs2.org",
                          "3, www.notfound.org").collect { case AnInt(id) :: url :: _ => (id, url.trim) }
 
-    getPageRanks(urls, graph).run === Seq(
+    getPageRanks(urls, graph).run === Vector(
       ("www.google.com"   -> 0.5f),
       ("www.specs2.org"   -> 7/12f),
       ("www.notfound.org" -> 0.75f))
@@ -66,7 +66,7 @@ trait PageRank extends NictaSimpleJobs {
 
   /** @return the page rank for each url */
   def getPageRanks(urls: DList[(Int, String)], graph: Graph[Int])(implicit configuration: ScoobiConfiguration) = {
-    val (_, rankings) = calculateRankings(1.1f, initialise[Int](graph))
+    val (_, rankings) = calculateRankings(10.0f, initialise[Int](graph))
     val pageRanks = rankings.map { case (id, (pr,_,_)) => (id, pr) }
     (urls join pageRanks).values
   }
