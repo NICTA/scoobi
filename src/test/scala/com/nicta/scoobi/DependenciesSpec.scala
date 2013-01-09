@@ -13,8 +13,7 @@ class DependenciesSpec extends UnitSpecification with Analysis {
   val implementation =
     layers(
       "exec      form",
-      "plan plan.source plan.comp plan.mscr",
-      "mapreducer",
+      "plan plan.source plan.comp plan.mscr mapreducer",
       "reflect rtt time",
       "util control text collection monitor").withPrefix("impl")
 
