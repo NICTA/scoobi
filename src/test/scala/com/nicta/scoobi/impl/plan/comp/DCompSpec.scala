@@ -9,13 +9,13 @@ import Scoobi._
 
 class DCompSpec extends UnitSpecification with Grouped { def is =
 
-  "A DComp node represent the current state of a DList or DObject computation"^
-  p^
-  "Sinks"^
-    "it is possible to add a Sink to a node"! g1.e1^
-    "it is possible to create a BridgeStore for a node"! g1.e2^
-    "it is possible to update all the sinks to add compression for example"! g1.e3^
-  end
+  "A DComp node represent the current state of a DList or DObject computation"                     ^
+                                                                                                   p^
+  "Sinks can be added to ParallelDo, GroupByKey and Combine nodes"                                 ^
+    "it is possible to add a Sink to a node"                                                       ! g1.e1^
+    "it is possible to create a BridgeStore for a node"                                            ! g1.e2^
+    "it is possible to update all the sinks to add compression for example"                        ! g1.e3^
+                                                                                                   end
 
   "sinks" - new g1 {
     def parallelDo = ParallelDo.create[String](Return.unit)

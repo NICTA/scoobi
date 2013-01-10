@@ -120,7 +120,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   private lazy val readNodeStore: CompNode => Any = attr("readNodeStore") {
-    case mt: Materialise[_] => mt.in.bridgeStore.map(readBridgeStore).getOrElse(Seq())
+    case mt: Materialise[_] => readBridgeStore(mt.in.bridgeStore)
     case other              => ()
   }
 

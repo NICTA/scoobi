@@ -21,12 +21,9 @@ import ScoobiConfigurationImpl._
  */
 sealed trait DComp[+A] extends CompNode {
   lazy val id = UniqueId.get
-
-  def sinks = Seq[Sink]()
-  lazy val bridgeStore: Option[Bridge] = None
-
-  def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
-  def updateSinks(f: Seq[Sink] => Seq[Sink]): DComp[A] = this
+}
+trait DProcessComp[A] extends DComp[A] with ProcessNode {
+  type PN = DProcessComp[A]
 }
 
 /**
@@ -39,16 +36,16 @@ case class ParallelDo[A, B, E](ins:                Seq[CompNode],
                                implicit val wfa:   WireFormat[A],
                                implicit val wfb:   WireFormat[B],
                                implicit val wfe:   WireFormat[E],
-                               override val sinks: Seq[Sink] = Seq(),
-                               bridgeStoreId:      String = randomUUID.toString) extends DComp[B] {
+                               sinks:              Seq[Sink] = Seq(),
+                               bridgeStoreId:      String = randomUUID.toString) extends DProcessComp[B] {
 
   lazy val wf = wfb
   override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, wfe).mkString(",") + "] env: " + env
 
   def source = ins.collect(isALoad).headOption
 
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
-  override def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
+  lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
 
   def setup(implicit configuration: Configuration) { dofn.setup(environment(ScoobiConfigurationImpl(configuration)).pull) }
@@ -134,14 +131,14 @@ case class Combine[K , V](in: CompNode, f: (V, V) => V,
                           implicit val wfk:   WireFormat[K],
                           implicit val gpk:   Grouping[K],
                           implicit val wfv:   WireFormat[V],
-                          override val sinks: Seq[Sink]      = Seq(),
-                          bridgeStoreId:      String         = randomUUID.toString) extends DComp[(K, V)] {
+                          sinks:              Seq[Sink] = Seq(),
+                          bridgeStoreId:      String = randomUUID.toString) extends DProcessComp[(K, V)] {
 
   lazy val wf = wireFormat[(K, V)]
   override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
-  override def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
+  lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   def unsafeCombine(values: Iterable[Any]) = values.asInstanceOf[Iterable[V]].reduce(f)
   def combine = f
@@ -172,14 +169,14 @@ case class GroupByKey[K, V](in: CompNode,
                             implicit val wfk:   WireFormat[K],
                             implicit val gpk:   Grouping[K],
                             implicit val wfv:   WireFormat[V],
-                            override val sinks: Seq[Sink] = Seq(),
-                            bridgeStoreId:      String    = randomUUID.toString) extends DComp[(K, Iterable[V])] {
+                            sinks:              Seq[Sink] = Seq(),
+                            bridgeStoreId:      String = randomUUID.toString) extends DProcessComp[(K, Iterable[V])] {
 
   lazy val wf = wireFormat[(K, Iterable[V])]
   override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
-  override lazy val bridgeStore = Some(BridgeStore(bridgeStoreId, wf))
-  override def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
+  lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object GroupByKey1 {
   def unapply(gbk: GroupByKey[_,_]): Option[CompNode] = Some(gbk.in)
@@ -208,19 +205,19 @@ object Return {
 }
 
 /** The Materialise node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialise[A](in: CompNode, wf: WireFormat[Iterable[A]]) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
+case class Materialise[A](in: CompNode with ProcessNode, wf: WireFormat[Iterable[A]]) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
   override val toString = "Materialise ("+id+")["+wf+"]"
 }
 object Materialise1 {
   def unapply(mt: Materialise[_]): Option[CompNode] = Some(mt.in)
 }
-/** The Op node type specifies the building of Exp DComp by applying a function to the values
- * of two other Exp DComp nodes. */
+
+/**
+ * The Op node type specifies the building of Exp DComp by applying a function to the values
+ * of two other DComp nodes
+ */
 case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, wf: WireFormat[C]) extends DComp[C] with WithEnvironment[C] {
-
-  type CompNodeType = Op[A, B, C]
   override val toString = "Op ("+id+")["+wf+"]"
-
   def unsafeExecute(a: Any, b: Any): C = f(a.asInstanceOf[A], b.asInstanceOf[B])
 }
 object Op1 {

@@ -48,9 +48,9 @@ trait OutputChannel extends Channel {
 }
 
 trait MscrOutputChannel extends OutputChannel {
-  def sinks = bridgeStore.toSeq ++ nodeSinks
+  def sinks = bridgeStore +: nodeSinks
   protected def nodeSinks: Seq[Sink]
-  def bridgeStore: Option[Bridge]
+  def bridgeStore: Bridge
 }
 case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
                             combiner: Option[Combine[_,_]]      = None,
@@ -97,11 +97,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
 
   lazy val nodeSinks = groupByKey.sinks ++ combiner.toSeq.flatMap(_.sinks) ++ reducer.toSeq.flatMap(_.sinks)
   lazy val inputNodes = reducer.toSeq.map(_.env)
-
-  lazy val bridgeStore =
-     (reducer: Option[CompNode]).
-      orElse(combiner  ).
-      getOrElse(groupByKey).bridgeStore
+  lazy val bridgeStore = (reducer: Option[ProcessNode]).orElse(combiner).getOrElse(groupByKey).bridgeStore
 }
 
 case class BypassOutputChannel(output: ParallelDo[_,_,_]) extends MscrOutputChannel {

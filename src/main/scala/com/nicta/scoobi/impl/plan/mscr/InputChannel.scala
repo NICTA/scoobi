@@ -70,11 +70,8 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   lazy val tags = if (groupByKeys.isEmpty) valueTypes.tags else keyTypes.tags
 
   lazy val source = sourceNode match {
-    case n: Load[_]           => n.source
-    case n: Op[_,_,_]         => n.bridgeStore.get
-    case n: GroupByKey[_,_]   => n.bridgeStore.get
-    case n: Combine[_,_]      => n.bridgeStore.get
-    case n: ParallelDo[_,_,_] => n.bridgeStore.get
+    case n: Load[_]     => n.source
+    case n: ProcessNode => n.bridgeStore
   }
 
   lazy val inputNodes = Seq(sourceNode) ++ mappers.map(_.env)
@@ -170,10 +167,8 @@ case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None) 
   }
   override def hashCode = input.id.hashCode
   lazy val source = input match {
-    case n: Load[_]           => n.source
-    case n: GroupByKey[_,_]   => n.bridgeStore.get
-    case n: Combine[_,_]      => n.bridgeStore.get
-    case n: ParallelDo[_,_,_] => n.bridgeStore.get
+    case n: Load[_]     => n.source
+    case n: ProcessNode => n.bridgeStore
   }
   lazy val inputNodes = input match {
     case n: ParallelDo[_,_,_] => Seq(n, n.env)

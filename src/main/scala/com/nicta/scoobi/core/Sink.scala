@@ -94,9 +94,15 @@ trait DataSink[K, V, B] extends Sink { outer =>
       recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
     }
   }
-
 }
 
+/**
+ * A Bridge is both a Source and a Sink.
+ *
+ * It has a bridgeStoreId which is a UUID string.
+ *
+ * The content of the Bridge can be read as an Iterable to retrieve materialised values
+ */
 trait Bridge extends Source with Sink {
   def bridgeStoreId: String
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
@@ -106,3 +112,15 @@ trait Bridge extends Source with Sink {
 trait OutputConverter[K, V, B] {
   def toKeyValue(x: B): (K, V)
 }
+
+/**
+ * specify an object on which it is possible to add sinks and to compress them
+ */
+trait DataSinks {
+  type T
+  def addSink(sink: Sink): T
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): T
+  def compress: T = compressWith(new GzipCodec)
+}
+
+

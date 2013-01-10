@@ -30,19 +30,19 @@ import com.nicta.scoobi.core
 
 /** An implementation of the DList trait that builds up a DAG of computation nodes. */
 private[scoobi]
-class DListImpl[A](comp: DComp[A])(implicit val wf: WireFormat[A]) extends DList[A] {
+class DListImpl[A](comp: DProcessComp[A])(implicit val wf: WireFormat[A]) extends DList[A] {
 
-  type C = DComp[A]
+  type C = DProcessComp[A]
 
-  def getComp: DComp[A] = comp
+  def getComp: C = comp
 
   def addSink(sink: Sink) =
-    setComp((c: DComp[A]) => c.addSink(sink))
+    setComp((c: C) => c.addSink(sink))
 
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
-    setComp((c: DComp[A]) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
+    setComp((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
 
-  def setComp(f: DComp[A] => DComp[A]) = new DListImpl[A](f(comp))(wf)
+  def setComp(f: C => C) = new DListImpl[A](f(comp))(wf)
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo[A, B, E](Seq(comp), env.getComp, dofn,
@@ -75,6 +75,6 @@ class DListImpl[A](comp: DComp[A])(implicit val wf: WireFormat[A]) extends DList
 
 private[scoobi]
 object DListImpl {
-  def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = new DListImpl(Load(source, wf))
+  def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = apply(Seq(Load(source, wf)))
   def apply[A](ins: Seq[CompNode])(implicit wf: WireFormat[A]): DListImpl[A] =  new DListImpl[A](ParallelDo.create(ins:_*)(wf))
 }

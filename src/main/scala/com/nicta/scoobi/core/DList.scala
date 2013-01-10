@@ -57,19 +57,11 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def ++(ins: DList[A]*): DList[A]
 
   /**Group the values of a distributed list with key-value elements by key. */
-  def groupByKey[K, V]
-  (implicit ev: A <:< (K, V),
-   wk:  WireFormat[K],
-   gpk:  Grouping[K],
-   wv:  WireFormat[V]): DList[(K, Iterable[V])]
+  def groupByKey[K, V](implicit ev: A <:< (K, V), wk: WireFormat[K], gpk: Grouping[K], wv: WireFormat[V]): DList[(K, Iterable[V])]
 
   /**Apply an associative function to reduce the collection of values to a single value in a
    * key-value-collection distributed list. */
-  def combine[K, V](f: (V, V) => V)
-  (implicit ev: A <:< (K, Iterable[V]),
-   wk:  WireFormat[K],
-   gpk:  Grouping[K],
-   wv:  WireFormat[V]): DList[(K, V)]
+  def combine[K, V](f: (V, V) => V)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], gpk: Grouping[K], wv: WireFormat[V]): DList[(K, V)]
 
   @deprecated(message="use materialise instead", since="0.7.0")
   def materialize: DObject[Iterable[A]] = materialise
@@ -265,17 +257,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Find the smallest element in the distributed list. */
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
     reduce((x, y) => if (cmp.lteq(f(x), f(y))) x else y)
-}
-
-object CovariantDList {
-  implicit def covariant[A, B <: A](list: DList[B]): DList[A] = list
-}
-
-trait DataSinks {
-  type T
-  def addSink(sink: Sink): T
-  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): T
-  def compress: T = compressWith(new GzipCodec)
 }
 
 trait Persistent[T] {

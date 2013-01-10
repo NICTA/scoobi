@@ -33,7 +33,7 @@ import collection.mutable.ArrayBuffer
 import annotation.implicitNotFound
 import collection.mutable
 
-/**Type-class for sending types across the Hadoop wire. */
+/** Typeclass for sending types across the Hadoop wire */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
 trait WireFormat[A] {
   def toWire(x: A, out: DataOutput)
@@ -41,7 +41,6 @@ trait WireFormat[A] {
 }
 
 object WireFormat extends WireFormatImplicits {
-
   // extend WireFormat with useful methods
   implicit def extendedWireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
 

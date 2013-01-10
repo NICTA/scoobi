@@ -44,7 +44,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
     /** lists of elements with a simple type A */
     def genList1(depth: Int = 1): Gen[DList[String]] =
-      if (depth <= 1) Gen.value(new DListImpl[String](load))
+      if (depth <= 1) Gen.value(DListImpl(source))
       else            Gen.oneOf(genList1(depth - 1).map(l => l.map(identity)),
                                 genList2(depth - 1).map(l => l.map(_._1)),
                                 genList3(depth - 1).map(l => l.map(_._1)),
@@ -93,6 +93,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  */
 trait CompNodeFactory extends Scope {
 
+  def source                                        = ConstantStringDataSource("start")
   def loadWith(s: String)                           = Load(ConstantStringDataSource(s), wireFormat[String])
   def load                                          = loadWith("start")
   def aRoot(nodes: CompNode*)                       = Root(nodes)
@@ -101,7 +102,7 @@ trait CompNodeFactory extends Scope {
                                                                        wireFormat[String], grouping[String], wireFormat[String])
   def gbk(in: CompNode): GroupByKey[String, String] = GroupByKey(in.asInstanceOf[DComp[(String,String)]], wireFormat[String], grouping[String], wireFormat[String])
   def gbk(sink: Sink): GroupByKey[String, String]   = gbk(load).addSink(sink).asInstanceOf[GroupByKey[String, String]]
-  def mt(in: CompNode)                              = Materialise(in.asInstanceOf[DComp[String]], wireFormat[Iterable[String]])
+  def mt(in: ProcessNode)                           = Materialise(in.asInstanceOf[DProcessComp[String]], wireFormat[Iterable[String]])
 
   def op(in1: CompNode, in2: CompNode)              = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, wireFormat[String])
 

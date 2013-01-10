@@ -45,7 +45,7 @@ case class InMemoryMode() extends ShowNode {
   private
   lazy val prepare: ScoobiConfiguration => CompNode => Unit =
     paramAttr("prepare") { sc: ScoobiConfiguration => { node: CompNode =>
-      node.sinks.foreach(_.outputCheck(sc))
+      node match { case n: ProcessNode => n.sinks.foreach(_.outputCheck(sc)); case _ => () }
       children(node).foreach(_ -> prepare(sc))
     }}
 
@@ -60,15 +60,14 @@ case class InMemoryMode() extends ShowNode {
     paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Root              => saveSinks(Vector(n.ins.map(_ -> computeValue(c)):_*)         , n.sinks)
-        case n: Load[_]           => saveSinks(computeLoad(n)                                     , n.sinks)
-        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                               , n.sinks)
-        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)
-        case n: Combine[_,_]      => saveSinks(computeCombine(n)                                  , n.sinks)
-        case n: Materialise[_]    => saveSinks(Vector(n.in -> compute(c))                         , Seq())
-        case n: Op[_,_,_]         => saveSinks(Vector(n.unsafeExecute(n.in1 -> computeValue(c),
-                                                                      n.in2 -> computeValue(c)))  , n.sinks)
-        case n: Return[_]         => saveSinks(Vector(n.in)                                       , n.sinks)
+        case n: Load[_]           => computeLoad(n)
+        case n: Root              => Vector(n.ins.map(_ -> computeValue(c)):_*)
+        case n: Return[_]         => Vector(n.in)
+        case n: Op[_,_,_]         => Vector(n.unsafeExecute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
+        case n: Materialise[_]    => Vector(n.in -> compute(c))
+        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n), n.sinks)
+        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n), n.sinks)
+        case n: Combine[_,_]      => saveSinks(computeCombine(n)   , n.sinks)
       }
     }
 
@@ -119,7 +118,7 @@ case class InMemoryMode() extends ShowNode {
     val partitions = {
       val numPart = 10    // TODO - set this based on input size? or vary it randomly?
       val vbs = IndexedSeq.fill(numPart)(new VectorBuilder[Any]())
-      in foreach { case kv @ (k, _) => val p = grp.unsafePartition(k, numPart); vbs(p) += kv }
+      in foreach { case kv @ (k, _) => val p = grp.asInstanceOf[Grouping[Any]].partition(k, numPart); vbs(p) += kv }
       vbs map { _.result() }
     }
 
@@ -130,7 +129,7 @@ case class InMemoryMode() extends ShowNode {
     val grouped = partitions map { (kvs: Vector[_]) =>
 
       val vbMap = kvs.foldLeft(Map.empty: Map[Any, VectorBuilder[Any]]) { case (bins, (k, v)) =>
-        bins.find(kkvs => grp.unsafeGroupCompare(kkvs._1, k) == 0) match {
+        bins.find(kkvs => grp.asInstanceOf[Grouping[Any]].groupCompare(kkvs._1, k) == 0) match {
           case Some((kk, vb)) => bins.updated(kk, vb += ((k, v)))
           case None           => { val vb = new VectorBuilder[Any](); bins + (k -> (vb += ((k, v)))) }
         }
@@ -143,7 +142,7 @@ case class InMemoryMode() extends ShowNode {
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
     /* Sorting */
-    val ord = new Ordering[Any] { def compare(x: Any, y: Any): Int = grp.unsafeSortCompare(x, y) }
+    val ord = new Ordering[Any] { def compare(x: Any, y: Any): Int = grp.asInstanceOf[Grouping[Any]].sortCompare(x, y) }
 
     val sorted = grouped map { (kvMap: Map[_, Vector[_]]) =>
       kvMap map { case (k, kvs) => (k, kvs.sortBy(vs => vs.asInstanceOf[Tuple2[_,_]]._1)(ord)) }

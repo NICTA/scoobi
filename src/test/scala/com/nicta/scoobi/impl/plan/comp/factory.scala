@@ -3,7 +3,7 @@ package impl
 package plan
 package comp
 
-import core.CompNode
+import core.{ProcessNode, CompNode}
 import mscr.MscrAttributes
 import org.kiama.rewriting.Rewriter
 
@@ -18,7 +18,7 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   override def rt                                                   = init(super.rt)
   override def cb(in: CompNode)                                     = init(super.cb(in))
   override def gbk(in: CompNode)                                    = init(super.gbk(in))
-  override def mt(in: CompNode)                                     = init(super.mt(in))
+  override def mt(in: ProcessNode)                                  = init(super.mt(in))
   override def op(in1: CompNode, in2: CompNode)                     = init(super.op(in1, in2))
   override def parallelDo(in: CompNode)                             = init(super.parallelDo(in))
   override def pd(ins: CompNode*): ParallelDo[String,String,String] = init(super.pd(ins:_*))
