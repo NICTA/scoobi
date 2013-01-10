@@ -86,18 +86,18 @@ object ChannelsInputFormat {
   }
 
   private def configureSourcesChannels(jar: JarBuilder, sources: Seq[Source])(implicit sc: ScoobiConfiguration) = (initial: Configuration) => {
-    sources.zipWithIndex.foldLeft(initial) { case (conf, (source, channel)) =>
+    sources.foldLeft(initial) { case (conf, source) =>
       conf |>
         configureSourceRuntimeClass(jar, source) |>
-        configureInputChannel(channel, source)
+        configureInputChannel(source)
     }
   }
 
   /** configure a new input channel on the job's configuration */
-  private def configureInputChannel(channel: Int, source: Source)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
+  private def configureInputChannel(source: Source)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
     conf |>
-      configureSourceInputFormat(source, channel) |>
-      configureSource(source, channel)
+      configureSourceInputFormat(source) |>
+      configureSource(source)
   }
 
   private def configureChannelsInputFormat(job: Job): Configuration = {
@@ -116,8 +116,8 @@ object ChannelsInputFormat {
    * Record as configuration properties the channel number to InputFormat mappings
    * as described by the DataSource
    */
-  private def configureSourceInputFormat(source: Source, channel: Int) = (conf: Configuration) => {
-    conf.addValues(INPUT_FORMAT_PROPERTY, channel+";"+source.inputFormat.getName)
+  private def configureSourceInputFormat(source: Source) = (conf: Configuration) => {
+    conf.addValues(INPUT_FORMAT_PROPERTY, source.id+";"+source.inputFormat.getName)
   }
 
   /**
@@ -127,15 +127,15 @@ object ChannelsInputFormat {
    *
    * Also include the properties which might have been modified by the source (like the DistributedCache files)
    */
-  private def configureSource(source: Source, channel: Int)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
+  private def configureSource(source: Source)(implicit sc: ScoobiConfiguration) = (conf: Configuration) => {
     val job = new Job(new Configuration(conf))
     source.inputConfigure(job)
 
     Option(job.getConfiguration.get(CACHE_FILES)).foreach { files =>
-      conf.set(ChannelPrefix.prefix(channel, CACHE_FILES), files)
+      conf.set(ChannelPrefix.prefix(source.id, CACHE_FILES), files)
       conf.addValues(CACHE_FILES, files)
     }
-    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  => (ChannelPrefix.prefix(channel, k), v) }
+    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  => (ChannelPrefix.prefix(source.id, k), v) }
   }
 
   /**

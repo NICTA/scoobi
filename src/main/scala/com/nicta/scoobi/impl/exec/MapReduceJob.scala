@@ -39,7 +39,7 @@ import mapreducer.BridgeStore
 import monitor.Loggable._
 
 /** A class that defines a single Hadoop MapReduce job. */
-case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr()) {
+case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
 
   type T = MapReduceJob
 

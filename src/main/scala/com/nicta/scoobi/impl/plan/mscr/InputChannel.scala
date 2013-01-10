@@ -23,7 +23,7 @@ import CollectFunctions._
 trait Channel extends Attributable
 
 case class InputChannels(channels: Seq[InputChannel]) {
-  def channel(n: Int) = channels(n)
+  def channelsForSource(n: Int) = channels.filter(_.source.id == n)
 }
 case class OutputChannels(channels: Seq[OutputChannel]) {
   def channel(n: Int) = channels.find(c => c.tag == n)
@@ -64,6 +64,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     case i: MapperInputChannel => i.sourceNode.id == sourceNode.id
     case _                     => false
   }
+  override def hashCode = sourceNode.id.hashCode
 
   /** collect all the tags accessible from this source node */
   lazy val tags = if (groupByKeys.isEmpty) valueTypes.tags else keyTypes.tags
@@ -137,21 +138,21 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
     implicit val sc = ScoobiConfigurationImpl(configuration)
     val emitter = if (groupByKeys.isEmpty) valueEmitter(context) else keyValueEmitter(context)
 
-    def computeMappers(node: CompNode): Any = node match {
-      case n if n == sourceNode => source.inputConverter.asInstanceOf[InputConverter[K1, V1, Any]].fromKeyValue(context, key, value)
+    def computeMappers(node: CompNode): Seq[Any] = node match {
+      case n if n == sourceNode => Seq(source.inputConverter.asInstanceOf[InputConverter[K1, V1, Any]].fromKeyValue(context, key, value))
       case mapper: ParallelDo[_,_,_]              =>
-        val mappedValue = computeMappers {
+        val mappedValues = computeMappers {
           if (mapper.ins.size == 1) mapper.ins.head
           else                      mapper.ins.filter(n => nodes.transitiveUses(sourceNode).contains(n) || (sourceNode == n)).head
         }
 
         if (mappers.size > 1 && nodes.uses(mapper).forall(isParallelDo && !isFloating)) {
           val vb = new VectorBuilder[Any]
-          mapper.unsafeMap(mappedValue, new Emitter[Any] { def emit(v: Any) { vb += v } })
-          vb.result.head
+          mappedValues.foreach(v => mapper.unsafeMap(v, new Emitter[Any] { def emit(v: Any) { vb += v } }))
+          vb.result
         }
-        else mapper.unsafeMap(mappedValue, emitter)
-      case _                                       => ()
+        else mappedValues.map(v => mapper.unsafeMap(v, emitter))
+      case _                                       => Seq()
     }
     lastMappers foreach computeMappers
     if (lastMappers.isEmpty)
@@ -167,6 +168,7 @@ case class IdInputChannel(input: CompNode, gbk: Option[GroupByKey[_,_]] = None) 
     case i: IdInputChannel => i.input.id == input.id
     case _                 => false
   }
+  override def hashCode = input.id.hashCode
   lazy val source = input match {
     case n: Load[_]           => n.source
     case n: GroupByKey[_,_]   => n.bridgeStore.get

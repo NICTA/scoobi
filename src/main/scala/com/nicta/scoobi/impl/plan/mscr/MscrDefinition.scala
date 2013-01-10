@@ -44,7 +44,7 @@ trait MscrsDefinition extends Layering {
     val allPotentialSources = allMappers.flatMap(_.ins)
     val sources = allPotentialSources.filterNot(allMappers.contains)
     val in = sources.map(MapperInputChannel(_))
-    val out = in.flatMap(_.lastMappers.map(BypassOutputChannel(_))).distinct
+    val out = in.flatMap(_.lastMappers.map(BypassOutputChannel(_)))
     makeMscrs(in, out)
   }
 
@@ -66,7 +66,7 @@ trait MscrsDefinition extends Layering {
       channelsWithCommonTags.map { taggedInputChannels =>
         val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
         val outputChannels = out.filter(o => correspondingOutputTags.contains(o.tag))
-        Mscr(taggedInputChannels, if (outputChannels.isEmpty) taggedInputChannels.map(_.sourceNode).collect { case pd: ParallelDo[_,_,_] => BypassOutputChannel(pd) } else outputChannels)
+        Mscr.create(taggedInputChannels, (if (outputChannels.isEmpty) taggedInputChannels.map(_.sourceNode).collect { case pd: ParallelDo[_,_,_] => BypassOutputChannel(pd) } else outputChannels))
       }
     }
   }

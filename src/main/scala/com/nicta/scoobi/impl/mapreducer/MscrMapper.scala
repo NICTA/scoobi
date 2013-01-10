@@ -35,30 +35,30 @@ import plan.mscr.{InputChannels, InputChannel}
 class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
 
   lazy val logger = LogFactory.getLog("scoobi.MapTask")
-  private var inputChannels: InputChannels = _
-  private var inputChannel: InputChannel = _
+  private var allInputChannels: InputChannels = _
+  private var taggedInputChannels: Seq[InputChannel] = _
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
 
   override def setup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
 
-    inputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
+    allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
     logger.info("Input is " + inputSplit)
-    inputChannel = inputChannels.channel(inputSplit.channel)
-    inputChannel.setup(context)
+    taggedInputChannels = allInputChannels.channelsForSource(inputSplit.channel)
+    taggedInputChannels.foreach(_.setup(context))
 
   }
 
   override def map(key: K1, value: V1, context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
-    inputChannel.map(key, value, context)
+    taggedInputChannels.foreach(_.map(key, value, context))
   }
 
   override def cleanup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
-    inputChannel.cleanup(context)
+    taggedInputChannels.foreach(_.cleanup(context))
   }
 }

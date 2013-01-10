@@ -72,12 +72,14 @@ trait PageRank extends NictaSimpleJobs {
   }
 
   /** @return new rankings */
-  def updateRankings[K : WireFormat : Grouping](previous: DList[Ranking[K]], d: Float = 0.5f) = {
-    val outbound = previous flatMap { case (_, (pageRank, _, links)) => links.map(link => (link, pageRank / links.size)) }
-
-    (previous coGroup outbound) map { case (url, (prevData, outboundMass)) =>
+  def updateRankings[K](previous: DList[Ranking[K]], d: Float = 0.5f)(implicit configuration: ScoobiConfiguration, wf: WireFormat[K], grouping: Grouping[K]) = {
+    val outbound: DList[(K, Float)] = previous flatMap { case t @ (url, (pageRank, _, links)) =>
+      links.map { link => (link, pageRank / links.size) }
+    }
+   (previous coGroup outbound) map { case (url, (prevData, outboundMass)) =>
       val newPageRank = (1 - d) + d * outboundMass.sum
-      (url, prevData.headOption.map { case (oldPageRank, _, links) => (newPageRank, oldPageRank, links) }.getOrElse((newPageRank, 0f, Nil)))
+      (url, prevData.headOption.map { case (oldPageRank, _, links) =>
+        (newPageRank, oldPageRank, links) }.getOrElse((newPageRank, 0f, Nil)))
     }
   }
 
@@ -89,7 +91,6 @@ trait PageRank extends NictaSimpleJobs {
   @tailrec
   private def calculateRankings(delta: Float, previous: Rankings[Int])
                        (implicit configuration: ScoobiConfiguration): (Float, Rankings[Int]) = {
-    println("calculating rankings with delta="+delta)
     if (delta <= 1.0f) (delta, previous)
     else {
       val next = updateRankings(previous)
