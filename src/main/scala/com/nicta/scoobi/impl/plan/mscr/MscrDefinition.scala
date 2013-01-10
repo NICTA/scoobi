@@ -29,8 +29,8 @@ trait MscrsDefinition extends Layering {
   }
 
   private def hasMaterialisedEnv(pd: ParallelDo[_,_,_]) =
-    descendentsUntil(isGroupByKey || isParallelDo)(pd.env).exists(isMaterialize)
-
+    (pd.env +: descendentsUntil(isGroupByKey || isParallelDo)(pd.env)).exists(isMaterialize)
+  
   /** all the mscrs for a given layer */
   lazy val mscrs: Layer[T] => Seq[Mscr] =
     attr("mscrs") { case layer => gbkMscrs(layer) ++ pdMscrs(layer) }
