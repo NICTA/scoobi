@@ -65,7 +65,7 @@ case class InMemoryMode() extends ShowNode {
         case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n)                               , n.sinks)
         case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n)                               , n.sinks)
         case n: Combine[_,_]      => saveSinks(computeCombine(n)                                  , n.sinks)
-        case n: Materialize[_]    => saveSinks(Vector(n.in -> compute(c))                         , Seq())
+        case n: Materialise[_]    => saveSinks(Vector(n.in -> compute(c))                         , Seq())
         case n: Op[_,_,_]         => saveSinks(Vector(n.unsafeExecute(n.in1 -> computeValue(c),
                                                                       n.in2 -> computeValue(c)))  , n.sinks)
         case n: Return[_]         => saveSinks(Vector(n.in)                                       , n.sinks)
@@ -160,7 +160,7 @@ case class InMemoryMode() extends ShowNode {
 
   private def computeCombine(combine: Combine[_,_])(implicit sc: ScoobiConfiguration): Seq[_] =
     (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) =>
-      (k, combine.unsafeReduce(vs))
+      (k, combine.unsafeCombine(vs))
     }.debug("computeCombine")
 
   private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {

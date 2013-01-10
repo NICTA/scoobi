@@ -25,12 +25,12 @@ import Configurations._
 import ScoobiConfigurationImpl._
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
-  * XStream to serialize objects to XML strings and then send out via Hadoop's
+  * XStream to serialise objects to XML strings and then send out via Hadoop's
   * distributed cache. Two APIs are provided for pushing and pulling objects. */
 object DistCache {
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
-    * serialized object. */
+    * serialised object. */
   def mkPath(configuration: Configuration, tag: String): Path = {
     val scratchDir = new Path(configuration.workingDirectory, "dist-objs")
     new Path(scratchDir, tag)
@@ -44,10 +44,10 @@ object DistCache {
   }
 
   /**
-   * serialize an object to a path
+   * serialise an object to a path
    */
   def serialise[T](conf: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
-    /* Serialize */
+    /* Serialise */
     val path = mkPath(conf, tag)
     val dos = path.getFileSystem(conf).create(path)
     Serialiser.serialise(obj, dos)
@@ -67,7 +67,7 @@ object DistCache {
   }
 
   /**
-   * deserialize an object from a path file
+   * deserialise an object from a path file
    */
   def deserialise[T](conf: Configuration) = (path: Path) => {
     val dis = path.getFileSystem(conf).open(path)

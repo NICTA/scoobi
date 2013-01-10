@@ -90,7 +90,7 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
   lazy val groupByKeys: Seq[GroupByKey[_,_]] = groupByKeysUses(sourceNode)
   lazy val groupByKeysUses: CompNode => Seq[GroupByKey[_,_]] = attr { case node =>
     val (gbks, nonGbks) = nodes.uses(node).partition(isGroupByKey)
-    gbks.collect(isAGroupByKey).toSeq ++ nonGbks.filterNot(isMaterialize).flatMap(groupByKeysUses)
+    gbks.collect(isAGroupByKey).toSeq ++ nonGbks.filterNot(isMaterialise).flatMap(groupByKeysUses)
   }
 
   lazy val lastMappers: Seq[ParallelDo[_,_,_]] =

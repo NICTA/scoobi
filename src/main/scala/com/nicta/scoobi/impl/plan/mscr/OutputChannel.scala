@@ -70,7 +70,7 @@ case class GbkOutputChannel(groupByKey:   GroupByKey[_,_],
 
   def reduce[K, V, B](key: TaggedKey, untaggedValues: UntaggedValues[V], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     val emitter: Emitter[B] = createEmitter(channelOutput)
-    val values = combiner.map(c => c.unsafeReduce(untaggedValues)).getOrElse(untaggedValues)
+    val values = combiner.map(c => c.unsafeCombine(untaggedValues)).getOrElse(untaggedValues)
     reducer.map(_.asInstanceOf[ParallelDo[(K, V), B, _]].unsafeReduce(key.get(tag).asInstanceOf[K], values, emitter)).getOrElse {
       combiner.map(c => emitter.emit((key.get(tag), values).asInstanceOf[B])).getOrElse {
         emitter.emit((key.get(tag), values).asInstanceOf[B])

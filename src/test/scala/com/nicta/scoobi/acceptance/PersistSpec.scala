@@ -20,11 +20,11 @@ class PersistSpec extends NictaSimpleJobs {
     val o1 = DList(1, 2, 3).sum
     o1.run === 6
   }
-  "3. a list, materialized" >> { implicit sc: ScoobiConfiguration =>
+  "3. a list, materialised" >> { implicit sc: ScoobiConfiguration =>
     val list = DList(1, 2, 3)
     list.run === Seq(1, 2, 3)
   }
-  "4. a list, having a sink and also materialized" >> { implicit sc: ScoobiConfiguration =>
+  "4. a list, having a sink and also materialised" >> { implicit sc: ScoobiConfiguration =>
     val resultFile = TempFiles.createTempFile("test")
     val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
 
@@ -33,7 +33,7 @@ class PersistSpec extends NictaSimpleJobs {
   }
   endp
 
-  "5. 2 materialized lists with a common ancestor" >> {
+  "5. 2 materialised lists with a common ancestor" >> {
     "5.1 when we only want one list, only the computations for that list must be executed" >> { implicit sc: ScoobiConfiguration =>
       val l1 = DList(1, 2, 3).map(_ * 10)
       val l2 = l1.map(_ + 1 )

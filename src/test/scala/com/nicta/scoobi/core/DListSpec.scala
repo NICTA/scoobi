@@ -66,7 +66,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
 
     val inputGrouped = input.groupBy(_._1)
     val inputGroupedDifferently = input.groupBy(_._2)
-    val inputGroupedAsDObject = inputGrouped.materialize
+    val inputGroupedAsDObject = inputGrouped.materialise
 
     val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
 

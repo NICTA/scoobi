@@ -5,7 +5,7 @@ package mscr
 
 import testing.UnitSpecification
 import org.specs2.specification.Grouped
-import comp.{StringSink, factory}
+import comp.{GroupByKey, StringSink, factory}
 
 class OutputChannelSpec extends UnitSpecification with Grouped { def is =
 
@@ -13,12 +13,12 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
     "the sinks of an OutputChannel are"                                        ^
     "a BridgeStore created from one of the nodes by default"                   ! g1.e1^
     "the additional sinks of the compnodes if there are some"                  ! g1.e2^
-  end
+                                                                               end
 
   "sinks" - new g1 with factory {
-    val gbk1 = gbk(load)
+    val (gbk1, gbk2) = (gbk(load), gbk(StringSink()))
 
     e1 := GbkOutputChannel(gbk1).sinks === Seq(gbk1.bridgeStore.get)
-    e2 := GbkOutputChannel(gbk1.addSink(StringSink())).sinks === Seq(gbk1.bridgeStore.get, StringSink())
+    e2 := GbkOutputChannel(gbk2).sinks === Seq(gbk2.bridgeStore.get, StringSink())
   }
 }

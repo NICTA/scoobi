@@ -27,7 +27,7 @@ trait ShowNode extends CompNodes {
   implicit lazy val showCompNode: Show[CompNode] = new Show[CompNode] {
     override def shows(n: CompNode) = (n.toString + (n match {
       case Op1(in1, in2)    => Seq(in1, in2).showString("[","]")
-      case Materialize1(in) => parens(pretty(in))
+      case Materialise1(in) => parens(pretty(in))
       case GroupByKey1(in)  => parens(pretty(in))
       case Combine1(in)     => parens(pretty(in))
       case ParallelDo1(ins) => ins.showString("[","]")
@@ -80,7 +80,7 @@ trait ShowNode extends CompNodes {
       case Return1(_)            => value(showNode(node, attribute))
       case Combine1(in)          => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case GroupByKey1(in)       => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
-      case Materialize1(in)      => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
+      case Materialise1(in)      => showNode(node, attribute) <> braces (nest (line <> show(in, attribute) <> line))
       case Op1(in1, in2)         => showNode(node, attribute) <> braces (nest (line <> "1. " <> show(in1, attribute) <> line <> "2. " <> show(in2, attribute)))
       case other                 => value(other)
     }

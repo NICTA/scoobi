@@ -17,20 +17,20 @@ trait MscrsDefinition extends Layering {
 
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
-    case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialize)) &&
+    case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise)) &&
                                    !isReducer(pd) &&
                                   (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
     case other                 => false
   }
 
   private def isInsideMapper(pd: ParallelDo[_,_,_]) = {
-    val pdDescendents = descendentsUntil(isMaterialize)(pd).collect(isAParallelDo)
+    val pdDescendents = descendentsUntil(isMaterialise)(pd).collect(isAParallelDo)
     !pdDescendents.isEmpty && pdDescendents.forall(isFloating)
   }
 
   private def hasMaterialisedEnv(pd: ParallelDo[_,_,_]) =
-    (pd.env +: descendentsUntil(isGroupByKey || isParallelDo)(pd.env)).exists(isMaterialize)
-  
+    (pd.env +: descendentsUntil(isGroupByKey || isParallelDo)(pd.env)).exists(isMaterialise)
+
   /** all the mscrs for a given layer */
   lazy val mscrs: Layer[T] => Seq[Mscr] =
     attr("mscrs") { case layer => gbkMscrs(layer) ++ pdMscrs(layer) }

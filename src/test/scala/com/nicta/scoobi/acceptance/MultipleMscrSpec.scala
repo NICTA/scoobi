@@ -55,14 +55,14 @@ class MultipleMscrSpec extends NictaSimpleJobs {
     (unique(input1) join unique(input2)).run must_== Seq(("hello", ("hello", "hello")))
   }
 
-  "A DList grouped in two different ways with one of them materialized and then joined to the other should work." >> { implicit c: SC =>
+  "A DList grouped in two different ways with one of them materialised and then joined to the other should work." >> { implicit c: SC =>
 
     val input = fromDelimitedInput("k1,v1","k2,v2").collect { case key :: value :: _ => (key, value) }
 
     val inputGrouped = input.groupBy(_._1)
     val inputGroupedDifferently = input.groupBy(_._2)
 
-    val inputGroupedAsDObject = inputGrouped.materialize
+    val inputGroupedAsDObject = inputGrouped.materialise
 
     val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
 
@@ -73,7 +73,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
         (expectedGBKs, ("v2",Seq(("k2","v2")))))
   }
 
-  "A DList grouped in two different ways with one of them grouped again, materialized, then joined to the other." >> { implicit c: SC =>
+  "A DList grouped in two different ways with one of them grouped again, materialised, then joined to the other." >> { implicit c: SC =>
 
     val input = fromDelimitedInput("k1,v1","k2,v2").collect { case key :: value :: _ => (key, value) }
 
@@ -84,7 +84,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
 
     val inputGroupedDifferently = input.groupBy(_._2)             // Seq((v1, Seq((k1, v1)), (v2, Seq((k2, v2))))
 
-    val inputGroupedAsDObject = inputGrouped.materialize
+    val inputGroupedAsDObject = inputGrouped.materialise
 
     val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
     val expectedGBKs = Seq(("k1",Seq(("k1","v1"))), ("k2",Seq(("k2","v2"))))
@@ -106,7 +106,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
       val x =                    w.groupByKey map { case (k, vs) => (k, vs.head) }
       val y = (mkkv(a) ++ x)
       val z = y.groupByKey map { case (k, vs) => (k, vs.head) }
-      z.materialize
+      z.materialise
     }
 
     val (r0, r1) = (s(0), s(1))
@@ -127,7 +127,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
       val x = ((if (i == 0) cc else dd) ++ w).groupByKey map { case (k, vs) => (k, vs.head) }
       val y = ((if (i == 0) dd else cc) ++ x)
       val z = y.groupByKey map { case (k, vs) => (k, vs.head) }
-      z.materialize
+      z.materialise
     }
 
     val (r0, r1) = (s(0), s(1))

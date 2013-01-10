@@ -29,7 +29,7 @@ import impl.plan.comp.DComp
  * - ++: to concatenate 2 DLists
  * - groupByKey: to group a list of (key, value) elements by key, so as to get (key, values)
  * - combine: a parallel 'reduce' operation
- * - materialize: transforms a distributed list into a non-distributed list
+ * - materialise: transforms a distributed list into a non-distributed list
  */
 trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   type T = DList[A]
@@ -71,9 +71,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    gpk:  Grouping[K],
    wv:  WireFormat[V]): DList[(K, V)]
 
-  /**Turn a distributed list into a normal, non-distributed collection that can be accessed
-   * by the client. */
-  def materialize: DObject[Iterable[A]]
+  @deprecated(message="use materialise instead", since="0.7.0")
+  def materialize: DObject[Iterable[A]] = materialise
+
+  /**
+   * Turn a distributed list into a normal, non-distributed collection that can be accessed
+   * by the client
+   */
+  def materialise: DObject[Iterable[A]]
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Derived functionality (return DLists).
@@ -225,7 +230,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
     /* Group all elements together (so they go to the same reducer task) and then
      * combine them. */
-    val x: DObject[Iterable[A]] = imc.groupBy(_ => 0).combine(op).map(_._2).materialize
+    val x: DObject[Iterable[A]] = imc.groupBy(_ => 0).combine(op).map(_._2).materialise
     x map {
       case it if it.isEmpty => sys.error("the reduce operation is called on an empty list")
       case it               => it.head

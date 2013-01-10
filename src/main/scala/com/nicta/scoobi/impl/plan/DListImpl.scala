@@ -66,7 +66,7 @@ class DListImpl[A](comp: DComp[A])(implicit val wf: WireFormat[A]) extends DList
                 gpk:  Grouping[K],
                 wfv: WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, wfk, gpk, wfv))
 
-  lazy val materialize: DObject[Iterable[A]] = new DObjectImpl(Materialize(comp, wireFormat[Iterable[A]], comp.sinks))
+  lazy val materialise: DObject[Iterable[A]] = new DObjectImpl(Materialise(comp, wireFormat[Iterable[A]]))
 
   def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject.newInstance, dofn)
 

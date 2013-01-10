@@ -30,7 +30,7 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
 
   def show(node: CompNode): String = "SHOWING NODE: "+showNode(node, None)
 
-  /** initialize the Kiama attributes of a CompNode */
+  /** initialise the Kiama attributes of a CompNode */
   def init[T <: CompNode](t: T): T  = initAttributable(t)
 
   val rewriter = new Rewriter {}
@@ -43,7 +43,4 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
 
 }
 object factory extends factory
-
-import mscr.MscrAttributes
-trait graph
 

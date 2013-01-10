@@ -5,6 +5,7 @@ package comp
 
 import testing.UnitSpecification
 import org.specs2.specification.Grouped
+import Scoobi._
 
 class DCompSpec extends UnitSpecification with Grouped { def is =
 
@@ -17,9 +18,11 @@ class DCompSpec extends UnitSpecification with Grouped { def is =
   end
 
   "sinks" - new g1 {
-    e1 := Return.unit.addSink(StringSink()).sinks === Seq(StringSink())
-    e2 := Return.unit.bridgeStore must not(beNull)
-    e3 := Return.unit.addSink(StringSink()).updateSinks(s => s.map(_.compress)).sinks.map(_.isCompressed) === Seq(true)
+    def parallelDo = ParallelDo.create[String](Return.unit)
+
+    e1 := parallelDo.addSink(StringSink()).sinks === Seq(StringSink())
+    e2 := parallelDo.bridgeStore must not(beNull)
+    e3 := parallelDo.addSink(StringSink()).updateSinks(s => s.map(_.compress)).sinks.map(_.isCompressed) === Seq(true)
   }
 
 }

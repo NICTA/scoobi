@@ -58,17 +58,17 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     l.run must haveTheSameElementsAs(Seq((1, Iterable(Seq("a"), Seq("a")))))
   }
   "12. 2 parallelDos on a flatten" in { implicit sc: SC =>
-    (DList("hello") ++ DList("world")).materialize.run.toSet === Set("hello", "world")
+    (DList("hello") ++ DList("world")).materialise.run.toSet === Set("hello", "world")
   }
   "13. join + pd + gbk + pd" in { implicit sc: SC =>
-    val list = (DList("a").materialize.map(_.mkString) join DList("b")).groupByKey.map { case (k, v) => (k, v) }
+    val list = (DList("a").materialise.map(_.mkString) join DList("b")).groupByKey.map { case (k, v) => (k, v) }
 
-    normalise(list.materialize.run) === "Vector((a,Vector(b)))"
+    normalise(list.materialise.run) === "Vector((a,Vector(b)))"
   }
   "14. gbk1 with reducer + gbk2 with output feeding gbk1" >> { implicit sc: SC =>
     val l0 = DList((1, "a"))
     val l1 = l0.groupByKey.filter(_ => true)
-    val l2 = l0.groupByKey.map { case (i, as) => "b" }.materialize
+    val l2 = l0.groupByKey.map { case (i, as) => "b" }.materialise
     val l3 = (l2 join l1).filter(_ => true)
 
     normalise(l1.run) === "Vector((1,Vector(a)))"
@@ -99,7 +99,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   }
   "19. join + gbk" >> { implicit sc: ScoobiConfiguration =>
     def list = DList("hello").map(_.partition(_ > 'm'))
-    val l1 = list.groupByKey.map { case (k, vs) => k }. materialize
+    val l1 = list.groupByKey.map { case (k, vs) => k }. materialise
     val l2 = l1.join(DList("hello")).map { case (vs, k) => k }
     normalise(l2.run) must not(throwAn[Exception])
   }
@@ -124,7 +124,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     normalise(l3.run) === "Vector(start, start)"
   }
   "24. join on a gbk" >> { implicit sc: ScoobiConfiguration =>
-    val l1 = DList("hello").materialize
+    val l1 = DList("hello").materialise
     val l2 = l1 join DList("a" -> "b").groupByKey.map(_.toString)
     normalise(l2.run) === "Vector((Vector(hello),(a,Vector(b))))"
   }

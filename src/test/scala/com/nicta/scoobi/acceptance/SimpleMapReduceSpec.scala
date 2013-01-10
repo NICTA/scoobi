@@ -64,7 +64,7 @@ class SimpleMapReduceSpec extends NictaSimpleJobs {
         map[String](_ => throw new RuntimeException("forcing a failure in the mapper")).run must throwA[JobExecException].unless(sc.isInMemory)
   }
 
-  "We can materialize a DList with more than 1 reducer" >> { implicit sc: SC =>
+  "We can materialise a DList with more than 1 reducer" >> { implicit sc: SC =>
     sc.setMinReducers(2)
     val xs = (1 to 10).toList
     xs.toDList.run.sorted must_== xs.toSeq

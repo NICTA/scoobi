@@ -17,7 +17,7 @@ import mapreducer.BridgeStore
 case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
   implicit lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
-  def execute(list: DList[_]): Unit = {
+  def execute(list: DList[_]) {
     execute(list.getComp)
   }
 
@@ -52,7 +52,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     attr("executeNode") {
       case (original, node @ Op1(in1, in2)   ) => node.unsafeExecute(executeNode((original, in1)), executeNode((original, in2))).debug("result for op "+node.id+": ")
       case (original, node @ Return1(in)     ) => in
-      case (original, node @ Materialize1(in)) => executeLayers(original, node); readNodeStore(node)
+      case (original, node @ Materialise1(in)) => executeLayers(original, node); readNodeStore(node)
       case (original, node                   ) => executeLayers(original, node)
     }
   }
@@ -120,7 +120,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   }
 
   private lazy val readNodeStore: CompNode => Any = attr("readNodeStore") {
-    case mt: Materialize[_] => mt.in.bridgeStore.map(readBridgeStore).getOrElse(Seq())
+    case mt: Materialise[_] => mt.in.bridgeStore.map(readBridgeStore).getOrElse(Seq())
     case other              => ()
   }
 

@@ -136,9 +136,9 @@ The code above is merely a shorthand for:
 
       val list: DList[Int]  = DList(1, 2, 3)
 
-      val materializedList = list.materialize
+      val materialisedList = list.materialise
       // returns Seq(1, 2, 3)
-      materializedList.run
+      materialisedList.run
 
 Finally, when you have several `DObjects` and `DLists` which are part of the same computation graph, you can persist them all at once:
 

@@ -51,16 +51,16 @@ trait CollectFunctions {
   lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey[_,_] => true; case other => false }
   /** return true if a CompNode is a GroupByKey */
   lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk: GroupByKey[_,_] => gbk }
-  /** return true if a CompNode is a Materialize */
-  lazy val isMaterialize: CompNode => Boolean = { case m: Materialize[_] => true; case other => false }
+  /** return true if a CompNode is a Materialise */
+  lazy val isMaterialise: CompNode => Boolean = { case m: Materialise[_] => true; case other => false }
   /** return true if a CompNode is a Return */
   lazy val isReturn: CompNode => Boolean = { case r: Return[_]=> true; case other => false }
   /** return true if a CompNode needs to be persisted */
-  lazy val isSinkNode: CompNode => Boolean = isMaterialize
+  lazy val isSinkNode: CompNode => Boolean = isMaterialise
   /** return true if a CompNode needs to be loaded */
   lazy val isValueNode: CompNode => Boolean = isReturn || isComputedValueNode
   /** return true if a CompNode needs to be computed */
-  lazy val isComputedValueNode: CompNode => Boolean = isMaterialize || isOp
+  lazy val isComputedValueNode: CompNode => Boolean = isMaterialise || isOp
   /** return true if a CompNode is an Op */
   lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }
 }

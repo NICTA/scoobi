@@ -30,7 +30,7 @@ trait Optimiser extends CompNodes with Rewriter {
    * add a simple parallelDo node if a Load goes directly to a Materialise, to allow the creation of at least a simple Mscr
    */
   def materialiseLoad = everywhere(rule {
-    case mt @ Materialize(ld: Load[_], _, _) => mt.debug("materialiseLoad").copy(in = ParallelDo.create(ld)(ld.wf))
+    case mt @ Materialise(ld: Load[_],_) => mt.debug("materialiseLoad").copy(in = ParallelDo.create(ld)(ld.wf))
   })
 
   /**
@@ -67,7 +67,7 @@ trait Optimiser extends CompNodes with Rewriter {
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
     case n: Op[_,_,_]         => n.copy()
-    case n: Materialize[_]    => n.copy()
+    case n: Materialise[_]    => n.copy()
     case n: GroupByKey[_,_]   => n.copy()
     case n: Combine[_,_]      => n.copy()
     case n: ParallelDo[_,_,_] => n.copy()

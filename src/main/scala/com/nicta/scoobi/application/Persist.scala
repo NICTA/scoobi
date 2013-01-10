@@ -23,13 +23,13 @@ trait Persist { outer =>
    *
    * This is equivalent to:
    *   ```
-   *    val obj = list.materialize
+   *    val obj = list.materialise
    *    run(obj)
    *   ```
    */
   def run[T](p: =>core.Persistent[T])(implicit configuration: core.ScoobiConfiguration): T = {
     p match {
-      case list: core.DList[_] => Vector(persist(list.materialize).toSeq:_*)
+      case list: core.DList[_] => Vector(persist(list.materialise).toSeq:_*)
       case o: DObject[_]       => persist(o)
     }
   }

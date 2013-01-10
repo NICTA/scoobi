@@ -53,7 +53,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
     /** objects of elements with a simple type A */
     def genObject(depth: Int = 1): Gen[DObject[String]] =
       if (depth <= 1) DObjects[String]("start")
-      else            Gen.oneOf(genList(depth - 1).map(l => l.materialize.map(normalise)),
+      else            Gen.oneOf(genList(depth - 1).map(l => l.materialise.map(normalise)),
                                 ^(genObject(depth / 2), genObject(depth / 2))((_ join _)).map(o => o.map(_.toString))).memo
 
     /** lists of elements with a type (K, V) */
@@ -93,19 +93,19 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  */
 trait CompNodeFactory extends Scope {
 
-  def loadWith(s: String)                    = Load(ConstantStringDataSource(s), wireFormat[String])
-  def load                                   = loadWith("start")
-  def aRoot(nodes: CompNode*)                = Root(nodes)
-  def rt                                     = Return("", wireFormat[String])
-  def cb(in: CompNode)                       = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,
+  def loadWith(s: String)                           = Load(ConstantStringDataSource(s), wireFormat[String])
+  def load                                          = loadWith("start")
+  def aRoot(nodes: CompNode*)                       = Root(nodes)
+  def rt                                            = Return("", wireFormat[String])
+  def cb(in: CompNode)                              = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,
                                                                        wireFormat[String], grouping[String], wireFormat[String])
-  def gbk(in: CompNode)                      = GroupByKey(in.asInstanceOf[DComp[(String,String)]],
-                                                          wireFormat[String], grouping[String], wireFormat[String])
-  def mt(in: CompNode)                       = Materialize(in.asInstanceOf[DComp[String]], wireFormat[Iterable[String]])
+  def gbk(in: CompNode): GroupByKey[String, String] = GroupByKey(in.asInstanceOf[DComp[(String,String)]], wireFormat[String], grouping[String], wireFormat[String])
+  def gbk(sink: Sink): GroupByKey[String, String]   = gbk(load).addSink(sink).asInstanceOf[GroupByKey[String, String]]
+  def mt(in: CompNode)                              = Materialise(in.asInstanceOf[DComp[String]], wireFormat[Iterable[String]])
 
-  def op(in1: CompNode, in2: CompNode)       = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, wireFormat[String])
+  def op(in1: CompNode, in2: CompNode)              = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, wireFormat[String])
 
-  def parallelDo(in: CompNode)               = pd(in)
+  def parallelDo(in: CompNode)                      = pd(in)
 
   def pd(ins: CompNode*): ParallelDo[String, String, String] =
     ParallelDo[String, String, String](ins.map(_.asInstanceOf[DComp[String]]), rt.asInstanceOf[DComp[String]], fn,
