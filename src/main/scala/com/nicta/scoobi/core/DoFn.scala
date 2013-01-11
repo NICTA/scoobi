@@ -22,6 +22,17 @@ trait DoFunction {
   private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter)
 }
 
+case class BasicDoFunction(f: (Any, Any, EmitterWriter) => Any) extends DoFunction {
+  def setupFunction(en: Any) {}
+  def processFunction(env: Any, input: Any, emitter: EmitterWriter) { f(env, input, emitter) }
+  def cleanupFunction(env: Any, emitter: EmitterWriter) {}
+}
+
+object EmitterDoFunction extends DoFunction {
+  def setupFunction(en: Any) {}
+  def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write(input) }
+  def cleanupFunction(env: Any, emitter: EmitterWriter) {}
+}
 /**
  * Interface for specifying parallel operation over DLists in the absence of an
  * environment

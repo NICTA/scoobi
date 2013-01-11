@@ -15,7 +15,7 @@ import util.UniqueId
  * Processing node in the computation graph
  */
 trait ProcessNode extends CompNode {
-  lazy val id: Int = UniqueId.get
+  val id: Int = UniqueId.get
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
   def bridgeStore: Bridge
   /** list of additional sinks for this node */
@@ -27,7 +27,9 @@ trait ProcessNode extends CompNode {
 /**
  * Value node to either load or materialise a value
  */
-trait ValueNode extends CompNode
+trait ValueNode extends CompNode {
+  val id: Int = UniqueId.get
+}
 
 /**
  * The ParallelDo node type specifies the building of a CompNode as a result of applying a function to
@@ -74,10 +76,6 @@ case class ParallelDo(ins:           Seq[CompNode],
       case other              => ()
     }
   }
-
-  def fuse(p2: ParallelDo)(wfc: WireReaderWriter, wff: WireReaderWriter): ParallelDo =
-    ParallelDo.fuse(this, p2)(wfa, wfb, wfc, wfe, wff)
-
 }
 object ParallelDo {
 
@@ -95,39 +93,30 @@ object ParallelDo {
   }
 
   /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
-  private[scoobi]
-  def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
+  private def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
     def setupFunction(env: Any) { env match { case (e1, e2) => f.setupFunction(e1); g.setupFunction(e2) } }
 
     def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
-      env match {
-        case (e1, e2) => f.processFunction(e1, input, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } } )
+      env match { case (e1, e2) =>
+        f.processFunction(e1, input, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } } )
       }
     }
 
     def cleanupFunction(env: Any, emitter: EmitterWriter) {
-      env match {
-        case (e1, e2) => f.cleanupFunction(e1, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } })
+      env match { case (e1, e2) =>
+        f.cleanupFunction(e1, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } })
         g.cleanupFunction(e2, emitter)
       }
     }
   }
 
   /** Create a new environment by forming a tuple from two separate evironments.*/
-  private[scoobi]
-  def fuseEnv(fExp: CompNode, gExp: CompNode)(wff: WireReaderWriter, wfg: WireReaderWriter): CompNode =
+  private def fuseEnv(fExp: CompNode, gExp: CompNode)(wff: WireReaderWriter, wfg: WireReaderWriter): CompNode =
     Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(wff, wfg))
 
   private[scoobi]
   def create(ins: CompNode*)(wf: WireReaderWriter) =
-    ParallelDo(
-      ins,
-      UnitDObject.newInstance.getComp,
-      new DoFunction {
-        def setupFunction(en: Any) {}
-        def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write(input) }
-        def cleanupFunction(env: Any, emitter: EmitterWriter) {}
-      }, wf, wf, wireFormat[Unit])
+    ParallelDo(ins, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf, wireFormat[Unit])
 
 }
 
@@ -159,15 +148,9 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
    * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
    */
   def toParallelDo = {
-    val dofn = new DoFunction {
-      def setupFunction(env: Any) {}
-      def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
-        input match {
-          case (key, values: Seq[_]) => emitter.write((key, values.reduce(f)))
-        }
-      }
-      def cleanupFunction(env: Any, emitter: EmitterWriter) {}
-    }
+    val dofn = BasicDoFunction((env: Any, input: Any, emitter: EmitterWriter) => input match {
+      case (key, values: Seq[_]) => emitter.write((key, values.reduce(f)))
+    })
     // Return(()) is used as the Environment because there's no need for a specific value here
     ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), wireFormat[Unit])
   }

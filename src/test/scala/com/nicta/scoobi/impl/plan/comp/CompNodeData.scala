@@ -101,25 +101,19 @@ trait CompNodeFactory extends Scope {
   def cb(in: CompNode)                 = Combine(in, (s1: Any, s2: Any) => s1.toString + s2.toString, wireFormat[String], grouping[String], wireFormat[String])
   def gbk(in: CompNode): GroupByKey    = GroupByKey(in, wireFormat[String], grouping[String], wireFormat[String])
   def gbk(sink: Sink): GroupByKey      = gbk(load).addSink(sink).asInstanceOf[GroupByKey]
-  def mt(in: ProcessNode)             = Materialise(in, wireFormat[Iterable[String]])
+  def mt(in: ProcessNode)              = Materialise(in, wireFormat[Iterable[String]])
 
   def op(in1: CompNode, in2: CompNode) = Op(in1, in2, (a, b) => a, wireFormat[String])
   def parallelDo(in: CompNode)         = pd(in)
 
   def pd(ins: CompNode*): ParallelDo =
-    ParallelDo(ins, rt, fn,
+    ParallelDo(ins, rt, EmitterDoFunction,
     wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
     java.util.UUID.randomUUID().toString)
 
   def pdWithEnv(in: CompNode, env: CompNode): ParallelDo =
-    ParallelDo(Seq(in), env, fn,
+    ParallelDo(Seq(in), env, EmitterDoFunction,
       wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
       java.util.UUID.randomUUID.toString)
-
-  lazy val fn = new DoFunction {
-    private[scoobi] def setupFunction(env: Any) {}
-    private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write(input) }
-    private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) {}
-  }
 
 }

@@ -17,10 +17,12 @@ package com.nicta.scoobi
 package impl
 package util
 
+import java.util.concurrent.atomic.AtomicInteger
+
 /** Trait that is sub-classed by objects to provide sets of unique identifiers. */
 trait UniqueInt {
-  private var i: Int = -1
-  def get: Int = synchronized { i=i+1 ; i }
+  private final val counter = new AtomicInteger
+  def get: Int = counter.incrementAndGet
 }
 
 object UniqueId extends UniqueInt

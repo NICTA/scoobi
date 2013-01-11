@@ -17,7 +17,6 @@ package com.nicta.scoobi
 package core
 
 import org.apache.hadoop.mapreduce._
-import impl.util.UniqueId
 
 /**
  * DataSource for a computation graph.

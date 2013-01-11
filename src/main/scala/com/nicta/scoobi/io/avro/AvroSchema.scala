@@ -104,7 +104,7 @@ object AvroSchema {
       new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
   }
 
-  object FixedCounter extends com.nicta.scoobi.impl.util.UniqueInt {}
+  object FixedCounter extends com.nicta.scoobi.impl.util.UniqueInt
 
   implicit def FixedSchema[T](implicit fxd: AvroFixed[T]) = new AvroSchema[T]  {
     private val id = FixedCounter.get
