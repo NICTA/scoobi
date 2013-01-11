@@ -18,7 +18,6 @@ package impl
 package collection
 
 import scala.collection._
-import scalaz.Monoid
 
 /**
  * This trait provides utility methods on maps, especially mutable maps

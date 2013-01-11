@@ -15,7 +15,6 @@ import core._
 import monitor.Loggable._
 import impl.plan._
 import comp._
-import WireFormat._
 import ScoobiConfigurationImpl._
 import org.apache.hadoop.mapreduce.RecordReader
 
@@ -100,16 +99,14 @@ case class InMemoryMode() extends ShowNode {
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
-    val emitter = new Emitter[Any] { def emit(v: Any) { vb += v } }
+    val emitter = new EmitterWriter { def write(v: Any) { vb += v } }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
     dofn.setupFunction(env)
     (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
     vb.result.debug("computeParallelDo")
-
   }
-
 
   private def computeGroupByKey(gbk: GroupByKey)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val in = gbk.in -> compute(sc)

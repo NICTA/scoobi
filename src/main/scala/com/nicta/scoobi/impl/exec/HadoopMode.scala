@@ -3,13 +3,10 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.kiama.attribution._
-
 import core._
 import plan.comp._
 import plan.mscr._
 import monitor.Loggable._
-import mapreducer.BridgeStore
 
 /**
  * Execution of Scoobi applications using Hadoop.
