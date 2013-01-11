@@ -19,16 +19,14 @@ package core
 import java.lang.Comparable
 import annotation.implicitNotFound
 
-
 /**
  * Specify the way in which key-values are "shuffled". Used by `groupByKey` in `DList`
  */
 @implicitNotFound(msg = "Cannot find Grouping type class for ${K}")
 trait Grouping[K] extends KeyGrouping {
-
-  def partitionKey(k: Any, num: Int) = partition(k.asInstanceOf[K], num)
-  def sortKey(k1: Any, k2: Any) = sortCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
-  def groupKey(k1: Any, k2: Any) = groupCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
+  private[scoobi] def partitionKey(k: Any, num: Int) = partition(k.asInstanceOf[K], num)
+  private[scoobi] def sortKey(k1: Any, k2: Any) = sortCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
+  private[scoobi] def groupKey(k1: Any, k2: Any) = groupCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
 
   /** Specifies how key-values are partitioned among Reducer tasks. */
   def partition(key: K, num: Int): Int = (key.hashCode & Int.MaxValue) % num
@@ -40,17 +38,6 @@ trait Grouping[K] extends KeyGrouping {
   /** Specifies how values, for a given partition, are grouped together in
    * a given partition. */
   def groupCompare(x: K, y: K): Int
-}
-
-trait KeyGrouping {
-  /** Specifies how key-values are partitioned among Reducer tasks. */
-  def partitionKey(k: Any, num: Int): Int
-  /** Specifies the order in which grouped values are presented to a Reducer
-    * task, for a given partition. */
-  def sortKey(k1: Any, k2: Any): Int
-  /** Specifies how values, for a given partition, are grouped together in
-    * a given partition. */
-  def groupKey(k1: Any, k2: Any): Int
 }
 
 object Grouping extends GroupingImplicits {
@@ -227,3 +214,14 @@ trait GroupingImplicits {
     }
   }
 }
+
+/**
+ * Internal untyped grouping typeclass
+ */
+private[scoobi]
+trait KeyGrouping {
+  private[scoobi] def partitionKey(k: Any, num: Int): Int
+  private[scoobi] def sortKey(k1: Any, k2: Any): Int
+  private[scoobi] def groupKey(k1: Any, k2: Any): Int
+}
+

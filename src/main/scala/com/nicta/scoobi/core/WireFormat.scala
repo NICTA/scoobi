@@ -54,7 +54,7 @@ object WireReaderWriter {
     import java.io._
     val byteArrOs = new ByteArrayOutputStream()
     wf.write(a, new DataOutputStream(byteArrOs))
-    wf.read(new DataInputStream(new ByteArrayInputStream(byteArrOs.toByteArray())))
+    wf.read(new DataInputStream(new ByteArrayInputStream(byteArrOs.toByteArray)))
   }
 
 }

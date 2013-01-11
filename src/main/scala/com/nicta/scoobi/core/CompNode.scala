@@ -15,7 +15,7 @@ trait CompNode extends Attributable {
   /** unique identifier for this computation node */
   def id: Int
 
-  /** wireformat defining how to serialise / deserialise  data for that node */
+  /** object defining how to serialise / deserialise  data for that node */
   def wf: WireReaderWriter
 
   override def equals(a: Any) = a match {
@@ -25,7 +25,9 @@ trait CompNode extends Attributable {
   override def hashCode = id.hashCode
 }
 
-
+/**
+ * Definition of the Equal instance for CompNodes
+ */
 object CompNode {
   implicit def compNodeEqual[T <: CompNode] = new Equal[T] {
     def equal(a1: T, a2: T) = a1.id == a2.id
