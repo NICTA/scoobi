@@ -30,7 +30,7 @@ trait TaggedValue extends Tagged with Writable
 
 /** Companion object for dynamically constructing a subclass of TaggedValue. */
 object TaggedValue {
-  def apply(name: String, tags: Map[Int, Tuple1[WireFormat[_]]])(implicit sc: ScoobiConfiguration): RuntimeClass =
+  def apply(name: String, tags: Map[Int, Tuple1[WireReaderWriter]])(implicit sc: ScoobiConfiguration): RuntimeClass =
     MetadataClassBuilder[MetadataTaggedValue](name, tags).toRuntimeClass
 }
 

@@ -24,11 +24,12 @@ import rtt._
 import util.DistCache
 import plan.mscr.{OutputChannel, OutputChannels}
 import plan.comp.Combine
+import core.InputOutputContext
 
 /** Hadoop Combiner class for an MSCR. */
-class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
+class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
 
-  private type Combiners = Map[Int, Combine[_,_]]
+  private type Combiners = Map[Int, Combine]
   private var combiners: Combiners = _
   private var tv: TaggedValue = _
 
@@ -37,21 +38,19 @@ class MscrCombiner[V2] extends HReducer[TaggedKey, TaggedValue, TaggedKey, Tagge
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 
-  override def reduce(key: TaggedKey,
-                      values: java.lang.Iterable[TaggedValue],
-                      context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
+  override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
 
     val tag = key.tag
 
     if (combiners.contains(tag)) {
       /* Only perform combining if one is available for this tag. */
-      val combiner = combiners(tag).asInstanceOf[Combine[V2, V2]]
+      val combiner = combiners(tag).asInstanceOf[Combine]
 
       /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
-      val untaggedValues = new Iterable[V2] { def iterator = values.iterator map (_.get(tag).asInstanceOf[V2]) }
+      val untaggedValues = new Iterable[Any] { def iterator = values.iterator map (_.get(tag)) }
 
       /* Do the combining. */
-      val reduction = untaggedValues.reduce(combiner.combine)
+      val reduction = combiner.combine(untaggedValues)
       tv.set(tag, reduction)
 
       context.write(key, tv)

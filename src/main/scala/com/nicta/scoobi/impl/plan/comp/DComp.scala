@@ -4,40 +4,36 @@ package plan
 package comp
 
 import core._
-import collection._
-import util.UniqueId
-import WireFormat._
 import WireFormat._
 import mapreducer._
-import scalaz.Memo._
-import scalaz.Equal
 import java.util.UUID._
 import CollectFunctions._
 import org.apache.hadoop.conf.Configuration
-import ScoobiConfigurationImpl._
 
 /**
  * GADT for distributed list computation graph.
  */
-sealed trait DComp[+A] extends CompNode {
-  lazy val id = UniqueId.get
-}
-trait DProcessComp[A] extends DComp[A] with ProcessNode {
-  type PN = DProcessComp[A]
+trait ProcessNode extends CompNode {
+  /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
+  def bridgeStore: Bridge
+  /** list of additional sinks for this node */
+  def sinks : Seq[Sink]
+  def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
+  def updateSinks(f: Seq[Sink] => Seq[Sink]): ProcessNode
 }
 
 /**
- * The ParallelDo node type specifies the building of a DComp as a result of applying a function to
- * all elements of an existing DComp and concatenating the results
+ * The ParallelDo node type specifies the building of a CompNode as a result of applying a function to
+ * all elements of an existing CompNode and concatenating the results
  */
-case class ParallelDo[A, B, E](ins:                Seq[CompNode],
-                               env:                CompNode,
-                               dofn:               EnvDoFn[A, B, E],
-                               implicit val wfa:   WireFormat[A],
-                               implicit val wfb:   WireFormat[B],
-                               implicit val wfe:   WireFormat[E],
-                               sinks:              Seq[Sink] = Seq(),
-                               bridgeStoreId:      String = randomUUID.toString) extends DProcessComp[B] {
+case class ParallelDo(ins:           Seq[CompNode],
+                      env:           CompNode,
+                      dofn:          DoFunction,
+                      wfa:           WireReaderWriter,
+                      wfb:           WireReaderWriter,
+                      wfe:           WireReaderWriter,
+                      sinks:         Seq[Sink] = Seq(),
+                      bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
 
   lazy val wf = wfb
   override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, wfe).mkString(",") + "] env: " + env
@@ -48,199 +44,206 @@ case class ParallelDo[A, B, E](ins:                Seq[CompNode],
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
 
-  def setup(implicit configuration: Configuration) { dofn.setup(environment(ScoobiConfigurationImpl(configuration)).pull) }
-  def unsafeMap[R](value: Any, emitter: Emitter[R])(implicit sc: ScoobiConfiguration) {
+  def setup(implicit configuration: Configuration) { dofn.setupFunction(environment(ScoobiConfigurationImpl(configuration)).pull) }
+  def map(value: Any, emitter: EmitterWriter)(implicit sc: ScoobiConfiguration) {
     val env = environment.pull(sc.configuration)
-    dofn.unsafeSetup(env)
-    dofn.unsafeProcess(env, value, emitter)
-    dofn.unsafeCleanup(env, emitter)
+    dofn.setupFunction(env)
+    dofn.processFunction(env, value, emitter)
+    dofn.cleanupFunction(env, emitter)
   }
-  def unsafeReduce(key: Any, values: Any, emitter: Emitter[B])(implicit configuration: Configuration) {
-    dofn.process(environment(ScoobiConfigurationImpl(configuration)).pull, (key, values).asInstanceOf[A], emitter)
+  def reduce(key: Any, values: Any, emitter: EmitterWriter)(implicit configuration: Configuration) {
+    dofn.processFunction(environment(ScoobiConfigurationImpl(configuration)).pull, (key, values), emitter)
   }
-  def cleanup(emitter: Emitter[B])(implicit configuration: Configuration) { dofn.cleanup(environment(ScoobiConfigurationImpl(configuration)).pull, emitter) }
+  def cleanup(emitter: EmitterWriter)(implicit configuration: Configuration) { dofn.cleanupFunction(environment(ScoobiConfigurationImpl(configuration)).pull, emitter) }
 
-  def environment(implicit sc: ScoobiConfiguration): Env[E] = env match {
-    case e: WithEnvironment[_] => e.environment(sc).asInstanceOf[Env[E]]
-    case other                 => Env[E](wfe)
+  def environment(implicit sc: ScoobiConfiguration): Env = env match {
+    case e: WithEnvironment => e.environment(sc)
+    case other              => Env(wfe)
   }
 
-  def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
+  def pushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
     env match {
-      case e: WithEnvironment[_] => e.unsafePushEnv(result)(sc)
-      case other                 => ()
+      case e: WithEnvironment => e.pushEnv(result)(sc)
+      case other              => ()
     }
   }
 
-  def fuse[C, F](p2: ParallelDo[_, C, F])
-                (implicit wfc: WireFormat[C],
-                          wff: WireFormat[F]): ParallelDo[A, C, (E, F)] =
-          ParallelDo.fuse[A, C, E, F](this, p2)(wfa, wfc, wireFormat[E], wireFormat[F])
+  def fuse(p2: ParallelDo)(wfc: WireReaderWriter, wff: WireReaderWriter): ParallelDo =
+    ParallelDo.fuse(this, p2)(wfa, wfb, wfc, wfe, wff)
 
 }
 object ParallelDo {
 
   private[scoobi]
-  def fuse[A : WireFormat, C : WireFormat, E : WireFormat, F : WireFormat](pd1: ParallelDo[A, _, E], pd2: ParallelDo[_, C, F]): ParallelDo[A, C, (E, F)] = {
-    new ParallelDo(pd1.ins, fuseEnv[E, F](pd1.env, pd2.env), fuseDoFn(pd1.dofn.asInstanceOf[EnvDoFn[A,Any,E]], pd2.dofn.asInstanceOf[EnvDoFn[Any,C,F]]),
-                   wireFormat[A], wireFormat[C], wireFormat[(E, F)],
+  def fuse(pd1: ParallelDo, pd2: ParallelDo)
+          (wfa: WireReaderWriter,
+           wfb: WireReaderWriter,
+           wfc: WireReaderWriter,
+           wfe: WireReaderWriter,
+           wff: WireReaderWriter): ParallelDo = {
+    new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env)(wfe, wff), fuseDoFunction(pd1.dofn, pd2.dofn),
+                   wfa, wfc, pair(wfe, wff),
                    pd1.sinks ++ pd2.sinks,
                    pd2.bridgeStoreId)
   }
 
   /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
   private[scoobi]
-  def fuseDoFn[X, Z, F, G](f: EnvDoFn[X, Any, F], g: EnvDoFn[Any, Z, G]): EnvDoFn[X, Z, (F, G)] = new EnvDoFn[X, Z, (F, G)] {
-    def setup(env: (F, G)) { f.setup(env._1); g.setup(env._2) }
+  def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
+    def setupFunction(env: Any) { env match { case (e1, e2) => f.setupFunction(e1); g.setupFunction(e2) } }
 
-    def process(env: (F, G), input: X, emitter: Emitter[Z]) {
-      f.process(env._1, input, new Emitter[Any] { def emit(value: Any) { g.process(env._2, value, emitter) } } )
+    def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
+      env match {
+        case (e1, e2) => f.processFunction(e1, input, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } } )
+      }
     }
 
-    def cleanup(env: (F, G), emitter: Emitter[Z]) {
-      f.cleanup(env._1, new Emitter[Any] { def emit(value: Any) { g.process(env._2, value, emitter) } })
-      g.cleanup(env._2, emitter)
+    def cleanupFunction(env: Any, emitter: EmitterWriter) {
+      env match {
+        case (e1, e2) => f.cleanupFunction(e1, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } })
+        g.cleanupFunction(e2, emitter)
+      }
     }
   }
 
   /** Create a new environment by forming a tuple from two separate evironments.*/
   private[scoobi]
-  def fuseEnv[F : WireFormat, G : WireFormat](fExp: CompNode, gExp: CompNode): DComp[(F, G)] =
-    Op(fExp, gExp, (f: F, g: G) => (f, g), wireFormat[(F, G)])
+  def fuseEnv(fExp: CompNode, gExp: CompNode)(wff: WireReaderWriter, wfg: WireReaderWriter): CompNode =
+    Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(wff, wfg))
 
   private[scoobi]
-  def create[A](ins: CompNode*)(implicit wf: WireFormat[A]) =
-    ParallelDo[A, A, Unit](
+  def create(ins: CompNode*)(wf: WireReaderWriter) =
+    ParallelDo(
       ins,
       UnitDObject.newInstance.getComp,
-      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } },
-      wf, wf, wireFormat[Unit])
+      new DoFunction {
+        def setupFunction(en: Any) {}
+        def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write(input) }
+        def cleanupFunction(env: Any, emitter: EmitterWriter) {}
+      }, wf, wf, wireFormat[Unit])
 
 }
 
 object ParallelDo1 {
   /** extract only the incoming node of this parallel do */
-  def unapply(node: ParallelDo[_,_,_]): Option[Seq[CompNode]] = Some(node.ins)
+  def unapply(node: ParallelDo): Option[Seq[CompNode]] = Some(node.ins)
 }
 
 /**
- * The Combine node type specifies the building of a DComp as a result of applying an associative
- * function to the values of an existing key-values DComp
+ * The Combine node type specifies the building of a CompNode as a result of applying an associative
+ * function to the values of an existing key-values CompNode
  */
-case class Combine[K , V](in: CompNode, f: (V, V) => V,
-                          implicit val wfk:   WireFormat[K],
-                          implicit val gpk:   Grouping[K],
-                          implicit val wfv:   WireFormat[V],
+case class Combine(in: CompNode, f: (Any, Any) => Any,
+                          wfk:   WireReaderWriter,
+                          gpk:   KeyGrouping,
+                          wfv:   WireReaderWriter,
                           sinks:              Seq[Sink] = Seq(),
-                          bridgeStoreId:      String = randomUUID.toString) extends DProcessComp[(K, V)] {
+                          bridgeStoreId:      String = randomUUID.toString) extends ProcessNode {
 
-  lazy val wf = wireFormat[(K, V)]
+  lazy val wf = pair(wfk, wfv)
   override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
   lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-  def unsafeCombine(values: Iterable[Any]) = values.asInstanceOf[Iterable[V]].reduce(f)
-  def combine = f
+  def combine(values: Iterable[Any]) = values.reduce(f)
 
   /**
    * @return a ParallelDo node where the mapping uses the combine function to combine the Iterable[V] values
    */
   def toParallelDo = {
-    val dofn = new BasicDoFn[(K, Iterable[V]), (K, V)] {
-      def process(input: (K, Iterable[V]), emitter: Emitter[(K, V)]) {
-        val (key, values) = input
-        emitter.emit((key, values.reduce(f)))
+    val dofn = new DoFunction {
+      def setupFunction(env: Any) {}
+      def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
+        input match {
+          case (key, values: Seq[_]) => emitter.write((key, values.reduce(f)))
+        }
       }
+      def cleanupFunction(env: Any, emitter: EmitterWriter) {}
     }
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo[(K, Iterable[V]), (K, V), Unit](Seq(in), Return.unit, dofn, wireFormat[(K, Iterable[V])], wireFormat[(K, V)], wireFormat[Unit])
+    ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), wireFormat[Unit])
   }
 }
 object Combine1 {
-  def unapply(node: Combine[_,_]): Option[CompNode] = Some(node.in)
+  def unapply(node: Combine): Option[CompNode] = Some(node.in)
 }
 
 /**
- * The GroupByKey node type specifies the building of a DComp as a result of partitioning an exiting
- * key-value DComp by key
+ * The GroupByKey node type specifies the building of a CompNode as a result of partitioning an exiting
+ * key-value CompNode by key
  */
-case class GroupByKey[K, V](in: CompNode,
-                            implicit val wfk:   WireFormat[K],
-                            implicit val gpk:   Grouping[K],
-                            implicit val wfv:   WireFormat[V],
-                            sinks:              Seq[Sink] = Seq(),
-                            bridgeStoreId:      String = randomUUID.toString) extends DProcessComp[(K, Iterable[V])] {
+case class GroupByKey(in: CompNode, wfk: WireReaderWriter, gpk: KeyGrouping, wfv: WireReaderWriter,
+                      sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
 
-  lazy val wf = wireFormat[(K, Iterable[V])]
+  lazy val wf = pair(wfk, iterable(wfv))
   override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
   lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object GroupByKey1 {
-  def unapply(gbk: GroupByKey[_,_]): Option[CompNode] = Some(gbk.in)
+  def unapply(gbk: GroupByKey): Option[CompNode] = Some(gbk.in)
 }
 
 /**
- * The Load node type specifies the creation of a DComp from some source other than another DComp.
+ * The Load node type specifies the creation of a CompNode from some source other than another CompNode.
  * A DataSource object specifies how the loading is performed
  */
-case class Load[A](source: Source, wf: WireFormat[A]) extends DComp[A] {
+case class Load(source: Source, wf: WireReaderWriter) extends CompNode {
   override val toString = "Load ("+id+")["+wf+"]"
 }
 object Load1 {
-  def unapply(load: Load[_]): Option[Source] = Some(load.source)
+  def unapply(load: Load): Option[Source] = Some(load.source)
 }
 
-/** The Return node type specifies the building of a Exp DComp from an "ordinary" value. */
-case class Return[A](in: A, wf: WireFormat[A]) extends DComp[A] with WithEnvironment[A] {
+/** The Return node type specifies the building of a Exp CompNode from an "ordinary" value. */
+case class Return(in: Any, wf: WireReaderWriter) extends CompNode with WithEnvironment {
   override val toString = "Return ("+id+")["+wf+"]"
 }
 object Return1 {
-  def unapply(rt: Return[_]): Option[_] = Some(rt.in)
+  def unapply(rt: Return): Option[Any] = Some(rt.in)
 }
 object Return {
   def unit = Return((), wireFormat[Unit])
 }
 
-/** The Materialise node type specifies the conversion of an Arr DComp to an Exp DComp. */
-case class Materialise[A](in: CompNode with ProcessNode, wf: WireFormat[Iterable[A]]) extends DComp[Iterable[A]] with WithEnvironment[Iterable[A]] {
+case class Materialise(in: ProcessNode, wf: WireReaderWriter) extends CompNode with WithEnvironment {
   override val toString = "Materialise ("+id+")["+wf+"]"
 }
 object Materialise1 {
-  def unapply(mt: Materialise[_]): Option[CompNode] = Some(mt.in)
+  def unapply(mt: Materialise): Option[CompNode] = Some(mt.in)
 }
 
 /**
- * The Op node type specifies the building of Exp DComp by applying a function to the values
- * of two other DComp nodes
+ * The Op node type specifies the building of Exp CompNode by applying a function to the values
+ * of two other CompNode nodes
  */
-case class Op[A, B, C](in1: CompNode, in2: CompNode, f: (A, B) => C, wf: WireFormat[C]) extends DComp[C] with WithEnvironment[C] {
+case class Op(in1: CompNode, in2: CompNode, f: (Any, Any) => Any, wf: WireReaderWriter) extends CompNode with WithEnvironment {
   override val toString = "Op ("+id+")["+wf+"]"
-  def unsafeExecute(a: Any, b: Any): C = f(a.asInstanceOf[A], b.asInstanceOf[B])
+  def execute(a: Any, b: Any): Any = f(a, b)
 }
 object Op1 {
-  def unapply(op: Op[_,_,_]): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
+  def unapply(op: Op): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
 }
 
-case class Root(ins: Seq[CompNode]) extends DComp[Unit] {
-  lazy val wf: WireFormat[_] = wireFormat[Unit]
+case class Root(ins: Seq[CompNode]) extends CompNode {
+  lazy val wf: WireReaderWriter = wireFormat[Unit]
 }
 
-trait WithEnvironment[E] {
-  def wf: WireFormat[_]
-  private var _environment: Option[Env[_]] = None
+trait WithEnvironment {
+  def wf: WireReaderWriter
+  private var _environment: Option[Env] = None
 
-  def environment(sc: ScoobiConfiguration): Env[E] = {
+  def environment(sc: ScoobiConfiguration): Env = {
     _environment match {
       case Some(e) => e
       case None    => val e = Env(wf)(sc); _environment = Some(e); e
     }
-  }.asInstanceOf[Env[E]]
+  }
 
-  def unsafePushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
-      environment(sc).push(result.asInstanceOf[E])(sc.conf)
+  def pushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
+    environment(sc).push(result)(sc.conf)
   }
 }
 

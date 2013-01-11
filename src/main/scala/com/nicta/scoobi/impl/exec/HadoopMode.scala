@@ -50,7 +50,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
     }
 
     attr("executeNode") {
-      case (original, node @ Op1(in1, in2)   ) => node.unsafeExecute(executeNode((original, in1)), executeNode((original, in2))).debug("result for op "+node.id+": ")
+      case (original, node @ Op1(in1, in2)   ) => node.execute(executeNode((original, in1)), executeNode((original, in2))).debug("result for op "+node.id+": ")
       case (original, node @ Return1(in)     ) => in
       case (original, node @ Materialise1(in)) => executeLayers(original, node); readNodeStore(node)
       case (original, node                   ) => executeLayers(original, node)
@@ -106,7 +106,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
       case rt @ Return1(in)      => pushEnv(rt, in)
-      case op @ Op1(in1, in2)    => pushEnv(op, op.unsafeExecute(load(in1), load(in2)).debug("result for op "+op.id+": "))
+      case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)).debug("result for op "+op.id+": "))
       case ld @ Load1(_)         => pushEnv(ld, ())
       case other                 => pushEnv(other, readNodeStore(other))
     }
@@ -114,19 +114,19 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
 
   private def pushEnv(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
     usesAsEnvironment(node).map { pd =>
-      pd.unsafePushEnv(result)
+      pd.pushEnv(result)
     }
     result
   }
 
   private lazy val readNodeStore: CompNode => Any = attr("readNodeStore") {
-    case mt: Materialise[_] => readBridgeStore(mt.in.bridgeStore)
-    case other              => ()
+    case mt: Materialise => readBridgeStore(mt.in.bridgeStore)
+    case other           => ()
   }
 
   private lazy val readStore: Sink => Any = attr("readStore") {
-    case bs: BridgeStore[_] => readBridgeStore(bs)
-    case other              => ()
+    case bs: Bridge => readBridgeStore(bs)
+    case other      => ()
   }
 
   private lazy val readBridgeStore: Bridge => Any = attr("readBridgeStore") {

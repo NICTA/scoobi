@@ -16,10 +16,6 @@
 package com.nicta.scoobi
 package core
 
-import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
-import org.apache.hadoop.io.SequenceFile.CompressionType
-import impl.plan.comp.DComp
-
 /**
  * A list that is distributed across multiple machines.
  *
@@ -33,7 +29,6 @@ import impl.plan.comp.DComp
  */
 trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   type T = DList[A]
-
   type C <: CompNode
 
   private[scoobi]
@@ -48,9 +43,11 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   // Primitive functionality.
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /**Apply a specified function to "chunks" of elements from the distributed list to produce
+  /**
+   * Apply a specified function to "chunks" of elements from the distributed list to produce
    * zero or more output elements. The resulting output elements from the many "chunks" form
-   * a new distributed list. */
+   * a new distributed list
+   */
   def parallelDo[B : WireFormat, E: WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B]
 
   /**Concatenate one or more distributed lists to this distributed list. */
@@ -87,38 +84,46 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     parallelDo(dofn)
   }
   
-   /** Group the values of a distributed list with key-value elements by key. And explicitly
-       take the grouping that should be used. This is best used when you're doing things like
-       secondary sorts, or groupings with strange logic (like making sure None's / nulls are
-       sprayed across all reducers.. */
+  /**
+   * Group the values of a distributed list with key-value elements by key. And explicitly
+   * take the grouping that should be used. This is best used when you're doing things like
+   * secondary sorts, or groupings with strange logic (like making sure None's / nulls are
+   * sprayed across all reducers
+   */
   def groupByKeyWith[K, V](grouping: Grouping[K])(implicit ev: A <:< (K, V), wfk: WireFormat[K], wfv: WireFormat[V]): DList[(K, Iterable[V])] =
     groupByKey(ev, wfk, grouping, wfv)
 
-  /**For each element of the distributed list produce zero or more elements by
+  /**
+   * For each element of the distributed list produce zero or more elements by
    * applying a specified function. The resulting collection of elements form a
-   * new distributed list. */
+   * new distributed list
+   */
   def flatMap[B: WireFormat](f: A => Iterable[B]): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => f(input).foreach {
       emitter.emit(_)
     })
 
-  /**For each element of the distributed list produce a new element by applying a
+  /**
+   * For each element of the distributed list produce a new element by applying a
    * specified function. The resulting collection of elements form a new
-   * distributed list. */
-  def map[B: WireFormat](f: A => B): DList[B] =
+   * distributed list
+   */
+  def map[B : WireFormat](f: A => B): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => emitter.emit(f(input)))
 
-  /**Keep elements from the distributed list that pass a specified predicate function. */
+  /** Keep elements from the distributed list that pass a specified predicate function */
   def filter(p: A => Boolean): DList[A] =
     basicParallelDo((input: A, emitter: Emitter[A]) => if (p(input)) {
       emitter.emit(input)
     })
 
-  /**Keep elements from the distributed list that do not pass a specified predicate function. */
+  /** Keep elements from the distributed list that do not pass a specified predicate function */
   def filterNot(p: A => Boolean): DList[A] = filter(p andThen (!_))
 
-  /**Build a new DList by applying a partial function to all elements of this DList on
-   * which the function is defined. */
+  /**
+   * Build a new DList by applying a partial function to all elements of this DList on
+   * which the function is defined
+   */
   def collect[B: WireFormat](pf: PartialFunction[A, B]): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) {
       emitter.emit(pf(input))
@@ -172,7 +177,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   }
 
   /**Create a new distributed list that is keyed based on a specified function. */
-  def by[K: WireFormat](kf: A => K): DList[(K, A)] = map {
+  def by[K : WireFormat](kf: A => K): DList[(K, A)] = map {
     x => (kf(x), x)
   }
 

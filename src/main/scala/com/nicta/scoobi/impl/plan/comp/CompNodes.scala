@@ -17,8 +17,8 @@ trait CompNodes extends GraphNodes with CollectFunctions {
    */
   lazy val inputs : CompNode => Seq[CompNode] = attr("inputs") {
     // for a parallel do node just consider the input node, not the environment
-    case pd: ParallelDo[_,_,_]  => pd.ins
-    case n                      => incomings(n)
+    case pd: ParallelDo => pd.ins
+    case n              => incomings(n)
   }
 
   /** compute the incoming data of a given node: all the children of a node, including its environment for a parallelDo */
@@ -26,8 +26,8 @@ trait CompNodes extends GraphNodes with CollectFunctions {
     attr("incomings") { case n => children(n) }
 
   /** compute all the nodes which use a given node as an environment */
-  def usesAsEnvironment : CompNode => Seq[ParallelDo[_,_,_]] = attr("usesAsEnvironment") { case node =>
-    uses(node).collect { case pd: ParallelDo[_,_,_] if pd.env == node => pd }.toSeq
+  def usesAsEnvironment : CompNode => Seq[ParallelDo] = attr("usesAsEnvironment") { case node =>
+    uses(node).collect { case pd: ParallelDo if pd.env == node => pd }.toSeq
   }
 
 }
@@ -38,23 +38,23 @@ object CompNodes extends CompNodes
  */
 trait CollectFunctions {
   /** return true if a CompNode is a ParallelDo */
-  lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo[_,_,_] => true; case other => false }
+  lazy val isParallelDo: CompNode => Boolean = { case p: ParallelDo => true; case other => false }
   /** return true if a CompNode is a Load */
-  lazy val isLoad: CompNode => Boolean = { case l: Load[_] => true; case other => false }
+  lazy val isLoad: CompNode => Boolean = { case l: Load => true; case other => false }
   /** return true if a CompNode is a Load */
-  lazy val isALoad: PartialFunction[CompNode, Load[_]] = { case l: Load[_] => l }
+  lazy val isALoad: PartialFunction[CompNode, Load] = { case l: Load => l }
   /** return true if a CompNode is a Combine */
-  lazy val isACombine: PartialFunction[Any, Combine[_,_]] = { case c: Combine[_,_] => c }
+  lazy val isACombine: PartialFunction[Any, Combine] = { case c: Combine => c }
   /** return true if a CompNode is a ParallelDo */
-  lazy val isAParallelDo: PartialFunction[Any, ParallelDo[_,_,_]] = { case p: ParallelDo[_,_,_] => p }
+  lazy val isAParallelDo: PartialFunction[Any, ParallelDo] = { case p: ParallelDo => p }
   /** return true if a CompNode is a GroupByKey */
-  lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey[_,_] => true; case other => false }
+  lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey => true; case other => false }
   /** return true if a CompNode is a GroupByKey */
-  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey[_,_]] = { case gbk: GroupByKey[_,_] => gbk }
+  lazy val isAGroupByKey: PartialFunction[Any, GroupByKey] = { case gbk: GroupByKey => gbk }
   /** return true if a CompNode is a Materialise */
-  lazy val isMaterialise: CompNode => Boolean = { case m: Materialise[_] => true; case other => false }
+  lazy val isMaterialise: CompNode => Boolean = { case m: Materialise => true; case other => false }
   /** return true if a CompNode is a Return */
-  lazy val isReturn: CompNode => Boolean = { case r: Return[_]=> true; case other => false }
+  lazy val isReturn: CompNode => Boolean = { case r: Return=> true; case other => false }
   /** return true if a CompNode needs to be persisted */
   lazy val isSinkNode: CompNode => Boolean = isMaterialise
   /** return true if a CompNode needs to be loaded */
@@ -62,6 +62,6 @@ trait CollectFunctions {
   /** return true if a CompNode needs to be computed */
   lazy val isComputedValueNode: CompNode => Boolean = isMaterialise || isOp
   /** return true if a CompNode is an Op */
-  lazy val isOp: CompNode => Boolean = { case o: Op[_,_,_] => true; case other => false }
+  lazy val isOp: CompNode => Boolean = { case o: Op => true; case other => false }
 }
 object CollectFunctions extends CollectFunctions

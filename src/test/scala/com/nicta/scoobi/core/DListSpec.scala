@@ -92,16 +92,6 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     DList.concat(aa, bb).run.sorted must_== (1 to 10).toSeq
   }
 
-  "DLists can be made covariant" >> {
-    implicit def mwfa: WireFormat[A] = null.asInstanceOf[WireFormat[A]]
-    implicit def mwfb: WireFormat[B] = null.asInstanceOf[WireFormat[B]]
-    //import CovariantDList._
-    class A
-    class B extends A
-    (DList(new B): DList[A])
-    ok
-  }
-  
   "DLists can be concatenated via reduce" >> {
     "without group by key" >> { implicit sc: SC =>
       Seq.fill(5)(DList(1 -> 2)).reduce(_++_).run === Seq.fill(5)(1 -> 2)

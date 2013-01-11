@@ -3,6 +3,7 @@ package core
 
 import org.kiama.attribution.Attributable
 import scalaz.Equal
+import impl.util.UniqueId
 
 /**
  * Base trait for "computation nodes" with no generic type information for easier rewriting
@@ -12,11 +13,11 @@ import scalaz.Equal
  * CompNodes are Attributable so that they can be used in attribute grammars
  */
 trait CompNode extends Attributable {
-  /** identifier for this computation node */
-  def id: Int
+  /** unique identifier for this computation node */
+  lazy val id: Int = UniqueId.get
 
   /** wireformat defining how to serialise / deserialise  data for that node */
-  def wf: WireFormat[_]
+  def wf: WireReaderWriter
 
   override def equals(a: Any) = a match {
     case n: CompNode => n.id == id
@@ -30,16 +31,6 @@ object CompNode {
   implicit def compNodeEqual[T <: CompNode] = new Equal[T] {
     def equal(a1: T, a2: T) = a1.id == a2.id
   }
-}
-
-trait ProcessNode { self: CompNode =>
-  type PN
-  /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
-  def bridgeStore: Bridge
-  /** list of additional sinks for this node */
-  def sinks : Seq[Sink]
-  def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
-  def updateSinks(f: Seq[Sink] => Seq[Sink]): PN
 }
 
 

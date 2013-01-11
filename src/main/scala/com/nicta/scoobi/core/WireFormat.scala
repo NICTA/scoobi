@@ -35,12 +35,48 @@ import collection.mutable
 
 /** Typeclass for sending types across the Hadoop wire */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
-trait WireFormat[A] {
+trait WireFormat[A] extends WireReaderWriter {
+  def write(x: Any, out: DataOutput) { toWire(x.asInstanceOf[A], out) }
+  def read(in: DataInput) = fromWire(in)
+
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
 }
+trait WireReaderWriter { this: WireFormat[_] =>
+  def write(a: Any, out: DataOutput)
+  def read(in: DataInput): Any
+}
+
+object WireReaderWriter {
+  /** Performs a deep copy of an arbitrary object by first serialising then deserialising
+    * it via its WireFormat. */
+  def wireReaderWriterCopy(a: Any)(wf: WireReaderWriter): Any = {
+    import java.io._
+    val byteArrOs = new ByteArrayOutputStream()
+    wf.write(a, new DataOutputStream(byteArrOs))
+    wf.read(new DataInputStream(new ByteArrayInputStream(byteArrOs.toByteArray())))
+  }
+
+}
 
 object WireFormat extends WireFormatImplicits {
+  def pair(wf1: WireReaderWriter, wf2: WireReaderWriter): WireReaderWriter =
+    Tuple2Fmt(wf1.asInstanceOf[WireFormat[Any]], wf2.asInstanceOf[WireFormat[Any]])
+
+  def iterable(wf: WireReaderWriter): WireReaderWriter =
+    TraversableFmt(wf.asInstanceOf[WireFormat[Any]], implicitly[CanBuildFrom[_, Any, Iterable[_]]])
+
+  /*
+  new WireReaderWriter {
+    def write(a: Any, out: DataOutput) { a match { case (x, y) => wf1.write(x, out); wf2.write(y, out) } }
+    def read(in: DataInput): Any = (wf1.read(in), wf2.read(in))
+  }
+  def iterable(wf: WireReaderWriter): WireReaderWriter = new WireReaderWriter {
+    def write(a: Any, out: DataOutput) { a match { case xs: Iterable[_] => wf.write(xs.size, out); xs.foreach(x => wf.write(x, out)) } }
+    def read(in: DataInput): Any = Seq.fill(wf.read(in).asInstanceOf[Int])(wf.read(in))
+  }
+   */
+
   // extend WireFormat with useful methods
   implicit def extendedWireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
 

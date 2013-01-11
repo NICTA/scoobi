@@ -25,7 +25,7 @@ trait TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]
 
 /** Companion object for dynamically constructing a subclass of TaggedPartitioner. */
 object TaggedPartitioner {
-  def apply(name: String, tags: Map[Int, (WireFormat[_], Grouping[_])])(implicit sc: ScoobiConfiguration): RuntimeClass =
+  def apply(name: String, tags: Map[Int, (WireReaderWriter, KeyGrouping)])(implicit sc: ScoobiConfiguration): RuntimeClass =
     MetadataClassBuilder[MetadataTaggedPartitioner](name, tags).toRuntimeClass
 }
 

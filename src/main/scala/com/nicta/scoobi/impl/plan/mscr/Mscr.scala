@@ -7,8 +7,10 @@ import org.kiama.attribution.Attributable
 
 import util.UniqueId
 import comp._
-import core.{Bridge, Grouping, WireFormat}
+import core._
 import scalaz.Scalaz._
+import scala.Tuple1
+import scala.Some
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
@@ -45,14 +47,14 @@ object Mscr {
   def empty = create(Seq(), Seq())
 }
 
-case class KeyTypes(types: Map[Int, (WireFormat[_], Grouping[_])] = Map()) {
+case class KeyTypes(types: Map[Int, (WireReaderWriter, KeyGrouping)] = Map()) {
   def tags = types.keys.toSeq
-  def add(tag: Int, wf: WireFormat[_], gp: Grouping[_]) =
+  def add(tag: Int, wf: WireReaderWriter, gp: KeyGrouping) =
     copy(types = types + (tag -> (wf, gp)))
 }
-case class ValueTypes(types: Map[Int, Tuple1[WireFormat[_]]] = Map()) {
+case class ValueTypes(types: Map[Int, Tuple1[WireReaderWriter]] = Map()) {
   def tags = types.keys.toSeq
-  def add(tag: Int, wf: WireFormat[_]) =
+  def add(tag: Int, wf: WireReaderWriter) =
     copy(types = types + (tag -> Tuple1(wf)))
 }
 

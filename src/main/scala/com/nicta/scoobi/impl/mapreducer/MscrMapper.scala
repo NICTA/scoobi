@@ -19,7 +19,7 @@ package impl
 package mapreducer
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.{Mapper => HMapper}
+import org.apache.hadoop.mapreduce.{Mapper => HMapper, MapContext, TaskInputOutputContext}
 
 import core._
 import rtt._
@@ -32,7 +32,7 @@ import plan.mscr.{InputChannels, InputChannel}
  * It is composed of several tagged mappers which are taking inputs of a given type on a channel and emitting the result
  * for different tagged outputs
  */
-class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, TaggedValue] {
+class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
   lazy val logger = LogFactory.getLog("scoobi.MapTask")
   private var allInputChannels: InputChannels = _
@@ -40,7 +40,7 @@ class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, Tagged
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
 
-  override def setup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
+  override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
 
     allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
@@ -50,15 +50,15 @@ class MscrMapper[K1, V1, A, E, K2, V2] extends HMapper[K1, V1, TaggedKey, Tagged
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
     logger.info("Input is " + inputSplit)
     taggedInputChannels = allInputChannels.channelsForSource(inputSplit.channel)
-    taggedInputChannels.foreach(_.setup(context))
+    taggedInputChannels.foreach(_.setup(InputOutputContext(context.asInstanceOf[MapContext[Any,Any,Any,Any]])))
 
   }
 
-  override def map(key: K1, value: V1, context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
-    taggedInputChannels.foreach(_.map(key, value, context))
+  override def map(key: Any, value: Any, context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
+    taggedInputChannels.foreach(_.map(key, value, InputOutputContext(context.asInstanceOf[MapContext[Any,Any,Any,Any]])))
   }
 
-  override def cleanup(context: HMapper[K1, V1, TaggedKey, TaggedValue]#Context) {
-    taggedInputChannels.foreach(_.cleanup(context))
+  override def cleanup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
+    taggedInputChannels.foreach(_.cleanup(InputOutputContext(context.asInstanceOf[MapContext[Any,Any,Any,Any]])))
   }
 }

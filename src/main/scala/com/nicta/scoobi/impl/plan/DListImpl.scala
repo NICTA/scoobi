@@ -30,9 +30,9 @@ import com.nicta.scoobi.core
 
 /** An implementation of the DList trait that builds up a DAG of computation nodes. */
 private[scoobi]
-class DListImpl[A](comp: DProcessComp[A])(implicit val wf: WireFormat[A]) extends DList[A] {
+class DListImpl[A](comp: ProcessNode)(implicit val wf: WireFormat[A]) extends DList[A] {
 
-  type C = DProcessComp[A]
+  type C = ProcessNode
 
   def getComp: C = comp
 
@@ -45,8 +45,8 @@ class DListImpl[A](comp: DProcessComp[A])(implicit val wf: WireFormat[A]) extend
   def setComp(f: C => C) = new DListImpl[A](f(comp))(wf)
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(ParallelDo[A, B, E](Seq(comp), env.getComp, dofn,
-                                      wireFormat[A], wireFormat[B], wireFormat[E]))
+    new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn,
+                             wireFormat[A], wireFormat[B], wireFormat[E]))
 
   def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
 
@@ -64,7 +64,7 @@ class DListImpl[A](comp: DProcessComp[A])(implicit val wf: WireFormat[A]) extend
       (implicit ev:   A <:< (K,Iterable[V]),
                 wfk: WireFormat[K],
                 gpk:  Grouping[K],
-                wfv: WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, f, wfk, gpk, wfv))
+                wfv: WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, (a1: Any, a2: Any) => f(a1.asInstanceOf[V], a2.asInstanceOf[V]), wfk, gpk, wfv))
 
   lazy val materialise: DObject[Iterable[A]] = new DObjectImpl(Materialise(comp, wireFormat[Iterable[A]]))
 

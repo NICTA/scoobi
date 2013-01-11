@@ -27,19 +27,18 @@ import core._
   * in which a computation is performed within. "Environment" here refers to the
   * the "side-input" of a "ParallelDo". Computed environments are pushed/pulled to/from
   * the distributed cache. */
-class Env[E : WireFormat] private (path: Path) {
-  val wf = implicitly[WireFormat[E]]
+class Env(path: Path)(wf: WireReaderWriter) {
 
   /** Store the environment value in the distributed cache. */
-  def push(env: E)(implicit configuration: Configuration) {
+  def push(env: Any)(implicit configuration: Configuration) {
     val dos = path.getFileSystem(configuration).create(path)
-    wf.toWire(env, dos)
+    wf.write(env, dos)
     dos.close()
     DistributedCache.addCacheFile(path.toUri, configuration)
   }
 
   /** Get an environment value from the distributed cache. */
-  def pull(implicit configuration: Configuration): E = {
+  def pull(implicit configuration: Configuration): Any = {
     val cacheFiles = DistributedCache.getCacheFiles(configuration)
     val cacheFilePaths = cacheFiles.filter(_.toString == path.toString)
     val cacheFilePath  = cacheFilePaths.headOption.
@@ -47,7 +46,7 @@ class Env[E : WireFormat] private (path: Path) {
 
     val cacheFile = new Path(cacheFilePath.toString)
     val dis = cacheFile.getFileSystem(configuration).open(cacheFile)
-    val obj: E = implicitly[WireFormat[E]].fromWire(dis)
+    val obj = wf.read(dis)
     dis.close()
     obj
   }
@@ -59,15 +58,15 @@ class Env[E : WireFormat] private (path: Path) {
 object Env {
 
   /** Create a new "environment" container. */
-  def apply[E](wf: WireFormat[E])(implicit sc: ScoobiConfiguration): Env[E] = {
+  def apply(wf: WireReaderWriter)(implicit sc: ScoobiConfiguration): Env = {
     val id = java.util.UUID.randomUUID.toString
     val path = new Path(sc.workingDirectory, "env/" + id)
     new Env(path)(wf)
   }
 
   /** Create an "environment" container for the "Unit" value. */
-  val empty: Env[Unit] = new Env[Unit](new Path("empty")) {
-    override def push(env: Unit)(implicit c: Configuration) {}
+  val empty: Env = new Env(new Path("empty"))(WireFormat.wireFormat[Unit]) {
+    override def push(env: Any)(implicit c: Configuration) {}
     override def pull(implicit c: Configuration) {}
   }
 }

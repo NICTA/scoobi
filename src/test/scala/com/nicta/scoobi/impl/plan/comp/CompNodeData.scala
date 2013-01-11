@@ -36,8 +36,8 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
     implicit lazy val arbitraryDList:    Arbitrary[DList[String]]   = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalise))))
     implicit lazy val arbitraryDObject:  Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
 
-    implicit lazy val groupByKey: Arbitrary[GroupByKey[_,_]] =
-      Arbitrary(arbitraryDList.arbitrary.map(_.map(_.partition(_ > 'a')).groupByKey.getComp.asInstanceOf[GroupByKey[_,_]]))
+    implicit lazy val groupByKey: Arbitrary[GroupByKey] =
+      Arbitrary(arbitraryDList.arbitrary.map(_.map(_.partition(_ > 'a')).groupByKey.getComp.asInstanceOf[GroupByKey]))
 
     /** lists of elements of any type */
     def genList(depth: Int = 1): Gen[DList[_]] = Gen.oneOf(genList1(depth), genList2(depth), genList3(depth))
@@ -52,7 +52,7 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
 
     /** objects of elements with a simple type A */
     def genObject(depth: Int = 1): Gen[DObject[String]] =
-      if (depth <= 1) DObjects[String]("start")
+      if (depth <= 1) DObjects("start")
       else            Gen.oneOf(genList(depth - 1).map(l => l.materialise.map(normalise)),
                                 ^(genObject(depth / 2), genObject(depth / 2))((_ join _)).map(o => o.map(_.toString))).memo
 
@@ -93,35 +93,33 @@ trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with C
  */
 trait CompNodeFactory extends Scope {
 
-  def source                                        = ConstantStringDataSource("start")
-  def loadWith(s: String)                           = Load(ConstantStringDataSource(s), wireFormat[String])
-  def load                                          = loadWith("start")
-  def aRoot(nodes: CompNode*)                       = Root(nodes)
-  def rt                                            = Return("", wireFormat[String])
-  def cb(in: CompNode)                              = Combine[String, String](in.asInstanceOf[DComp[(String, Iterable[String])]], (s1: String, s2: String) => s1 + s2,
-                                                                       wireFormat[String], grouping[String], wireFormat[String])
-  def gbk(in: CompNode): GroupByKey[String, String] = GroupByKey(in.asInstanceOf[DComp[(String,String)]], wireFormat[String], grouping[String], wireFormat[String])
-  def gbk(sink: Sink): GroupByKey[String, String]   = gbk(load).addSink(sink).asInstanceOf[GroupByKey[String, String]]
-  def mt(in: ProcessNode)                           = Materialise(in.asInstanceOf[DProcessComp[String]], wireFormat[Iterable[String]])
+  def source                           = ConstantStringDataSource("start")
+  def loadWith(s: String)              = Load(ConstantStringDataSource(s), wireFormat[String])
+  def load                             = loadWith("start")
+  def aRoot(nodes: CompNode*)          = Root(nodes)
+  def rt                               = Return("", wireFormat[String])
+  def cb(in: CompNode)                 = Combine(in, (s1: Any, s2: Any) => s1.toString + s2.toString, wireFormat[String], grouping[String], wireFormat[String])
+  def gbk(in: CompNode): GroupByKey    = GroupByKey(in, wireFormat[String], grouping[String], wireFormat[String])
+  def gbk(sink: Sink): GroupByKey      = gbk(load).addSink(sink).asInstanceOf[GroupByKey]
+  def mt(in: ProcessNode)             = Materialise(in, wireFormat[Iterable[String]])
 
-  def op(in1: CompNode, in2: CompNode)              = Op[String, String, String](in1.asInstanceOf[DComp[String]], in2.asInstanceOf[DComp[String]], (a, b) => a, wireFormat[String])
+  def op(in1: CompNode, in2: CompNode) = Op(in1, in2, (a, b) => a, wireFormat[String])
+  def parallelDo(in: CompNode)         = pd(in)
 
-  def parallelDo(in: CompNode)                      = pd(in)
-
-  def pd(ins: CompNode*): ParallelDo[String, String, String] =
-    ParallelDo[String, String, String](ins.map(_.asInstanceOf[DComp[String]]), rt.asInstanceOf[DComp[String]], fn,
+  def pd(ins: CompNode*): ParallelDo =
+    ParallelDo(ins, rt, fn,
     wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
     java.util.UUID.randomUUID().toString)
 
-  def pdWithEnv(in: CompNode, env: CompNode): ParallelDo[String, String, String] =
-    ParallelDo[String, String, String](Seq(in).map(_.asInstanceOf[DComp[String]]), env.asInstanceOf[DComp[String]], fn,
+  def pdWithEnv(in: CompNode, env: CompNode): ParallelDo =
+    ParallelDo(Seq(in), env, fn,
       wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
-      java.util.UUID.randomUUID().toString)
+      java.util.UUID.randomUUID.toString)
 
-  lazy val fn = new EnvDoFn[String, String, String] {
-    def setup(env: String) {}
-    def cleanup(env: String, emitter: Emitter[String]) {}
-    def process(env: String, input: String, emitter: Emitter[String]) { emitter.emit(input) }
+  lazy val fn = new DoFunction {
+    private[scoobi] def setupFunction(env: Any) {}
+    private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write(input) }
+    private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) {}
   }
 
 }

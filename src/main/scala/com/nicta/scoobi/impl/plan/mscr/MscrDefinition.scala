@@ -17,18 +17,18 @@ trait MscrsDefinition extends Layering {
 
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
-    case pd: ParallelDo[_,_,_] => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise)) &&
+    case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise)) &&
                                    !isReducer(pd) &&
                                   (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
     case other                 => false
   }
 
-  private def isInsideMapper(pd: ParallelDo[_,_,_]) = {
+  private def isInsideMapper(pd: ParallelDo) = {
     val pdDescendents = descendentsUntil(isMaterialise)(pd).collect(isAParallelDo)
     !pdDescendents.isEmpty && pdDescendents.forall(isFloating)
   }
 
-  private def hasMaterialisedEnv(pd: ParallelDo[_,_,_]) =
+  private def hasMaterialisedEnv(pd: ParallelDo) =
     (pd.env +: descendentsUntil(isGroupByKey || isParallelDo)(pd.env)).exists(isMaterialise)
 
   /** all the mscrs for a given layer */
@@ -66,7 +66,7 @@ trait MscrsDefinition extends Layering {
       channelsWithCommonTags.map { taggedInputChannels =>
         val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
         val outputChannels = out.filter(o => correspondingOutputTags.contains(o.tag))
-        Mscr.create(taggedInputChannels, (if (outputChannels.isEmpty) taggedInputChannels.map(_.sourceNode).collect { case pd: ParallelDo[_,_,_] => BypassOutputChannel(pd) } else outputChannels))
+        Mscr.create(taggedInputChannels, (if (outputChannels.isEmpty) taggedInputChannels.map(_.sourceNode).collect { case pd: ParallelDo => BypassOutputChannel(pd) } else outputChannels))
       }
     }
   }
@@ -78,12 +78,12 @@ trait MscrsDefinition extends Layering {
     }
   }
 
-  private def gbkOutputChannel(gbk: GroupByKey[_,_]): GbkOutputChannel = {
+  private def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
     val gbkParents = (gbk -> parents).toList
     gbkParents match {
-      case (c: Combine[_,_]) :: (p: ParallelDo[_,_,_]) :: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
-      case (p: ParallelDo[_,_,_]) :: rest                      if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p))
-      case (c: Combine[_,_]) :: rest                                           => GbkOutputChannel(gbk, combiner = Some(c))
+      case (c: Combine) :: (p: ParallelDo) :: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
+      case (p: ParallelDo) :: rest                      if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p))
+      case (c: Combine) :: rest                                           => GbkOutputChannel(gbk, combiner = Some(c))
       case _                                                                   => GbkOutputChannel(gbk)
     }
   }
@@ -108,7 +108,7 @@ trait MscrsDefinition extends Layering {
     (sources ++ nonSources.filter(isParallelDo).flatMap(sourceNodes)).distinct
   }
   lazy val isSourceNode: CompNode => Boolean = attr("isSource") {
-    case pd: ParallelDo[_,_,_] => isReducer(pd)
+    case pd: ParallelDo => isReducer(pd)
     case other                 => true
   }
   lazy val layerSinks: Layer[T] => Seq[Sink] = attr("layer sinks") { case layer =>
@@ -123,15 +123,15 @@ trait MscrsDefinition extends Layering {
     }.distinct
   }
 
-  lazy val floatingParallelDos: Layer[T] => Seq[ParallelDo[_,_,_]] = floatingNodes(isAParallelDo)
+  lazy val floatingParallelDos: Layer[T] => Seq[ParallelDo] = floatingNodes(isAParallelDo)
 
   def floatingNodes[N <: CompNode](pf: PartialFunction[CompNode, N]): Layer[T] => Seq[N] = attr("floating nodes") { case layer =>
     layer.nodes.collect(pf).filter(isFloating).toSeq
   }
 
-  lazy val isReducer: ParallelDo[_,_,_] => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey[_,_])) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd @ ParallelDo1((gbk: GroupByKey[_,_]) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+  lazy val isReducer: ParallelDo => Boolean = attr("isReducer") {
+    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
     case _                                                  => false
   }
 

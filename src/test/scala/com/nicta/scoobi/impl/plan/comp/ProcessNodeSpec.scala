@@ -5,11 +5,12 @@ package comp
 
 import testing.UnitSpecification
 import org.specs2.specification.Grouped
+import core.WireFormat._
 import Scoobi._
 
-class DCompSpec extends UnitSpecification with Grouped { def is =
+class ProcessNodeSpec extends UnitSpecification with Grouped { def is =
 
-  "A DComp node represent the current state of a DList or DObject computation"                     ^
+  "A ProcessNode node represent the current state of a DList or DObject computation"               ^
                                                                                                    p^
   "Sinks can be added to ParallelDo, GroupByKey and Combine nodes"                                 ^
     "it is possible to add a Sink to a node"                                                       ! g1.e1^
@@ -18,7 +19,7 @@ class DCompSpec extends UnitSpecification with Grouped { def is =
                                                                                                    end
 
   "sinks" - new g1 {
-    def parallelDo = ParallelDo.create[String](Return.unit)
+    def parallelDo = ParallelDo.create(Return.unit)(wireFormat[String])
 
     e1 := parallelDo.addSink(StringSink()).sinks === Seq(StringSink())
     e2 := parallelDo.bridgeStore must not(beNull)

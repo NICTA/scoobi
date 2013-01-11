@@ -16,10 +16,7 @@
 package com.nicta.scoobi
 package core
 
-import org.apache.hadoop.mapreduce.InputFormat
-import org.apache.hadoop.mapreduce.MapContext
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.RecordReader
+import org.apache.hadoop.mapreduce._
 import impl.util.UniqueId
 
 /**
@@ -39,10 +36,10 @@ trait Source {
   /** @return the size in bytes of the data being input by this source */
   def inputSize(implicit sc: ScoobiConfiguration): Long
   /** map the key-values of a source's InputFormat to the final type produced by it */
-  def inputConverter: InputConverter[_,_,_]
+  def fromKeyValueConverter: FromKeyValueConverter
 
   private[scoobi]
-  def unsafeRead(reader: RecordReader[_,_], mapContext: MapContext[_,_,_,_], read: Any => Unit)
+  def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit)
 }
 
 /**
@@ -54,20 +51,29 @@ trait DataSource[K, V, A] extends Source {
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
   def inputSize(implicit sc: ScoobiConfiguration): Long
   def inputConverter: InputConverter[K, V, A]
+  def fromKeyValueConverter = inputConverter
 
-  def unsafeRead(reader: RecordReader[_,_], mapContext: MapContext[_,_,_,_], read: Any => Unit) {
+  private[scoobi]
+  def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit) {
     while (reader.nextKeyValue) {
-      read(inputConverter.fromKeyValue(mapContext.asInstanceOf[MapContext[K,V,_,_]],
-        reader.getCurrentKey.asInstanceOf[K],
-        reader.getCurrentValue.asInstanceOf[V]).asInstanceOf[Any])
+      read(fromKeyValueConverter.asValue(mapContext, reader.getCurrentKey, reader.getCurrentValue))
     }
   }
 }
 
 
 /** Convert an InputFormat's key-value types to the type produced by a source */
-trait InputConverter[K, V, A] {
+trait InputConverter[K, V, A] extends FromKeyValueConverter {
   type InputContext = MapContext[K, V, _, _]
+  def asValue(context: InputOutputContext, key: Any, value: Any): Any = fromKeyValue(context.context.asInstanceOf[InputContext], key.asInstanceOf[K], value.asInstanceOf[V])
   def fromKeyValue(context: InputContext, key: K, value: V): A
 }
 
+private[scoobi]
+trait FromKeyValueConverter {
+  def asValue(context: InputOutputContext, key: Any, value: Any): Any
+}
+
+case class InputOutputContext(context: MapContext[Any,Any,Any,Any]) {
+  def write(key: Any, value: Any) { context.write(key, value) }
+}

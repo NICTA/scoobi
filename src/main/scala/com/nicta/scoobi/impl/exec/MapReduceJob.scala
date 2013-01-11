@@ -124,7 +124,7 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
     ChannelsInputFormat.configureSources(job, jar, mscr.sources)
 
     DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers")
-    job.setMapperClass(classOf[MscrMapper[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
+    job.setMapperClass(classOf[MscrMapper].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
   }
 
   /** Combiners:
@@ -134,7 +134,7 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
   private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     if (!mscr.combiners.isEmpty) {
       DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners")
-      job.setCombinerClass(classOf[MscrCombiner[_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
+      job.setCombinerClass(classOf[MscrCombiner].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
   }
 
@@ -143,7 +143,7 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
    *       a BridgeStore and add to JAR
    *     - add a named output for each output channel */
   private def configureReducers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
-    mscr.sinks collect { case bs : BridgeStore[_] => jar.addRuntimeClass(bs.rtClass) }
+    mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass) }
 
     mscr.outputChannels.foreach { out =>
       out.sinks.zipWithIndex.foreach { case (sink, i) =>
@@ -152,7 +152,7 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
     }
 
     DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
-    job.setReducerClass(classOf[MscrReducer[_,_,_,_,_,_]].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
+    job.setReducerClass(classOf[MscrReducer].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 
     /**

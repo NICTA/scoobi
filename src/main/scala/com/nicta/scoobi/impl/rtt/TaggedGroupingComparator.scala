@@ -25,7 +25,7 @@ trait TaggedGroupingComparator extends RawComparator[TaggedKey]
 
 /** Companion object for dynamically constructing a subclass of TaggedGroupingComparator. */
 object TaggedGroupingComparator {
-  def apply(name: String, tags: Map[Int, (WireFormat[_], Grouping[_])])(implicit sc: ScoobiConfiguration) : RuntimeClass =
+  def apply(name: String, tags: Map[Int, (WireReaderWriter, KeyGrouping)])(implicit sc: ScoobiConfiguration) : RuntimeClass =
     MetadataClassBuilder[MetadataTaggedGroupingComparator](name, tags).toRuntimeClass
 }
 

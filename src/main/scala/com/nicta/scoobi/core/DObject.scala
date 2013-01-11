@@ -16,17 +16,21 @@
 package com.nicta.scoobi
 package core
 
-/* A wrapper around an object that is part of the graph of a distributed computation.*/
+/**
+ *  A wrapper around an object that is part of the graph of a distributed computation
+ */
 trait DObject[A] extends Persistent[A] {
   type C <: CompNode
 
   implicit def wf: WireFormat[A]
 
-  /**Create a new distributed object by apply a function to this distributed object. */
+  /** Create a new distributed object by apply a function to this distributed object */
   def map[B : WireFormat](f: A => B): DObject[B]
 
-  /**Create a new distributed list by replicating the value of this distributed object
-   * to every element within the provided distributed list. */
+  /**
+   * Create a new distributed list by replicating the value of this distributed object
+   * to every element within the provided distributed list
+   */
   def join[B : WireFormat](list: DList[B]): DList[(A, B)]
   def join[B : WireFormat](o: DObject[B]): DObject[(A, B)]
 

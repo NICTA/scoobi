@@ -42,7 +42,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
 
 
   /** Write a value out on multiple outputs of a given output channel.*/
-  def write[K, V](channel: Int, output: Int, kv: (K, V)) = {
+  def write[K, V](channel: Int, output: Int, kv: (K, V)) {
     val taskContext = getContext(channel, output)
     val recordWriter = getRecordWriter(taskContext, channel, output).asInstanceOf[RecordWriter[K, V]]
     recordWriter.write(kv._1, kv._2)

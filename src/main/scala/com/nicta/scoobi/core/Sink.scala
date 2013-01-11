@@ -43,7 +43,7 @@ trait Sink {
 
   /** write values to this sink, using a specific record writer */
   private [scoobi]
-  def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_])
+  def write(values: Seq[_], recordWriter: RecordWriter[_,_])
 }
 
 /** An output store from a MapReduce job. */
@@ -88,7 +88,7 @@ trait DataSink[K, V, B] extends Sink { outer =>
   }
 
   private [scoobi]
-  def unsafeWrite(values: Seq[_], recordWriter: RecordWriter[_,_]) {
+  def write(values: Seq[_], recordWriter: RecordWriter[_,_]) {
     values foreach { value =>
       val (k, v) = outputConverter.toKeyValue(value.asInstanceOf[B])
       recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
@@ -109,8 +109,16 @@ trait Bridge extends Source with Sink {
 }
 
 /** Convert the type consumed by a DataSink into an OutputFormat's key-value types. */
-trait OutputConverter[K, V, B] {
+trait OutputConverter[K, V, B] extends ToKeyValueConverter {
+  protected[scoobi]
+  def asKeyValue(x: Any) = toKeyValue(x.asInstanceOf[B]).asInstanceOf[(Any, Any)]
   def toKeyValue(x: B): (K, V)
+}
+
+private[scoobi]
+trait ToKeyValueConverter {
+  protected[scoobi]
+  def asKeyValue(x: Any): (Any, Any)
 }
 
 /**

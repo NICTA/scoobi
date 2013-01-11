@@ -17,6 +17,7 @@ import impl.plan._
 import comp._
 import WireFormat._
 import ScoobiConfigurationImpl._
+import org.apache.hadoop.mapreduce.RecordReader
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -60,18 +61,18 @@ case class InMemoryMode() extends ShowNode {
     paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Load[_]           => computeLoad(n)
-        case n: Root              => Vector(n.ins.map(_ -> computeValue(c)):_*)
-        case n: Return[_]         => Vector(n.in)
-        case n: Op[_,_,_]         => Vector(n.unsafeExecute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
-        case n: Materialise[_]    => Vector(n.in -> compute(c))
-        case n: ParallelDo[_,_,_] => saveSinks(computeParallelDo(n), n.sinks)
-        case n: GroupByKey[_,_]   => saveSinks(computeGroupByKey(n), n.sinks)
-        case n: Combine[_,_]      => saveSinks(computeCombine(n)   , n.sinks)
+        case n: Load        => computeLoad(n)
+        case n: Root        => Vector(n.ins.map(_ -> computeValue(c)):_*)
+        case n: Return      => Vector(n.in)
+        case n: Op          => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
+        case n: Materialise => Vector(n.in -> compute(c))
+        case n: ParallelDo  => saveSinks(computeParallelDo(n), n.sinks)
+        case n: GroupByKey  => saveSinks(computeGroupByKey(n), n.sinks)
+        case n: Combine     => saveSinks(computeCombine(n)   , n.sinks)
       }
     }
 
-  private def computeLoad(load: Load[_])(implicit sc: ScoobiConfiguration): Seq[_] = {
+  private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[_] = {
 
     val vb = new VectorBuilder[Any]()
     val job = new Job(new Configuration(sc))
@@ -84,12 +85,12 @@ case class InMemoryMode() extends ShowNode {
     inputFormat.getSplits(job) foreach { split =>
       val tid = new TaskAttemptID()
       val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
-      val rr = inputFormat.createRecordReader(split, taskContext)
-      val mapContext = new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split)
+      val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
+      val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
 
       rr.initialize(split, taskContext)
 
-      source.unsafeRead(rr, mapContext, (a: Any) => vb += wireFormatCopy(a)(load.wf.asInstanceOf[WireFormat[Any]]))
+      source.read(rr, mapContext, (a: Any) => vb += WireReaderWriter.wireReaderWriterCopy(a)(load.wf))
       rr.close()
     }
 
@@ -97,20 +98,20 @@ case class InMemoryMode() extends ShowNode {
   }
 
 
-  private def computeParallelDo(pd: ParallelDo[_,_,_])(implicit sc: ScoobiConfiguration): Seq[_] = {
+  private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
     val emitter = new Emitter[Any] { def emit(v: Any) { vb += v } }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
-    dofn.unsafeSetup(env)
-    (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.unsafeProcess(env, v, emitter) }
-    dofn.unsafeCleanup(env, emitter)
+    dofn.setupFunction(env)
+    (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
+    dofn.cleanupFunction(env, emitter)
     vb.result.debug("computeParallelDo")
 
   }
 
 
-  private def computeGroupByKey(gbk: GroupByKey[_,_])(implicit sc: ScoobiConfiguration): Seq[_] = {
+  private def computeGroupByKey(gbk: GroupByKey)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val in = gbk.in -> compute(sc)
     val grp = gbk.gpk
 
@@ -118,7 +119,7 @@ case class InMemoryMode() extends ShowNode {
     val partitions = {
       val numPart = 10    // TODO - set this based on input size? or vary it randomly?
       val vbs = IndexedSeq.fill(numPart)(new VectorBuilder[Any]())
-      in foreach { case kv @ (k, _) => val p = grp.asInstanceOf[Grouping[Any]].partition(k, numPart); vbs(p) += kv }
+      in foreach { case kv @ (k, _) => val p = grp.partitionKey(k, numPart); vbs(p) += kv }
       vbs map { _.result() }
     }
 
@@ -129,7 +130,7 @@ case class InMemoryMode() extends ShowNode {
     val grouped = partitions map { (kvs: Vector[_]) =>
 
       val vbMap = kvs.foldLeft(Map.empty: Map[Any, VectorBuilder[Any]]) { case (bins, (k, v)) =>
-        bins.find(kkvs => grp.asInstanceOf[Grouping[Any]].groupCompare(kkvs._1, k) == 0) match {
+        bins.find(kkvs => grp.groupKey(kkvs._1, k) == 0) match {
           case Some((kk, vb)) => bins.updated(kk, vb += ((k, v)))
           case None           => { val vb = new VectorBuilder[Any](); bins + (k -> (vb += ((k, v)))) }
         }
@@ -142,7 +143,7 @@ case class InMemoryMode() extends ShowNode {
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
     /* Sorting */
-    val ord = new Ordering[Any] { def compare(x: Any, y: Any): Int = grp.asInstanceOf[Grouping[Any]].sortCompare(x, y) }
+    val ord = new Ordering[Any] { def compare(x: Any, y: Any): Int = grp.sortKey(x, y) }
 
     val sorted = grouped map { (kvMap: Map[_, Vector[_]]) =>
       kvMap map { case (k, kvs) => (k, kvs.sortBy(vs => vs.asInstanceOf[Tuple2[_,_]]._1)(ord)) }
@@ -157,9 +158,9 @@ case class InMemoryMode() extends ShowNode {
   }
 
 
-  private def computeCombine(combine: Combine[_,_])(implicit sc: ScoobiConfiguration): Seq[_] =
+  private def computeCombine(combine: Combine)(implicit sc: ScoobiConfiguration): Seq[_] =
     (combine.in -> compute(sc)).map { case (k, vs: Iterable[_]) =>
-      (k, combine.unsafeCombine(vs))
+      (k, combine.combine(vs))
     }.debug("computeCombine")
 
   private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
@@ -183,7 +184,7 @@ case class InMemoryMode() extends ShowNode {
       oc.setupJob(job)
       oc.setupTask(taskContext)
 
-      sink.unsafeWrite(result, rw)
+      sink.write(result, rw)
 
       rw.close(taskContext)
       oc.commitTask(taskContext)

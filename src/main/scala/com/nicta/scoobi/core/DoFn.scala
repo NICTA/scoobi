@@ -16,6 +16,12 @@
 package com.nicta.scoobi
 package core
 
+trait DoFunction {
+  private[scoobi] def setupFunction(env: Any)
+  private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter)
+  private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter)
+}
+
 /**
  * Interface for specifying parallel operation over DLists in the absence of an
  * environment
@@ -42,25 +48,15 @@ trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
  * These 3 steps encapsulate the entire life-cycle of a DoFn. A DoFn object
  * will not be referenced after these steps
  */
-trait EnvDoFn[A, B, E] { outer =>
+trait EnvDoFn[A, B, E] extends DoFunction { outer =>
+  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] { def emit(x: B) { emitter.write(x) } }
+  private[scoobi] def setupFunction(env: Any) { setup(env.asInstanceOf[E]) }
+  private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { process(env.asInstanceOf[E], input.asInstanceOf[A], typedEmitter(emitter)) }
+  private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) { cleanup(env.asInstanceOf[E], typedEmitter(emitter)) }
+
   def setup(env: E)
   def process(env: E, input: A, emitter: Emitter[B])
   def cleanup(env: E, emitter: Emitter[B])
-
-  private[scoobi]
-  def unsafeSetup(env: Any) {
-    setup(env.asInstanceOf[E])
-  }
-
-  private[scoobi]
-  def unsafeProcess[R](env: Any, input: Any, emitter: Emitter[R]) {
-    process(env.asInstanceOf[E], input.asInstanceOf[A], emitter.asInstanceOf[Emitter[B]])
-  }
-
-  private[scoobi]
-  def unsafeCleanup[R](env: Any, emitter: Emitter[R]) {
-    cleanup(env.asInstanceOf[E], emitter.asInstanceOf[Emitter[B]])
-  }
 }
 
 
@@ -75,6 +71,12 @@ trait BasicDoFn[A, B] extends DoFn[A, B] {
 
 
 /** Interface for writing outputs from a DoFn. */
-trait Emitter[A] {
+trait Emitter[A] extends EmitterWriter {
+  private[scoobi]
+  def write(value: Any) { emit(value.asInstanceOf[A]) }
   def emit(value: A)
+}
+trait EmitterWriter {
+  private[scoobi]
+  def write(value: Any)
 }

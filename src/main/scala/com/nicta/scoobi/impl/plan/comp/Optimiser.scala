@@ -10,7 +10,7 @@ import org.kiama.rewriting.Rewriter
 import collection.+:
 
 /**
- * Optimiser for the DComp AST graph
+ * Optimiser for the CompNode AST graph
  *
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
@@ -23,7 +23,7 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   def combineToParDo = everywhere(rule {
     case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c
-    case c: Combine[_,_]                         => c.debug("combineToParDo").toParallelDo
+    case c: Combine                         => c.debug("combineToParDo").toParallelDo
   })
 
   /**
@@ -58,13 +58,13 @@ trait Optimiser extends CompNodes with Rewriter {
 
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
-    case n: Op[_,_,_]         => n.copy()
-    case n: Materialise[_]    => n.copy()
-    case n: GroupByKey[_,_]   => n.copy()
-    case n: Combine[_,_]      => n.copy()
-    case n: ParallelDo[_,_,_] => n.copy()
-    case n: Load[_]           => n.copy()
-    case n: Return[_]         => n.copy()
+    case n: Op          => n.copy()
+    case n: Materialise => n.copy()
+    case n: GroupByKey  => n.copy()
+    case n: Combine     => n.copy()
+    case n: ParallelDo  => n.copy()
+    case n: Load        => n.copy()
+    case n: Return      => n.copy()
   }))(node)
 
   /** apply one strategy to a list of Nodes. Used for testing */

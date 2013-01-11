@@ -8,6 +8,7 @@ import org.apache.hadoop.io.Writable
 import java.io.{DataInputStream, ByteArrayInputStream, ByteArrayOutputStream, DataOutputStream}
 import org.specs2.mutable.Tables
 import java.util.UUID
+import core.{KeyGrouping, WireReaderWriter}
 
 class MetadataClassBuilderSpec extends UnitSpecification with Tables {
 
@@ -56,7 +57,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
      wf[(String, Int)]    ! gp[(String, Int)]    ! ("test", 2)        | checkTaggedPartition
   }
 
-  def checkScoobiWritable = (wf: WireFormat[_], value: Any) => {
+  def checkScoobiWritable = (wf: WireReaderWriter, value: Any) => {
     val builder = new MetadataClassBuilder[MetadataScoobiWritable](UUID.randomUUID.toString, wf)
     val writable = builder.toClass.newInstance.asInstanceOf[ScoobiWritable[Any]]
     writable.set(value)
@@ -64,7 +65,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
     writable.get === value
   }
 
-  def checkTaggedValue = (wf: WireFormat[_], value: Any) => {
+  def checkTaggedValue = (wf: WireReaderWriter, value: Any) => {
     val builder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(0 -> Tuple1(wf)))
     val writable = builder.toClass.newInstance.asInstanceOf[TaggedValue]
     writable.set(0, value)
@@ -72,7 +73,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
     writable.get(0) === value
   }
 
-  def checkTaggedKey = (wf: WireFormat[_], gp: Grouping[_], value: Any) => {
+  def checkTaggedKey = (wf: WireReaderWriter, gp: KeyGrouping, value: Any) => {
     val builder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(0 -> (wf, gp)))
     val key = builder.toClass.newInstance.asInstanceOf[TaggedKey]
     key.set(0, value)
@@ -82,7 +83,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
     key.compareTo(key) === 0
   }
 
-  def checkTaggedGroupingComparator = (wf: WireFormat[_], gp: Grouping[_], v: Any) => {
+  def checkTaggedGroupingComparator = (wf: WireReaderWriter, gp: KeyGrouping, v: Any) => {
     val builder = new MetadataClassBuilder[MetadataTaggedGroupingComparator](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
     val grouping = builder.toClass.newInstance.asInstanceOf[TaggedGroupingComparator]
 
@@ -93,7 +94,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
     grouping.compare(key, key) === 0
   }
 
-  def checkTaggedPartition = (wf: WireFormat[_], gp: Grouping[_], v: Any) => {
+  def checkTaggedPartition = (wf: WireReaderWriter, gp: KeyGrouping, v: Any) => {
     val builder = new MetadataClassBuilder[MetadataTaggedPartitioner](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
     val partitioner = builder.toClass.newInstance.asInstanceOf[TaggedPartitioner]
 
