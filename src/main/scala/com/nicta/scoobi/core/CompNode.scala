@@ -3,7 +3,6 @@ package core
 
 import org.kiama.attribution.Attributable
 import scalaz.Equal
-import impl.util.UniqueId
 
 /**
  * Base trait for "computation nodes" with no generic type information for easier rewriting
@@ -14,7 +13,7 @@ import impl.util.UniqueId
  */
 trait CompNode extends Attributable {
   /** unique identifier for this computation node */
-  lazy val id: Int = UniqueId.get
+  def id: Int
 
   /** wireformat defining how to serialise / deserialise  data for that node */
   def wf: WireReaderWriter

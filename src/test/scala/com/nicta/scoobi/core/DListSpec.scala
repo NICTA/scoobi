@@ -26,8 +26,6 @@ import org.kiama.attribution.Attribution
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers {
 
-  sequential
-
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
     val list = DList((new Text("key1"), new Text("value1")), (new Text("key2"), new Text("value2")))
