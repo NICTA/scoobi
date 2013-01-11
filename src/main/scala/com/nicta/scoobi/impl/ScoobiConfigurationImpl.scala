@@ -192,7 +192,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
-  def jobStep(stepId: Int) = jobId + "(Step-" + stepId + ")"
+  def jobStep(mscrId: Int) = jobId + "(Step-" + mscrId + ")"
 
   /**Scoobi's configuration. */
   lazy val conf = {

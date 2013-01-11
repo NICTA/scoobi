@@ -17,6 +17,7 @@ import impl.plan._
 import comp._
 import ScoobiConfigurationImpl._
 import org.apache.hadoop.mapreduce.RecordReader
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -162,10 +163,11 @@ case class InMemoryMode() extends ShowNode {
 
   private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
     sinks.foreach { sink =>
-      val job = new MapReduceJob(stepId = 1).configureJob(sc)(new Job(new Configuration(sc)))
+      val job = new Job(new Configuration(sc))
 
       val outputFormat = sink.outputFormat.newInstance()
 
+      FileOutputFormat.setOutputPath(job, sc.temporaryOutputDirectory)
       job.setOutputFormatClass(sink.outputFormat)
       job.setOutputKeyClass(sink.outputKeyClass)
       job.setOutputValueClass(sink.outputValueClass)

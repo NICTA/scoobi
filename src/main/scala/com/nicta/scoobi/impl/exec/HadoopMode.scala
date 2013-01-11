@@ -67,7 +67,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
       } else {
         logger.debug("Executing layer\n"+layer)
 
-        mscrs(layer).zipWithIndex.foreach { case (mscr, step) =>
+        mscrs(layer).foreach { mscr =>
           if (mscr.bridgeStores.forall(hasBeenFilled)) {
             logger.debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
           } else {
@@ -82,8 +82,7 @@ case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with M
             logger.debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
             mscr.inputNodes.foreach(load)
 
-            val job = MapReduceJob.create(step, mscr)
-            job.run
+            MapReduceJob(mscr).run
           }
         }
       }

@@ -33,27 +33,24 @@ import reflect.Classes._
 import io._
 import mapreducer._
 import ScoobiConfigurationImpl._
-import ChannelOutputFormat._
-import org.apache.hadoop.fs.Path
 import mapreducer.BridgeStore
-import monitor.Loggable._
+import MapReduceJob.configureJar
 
-/** A class that defines a single Hadoop MapReduce job. */
-case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
-
-  type T = MapReduceJob
+/**
+ * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
+ */
+case class MapReduceJob(mscr: Mscr) {
 
   implicit protected val fileSystems: FileSystems = FileSystems
-
-  private implicit lazy val logger = LogFactory.getLog("scoobi.Step")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
   /** Take this MapReduce job and run it on Hadoop. */
   def run(implicit configuration: ScoobiConfiguration) {
 
     val job =
-      new Job(configuration, configuration.jobStep(stepId)) |>
-      configureJob |>
-      executeJob   |>
+      new Job(configuration, configuration.jobStep(mscr.id)) |>
+      configureJob                                           |>
+      executeJob                                             |>
       collectOutputs
 
     // if job failed, throw an exception
@@ -61,7 +58,7 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
       throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
     }
   }
-  
+
   def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
     FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory)
 
@@ -77,19 +74,6 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
     job
   }
 
-  /** Make temporary JAR file for this job. At a minimum need the Scala runtime
-   * JAR, the Scoobi JAR, and the user's application code JAR(s). */
-  private[scoobi] def configureJar(jar: JarBuilder)(implicit configuration: ScoobiConfiguration) {
-    // if the dependent jars have not been already uploaded, make sure that the Scoobi jar
-    // i.e. the jar containing this.getClass, is included in the job jar.
-    // add also the client jar containing the main method executing the job
-    if (!configuration.uploadedLibJars) {
-      jar.addContainingJar(getClass)
-      jar.addContainingJar(mainClass)
-    }
-    configuration.userJars.foreach { jar.addJar(_) }
-    configuration.userDirs.foreach { jar.addClassDirectory(_) }
-  }
 
   /** Sort-and-shuffle:
    *   - (K2, V2) are (TaggedKey, TaggedValue), the wrappers for all K-V types
@@ -208,12 +192,25 @@ case class MapReduceJob(stepId: Int, mscr: Mscr = Mscr.empty) {
     job
   }
 }
-object MapReduceJob {
-  /** Construct a MapReduce job from a MSCR. */
-  def create(stepId: Int, mscr: Mscr)(implicit configuration: ScoobiConfiguration): MapReduceJob =
-    new MapReduceJob(stepId, mscr)
-}
 
+private[scoobi]
+object MapReduceJob {
+  /**
+   * Make temporary JAR file for this job. At a minimum need the Scala runtime
+   * JAR, the Scoobi JAR, and the user's application code JAR(s)
+   */
+  def configureJar(jar: JarBuilder)(implicit configuration: ScoobiConfiguration) {
+    // if the dependent jars have not been already uploaded, make sure that the Scoobi jar
+    // i.e. the jar containing this.getClass, is included in the job jar.
+    // add also the client jar containing the main method executing the job
+    if (!configuration.uploadedLibJars) {
+      jar.addContainingJar(getClass)
+      jar.addContainingJar(mainClass)
+    }
+    configuration.userJars.foreach { jar.addJar(_) }
+    configuration.userDirs.foreach { jar.addClassDirectory(_) }
+  }
+}
 
 /* Helper class to track progress of Map or Reduce tasks and whether or not
  * progress has advanced. */

@@ -41,7 +41,7 @@ trait ScoobiConfiguration {
   def jobName: Option[String]
   def fs: FileSystem
   def jobId: String
-  def jobStep(stepId: Int): String
+  def jobStep(mscrId: Int): String
   def conf: Configuration
   def setAsInMemory: ScoobiConfiguration
   def setAsLocal: ScoobiConfiguration

@@ -5,19 +5,16 @@ package mscr
 
 import org.kiama.attribution.Attributable
 
-import util.UniqueId
-import comp._
 import core._
-import scalaz.Scalaz._
-import scala.Tuple1
-import scala.Some
+import util.UniqueInt
+import mscr.Mscr.ids
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
  * @see MscrGraph
  */
 case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
-  val id: Int = UniqueId.get
+  val id: Int = ids.get
 
   lazy val keyTypes   = KeyTypes(Map(inputChannels.flatMap(_.keyTypes.types):_*))
   lazy val valueTypes = ValueTypes(Map(inputChannels.flatMap(_.valueTypes.types):_*))
@@ -39,6 +36,8 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
 }
 
 object Mscr {
+  object ids extends UniqueInt
+
   /** @return a Mscr from a single input and a single output */
   def create(input: InputChannel, output: OutputChannel): Mscr = create(Seq(input), Seq(output))
   def create(input: InputChannel, output: Seq[OutputChannel]): Mscr = create(Seq(input), output)

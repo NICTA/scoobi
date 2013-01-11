@@ -22,12 +22,12 @@ class MapReduceJobSpec extends UnitSpecification with Mockito { isolated
 
       "if the dependent jars have not been uploaded then the Scoobi jar must be added to the JarBuilder" >> { implicit sc: ScoobiConfiguration =>
         sc.setUploadedLibJars(uploaded = false)
-        new MapReduceJob(1).configureJar(jar)
+        MapReduceJob.configureJar(jar)
         there was two(jar).addContainingJar(any[Class[_]])
       }
       "if the dependent jars have been uploaded then the Scoobi jar must not be added to the JarBuilder" >> { implicit sc: ScoobiConfiguration =>
         sc.setUploadedLibJars(uploaded = true)
-        new MapReduceJob(1).configureJar(jar)
+        MapReduceJob.configureJar(jar)
         there was no(jar).addContainingJar(any[Class[_]])
       }
     }
