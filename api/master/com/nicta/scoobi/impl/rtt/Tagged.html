@@ -14,27 +14,27 @@
         </head>
         <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
+        <img src="../../../../../lib/trait_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a>.<a name="com.nicta.scoobi.impl.rtt" class="extype" href="package.html">rtt</a></p>
         <h1>Tagged</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <span class="name">Tagged</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A heterogeneous type.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="">Tagged</a></dd></dl><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A collection of types indexed by a tag</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a name="com.nicta.scoobi.impl.rtt.Tagged" class="extype" href="">Tagged</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a></div>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.rtt.MetadataTaggedKey" class="extype" href="MetadataTaggedKey.html">MetadataTaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.MetadataTaggedValue" class="extype" href="MetadataTaggedValue.html">MetadataTaggedValue</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedValue" class="extype" href="TaggedValue.html">TaggedValue</a></div>
         </div></div>
     
 
@@ -58,22 +58,7 @@
 
       <div id="template">
         <div id="allMembers">
-        <div class="members" id="constructors">
-              <h3>Instance Constructors</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.Tagged#this" data-isabs="false">
-      <a id="this:Tagged"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Tagged</span><span class="params">(<span name="t">t: <span name="scala.Int" class="extype">Int</span></span>)</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -92,14 +77,14 @@
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.Tagged#set" data-isabs="true">
-      <a id="set(Int,Any):Unit"></a>
+      <a id="set(Int,⇒ Any):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">set</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="x">x: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">set</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>, <span name="x">x: ⇒ <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       
@@ -314,7 +299,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setTag</span><span class="params">(<span name="tag">tag: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setTag</span><span class="params">(<span name="tag1">tag1: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
       </span>
       </h4>
       

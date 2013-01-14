@@ -683,6 +683,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" data-isabs="false">
+      <a id="EitherWireFormat:EitherWireFormat[T1, T2]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="core/WireFormatImplicits$EitherWireFormat.html"><span class="name">EitherWireFormat</span></a><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="result"> extends WireFormat[Either[T1, T2]]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.Scoobi#Emitter" data-isabs="false">
       <a id="Emitter:Emitter[A]"></a>
       <h4 class="signature">
@@ -1324,14 +1336,14 @@ type class instance. Partitioning and grouping use the default implementation.</
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits#EitherFmt" data-isabs="false">
-      <a id="EitherFmt[T1, T2](WireFormat[T1],WireFormat[T2]):WireFormat[Either[T1, T2]]"></a>
+      <a id="EitherFmt[T1, T2](WireFormat[T1],WireFormat[T2]):EitherWireFormat[T1, T2]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">EitherFmt</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wt1">wt1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[T1]</span>, <span name="wt2">wt2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[T2]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[<span name="scala.Either" class="extype">Either</span>[T1, T2]]</span>
+        <span class="name">EitherFmt</span><span class="tparams">[<span name="T1">T1</span>, <span name="T2">T2</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wt1">wt1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[T1]</span>, <span name="wt2">wt2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="core/WireFormat.html">WireFormat</a>[T2]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" class="extype" href="core/WireFormatImplicits$EitherWireFormat.html">EitherWireFormat</a>[T1, T2]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormatImplicits" class="extype" href="core/WireFormatImplicits.html">WireFormatImplicits</a></dd></dl></div>

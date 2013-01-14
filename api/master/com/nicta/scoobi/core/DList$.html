@@ -189,30 +189,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#concat" data-isabs="false">
-      <a id="concat[A](DList[A]*)(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">concat</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="xss">xss: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Concatenate all distributed lists into a single distributed list.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#concat" data-isabs="false">
-      <a id="concat[A](List[DList[A]])(Manifest[A],WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">concat</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="xss">xss: List[<a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Concatenate all distributed lists into a single distributed list.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -445,7 +421,40 @@ integer values starting from 0.</p>
     </li></ol>
             </div>
 
-        
+        <div class="values members" id="values">
+              <h3>Deprecated Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.DList#concat" data-isabs="false">
+      <a id="concat[A](DList[A],DList[A]*)(Manifest[A],WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) Use the DList ++ method instead.">concat</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="xs">xs: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>, <span name="xss">xss: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Concatenate all distributed lists into a single distributed list.</p><div class="fullcomment"><div class="comment cmt"><p>Concatenate all distributed lists into a single distributed list.</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> Use the DList ++ method instead.</p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#concat" data-isabs="false">
+      <a id="concat[A](DList[A],List[DList[A]])(Manifest[A],WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) Use the DList ++ method instead.">concat</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="xs">xs: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>, <span name="xss">xss: List[<a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Concatenate all distributed lists into a single distributed list.</p><div class="fullcomment"><div class="comment cmt"><p>Concatenate all distributed lists into a single distributed list.</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> Use the DList ++ method instead.</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">

@@ -240,6 +240,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#mkPath" data-isabs="false">
+      <a id="mkPath(Configuration,String):Path"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mkPath</span><span class="params">(<span name="configuration">configuration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Make a local filesystem path based on a 'tag' to temporarily store the
+serialized object.</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -290,38 +303,26 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
 the current job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#pushObject" data-isabs="false">
-      <a id="pushObject[T](Configuration,T,String):Unit"></a>
+      <a id="pushObject[T](Configuration,T,String):Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#serialise" data-isabs="false">
-      <a id="serialise(Configuration,Any,OutputStream):Unit"></a>
+      <a id="serialise[T](Configuration,T,String)((Path) ⇒ Unit):Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">serialise</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: <span name="scala.Any" class="extype">Any</span></span>, <span name="out">out: <span name="java.io.OutputStream" class="extype">OutputStream</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
-      </span>
-      </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.DistCache#serialise" data-isabs="false">
-      <a id="serialise[T](Configuration,T,String)((Path) ⇒ Unit):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">serialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="params">(<span name="action">action: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">serialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="obj">obj: T</span>, <span name="tag">tag: String</span>)</span><span class="params">(<span name="action">action: (<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">serialise an object to a path
