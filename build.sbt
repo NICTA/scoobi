@@ -123,6 +123,8 @@ git.remoteRepo := "git@github.com:NICTA/scoobi.git"
 /** Notification */
 seq(lsSettings :_*)
 
+(LsKeys.ghBranch in LsKeys.lsync) := Some("master-publish") 
+
 (LsKeys.ghUser in LsKeys.lsync) := Some("nicta")
 
 (LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
