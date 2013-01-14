@@ -30,6 +30,7 @@ trait Loggable {
     def debug(condition: T => Boolean, display: T => String): T    = if (condition(evaluated)) debug(display) else evaluated
     def debugNot(condition: T => Boolean, display: T => String): T = debug(!condition, display)
 
+    def debug(pre: String, d: T => String)   : T = debug((t: T) => pre+"\n"+d(t))
     def debug(display: T => String)          : T = { logger.debug(display(evaluated)); evaluated }
     def debug(pre: String, post: String = ""): T = debug(v => pre+" "+v+" "+post)
 

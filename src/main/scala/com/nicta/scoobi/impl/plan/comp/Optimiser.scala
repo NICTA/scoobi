@@ -81,7 +81,10 @@ trait Optimiser extends CompNodes with Rewriter {
    * another node as an environment) may change.
    */
   private[scoobi]
-  def optimise(node: CompNode): CompNode =
-    optimise(Seq(reinitAttributable(duplicate(node)))).headOption.getOrElse(node)
+  def optimise(node: CompNode): CompNode = {
+    val optimised = reinitAttributable(optimise(Seq(reinitAttributable(duplicate(node)))).headOption.getOrElse(node))
+    reinitUses
+    optimised
+  }
 }
 object Optimiser extends Optimiser

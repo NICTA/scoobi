@@ -51,6 +51,8 @@ trait Seqs {
 
   }
 
+  /** function returning elements toString separated by a newline */
+  val mkStrings = (seq: Seq[_]) => seq.mkString("\n")
 }
 /**
  * extrator for the first element of Seq[T]

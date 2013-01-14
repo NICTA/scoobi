@@ -12,7 +12,7 @@ class Persister(sc: ScoobiConfiguration) {
   private implicit lazy val logger = LogFactory.getLog("scoobi.Persister")
 
   private val inMemoryMode = InMemoryMode()
-  private val hadoopMode   = HadoopMode()
+  private val hadoopMode   = HadoopMode(sc)
 
   def persist[A](ps: Seq[Persistent[_]]) {
     val asOne = Root(ps.map(_.getComp))

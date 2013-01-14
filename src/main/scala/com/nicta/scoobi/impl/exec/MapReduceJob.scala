@@ -60,7 +60,7 @@ case class MapReduceJob(mscr: Mscr) {
   }
 
   def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
-    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory)
+    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
 
     val jar = new JarBuilder
     job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
@@ -107,7 +107,7 @@ case class MapReduceJob(mscr: Mscr) {
   private def configureMappers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     ChannelsInputFormat.configureSources(job, jar, mscr.sources)
 
-    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers")
+    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers-"+job.getJobName)
     job.setMapperClass(classOf[MscrMapper].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
   }
 
@@ -117,7 +117,7 @@ case class MapReduceJob(mscr: Mscr) {
    *   - use distributed cache to push all combine code out */
   private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     if (!mscr.combiners.isEmpty) {
-      DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners")
+      DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners-"+job.getJobName)
       job.setCombinerClass(classOf[MscrCombiner].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
   }
@@ -135,7 +135,7 @@ case class MapReduceJob(mscr: Mscr) {
       }
     }
 
-    DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
+    DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers-"+job.getJobName)
     job.setReducerClass(classOf[MscrReducer].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 
@@ -187,8 +187,8 @@ case class MapReduceJob(mscr: Mscr) {
 
   private[scoobi] def collectOutputs(implicit configuration: ScoobiConfiguration) = (job: Job) => {
     /* Move named file-based sinks to their correct output paths. */
-    mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory)))
-    configuration.deleteTemporaryOutputDirectory
+    mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
+    configuration.deleteTemporaryOutputDirectory(job)
     job
   }
 }

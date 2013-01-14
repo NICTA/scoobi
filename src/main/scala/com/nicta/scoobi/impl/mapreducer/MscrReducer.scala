@@ -35,7 +35,7 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
-    outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(OutputChannels(Seq()))
+    outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers-"+context.getJobName).getOrElse(OutputChannels(Seq()))
     channelOutput = new ChannelOutputFormat(context)
 
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)

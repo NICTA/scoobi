@@ -111,9 +111,10 @@ trait MscrsDefinition extends Layering {
     case pd: ParallelDo => isReducer(pd)
     case other                 => true
   }
-  lazy val layerSinks: Layer[T] => Seq[Sink] = attr("layer sinks") { case layer =>
-    mscrs(layer).flatMap(_.sinks).distinct
-  }
+  lazy val layerSinks: Layer[T] => Seq[Sink] =
+    attr("layer sinks") { case layer => mscrs(layer).flatMap(_.sinks).distinct }
+  lazy val layerBridges: Layer[T] => Seq[Bridge] =
+    attr("layer bridges") { case layer => layerSinks(layer).collect { case bs: Bridge => bs } }
 
   /** collect all input nodes to the gbks of this layer */
   lazy val gbkInputs: Layer[T] => Seq[CompNode] = attr("gbk inputs") { case layer =>

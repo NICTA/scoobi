@@ -202,7 +202,7 @@ case class Materialise(in: ProcessNode, wf: WireReaderWriter) extends ValueNode 
   override val toString = "Materialise ("+id+")["+wf+"]"
 }
 object Materialise1 {
-  def unapply(mt: Materialise): Option[CompNode] = Some(mt.in)
+  def unapply(mt: Materialise): Option[ProcessNode] = Some(mt.in)
 }
 
 /**

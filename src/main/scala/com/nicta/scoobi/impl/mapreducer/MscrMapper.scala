@@ -42,7 +42,7 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
 
-    allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
+    allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers-"+context.getJobName).getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
 

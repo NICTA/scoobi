@@ -7,126 +7,117 @@ import core._
 import plan.comp._
 import plan.mscr._
 import monitor.Loggable._
-
+import collection.Seqs._
+import scalaz.{DList => _, _}
+import Scalaz._
 /**
- * Execution of Scoobi applications using Hadoop.
+ * Execution of Scoobi applications using Hadoop
+ *
+ * The overall process consists in:
+ *
+ *  - optimising the computation graph
+ *  - defining "layers" of independent processing nodes
+ *  - defining optimal Mscrs in each layer
+ *  - executing each layer in sequence
  */
-case class HadoopMode(implicit sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
+private[scoobi]
+case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
   implicit lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
-  def execute(list: DList[_]) {
-    execute(list.getComp)
-  }
+  /** execute a DList, storing the results in DataSinks */
+  def execute(list: DList[_]) { execute(list.getComp) }
+  /** execute a DObject, reading the result from a BridgeStore */
+  def execute(o: DObject[_]): Any = execute(o.getComp)
+  /** execute a computation graph */
+  def execute(node: CompNode): Any = node |> prepare |> executeNode
 
-  def execute(o: DObject[_]): Any = {
-    execute(o.getComp)
-  }
-
-  def execute(node: CompNode): Any = {
-    executeNode((node, prepare(node)))
-  }
-
+  /**
+   * Prepare the execution of the graph by optimising it
+   */
+  private
   lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
-    reinitAttributable(node)
-    logger.debug("Raw nodes\n"+pretty(node))
-    logger.debug("Raw graph\n"+showGraph(node))
-
-    val optimised = reinitAttributable(optimise(node))
-    reinitUses
-
-    logger.debug("Optimised nodes\n"+pretty(optimised))
-    logger.debug("Optimised graph\n"+showGraph(optimised))
-    optimised
+    optimise(node.debug("Raw nodes", prettyGraph)).debug("Optimised nodes", prettyGraph)
   }
 
-  lazy val executeNode: ((CompNode, CompNode)) => Any = {
-    def executeLayers(original: CompNode, node: CompNode) {
-      val graphLayers = (node -> layers)
-      logger.debug("Executing layers\n"+graphLayers.mkString("\n"))
-      graphLayers.map(executeLayer)
+  /**
+   * execute a computation node
+   */
+  private
+  lazy val executeNode: CompNode => Any = {
+    def executeLayers(node: CompNode) {
+      layers(node).debug("Executing layers", mkStrings).map(executeLayer)
     }
-
+    // execute value nodes recursively, other nodes start a "layer" execution
     attr("executeNode") {
-      case (original, node @ Op1(in1, in2)   ) => node.execute(executeNode((original, in1)), executeNode((original, in2))).debug("result for op "+node.id+": ")
-      case (original, node @ Return1(in)     ) => in
-      case (original, node @ Materialise1(in)) => executeLayers(original, node); readNodeStore(node)
-      case (original, node                   ) => executeLayers(original, node)
+      case node @ Op1(in1, in2)    => node.execute(executeNode(in1), executeNode(in2)).debug("result for op "+node.id+": ")
+      case node @ Return1(in)      => in
+      case node @ Materialise1(in) => executeLayers(node); read(in.bridgeStore)
+      case node                    => executeLayers(node)
     }
   }
 
-  private lazy val executeLayer: Layer[T] => Any = attr("executeLayer") { case layer =>
-    Execution(layer).execute
-  }
+  private lazy val executeLayer: Layer[T] => Any =
+    attr("executeLayer") { case layer => Execution(layer).execute }
 
-  case class Execution(layer: Layer[T]) {
+  /**
+   * Execution of a "layer" of Mscrs
+   */
+  private case class Execution(layer: Layer[T]) {
 
     def execute: Seq[Any] = {
-      val bridgeStores = layerSinks(layer).collect { case bs: Bridge => bs }
-      if (bridgeStores.forall(hasBeenFilled)) {
-        logger.debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
-      } else {
-        logger.debug("Executing layer\n"+layer)
+      if (layerBridges(layer).forall(hasBeenFilled)) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
+      else {
+        debug("Executing layer\n"+layer)
 
-        mscrs(layer).foreach { mscr =>
-          if (mscr.bridgeStores.forall(hasBeenFilled)) {
-            logger.debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
-          } else {
-            logger.debug("Executing Mscr\n"+mscr)
+        mscrs(layer).par.foreach { mscr =>
+          implicit val mscrConfiguration = sc.duplicate
 
-            logger.debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
+          if (mscr.bridges.forall(hasBeenFilled)) debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
+          else {
+            debug("Executing Mscr\n"+mscr)
+
+            debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
             mscr.sources.foreach(_.inputCheck)
 
-            logger.debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
+            debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
             mscr.sinks.foreach(_.outputCheck)
 
-            logger.debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
+            debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
             mscr.inputNodes.foreach(load)
 
             MapReduceJob(mscr).run
           }
         }
       }
-      bridgeStores.map(bs => filledBridge(bs.bridgeStoreId))
-      layerSinks(layer).debug("Layer sinks: ").map(readStore).toSeq
+      layerBridges(layer).foreach(markBridgeAsFilled)
+      layerBridges(layer).debug("Layer bridges: ").map(read).toSeq
     }
-
-
   }
 
+  /** mark a bridge as filled so it doesn't have to be recomputed */
+  private def markBridgeAsFilled = (b: Bridge) => filledBridge(b.bridgeStoreId)
+  /** this attributes store the fact that a Bridge has received data */
   private lazy val filledBridge: CachedAttribute[String, String] = attr("filled bridge")(identity)
+  /** @return true if a given Bridge has already received data */
+  private def hasBeenFilled(b: Bridge)= filledBridge.hasBeenComputedAt(b.bridgeStoreId)
+  /** @return the content of a Bridge as an Iterable */
+  private lazy val read: Bridge => Any = attr("read") { case bs => bs.readAsIterable(sc) }
 
-  private def hasBeenFilled(b: Bridge): Boolean = {
-    filledBridge.hasBeenComputedAt(b.bridgeStoreId)
-  }
-
+  /** make sure that all inputs environments are fully loaded */
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
       case rt @ Return1(in)      => pushEnv(rt, in)
       case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)).debug("result for op "+op.id+": "))
-      case ld @ Load1(_)         => pushEnv(ld, ())
-      case other                 => pushEnv(other, readNodeStore(other))
+      case mt @ Materialise1(in) => pushEnv(mt, read(in.bridgeStore))
+      case other                 => ()
     }
   }
 
+  /** once a node has been computed, if it defines an environment for another node push the value in the distributed cache */
   private def pushEnv(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
-    usesAsEnvironment(node).map { pd =>
-      pd.pushEnv(result)
-    }
+    usesAsEnvironment(node).map(_.pushEnv(result))
     result
   }
 
-  private lazy val readNodeStore: CompNode => Any = attr("readNodeStore") {
-    case mt: Materialise => readBridgeStore(mt.in.bridgeStore)
-    case other           => ()
-  }
-
-  private lazy val readStore: Sink => Any = attr("readStore") {
-    case bs: Bridge => readBridgeStore(bs)
-    case other      => ()
-  }
-
-  private lazy val readBridgeStore: Bridge => Any = attr("readBridgeStore") {
-    case bs => bs.readAsIterable
-  }
 }
 

@@ -20,6 +20,7 @@ import io.FileSystems
 import Configurations._
 import FileSystems._
 import monitor.Loggable._
+import org.apache.hadoop.mapreduce.Job
 
 case class ScoobiConfigurationImpl(configuration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
@@ -235,7 +236,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
     this
   }
 
-  /**@return a pseudo-random unique id */
+  /** @return a pseudo-random unique id */
   private def uniqueId = java.util.UUID.randomUUID
 
   /** set a value on the configuration */
@@ -250,12 +251,12 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
   lazy val scoobiDirectory: Path          = new Path(scoobiDir)
   lazy val workingDirectory: Path         = new Path(workingDir)
-  lazy val temporaryOutputDirectory: Path = new Path(workingDirectory, "tmp-out")
+  def temporaryOutputDirectory(job: Job): Path = new Path(workingDirectory, "tmp-out-"+job.getJobName)
   lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
   def deleteScoobiDirectory          = fs.delete(scoobiDirectory, true)
   def deleteWorkingDirectory         = fs.delete(workingDirectory, true)
-  def deleteTemporaryOutputDirectory = fs.delete(temporaryOutputDirectory, true)
+  def deleteTemporaryOutputDirectory(job: Job) = fs.delete(temporaryOutputDirectory(job), true)
 
   /** @return the file system for this configuration, either a local or a remote one */
   def fileSystem = FileSystems.fileSystem(this)
@@ -265,6 +266,10 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   def persist[A](list: DList[A])         = persister.persist(list)
   def persist[A](o: DObject[A]): A       = persister.persist(o)
 
+  def duplicate = {
+    val c = new Configuration(configuration)
+    ScoobiConfigurationImpl(c)
+  }
 }
 
 object ScoobiConfigurationImpl {

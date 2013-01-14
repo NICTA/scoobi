@@ -20,7 +20,7 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
   lazy val valueTypes = ValueTypes(Map(inputChannels.flatMap(_.valueTypes.types):_*))
   lazy val sources    = inputChannels.map(_.source).distinct
   lazy val sinks      = outputChannels.flatMap(_.sinks).distinct
-  lazy val bridgeStores = sinks.collect { case bs: Bridge => bs }
+  lazy val bridges    = sinks.collect { case bs: Bridge => bs }
   lazy val inputNodes = (inputChannels.flatMap(_.inputNodes) ++ outputChannels.flatMap(_.inputNodes)).distinct
 
   override def toString =

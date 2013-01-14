@@ -48,6 +48,9 @@ trait ShowNode extends CompNodes {
   def showNode[T](n: CompNode, attribute: Option[CompNode => T]) = n.toString + attribute.map(a => " -> "+ a(n).toString + " ").getOrElse("")
   lazy val show: CompNode => String = pretty(_:CompNode)
 
+
+  /** @return a nested text representation of the nodes graph + graph if it's not too big */
+  def prettyGraph = (node : CompNode) => pretty(node) + "\nGraph\n" + showGraph(node)
   /** @return a nested text representation of the nodes graph */
   def pretty(node : CompNode) = prettyPrinter.pretty(show(node, None))
   /** @return a nested text representation of the nodes graph + an attribute for each node */

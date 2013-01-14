@@ -6,6 +6,7 @@ import java.io.File
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{Path, FileSystem}
 import impl.Configurations._
+import org.apache.hadoop.mapreduce.Job
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -52,19 +53,19 @@ trait ScoobiConfiguration {
   def scoobiDir: String
   def workingDir: String
   def workingDirectory: Path
-  def temporaryOutputDirectory: Path
+  def temporaryOutputDirectory(job: Job): Path
   def temporaryJarFile: File
 
   def deleteScoobiDirectory: Boolean
   def deleteWorkingDirectory: Boolean
-  def deleteTemporaryOutputDirectory: Boolean
+  def deleteTemporaryOutputDirectory(job: Job): Boolean
 
   def fileSystem: FileSystem
 
   def persist[A](ps: Seq[Persistent[_]])
   def persist[A](list: DList[A])
   def persist[A](o: DObject[A]): A
-
+  def duplicate: ScoobiConfiguration
 }
 
 object Mode extends Enumeration {
