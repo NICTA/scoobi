@@ -29,7 +29,7 @@ import core._
 import application.ScoobiConfiguration
 
 
-/** Smart functions for materializing distributed lists by loading Sequence files. */
+/** Smart functions for materialising distributed lists by loading Sequence files. */
 object SequenceInput {
   lazy val logger = LogFactory.getLog("scoobi.SequenceInput")
 

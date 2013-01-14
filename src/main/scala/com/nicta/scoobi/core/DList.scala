@@ -76,6 +76,9 @@ trait DList[A] {
    mV: Manifest[V],
    wtV: WireFormat[V]): DList[(K, V)]
 
+  @deprecated(message="use materialise instead", since="0.6.0")
+  def materialize: DObject[Iterable[A]] = materialise
+
   /**Turn a distributed list into a normal, non-distributed collection that can be accessed
    * by the client. */
   def materialise: DObject[Iterable[A]]
