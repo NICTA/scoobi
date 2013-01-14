@@ -64,16 +64,16 @@
     </head><body><div id="breadcrumbs"><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Advanced Notes.html">Advanced</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Advanced Notes</title><a name="Advanced+Notes"><h2 specId="1651512422">Advanced Notes</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Configuration+Options"><h3>Configuration Options</h3></a><p>Scoobi allows you to configure a few useful runtime settings:</p>
+                       <div class="col1"><div id="central"><title>Advanced Notes</title><a name="Advanced+Notes"><h2 specId="1210386181">Advanced Notes</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Configuration+Options"><h3>Configuration Options</h3></a><p>Scoobi allows you to configure a few useful runtime settings:</p>
 <ul>
   <li>Use a non-standard working directory by passing <code class="prettyprint">-Dscoobi.workdir</code> to a <code class="prettyprint">ScoobiApp</code></li>
   <li>Set an upper-bound on the amount of reducers scoobi will use with <code class="prettyprint">ScoobiConfiguration.setMaxReducers</code></li>
   <li>Set a lower-bound on the amount of reducers scoobi use with <code class="prettyprint">ScoobiConfiguration.setMinReducers</code></li>
   <li>Set the amount of reducers scoobi picks, with <code class="prettyprint">ScoobiConfiguration.setBytesPerReducer</code> (Note: this is based on the input to a MapReduce job, not the input to the reducer. Default is 1GiB)</li>
-</ul><p>Look in <code class="prettyprint">ScoobiConfiguration</code> for other useful runtime configuration options</p><a name="Static+References"><h3>Static References</h3></a><p>Values or objects that are behind a final static variable or reference won't get serialized properly. They get serialized in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a <code class="prettyprint">val</code> to a <code class="prettyprint">var</code> (especially considering variables are not shared between map-reduce jobs)</p><a name="DList+Covariance"><h3>DList Covariance</h3></a><p>At the moment DList is not covariant (that is, a <code class="prettyprint">DList[Apple]</code> is not a <code class="prettyprint">DList[Fruit]</code>). This is something we're slowly working on, but is quite a large issue because of its flow-on effects</p></div></status></div></div>
+</ul><p>Look in <code class="prettyprint">ScoobiConfiguration</code> for other useful runtime configuration options</p><a name="Static+References"><h3>Static References</h3></a><p>Values or objects that are behind a final static variable or reference won't get serialised properly. They get serialised in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a <code class="prettyprint">val</code> to a <code class="prettyprint">var</code> (especially considering variables are not shared between map-reduce jobs)</p><a name="DList+Covariance"><h3>DList Covariance</h3></a><p>At the moment DList is not covariant (that is, a <code class="prettyprint">DList[Apple]</code> is not a <code class="prettyprint">DList[Fruit]</code>). This is something we're slowly working on, but is quite a large issue because of its flow-on effects</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1571098801"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="2030607121"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="249478905"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1436272215"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -83,7 +83,7 @@
           </li><li id=""><a href="../guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1849364925"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1171687299"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -97,7 +97,7 @@
           </li><li id=""><a href="../guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="465739234"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="626637265"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Objects.html#Materializing">Materializing</a>
@@ -111,7 +111,7 @@
           </li><li id=""><a href="../guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1395004194"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1623423573"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -131,6 +131,8 @@
             
           </li><li id=""><a href="../guide/Input and Output.html#Avro+file+output">Avro file output</a>
             
+          </li><li id=""><a href="../guide/Input and Output.html#With+a+predefined+avro+schema">With a predefined avro schema</a>
+            
           </li></ul>
           </li><li id=""><a href="../guide/Input and Output.html#Without+files">Without files</a>
             
@@ -141,7 +143,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1116930786"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="22577243"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
@@ -153,7 +155,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1077047696"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="939034682"><a href="../guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -161,7 +163,7 @@
           </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1294125311"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1283354591"><a href="../guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Extensions.html#Grouping">Grouping</a>
@@ -177,15 +179,21 @@
           </li><li id=""><a href="../guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="231207144"><a href="../guide/Application.html#Application">Application</a>
+          </li><li id="1358523638"><a href="../guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/Application.html#Arguments">Arguments</a>
+            <ul><li id=""><a href="../guide/Application.html#Scoobi+Configuration+Arguments">Scoobi Configuration Arguments</a>
             
-          </li><li id=""><a href="../guide/Application.html#Scoobi+Configuration+Arguments">Scoobi Configuration Arguments</a>
-            
+          </li></ul>
           </li><li id=""><a href="../guide/Application.html#Dependencies">Dependencies</a>
+            <ul><li id=""><a href="../guide/Application.html#%22Fat%22+jar">&quot;Fat&quot; jar</a>
             
+          </li><li id=""><a href="../guide/Application.html#Dependencies+uploading">Dependencies uploading</a>
+            
+          </li><li id=""><a href="../guide/Application.html#LibJars+usage">LibJars usage</a>
+            
+          </li></ul>
           </li><li id=""><a href="../guide/Application.html#Configuration">Configuration</a>
             
           </li><li id=""><a href="../guide/Application.html#Local+execution">Local execution</a>
@@ -193,7 +201,7 @@
           </li><li id=""><a href="../guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1879658515"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1448380833"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -221,21 +229,23 @@
           </li><li id=""><a href="../guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1407265344"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="787452012"><a href="../guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/Deployment.html#Introduction">Introduction</a>
             
-          </li><li id=""><a href="../guide/Deployment.html#Disable+jars+uploading">Disable jars uploading</a>
-            
           </li><li id=""><a href="../guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
-            
-          </li><li id=""><a href="../guide/Deployment.html#Quick+Hack">Quick Hack</a>
+            <ul><li id=""><a href="../guide/Deployment.html#Quick+Hack">Quick Hack</a>
             
           </li><li id=""><a href="../guide/Deployment.html#Ugly+Hack">Ugly Hack</a>
             
+          </li></ul>
+          </li><li id=""><a href="../guide/Deployment.html#Maven+assembly">Maven assembly</a>
+            
           </li><li id=""><a href="../guide/Deployment.html#Running">Running</a>
             
+          </li><li id=""><a href="../guide/Deployment.html#Troubleshooting">Troubleshooting</a>
+            
           </li></ul>
-          </li><li id="1651512422"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1210386181"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/Advanced Notes.html#Static+References">Static References</a>
@@ -243,9 +253,21 @@
           </li><li id=""><a href="../guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
+          </li><li id="620288323"><a href="../guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+            <ul><li id=""><a href="../guide/Scoobi Development.html#Building">Building</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#User+Guide+%2F+Docs">User Guide / Docs</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#Contributions">Contributions</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#Eclipse">Eclipse</a>
+            
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1571098801','1651512422'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['249478905','1210386181'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>

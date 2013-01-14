@@ -64,13 +64,17 @@
     </head><body><div id="breadcrumbs"><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Deployment.html">Deployment</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="1407265344">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment. Previously we had a plugin <code class="prettyprint">sbt-scoobi</code> but since deprecated in favor of using existing tools. <a href="https://github.com/sbt/sbt-assembly/">Sbt-assembly</a> does the trick, but unfortunately isn't too particularly easy/nice to use.</p><a name="Disable+jars+uploading"><h3>Disable jars uploading</h3></a><p>By default an application using th <code class="prettyprint">ScoobiApp</code> trait, will upload all the dependent jars to the cluster in a <code class="prettyprint">libjars</code> directory (see the <a href="Application.html#Dependencies">Application</a> page). If you package your own fat jar with all the dependent classes, you will want to deactivate this functionality by adding the following arguments to the command line: <code class="prettyprint">scoobi nolibjars</code>. Or alternatively, hardcode it in via <code class="prettyprint">override def upload = false</code> inside your scoobi app.</p><a name="Sbt-assembly"><h3>Sbt-assembly</h3></a><p>First check <a href="https://github.com/sbt/sbt-assembly/">sbt-assembly</a> for up to date information and documentation. This should be your first reference point. However, the way we have found works best /and please let us know if you find a better way/ is:</p><p>First add <code class="prettyprint">sbt-assembly</code> plugin, at <code class="prettyprint">project/plugins.sbt</code> with</p>
+                       <div class="col1"><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="787452012">Deployment</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
+<ul>
+  <li><a href="https://github.com/sbt/sbt-assembly">Sbt assembly</a></li>
+  <li><a href="http://maven.apache.org/plugins/maven-assembly-plugin/usage.html">Maven assembly</a></li>
+</ul><a name="Sbt-assembly"><h3>Sbt-assembly</h3></a><p>First check <a href="https://github.com/sbt/sbt-assembly/">sbt-assembly</a> for up to date information and documentation. This should be your first reference point. However, the way we have found works best /and please let us know if you find a better way/ is:</p><p>First add <code class="prettyprint">sbt-assembly</code> plugin, at <code class="prettyprint">project/plugins.sbt</code> with</p>
 <pre><code class="prettyprint">addSbtPlugin(&quot;com.eed3si9n&quot; % &quot;sbt-assembly&quot; % &quot;0.8.3&quot;)
 </code></pre><p>And now at the top of your <code class="prettyprint">build.sbt</code> add the required incantation:</p>
 <pre><code class="prettyprint">import AssemblyKeys._
 
 assemblySettings
-</code></pre><a name="Quick+Hack"><h3>Quick Hack</h3></a><p>Ben Wing's suggestion provides a quick and easy solution by using a merge strategy, by putting this at the bottom of your <code class="prettyprint">build.sbt</code>:</p>
+</code></pre><a name="Quick+Hack"><h4>Quick Hack</h4></a><p>Ben Wing's suggestion provides a quick and easy solution by using a merge strategy, by putting this at the bottom of your <code class="prettyprint">build.sbt</code>:</p>
 <pre><code class="prettyprint">mergeStrategy in assembly &lt;&lt;= (mergeStrategy in assembly) { (old) =&gt;
   {
     case x =&gt; {
@@ -80,15 +84,15 @@ assemblySettings
     }
   }
 }
-</code></pre><p>The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, xmlpull etc.).</p><p>The big advantage to this approach, is that <code class="prettyprint">sbt run</code> still works</p><a name="Ugly+Hack"><h3>Ugly Hack</h3></a><p>We can also fake the <code class="prettyprint">libraryDependencies</code> to build a proper jar. Please note, the way we change this, will make it incompatible with a normal <code class="prettyprint">sbt run</code>. So you might want to have two versions of your <code class="prettyprint">build.sbt</code></p><p>First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:</p>
-<pre><code class="prettyprint">&quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.5.0-cdh4&quot; intransitive()
-</code></pre><p>However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's <a href="https://github.com/NICTA/scoobi/blob/SCOOBI-0.5.0-cdh4/build.sbt">build.sbt</a> (and the correct branch/revision) for the canonical list, but for example it might be:</p>
+</code></pre><p>The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, xmlpull etc.).</p><p>The big advantage to this approach, is that <code class="prettyprint">sbt run</code> still works</p><a name="Ugly+Hack"><h4>Ugly Hack</h4></a><p>We can also fake the <code class="prettyprint">libraryDependencies</code> to build a proper jar. Please note, the way we change this, will make it incompatible with a normal <code class="prettyprint">sbt run</code>. So you might want to have two versions of your <code class="prettyprint">build.sbt</code></p><p>First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:</p>
+<pre><code class="prettyprint">&quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.6.0-cdh4&quot; intransitive()
+</code></pre><p>However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's <a href="https://github.com/NICTA/scoobi/blob/SCOOBI-0.6.0-cdh4/build.sbt">build.sbt</a> (and the correct branch/revision) for the canonical list, but for example it might be:</p>
 <pre><code class="prettyprint">&quot;javassist&quot; % &quot;javassist&quot; % &quot;3.12.1.GA&quot;
-&quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.0&quot; // Note: you only need this if you use it
-&quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.0&quot;        // Note: you only need this if you use it
-&quot;org.scalaz&quot; %% &quot;scalaz-core&quot; % &quot;6.95&quot;
+&quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.3-SNAPSHOT&quot; // Note: you only need this if you use it
+&quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.3-SNAPSHOT&quot;        // Note: you only need this if you use it
+&quot;org.scalaz&quot; %% &quot;scalaz-core&quot; % &quot;7.0.0-M3&quot;
 &quot;com.thoughtworks.xstream&quot; % &quot;xstream&quot; % &quot;1.4.3&quot; intransitive()
-</code></pre><p>And lastly, we probably want <code class="prettyprint">sbt compile</code> to work -- so we add in we add in all the dependencies we excluded, but as a provided&quot;. e.g.</p><p>&quot;org.apache.hadoop&quot; % &quot;hadoop-client&quot; % &quot;2.0.0-mr1-cdh4.0.0&quot; % &quot;provided&quot;<br />&quot;org.apache.hadoop&quot; % &quot;hadoop-core&quot; % &quot;2.0.0-mr1-cdh4.0.0&quot; % &quot;provided&quot;</p><p>When you put this all together, here's is what an example <code class="prettyprint">build.sbt</code> should look like:</p>
+</code></pre><p>And lastly, we probably want <code class="prettyprint">sbt compile</code> to work -- so we add in we add in all the dependencies we excluded, but as a provided&quot;. e.g.</p><p>&quot;org.apache.hadoop&quot; % &quot;hadoop-client&quot; % &quot;2.0.0-mr1-cdh4.0.1&quot; % &quot;provided&quot;<br />&quot;org.apache.hadoop&quot; % &quot;hadoop-core&quot; % &quot;2.0.0-mr1-cdh4.0.1&quot; % &quot;provided&quot;</p><p>When you put this all together, here's is what an example <code class="prettyprint">build.sbt</code> should look like:</p>
 <pre><code class="prettyprint">import AssemblyKeys._
 
 assemblySettings
@@ -102,30 +106,28 @@ scalaVersion := &quot;2.9.2&quot;
 scalacOptions ++= Seq(&quot;-Ydependent-method-types&quot;, &quot;-deprecation&quot;)
 
 libraryDependencies ++= Seq(
-   &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.5.0-cdh4&quot; intransitive(),
+   &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.6.0-cdh4&quot; intransitive(),
    &quot;javassist&quot; % &quot;javassist&quot; % &quot;3.12.1.GA&quot;,
-   &quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.0&quot;, // Note: add ' % &quot;provided&quot;'  if you don't need it 
-   &quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.0&quot;,        // Note: add ' % &quot;provided&quot;'  if you don't need it 
-   &quot;org.apache.hadoop&quot; % &quot;hadoop-client&quot; % &quot;2.0.0-mr1-cdh4.0.0&quot; % &quot;provided&quot;,
-   &quot;org.apache.hadoop&quot; % &quot;hadoop-core&quot; % &quot;2.0.0-mr1-cdh4.0.0&quot; % &quot;provided&quot;,
-   &quot;org.scalaz&quot; %% &quot;scalaz-core&quot; % &quot;6.95&quot;,
+   &quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.3-SNAPSHOT&quot;, // Note: add ' % &quot;provided&quot;'  if you don't need it 
+   &quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.3-SNAPSHOT&quot;,        // Note: add ' % &quot;provided&quot;'  if you don't need it 
+   &quot;org.apache.hadoop&quot; % &quot;hadoop-client&quot; % &quot;2.0.0-mr1-cdh4.0.1&quot; % &quot;provided&quot;,
+   &quot;org.apache.hadoop&quot; % &quot;hadoop-core&quot; % &quot;2.0.0-mr1-cdh4.0.1&quot; % &quot;provided&quot;,
+   &quot;org.scalaz&quot; %% &quot;scalaz-core&quot; % &quot;7.0.0-M3&quot;,
    &quot;com.thoughtworks.xstream&quot; % &quot;xstream&quot; % &quot;1.4.3&quot; intransitive()
    )
 
-resolvers ++= Seq(&quot;cloudera&quot; at &quot;https://repository.cloudera.com/content/repositories/releases&quot;,
-                  &quot;apache&quot;   at &quot;https://repository.apache.org/content/repositories/releases&quot;,
-                  &quot;scoobi&quot;   at &quot;http://nicta.github.com/scoobi/releases&quot;) // for scalaz 6.95
-</code></pre><a name="Running"><h3>Running</h3></a><p>Create the jar:</p>
-<pre><code class="prettyprint">$ sbt assembly
-</code></pre><p>Running the jar:</p>
-<pre><code class="prettyprint">$ hadoop jar target/appname-assembly-version.jar scoobi nolibjars
+resolvers ++= Seq(&quot;nicta's avro&quot; at &quot;http://nicta.github.com/scoobi/releases&quot;,
+                  &quot;sonatype snapshots&quot; at &quot;http://oss.sonatype.org/content/repositories/snapshots&quot;,
+                  &quot;cloudera&quot; at &quot;https://repository.cloudera.com/content/repositories/releases&quot;)
+</code></pre><a name="Maven+assembly"><h3>Maven assembly</h3></a><p>Building Maven jars for Hadoop is documented in several blog posts. <a href="http://www.tikalk.com/java/build-your-first-hadoop-project-maven">This one</a>, for example, provides a step-by-step guide.</p><a name="Running"><h3>Running</h3></a><p>Running the jar:</p>
+<pre><code class="prettyprint">$ hadoop jar target/appname-assembly-version.jar scoobi
 </code></pre><p>Note that there appears to be an OSX and Java 6 specific <a href="https://github.com/NICTA/scoobi/issues/1">issue</a> associated with calling <code class="prettyprint">hadoop</code> in this manner requiring the jar to be added to <code class="prettyprint">HADOOP_CLASSPATH</code> and then <code class="prettyprint">hadoop</code> being given the correct object to run. e.g.:</p>
 <pre><code class="prettyprint">$ export HADOOP_CLASSPATH=$PWD/target/appname-assembly-version.jar
 $ hadoop WordCount &lt;args&gt;
-</code></pre><p>If you have any <code class="prettyprint">ClassNotFoundException</code> with a Scoobi class missing, make sure you've disabled jars uploading (see above).</p></div></status></div></div>
+</code></pre><a name="Troubleshooting"><h3>Troubleshooting</h3></a><p>You might get some <code class="prettyprint">ClassNotFoundException</code> on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi &quot;job jar&quot; that is distributed to the cluster node by turning off the dependency uploading mechanism (see the <a href="Application.html">Application</a> page):</p><p><code class="prettyprint">$ hadoop WordCount &lt;args&gt; scoobi nolibjars</code></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1571098801"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="2030607121"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="249478905"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1436272215"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -135,7 +137,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1849364925"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1171687299"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -149,7 +151,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="465739234"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="626637265"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Objects.html#Materializing">Materializing</a>
@@ -163,7 +165,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1395004194"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1623423573"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -183,6 +185,8 @@ $ hadoop WordCount &lt;args&gt;
             
           </li><li id=""><a href="../guide/Input and Output.html#Avro+file+output">Avro file output</a>
             
+          </li><li id=""><a href="../guide/Input and Output.html#With+a+predefined+avro+schema">With a predefined avro schema</a>
+            
           </li></ul>
           </li><li id=""><a href="../guide/Input and Output.html#Without+files">Without files</a>
             
@@ -193,7 +197,7 @@ $ hadoop WordCount &lt;args&gt;
             
           </li></ul>
           </li></ul>
-          </li><li id="1116930786"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="22577243"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
@@ -205,7 +209,7 @@ $ hadoop WordCount &lt;args&gt;
             
           </li></ul>
           </li></ul>
-          </li><li id="1077047696"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="939034682"><a href="../guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -213,7 +217,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1294125311"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1283354591"><a href="../guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Extensions.html#Grouping">Grouping</a>
@@ -229,15 +233,21 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="231207144"><a href="../guide/Application.html#Application">Application</a>
+          </li><li id="1358523638"><a href="../guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/Application.html#Arguments">Arguments</a>
+            <ul><li id=""><a href="../guide/Application.html#Scoobi+Configuration+Arguments">Scoobi Configuration Arguments</a>
             
-          </li><li id=""><a href="../guide/Application.html#Scoobi+Configuration+Arguments">Scoobi Configuration Arguments</a>
-            
+          </li></ul>
           </li><li id=""><a href="../guide/Application.html#Dependencies">Dependencies</a>
+            <ul><li id=""><a href="../guide/Application.html#%22Fat%22+jar">&quot;Fat&quot; jar</a>
             
+          </li><li id=""><a href="../guide/Application.html#Dependencies+uploading">Dependencies uploading</a>
+            
+          </li><li id=""><a href="../guide/Application.html#LibJars+usage">LibJars usage</a>
+            
+          </li></ul>
           </li><li id=""><a href="../guide/Application.html#Configuration">Configuration</a>
             
           </li><li id=""><a href="../guide/Application.html#Local+execution">Local execution</a>
@@ -245,7 +255,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1879658515"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1448380833"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -273,21 +283,23 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1407265344"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="787452012"><a href="../guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/Deployment.html#Introduction">Introduction</a>
             
-          </li><li id=""><a href="../guide/Deployment.html#Disable+jars+uploading">Disable jars uploading</a>
-            
           </li><li id=""><a href="../guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
-            
-          </li><li id=""><a href="../guide/Deployment.html#Quick+Hack">Quick Hack</a>
+            <ul><li id=""><a href="../guide/Deployment.html#Quick+Hack">Quick Hack</a>
             
           </li><li id=""><a href="../guide/Deployment.html#Ugly+Hack">Ugly Hack</a>
             
+          </li></ul>
+          </li><li id=""><a href="../guide/Deployment.html#Maven+assembly">Maven assembly</a>
+            
           </li><li id=""><a href="../guide/Deployment.html#Running">Running</a>
             
+          </li><li id=""><a href="../guide/Deployment.html#Troubleshooting">Troubleshooting</a>
+            
           </li></ul>
-          </li><li id="1651512422"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1210386181"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/Advanced Notes.html#Static+References">Static References</a>
@@ -295,9 +307,21 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
+          </li><li id="620288323"><a href="../guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+            <ul><li id=""><a href="../guide/Scoobi Development.html#Building">Building</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#User+Guide+%2F+Docs">User Guide / Docs</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#Contributions">Contributions</a>
+            
+          </li><li id=""><a href="../guide/Scoobi Development.html#Eclipse">Eclipse</a>
+            
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1571098801','1407265344'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['249478905','787452012'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
