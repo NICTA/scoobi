@@ -35,5 +35,8 @@
  * [issue 153](https://github.com/NICTA/scoobi/issues/153): generating _SUCCESS files in the output directories
  * [issue 158](https://github.com/NICTA/scoobi/issues/158): made sure that Avro is working with both cdh3 and cdh4
  * [issue 164](https://github.com/NICTA/scoobi/issues/164): fixed the User Guide display on low resolution screens
- 
+ * [issue 169](https://github.com/NICTA/scoobi/issues/169): MR output files should be moved to to output dirs, not copied
+ * [issue 184](https://github.com/NICTA/scoobi/issues/184): Pass along proper context to OutputFormat#close
+ * [issue 185](https://github.com/NICTA/scoobi/issues/185): output files can be copied to the S3 file system when the job is executed on EC2
+
 ------ 
