@@ -107,13 +107,9 @@ trait CompNodeFactory extends Scope {
   def parallelDo(in: CompNode)         = pd(in)
 
   def pd(ins: CompNode*): ParallelDo =
-    ParallelDo(ins, rt, EmitterDoFunction,
-    wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
-    java.util.UUID.randomUUID().toString)
+    ParallelDo(ins, rt, EmitterDoFunction, wireFormat[String], wireFormat[String], Seq(), java.util.UUID.randomUUID().toString)
 
   def pdWithEnv(in: CompNode, env: ValueNode): ParallelDo =
-    ParallelDo(Seq(in), env, EmitterDoFunction,
-      wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
-      java.util.UUID.randomUUID.toString)
+    ParallelDo(Seq(in), env, EmitterDoFunction, wireFormat[String], wireFormat[String], Seq(), java.util.UUID.randomUUID.toString)
 
 }

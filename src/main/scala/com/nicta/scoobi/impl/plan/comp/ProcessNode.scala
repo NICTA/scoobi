@@ -43,12 +43,12 @@ case class ParallelDo(ins:           Seq[CompNode],
                       dofn:          DoFunction,
                       wfa:           WireReaderWriter,
                       wfb:           WireReaderWriter,
-                      wfe:           WireReaderWriter,
                       sinks:         Seq[Sink] = Seq(),
                       bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
 
   lazy val wf = wfb
-  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, wfe).mkString(",") + "] env: " + env
+  lazy val wfe = env.wf
+  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "] env: " + env
 
   def source = ins.collect(isALoad).headOption
 
@@ -84,10 +84,12 @@ case class ParallelDo(ins:           Seq[CompNode],
     env.pushEnv(result)(sc)
   }
 }
-object ParallelDo {
 
+object ParallelDo {
   /**
    * Fuse 2 consecutive parallelDo nodes together
+   *
+   * pd1 ---> pd2
    */
   private[scoobi]
   def fuse(pd1: ParallelDo, pd2: ParallelDo): ParallelDo = {
@@ -114,14 +116,14 @@ object ParallelDo {
 
     // create a new ParallelDo node fusing functions and environments */
     new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env), fuseDoFunction(pd1.dofn, pd2.dofn),
-                   pd1.wfa, pd2.wfb, pair(pd1.wfe, pd2.wfb),
+                   pd1.wfa, pd2.wfb,
                    pd1.sinks ++ pd2.sinks,
                    pd2.bridgeStoreId)
   }
 
   private[scoobi]
   def create(ins: CompNode*)(wf: WireReaderWriter) =
-    ParallelDo(ins, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf, wireFormat[Unit])
+    ParallelDo(ins, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf)
 
 }
 
@@ -158,7 +160,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
       case (key, values: Seq[_]) => emitter.write((key, values.reduce(f)))
     })
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), wireFormat[Unit])
+    ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv))
   }
 }
 object Combine1 {

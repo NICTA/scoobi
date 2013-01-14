@@ -40,7 +40,7 @@ class DObjectImpl[A](comp: ValueNode)(implicit val wf: WireFormat[A]) extends DO
       def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write((env, input)) }
       def cleanupFunction(env: Any, emitter: EmitterWriter) {}
     }
-    new DListImpl(ParallelDo(Seq(list.getComp), comp, dofn, wireFormat[B], wireFormat[(A, B)], wireFormat[A]))
+    new DListImpl(ParallelDo(Seq(list.getComp), comp, dofn, wireFormat[B], wireFormat[(A, B)]))
   }
 
   def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)

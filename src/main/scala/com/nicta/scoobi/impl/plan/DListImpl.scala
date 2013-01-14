@@ -45,8 +45,7 @@ class DListImpl[A](comp: ProcessNode)(implicit val wf: WireFormat[A]) extends DL
   def setComp(f: C => C) = new DListImpl[A](f(comp))(wf)
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn,
-                             wireFormat[A], wireFormat[B], wireFormat[E]))
+    new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
 
   def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
 
