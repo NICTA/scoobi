@@ -80,7 +80,7 @@ trait DList[A] {
    * by the client. */
   def materialise: DObject[Iterable[A]]
 
-  /**Mark that all DList preceeding transformations up to the first groupByKey must be within
+  /**Mark that all DList preceding transformations up to the first groupByKey must be within
    * the same Map-Reduce job. */
   def groupBarrier: DList[A]
 
@@ -192,7 +192,7 @@ trait DList[A] {
     x => (kf(x), x)
   }
 
-  /**Create a distribued list containing just the keys of a key-value distributed list. */
+  /**Create a distributed list containing just the keys of a key-value distributed list. */
   def keys[K, V]
   (implicit ev: A <:< (K, V),
    mK: Manifest[K],
@@ -201,7 +201,7 @@ trait DList[A] {
    wtV: WireFormat[V])
   : DList[K] = map(ev(_)._1)
 
-  /**Create a distribued list containing just the values of a key-value distributed list. */
+  /**Create a distributed list containing just the values of a key-value distributed list. */
   def values[K, V]
   (implicit ev: A <:< (K, V),
    mK: Manifest[K],
@@ -226,11 +226,8 @@ trait DList[A] {
       def setup() {}
 
       def process(input: A, emitter: Emitter[A]) = {
-        if (first) {
-          acc = input; first = false
-        } else {
-          acc = op(acc, input)
-        }
+        acc = if(first) input else op(acc, input)
+        first = false
       }
 
       def cleanup(emitter: Emitter[A]) {
@@ -241,10 +238,7 @@ trait DList[A] {
     /* Group all elements together (so they go to the same reducer task) and then
      * combine them. */
     val x: DObject[Iterable[A]] = imc.groupBy(_ => 0).combine(op).map(_._2).materialise
-    x map {
-      case it if it.isEmpty => sys.error("the reduce operation is called on an empty list")
-      case it               => it.head
-    }
+    x map (_.headOption getOrElse (sys.error("the reduce operation is called on an empty list")))
   }
 
   /**Multiply up the elements of this distribute list. */
@@ -292,14 +286,13 @@ object DList {
     new DListImpl(source)
 
   /** Concatenate all distributed lists into a single distributed list. */
-  def concat[A : Manifest : WireFormat](xss: List[DList[A]]): DList[A] = xss match {
-    case Nil      => sys.error("'concat' must take a non-empty list.")
-    case x :: Nil => x
-    case x :: xs  => x ++ (xs: _*)
-  }
+  @deprecated("Use the DList ++ method instead.", "0.7.0")
+  def concat[A : Manifest : WireFormat](xs: DList[A], xss: List[DList[A]]): DList[A] =
+    xs ++ (xss: _*)
 
   /** Concatenate all distributed lists into a single distributed list. */
-  def concat[A : Manifest : WireFormat](xss: DList[A]*): DList[A] = concat(xss.toList)
+  @deprecated("Use the DList ++ method instead.", "0.7.0")
+  def concat[A : Manifest : WireFormat](xs: DList[A], xss: DList[A]*): DList[A] = concat(xs, xss.toList)
 
   /** Create a distributed list containing values of a given function over a range of
    * integer values starting from 0. */
