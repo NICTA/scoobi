@@ -5,7 +5,6 @@ import java.net.URL
 import java.io.File
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{Path, FileSystem}
-import impl.Configurations._
 import org.apache.hadoop.mapreduce.Job
 
 /**
@@ -61,6 +60,7 @@ trait ScoobiConfiguration {
   def deleteTemporaryOutputDirectory(job: Job): Boolean
 
   def fileSystem: FileSystem
+  def newEnv(wf: WireReaderWriter): Environment
 
   def persist[A](ps: Seq[Persistent[_]])
   def persist[A](list: DList[A])

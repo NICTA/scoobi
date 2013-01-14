@@ -111,7 +111,7 @@ trait CompNodeFactory extends Scope {
     wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
     java.util.UUID.randomUUID().toString)
 
-  def pdWithEnv(in: CompNode, env: CompNode): ParallelDo =
+  def pdWithEnv(in: CompNode, env: ValueNode): ParallelDo =
     ParallelDo(Seq(in), env, EmitterDoFunction,
       wireFormat[String], wireFormat[String], wireFormat[String], Seq(),
       java.util.UUID.randomUUID.toString)

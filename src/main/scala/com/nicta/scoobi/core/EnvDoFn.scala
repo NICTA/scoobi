@@ -16,6 +16,8 @@
 package com.nicta.scoobi
 package core
 
+import collection.immutable.VectorBuilder
+
 /**
  * Interface for specifying parallel operation over DLists. The semantics
  * of DoFn lifecycle are as follows:
@@ -104,4 +106,13 @@ private[scoobi]
 trait EmitterWriter {
   private[scoobi]
   def write(value: Any)
+}
+
+/**
+ * In memory emitter writer saving the values to a Vector
+ */
+case class VectorEmitterWriter() extends EmitterWriter {
+  val vb = new VectorBuilder[Any]
+  def write(v: Any) { vb += v }
+  def result = vb.result
 }

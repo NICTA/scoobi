@@ -13,16 +13,16 @@ trait factory extends nodesFactory with MscrAttributes with ShowNodeMscr with Op
 }
 
 trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
-  override def load                                               = init(super.load)
-  override def aRoot(nodes: CompNode*)                            = init(super.aRoot(nodes:_*))
-  override def rt                                                 = init(super.rt)
-  override def cb(in: CompNode)                                   = init(super.cb(in))
-  override def gbk(in: CompNode)                                  = init(super.gbk(in))
-  override def mt(in: ProcessNode)                                = init(super.mt(in))
-  override def op(in1: CompNode, in2: CompNode)                   = init(super.op(in1, in2))
-  override def parallelDo(in: CompNode)                           = init(super.parallelDo(in))
-  override def pd(ins: CompNode*): ParallelDo                     = init(super.pd(ins:_*))
-  override def pdWithEnv(in: CompNode, env: CompNode): ParallelDo = init(super.pdWithEnv(in, env))
+  override def load                                                = init(super.load)
+  override def aRoot(nodes: CompNode*)                             = init(super.aRoot(nodes:_*))
+  override def rt                                                  = init(super.rt)
+  override def cb(in: CompNode)                                    = init(super.cb(in))
+  override def gbk(in: CompNode)                                   = init(super.gbk(in))
+  override def mt(in: ProcessNode)                                 = init(super.mt(in))
+  override def op(in1: CompNode, in2: CompNode)                    = init(super.op(in1, in2))
+  override def parallelDo(in: CompNode)                            = init(super.parallelDo(in))
+  override def pd(ins: CompNode*): ParallelDo                      = init(super.pd(ins:_*))
+  override def pdWithEnv(in: CompNode, env: ValueNode): ParallelDo = init(super.pdWithEnv(in, env))
 
   /** show before and after the optimisation */
   def optimisation(node: CompNode, optimised: CompNode) =

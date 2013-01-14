@@ -5,6 +5,7 @@ package comp
 
 import core._
 import control.Functions._
+
 /**
  * General methods for navigating a graph of CompNodes
  */
@@ -18,12 +19,8 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   lazy val inputs : CompNode => Seq[CompNode] = attr("inputs") {
     // for a parallel do node just consider the input node, not the environment
     case pd: ParallelDo => pd.ins
-    case n              => incomings(n)
+    case n              => children(n)
   }
-
-  /** compute the incoming data of a given node: all the children of a node, including its environment for a parallelDo */
-  lazy val incomings : CompNode => Seq[CompNode] =
-    attr("incomings") { case n => children(n) }
 
   /** compute all the nodes which use a given node as an environment */
   def usesAsEnvironment : CompNode => Seq[ParallelDo] = attr("usesAsEnvironment") { case node =>

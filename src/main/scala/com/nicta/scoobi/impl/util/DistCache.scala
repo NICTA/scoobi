@@ -32,7 +32,7 @@ object DistCache {
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialised object. */
   def mkPath(configuration: Configuration, tag: String): Path = {
-    val scratchDir = new Path(configuration.workingDirectory, "dist-objs")
+    val scratchDir = new Path(ScoobiConfigurationImpl(configuration).workingDirectory, "dist-objs")
     new Path(scratchDir, tag+"-"+configuration.get(JOB_STEP))
   }
 

@@ -5,6 +5,7 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import java.net.URL
 import java.io.File
+import mapreducer.Env
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.GenericOptionsParser
@@ -264,6 +265,8 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
 
   /** @return the file system for this configuration, either a local or a remote one */
   def fileSystem = FileSystems.fileSystem(this)
+  /** @return a new environment object */
+  def newEnv(wf: WireReaderWriter): Environment = Env(wf)(this)
 
   private lazy val persister = new Persister(this)
   def persist[A](ps: Seq[Persistent[_]]) = persister.persist(ps)
@@ -281,7 +284,7 @@ object ScoobiConfigurationImpl {
 
   implicit def toHadoopConfiguration(sc: ScoobiConfiguration): Configuration = sc.conf
 
-  implicit def fromHadoopConfiguration(conf: Configuration): ScoobiConfigurationImpl = new ScoobiConfigurationImpl(conf)
+  implicit def fromHadoopConfiguration(implicit conf: Configuration): ScoobiConfigurationImpl = new ScoobiConfigurationImpl(conf)
 
   def apply(args: Array[String]): ScoobiConfiguration =
     ScoobiConfigurationImpl(new Configuration()).callWithHadoopArgs(args, (a: Array[String]) => ())

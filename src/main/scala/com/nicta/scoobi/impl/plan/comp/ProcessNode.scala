@@ -10,9 +10,12 @@ import java.util.UUID._
 import CollectFunctions._
 import org.apache.hadoop.conf.Configuration
 import util.UniqueId
+import ScoobiConfigurationImpl._
 
 /**
- * Processing node in the computation graph
+ * Processing node in the computation graph.
+ *
+ * It has a unique id, a BridgeStore for its outputs and some possible additional sinks.
  */
 trait ProcessNode extends CompNode {
   val id: Int = UniqueId.get
@@ -27,7 +30,7 @@ trait ProcessNode extends CompNode {
 /**
  * Value node to either load or materialise a value
  */
-trait ValueNode extends CompNode {
+trait ValueNode extends CompNode with WithEnvironment {
   val id: Int = UniqueId.get
 }
 
@@ -36,7 +39,7 @@ trait ValueNode extends CompNode {
  * all elements of an existing CompNode and concatenating the results
  */
 case class ParallelDo(ins:           Seq[CompNode],
-                      env:           CompNode,
+                      env:           ValueNode,
                       dofn:          DoFunction,
                       wfa:           WireReaderWriter,
                       wfb:           WireReaderWriter,
@@ -52,67 +55,69 @@ case class ParallelDo(ins:           Seq[CompNode],
   lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
-
-  def setup(implicit configuration: Configuration) { dofn.setupFunction(environment(ScoobiConfigurationImpl(configuration)).pull) }
+  /** Use this ParallelDo as a Mapper */
   def map(value: Any, emitter: EmitterWriter)(implicit sc: ScoobiConfiguration) {
-    val env = environment.pull(sc.configuration)
-    dofn.setupFunction(env)
-    dofn.processFunction(env, value, emitter)
-    dofn.cleanupFunction(env, emitter)
+    dofn.setupFunction(environment)
+    dofn.processFunction(environment, value, emitter)
+    dofn.cleanupFunction(environment, emitter)
   }
+
+  /** Use this ParallelDo as a Reducer */
+  /** setup this parallel do computation */
+  def setup(implicit configuration: Configuration) {
+    dofn.setupFunction(environment)
+  }
+  /** reduce key and values */
   def reduce(key: Any, values: Any, emitter: EmitterWriter)(implicit configuration: Configuration) {
-    dofn.processFunction(environment(ScoobiConfigurationImpl(configuration)).pull, (key, values), emitter)
+    dofn.processFunction(environment, (key, values), emitter)
   }
-  def cleanup(emitter: EmitterWriter)(implicit configuration: Configuration) { dofn.cleanupFunction(environment(ScoobiConfigurationImpl(configuration)).pull, emitter) }
-
-  def environment(implicit sc: ScoobiConfiguration): Env = env match {
-    case e: WithEnvironment => e.environment(sc)
-    case other              => Env(wfe)
+  /** cleanup */
+  def cleanup(emitter: EmitterWriter)(implicit configuration: Configuration) {
+    dofn.cleanupFunction(environment, emitter)
   }
 
+  /** @return the environment object stored within the env node */
+  private def environment(implicit sc: ScoobiConfiguration) = env.environment(sc).pull(sc.configuration)
+
+  /** push a computed result to the distributed cache for the parallelDo environment */
   def pushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
-    env match {
-      case e: WithEnvironment => e.pushEnv(result)(sc)
-      case other              => ()
-    }
+    env.pushEnv(result)(sc)
   }
 }
 object ParallelDo {
 
+  /**
+   * Fuse 2 consecutive parallelDo nodes together
+   */
   private[scoobi]
-  def fuse(pd1: ParallelDo, pd2: ParallelDo)
-          (wfa: WireReaderWriter,
-           wfb: WireReaderWriter,
-           wfc: WireReaderWriter,
-           wfe: WireReaderWriter,
-           wff: WireReaderWriter): ParallelDo = {
-    new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env)(wfe, wff), fuseDoFunction(pd1.dofn, pd2.dofn),
-                   wfa, wfc, pair(wfe, wff),
+  def fuse(pd1: ParallelDo, pd2: ParallelDo): ParallelDo = {
+    /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
+    def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
+      /** fusion of the setup functions */
+      def setupFunction(env: Any) { env match { case (e1, e2) => f.setupFunction(e1); g.setupFunction(e2) } }
+      /** fusion of the process functions */
+      def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
+        env match { case (e1, e2) => f.processFunction(e1, input, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } } ) }
+      }
+      /** fusion of the cleanup functions */
+      def cleanupFunction(env: Any, emitter: EmitterWriter) {
+        env match { case (e1, e2) =>
+          f.cleanupFunction(e1, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } })
+          g.cleanupFunction(e2, emitter)
+        }
+      }
+    }
+
+    /** Fusion of the environments as an pairing Operation */
+    def fuseEnv(fExp: CompNode, gExp: CompNode): ValueNode =
+      Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(pd1.wfe, pd2.wfe))
+
+    // create a new ParallelDo node fusing functions and environments */
+    new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env), fuseDoFunction(pd1.dofn, pd2.dofn),
+                   pd1.wfa, pd2.wfb, pair(pd1.wfe, pd2.wfb),
                    pd1.sinks ++ pd2.sinks,
                    pd2.bridgeStoreId)
   }
-
-  /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
-  private def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
-    def setupFunction(env: Any) { env match { case (e1, e2) => f.setupFunction(e1); g.setupFunction(e2) } }
-
-    def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
-      env match { case (e1, e2) =>
-        f.processFunction(e1, input, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } } )
-      }
-    }
-
-    def cleanupFunction(env: Any, emitter: EmitterWriter) {
-      env match { case (e1, e2) =>
-        f.cleanupFunction(e1, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } })
-        g.cleanupFunction(e2, emitter)
-      }
-    }
-  }
-
-  /** Create a new environment by forming a tuple from two separate evironments.*/
-  private def fuseEnv(fExp: CompNode, gExp: CompNode)(wff: WireReaderWriter, wfg: WireReaderWriter): CompNode =
-    Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(wff, wfg))
 
   private[scoobi]
   def create(ins: CompNode*)(wf: WireReaderWriter) =
@@ -142,6 +147,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
   lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
+  /** combine values: this is used in a Reducer */
   def combine(values: Iterable[Any]) = values.reduce(f)
 
   /**
@@ -221,17 +227,22 @@ case class Root(ins: Seq[CompNode]) extends ValueNode {
   lazy val wf: WireReaderWriter = wireFormat[Unit]
 }
 
+/**
+ * Value nodes have environments which are determined by the job configuration
+ * because they are effectively files which are distributed via the distributed cache
+ */
 trait WithEnvironment {
   def wf: WireReaderWriter
-  private var _environment: Option[Env] = None
+  private var _environment: Option[Environment] = None
 
-  def environment(sc: ScoobiConfiguration): Env = {
+  def environment(sc: ScoobiConfiguration): Environment = {
     _environment match {
       case Some(e) => e
-      case None    => val e = Env(wf)(sc); _environment = Some(e); e
+      case None    => val e = sc.newEnv(wf); _environment = Some(e); e
     }
   }
 
+  /** push a value for this environment. This serialises the value and distribute it in the file cache */
   def pushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
     environment(sc).push(result)(sc.conf)
   }

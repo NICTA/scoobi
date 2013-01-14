@@ -27,7 +27,7 @@ import core._
   * in which a computation is performed within. "Environment" here refers to the
   * the "side-input" of a "ParallelDo". Computed environments are pushed/pulled to/from
   * the distributed cache. */
-class Env(path: Path)(wf: WireReaderWriter) {
+class Env(path: Path)(wf: WireReaderWriter) extends Environment {
 
   /** Store the environment value in the distributed cache. */
   def push(env: Any)(implicit configuration: Configuration) {

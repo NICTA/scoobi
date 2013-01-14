@@ -147,9 +147,9 @@ case class MapperInputChannel(sourceNode: CompNode) extends InputChannel {
         }
 
         if (mappers.size > 1 && nodes.uses(mapper).forall(isParallelDo && !isFloating)) {
-          val vb = new VectorBuilder[Any]
-          mappedValues.foreach(v => mapper.map(v, new EmitterWriter { def write(v: Any) { vb += v } }))
-          vb.result
+          val emitter = VectorEmitterWriter()
+          mappedValues.foreach(v => mapper.map(v, emitter))
+          emitter.result
         }
         else mappedValues.map(v => mapper.map(v, emitter))
       case _                                       => Seq()

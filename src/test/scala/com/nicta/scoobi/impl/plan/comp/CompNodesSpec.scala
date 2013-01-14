@@ -5,7 +5,9 @@ package comp
 
 import testing.mutable.UnitSpecification
 import org.specs2.specification.AllExpectations
-import core.CompNode
+import core.{Environment, WireReaderWriter, VectorEmitterWriter, CompNode}
+import core.WireFormat._
+import org.apache.hadoop.conf._
 
 class CompNodesSpec extends UnitSpecification with AllExpectations with CompNodeData {
 
@@ -33,6 +35,26 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
     val pd1 = pdWithEnv(load, mt1)
 
     (mt1 -> usesAsEnvironment) === Seq(pd1)
+  }
+
+  "2 ParallelDo nodes can be fused together" >> {
+    "simple case: 2 pass-through ParallelDos, the input value must be unchanged" >> new factory {
+      val pd1 = ParallelDo.create(loadWith("hello"))(wireFormat[String])
+      val pd2 = ParallelDo.create(pd1)(wireFormat[String])
+      val fused = ParallelDo.fuse(pd1, pd2)
+      val emitter = VectorEmitterWriter()
+
+      fused.map("world", emitter)(configuration)
+      emitter.result === Seq("world")
+    }
+  }
+
+  /** this configuration doesn't store any value in the environment */
+  def configuration = new ScoobiConfigurationImpl() {
+    override def newEnv(wf: WireReaderWriter) = new Environment {
+      def push(any: Any)(implicit conf: Configuration) {}
+      def pull(implicit conf: Configuration) = ((),())
+    }
   }
 }
 
