@@ -10,7 +10,7 @@ import org.kiama.rewriting.Rewriter
 import collection.+:
 
 /**
- * Optimiser for the CompNode AST graph
+ * Optimiser for the CompNode graph
  *
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
@@ -23,7 +23,7 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   def combineToParDo = everywhere(rule {
     case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c
-    case c: Combine                         => c.debug("combineToParDo").toParallelDo
+    case c: Combine                              => c.debug("combineToParDo").toParallelDo
   })
 
   /**
@@ -37,18 +37,17 @@ trait Optimiser extends CompNodes with Rewriter {
    *
    * This rule is repeated until nothing can be fused anymore
    */
-  def parDoFuse(pass: Int) = repeat(sometd(rule {
+  def parDoFuse = repeat(sometd(rule {
     case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty =>
-      ParallelDo.fuse(p1.debug("parDoFuse (pass "+pass+") "), p2)
+      ParallelDo.fuse(p1.debug("parDoFuse"), p2)
   }))
 
   /**
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Seq[CompNode]) =
-    attempt(parDoFuse(pass = 1)      ) <*
-    attempt(combineToParDo           ) <*
-    attempt(parDoFuse(pass = 2)      )
+    attempt(combineToParDo) <*
+    attempt(parDoFuse     )
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs
