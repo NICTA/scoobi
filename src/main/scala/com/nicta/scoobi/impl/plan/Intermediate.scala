@@ -485,7 +485,7 @@ object Intermediate {
 
         /* Create a MapperInputChannel for each group of ParallelDo nodes, "belonging" to this
          * set of related GBKs, that share the same input. */
-        val pdos = related.pdos map { getParallelDo(_).orNull }
+        val pdos = related.pdos.flatMap { getParallelDo(_) }
         val mapperICs = pdos.toList.groupBy { case ParallelDo(i, _, _, _, _) => i }
                                    .values
                                    .map { MapperInputChannel(_) }
