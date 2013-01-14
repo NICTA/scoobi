@@ -38,7 +38,7 @@ import org.apache.avro.file.DataFileReader
 import core._
 import application.ScoobiConfiguration
 
-/** Smart functions for materializing distributed lists by loading Avro files. */
+/** Smart functions for materialising distributed lists by loading Avro files. */
 object AvroInput extends AvroParsingImplicits {
   lazy val logger = LogFactory.getLog("scoobi.AvroInput")
 
