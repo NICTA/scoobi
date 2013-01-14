@@ -34,7 +34,7 @@ import impl.ScoobiConfigurationImpl._
 import impl.io.Helper
 import impl.util.UniqueId
 
-/** Smart functions for materializing distributed lists by loading text files. */
+/** Smart functions for materialising distributed lists by loading text files. */
 object TextInput {
   lazy val logger = LogFactory.getLog("scoobi.TextInput")
 

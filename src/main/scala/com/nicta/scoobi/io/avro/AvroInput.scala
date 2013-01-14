@@ -41,7 +41,7 @@ import impl.io.Helper
 import impl.util.UniqueId
 import WireFormat._
 
-/** Smart functions for materializing distributed lists by loading Avro files. */
+/** Smart functions for materialising distributed lists by loading Avro files. */
 object AvroInput extends AvroParsingImplicits {
   lazy val logger = LogFactory.getLog("scoobi.AvroInput")
 

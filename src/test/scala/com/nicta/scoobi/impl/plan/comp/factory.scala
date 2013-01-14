@@ -4,13 +4,10 @@ package plan
 package comp
 
 import core.CompNode
-import mscr.MscrAttributes
+import mscr.{MscrsDefinition, MscrAttributes}
 import org.kiama.rewriting.Rewriter
 
-trait factory extends nodesFactory with MscrAttributes with ShowNodeMscr with Optimiser {
-  override def show(node: CompNode): String =
-    "SHOWING NODE: "+showNode(node, None)
-}
+trait factory extends nodesFactory with MscrAttributes with ShowNode with Optimiser with MscrsDefinition
 
 trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
   override def load                                                = init(super.load)
@@ -26,9 +23,8 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
 
   /** show before and after the optimisation */
   def optimisation(node: CompNode, optimised: CompNode) =
-  if (show(node) != show(optimised)) "INITIAL: \n"+show(node)+"\nOPTIMISED:\n"+show(optimised) else "no optimisation"
-
-  def show(node: CompNode): String = "SHOWING NODE: "+showNode(node, None)
+   if (pretty(node) != pretty(optimised)) "INITIAL: \n"+pretty(node)+"\nOPTIMISED:\n"+pretty(optimised)
+   else                                   "no optimisation"
 
   /** initialise the Kiama attributes of a CompNode */
   def init[T <: CompNode](t: T): T  = initAttributable(t)

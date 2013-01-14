@@ -60,7 +60,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * key-value-collection distributed list. */
   def combine[K, V](f: (V, V) => V)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], gpk: Grouping[K], wv: WireFormat[V]): DList[(K, V)]
 
-  @deprecated(message="use materialise instead", since="0.7.0")
+  @deprecated(message="use materialise instead", since="0.6.0")
   def materialize: DObject[Iterable[A]] = materialise
 
   /**

@@ -35,9 +35,7 @@ case class InMemoryMode() extends ShowNode {
   }
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
-    initAttributable(node)
-    logger.debug("nodes\n"+pretty(node))
-    logger.debug("graph\n"+showGraph(node))
+    initAttributable(node).debug("nodes\n", prettyGraph)
 
     node -> prepare(sc)
     node -> computeValue(sc)

@@ -31,7 +31,7 @@ import impl.ScoobiConfigurationImpl._
 import impl.io.Helper
 import impl.util.UniqueId
 
-/** Smart functions for materializing distributed lists by loading Sequence files. */
+/** Smart functions for materialising distributed lists by loading Sequence files. */
 object SequenceInput {
   lazy val logger = LogFactory.getLog("scoobi.SequenceInput")
 
