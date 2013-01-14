@@ -193,7 +193,11 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
-  def jobStep(mscrId: Int) = jobId + "(Step-" + mscrId + ")"
+  def jobStep(mscrId: Int) = {
+    conf.set(JOB_STEP, jobId + "(Step-" + mscrId + ")")
+    conf.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, conf.get(JOB_STEP))
+    conf.get(JOB_STEP)
+  }
 
   /**Scoobi's configuration. */
   lazy val conf = {
@@ -251,7 +255,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   lazy val workingDir                     = configuration.getOrSet("scoobi.workingdir", dirPath(scoobiDir + jobId))
   lazy val scoobiDirectory: Path          = new Path(scoobiDir)
   lazy val workingDirectory: Path         = new Path(workingDir)
-  def temporaryOutputDirectory(job: Job): Path = new Path(workingDirectory, "tmp-out-"+job.getJobName)
+  def temporaryOutputDirectory(job: Job)  = new Path(workingDirectory, "tmp-out-"+jobId)
   lazy val temporaryJarFile: File         = File.createTempFile("scoobi-job-"+jobId, ".jar")
 
   def deleteScoobiDirectory          = fs.delete(scoobiDirectory, true)

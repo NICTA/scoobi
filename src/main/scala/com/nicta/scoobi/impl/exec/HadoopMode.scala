@@ -113,8 +113,13 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     }
   }
 
-  /** once a node has been computed, if it defines an environment for another node push the value in the distributed cache */
-  private def pushEnv(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = {
+  /**
+   * once a node has been computed, if it defines an environment for another node push the value in the distributed cache
+   * This method is synchronised because it can be called by several threads when Mscrs are executing in parallel to load
+   * input nodes. However the graph attributes are not thread-safe and a "cyclic" evaluation might happen if several
+   * thread are trying to evaluate the same attributes
+   */
+  private def pushEnv(node: CompNode, result: Any)(implicit sc: ScoobiConfiguration) = synchronized {
     usesAsEnvironment(node).map(_.pushEnv(result))
     result
   }

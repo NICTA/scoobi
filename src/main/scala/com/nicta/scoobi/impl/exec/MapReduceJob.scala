@@ -107,7 +107,7 @@ case class MapReduceJob(mscr: Mscr) {
   private def configureMappers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     ChannelsInputFormat.configureSources(job, jar, mscr.sources)
 
-    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers-"+job.getJobName)
+    DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers")
     job.setMapperClass(classOf[MscrMapper].asInstanceOf[Class[_ <: Mapper[_,_,_,_]]])
   }
 
@@ -117,7 +117,7 @@ case class MapReduceJob(mscr: Mscr) {
    *   - use distributed cache to push all combine code out */
   private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
     if (!mscr.combiners.isEmpty) {
-      DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners-"+job.getJobName)
+      DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners")
       job.setCombinerClass(classOf[MscrCombiner].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
     }
   }
@@ -135,7 +135,7 @@ case class MapReduceJob(mscr: Mscr) {
       }
     }
 
-    DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers-"+job.getJobName)
+    DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
     job.setReducerClass(classOf[MscrReducer].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
 

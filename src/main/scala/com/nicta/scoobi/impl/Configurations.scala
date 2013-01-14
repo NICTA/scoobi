@@ -31,6 +31,7 @@ trait Configurations {
    * List of Scoobi properties which are stored in the Hadoop configuration object
    */
   val JOB_ID                             = "scoobi.jobid"
+  val JOB_STEP                           = "scoobi.jobstep"
   val PROGRESS_TIME                      = "scoobi.progress.time"
   val JOB_NAME                           = "scoobi.jobname"
   val SCOOBI_MODE                        = "scoobi.mode"

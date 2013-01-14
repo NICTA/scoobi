@@ -33,44 +33,44 @@ object DistCache {
     * serialised object. */
   def mkPath(configuration: Configuration, tag: String): Path = {
     val scratchDir = new Path(configuration.workingDirectory, "dist-objs")
-    new Path(scratchDir, tag)
+    new Path(scratchDir, tag+"-"+configuration.get(JOB_STEP))
   }
 
   /** Distribute an object to be available for tasks in the current job. */
-  def pushObject[T](conf: Configuration, obj: T, tag: String): Path = {
-    serialise[T](conf, obj, tag) { path =>
-      DistributedCache.addCacheFile(path.toUri, conf)
+  def pushObject[T](configuration: Configuration, obj: T, tag: String): Path = {
+    serialise[T](configuration, obj, tag) { path =>
+      DistributedCache.addCacheFile(path.toUri, configuration)
     }
   }
 
   /**
    * serialise an object to a path
    */
-  def serialise[T](conf: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
+  def serialise[T](configuration: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
     /* Serialise */
-    val path = mkPath(conf, tag)
-    val dos = path.getFileSystem(conf).create(path)
+    val path = mkPath(configuration, tag)
+    val dos = path.getFileSystem(configuration).create(path)
     Serialiser.serialise(obj, dos)
     action(path)
-    new Path(new Path(path.getFileSystem(conf).getUri), path)
+    new Path(new Path(path.getFileSystem(configuration).getUri), path)
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
-  def pullObject[T](conf: Configuration, tag: String): Option[T] = {
+  def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
     /* Get distributed cache file. */
-    val path = mkPath(conf, tag)
-    val cacheFiles = DistributedCache.getCacheFiles(conf)
+    val path = mkPath(configuration, tag)
+    val cacheFiles = DistributedCache.getCacheFiles(configuration)
     cacheFiles.find(_.toString == path.toString).flatMap { uri =>
-      deserialise(conf)(new Path(uri.toString))
+      deserialise(configuration)(new Path(uri.toString))
     }
   }
 
   /**
    * deserialise an object from a path file
    */
-  def deserialise[T](conf: Configuration) = (path: Path) => {
-    val dis = path.getFileSystem(conf).open(path)
+  def deserialise[T](configuration: Configuration) = (path: Path) => {
+    val dis = path.getFileSystem(configuration).open(path)
     try {
       Some(Serialiser.deserialise(dis).asInstanceOf[T])
     } catch { case e => { e.printStackTrace(); None } }
