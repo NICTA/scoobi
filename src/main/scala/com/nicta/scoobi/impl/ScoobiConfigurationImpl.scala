@@ -196,7 +196,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStep(mscrId: Int) = {
     conf.set(JOB_STEP, jobId + "(Step-" + mscrId + ")")
-    conf.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, conf.get(JOB_STEP))
+    conf.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+conf.get(JOB_STEP))
     conf.get(JOB_STEP)
   }
 
@@ -274,7 +274,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
   def persist[A](o: DObject[A]): A       = persister.persist(o)
 
   def duplicate = {
-    val c = new Configuration(configuration)
+    val c = new Configuration(conf)
     ScoobiConfigurationImpl(c)
   }
 }
