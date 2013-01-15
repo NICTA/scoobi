@@ -275,7 +275,7 @@ case class ScoobiConfigurationImpl(configuration: Configuration = new Configurat
 
   def duplicate = {
     val c = new Configuration(conf)
-    ScoobiConfigurationImpl(c)
+    ScoobiConfigurationImpl(c).addUserDirs(userDirs.toSeq).addJars(userJars.toSeq)
   }
 }
 
