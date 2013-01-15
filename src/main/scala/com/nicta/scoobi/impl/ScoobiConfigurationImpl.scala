@@ -288,5 +288,14 @@ object ScoobiConfigurationImpl {
 
   def apply(args: Array[String]): ScoobiConfiguration =
     ScoobiConfigurationImpl(new Configuration()).callWithHadoopArgs(args, (a: Array[String]) => ())
+
+  // only used in tests
+  private[scoobi] lazy val unitEnv =
+    new ScoobiConfigurationImpl() {
+      override def newEnv(wf: WireReaderWriter) = new Environment {
+        def push(any: Any)(implicit conf: Configuration) {}
+        def pull(implicit conf: Configuration) = ((),())
+      }
+    }
 }
 

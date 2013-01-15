@@ -110,11 +110,12 @@ trait MapperInputChannel extends InputChannel {
     tv = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
   }
 
+  protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
+
   /** map a given key/value and emit it */
   def map(key: Any, value: Any, context: InputOutputContext) {
-    implicit val configuration = context.context.getConfiguration
-    implicit val sc = ScoobiConfigurationImpl(configuration)
-    val emitter = createEmitter(context)
+    implicit val configuration = context.configuration
+    implicit val sc = scoobiConfiguration(configuration)
 
     /**
      * map the input key/value using the full tree of mappers.
@@ -125,32 +126,36 @@ trait MapperInputChannel extends InputChannel {
      *  - the internal mapper nodes are using a VectorEmitterWriter to compute values and leave them in memory
      *  - the in memory values are finally mapped with the "lastMappers" and emitted to disk
      */
-    def computeMappers(node: CompNode): Seq[Any] = node match {
+    def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = node match {
       case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
       case mapper: ParallelDo   =>
-        val mappedValues = computeMappers {
+        val childNode =
           if (mapper.ins.size == 1) mapper.ins.head
           else                      mapper.ins.filter(n => transitiveUses(sourceNode).contains(n) || (sourceNode == n)).head
-        }
+
+        val mappedValues = computeMappers(childNode, emitter)
 
         if (mappers.size > 1 && isInsideMapper(mapper)) VectorEmitterWriter().map(mappedValues, mapper)
         else                                            mappedValues.map(v => mapper.map(v, emitter))
       case _                    => Seq()
     }
 
-    lastMappers foreach computeMappers
+    lastMappers.foreach(mapper => computeMappers(mapper, createEmitter(outputTag(mapper), context)))
 
     if (lastMappers.isEmpty)
-      emitter.write(source.fromKeyValueConverter.asValue(context, key, value))
+      tags.map(t => createEmitter(t, context).write(source.fromKeyValueConverter.asValue(context, key, value)))
   }
+
+  /** @return the output tag for a given "last" mapper */
+  protected def outputTag(mapper: ParallelDo): Int
 
   def cleanup(context: InputOutputContext) {}
 
   /**
-   * create an emitter, which will either emit values with auto-generated keys for a FloatingInputChannel,
+   * create an emitter for a given output tag, which will either emit values with auto-generated keys for a FloatingInputChannel,
    * or key/values for a GbkInputChannel
    */
-  protected def createEmitter(context: InputOutputContext): EmitterWriter
+  protected def createEmitter(tag: Int, context: InputOutputContext): EmitterWriter
 }
 
 /**
@@ -165,18 +170,17 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
   lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
 
-  protected def createEmitter(context: InputOutputContext) = new EmitterWriter {
+  protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     def write(x: Any) {
       x match {
         case (x1, x2) =>
-          tags.foreach { tag =>
-            tk.set(tag, x1)
-            tv.set(tag, x2)
-            context.write(tk, tv)
-          }
+          tk.set(tag, x1)
+          tv.set(tag, x2)
+          context.write(tk, tv)
       }
     }
   }
+  protected def outputTag(mapper: ParallelDo): Int = mapper.parent[CompNode].id
 }
 
 /**
@@ -191,15 +195,14 @@ class FloatingInputChannel(val sourceNode: CompNode) extends MapperInputChannel 
   lazy val keyTypes   = lastMappers.foldLeft(KeyTypes())   { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
   lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
 
-  protected def createEmitter(context: InputOutputContext) = new EmitterWriter {
+  protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     def write(x: Any) {
-      tags.foreach { tag =>
-        tk.set(tag, rollingInt.get)
-        tv.set(tag, x)
-        context.write(tk, tv)
-      }
+      tk.set(tag, rollingInt.get)
+      tv.set(tag, x)
+      context.write(tk, tv)
     }
   }
+  protected def outputTag(mapper: ParallelDo): Int = mapper.id
 }
 
 

@@ -89,6 +89,13 @@ case class BasicDoFunction(f: (Any, Any, EmitterWriter) => Any) extends DoFuncti
   private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) {}
 }
 
+private[scoobi]
+case class MapFunction(f: Any => Any) extends DoFunction {
+  private[scoobi] def setupFunction(en: Any) {}
+  private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write(f(input)) }
+  private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) {}
+}
+
 /**
  * simple forwarder to an Emitter
  */

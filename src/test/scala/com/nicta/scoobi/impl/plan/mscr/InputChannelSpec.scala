@@ -6,12 +6,13 @@ package mscr
 import testing.UnitSpecification
 import org.specs2.specification.Groups
 import comp.{GroupByKey, factory}
-import org.specs2.matcher.ThrownExpectations
-import core.CompNode
-import core.WireFormat._
+import org.specs2.matcher.{Matcher, ThrownExpectations}
+import core.{MapFunction, InputOutputContext, CompNode}
+import org.apache.hadoop.conf.Configuration
+import rtt.{MetadataTaggedValue, MetadataTaggedKey, TaggedValue, TaggedKey}
+import scala.collection.mutable.ListBuffer
 
-class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is =
-
+class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is = sequential ^
   """
   An InputChannel encapsulates parallelDo nodes which have a common source node.
   There are 2 types of InputChannels:
@@ -31,6 +32,12 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
   "an input channel defines the types of values emitted by tag"                                                         ^
     "as the types of the gbks values for a GbkInputChannel"                                                             ! g1().e8^
     "as the types of the last mappers for a FloatingInputChannel"                                                       ! g1().e9^
+                                                                                                                        endp^
+  "An input channel must map key/values based on the mappers connected to its source"                                   ^
+    "if there is only one mapper"                                                                                       ! g2().e1^
+    "if there are 2 independent mappers"                                                                                ! g2().e2^
+    "if there are 2 consecutive mappers"                                                                                ! g2().e3^
+    "if there are 3 mappers as a tree"                                                                                  ! g2().e4^
                                                                                                                         end
 
   "general properties of input channels" - new g1 with factory {
@@ -65,7 +72,76 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       floatingInputChannel(l1).valueTypes.types.values.toList === Seq(Tuple1(pd2.wf))
     }
 
-    def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys)
-    def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode)
   }
+
+  "mapping values" - new g2 with factory {
+    val (l1, l2) = (load, load)
+    val pd1 = pd(l1).copy(dofn = MapFunction(_.toString.toUpperCase))
+
+    e1 := {
+      mt(pd1)
+      val channel = floatingInputChannel(l1)
+      channel.map("1", "start", context)
+      context.key === 1
+      context.value === "START"
+    }
+
+    e2 := {
+      val pd2 = pd(l1).copy(dofn = MapFunction(_.toString.toLowerCase))
+      val (mt1, mt2) = (mt(pd1), mt(pd2))
+      aRoot(mt1, mt2)
+
+      val channel = floatingInputChannel(l1)
+      channel.map("1", "stARt", context)
+      context.keys must beDistinct
+      context.values === Seq("START", "start")
+    }
+
+    e3 := {
+      val pd2 = pd(pd1).copy(dofn = MapFunction(_.toString+" now"))
+      gbk(pd2)
+
+      val channel = floatingInputChannel(l1)
+      channel.map("1", "stARt", context)
+      context.values === Seq("START now")
+    }
+
+    e4 := {
+      val pd2 = pd(pd1).copy(dofn = MapFunction(a => (a, a.toString+" now")))
+      val pd3 = pd(pd1).copy(dofn = MapFunction(a => (a, a.toString+" later")))
+      val (gbk1, gbk2) = (gbk(pd2), gbk(pd3))
+      aRoot(gbk1, gbk2)
+
+      val channel = gbkInputChannel(l1, Seq(gbk1, gbk2))
+      channel.map("1", "stARt", context)
+      context.values === Seq("START now", "START later")
+    }
+
+    val context = new InputOutputContext(null) {
+      var key: Any = _
+      var value: Any = _
+      var tag: Int = _
+      val keys = new ListBuffer[Any]
+      val values = new ListBuffer[Any]
+
+      override def write(k: Any, v: Any) {
+        key = k match { case tk: TaggedKey => tk.get(tk.tag) }
+        keys.append(key)
+        value = v match { case tv: TaggedValue => tv.get(tv.tag) }
+        tag = v match { case tv: TaggedValue => tv.tag }
+        values.append(value)
+      }
+      override def configuration = new Configuration
+    }
+  }
+
+  trait MockInputChannel extends MapperInputChannel {
+    tk = new MetadataTaggedKey { def metadataPath = "" }
+    tv = new MetadataTaggedValue { def metadataPath = ""  }
+    override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv
+  }
+  def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode) with MockInputChannel
+  def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys) with MockInputChannel
+
+  def beDistinct[T]: Matcher[Seq[T]] = (seq: Seq[T]) => (seq.distinct.size == seq.size, "The sequence contains duplicated elements:\n"+seq)
 }

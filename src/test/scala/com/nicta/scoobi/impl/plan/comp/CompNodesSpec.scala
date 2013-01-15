@@ -65,12 +65,7 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
     emitter.result
   }
   /** this configuration doesn't store any value in the environment */
-  def configuration = new ScoobiConfigurationImpl() {
-    override def newEnv(wf: WireReaderWriter) = new Environment {
-      def push(any: Any)(implicit conf: Configuration) {}
-      def pull(implicit conf: Configuration) = ((),())
-    }
-  }
+  def configuration = ScoobiConfigurationImpl.unitEnv
 }
 
 trait nodes extends factory {

@@ -79,5 +79,6 @@ trait FromKeyValueConverter {
 }
 
 case class InputOutputContext(context: MapContext[Any,Any,Any,Any]) {
+  def configuration = context.getConfiguration
   def write(key: Any, value: Any) { context.write(key, value) }
 }
