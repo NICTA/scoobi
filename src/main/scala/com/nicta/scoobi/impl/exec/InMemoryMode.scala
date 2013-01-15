@@ -190,6 +190,6 @@ case class InMemoryMode() extends ShowNode {
     result
   }
 
-
 }
+
 

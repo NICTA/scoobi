@@ -41,7 +41,11 @@ trait Grouping[K] extends KeyGrouping {
 }
 
 object Grouping extends GroupingImplicits {
-  def all[K] = new Grouping[K] { def groupCompare(x: K, y: K) = 0 }
+  def all[K] = new AllGrouping
+  class AllGrouping[K] extends Grouping[K] {
+    def groupCompare(x: K, y: K) = 0
+    override def toString = "AllGrouping"
+  }
 }
 
 /** Implicit definitions of Grouping instances for common types. */
@@ -49,13 +53,17 @@ trait GroupingImplicits {
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
-  implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
+  implicit def OrderingGrouping[T : Ordering]: Grouping[T] = new OrderingGrouping
+  class OrderingGrouping[T : Ordering] extends Grouping[T] {
+    override def toString = "OrderingGrouping"
     def groupCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
   }
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
-  implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
+  implicit def ComparableGrouping[T <: Comparable[T]]: Grouping[T] = new ComparableGrouping
+  class ComparableGrouping[T <: Comparable[T]] extends Grouping[T] {
+    override def toString = "ComparableGrouping"
     def groupCompare(x: T, y: T): Int = x.compareTo(y)
   }
 

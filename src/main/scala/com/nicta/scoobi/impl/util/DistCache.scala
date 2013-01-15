@@ -33,7 +33,7 @@ object DistCache {
     * serialised object. */
   def mkPath(configuration: Configuration, tag: String): Path = {
     val scratchDir = new Path(ScoobiConfigurationImpl(configuration).workingDirectory, "dist-objs")
-    new Path(scratchDir, tag+"-"+configuration.get(JOB_STEP))
+    new Path(scratchDir, tag+ Option(configuration.get(JOB_STEP)).map("-"+_).getOrElse(""))
   }
 
   /** Distribute an object to be available for tasks in the current job. */

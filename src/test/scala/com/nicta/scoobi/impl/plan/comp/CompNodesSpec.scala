@@ -9,7 +9,7 @@ import core._
 import core.WireFormat._
 import org.apache.hadoop.conf._
 import ParallelDo._
-import core.VectorEmitterWriter
+import mapreducer.VectorEmitterWriter
 
 class CompNodesSpec extends UnitSpecification with AllExpectations with CompNodeData {
 

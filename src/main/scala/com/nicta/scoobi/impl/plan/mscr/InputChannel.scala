@@ -6,7 +6,7 @@ package mscr
 import core._
 import comp._
 import util.UniqueInt
-import mapreducer.ChannelOutputFormat
+import mapreducer.{VectorEmitterWriter, ChannelOutputFormat}
 import core.WireFormat._
 import comp.GroupByKey
 import scalaz.Equal
@@ -52,19 +52,17 @@ trait InputChannel {
 
   /** main source node providing data for this input channel */
   def sourceNode: CompNode
-
   /** data source for this input channel */
   def source: Source
-
   /** sourceNode + environments for the parallelDo nodes */
   def inputNodes: Seq[CompNode]
+
+  /** set of tags, which are node ids consuming the values produced by this input channel */
+  def tags: Seq[Int]
   /** types of the keys which are emitted by this InputChannel, by tag */
   def keyTypes: KeyTypes
   /** types of the values which are emitted by this InputChannel, by tag */
   def valueTypes: ValueTypes
-
-  /** set of tags, which are node ids consuming the values produced by this input channel */
-  def tags: Seq[Int]
 
   /** setup the parallelDos of this input channel */
   def setup(context: InputOutputContext)
@@ -90,7 +88,7 @@ trait MapperInputChannel extends InputChannel {
   }
 
   /** sourceNode + environments for the parallelDo nodes */
-  lazy val inputNodes = Seq(sourceNode) ++ mappers.map(_.env)
+  lazy val inputNodes = sourceNode +: mappers.map(_.env)
 
   /**
    * last mappers in the "tree" of mappers using the input channel source node
