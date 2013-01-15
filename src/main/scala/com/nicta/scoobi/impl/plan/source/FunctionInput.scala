@@ -37,7 +37,7 @@ trait FunctionInput {
     * a function that maps list indices to element values. */
   def fromFunction[A : WireFormat](n: Int)(f: Int => A): DList[A] = {
     val source = new DataSource[NullWritable, A, A] {
-      val id: Int = UniqueId.get
+      lazy val id: Int = UniqueId.get
 
       val inputFormat = classOf[FunctionInputFormat[A]]
       override def toString = "FunctionInput("+id+")"

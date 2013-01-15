@@ -41,7 +41,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 
-  val id: Int = UniqueId.get
+  lazy val id: Int = UniqueId.get
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 

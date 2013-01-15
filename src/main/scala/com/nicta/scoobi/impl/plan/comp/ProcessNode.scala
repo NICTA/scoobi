@@ -18,7 +18,7 @@ import ScoobiConfigurationImpl._
  * It has a unique id, a BridgeStore for its outputs and some possible additional sinks.
  */
 trait ProcessNode extends CompNode {
-  val id: Int = UniqueId.get
+  lazy val id: Int = UniqueId.get
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
   def bridgeStore: Bridge
   /** list of additional sinks for this node */
@@ -31,7 +31,7 @@ trait ProcessNode extends CompNode {
  * Value node to either load or materialise a value
  */
 trait ValueNode extends CompNode with WithEnvironment {
-  val id: Int = UniqueId.get
+  lazy val id: Int = UniqueId.get
 }
 
 /**

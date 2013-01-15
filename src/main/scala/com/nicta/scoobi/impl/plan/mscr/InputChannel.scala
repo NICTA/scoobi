@@ -81,7 +81,7 @@ trait MapperInputChannel extends InputChannel {
   /** attributes used to determine if parallelDos are floating */
   private val nodes = new MscrsDefinition {}; import nodes._
 
-  lazy val id: Int = source.id
+  lazy val id: Int = sourceNode.id
 
   /** data source for this input channel */
   lazy val source = sourceNode match {

@@ -42,7 +42,7 @@ trait SeqInput {
   def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] = {
 
     val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
-      val id: Int = UniqueId.get
+      lazy val id: Int = UniqueId.get
 
       val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
       override def toString = "SeqInput("+id+")"
