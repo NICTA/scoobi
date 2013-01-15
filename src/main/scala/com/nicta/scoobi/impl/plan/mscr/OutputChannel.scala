@@ -13,10 +13,12 @@ import org.apache.hadoop.conf.Configuration
 import rtt.TaggedKey
 import mapreducer.{ChannelOutputFormat, UntaggedValues}
 import ChannelOutputFormat._
-import org.apache.hadoop.io.compress.CompressionCodec
 
-trait OutputChannel extends Channel {
-  lazy val id: Int = UniqueId.get
+/**
+ * Two OutputChannels are equal if they have the same tag
+ */
+trait OutputChannel {
+  lazy val id: Int = tag
 
   override def equals(a: Any) = a match {
     case o: OutputChannel => o.id == id

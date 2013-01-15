@@ -55,13 +55,9 @@ class ConstantStringDataSource(val value: String) extends DataSource[String, Str
 case class ConstantStringInputSplit(var value: String) extends InputSplit with Writable {
   def this() = this("")
   def getLength = value.size
-  def readFields(in: DataInput) {
-    value = readLine()
-  }
+  def readFields(in: DataInput) {}
 
-  def write(out: DataOutput) {
-    out.writeChars(value)
-  }
+  def write(out: DataOutput) { out.writeChars(value) }
   def getLocations = Array("localhost")
 
 

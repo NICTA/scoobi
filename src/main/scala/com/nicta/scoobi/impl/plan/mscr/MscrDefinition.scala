@@ -18,14 +18,9 @@ trait MscrsDefinition extends Layering {
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise)) &&
-                                   !isReducer(pd) &&
-                                  (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
-    case other                 => false
-  }
-
-  private def isInsideMapper(pd: ParallelDo) = {
-    val pdDescendents = descendentsUntil(isMaterialise)(pd).collect(isAParallelDo)
-    !pdDescendents.isEmpty && pdDescendents.forall(isFloating)
+                           !isReducer(pd) &&
+                           (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
+    case _              => false
   }
 
   private def hasMaterialisedEnv(pd: ParallelDo) =
@@ -38,12 +33,12 @@ trait MscrsDefinition extends Layering {
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
     // make a first pass to get the first source nodes
-    val in1 = floatingParallelDos(layer).flatMap(_.ins).map(MapperInputChannel(_))
+    val in1 = floatingParallelDos(layer).flatMap(_.ins).map(InputChannel.create(_))
     // get the possible other source nodes for "inner mappers"
     val allMappers = in1.flatMap(_.mappers)
     val allPotentialSources = allMappers.flatMap(_.ins)
     val sources = allPotentialSources.filterNot(allMappers.contains)
-    val in = sources.map(MapperInputChannel(_))
+    val in = sources.map(InputChannel.create(_))
     val out = in.flatMap(_.lastMappers.map(BypassOutputChannel(_)))
     makeMscrs(in, out)
   }
@@ -89,7 +84,20 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val mapperInputChannels: Layer[T] => Seq[MapperInputChannel] = attr("mapper input channels") { case layer =>
-    layerSourceNodes(layer).map(MapperInputChannel(_))
+    layerSourceNodes(layer).map(InputChannel.create(_))
+  }
+
+  /**
+   * flattened tree of mappers using this a given node
+   */
+  lazy val mappersUses: CompNode => Seq[ParallelDo] = attr { case node =>
+    val (pds, _) = uses(node).partition(isParallelDo)
+    pds.collect(isAParallelDo).toSeq ++ pds.filter { pd => (isParallelDo && !isFloating)(pd.parent[CompNode]) }.flatMap(mappersUses)
+  }
+
+  /** @return true if a ParallelDo node is not a leaf of a tree of mappers connected to a given source node */
+  lazy val isInsideMapper: ParallelDo => Boolean = attr { case node =>
+    uses(node).forall(isParallelDo && !isFloating)
   }
 
   lazy val layerInputs: Layer[T] => Seq[CompNode] = attr("layer inputs") { case layer =>

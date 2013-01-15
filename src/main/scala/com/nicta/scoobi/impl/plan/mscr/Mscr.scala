@@ -4,28 +4,46 @@ package plan
 package mscr
 
 import org.kiama.attribution.Attributable
-
 import core._
 import util.UniqueInt
 import mscr.Mscr.ids
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels
- * @see MscrGraph
+ *
+ * Each mscr has a unique id, which is used for equality.
+ *
+ * A Mscr has both input and output channels where input channels are doing mapping operations while output channels
+ * are doing grouping and reducing operations.
+ *
+ * In order to optimise the processing a same value can be computed by several mapping functions and be directed to different
+ * grouping / reducing functions, each of them identified by a tag.
  */
 case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannels: Seq[OutputChannel] = Seq()) extends Attributable {
   val id: Int = ids.get
+  override def equals(a: Any) = a match {
+    case m: Mscr => id == m.id
+    case _       => false
+  }
+  override def hashCode = id.hashCode
 
-  lazy val keyTypes   = KeyTypes(Map(inputChannels.flatMap(_.keyTypes.types):_*))
-  lazy val valueTypes = ValueTypes(Map(inputChannels.flatMap(_.valueTypes.types):_*))
-  lazy val sources    = inputChannels.map(_.source).distinct
-  lazy val sinks      = outputChannels.flatMap(_.sinks).distinct
+  /** datasources for this Mscr */
+  lazy val sources = inputChannels.map(_.source).distinct
+  /** datasinks for this Mscr */
+  lazy val sinks = outputChannels.flatMap(_.sinks).distinct
+  /** bridges (source+sink) for this Mscr */
   lazy val bridges    = sinks.collect { case bs: Bridge => bs }
+  /** distinct input nodes  for this Mscr */
   lazy val inputNodes = (inputChannels.flatMap(_.inputNodes) ++ outputChannels.flatMap(_.inputNodes)).distinct
+
+  /** map of wireformats and groupings for each key tag of this Mscr */
+  lazy val keyTypes   = KeyTypes(Map(inputChannels.flatMap(_.keyTypes.types):_*))
+  /** map of wireformats for each input tag of this Mscr */
+  lazy val valueTypes = ValueTypes(Map(inputChannels.flatMap(_.valueTypes.types):_*))
 
   override def toString =
     Seq(id.toString,
-        if (inputChannels.isEmpty) "" else inputChannels.mkString("  inputs: ", "\n          ", ""),
+        if (inputChannels.isEmpty)  "" else inputChannels.mkString("  inputs: ", "\n          ", ""),
         if (outputChannels.isEmpty) "" else outputChannels.mkString("  outputs: ",  "\n           ", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")\n")
 
   /** @return all the combiners of this mscr */
@@ -35,6 +53,9 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
 
 }
 
+/**
+ * Utility functions to create Mscrs
+ */
 object Mscr {
   object ids extends UniqueInt
 
@@ -46,11 +67,14 @@ object Mscr {
   def empty = create(Seq(), Seq())
 }
 
+/** encapsulation of expected key types for each tag */
 case class KeyTypes(types: Map[Int, (WireReaderWriter, KeyGrouping)] = Map()) {
   def tags = types.keys.toSeq
   def add(tag: Int, wf: WireReaderWriter, gp: KeyGrouping) =
     copy(types = types + (tag -> (wf, gp)))
 }
+
+/** encapsulation of expected value types for each tag */
 case class ValueTypes(types: Map[Int, Tuple1[WireReaderWriter]] = Map()) {
   def tags = types.keys.toSeq
   def add(tag: Int, wf: WireReaderWriter) =
