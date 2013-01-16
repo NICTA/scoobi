@@ -16,6 +16,9 @@
 package com.nicta.scoobi
 package guide
 
+import org.specs2.specification.SpecificationStructure
+import org.specs2.html.MarkdownLink
+
 class UserGuide extends ScoobiPage { def is = args.report(notoc=false) ^"User Guide".title^
                                                                                                                         """
 <notoc><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></notoc>
@@ -37,22 +40,45 @@ Scoobi is a library that leverages the Scala programming language to provide a p
 
 In this user guide, you will find:                                                                                      """^
                                                                                                                         p^
-    Seq(
-   "a " + qs.markdownLink.fromTop + " guide",
-   "an overview of Scoobi's concepts: " + dl.markdownLink.fromTop + ", " + dobj.markdownLink.fromTop,
-   "the supported " + inout.markdownLink("Input and Output types").fromTop,
-   "how to support your own " + data.markdownLink.fromTop,
-   "how to use " + gp.markdownLink.fromTop,
-   "extensions ".markdownLink(ext).fromTop + "for db-like programming",
-   "how to create " + app.markdownLink("Scoobi applications").fromTop,
-   "a "+ ts.markdownLink("testing guide").fromTop,
-   dply.markdownLink.fromTop + " instructions",
-   "some " + adv.markdownLink.fromTop,
-   "get involved in " + dev.markdownLink.fromTop
+  Seq(
+   link("a"                                , qs, "guide"                                     ),
+   link("an overview of Scoobi's concepts:", dl, link(",", dobj)                             ),
+   link("the supported"                    , inout - "Input and Output types"                ),
+   link("how to support your own"          , data                                            ),
+   link("how to use"                       , gp                                              ),
+   link(                                     ext - "extensions", "for db-like programming"   ),
+   link("how to create"                    , app - "Scoobi applications"                     ),
+   link("a"                                , ts - "testing guide"                            ),
+   link(                                     dply, "instructions"                            ),
+   link("some"                             , adv                                             ),
+   link("get involved in"                  , dev                                             )
     ).map("* "+_).mkString("\n")                                                                                        ^
                                                                                                                         p^
    link(all.map(_.hide))                                                                                                ^
                                                                                                                         end
+
+  def link(pre: String, l1: MarkdownLink): String =
+    pre+" "+l1
+
+  def link(l1: MarkdownLink, post: String): String =
+    l1+" "+post
+
+  def link(pre: String, spec: SpecificationStructure, l1: MarkdownLink): String =
+     link(pre, spec, l1.toString)
+
+  def link(spec: SpecificationStructure, post: String): String =
+    spec.markdownLink.fromTop+" "+post
+
+  def link(pre: String, spec: SpecificationStructure): String =
+    pre+" "+spec.markdownLink.fromTop
+
+  def link(pre: String, spec: SpecificationStructure, post: String): String =
+    pre+" "+spec.markdownLink.fromTop+" "+post
+
+  implicit def toTopLink(s: ScoobiPage): TopLink = new TopLink(s)
+  class TopLink(s: ScoobiPage) {
+    def - (linkName: String) = s.markdownLink(linkName).fromTop
+  }
 
   lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts, dply, adv, dev)
 
