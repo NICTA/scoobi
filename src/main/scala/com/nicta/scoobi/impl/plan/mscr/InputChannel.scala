@@ -129,11 +129,8 @@ trait MapperInputChannel extends InputChannel {
     def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = node match {
       case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
       case mapper: ParallelDo   =>
-        val childNode =
-          if (mapper.ins.size == 1) mapper.ins.head
-          else                      mapper.ins.filter(n => transitiveUses(sourceNode).contains(n) || (sourceNode == n)).head
-
-        val mappedValues = computeMappers(childNode, emitter)
+        val previousNode = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).contains(n)).head
+        val mappedValues = computeMappers(previousNode, emitter)
 
         if (mappers.size > 1 && isInsideMapper(mapper)) VectorEmitterWriter().map(mappedValues, mapper)
         else                                            mappedValues.map(v => mapper.map(v, emitter))
