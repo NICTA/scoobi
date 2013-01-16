@@ -46,6 +46,8 @@ case class MSCRGraph(
   * channels. */
 case class MSCR(inputChannels: Set[InputChannel], outputChannels: Set[OutputChannel]) {
 
+  def isEmpty = inputChannels.isEmpty || outputChannels.isEmpty
+
   /** Input environment nodes (Exp nodes) that are inputs to this MSCR. */
   val inputEnvs: Set[AST.Node[_, _ <: Shape]] = {
     val icNodes = inputChannels flatMap {
@@ -85,13 +87,15 @@ object MSCR {
 
   /** Locate the MSCR that contains a particular input distributed-list */
   def containingInput(mscrs: Set[MSCR], node: AST.Node[_, _ <: Shape]): MSCR = {
-    mscrs.find(mscr => mscr.inputNodes.contains(node)).orNull
+    mscrs.find(mscr => mscr.inputNodes.contains(node)).getOrElse(empty)
   }
 
   /** Locate the MSCR that contains a particular output distributed-list */
   def containingOutput(mscrs: Set[MSCR], node: AST.Node[_, _ <: Shape]): MSCR = {
-    mscrs.find(mscr => mscr.outputNodes.contains(node)).orNull
+    mscrs.find(mscr => mscr.outputNodes.contains(node)).getOrElse(empty)
   }
+
+  def empty = MSCR(Set(), Set())
 }
 
 

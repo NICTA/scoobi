@@ -127,23 +127,24 @@ object Executor {
     logger.debug("Executing 'MSCR'")
     var state = st
     val mscr = MSCR.containingOutput(state.mscrs, node)
+    if (!mscr.isEmpty) {
+      /* Make sure all inputs have been computed - recurse into executeMSCR. */
+      mscr.inputNodes.foreach { n => state = executeOnce(n, state) }
 
-    /* Make sure all inputs have been computed - recurse into executeMSCR. */
-    mscr.inputNodes.foreach { n => state = executeOnce(n, state) }
+      /* Make a Hadoop job and run it. */
+      logger.info("Running step: " + state.step + " of " + state.mscrs.size)
+      logger.info("Number of input channels: " + mscr.inputChannels.size)
+      logger.info("Number of output channels: " + mscr.outputChannels.size)
+      mscr.outputNodes.zipWithIndex.foreach { case (o, ix) => logger.debug(ix + ": " + o.toVerboseString) }
 
-    /* Make a Hadoop job and run it. */
-    logger.info("Running step: " + state.step + " of " + state.mscrs.size)
-    logger.info("Number of input channels: " + mscr.inputChannels.size)
-    logger.info("Number of output channels: " + mscr.outputChannels.size)
-    mscr.outputNodes.zipWithIndex.foreach { case (o, ix) => logger.debug(ix + ": " + o.toVerboseString) }
+      MapReduceJob(state.step, mscr).run(state.conf)
 
-    MapReduceJob(state.step, mscr).run(state.conf)
-
-    /* Update compute table - all nodes captured by this MSCR have now been "executed". */
-    mscr.nodes.foreach { n => state = state.addComputedArr(n) }
-    /* Remove intermediate data if possible or decrement the BridgeStores reference count */
-    state = freeIntermediateOutputs(mscr, state)
-    state.incStep
+      /* Update compute table - all nodes captured by this MSCR have now been "executed". */
+      mscr.nodes.foreach { n => state = state.addComputedArr(n) }
+      /* Remove intermediate data if possible or decrement the BridgeStores reference count */
+      state = freeIntermediateOutputs(mscr, state)
+      state.incStep
+    } else st
   }
 
   /* Update reference counts - decrement counts for all intermediates then
