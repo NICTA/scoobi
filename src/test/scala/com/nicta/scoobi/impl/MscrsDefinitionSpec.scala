@@ -28,8 +28,8 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
                                                                                                                         endp^ section("outputs")^
     "Input channels"                                                                                                    ^
       "GbkOutputChannels have inputs, some of them are Mappers"                                                         ^
-      "all mappers sharing the same input go to the same MapperInputChannel"                                            ! g3().e1^
-      "other mappers go to an individual MapperInputChannel"                                                            ! g3().e2^
+      "all mappers sharing the same input go to the same MscrInputChannel"                                            ! g3().e1^
+      "other mappers go to an individual MscrInputChannel"                                                            ! g3().e2^
       "other Gbk inputs go to an IdInputChannel"                                                                        ! g3().e3^
                                                                                                                         endp^
     "Mscr creation"                                                                                                     ^ section("creation")^
@@ -89,7 +89,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     e1 := {
       val graph = pd(gbk1, gbk2)
       val ls    = layers(graph)
-      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq
+      val inputChannels: Seq[MscrInputChannel] = mapperInputChannels(ls.head).toSeq
 
       inputChannels must have size(1)
     }
@@ -97,7 +97,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     e2 := {
       val graph = pd(gbk1, gbk2, gbk3)
       val ls    = layers(graph)
-      val inputChannels: Seq[MapperInputChannel] = mapperInputChannels(ls.head).toSeq.reverse
+      val inputChannels: Seq[MscrInputChannel] = mapperInputChannels(ls.head).toSeq.reverse
 
       inputChannels must have size(2)
     }

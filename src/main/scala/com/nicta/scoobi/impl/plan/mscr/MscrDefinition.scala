@@ -44,7 +44,7 @@ trait MscrsDefinition extends Layering {
 
   /** Mscrs for mscrs built around gbk nodes */
   lazy val gbkMscrs: Layer[T] => Seq[Mscr] = attr("gbk mscrs") { case layer =>
-    makeMscrs(mapperInputChannels(layer), gbkOutputChannels(layer))
+    makeMscrs(mscrInputChannels(layer), gbkOutputChannels(layer))
   }
 
   /**
@@ -82,7 +82,7 @@ trait MscrsDefinition extends Layering {
     }
   }
 
-  lazy val mapperInputChannels: Layer[T] => Seq[MapperInputChannel] = attr("mapper input channels") { case layer =>
+  lazy val mscrInputChannels: Layer[T] => Seq[MscrInputChannel] = attr("mscr input channels") { case layer =>
     layerSourceNodes(layer).map(InputChannel.create(_))
   }
 

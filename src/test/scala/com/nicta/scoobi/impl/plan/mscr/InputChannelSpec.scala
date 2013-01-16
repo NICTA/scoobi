@@ -135,10 +135,10 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     }
   }
 
-  trait MockInputChannel extends MapperInputChannel {
+  trait MockInputChannel extends MscrInputChannel {
     tk = new MetadataTaggedKey { def metadataPath = "" }
     tv = new MetadataTaggedValue { def metadataPath = ""  }
-    override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv
+    override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
   def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode) with MockInputChannel
   def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys) with MockInputChannel

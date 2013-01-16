@@ -33,7 +33,7 @@ import core.InputOutputContext
  *  - GbkInputChannel: this input channel outputs key/values to GroupByKeys
  *  - FloatingInputChannel: this input channel simply does some mapping for "floating" paralleldos
  *
- *  They both share some implementation in the MapperInputChannel trait.
+ *  They both share some implementation in the MscrInputChannel trait.
  *
  *  An input channel can have no mappers at all. In that case the values from the source node are directly emitted with
  *  no transformation.
@@ -74,7 +74,7 @@ trait InputChannel {
 /**
  * Common implementation of InputChannel for GbkInputChannel and FloatingInputChannel
  */
-trait MapperInputChannel extends InputChannel {
+trait MscrInputChannel extends InputChannel {
   /** attributes used to determine if parallelDos are floating */
   private val nodes = new MscrsDefinition {}; import nodes._
 
@@ -157,7 +157,7 @@ trait MapperInputChannel extends InputChannel {
 /**
  * This input channel is a tree of Mappers which are all connected to Gbk nodes
  */
-class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MapperInputChannel {
+class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
   override def toString = "GbkInputChannel("+sourceNode+")"
 
   /** collect all the tags accessible from this source node */
@@ -182,7 +182,7 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
 /**
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
-class FloatingInputChannel(val sourceNode: CompNode) extends MapperInputChannel {
+class FloatingInputChannel(val sourceNode: CompNode) extends MscrInputChannel {
   override def toString = "FloatingInputChannel("+sourceNode+")"
 
   /** collect all the tags accessible from this source node */
@@ -203,7 +203,7 @@ class FloatingInputChannel(val sourceNode: CompNode) extends MapperInputChannel 
 
 
 object InputChannel {
-  def create(sourceNode: CompNode): MapperInputChannel = {
+  def create(sourceNode: CompNode): MscrInputChannel = {
     /** attributes used to determine if parallelDos are floating */
     val nodes = new MscrsDefinition {}; import nodes._
 

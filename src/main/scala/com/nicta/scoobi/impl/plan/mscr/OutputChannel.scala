@@ -5,13 +5,11 @@ package mscr
 
 import core._
 import comp._
-import util._
 import scalaz.Equal
 import impl.io.FileSystems
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
-import rtt.TaggedKey
-import mapreducer.{ChannelOutputFormat, UntaggedValues}
+import mapreducer._
 import ChannelOutputFormat._
 
 /**
@@ -37,7 +35,7 @@ trait OutputChannel {
   /** setup the nodes of the channel before writing data */
   def setup(implicit configuration: Configuration)
   /** reduce key/values, given the current output format */
-  def reduce(key: Any, untaggedValues: UntaggedValues, channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
+  def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
   /** cleanup the channel, given the current output format */
   def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
 
@@ -90,11 +88,16 @@ trait MscrOutputChannel extends OutputChannel {
     def write(x: Any)  {
       sinks foreach { sink =>
         sink.configureCompression(configuration)
-        channelOutput.write(tag, sink.id, sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x))
+        channelOutput.write(tag, sink.id, convert(sink, x))
       }
     }
   }
 
+  /** use the output converter of a sink to convert a value to a key/value */
+  protected def convert(sink: Sink, x: Any) = sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x)
+
+  /** create a ScoobiConfiguration from a Hadoop one */
+  protected def scoobiConfiguration(configuration: Configuration): ScoobiConfiguration = ScoobiConfigurationImpl(configuration)
 
 }
 
@@ -126,26 +129,31 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   lazy val bridgeStore = lastNode.bridgeStore
 
   /** only the reducer needs to be setup if there is one */
-  def setup(implicit configuration: Configuration) { reducer.foreach(_.setup) }
+  def setup(implicit configuration: Configuration) { reducer.foreach(_.setup(scoobiConfiguration(configuration))) }
 
   /**
    * reduce all the key/values with either the reducer, or the combiner
-   * otherwise just emit key/value pairs
+   * otherwise just emit key/value pairs.
+   *
+   * The key and values are untagged. The emitter is in charge of writing them to the proper tag, which is the channel's tag
    */
-  def reduce(key: Any, untaggedValues: UntaggedValues, channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+  def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    implicit val sc = scoobiConfiguration(configuration)
     val emitter: EmitterWriter = createEmitter(channelOutput)
-    val values = combiner.map(c => c.combine(untaggedValues)).getOrElse(untaggedValues)
-    reducer.map(_.reduce(key, values, emitter)).getOrElse {
-      combiner.map(c => emitter.write((key, values))).getOrElse {
-        emitter.write((key, values))
+    val combinedValues = combiner.map(c => c.combine(values)).getOrElse(values)
+
+    reducer.map(_.reduce(key, combinedValues, emitter)).getOrElse {
+      combiner.map(c => emitter.write((key, combinedValues))).getOrElse {
+        emitter.write((key, combinedValues))
       }
     }
   }
 
   /** invoke the reducer cleanup if there is one */
   def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    implicit val sc = scoobiConfiguration(configuration)
     val emitter = createEmitter(channelOutput)
-    reducer.foreach(_.cleanup(emitter)(configuration))
+    reducer.foreach(_.cleanup(emitter))
   }
 
   /** @return the last node of this channel */
@@ -179,10 +187,9 @@ case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
   /**
    * Just emit the values to the sink, the key is irrelevant since it is a RollingInt in that case
    */
-  def reduce(key: Any, untaggedValues: UntaggedValues, channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    implicit val sc = ScoobiConfigurationImpl(configuration)
+  def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     val emitter = createEmitter(channelOutput)
-    untaggedValues foreach emitter.write
+    values foreach emitter.write
   }
 
   /** no cleanup is required because this node has already been cleaned-up as a mapper */

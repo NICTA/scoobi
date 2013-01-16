@@ -63,15 +63,15 @@ case class ParallelDo(ins:           Seq[CompNode],
 
   /** Use this ParallelDo as a Reducer */
   /** setup this parallel do computation */
-  def setup(implicit configuration: Configuration) {
+  def setup(implicit sc: ScoobiConfiguration) {
     dofn.setupFunction(environment)
   }
   /** reduce key and values */
-  def reduce(key: Any, values: Any, emitter: EmitterWriter)(implicit configuration: Configuration) {
+  def reduce(key: Any, values: Any, emitter: EmitterWriter)(implicit sc: ScoobiConfiguration) {
     dofn.processFunction(environment, (key, values), emitter)
   }
   /** cleanup */
-  def cleanup(emitter: EmitterWriter)(implicit configuration: Configuration) {
+  def cleanup(emitter: EmitterWriter)(implicit sc: ScoobiConfiguration) {
     dofn.cleanupFunction(environment, emitter)
   }
 

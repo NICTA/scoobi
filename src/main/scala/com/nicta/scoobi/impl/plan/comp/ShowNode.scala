@@ -65,8 +65,8 @@ trait ShowNode extends CompNodes {
     if (descendents(node).size <= 30) {
       val graph = Graph((node -> vertices).toList.map(v => showNode(v)), (node -> edges).toList.map { case (v1, v2) => showNode(v1) -> showNode(v2) })
       Layouter.renderGraph(graph)
-    } else "cannot represent the node as a graph because it is too big\n"+show(node)
-  }("cannot represent the node as a graph "+(if (isCyclic(node)) "(because there is a cycle)" else "")+"\n"+show(node))
+    } else "cannot represent the node as a graph because it is too big\n"+pretty(node)
+  }("cannot represent the node as a graph "+(if (isCyclic(node)) "(because there is a cycle)" else "")+"\n"+pretty(node))
 
 }
 
