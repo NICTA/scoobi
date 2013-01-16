@@ -40,7 +40,8 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     val job = new Job(sc.conf, "id")
     val jarBuilder = mock[JarBuilder]
 
-    val configuration = configureSources(job, jarBuilder, List(ConstantStringDataSource("one"), aBridgeStore)).toMap.
+    val (source1, source2) = (ConstantStringDataSource("one"), aBridgeStore)
+    val configuration = configureSources(job, jarBuilder, Seq(source1, source2)).toMap.
                           showAs(_.toList.sorted.filter(_._1.startsWith("scoobi")).mkString("\n")).evaluate
 
     "the input format class must be set as 'ChannelsInputFormat' " >> {
@@ -51,16 +52,16 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     }
     "there must be one scoobi input format for each source" >> {
       configuration must havePair("scoobi.input.formats" ->
-                                  ("1;com.nicta.scoobi.io.ConstantStringInputFormat,"+
-                                   "2;org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat"))
+                                  (source1.id+";com.nicta.scoobi.io.ConstantStringInputFormat,"+
+                                   source2.id+";org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat"))
     }
     "all the configuration values of a source must be prefixed with scoobi.input 'channel id'" >> {
-      configuration must haveKeys("scoobi.input1:mapred.constant.string",
-                                  "scoobi.input2:mapred.input.dir")
+      configuration must haveKeys("scoobi.input"+source1.id+":mapred.constant.string",
+                                  "scoobi.input"+source2.id+":mapred.input.dir")
     }
     "sources can configure distributed cache files. They must be prefixed by channel id in the configuration" >> {
-      configuration must haveKeys("scoobi.input1:mapred.cache.files",
-                                  "scoobi.input2:mapred.cache.files")
+      configuration must haveKeys("scoobi.input"+source1.id+":mapred.cache.files",
+                                  "scoobi.input"+source2.id+":mapred.cache.files")
     }
 
   }
