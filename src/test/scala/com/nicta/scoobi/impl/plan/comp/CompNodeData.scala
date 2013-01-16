@@ -6,7 +6,7 @@ package comp
 import data.Data
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2._
-import specification.FragmentsBuilder
+import matcher.ScalaCheckMatchers
 import specification.Scope
 import main.CommandLineArguments
 
@@ -16,7 +16,7 @@ import application._
 import WireFormat._
 import org.kiama.rewriting.Rewriter._
 
-trait CompNodeData extends Data with ScalaCheck with CommandLineArguments with CompNodeFactory { this: FragmentsBuilder =>
+trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArguments with CompNodeFactory {
 
     /**
      * Arbitrary instance for a CompNode

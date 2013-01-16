@@ -72,13 +72,15 @@ trait MscrsDefinition extends Layering {
     }
   }
 
-  private def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
-    val gbkParents = (gbk -> parents).toList
-    gbkParents match {
-      case (c: Combine) :: (p: ParallelDo) :: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
-      case (p: ParallelDo) :: rest                      if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p))
-      case (c: Combine) :: rest                                           => GbkOutputChannel(gbk, combiner = Some(c))
-      case _                                                                   => GbkOutputChannel(gbk)
+  /**
+\   * @return a gbk output channel based on the nodes which are following the gbk
+   */
+  protected def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
+    parents(gbk) match {
+      case (c: Combine) +: (p: ParallelDo) +: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
+      case (p: ParallelDo) +: rest                 if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p))
+      case (c: Combine) +: rest                                    => GbkOutputChannel(gbk, combiner = Some(c))
+      case _                                                       => GbkOutputChannel(gbk)
     }
   }
 

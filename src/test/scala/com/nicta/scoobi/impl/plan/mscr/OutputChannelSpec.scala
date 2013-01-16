@@ -61,24 +61,24 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
     val (gbk1, gbk2) = (gbk(load), gbk(StringSink()))
 
     e1 := {
-      val channel = gbkOutputChannel(gbk1)
+      val channel = gbkChannel(gbk1)
       channel.reduce("1", Seq(1, 2, 3)) === Seq(("1", Seq(1, 2, 3)))
     }
     e2 := {
-      val channel = gbkOutputChannel(gbk1, combiner = Some(cb(gbk1)))
+      val channel = gbkChannel(gbk1, combiner = Some(cb(gbk1)))
       channel.reduce("1", Seq(1, 2, 3)) === Seq(("1", "123"))
     }
     e3 := {
-      val channel = gbkOutputChannel(gbk1, reducer = Some(pd(gbk1).copy(dofn = MapFunction { case (k, vs: Iterable[_]) => (k, vs.mkString+"a") })))
+      val channel = gbkChannel(gbk1, reducer = Some(pd(gbk1).copy(dofn = MapFunction { case (k, vs: Iterable[_]) => (k, vs.mkString+"a") })))
       channel.reduce("1", Seq(1, 2, 3)) === Seq(("1", "123a"))
     }
     e4 := {
       val cb1 = cb(gbk1)
-      val channel = gbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd(cb1).copy(dofn = MapFunction { case (k, vs) => (k, vs+"a") })))
+      val channel = gbkChannel(gbk1, combiner = Some(cb1), reducer = Some(pd(cb1).copy(dofn = MapFunction { case (k, vs) => (k, vs+"a") })))
       channel.reduce("1", Seq(1, 2, 3)) === Seq(("1", "123a"))
     }
     e5 := {
-      val channel = bypassOutputChannel(pd(load))
+      val channel = bypassChannel(pd(load))
       channel.reduce("1", Seq(1, 2, 3)) === Seq(("nokey", 1), ("nokey", 2), ("nokey", 3))
     }
   }
@@ -105,10 +105,7 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
   }
 
   /** create a gbk output channel for a group by key, collecting the emitted results */
-  def gbkOutputChannel(gbk: GroupByKey, combiner: Option[Combine] = None, reducer: Option[ParallelDo] = None) = new GbkOutputChannel(gbk, combiner, reducer) with MockOutputChannel {
-  }
+  def gbkChannel(gbk: GroupByKey, combiner: Option[Combine] = None, reducer: Option[ParallelDo] = None) = new GbkOutputChannel(gbk, combiner, reducer) with MockOutputChannel
   /** create a bypass output channel for a parallelDo */
-  def bypassOutputChannel(pd: ParallelDo) = new BypassOutputChannel(pd) with MockOutputChannel {
-  }
-
+  def bypassChannel(pd: ParallelDo) = new BypassOutputChannel(pd) with MockOutputChannel
 }

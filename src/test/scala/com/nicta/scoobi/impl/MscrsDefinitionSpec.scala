@@ -4,15 +4,15 @@ package impl
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Prop._
 import org.specs2._
-import plan.mscr._
-import plan.mscr.GbkOutputChannel
-import specification.Groups
 import matcher.ThrownExpectations
-import plan.comp._
-import core._
+import specification.Groups
 import testing.UnitSpecification
+import plan._
+import comp._
+import core._
+import mscr._
 
-class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations with CompNodeData { def is =
+class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations { def is =
 
   "The gbks of a graph can be sorted in layers according to their dependencies"                                         ^
     "all the nodes in a layer cannot be parent of each other"                                                           ! g1().e1^
@@ -24,28 +24,20 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       "aggregating the combine node if there is one after the gbk"                                                      ! g2().e2^
       "aggregating the pd node if there is one after the gbk"                                                           ! g2().e3^
       "aggregating the combine and pd nodes if they are after the gbk"                                                  ! g2().e4^
-      "there is a bypass output channel for each mapper having outputs other than a gbk"                                ! g2().e5^
-                                                                                                                        endp^ section("outputs")^
+                                                                                                                        p^ section("outputs")^
     "Input channels"                                                                                                    ^
-      "GbkOutputChannels have inputs, some of them are Mappers"                                                         ^
-      "all mappers sharing the same input go to the same MscrInputChannel"                                            ! g3().e1^
-      "other mappers go to an individual MscrInputChannel"                                                            ! g3().e2^
-      "other Gbk inputs go to an IdInputChannel"                                                                        ! g3().e3^
-                                                                                                                        endp^
+      "all mappers sharing the same input go to the same MscrInputChannel"                                              ! g3().e1^
+                                                                                                                        p^
     "Mscr creation"                                                                                                     ^ section("creation")^
-      "output channels must have a unique tag"                                                                          ! g4().e1^
-      "the set of tags of an input channel must be all the tags of its output channels"                                 ! g4().e2^
-      "there must be one mscr per set of related tags"                                                                  ! g4().e3^
-      "the mscrs are all the gbk mscrs on the layer + the mscrs for parallel do nodes which are not in a gbk mscr"      ! g4().e4^
+      "there must be one mscr per set of related tags"                                                                  ! g4().e1^
                                                                                                                         end
 
-/*
-  "layering of Gbk layers" - new g1 with definition { import scalaz.Scalaz._
+
+  "layering of Gbk layers" - new g1 with definition {
+    import scalaz.Scalaz._
 
     e1 := prop { layer: Layer[CompNode] =>
       val nodes = layer.nodes
-
-      nodes must not(beEmpty)
       nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n)))
     }.set(minTestsOk -> 100)
 
@@ -64,99 +56,85 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
     e1 := {
       val gbk1 = gbk(load)
-      (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1)
+      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1)
     }
     e2 := {
       val gbk1 = gbk(load)
       val cb1 = cb(gbk1)
-      (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, combiner = Some(cb1))
+      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1, combiner = Some(cb1))
     }
     e3 := {
       val gbk1 = gbk(load)
       val pd1 = pd(gbk1)
-      (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, reducer = Some(pd1))
+      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1, reducer = Some(pd1))
     }
     e4 := {
       val gbk1 = gbk(load)
       val cb1 = cb(gbk1)
       val pd1 = pd(cb1)
-      (gbk1 -> gbkOutputChannel) === GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1))
+      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1))
     }
   }
 
-  "Input channels" - new g3 with definition with simpleGraph {
+  "Input channels" - new g3 with definition {
+    e1 := {
+      val l1 = load
+      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(l1))
+      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
+      val layer1    = layers(aRoot(gbk1, gbk2, gbk3)).head
+
+      mscrInputChannels(layer1) must  have size(1)
+    }
+  }
+
+  "Mscr creation" - new g4 with definition {
 
     e1 := {
-      val graph = pd(gbk1, gbk2)
-      val ls    = layers(graph)
-      val inputChannels: Seq[MscrInputChannel] = mapperInputChannels(ls.head).toSeq
+      /**
+       *             Mscr1             Mscr2
+       *
+       *         l1            l2       l3
+       *        /   \        /    \      |
+       *     pd1     pd2  pd3     pd4   pd5
+       *       \         X        /      |
+       *       flatten1     flatten2     |
+       *           |           |         |
+       *           gbk1       gbk2      gbk3
+       */
+      val (l1, l2, l3) = (load, load, load)
+      val (pd1, pd2, pd3, pd4, pd5) = (pd(l1), pd(l1), pd(l2), pd(l2), pd(l3))
+      val (flatten1, flatten2) = (pd(pd1, pd3), pd(pd2, pd4))
+      val (gbk1, gbk2, gbk3) = (gbk(flatten1), gbk(flatten2), gbk(pd5))
+      val layer1    = layers(aRoot(gbk1, gbk2, gbk3)).head
 
-      inputChannels must have size(1)
-    }
+      val layer1Mscrs = mscrs(layer1)
+      layer1Mscrs must have size(2)
 
-    e2 := {
-      val graph = pd(gbk1, gbk2, gbk3)
-      val ls    = layers(graph)
-      val inputChannels: Seq[MscrInputChannel] = mapperInputChannels(ls.head).toSeq.reverse
+      val (mscr1, mscr2) = (layer1Mscrs(0), layer1Mscrs(1))
+      mscr1.sources.size === 2
+      mscr1.bridges.size === 2
 
-      inputChannels must have size(2)
-    }
-
-    e3 := {
-      val graph = pd(gbk1, gbk2, gbk3, gbk4)
-      val ls    = layers(graph)
-      val channels: Seq[InputChannel] = gbkInputChannels(ls.head).toSeq
-
-      channels must have size(3)
-    }
-  }
-
-  "Mscr creation" - new g4 with definition with simpleGraph {
-    lazy val graph  = pd(gbk1, gbk2, gbk3, gbk4)
-    lazy val layer1 = layers(graph).head
-
-    e1 := {
-      val tags = gbkOutputChannels(layer1).map(_.tag)
-      "there are as many tags as output channels on a layer" ==> {
-        tags.toSet must have size(layer1.gbks.size)
-      }
-    }
-    e3 := {
-      mscrs(layers(graph).head) must have size(3)
-    }
-    e4 := {
-      val graph2 = pd(gbk1, gbk2, gbk3, gbk4, mt(pd(load)))
-      val layer1 = layers(graph2).head
-
-      layers(graph2) must have size(1)
-      "there are 5 mscrs in total" ==> { mscrs(layer1) must have size(4) }
-      "there is one pd mscr"       ==> { pdMscrs(layer1) must have size(1) }
-      "there are 3 gbk mscrs"      ==> { gbkMscrs(layer1) must have size(3) }
+      mscr2.sources.size === 1
+      mscr2.bridges.size === 1
     }
   }
 
-  trait simpleGraph extends nodesFactory {
-    val ld1 = load
-    val (pd1, pd2, cb1) = (pd(ld1), pd(ld1), cb(load))
-    val (gbk1, gbk2, gbk3, gbk4) = (gbk(pd1), gbk(pd2), gbk(pd(load)), gbk(cb1))
-  }
-
-  trait definition extends nodesFactory with MscrsDefinition {
-    implicit val arbitraryLayer: Arbitrary[Layer[CompNode]] = Arbitrary(genLayer)
-
-    // make sure there is at least one layer
-    // by construction, there is no cycle
-    val genLayers = arbitraryCompNode.arbitrary.map { n =>
-      resetMemo()             // reset the memos otherwise too much data accumulates during testing!
-      layers(gbk(pd(gbk(n)))) // generate at least 2 layers
-    }
-    val genLayer     = genLayers.flatMap(ls => Gen.pick(1, ls)).map(_.head)
-    val genLayerPair = genLayers.flatMap(ls => Gen.pick(2, ls)).map { ls => (ls(0), ls(1)) }
-
-    def graph(layer: Layer[CompNode]) =
-      if (layer.nodes.isEmpty) "empty layer - shouldn't happen"
-      else                     layer.nodes.map(showGraph).mkString("\nshowing graphs for layer\n", "\n", "\n")
-  }
-*/
 }
+trait definition extends factory with CompNodeData {
+  implicit val arbitraryLayer: Arbitrary[Layer[CompNode]] = Arbitrary(genLayer)
 
+  // make sure there is at least one layer
+  // by construction, there is no cycle
+  val genLayers = arbitraryCompNode.arbitrary.map { n =>
+    resetMemo()             // reset the memos otherwise too much data accumulates during testing!
+    layers(gbk(pd(gbk(n)))) // generate at least 2 layers
+  }
+  val genLayer     = genLayers.flatMap(ls => Gen.pick(1, ls)).map(_.head)
+  val genLayerPair = genLayers.flatMap(ls => Gen.pick(2, ls)).map { ls => (ls(0), ls(1)) }
+
+  def graph(layer: Layer[CompNode]) =
+    if (layer.nodes.isEmpty) "empty layer - shouldn't happen"
+    else                     layer.nodes.map(showGraph).mkString("\nshowing graphs for layer\n", "\n", "\n")
+
+  override def delayedInit(body: => Unit) { body }
+}
