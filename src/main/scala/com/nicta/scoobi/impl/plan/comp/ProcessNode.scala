@@ -156,7 +156,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
    */
   def toParallelDo = {
     val dofn = BasicDoFunction((env: Any, input: Any, emitter: EmitterWriter) => input match {
-      case (key, values: Seq[_]) => emitter.write((key, values.reduce(f)))
+      case (key, values: Iterable[_]) => emitter.write((key, values.reduce(f)))
     })
     // Return(()) is used as the Environment because there's no need for a specific value here
     ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv))

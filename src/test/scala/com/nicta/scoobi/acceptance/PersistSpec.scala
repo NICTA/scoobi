@@ -6,6 +6,8 @@ import testing.TempFiles
 import Scoobi._
 
 class PersistSpec extends NictaSimpleJobs {
+  // make this spec sequential to avoid lack of connections on the cluster
+  sequential
 
   "There are many ways to execute computations with DLists or DObjects".txt
 
