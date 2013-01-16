@@ -45,10 +45,11 @@ object AvroOutput {
     }
 
     new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
+
       protected val outputPath = new Path(path)
 
-      val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
-      val outputKeyClass = classOf[AvroKey[sch.AvroType]]
+      val outputFormat     = classOf[AvroKeyOutputFormat[sch.AvroType]]
+      val outputKeyClass   = classOf[AvroKey[sch.AvroType]]
       val outputValueClass = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {

@@ -33,7 +33,6 @@ import core._
 import rtt._
 import io.Helper
 import ScoobiConfigurationImpl._
-import util.UniqueId
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
@@ -41,7 +40,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 
-  lazy val id: Int = UniqueId.get
+  override lazy val id: Int = DataSink.ids.get
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 

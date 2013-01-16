@@ -9,11 +9,14 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
+import DataSink._
 
 /**
  * An output store from a MapReduce job
  */
 trait DataSink[K, V, B] extends Sink { outer =>
+  lazy val id = ids.get
+
   def outputFormat: Class[_ <: OutputFormat[K, V]]
   def outputKeyClass: Class[K]
   def outputValueClass: Class[V]
@@ -67,6 +70,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
  */
 private[scoobi]
 trait Sink {
+  /** unique id for this Sink */
+  def id: Int
   /** The OutputFormat specifying the type of output for this DataSink. */
   def outputFormat: Class[_ <: OutputFormat[_, _]]
   /** The Class of the OutputFormat's key. */
@@ -99,6 +104,9 @@ trait Sink {
   def write(values: Seq[_], recordWriter: RecordWriter[_,_])
 }
 
+object DataSink {
+  object ids extends UniqueInt
+}
 /**
  * specify an object on which it is possible to add sinks and to compress them
  */

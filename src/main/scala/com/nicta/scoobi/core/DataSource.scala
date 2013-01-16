@@ -17,13 +17,14 @@ package com.nicta.scoobi
 package core
 
 import org.apache.hadoop.mapreduce._
-
+import DataSource._
 /**
  * DataSource for a computation graph.
  *
  * It reads key-values (K, V) from the file system and uses an input converter to create a type A of input
  */
 trait DataSource[K, V, A] extends Source {
+  lazy val id = ids.get
   def inputFormat: Class[_ <: InputFormat[K, V]]
   def inputCheck(implicit sc: ScoobiConfiguration)
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
@@ -38,7 +39,9 @@ trait DataSource[K, V, A] extends Source {
     }
   }
 }
-
+object DataSource {
+  object ids extends UniqueInt
+}
 /**
  * Convert an InputFormat's key-value types to the type produced by a source
  */

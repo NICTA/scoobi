@@ -26,6 +26,7 @@ import org.apache.avro.specific.{ SpecificRecord, SpecificData }
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
+import core.UniqueInt
 
 /** Defines the Avro schema for a given Scala type. */
 trait AvroSchema[A] {
@@ -104,7 +105,7 @@ object AvroSchema {
       new GenericData.Array[sch.AvroType](schema, xs.map(sch.toAvro(_)).toIterable)
   }
 
-  object FixedCounter extends com.nicta.scoobi.impl.util.UniqueInt
+  object FixedCounter extends UniqueInt
 
   implicit def FixedSchema[T](implicit fxd: AvroFixed[T]) = new AvroSchema[T]  {
     private val id = FixedCounter.get

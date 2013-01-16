@@ -5,8 +5,9 @@ package mscr
 
 import org.kiama.attribution.Attributable
 import core._
-import util.UniqueInt
 import mscr.Mscr.ids
+import scala.Tuple1
+import scala.Some
 
 /**
  * This class represents an MSCR job with a Seq of input channels and a Seq of output channels

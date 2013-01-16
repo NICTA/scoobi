@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package com.nicta.scoobi
-package impl
-package util
+package core
 
 import java.util.concurrent.atomic.AtomicInteger
 

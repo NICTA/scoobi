@@ -3,17 +3,16 @@ package impl
 package plan
 package mscr
 
+import org.apache.hadoop.conf.Configuration
 import core._
 import comp._
-import util.UniqueInt
-import mapreducer.{VectorEmitterWriter, ChannelOutputFormat}
+import mapreducer._
 import core.WireFormat._
-import comp.GroupByKey
 import scalaz.Equal
-import org.apache.hadoop.conf.Configuration
 import rtt._
 import control.Functions._
 import Channel._
+import core.InputOutputContext
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey

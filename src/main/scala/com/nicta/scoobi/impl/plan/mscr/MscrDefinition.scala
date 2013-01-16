@@ -9,7 +9,6 @@ import control.Functions._
 import collection._
 import comp._
 import core._
-import util.UniqueId
 
 trait MscrsDefinition extends Layering {
 

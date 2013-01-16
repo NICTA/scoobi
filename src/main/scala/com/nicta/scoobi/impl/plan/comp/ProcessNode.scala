@@ -9,7 +9,6 @@ import mapreducer._
 import java.util.UUID._
 import CollectFunctions._
 import org.apache.hadoop.conf.Configuration
-import util.UniqueId
 import ScoobiConfigurationImpl._
 
 /**

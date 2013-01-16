@@ -15,33 +15,61 @@ import mapreducer.{ChannelOutputFormat, UntaggedValues}
 import ChannelOutputFormat._
 
 /**
- * Two OutputChannels are equal if they have the same tag
+ * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
+ *
+ * Two OutputChannels are equal if they have the same tag. This tag is the id of the last processing node of the channel
  */
 trait OutputChannel {
-  lazy val id: Int = tag
-
-  override def equals(a: Any) = a match {
-    case o: OutputChannel => o.id == id
-    case other            => false
-  }
-  override def hashCode = id.hashCode
-
-  def sinks: Seq[Sink]
-  def inputNodes: Seq[CompNode]
-
+  /** unique identifier for the Channel */
   def tag: Int
 
+  /** an output channel write data to a bridge */
+  def bridgeStore: Bridge
+  /** sequence of the bridgeStore + all additional sinks */
+  def sinks: Seq[Sink]
+
+  /**
+   * sequence of all the nodes which may require some input data to be loaded, like a ParallelDo used as a reducer and
+   * needing its environment
+   */
+  def inputNodes: Seq[CompNode]
+
+  /** setup the nodes of the channel before writing data */
   def setup(implicit configuration: Configuration)
+  /** reduce key/values, given the current output format */
   def reduce(key: TaggedKey, untaggedValues: UntaggedValues, channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
+  /** cleanup the channel, given the current output format */
   def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
+
+  /** copy all outputs files to the destinations specified by sink files */
+  def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems)
+}
+
+/**
+ * Implementation of an OutputChannel for a Mscr
+ */
+trait MscrOutputChannel extends OutputChannel {
+
+  override def equals(a: Any) = a match {
+    case o: OutputChannel => o.tag == tag
+    case _                => false
+  }
+  override def hashCode = tag.hashCode
+
+  /** @return the bridgeStore + all the sinks defined by the nodes of the input channel */
+  def sinks = bridgeStore +: nodeSinks
+  /** list of all the sinks defined by the channel nodes */
+  protected def nodeSinks: Seq[Sink]
+
+  /** copy all outputs files to the destinations specified by sink files */
   def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
     val fs = configuration.fileSystem
     import fileSystems._
 
-    sinks.zipWithIndex.foreach { case (sink, i) =>
+    sinks.foreach { sink =>
       sink.outputPath foreach { outDir =>
         fs.mkdirs(outDir)
-        val files = outputFiles filter isResultFile(tag, i)
+        val files = outputFiles filter isResultFile(tag, sink.id)
         files foreach moveTo(outDir)
       }
     }
@@ -49,24 +77,18 @@ trait OutputChannel {
 
 }
 
-trait MscrOutputChannel extends OutputChannel {
-  def sinks = bridgeStore +: nodeSinks
-  protected def nodeSinks: Seq[Sink]
-  def bridgeStore: Bridge
-}
-
 case class GbkOutputChannel(groupByKey:   GroupByKey,
                             combiner: Option[Combine]      = None,
                             reducer:  Option[ParallelDo] = None) extends MscrOutputChannel {
 
-  def tag = groupByKey.id
+  lazy val tag = groupByKey.id
   def setup(implicit configuration: Configuration) { reducer.foreach(_.setup) }
 
   def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter {
     def write(x: Any)  {
-      sinks.zipWithIndex foreach { case (sink, i) =>
+      sinks foreach { sink =>
         sink.configureCompression(configuration)
-        channelOutput.write(tag, i, sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x))
+        channelOutput.write(tag, sink.id, sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x))
       }
     }
   }
@@ -110,7 +132,7 @@ case class BypassOutputChannel(output: ParallelDo) extends MscrOutputChannel {
   }
   override def hashCode = output.id.hashCode
 
-  def tag = output.id
+  lazy val tag = output.id
   lazy val nodeSinks = output.sinks
   lazy val bridgeStore = output.bridgeStore
   lazy val inputNodes = Seq(output.env)
@@ -119,9 +141,9 @@ case class BypassOutputChannel(output: ParallelDo) extends MscrOutputChannel {
 
   def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter {
     def write(x: Any)  {
-      sinks.zipWithIndex foreach { case (sink, i) =>
+      sinks foreach { sink =>
         sink.configureCompression(configuration)
-        channelOutput.write(tag, i, sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x))
+        channelOutput.write(tag, sink.id, sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x))
       }
     }
   }
@@ -137,7 +159,7 @@ case class BypassOutputChannel(output: ParallelDo) extends MscrOutputChannel {
 
 object OutputChannel {
   implicit def outputChannelEqual = new Equal[OutputChannel] {
-    def equal(a1: OutputChannel, a2: OutputChannel) = a1.id == a2.id
+    def equal(a1: OutputChannel, a2: OutputChannel) = a1.tag == a2.tag
   }
 }
 

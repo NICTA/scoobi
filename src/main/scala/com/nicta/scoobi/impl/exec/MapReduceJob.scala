@@ -130,9 +130,7 @@ case class MapReduceJob(mscr: Mscr) {
     mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass) }
 
     mscr.outputChannels.foreach { out =>
-      out.sinks.zipWithIndex.foreach { case (sink, i) =>
-        ChannelOutputFormat.addOutputChannel(job, out.tag, i, sink)
-      }
+      out.sinks.foreach(sink => ChannelOutputFormat.addOutputChannel(job, out.tag, sink))
     }
 
     DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
