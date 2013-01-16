@@ -102,7 +102,6 @@ object ChannelOutputFormat {
   def isResultFile(tag: Int, sinkId: Int) =
     (f: Path) => f.getName match {
       case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == sinkId
-      case "_SUCCESS"           => true
       case _                    => false
     }
 

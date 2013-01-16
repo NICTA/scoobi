@@ -49,7 +49,7 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
     outputChannels.channel(key.tag) foreach { channel =>
     /* Convert java.util.Iterable[TaggedValue] to Iterable[V2]. */
       val untaggedValues = new UntaggedValues(key.tag, values)
-      channel.reduce(key, untaggedValues, channelOutput)(context.getConfiguration)
+      channel.reduce(key.get(key.tag), untaggedValues, channelOutput)(context.getConfiguration)
     }
   }
 
