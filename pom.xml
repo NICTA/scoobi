@@ -2,10 +2,10 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nicta</groupId>
-    <artifactId>scoobi_2.9.2</artifactId>
+    <artifactId>scoobi_kiama</artifactId>
     <packaging>jar</packaging>
     <description>scoobi</description>
-    <version>0.6.0-cdh4-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
     <name>scoobi</name>
     <organization>
         <name>com.nicta</name>
