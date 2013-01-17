@@ -65,14 +65,14 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
   private case class Execution(layer: Layer[T]) {
 
     def execute: Seq[Any] = {
-      if (layerBridges(layer).forall(hasBeenFilled)) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
+      if (layerBridges(layer).nonEmpty && layerBridges(layer).forall(hasBeenFilled)) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
       else {
         debug("Executing layer\n"+layer)
 
         mscrs(layer).par.foreach { mscr =>
           implicit val mscrConfiguration = sc.duplicate
 
-          if (mscr.bridges.forall(hasBeenFilled)) debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
+          if (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)) debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
           else {
             debug("Executing Mscr\n"+mscr)
 

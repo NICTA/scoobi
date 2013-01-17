@@ -21,29 +21,27 @@ import java.io.IOException
 
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
-import testing.TestFiles
+import testing._
+import TempFiles._
 import application.Orderings._
 
 class SeqFileReadWriteSpec extends NictaSimpleJobs {
 
-  "Reading Text -> Text Sequence file" >> { implicit sc: SC =>
+  "Reading from a text sequence file" >> { implicit sc: SC =>
     // store test data in a sequence file
     val tmpSeqFile = createTempSeqFile(DList(("a", "b"), ("c", "d"), ("e", "f")))
 
     // load test data from the sequence file
-    val loadedTestData = fromSequenceFile[Text, Text](tmpSeqFile)
-    loadedTestData.run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"), ("e", "f"))
+    fromSequenceFile[Text, Text](tmpSeqFile).run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"), ("e", "f"))
   }
 
-  "Writing Text -> Text Sequence file" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+  "Writing to a text sequence file" >> { implicit sc: SC =>
+    val filePath = createTempFilePath("sequence-file")
 
-    val testDList: DList[(String, String)] = DList(("a", "b"), ("c", "d"))
-    persist(testDList.map((kv: (String, String)) => (new Text(kv._1), new Text(kv._2))).toSequenceFile(filePath, overwrite =true))
+    DList(("a", "b"), ("c", "d")).map(kv => (new Text(kv._1), new Text(kv._2))).toSequenceFile(filePath).run
 
     // load test data from the sequence file
-    val loadedTestData = fromSequenceFile[Text, Text](filePath)
-    loadedTestData.run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"))
+    fromSequenceFile[Text, Text](filePath).run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"))
   }
 
   "Reading Text -> IntWritable, Writing BytesWritable -> DoubleWritable" >> { implicit sc: SC =>
