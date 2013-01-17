@@ -68,7 +68,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
 
     val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
 
-    run(dObjectJoinedToInputGroupedDiff) must terminate(sleep = 20.seconds)
+    run(dObjectJoinedToInputGroupedDiff) must terminate(sleep = 60.seconds)
   }
 
   tag("issue 119")
