@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.apache.avro</groupId>
+  <artifactId>trevni-avro</artifactId>
+  <version>1.7.3.1</version>
+  <versioning>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <lastUpdated>20121105214728</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <classifier>tests</classifier>
+        <extension>jar</extension>
+        <value>1.7.3.1</value>
+        <updated>20121105214728</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.7.3.1</value>
+        <updated>20121105214728</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.7.3.1</value>
+        <updated>20121105214728</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
