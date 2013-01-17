@@ -28,7 +28,6 @@ package control
  */
 private[scoobi]
 trait Exceptions {
-
   /**
    * try to evaluate an expression, returning an Option
    *
@@ -40,6 +39,7 @@ trait Exceptions {
     try { Some(a) }
     catch { case e: Exception => None }
   }
+
   /**
    * try to evaluate an expression, returning a value T
    *
@@ -69,25 +69,20 @@ trait Exceptions {
    * try to evaluate an expression and return it if nothing fails.
    * return ko otherwise
    */
-  def tryOrElse[T](a: =>T)(ko: T): T = tryo(a).map(identity).getOrElse(ko)
-  /**
-   * try to evaluate an expression and return it in an Option if nothing fails.
-   * return None otherwise
-   */
-  def tryOrNone[T](a: =>T): Option[T] = tryo(a).orElse(None)
+  def tryOrElse[T](a: =>T)(ko: T): T = tryo(a).getOrElse(ko)
 
   /**
    * try to evaluate an expression and return ok if nothing fails.
    * return ko otherwise
    */
-  def tryMap[T, S](a: =>T)(ok: S)(ko: S): S = {
-    tryo(a).map(x => ok).getOrElse(ko)
-  }
+  def tryMap[T, S](a: =>T)(ok: S)(ko: S): S =
+    trye(a).fold(_ => ko, _ => ok)
+
   /**
    * try to evaluate an expression and return true if nothing fails.
    * return false otherwise
    */
-  def tryOk[T](a: =>T) = tryMap(a)(true)(false)
+  def tryOk[T](a: =>T) = tryo(a).isDefined
   /**
    * try to evaluate an expression and return true if there is an exception
    * return false otherwise

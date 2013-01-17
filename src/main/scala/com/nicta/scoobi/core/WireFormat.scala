@@ -29,19 +29,49 @@ import org.apache.avro.reflect.ReflectDatumWriter
 import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
 import org.apache.avro.io.DecoderFactory
 import collection.mutable.ArrayBuffer
+import scalaz._, Scalaz._
 
 import annotation.implicitNotFound
 import collection.mutable
 
 /** Typeclass for sending types across the Hadoop wire */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
-trait WireFormat[A] extends WireReaderWriter {
+trait WireFormat[A] extends WireReaderWriter { outer =>
+
   def write(x: Any, out: DataOutput) { toWire(x.asInstanceOf[A], out) }
   def read(in: DataInput) = fromWire(in)
 
   def toWire(x: A, out: DataOutput)
   def fromWire(in: DataInput): A
+
+  /**
+   * Map a pair of functions on this exponential functor to produce a new wire format.
+   */
+  def xmap[B](f: A => B, g: B => A): WireFormat[B] =
+    new WireFormat[B] {
+      def toWire(x: B, out: DataOutput) =
+        outer.toWire(g(x), out)
+
+      def fromWire(in: DataInput) =
+        f(outer.fromWire(in))
+    }
+
+  /**
+   * Produce a wire format on products from this wire format and the given wire format. Synonym for `***`.
+   */
+  def product[B](b: WireFormat[B]): WireFormat[(A, B)] = {
+    implicit val WA: WireFormat[A] = this
+    implicit val WB: WireFormat[B] = b
+    implicitly[WireFormat[(A, B)]]
+  }
+
+  /**
+   * Produce a wire format on products from this wire format and the given wire format. Synonym for `product`.
+   */
+  def ***[B](b: WireFormat[B]): WireFormat[(A, B)] =
+    product(b)
 }
+
 trait WireReaderWriter { this: WireFormat[_] =>
   def write(a: Any, out: DataOutput)
   def read(in: DataInput): Any
@@ -66,32 +96,6 @@ object WireFormat extends WireFormatImplicits {
   def iterable(wf: WireReaderWriter): WireReaderWriter =
     TraversableFmt(wf.asInstanceOf[WireFormat[Any]], implicitly[CanBuildFrom[_, Any, Iterable[_]]])
 
-  /*
-  new WireReaderWriter {
-    def write(a: Any, out: DataOutput) { a match { case (x, y) => wf1.write(x, out); wf2.write(y, out) } }
-    def read(in: DataInput): Any = (wf1.read(in), wf2.read(in))
-  }
-  def iterable(wf: WireReaderWriter): WireReaderWriter = new WireReaderWriter {
-    def write(a: Any, out: DataOutput) { a match { case xs: Iterable[_] => wf.write(xs.size, out); xs.foreach(x => wf.write(x, out)) } }
-    def read(in: DataInput): Any = Seq.fill(wf.read(in).asInstanceOf[Int])(wf.read(in))
-  }
-   */
-
-  // extend WireFormat with useful methods
-  implicit def extendedWireFormat[A](wf: WireFormat[A]): WireFormatX[A] = new WireFormatX[A](wf)
-
-  case class WireFormatX[A](wf: WireFormat[A]) {
-    /**
-     * transform a WireFormat[A] to a WireFormat[B] by providing a bijection A <=> B
-     */
-    def adapt[B : Manifest](f: B => A, g: A => B): WireFormat[B] = new WireFormat[B] {
-      def fromWire(in: DataInput) = g(wf.fromWire(in))
-      def toWire(x: B, out: DataOutput) { wf.toWire(f(x), out) }
-      override def toString = implicitly[Manifest[B]].erasure.getSimpleName
-    }
-    override def toString = wf.toString
-  }
-
   /** Performs a deep copy of an arbitrary object by first serialising then deserialising
     * it via its WireFormat. */
   def wireFormatCopy[A : WireFormat](a: A): A = {
@@ -106,6 +110,8 @@ object WireFormat extends WireFormatImplicits {
   def wireFormat[A](implicit wf: WireFormat[A]): WireFormat[A] = wf
 
 }
+
+/** Implicit definitions of WireFormat instances for common types. */
 trait WireFormatImplicits extends codegen.GeneratedWireFormats {
 
   class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
@@ -319,8 +325,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     new TraversableWireFormat(bf())
 
   /* Arrays */
-  implicit def ArrayFmt[T : WireFormat : Manifest]: WireFormat[Array[T]] =
-    new TraversableWireFormat(new ListBuffer[T]) adapt ((a: Array[T]) => a.toList, (s: List[T]) => s.toArray)
+  implicit def ArrayFmt[T](implicit m: Manifest[T], wt: WireFormat[T]): WireFormat[Array[T]] =
+    new TraversableWireFormat(new ListBuffer[T]) xmap ((s: List[T]) => s.toArray, (a: Array[T]) => a.toList)
 
   /**
    * This class is used to create a WireFormat for Traversables, Maps and Arrays
@@ -395,18 +401,6 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       }
     }
     override def toString = "Either["+wt1+","+wt2+"]"
-  }
-
-  implicit def LeftFmt[T1, T2](implicit wt1: WireFormat[T1]) = new WireFormat[Left[T1, T2]] {
-    def toWire(x: Left[T1, T2], out: DataOutput) = wt1.toWire(x.a, out)
-    def fromWire(in: DataInput): Left[T1, T2] = Left[T1, T2](wt1.fromWire(in))
-    override def toString = "Left["+wt1+"]"
-  }
-
-  implicit def RightFmt[T1, T2](implicit wt1: WireFormat[T2]) = new WireFormat[Right[T1, T2]] {
-    def toWire(x: Right[T1, T2], out: DataOutput) = wt1.toWire(x.b, out)
-    def fromWire(in: DataInput): Right[T1, T2] = Right[T1, T2](wt1.fromWire(in))
-    override def toString = "Right["+wt1+"]"
   }
 
   /**

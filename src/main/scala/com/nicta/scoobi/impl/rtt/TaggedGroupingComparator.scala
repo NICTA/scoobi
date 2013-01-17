@@ -38,7 +38,7 @@ abstract class MetadataTaggedGroupingComparator extends TaggedGroupingComparator
    * current tag
    */
   def compare(key1: TaggedKey, key2: TaggedKey) =
-    if (key1.tag == key2.tag) grouping(key1.tag).groupCompare(key1.get(key1.tag), key2.get(key1.tag))
+    if (key1.tag == key2.tag) grouping(key1.tag).groupCompare(key1.get(key1.tag), key2.get(key1.tag)).toInt
     else                      key1.tag - key2.tag
 
   /**
@@ -50,7 +50,7 @@ abstract class MetadataTaggedGroupingComparator extends TaggedGroupingComparator
 
     // if there's only one tag, it is not written to the input stream
     val (tag1, tag2) = if (tags.size == 1) (tags(0), tags(0)) else (buffer1.readInt, buffer2.readInt)
-    if (tag1 == tag2) grouping(tag1).groupCompare(wireFormat(tag1).fromWire(buffer1), wireFormat(tag1).fromWire(buffer2))
+    if (tag1 == tag2) grouping(tag1).groupCompare(wireFormat(tag1).fromWire(buffer1), wireFormat(tag1).fromWire(buffer2)).toInt
     else              tag1 - tag2
   }
 }

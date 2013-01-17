@@ -3,7 +3,7 @@ name := "scoobi"
 
 organization := "com.nicta"
 
-version := "0.6.0-cdh4-SNAPSHOT"
+version := "0.7.0-cdh4-SNAPSHOT"
 
 scalaVersion := "2.9.2"
 
@@ -46,7 +46,11 @@ testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
 fork in Test := true
 
 javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
-                    "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk")
+                    "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk",
+                    "-Xms3072m",
+                    "-Xmx3072m",
+                    "-XX:MaxPermSize=768m",
+                    "-XX:ReservedCodeCacheSize=1536m")
 
 publishArtifact in packageDoc := false // disable building docs, as it takes so much time
 

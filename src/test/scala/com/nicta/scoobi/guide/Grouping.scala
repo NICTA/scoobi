@@ -120,7 +120,7 @@ Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need 
         }
       }
 
-      override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
+      override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): scalaz.Ordering = {
         // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)
         // now hadoop allows us to "collapse" everything that is logically the same. So two keys are logically
         // the same if the FirstName's are equal

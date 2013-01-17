@@ -19,6 +19,7 @@ package rtt
 
 import org.apache.hadoop.io.WritableComparable
 import core._
+import application.ScoobiConfiguration
 
 /**
  * A tagged value for Hadoop keys. Specifically this will be a K2 type so must
@@ -44,7 +45,7 @@ trait MetadataGroupings extends TaggedMetadata {
  */
 abstract class MetadataTaggedKey extends TaggedKey with MetadataTaggedWritable with MetadataGroupings {
   def compareTo(other: TaggedKey): Int = other match {
-    case tk: MetadataTaggedKey if tk.tag == tag => grouping(tag).sortCompare(get(tag), tk.get(tag))
+    case tk: MetadataTaggedKey if tk.tag == tag => grouping(tag).sortCompare(get(tag), tk.get(tag)).toInt
     case tk: MetadataTaggedKey                  => tag - tk.tag
     case _                                      => 0
   }

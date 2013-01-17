@@ -112,7 +112,7 @@ object AvroSchema {
     type AvroType = GenericData.Fixed
     val schema: Schema = Schema.createFixed("anonfixed" + id, "", " ", fxd.length)
     def fromAvro(data: GenericData.Fixed) = {
-      val bytes = data.bytes();
+      val bytes = data.bytes()
       require(bytes.length == fxd.length)
       fxd.fromArray(bytes)
     }

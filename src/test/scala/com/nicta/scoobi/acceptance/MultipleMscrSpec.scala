@@ -83,7 +83,6 @@ class MultipleMscrSpec extends NictaSimpleJobs {
                              map(b => (b._1, b._2.flatMap(_._2))) // Seq((k1, Seq((k1, v1))), (k2, Seq((k2, v2))))
 
     val inputGroupedDifferently = input.groupBy(_._2)             // Seq((v1, Seq((k1, v1)), (v2, Seq((k2, v2))))
-
     val inputGroupedAsDObject = inputGrouped.materialise
 
     val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)

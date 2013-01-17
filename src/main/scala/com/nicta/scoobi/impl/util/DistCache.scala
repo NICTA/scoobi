@@ -20,9 +20,7 @@ package util
 import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._
 import org.apache.hadoop.conf.Configuration
-
 import Configurations._
-import ScoobiConfigurationImpl._
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialise objects to XML strings and then send out via Hadoop's

@@ -124,6 +124,5 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   def gp[T : Grouping]   = implicitly[Grouping[T]]
 
   implicit val sc: ScoobiConfiguration = new ScoobiConfigurationImpl
-
 }
 

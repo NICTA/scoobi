@@ -78,6 +78,24 @@ class JoinSpec extends NictaSimpleJobs {
       "(34,(Some(Smith),Some(Clerical)))",
       "(35,(None,Some(Marketing)))").mkString
   }
+
+  "Block inner join" >> { implicit sc: SC =>
+    (employeesByDepartmentId blockJoin departmentsById).run.map(_.toString).sorted.mkString === Seq(
+      "(31,(Rafferty,Sales))",
+      "(33,(Jones,Engineering))",
+      "(33,(Steinberg,Engineering))",
+      "(34,(Robinson,Clerical))",
+      "(34,(Smith,Clerical))").sorted.mkString
+  }
+
+  "Block inner join with 3 replications" >> { implicit sc: SC =>
+    ((employeesByDepartmentId replicateBy 3) blockJoin departmentsById).run.map(_.toString).sorted.mkString === Seq(
+      "(31,(Rafferty,Sales))",
+      "(33,(Jones,Engineering))",
+      "(33,(Steinberg,Engineering))",
+      "(34,(Robinson,Clerical))",
+      "(34,(Smith,Clerical))").sorted.mkString
+  }
 }
 
 object JoinExample {

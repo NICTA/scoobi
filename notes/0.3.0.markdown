@@ -18,12 +18,12 @@ reduce job ids, etc. Turning off standard Hadoop logging in log4j.properties is 
 
 This doesn't replace  `persist` but allows you to effectivly "sprinkle" the persisting throughout your code. Note that the call to `run()` triggers the map-reduce job(s) and on completion will clear out the list of DLists that were persisted. That means you can reuse a Job object.
 
-* A new [DList](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList) method `materialize`, that turns a `DList[A]` into a `DObject[Iterable[A]]`. A [DObject](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DObject) is really just a wrapper (there are other plans for it in the future) and you get to the value inside using its `get` method. `materialize` makes it possible to implement iterative algorithms that converge.
+* A new [DList](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DList) method `materialise`, that turns a `DList[A]` into a `DObject[Iterable[A]]`. A [DObject](http://nicta.github.com/scoobi/master/index.html#com.nicta.scoobi.DObject) is really just a wrapper (there are other plans for it in the future) and you get to the value inside using its `get` method. `materialise` makes it possible to implement iterative algorithms that converge.
 
 Here's how you use it:
 
     val a: DList[Int] = ...
-    val x: DObject[Iterable[Int]] = a.materialize
+    val x: DObject[Iterable[Int]] = a.materialise
 
     val job = Job()
     job << use(x)  // note: in later versions of scoobi, this becomes 'job << x.use'

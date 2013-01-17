@@ -19,13 +19,7 @@ package rtt
 
 import java.io._
 import javassist._
-
-import core.{ScoobiConfiguration, Grouping, WireFormat}
-import scala.collection.mutable
-import org.apache.hadoop.io.DataInputBuffer
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.conf.Configuration
-import impl.util.DistCache
+import core._
 
 /**
  * A class for building a class extending T at run-time.

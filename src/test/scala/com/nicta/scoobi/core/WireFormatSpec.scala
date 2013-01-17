@@ -33,28 +33,28 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
   "**Basic types**".p
 
   "A WireFormat instance is available for basic types" >> {
-    serializationIsOkFor[Int]
-    serializationIsOkFor[java.lang.Integer]
-    serializationIsOkFor[Boolean]
-    serializationIsOkFor[Long]
-    serializationIsOkFor[Double]
-    serializationIsOkFor[Float]
-    serializationIsOkFor[Char]
-    serializationIsOkFor[Byte]
-    serializationIsOkFor[Option[Int]]
-    serializationIsOkFor[Either[String, Boolean]]
-    serializationIsOkFor[java.util.Date]
-    serializationIsOkFor[(Int, String)]
-    serializationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
-    serializationIsOkFor[Seq[Int]]
-    "but a null traversable cannot be serialized" >> {
+    serialisationIsOkFor[Int]
+    serialisationIsOkFor[java.lang.Integer]
+    serialisationIsOkFor[Boolean]
+    serialisationIsOkFor[Long]
+    serialisationIsOkFor[Double]
+    serialisationIsOkFor[Float]
+    serialisationIsOkFor[Char]
+    serialisationIsOkFor[Byte]
+    serialisationIsOkFor[Option[Int]]
+    serialisationIsOkFor[Either[String, Boolean]]
+    serialisationIsOkFor[java.util.Date]
+    serialisationIsOkFor[(Int, String)]
+    serialisationIsOkFor[(Int, String, Long, Boolean, Double, Float, String, Byte)]
+    serialisationIsOkFor[Seq[Int]]
+    "but a null traversable cannot be serialised" >> {
       implicitly[WireFormat[Seq[Int]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
     } lt;
-    serializationIsOkFor[Map[Int, String]]
-    "but a null map cannot be serialized" >> {
+    serialisationIsOkFor[Map[Int, String]]
+    "but a null map cannot be serialised" >> {
       implicitly[WireFormat[Map[Int, String]]].toWire(null, NullDataOutput) must throwAn[IllegalArgumentException]
     } lt;
-    serializationIsOkFor[Array[Int]]
+    serialisationIsOkFor[Array[Int]]
   }
 
   "**Case classes**".newbr
@@ -63,12 +63,12 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
     "for a case class with a Double, a String, an Int" >> {
       // we need to explicitly import the wireformat
       implicit val wf = AnythingFmt[DefaultDoubleStringInt]
-      serializationIsOkFor[DefaultDoubleStringInt]
+      serialisationIsOkFor[DefaultDoubleStringInt]
     }
     "for a nested case class" >> {
       // we need to explicitly import the wireformat
       implicit val wf = AnythingFmt[DefaultStringNested]
-      serializationIsOkFor[DefaultStringNested]
+      serialisationIsOkFor[DefaultStringNested]
     }
   }
 
@@ -76,24 +76,24 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
 
     "for a case class holding a simple Int value" >> {
       implicit val IntHolderWireFormat = mkCaseWireFormat(IntHolder, IntHolder.unapply _)
-      serializationIsOkFor[IntHolder]
+      serialisationIsOkFor[IntHolder]
     }
     "for a case class with 2 Strings and an Int" >> {
       implicit val DoubleStringIntWireFormat = mkCaseWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
-      serializationIsOkFor[WritableDoubleStringInt]
+      serialisationIsOkFor[WritableDoubleStringInt]
 
       "this method is (much) more efficient than the default one" >> prop {x: WritableDoubleStringInt =>
-        serialize(x).length must be_<(serialize(x.toDefault)(AnythingFmt[DefaultDoubleStringInt]).length)
+        serialise(x).length must be_<(serialise(x.toDefault)(AnythingFmt[DefaultDoubleStringInt]).length)
       }
     }
     "for a nested case class" >> {
       implicit val DoubleStringIntWireFormat      = mkCaseWireFormat(WritableDoubleStringInt, WritableDoubleStringInt.unapply _)
       implicit val WritableStringNestedWireFormat = mkCaseWireFormat(WritableStringNested, WritableStringNested.unapply _)
 
-      serializationIsOkFor[WritableStringNested]
+      serialisationIsOkFor[WritableStringNested]
 
       "this method is (much) more efficient than the default one" >> prop { x: WritableStringNested =>
-          serialize(x).length must be_<(serialize(x.toDefault)(AnythingFmt[DefaultStringNested]).length)
+          serialise(x).length must be_<(serialise(x.toDefault)(AnythingFmt[DefaultStringNested]).length)
       }
     }
 
@@ -106,33 +106,33 @@ class WireFormatSpec extends UnitSpecification with ScalaCheck with CaseClassDat
 
       "for one node type" >> prop {
         (s: String) =>
-          serializationIsOkWith(BaseString(s))
+          serialisationIsOkWith(BaseString(s))
       }
       "for another node type" >> prop {
         (i: Int) =>
-          serializationIsOkWith(BaseInt(i))
+          serialisationIsOkWith(BaseInt(i))
       }
       "for an object of the base type" >> prop {
         (i: Int) =>
-          serializationIsOkWith(BaseObject)
+          serialisationIsOkWith(BaseObject)
       }
     }
 
   }
 
-  def serializationIsOkFor[T : WireFormat : Manifest : Arbitrary] =
-    implicitly[Manifest[T]].erasure.getSimpleName + " serializes correctly" >>
-      forAll(implicitly[Arbitrary[T]].arbitrary)((t: T) => serializationIsOkWith[T](t))
+  def serialisationIsOkFor[T : WireFormat : Manifest : Arbitrary] =
+    implicitly[Manifest[T]].erasure.getSimpleName + " serialises correctly" >>
+      forAll(implicitly[Arbitrary[T]].arbitrary)((t: T) => serialisationIsOkWith[T](t))
 
-  def serializationIsOkWith[T: WireFormat](x: T): Boolean = deserialize[T](serialize(x)) must_== x
+  def serialisationIsOkWith[T: WireFormat](x: T): Boolean = deserialise[T](serialise(x)) must_== x
 
-  def serialize[T: WireFormat](obj: T): Array[Byte] = {
+  def serialise[T: WireFormat](obj: T): Array[Byte] = {
     val bs = new ByteArrayOutputStream
     implicitly[WireFormat[T]].toWire(obj, new DataOutputStream(bs))
     bs.toByteArray
   }
 
-  def deserialize[T: WireFormat](raw: Array[Byte]): T = {
+  def deserialise[T: WireFormat](raw: Array[Byte]): T = {
     val bais = new ByteArrayInputStream(raw)
     implicitly[WireFormat[T]].fromWire(new DataInputStream(bais))
   }

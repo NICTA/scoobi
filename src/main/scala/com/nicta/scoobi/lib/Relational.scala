@@ -21,11 +21,23 @@ import scala.collection.mutable.ArrayBuffer
 import scala.Right
 import scala.Left
 import core._
-import core.WireFormat._
+import scalaz.Ordering._
 
 case class Relational[K : WireFormat: Grouping, A : WireFormat](left: DList[(K, A)]) {
   /** Perform an equijoin with another distributed lists. */
   def join[B : WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] = Relational.join(left, right)
+
+  /** Perform an equijoin with another distributed list where this list is considerably smaller
+    * than the right (but too large to fit in memory), and where the keys of right may be
+    * particularly skewed. */
+  def blockJoin[B : WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] =
+    Relational.blockJoin(left, right)
+
+  /** Specify a replication factor on the left DList of a block join. */
+  def replicateBy(rep: Int): Relational[K, A] = new Relational[K, A](left) {
+    override def blockJoin[B : WireFormat](right: DList[(K, B)]): DList[(K, (A, B))] =
+      Relational.blockJoin(left, right, rep)
+  }
 
   /**
    * Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
@@ -62,6 +74,7 @@ case class Relational[K : WireFormat: Grouping, A : WireFormat](left: DList[(K, 
   def coGroup[B : WireFormat](right: DList[(K, B)]): DList[(K, (Iterable[A], Iterable[B]))] = Relational.coGroup(left, right)
 
 }
+
 
 object Relational {
 
@@ -233,16 +246,16 @@ object Relational {
       override def partition(key: (K, Boolean), num: Int): Int =
         implicitly[Grouping[K]].partition(key._1, num)
 
-      override def groupCompare(a: (K, Boolean), b: (K, Boolean)): Int =
+      override def groupCompare(a: (K, Boolean), b: (K, Boolean)) =
         implicitly[Grouping[K]].groupCompare(a._1, b._1)
 
-      override def sortCompare(a: (K, Boolean), b: (K, Boolean)): Int = {
+      override def sortCompare(a: (K, Boolean), b: (K, Boolean)) = {
         val n = implicitly[Grouping[K]].sortCompare(a._1, b._1)
-        if (n != 0) n
-        else
-          (a._2, b._2) match {
-          case (true, false) => -1
-          case (false, true) => 1
+        if (n != EQ)
+          n
+        else (a._2, b._2) match {
+          case (true, false) => LT
+          case (false, true) => GT
           case _ => n
         }
       }
@@ -251,5 +264,43 @@ object Relational {
     (left ++ right).groupByKeyWith(grouping).parallelDo(dofn)
   }
 
-}
 
+  /** Perform an equijoin using block-join (aka replicate fragment join).
+    *
+    * Replicate the small (left) side n times including the id of the replica in the key. On the right
+    * side, add a random integer from 0...n-1 to the key. Join using the pseudo-key and strip out the extra
+    * fields.
+    *
+    * Useful for skewed join keys and large datasets. */
+  def blockJoin[K : WireFormat : Grouping, A : WireFormat, B : WireFormat]
+      (left: DList[(K, A)],
+       right: DList[(K, B)],
+       replicationFactor: Int = 5)
+    : DList[(K, (A, B))] = {
+
+    /* Add a random integer to the key. Initialze random generator for each mapper in case mapper is
+     * restarted; otherwise you may lose records unknowingly. */
+    def addRandIntToKey[A, B](ub: Int, seed: Int) = new DoFn[(A, B), ((A, Int), B)] {
+      val rgen = new util.Random(seed)
+      def setup() {}
+      def process(input: (A, B), emitter: Emitter[((A, Int), B)]) {
+        val (a,b) = input
+        emitter.emit(((a, rgen.nextInt(ub)), b))
+      }
+      def cleanup(emitter: Emitter[((A, Int), B)]) {}
+    }
+
+    import scalaz._, Scalaz._
+
+    implicit val grouping = new Grouping[(K, Int)] {
+      def groupCompare(a: (K, Int), b: (K, Int)) =
+        implicitly[Grouping[K]].groupCompare(a._1, b._1) |+| a._2 ?|? b._2
+    }
+
+    Relational.join(
+      left.flatMap{ case (k, v) => (0 until replicationFactor).map{ i => ((k, i), v) } },
+       right.parallelDo(addRandIntToKey[K, B](replicationFactor,0))
+    )
+    .map{case ((k,_),vs) => (k,vs)}
+  }
+}

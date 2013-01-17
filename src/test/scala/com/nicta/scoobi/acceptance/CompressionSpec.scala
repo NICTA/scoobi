@@ -110,7 +110,7 @@ trait CompressedFiles {
    * @return the path of a compressed file with "suffix" appended to the original file path
    */
   private def compressFile(file: File, suffix: String, compressor: OutputStream => OutputStream { def finish() })(implicit sc: ScoobiConfiguration): String = {
-    tryOr {
+    tryOr({
       val outputFile = new File(file.getPath+suffix)
       val out = compressor(new FileOutputStream(outputFile.getPath))
       val in = new FileInputStream(file.getPath)
@@ -127,6 +127,6 @@ trait CompressedFiles {
         FileSystems.deleteFiles(file.getName)
         path
       } else outputFile.getPath
-    }((e:Exception) => { println("error compressing a "+suffix+" file: "+e.getMessage); file.getPath })
+    })((e:Exception) => { println("error compressing a "+suffix+" file: "+e.getMessage); file.getPath })
   }
 }

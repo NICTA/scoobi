@@ -190,5 +190,3 @@ class ChannelRecordReader[K, V](split: InputSplit, context: TaskAttemptContext) 
 
   override def nextKeyValue: Boolean = originalRR.nextKeyValue
 }
-
-

@@ -19,6 +19,7 @@ package rtt
 
 import org.apache.hadoop.io.Writable
 import core._
+import application.ScoobiConfiguration
 
 /**
  * A tagged value for Hadoop values. Specifically this will be a V2 type so must

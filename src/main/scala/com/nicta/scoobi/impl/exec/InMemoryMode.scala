@@ -18,6 +18,7 @@ import comp._
 import ScoobiConfigurationImpl._
 import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import scalaz.Scalaz._
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -109,48 +110,52 @@ case class InMemoryMode() extends ShowNode {
 
   private def computeGroupByKey(gbk: GroupByKey)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val in = gbk.in -> compute(sc)
-    val grp = gbk.gpk
+    val gpk = gbk.gpk
 
     /* Partitioning */
-    val partitions = {
+    val partitions: IndexedSeq[Vector[(Any, Any)]] = {
       val numPart = 10    // TODO - set this based on input size? or vary it randomly?
-      val vbs = IndexedSeq.fill(numPart)(new VectorBuilder[Any]())
-      in foreach { case kv @ (k, _) => val p = grp.partitionKey(k, numPart); vbs(p) += kv }
+      val vbs = IndexedSeq.fill(numPart)(new VectorBuilder[(Any, Any)]())
+      in foreach { case kv @ (k, _) =>
+        val p = gpk.partitionKey(k, numPart)
+        vbs(p) += kv
+      }
       vbs map { _.result() }
     }
 
     logger.debug("partitions:")
     partitions.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
-    /* Grouping values */
-    val grouped = partitions map { (kvs: Vector[_]) =>
-
-      val vbMap = kvs.foldLeft(Map.empty: Map[Any, VectorBuilder[Any]]) { case (bins, (k, v)) =>
-        bins.find(kkvs => grp.groupKey(kkvs._1, k) == 0) match {
-          case Some((kk, vb)) => bins.updated(kk, vb += ((k, v)))
-          case None           => { val vb = new VectorBuilder[Any](); bins + (k -> (vb += ((k, v)))) }
-        }
-      }
-
-      vbMap map { case (k, vb) => (k, vb.result()) }
+    val sorted: IndexedSeq[Vector[(Any, Any)]] = partitions map { (v: Vector[(Any, Any)]) =>
+      v.sortBy(_._1)(gpk.toSortOrdering)
     }
+    logger.debug("sorted:")
+    sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+
+    val grouped: IndexedSeq[Vector[(Any, Vector[Any])]] =
+      sorted map { kvs =>
+        val vbMap = kvs.foldLeft(Vector.empty: Vector[(Any, VectorBuilder[(Any, Any)])]) { case (groups, kv@(k, _)) =>
+          groups.lastOption.filter { case (g, _) => gpk.isEqualWithGroup(g, k) } match {
+            case Some((_, q)) => {
+              q += kv
+              groups
+            }
+            case None =>
+              groups :+ {
+                val vb = new VectorBuilder[(Any, Any)]()
+                vb += kv
+                (k, vb)
+              }
+          }
+        }
+        vbMap map (_ :-> (_.result.map(_._2)))
+      }
 
     logger.debug("grouped:")
     grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
 
-    /* Sorting */
-    val ord = new Ordering[Any] { def compare(x: Any, y: Any): Int = grp.sortKey(x, y) }
-
-    val sorted = grouped map { (kvMap: Map[_, Vector[_]]) =>
-      kvMap map { case (k, kvs) => (k, kvs.sortBy(vs => vs.asInstanceOf[Tuple2[_,_]]._1)(ord)) }
-    }
-
-    logger.debug("sorted:")
-    sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
-
     /* Concatenate */
-    Vector(sorted.flatMap(_.toSeq map { case (k, kvs) => (k, kvs.map(vs => vs.asInstanceOf[Tuple2[_,_]]._2)) }): _*).debug("computeGroupByKey")
-
+    Vector(grouped.flatten:_*).debug("computeGroupByKey")
   }
 
 

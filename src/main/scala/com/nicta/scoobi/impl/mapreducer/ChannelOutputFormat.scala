@@ -41,7 +41,6 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
   private val taskContexts: MMap[(Int, Int), TaskAttemptContext] = MMap.empty
   private val recordWriters: MMap[(Int, Int), RecordWriter[_,_]] = MMap.empty
 
-
   /** write a value out on multiple outputs of a given output channel.*/
   def write[K, V](tag: Int, sinkId: Int, kv: (K, V)) {
     val taskContext = getContext(tag, sinkId)

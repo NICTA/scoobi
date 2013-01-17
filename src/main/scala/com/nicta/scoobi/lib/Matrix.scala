@@ -36,10 +36,8 @@ case class DVector[Elem: WireFormat : Ordering, T : WireFormat](data: DList[(Ele
 }
 
 object InMemVector {
-  def fromDList[Elem : WireFormat: Ordering, 
-                T : WireFormat](in: DList[(Elem, T)]): InMemVector[Elem, T] = {
+  def fromDList[Elem : WireFormat: Ordering, T : WireFormat](in: DList[(Elem, T)]): InMemVector[Elem, T] =
     InMemVector(in.materialise.map(xs => xs.toMap))
-  }
 }
 
 /**
@@ -56,7 +54,6 @@ case class InMemVector[Elem: WireFormat : Ordering, T : WireFormat](data: DObjec
 
 object InMemDenseVector {
   def fromDList[T : WireFormat](in: DList[(Int, T)], zero: T): InMemDenseVector[T] = {
-
     InMemDenseVector(in.materialise.map(xs => {
       val buff = scala.collection.mutable.ArrayBuffer[T]()
 
