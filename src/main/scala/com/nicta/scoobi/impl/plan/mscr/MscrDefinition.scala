@@ -16,7 +16,7 @@ trait MscrsDefinition extends Layering {
 
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
-    case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise)) &&
+    case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise) || !parent(pd).isDefined) &&
                            !isReducer(pd) &&
                            (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
     case _              => false
@@ -98,7 +98,7 @@ trait MscrsDefinition extends Layering {
 
   /** @return true if a ParallelDo node is not a leaf of a tree of mappers connected to a given source node */
   lazy val isInsideMapper: ParallelDo => Boolean = attr { case node =>
-    uses(node).forall(isParallelDo && !isFloating)
+    uses(node).nonEmpty && uses(node).forall(isParallelDo && !isFloating)
   }
 
   lazy val layerInputs: Layer[T] => Seq[CompNode] = attr("layer inputs") { case layer =>
