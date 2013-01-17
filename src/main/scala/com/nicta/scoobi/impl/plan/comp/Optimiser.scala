@@ -22,8 +22,8 @@ trait Optimiser extends CompNodes with Rewriter {
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
   def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_,_,_,_,_) => c
-    case c: Combine                              => c.debug("combineToParDo").toParallelDo
+    case c @ Combine(GroupByKey1(_),_,_,_,_,_) => c
+    case c: Combine                            => c.debug("combineToParDo").toParallelDo
   })
 
   /**

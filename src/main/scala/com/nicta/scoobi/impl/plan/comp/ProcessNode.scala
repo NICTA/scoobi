@@ -137,7 +137,6 @@ object ParallelDo1 {
  */
 case class Combine(in: CompNode, f: (Any, Any) => Any,
                           wfk:   WireReaderWriter,
-                          gpk:   KeyGrouping,
                           wfv:   WireReaderWriter,
                           sinks:              Seq[Sink] = Seq(),
                           bridgeStoreId:      String = randomUUID.toString) extends ProcessNode {

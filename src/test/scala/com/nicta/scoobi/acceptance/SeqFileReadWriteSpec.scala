@@ -92,7 +92,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
    */
   def createTempSeqFile[K, V](input: DList[(K, V)])(implicit sc: SC, ks: SeqSchema[K], vs: SeqSchema[V]): String = {
     val initialTmpFile = createTempFile()
-    persist(input.convertToSequenceFile(initialTmpFile, true))
+    persist(input.convertToSequenceFile(initialTmpFile, overwrite = true))
     initialTmpFile
   }
 
