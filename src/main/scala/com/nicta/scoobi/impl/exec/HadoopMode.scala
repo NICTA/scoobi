@@ -9,7 +9,6 @@ import plan.mscr._
 import monitor.Loggable._
 import collection.Seqs._
 import scalaz.{DList => _, _}
-import concurrent.Promise
 import Scalaz._
 /**
  * Execution of Scoobi applications using Hadoop
@@ -67,7 +66,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
 
     def execute: Seq[Any] = {
       if (layerBridgesAreFilled) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
-      else                       executeMscrs(mscrs(layer))
+      else                       executeMscrs(mscrs(layer)).debug("Executing layer\n"+layer)
 
       layerBridges(layer).foreach(markBridgeAsFilled)
       layerBridges(layer).debug("Layer bridges: ").map(read).toSeq
@@ -76,7 +75,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     /** execute mscrs concurrently if there are more than one */
     private def executeMscrs(mscrs: Seq[Mscr]) =
       if (mscrs.size <= 1) mscrs.foreach(executeMscr)
-      else                 mscrs.toList.map(mscr => Promise(executeMscr(mscr))).sequence.get.debug("Executing layer\n"+layer)
+      else                 mscrs.par.map(executeMscr)
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */
     private def layerBridgesAreFilled = layerBridges(layer).nonEmpty && layerBridges(layer).forall(hasBeenFilled)
