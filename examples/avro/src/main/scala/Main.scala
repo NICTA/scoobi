@@ -32,7 +32,7 @@ object AvroExample extends ScoobiApp {
     val w: DList[Weather] = DList(new Weather("Town Hall", 925, 23), new Weather("Red Fern", 1201, -55), new Weather("Bondi Junction", 1920, 100))
 
     // and they can easily be persisted, using our schema ( at src/main/avro/weather.avsc )
-    persist(toAvroFile(w, "test-output", overwrite = true))
+    persist(w.toAvroFile("test-output", overwrite = true))
 
     // and of course, it's easy to read avro files to disk, given a schema!
     val w2: DList[Weather] = fromAvroFile[Weather]("test-output")
@@ -54,6 +54,6 @@ object AvroExample extends ScoobiApp {
     val joined: DList[(Person, Weather)] = DObject(p) join w2
 
     // and let's dump it to a text file, so you can easily verify it worked ;D
-    persist(toTextFile(joined, "joined-output", overwrite=true))
+    persist(joined.toTextFile("joined-output", overwrite=true))
   }
 }
