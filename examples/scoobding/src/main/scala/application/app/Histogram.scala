@@ -11,6 +11,7 @@ import BackgroundAction._
 import measure._
 import time.DaytimeRange
 import scalaz.Semigroup
+import reactive.Trigger
 
 /**
  * This is the entry point for the HealthCheck application. It defines:

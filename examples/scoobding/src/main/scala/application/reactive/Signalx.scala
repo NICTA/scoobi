@@ -1,6 +1,5 @@
 package reactive
 
-
 object Signalx {
   implicit def toVar[T](v: =>T): Var[T] = Var(v)
   implicit def toSignalx[T](s: Signal[T]) = new Signalx[T](s)

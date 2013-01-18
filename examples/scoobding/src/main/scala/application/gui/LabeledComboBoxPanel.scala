@@ -3,8 +3,9 @@ package gui
 import swing._
 import event.SelectionChanged
 import Orientation._
-import reactive.{EventStream, EventStreamSourceProxy}
+import reactive.{EventStream}
 import java.awt.Component
+import reactive.EventStreamSourceProxy
 
 class LabeledComboBoxPanel[A](label: String, values: Seq[A]) extends BoxPanel(Horizontal) with EventStreamSourceProxy[String] {
   override def self: Component with EventStream[String] = this.asInstanceOf[Component with EventStream[String]]

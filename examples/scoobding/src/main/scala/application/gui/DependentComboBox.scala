@@ -3,7 +3,7 @@ package gui
 import swing.{ComboBox, Orientation, BoxPanel}
 import Orientation._
 import swing.event.SelectionChanged
-import reactive.{EventStream, EventStreamSourceProxy}
+import reactive._
 import java.awt.Component
 
 /**

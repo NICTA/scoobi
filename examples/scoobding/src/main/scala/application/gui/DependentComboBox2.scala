@@ -3,8 +3,9 @@ package gui
 import swing.{ ComboBox, Orientation, BoxPanel }
 import Orientation._
 import swing.event.SelectionChanged
-import reactive.{EventStream, EventStreamSourceProxy}
+import reactive.{EventStream}
 import java.awt.Component
+import reactive.EventStreamSourceProxy
 
 /**
  * This class is used to display 3 combox boxes where the elements in the second box depend on the selected element in the first,

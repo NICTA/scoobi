@@ -6,13 +6,20 @@ import java.awt.event.{ActionEvent, KeyEvent}
 import Images._
 import java.io.File
 import reactive._
-import swing.FileChooser.Result
+import FileChooser._
 import java.awt.Component
+import reactive.EventStreamSourceProxy
 
-case class OpenFileMenuItem(start: String, label: String = "Open") extends MenuItem(label) with EventStreamSourceProxy[File] { outer =>
-  override def self: Component with EventStream[File] = this.asInstanceOf[Component with EventStream[File]]
+case class OpenFilesMenuItem(start: String, label: String = "Open") extends MenuItem(label) with EventStreamSourceProxy[Seq[File]] { outer =>
+  override def self: Component with EventStream[Seq[File]] = this.asInstanceOf[Component with EventStream[Seq[File]]]
 
   val fileChooser = new FileChooser(new java.io.File(start))
+  fileChooser.peer.setMultiSelectionEnabled(true)
+
+  /**
+   * @return the selected files
+   */
+  def selectedFiles: Seq[File] = Option(fileChooser.selectedFiles).toSeq.flatten
 
   action = new Action(label) {
     icon = getIcon("folder-icon.png")
@@ -21,7 +28,7 @@ case class OpenFileMenuItem(start: String, label: String = "Open") extends MenuI
 
     def apply() {
       fileChooser.showOpenDialog(outer) match {
-        case Result.Approve => source.fire(fileChooser.selectedFile)
+        case Result.Approve => source.fire(selectedFiles)
         case _              => ()
       }
     }
