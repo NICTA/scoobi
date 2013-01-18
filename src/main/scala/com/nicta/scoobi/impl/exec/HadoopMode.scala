@@ -74,7 +74,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     }
 
     /** execute mscrs concurrently if there are more than one */
-    private def executeMscrs(mscrs: Seq[Mscr]) =
+    private def executeMscrs(mscrs: Seq[Mscr]): Unit =
       if (mscrs.size <= 1) mscrs.foreach(executeMscr)
       else                 mscrs.toList.map(m => Promise(executeMscr(m))).sequence.get
 

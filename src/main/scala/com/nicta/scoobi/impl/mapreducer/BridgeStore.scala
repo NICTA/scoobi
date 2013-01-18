@@ -40,7 +40,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   extends DataSource[NullWritable, ScoobiWritable[A], A]
   with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 
-  override lazy val id: Int = DataSink.ids.get
+  override lazy val id: Int = Data.ids.get
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 

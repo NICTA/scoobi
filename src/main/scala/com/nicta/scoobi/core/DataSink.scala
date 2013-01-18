@@ -9,7 +9,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.RecordWriter
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
-import DataSink._
+import Data._
 
 /**
  * An output store from a MapReduce job
@@ -104,7 +104,7 @@ trait Sink {
   def write(values: Seq[_], recordWriter: RecordWriter[_,_])
 }
 
-object DataSink {
+object Data {
   object ids extends UniqueInt
 }
 /**

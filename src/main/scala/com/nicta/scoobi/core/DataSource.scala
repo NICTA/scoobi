@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package core
 
 import org.apache.hadoop.mapreduce._
-import DataSource._
+import Data._
 /**
  * DataSource for a computation graph.
  *
@@ -38,9 +38,6 @@ trait DataSource[K, V, A] extends Source {
       read(fromKeyValueConverter.asValue(mapContext, reader.getCurrentKey, reader.getCurrentValue))
     }
   }
-}
-object DataSource {
-  object ids extends UniqueInt
 }
 /**
  * Convert an InputFormat's key-value types to the type produced by a source
