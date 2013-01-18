@@ -161,7 +161,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    */
   private def showResultTime[T <% Result](prefix: String, t: =>T): Result = {
     if (showTimes) {
-      lazy val (result, timer) = withTimer(ResultExecution.execute(t)(implicitly[T => Result]))
+      val (result, timer) = withTimer(ResultExecution.execute(t)(implicitly[T => Result]))
       result.updateExpected(prefix+": "+timer.time)
     } else t
   }

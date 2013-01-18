@@ -136,4 +136,12 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val (l1, l2) = (DList(1 -> "hello", 2 -> "world"), DList(1 -> "hi", 2 -> "you"))
     normalise((l1 ++ l2).groupByKey.run) === normalise((l1.groupByKey ++ l2.groupByKey).groupByKey.map { case (k, vs) => (k, vs.flatten) }.run)
   }
+
+  "concurrent" >> {
+    (1 to 10).par.map { i =>
+      implicit val sc = local.outside
+      DList((1, "hello"), (1, "world")).groupByKey.filter { case (k, v) => k >= 1 }.run
+    }
+    ok
+  }
 }
