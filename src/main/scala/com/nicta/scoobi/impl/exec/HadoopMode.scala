@@ -66,32 +66,40 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
   private case class Execution(layer: Layer[T]) {
 
     def execute: Seq[Any] = {
-      if (layerBridges(layer).nonEmpty && layerBridges(layer).forall(hasBeenFilled)) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
-      else {
-        debug("Executing layer\n"+layer)
+      if (layerBridgesAreFilled) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
+      else                       executeMscrs(mscrs(layer))
 
-        mscrs(layer).toList.map { mscr: Mscr =>
-          implicit val mscrConfiguration = sc.duplicate
-
-          if (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)) Promise(debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled"): Any)
-          else {
-            debug("Executing Mscr\n"+mscr)
-
-            debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
-            mscr.sources.foreach(_.inputCheck)
-
-            debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
-            mscr.sinks.foreach(_.outputCheck)
-
-            debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
-            mscr.inputNodes.foreach(load)
-
-            Promise(MapReduceJob(mscr).run: Any)
-          }
-        }.sequence.get
-      }
       layerBridges(layer).foreach(markBridgeAsFilled)
       layerBridges(layer).debug("Layer bridges: ").map(read).toSeq
+    }
+
+    /** execute mscrs concurrently if there are more than one */
+    private def executeMscrs(mscrs: Seq[Mscr]) =
+      if (mscrs.size <= 1) mscrs.foreach(executeMscr)
+      else                 mscrs.toList.map(mscr => Promise(executeMscr(mscr))).sequence.get.debug("Executing layer\n"+layer)
+
+    /** @return true if the layer has bridges are they're all already filled by previous computations */
+    private def layerBridgesAreFilled = layerBridges(layer).nonEmpty && layerBridges(layer).forall(hasBeenFilled)
+
+    /** execute a Mscr */
+    private def executeMscr(mscr: Mscr): Any = {
+      implicit val mscrConfiguration = sc.duplicate
+
+      if (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)) debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
+      else {
+        debug("Executing Mscr\n"+mscr)
+
+        debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
+        mscr.sources.foreach(_.inputCheck)
+
+        debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
+        mscr.sinks.foreach(_.outputCheck)
+
+        debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
+        mscr.inputNodes.foreach(load)
+
+        MapReduceJob(mscr).run
+      }
     }
   }
 
