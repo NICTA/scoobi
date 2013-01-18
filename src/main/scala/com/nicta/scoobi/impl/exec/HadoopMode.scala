@@ -9,6 +9,7 @@ import plan.mscr._
 import monitor.Loggable._
 import collection.Seqs._
 import scalaz.{DList => _, _}
+import concurrent.Promise
 import Scalaz._
 /**
  * Execution of Scoobi applications using Hadoop
@@ -69,10 +70,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
       else {
         debug("Executing layer\n"+layer)
 
-        mscrs(layer).par.foreach { mscr =>
+        mscrs(layer).toList.map { mscr: Mscr =>
           implicit val mscrConfiguration = sc.duplicate
 
-          if (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)) debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
+          if (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)) Promise(debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled"): Any)
           else {
             debug("Executing Mscr\n"+mscr)
 
@@ -85,9 +86,9 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
             debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
             mscr.inputNodes.foreach(load)
 
-            MapReduceJob(mscr).run
+            Promise(MapReduceJob(mscr).run: Any)
           }
-        }
+        }.sequence.get
       }
       layerBridges(layer).foreach(markBridgeAsFilled)
       layerBridges(layer).debug("Layer bridges: ").map(read).toSeq
