@@ -53,10 +53,10 @@ object AvroOutput {
       val outputValueClass = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc.conf)) {
+        if (Helper.pathExists(outputPath)(sc.configuration)) {
           if (overwrite) {
             logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)(sc.conf)
+            Helper.deletePath(outputPath)(sc.configuration)
           } else {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
           }

@@ -244,7 +244,7 @@ trait WithEnvironment {
 
   /** push a value for this environment. This serialises the value and distribute it in the file cache */
   def pushEnv(result: Any)(implicit sc: ScoobiConfiguration) {
-    environment(sc).push(result)(sc.conf)
+    environment(sc).push(result)(sc.configuration)
   }
 }
 

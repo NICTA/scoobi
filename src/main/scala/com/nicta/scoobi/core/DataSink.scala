@@ -51,7 +51,7 @@ trait DataSink[K, V, B] extends Sink { outer =>
   }
 
   def outputPath(implicit sc: ScoobiConfiguration) = {
-    val jobCopy = new Job(sc.conf)
+    val jobCopy = new Job(sc.configuration)
     outputConfigure(jobCopy)
     Option(FileOutputFormat.getOutputPath(jobCopy))
   }

@@ -74,7 +74,7 @@ object WordCount extends ScoobiApp {
                       .groupByKey
                       .combine((a: Int, b: Int) => a + b)
     
-    persist(toTextFile(counts, args(1)))
+    persist(counts.toTextFile(args(1))
   }
 }
 ```  

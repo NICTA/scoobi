@@ -20,7 +20,7 @@ import lib._
 import core._
 
 /** Global Scoobi functions and values. */
-object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Library with DObjects {
+object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Library with DObjects with ScoobiConfiguration {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
@@ -39,6 +39,8 @@ object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with 
   type Grouping[A] = com.nicta.scoobi.core.Grouping[A]
 
   type Emitter[A] = com.nicta.scoobi.core.Emitter[A]
+
+  override type ScoobiConfiguration = core.ScoobiConfiguration
 }
 
 

@@ -69,7 +69,7 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
 }
 
 object ScoobiConfiguration {
-  implicit def toConfiguration(sc: ScoobiConfiguration): Configuration = sc.conf
+  implicit def toConfiguration(sc: ScoobiConfiguration): Configuration = sc.configuration
   implicit def fromConfiguration(c: Configuration): ScoobiConfiguration = ScoobiConfigurationImpl(c)
 
   def apply(configuration: Configuration) = new ScoobiConfigurationImpl(configuration)

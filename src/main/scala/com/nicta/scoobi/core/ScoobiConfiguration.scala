@@ -13,6 +13,8 @@ import org.apache.hadoop.mapreduce.Job
  */
 trait ScoobiConfiguration {
   def configuration: Configuration
+  @deprecated(message="use 'configuration' instead", since="0.7.0")
+  def conf: Configuration = configuration
   def userJars: Set[String]
   def userDirs: Set[String]
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration
@@ -39,10 +41,8 @@ trait ScoobiConfiguration {
   def getBytesPerReducer: Long
   def jobNameIs(name: String)
   def jobName: Option[String]
-  def fs: FileSystem
   def jobId: String
   def jobStep(mscrId: Int): String
-  def conf: Configuration
   def setAsInMemory: ScoobiConfiguration
   def setAsLocal: ScoobiConfiguration
   def setDirectories: ScoobiConfiguration
