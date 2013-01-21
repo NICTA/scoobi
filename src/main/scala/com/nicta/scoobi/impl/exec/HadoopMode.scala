@@ -82,7 +82,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
      */
     private def runMscrs(mscrs: Seq[Mscr]): Unit = {
       if (mscrs.size <= 1) mscrs.filterNot(isFilled).foreach(runMscr)
-      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).par.map(executeMscr.tupled)
+      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).par.map(executeMscr.tupled).map(reportMscr.tupled)
     }
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */
@@ -115,7 +115,13 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     /** execute a Mscr */
     private def executeMscr = (mscr: Mscr, job: Job) => {
       implicit val mscrConfiguration = sc.duplicate
-      job |> MapReduceJob(mscr).execute
+      (mscr, job |> MapReduceJob(mscr).execute)
+    }
+
+    /** report the execution of a Mscr */
+    private def reportMscr = (mscr: Mscr, job: Job) => {
+      implicit val mscrConfiguration = sc.duplicate
+      job |> MapReduceJob(mscr).report
     }
   }
 
