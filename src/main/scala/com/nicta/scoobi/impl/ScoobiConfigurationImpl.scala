@@ -52,14 +52,14 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def jobName: Option[String] = Option(hadoopConfiguration.get(JOB_NAME))
 
   /* Timestamp used to mark each Scoobi working directory. */
-  private def timestamp = {
+  private lazy val timestamp = {
     val now = new Date
     val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
     sdf.format(now)
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
-  lazy val jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
+  def jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStep(mscrId: Int) = {
@@ -239,7 +239,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   /** @return a pseudo-random unique id */
-  private def uniqueId = java.util.UUID.randomUUID
+  private lazy val uniqueId = java.util.UUID.randomUUID
 
   /** set a value on the configuration */
   def set(key: String, value: Any) {
