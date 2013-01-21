@@ -76,10 +76,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     /** execute mscrs concurrently if there are more than one */
     private def executeMscrs(mscrs: Seq[Mscr]): Unit = {
         if (mscrs.size <= 1) mscrs.foreach(executeMscr)
-        else                 {
-          val result = mscrs.toList.par.map(executeMscr)
-          result
-        }
+        else                 mscrs.toList.par.map(executeMscr)
     }
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */

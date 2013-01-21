@@ -59,13 +59,13 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
-  def jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-").debug("the job id is")
+  def jobId: String = (Seq("scoobi", timestamp) ++ jobName :+ uniqueId).mkString("-")
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStep(mscrId: Int) = {
     configuration.set(JOB_STEP, jobId + "(Step-" + mscrId + ")")
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
-    configuration.get(JOB_STEP)
+    configuration.get(JOB_STEP).debug("the job step is")
   }
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
