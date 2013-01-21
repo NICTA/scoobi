@@ -9,6 +9,7 @@ import plan.mscr._
 import monitor.Loggable._
 import collection.Seqs._
 import scalaz.{DList => _, _}
+import concurrent.Promise
 import Scalaz._
 import org.apache.hadoop.mapreduce.Job
 
@@ -82,7 +83,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
      */
     private def runMscrs(mscrs: Seq[Mscr]): Unit = {
       if (mscrs.size <= 1) mscrs.filterNot(isFilled).foreach(runMscr)
-      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).map(executeMscr.tupled).seq.map(reportMscr.tupled)
+      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).map(executeMscr.tupled).sequence.get.map(reportMscr.tupled)
     }
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */
@@ -114,7 +115,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
 
     /** execute a Mscr */
     private def executeMscr = (mscr: Mscr, sc: ScoobiConfiguration, job: Job) => {
-      (mscr, sc, job |> MapReduceJob(mscr).execute(sc))
+      Promise((mscr, sc, job |> MapReduceJob(mscr).execute(sc)))
     }
 
     /** report the execution of a Mscr */
