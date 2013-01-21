@@ -6,6 +6,7 @@ import java.io.File
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{Path, FileSystem}
 import org.apache.hadoop.mapreduce.Job
+import impl.ScoobiConfigurationImpl
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -60,6 +61,8 @@ trait ScoobiConfiguration {
   def deleteTemporaryOutputDirectory(job: Job): Boolean
 
   def fileSystem: FileSystem
+  @deprecated(message = "use 'fileSystem' instead", since = "0.7.0")
+  def fs: FileSystem = fileSystem
   def newEnv(wf: WireReaderWriter): Environment
 
   def persist[A](ps: Seq[Persistent[_]])
@@ -72,3 +75,4 @@ object Mode extends Enumeration {
   type Mode = Value
   val InMemory, Local, Cluster = Value
 }
+

@@ -28,8 +28,9 @@ import com.nicta.scoobi.io._
 import testing.mutable.UnitSpecification
 import com.nicta.scoobi.impl.rtt._
 import Configurations._
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
 import WireFormat._
+import Scoobi._
 
 class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """

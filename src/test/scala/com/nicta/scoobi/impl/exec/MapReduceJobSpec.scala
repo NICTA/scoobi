@@ -8,7 +8,7 @@ import org.specs2.specification.Outside
 import rtt.JarBuilder
 
 import testing.mutable.UnitSpecification
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
 import core.ScoobiConfiguration
 import org.specs2.execute.Pending
 

@@ -7,6 +7,7 @@ import java.io.File
 import org.specs2.specification.Scope
 import impl.io.FileSystems
 import impl.control.SystemProperties
+import Scoobi._
 
 class LibJarsSpec extends UnitSpecification {
 

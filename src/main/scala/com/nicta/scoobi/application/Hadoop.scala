@@ -20,7 +20,7 @@ import org.apache.hadoop.fs.FileSystem
 import core._
 import Mode._
 import org.apache.commons.logging.LogFactory
-import impl.ScoobiConfigurationImpl._
+import impl.ScoobiConfiguration._
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
  *

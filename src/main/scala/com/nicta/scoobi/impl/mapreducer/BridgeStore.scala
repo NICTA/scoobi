@@ -32,7 +32,7 @@ import org.apache.hadoop.mapreduce.Job
 import core._
 import rtt._
 import io.Helper
-import ScoobiConfigurationImpl._
+import ScoobiConfiguration._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */

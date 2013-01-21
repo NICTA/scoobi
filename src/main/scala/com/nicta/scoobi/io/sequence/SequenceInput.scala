@@ -27,7 +27,7 @@ import org.apache.hadoop.mapreduce.Job
 import core._
 import WireFormat._
 import impl.plan.DListImpl
-import impl.ScoobiConfigurationImpl._
+import impl.ScoobiConfiguration._
 import impl.io.Helper
 
 /** Smart functions for materialising distributed lists by loading Sequence files. */

@@ -8,7 +8,7 @@ import org.apache.hadoop.fs.{FileUtil, LocalFileSystem, Path, FileSystem}
 import org.apache.hadoop.filecache.DistributedCache
 import com.nicta.scoobi.{impl, core}
 import core._
-import impl.ScoobiConfigurationImpl._
+import impl.ScoobiConfiguration._
 import impl.monitor.Loggable._
 import java.net.URI
 

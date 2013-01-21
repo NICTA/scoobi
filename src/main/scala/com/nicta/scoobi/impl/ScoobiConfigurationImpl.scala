@@ -43,7 +43,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     hadoopConfiguration.setInt(PROGRESS_TIME, 500)
     // this setting avoids unnecessary warnings
     hadoopConfiguration.set("mapred.used.genericoptionsparser", "true")
-    configuration
+    hadoopConfiguration
   }
 
   /**
@@ -72,7 +72,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 
   /** Helper method that parses the generic Hadoop command line arguments before
     * calling the user's code with the remaining arguments. */
-  private def callWithHadoopArgs(args: Array[String], f: Array[String] => Unit): ScoobiConfiguration = {
+  private[scoobi] def callWithHadoopArgs(args: Array[String], f: Array[String] => Unit): ScoobiConfiguration = {
     /* Parse options then update current configuration. Because the filesystem
      * property may have changed, also update working directory property. */
     val parser = new GenericOptionsParser(configuration, args)
@@ -275,14 +275,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 }
 
 object ScoobiConfigurationImpl {
-  implicit def toExtendedConfiguration(sc: ScoobiConfiguration): ExtendedConfiguration = extendConfiguration(sc.conf)
-
-  implicit def toHadoopConfiguration(sc: ScoobiConfiguration): Configuration = sc.conf
-
-  implicit def fromHadoopConfiguration(implicit conf: Configuration): ScoobiConfigurationImpl = new ScoobiConfigurationImpl(conf)
-
-  def apply(args: Array[String]): ScoobiConfiguration =
-    ScoobiConfigurationImpl(new Configuration()).callWithHadoopArgs(args, (a: Array[String]) => ())
+  implicit def toExtendedConfiguration(sc: ScoobiConfiguration): ExtendedConfiguration = extendConfiguration(sc.configuration)
 
   // only used in tests
   private[scoobi] def unitEnv(configuration: Configuration) =
@@ -293,4 +286,14 @@ object ScoobiConfigurationImpl {
       }
     }
 }
+
+trait ScoobiConfigurations {
+  implicit def toConfiguration(sc: ScoobiConfiguration): Configuration = sc.configuration
+  implicit def fromConfiguration(c: Configuration): ScoobiConfiguration = ScoobiConfigurationImpl(c)
+  def apply(configuration: Configuration) = new ScoobiConfigurationImpl(configuration)
+  def apply() = new ScoobiConfigurationImpl(new Configuration)
+  def apply(args: Array[String]): ScoobiConfiguration =
+    ScoobiConfigurationImpl(new Configuration()).callWithHadoopArgs(args, (a: Array[String]) => ())
+}
+object ScoobiConfiguration extends ScoobiConfigurations
 

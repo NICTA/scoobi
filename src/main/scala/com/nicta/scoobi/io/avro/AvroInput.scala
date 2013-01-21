@@ -36,7 +36,7 @@ import org.apache.avro.file.DataFileReader
 
 import core._
 import impl.plan.DListImpl
-import impl.ScoobiConfigurationImpl._
+import impl.ScoobiConfiguration._
 import impl.io.Helper
 import WireFormat._
 

@@ -4,7 +4,7 @@ package io
 import java.io.File
 import org.specs2.specification.Scope
 import org.apache.hadoop.fs.{FileStatus, Path}
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
 import impl.io.FileSystems
 import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables

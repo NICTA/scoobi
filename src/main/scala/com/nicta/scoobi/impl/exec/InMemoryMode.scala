@@ -16,6 +16,7 @@ import monitor.Loggable._
 import impl.plan._
 import comp._
 import ScoobiConfigurationImpl._
+import ScoobiConfiguration._
 import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import scalaz.Scalaz._

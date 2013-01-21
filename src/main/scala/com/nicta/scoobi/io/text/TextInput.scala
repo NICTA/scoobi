@@ -30,7 +30,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit
 import core._
 import impl.plan.DListImpl
 import impl.mapreducer.TaggedInputSplit
-import impl.ScoobiConfigurationImpl._
+import impl.ScoobiConfiguration._
 import impl.io.Helper
 
 /** Smart functions for materialising distributed lists by loading text files. */

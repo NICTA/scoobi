@@ -20,7 +20,7 @@ import org.specs2.mutable.Tables
 import org.specs2.specification.Scope
 
 import testing.mutable.UnitSpecification
-import core._
+import Scoobi._
 
 class ScoobiAppSpec extends UnitSpecification with Tables {
 

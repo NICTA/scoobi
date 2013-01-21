@@ -19,7 +19,7 @@ package rtt
 
 import org.apache.hadoop.io.WritableComparable
 import core._
-import application.ScoobiConfiguration
+import impl.ScoobiConfigurationImpl._
 
 /**
  * A tagged value for Hadoop keys. Specifically this will be a K2 type so must

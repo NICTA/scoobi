@@ -17,8 +17,8 @@ package com.nicta.scoobi
 package application
 
 import org.apache.hadoop.fs.FileSystem._
+import impl.ScoobiConfiguration
 import ScoobiConfiguration._
-
 /**
  * Definition of the Cluster addresses: FileSystem + JobTracker
  */

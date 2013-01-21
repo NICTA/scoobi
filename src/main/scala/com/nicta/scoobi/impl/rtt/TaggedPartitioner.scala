@@ -19,7 +19,7 @@ package rtt
 
 import org.apache.hadoop.mapreduce.Partitioner
 import core._
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
 
 /** Custom partitioner for tagged key-values. */
 trait TaggedPartitioner extends Partitioner[TaggedKey, TaggedValue]

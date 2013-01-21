@@ -4,7 +4,7 @@ package exec
 
 import org.specs2.specification.Grouped
 import plan.mscr.{BypassOutputChannel, MscrInputChannel, Mscr}
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
 import testing.UnitSpecification
 import plan.comp.factory
 import HadoopMode._

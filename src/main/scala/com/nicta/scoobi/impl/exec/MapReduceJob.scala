@@ -33,6 +33,7 @@ import reflect.Classes._
 import io._
 import mapreducer._
 import ScoobiConfigurationImpl._
+import ScoobiConfiguration._
 import mapreducer.BridgeStore
 import MapReduceJob.configureJar
 

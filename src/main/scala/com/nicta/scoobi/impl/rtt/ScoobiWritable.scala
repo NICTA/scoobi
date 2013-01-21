@@ -17,11 +17,9 @@ package com.nicta.scoobi
 package impl
 package rtt
 
-import java.io.{DataInput, DataOutput}
 import org.apache.hadoop.io._
 import core._
 import java.io.{DataInput, DataOutput}
-import application.ScoobiConfiguration
 
 /** The super-class of all "value" types used in Hadoop jobs. */
 abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>

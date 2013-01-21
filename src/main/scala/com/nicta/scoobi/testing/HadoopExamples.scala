@@ -25,7 +25,8 @@ import ResultLogicalCombinators._
 import core._
 import application._
 import impl.time.SimpleTimer
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
+import core.ScoobiConfiguration
 
 /**
  * This trait provides an Around context to be used in a Specification

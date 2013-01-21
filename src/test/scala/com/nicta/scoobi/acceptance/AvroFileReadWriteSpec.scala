@@ -25,7 +25,7 @@ import Scoobi._
 import testing.mutable.NictaSimpleJobs
 import testing.TestFiles
 import impl.exec.JobExecException
-import application.ScoobiConfiguration._
+import impl.ScoobiConfiguration._
 
 class AvroFileReadWriteSpec extends NictaSimpleJobs {
 

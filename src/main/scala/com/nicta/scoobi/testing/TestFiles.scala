@@ -23,6 +23,7 @@ import Scoobi._
 import core.WireFormat
 import impl.io.FileSystems
 
+import impl.ScoobiConfiguration._
 import impl.ScoobiConfigurationImpl._
 
 /**

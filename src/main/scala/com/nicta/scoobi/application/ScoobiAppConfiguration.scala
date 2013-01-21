@@ -25,7 +25,8 @@ import java.io.File
 import impl.control.SystemProperties
 
 import core._
-import impl.ScoobiConfigurationImpl
+import impl.ScoobiConfiguration
+import core.ScoobiConfiguration
 
 /**
  * This trait provides a ScoobiConfiguration object initialised with the configuration files found in the
@@ -68,11 +69,3 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
   }
 }
 
-object ScoobiConfiguration {
-  implicit def toConfiguration(sc: ScoobiConfiguration): Configuration = sc.configuration
-  implicit def fromConfiguration(c: Configuration): ScoobiConfiguration = ScoobiConfigurationImpl(c)
-
-  def apply(configuration: Configuration) = new ScoobiConfigurationImpl(configuration)
-  def apply() = new ScoobiConfigurationImpl(new Configuration)
-
-}

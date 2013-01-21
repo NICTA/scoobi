@@ -22,6 +22,7 @@ import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.fs.Path
 import core._
 import impl.io.FileSystems
+import impl.ScoobiConfiguration._
 import impl.ScoobiConfigurationImpl._
 import org.apache.commons.logging.LogFactory
 import impl.control.SystemProperties

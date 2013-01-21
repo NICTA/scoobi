@@ -3,7 +3,7 @@ package acceptance
 
 import impl.plan.comp._
 import testing.mutable.NictaSimpleJobs
-import application.ScoobiConfiguration
+import impl.ScoobiConfiguration
 import core.DList
 import impl.plan.DListImpl
 
