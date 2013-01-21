@@ -18,7 +18,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   """ >> {
     val builder = new MetadataClassBuilder[MetadataScoobiWritable]("specificName", wf[String])
 
-    normalise(builder.toString) ===
+    normalise(builder.show) ===
       """|class specificName extends com.nicta.scoobi.impl.rtt.MetadataScoobiWritable {
          |  java.lang.String metadataPath () {
          |    return "...scoobi.metadata.specificName";

@@ -47,17 +47,21 @@ case class MapReduceJob(mscr: Mscr) {
 
   /** Take this MapReduce job and run it on Hadoop. */
   def run(implicit configuration: ScoobiConfiguration) {
-
-    val job =
-      new Job(configuration, configuration.jobStep(mscr.id)) |>
-      configureJob                                           |>
-      executeJob                                             |>
-      collectOutputs
+    val job = configure |> execute
 
     // if job failed, throw an exception
     if(!job.isSuccessful) {
       throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
     }
+  }
+
+  /** configure the Hadoop job */
+  def configure(implicit configuration: ScoobiConfiguration): Job =
+    new Job(configuration, configuration.jobStep(mscr.id)) |> configureJob
+
+  /** execute the Hadoop job and collect results */
+  def execute(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+    job |> executeJob |> collectOutputs
   }
 
   def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {

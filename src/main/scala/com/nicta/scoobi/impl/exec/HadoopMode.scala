@@ -11,6 +11,8 @@ import collection.Seqs._
 import scalaz.{DList => _, _}
 import concurrent.Promise
 import Scalaz._
+import org.apache.hadoop.mapreduce.Job
+
 /**
  * Execution of Scoobi applications using Hadoop
  *
@@ -67,40 +69,54 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
 
     def execute: Seq[Any] = {
       if (layerBridgesAreFilled) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
-      else                       executeMscrs(mscrs(layer)).debug("Executing layer\n"+layer)
+      else                       runMscrs(mscrs(layer)).debug("Executing layer\n"+layer)
 
       layerBridges(layer).foreach(markBridgeAsFilled)
       layerBridges(layer).debug("Layer bridges: ").map(read).toSeq
     }
 
-    /** execute mscrs concurrently if there are more than one */
-    private def executeMscrs(mscrs: Seq[Mscr]): Unit = {
-        if (mscrs.size <= 1) mscrs.foreach(executeMscr)
-        else                 mscrs.toList.par.map(executeMscr)
+    /**
+     * run mscrs concurrently if there are more than one.
+     *
+     * Only the execution part is done concurrently, not the configuration.
+     * This is to make sure that there is not undesirable race condition during the setting up of variables
+     */
+    private def runMscrs(mscrs: Seq[Mscr]): Unit = {
+      if (mscrs.size <= 1) mscrs.filterNot(isFilled).foreach(runMscr)
+      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).par.map(executeMscr.tupled)
     }
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */
     private def layerBridgesAreFilled = layerBridges(layer).nonEmpty && layerBridges(layer).forall(hasBeenFilled)
 
-    /** execute a Mscr */
-    private def executeMscr = (mscr: Mscr) => {
+    private def isFilled = (mscr: Mscr) =>
+      (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)).debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
+
+    /** run a Mscr */
+    private def runMscr = (mscr: Mscr) => {
       implicit val mscrConfiguration = sc.duplicate
+      executeMscr.tupled(configureMscr(mscr))
+    }
+    
+    /** configure a Mscr */
+    private def configureMscr = (mscr: Mscr) => {
+      implicit val mscrConfiguration = sc.duplicate
+      debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
+      mscr.sources.foreach(_.inputCheck)
 
-      if (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)) debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
-      else {
-        debug("Executing Mscr\n"+mscr)
+      debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
+      mscr.sinks.foreach(_.outputCheck)
 
-        debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
-        mscr.sources.foreach(_.inputCheck)
+      debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
+      mscr.inputNodes.foreach(load)
 
-        debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
-        mscr.sinks.foreach(_.outputCheck)
+      (mscr, MapReduceJob(mscr).configure)
+    }
 
-        debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
-        mscr.inputNodes.foreach(load)
-
-        MapReduceJob(mscr).run
-      }
+    /** execute a Mscr */
+    private def executeMscr = (mscr: Mscr, job: Job) => {
+      implicit val mscrConfiguration = sc.duplicate
+      MapReduceJob(mscr).execute
     }
   }
 

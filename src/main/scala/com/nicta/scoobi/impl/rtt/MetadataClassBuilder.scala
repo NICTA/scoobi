@@ -46,7 +46,7 @@ import core._
 case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc: ScoobiConfiguration, mf: Manifest[T]) {
 
   /** string value showing the generated class source code */
-  override lazy val toString = {
+  lazy val show = {
     builtCtClass
     Seq("class "+className+" extends "+parentClassName+" {",
           indent(code.toString),
@@ -54,7 +54,7 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
   }
 
   /** Compile the definition and code for the class. */
-  def toRuntimeClass: RuntimeClass = new RuntimeClass(className, builtCtClass.toClass, classBytecode)
+  lazy val toRuntimeClass: RuntimeClass = new RuntimeClass(className, builtCtClass.toClass, classBytecode)
   /** @return the java class */
   def toClass: Class[_] = builtCtClass.toClass
 
