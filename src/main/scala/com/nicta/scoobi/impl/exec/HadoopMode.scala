@@ -82,7 +82,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
      */
     private def runMscrs(mscrs: Seq[Mscr]): Unit = {
       if (mscrs.size <= 1) mscrs.filterNot(isFilled).foreach(runMscr)
-      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).par.map(executeMscr.tupled).map(reportMscr.tupled)
+      else                 mscrs.filterNot(isFilled).toList.map(configureMscr).par.map(executeMscr.tupled).seq.map(reportMscr.tupled)
     }
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */
@@ -109,18 +109,16 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
       debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
       mscr.inputNodes.foreach(load)
 
-      (mscr, MapReduceJob(mscr).configure)
+      (mscr, mscrConfiguration, MapReduceJob(mscr).configure)
     }
 
     /** execute a Mscr */
-    private def executeMscr = (mscr: Mscr, job: Job) => {
-      implicit val mscrConfiguration = sc.duplicate
-      (mscr, job |> MapReduceJob(mscr).execute)
+    private def executeMscr = (mscr: Mscr, sc: ScoobiConfiguration, job: Job) => {
+      (mscr, sc, job |> MapReduceJob(mscr).execute(sc))
     }
 
     /** report the execution of a Mscr */
-    private def reportMscr = (mscr: Mscr, job: Job) => {
-      implicit val mscrConfiguration = sc.duplicate
+    private def reportMscr = (mscr: Mscr, sc: ScoobiConfiguration, job: Job) => {
       job |> MapReduceJob(mscr).report
     }
   }
