@@ -9,7 +9,6 @@ import plan.mscr._
 import monitor.Loggable._
 import collection.Seqs._
 import scalaz.{DList => _, _}
-import concurrent.Promise
 import Scalaz._
 import org.apache.hadoop.mapreduce.Job
 
@@ -116,7 +115,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     /** execute a Mscr */
     private def executeMscr = (mscr: Mscr, job: Job) => {
       implicit val mscrConfiguration = sc.duplicate
-      MapReduceJob(mscr).execute
+      job |> MapReduceJob(mscr).execute
     }
   }
 

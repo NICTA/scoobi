@@ -32,6 +32,8 @@ trait Configurations {
    */
   val JOB_ID                             = "scoobi.jobid"
   val JOB_STEP                           = "scoobi.jobstep"
+  val JOB_TIMESTAMP                      = "scoobi.jobtimestamp"
+  val JOB_UNIQUEID                       = "scoobi.uniqueid"
   val PROGRESS_TIME                      = "scoobi.progress.time"
   val JOB_NAME                           = "scoobi.jobname"
   val SCOOBI_MODE                        = "scoobi.mode"

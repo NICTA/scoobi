@@ -55,7 +55,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   private lazy val timestamp = {
     val now = new Date
     val sdf = new SimpleDateFormat("yyyyMMdd-HHmmss")
-    sdf.format(now)
+    hadoopConfiguration.getOrSet(JOB_TIMESTAMP, sdf.format(now))
   }
 
   /** The id for the current Scoobi job being (or about to be) executed. */
@@ -239,7 +239,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   /** @return a pseudo-random unique id */
-  private lazy val uniqueId = java.util.UUID.randomUUID
+  private lazy val uniqueId = hadoopConfiguration.getOrSet(JOB_UNIQUEID, java.util.UUID.randomUUID.toString)
 
   /** set a value on the configuration */
   def set(key: String, value: Any) {
