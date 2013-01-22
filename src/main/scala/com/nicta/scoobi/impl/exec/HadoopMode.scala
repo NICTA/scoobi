@@ -112,7 +112,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
 
     /** execute a Mscr */
     protected def executeMscr = (job: MapReduceJob) => {
-      Promise(tryOrElse(job.execute)(job))
+      Promise(tryOr(job.execute)((e: Exception) => { e.printStackTrace; job }))
     }
 
     /** report the execution of a Mscr */
