@@ -58,19 +58,6 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     res.run must haveTheSameElementsAs(res.run(configureForInMemory(ScoobiConfiguration())))
   }
 
-  tag("issue 127")
-  "There must be no cyclic execution" >> { implicit sc: SC =>
-    val input = fromKeyValues("k1,1", "k2,2")
-
-    val inputGrouped = input.groupBy(_._1)
-    val inputGroupedDifferently = input.groupBy(_._2)
-    val inputGroupedAsDObject = inputGrouped.materialise
-
-    val dObjectJoinedToInputGroupedDiff = (inputGroupedAsDObject join inputGroupedDifferently)
-
-    run(dObjectJoinedToInputGroupedDiff) must terminate(sleep = 60.seconds)
-  }
-
   tag("issue 119")
   "joining an object created from random elements and a DList must not crash" >> { implicit sc: SC =>
     val r = new scala.util.Random
