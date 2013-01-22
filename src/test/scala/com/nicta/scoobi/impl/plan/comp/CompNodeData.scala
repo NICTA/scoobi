@@ -16,7 +16,7 @@ import application._
 import WireFormat._
 import org.kiama.rewriting.Rewriter._
 
-trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArguments with CompNodeFactory {
+trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArguments with CompNodeFactory { outer =>
 
     /**
      * Arbitrary instance for a CompNode
@@ -84,7 +84,10 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
       })
     }(result).toString
 
-
+    implicit def toNormalised(result: Any): ToNormalised = new ToNormalised(result)
+    class ToNormalised(result: Any) {
+      def normalise = outer.normalise(result)
+    }
   }
 
 

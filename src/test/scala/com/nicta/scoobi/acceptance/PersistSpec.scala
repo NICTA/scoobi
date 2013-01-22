@@ -4,8 +4,9 @@ package acceptance
 import testing.mutable.NictaSimpleJobs
 import testing.TempFiles
 import Scoobi._
+import impl.plan.comp.CompNodeData
 
-class PersistSpec extends NictaSimpleJobs {
+class PersistSpec extends NictaSimpleJobs with CompNodeData {
   // make this spec sequential to avoid lack of connections on the cluster
   sequential
 
@@ -24,14 +25,14 @@ class PersistSpec extends NictaSimpleJobs {
   }
   "3. a list, materialised" >> { implicit sc: ScoobiConfiguration =>
     val list = DList(1, 2, 3)
-    list.run === Seq(1, 2, 3)
+    list.run.normalise === "Vector(1, 2, 3)"
   }
   "4. a list, having a sink and also materialised" >> { implicit sc: ScoobiConfiguration =>
     val resultFile = TempFiles.createTempFile("test")
     val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
 
     resultFile must exist
-    list.run === Seq(1, 2, 3)
+    list.run.normalise === "Vector(1, 2, 3)"
   }
   endp
 
@@ -43,7 +44,7 @@ class PersistSpec extends NictaSimpleJobs {
 
       "the list l1 is computed only once and l3 is not computed" ==> {
         l2.run must not(throwAn[Exception])
-        l2.run === Seq(11, 21, 31)
+        l2.run.normalise === "Vector(11, 21, 31)"
       }
     }
 
@@ -63,7 +64,7 @@ class PersistSpec extends NictaSimpleJobs {
 
       "the list l1 has been computed only once" ==> {
         persist(l2, l3) must not(throwAn[Exception])
-        (l2.run, l3.run) === (Seq(11, 21, 31), Seq(12, 22, 32))
+        (l2.run.normalise, l3.run.normalise) === ("Vector(11, 21, 31)", "Vector(12, 22, 32)")
       }
     }
     "5.3 when we iterate with several computations" >> { implicit sc: ScoobiConfiguration =>
@@ -93,7 +94,7 @@ class PersistSpec extends NictaSimpleJobs {
     persist(sum, max, plusOne)
 
     // collect results
-    (sum.run, max.run, plusOne.run) === (6, 3, Vector(2, 3, 4))
+    (sum.run, max.run, plusOne.run.normalise) === (6, 3, "Vector(2, 3, 4)")
   }
 
   "7. A tuple containing 2 objects and a list" >> { implicit sc: ScoobiConfiguration =>
@@ -101,6 +102,7 @@ class PersistSpec extends NictaSimpleJobs {
     val plusOne: DList[Int] = list.map(_ + 1)
 
     // execute the computation graph for the 2 DObjects and one DList
-    run(list.sum, list.max, plusOne) === (6, 3, Vector(2, 3, 4))
+    val (sum, max, plus1) = run(list.sum, list.max, plusOne)
+    (sum, max, plus1.normalise) === (6, 3, "Vector(2, 3, 4)")
   }
 }
