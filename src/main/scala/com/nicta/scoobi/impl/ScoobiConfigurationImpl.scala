@@ -23,8 +23,8 @@ import monitor.Loggable._
 import org.apache.hadoop.mapreduce.Job
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
-                                   userJars: Set[String] = Set(),
-                                   userDirs: Set[String] = Set()) extends ScoobiConfiguration {
+                                   var userJars: Set[String] = Set(),
+                                   var userDirs: Set[String] = Set()) extends ScoobiConfiguration {
 
   /**
    * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
@@ -102,7 +102,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * add a new jar url (as a String) to the current configuration
    */
-  def addJar(jar: String) = copy(userJars = userJars + jar)
+  def addJar(jar: String) = { userJars = userJars + jar; this }
 
   /**
    * add several user jars to the classpath of this configuration
@@ -119,7 +119,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * add a user directory to the classpath of this configuration
    */
-  def addUserDir(dir: String) = copy(userDirs = userDirs + dirPath(dir))
+  def addUserDir(dir: String) = { userDirs = userDirs + dirPath(dir); this }
 
   /**
    * add several user directories to the classpath of this configuration
