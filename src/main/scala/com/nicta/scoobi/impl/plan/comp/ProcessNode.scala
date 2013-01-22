@@ -47,7 +47,7 @@ case class ParallelDo(ins:           Seq[CompNode],
 
   lazy val wf = wfb
   lazy val wfe = env.wf
-  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "] env: " + env
+  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "]"
 
   def source = ins.collect(isALoad).headOption
 
