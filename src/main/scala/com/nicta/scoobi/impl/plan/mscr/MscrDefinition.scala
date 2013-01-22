@@ -54,7 +54,7 @@ trait MscrsDefinition extends Layering {
     if (out.isEmpty) Seq()
     else {
       // groups of input channels having at least one tag in common
-      val channelsWithCommonTags = in.toIndexedSeq.groupByM[Id]((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
+      val channelsWithCommonTags = in.toList.groupWhen((i1, i2) => (i1.tags intersect i2.tags).nonEmpty)
 
       // create Mscr for each set of channels with common tags
       channelsWithCommonTags.map { taggedInputChannels =>
