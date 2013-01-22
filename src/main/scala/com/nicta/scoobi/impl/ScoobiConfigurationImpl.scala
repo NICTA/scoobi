@@ -155,6 +155,12 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /** @return the current mode */
   def mode = Mode.withName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
 
+  /** @return true if the mscr jobs can be executed concurrently */
+  def concurrentJobs = hadoopConfiguration.getOrSetBoolean(CONCURRENT_JOBS, true)
+
+  /** set to true if the mscr jobs must be executed concurrently */
+  def setConcurrentJobs(concurrent: Boolean) = { hadoopConfiguration.setBoolean(CONCURRENT_JOBS, concurrent); this }
+
   /**
    * @return true if the dependent jars have been uploaded
    */

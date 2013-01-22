@@ -37,6 +37,7 @@ trait Configurations {
   val PROGRESS_TIME                      = "scoobi.progress.time"
   val JOB_NAME                           = "scoobi.jobname"
   val SCOOBI_MODE                        = "scoobi.mode"
+  val CONCURRENT_JOBS                    = "scoobi.concurrentjobs"
   val UPLOADED_LIBJARS                   = "scoobi.uploadedlibjars"
   val MAPREDUCE_REDUCERS_MIN             = "scoobi.mapreduce.reducers.min"
   val MAPREDUCE_REDUCERS_MAX             = "scoobi.mapreduce.reducers.max"
@@ -135,6 +136,14 @@ trait Configurations {
     def getOrSet(key: String, defaultValue: =>String): String = {
       if (!conf.defines(key)) conf.set(key, defaultValue)
       conf.get(key)
+    }
+
+    /**
+     * @return the value of the configuration for a given Boolean key or set it with a default value
+     */
+    def getOrSetBoolean(key: String, defaultValue: =>Boolean): Boolean = {
+      if (!conf.defines(key)) conf.setBoolean(key, defaultValue)
+      conf.getBoolean(key, defaultValue)
     }
 
     /**

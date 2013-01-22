@@ -30,6 +30,7 @@ trait ScoobiConfiguration {
   def isRemote: Boolean
   def isLocal: Boolean
   def isInMemory: Boolean
+  def concurrentJobs: Boolean
   def modeIs(mode: Mode.Value): ScoobiConfiguration
   def mode: Mode.Value
   def uploadedLibJars: Boolean

@@ -40,45 +40,48 @@ import MapReduceJob.configureJar
 /**
  * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
  */
-case class MapReduceJob(mscr: Mscr) {
+case class MapReduceJob(mscr: Mscr)(implicit val configuration: ScoobiConfiguration) {
 
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
+  private implicit lazy val job = new Job(configuration, configuration.jobStep(mscr.id))
+  
   /** Take this MapReduce job and run it on Hadoop. */
-  def run(implicit configuration: ScoobiConfiguration) {
-    configure |> execute |> report
+  def run = {
+    configure
+    execute
+    report
   }
-
-  /** configure the Hadoop job */
-  def configure(implicit configuration: ScoobiConfiguration): Job =
-    new Job(configuration, configuration.jobStep(mscr.id)) |> configureJob
 
   /** execute the Hadoop job and collect results */
-  def execute(implicit configuration: ScoobiConfiguration) = (job: Job) => {
-    job |> executeJob |> collectOutputs
+  def execute = {
+    executeJob
+    collectOutputs
   }
 
-  def report = (job: Job) => {
+  def report = {
     // if job failed, throw an exception
     if(!job.isSuccessful) {
       throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
     }
+    this
   }
 
-  def configureJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+  /** configure the Hadoop job */
+  def configure = {
     FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
 
     val jar = new JarBuilder
     job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
-    configureKeysAndValues(jar, job)
-    configureMappers(jar, job)
-    configureCombiners(jar, job)
-    configureReducers(jar, job)
+    configureKeysAndValues(jar)
+    configureMappers(jar)
+    configureCombiners(jar)
+    configureReducers(jar)
     configureJar(jar)
     jar.close(configuration)
 
-    job
+    this
   }
 
 
@@ -87,7 +90,7 @@ case class MapReduceJob(mscr: Mscr) {
    *   - Partitioner is generated and of type TaggedPartitioner
    *   - GroupingComparator is generated and of type TaggedGroupingComparator
    *   - SortComparator is handled by TaggedKey which is WritableComparable */
-  private def configureKeysAndValues(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
+  private def configureKeysAndValues(jar: JarBuilder) {
     val id = UniqueId.get
 
     val tkRtClass = TaggedKey("TK" + id, mscr.keyTypes.types)
@@ -111,7 +114,7 @@ case class MapReduceJob(mscr: Mscr) {
    *     - use ChannelInputs to specify multiple mappers through job
    *     - generate runtime class (ScoobiWritable) for each input value type and add to JAR (any
    *       mapper for a given input channel can be used as they all have the same input type */
-  private def configureMappers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
+  private def configureMappers(jar: JarBuilder) {
     ChannelsInputFormat.configureSources(job, jar, mscr.sources)
 
     DistCache.pushObject(job.getConfiguration, InputChannels(mscr.inputChannels), "scoobi.mappers")
@@ -122,7 +125,7 @@ case class MapReduceJob(mscr: Mscr) {
    *   - only need to make use of Hadoop's combiner facility if actual combiner
    *   functions have been added
    *   - use distributed cache to push all combine code out */
-  private def configureCombiners(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
+  private def configureCombiners(jar: JarBuilder) {
     if (!mscr.combiners.isEmpty) {
       DistCache.pushObject(job.getConfiguration, mscr.combinersByTag, "scoobi.combiners")
       job.setCombinerClass(classOf[MscrCombiner].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
@@ -133,7 +136,7 @@ case class MapReduceJob(mscr: Mscr) {
    *     - generate runtime class (ScoobiWritable) for each output values being written to
    *       a BridgeStore and add to JAR
    *     - add a named output for each output channel */
-  private def configureReducers(jar: JarBuilder, job: Job)(implicit configuration: ScoobiConfiguration) {
+  private def configureReducers(jar: JarBuilder) {
     mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass) }
 
     mscr.outputChannels.foreach { out =>
@@ -160,7 +163,7 @@ case class MapReduceJob(mscr: Mscr) {
     logger.info("Number of reducers: " + numReducers)
   }
 
-  private def executeJob(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+  private def executeJob = {
 
     val taskDetailsLogger = new TaskDetailsLogger(job)
 
@@ -187,14 +190,14 @@ case class MapReduceJob(mscr: Mscr) {
     }
     // Log any left over task details
     taskDetailsLogger.logTaskCompletionDetails()
-    job
+    this
   }
 
-  private[scoobi] def collectOutputs(implicit configuration: ScoobiConfiguration) = (job: Job) => {
+  private[scoobi] def collectOutputs = {
     /* Move named file-based sinks to their correct output paths. */
     mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
     configuration.deleteTemporaryOutputDirectory(job)
-    job
+    this
   }
 }
 

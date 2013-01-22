@@ -83,10 +83,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
     private def runMscrs(mscrs: Seq[Mscr]): Unit = {
-      mscrs.filterNot(isFilled).toList.
-        map(configureMscr).
-        map(executeMscr.tupled).
-        sequence.get.map(reportMscr.tupled)
+      val configured = mscrs.filterNot(isFilled).toList.map(configureMscr)
+      val executed = if (sc.concurrentJobs) configured.map(executeMscr).sequence.get
+                     else                   configured.map(_.execute)
+      executed.map(reportMscr)
     }
 
     /** @return true if the layer has bridges are they're all already filled by previous computations */
@@ -107,17 +107,17 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
       debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
       mscr.inputNodes.foreach(load)
 
-      (mscr, mscrConfiguration, MapReduceJob(mscr).configure)
+      MapReduceJob(mscr).configure
     }
 
     /** execute a Mscr */
-    private def executeMscr = (mscr: Mscr, sc: ScoobiConfiguration, job: Job) => {
-      Promise((mscr, sc, tryOrElse(job |> MapReduceJob(mscr).execute(sc))(job)))
+    protected def executeMscr = (job: MapReduceJob) => {
+      Promise(tryOrElse(job.execute)(job))
     }
 
     /** report the execution of a Mscr */
-    private def reportMscr = (mscr: Mscr, sc: ScoobiConfiguration, job: Job) => {
-      job |> MapReduceJob(mscr).report
+    protected def reportMscr = (job: MapReduceJob) => {
+      job.report
     }
   }
 
