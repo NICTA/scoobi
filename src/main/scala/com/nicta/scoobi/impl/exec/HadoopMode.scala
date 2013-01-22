@@ -12,6 +12,7 @@ import scalaz.{DList => _, _}
 import concurrent.Promise
 import Scalaz._
 import org.apache.hadoop.mapreduce.Job
+import control.Exceptions._
 
 /**
  * Execution of Scoobi applications using Hadoop
@@ -111,7 +112,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
 
     /** execute a Mscr */
     private def executeMscr = (mscr: Mscr, sc: ScoobiConfiguration, job: Job) => {
-      Promise((mscr, sc, job |> MapReduceJob(mscr).execute(sc)))
+      Promise((mscr, sc, tryOrElse(job |> MapReduceJob(mscr).execute(sc))(job)))
     }
 
     /** report the execution of a Mscr */
