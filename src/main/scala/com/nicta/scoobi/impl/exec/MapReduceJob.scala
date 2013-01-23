@@ -36,6 +36,7 @@ import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
 import mapreducer.BridgeStore
 import MapReduceJob.configureJar
+import control.Exceptions._
 
 /**
  * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
@@ -62,7 +63,10 @@ case class MapReduceJob(mscr: Mscr)(implicit val configuration: ScoobiConfigurat
 
   def report = {
     // if job failed, throw an exception
-    if(!job.isSuccessful) {
+    // an IllegalStateException can be thrown when asking for job.isSuccessful if the job has started executing but the
+    // RUNNING state has not been set
+    val successful = tryOrElse(job.isSuccessful)(false)
+    if(!successful) {
       throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
     }
     this

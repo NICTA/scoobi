@@ -24,7 +24,7 @@ import org.apache.hadoop.filecache.DistributedCache
 import core._
 import testing.TestFiles
 import org.apache.hadoop.io.Writable
-import java.io.{DataOutput, DataInput}
+import java.io.{File, DataOutput, DataInput}
 
 class ConstantStringDataSource(val value: String) extends DataSource[String, String, String] {
 
@@ -34,8 +34,6 @@ class ConstantStringDataSource(val value: String) extends DataSource[String, Str
   def inputCheck(implicit sc: ScoobiConfiguration) {}
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     job.getConfiguration.set("mapred.constant.string", "value")
-    val file = TestFiles.createTempFile("cache")
-    DistributedCache.addCacheFile(file.toURI, job.getConfiguration)
   }
   def inputSize(implicit sc: ScoobiConfiguration): Long = value.size
   lazy val inputConverter = ConstantStringInputConverter(value)
