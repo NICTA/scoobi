@@ -55,10 +55,8 @@ case class ParallelDo(ins:           Seq[CompNode],
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   /** Use this ParallelDo as a Mapper */
-  def map(value: Any, emitter: EmitterWriter)(implicit sc: ScoobiConfiguration) {
-    dofn.setupFunction(environment)
+  def map(environment: Any, value: Any, emitter: EmitterWriter) {
     dofn.processFunction(environment, value, emitter)
-    dofn.cleanupFunction(environment, emitter)
   }
 
   /** Use this ParallelDo as a Reducer */
@@ -76,7 +74,7 @@ case class ParallelDo(ins:           Seq[CompNode],
   }
 
   /** @return the environment object stored within the env node */
-  private def environment(implicit sc: ScoobiConfiguration) = env.environment(sc).pull(sc.configuration)
+  def environment(implicit sc: ScoobiConfiguration) = env.environment(sc).pull(sc.configuration)
 
   /** push a computed result to the distributed cache for the parallelDo environment */
   def pushEnv(result: Any)(implicit sc: ScoobiConfiguration) {

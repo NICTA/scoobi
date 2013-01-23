@@ -16,9 +16,9 @@ case class VectorEmitterWriter() extends EmitterWriter {
   def result = vb.result
 
   /** use this emitter to map a list of value with a parallelDo */
-  def map(mappedValues: Seq[Any], mapper: ParallelDo)(implicit configuration: ScoobiConfiguration) = {
+  def map(environment: Any, mappedValues: Seq[Any], mapper: ParallelDo)(implicit configuration: ScoobiConfiguration) = {
     vb.clear
-    mappedValues.foreach(v => mapper.map(v, this))
+    mappedValues.foreach(v => mapper.map(environment, v, this))
     result
   }
 }

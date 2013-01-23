@@ -68,7 +68,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   def checkTaggedValue = (wf: WireReaderWriter, value: Any) => {
     val builder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(0 -> Tuple1(wf)))
     val writable = builder.toClass.newInstance.asInstanceOf[TaggedValue]
-    writable.set(0, value)
+    writable.set(value)
     serialiseAndDeserialise(writable)
     writable.get(0) === value
   }
@@ -76,7 +76,7 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   def checkTaggedKey = (wf: WireReaderWriter, gp: KeyGrouping, value: Any) => {
     val builder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(0 -> (wf, gp)))
     val key = builder.toClass.newInstance.asInstanceOf[TaggedKey]
-    key.set(0, value)
+    key.set(value)
     serialiseAndDeserialise(key)
 
     key.get(0) === value
@@ -89,7 +89,8 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
 
     val keyBuilder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
     val key = keyBuilder.toClass.newInstance.asInstanceOf[TaggedKey]
-    key.set(3, v)
+    key.setTag(3)
+    key.set(v)
 
     grouping.compare(key, key) === 0
   }
@@ -100,11 +101,13 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
 
     val keyBuilder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
     val key = keyBuilder.toClass.newInstance.asInstanceOf[TaggedKey]
-    key.set(3, v)
+    key.setTag(3)
+    key.set(v)
 
     val valueBuilder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(3 -> Tuple1(wf)))
     val value        = valueBuilder.toClass.newInstance.asInstanceOf[TaggedValue]
-    value.set(3, v)
+    value.setTag(3)
+    value.set(v)
 
     partitioner.getPartition(key, value, 2) must be_>=(0)
   }

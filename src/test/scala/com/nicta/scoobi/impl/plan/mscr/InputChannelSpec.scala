@@ -7,7 +7,7 @@ import testing.UnitSpecification
 import org.specs2.specification.Groups
 import comp.{GroupByKey, factory}
 import org.specs2.matcher.{Matcher, ThrownExpectations}
-import core.{MapFunction, InputOutputContext, CompNode}
+import core.{EmitterWriter, MapFunction, InputOutputContext, CompNode}
 import org.apache.hadoop.conf.Configuration
 import rtt.{MetadataTaggedValue, MetadataTaggedKey, TaggedValue, TaggedKey}
 import scala.collection.mutable.ListBuffer
@@ -81,9 +81,9 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     e1 := {
       mt(pd1)
       val channel = floatingInputChannel(l1)
-      channel.map("1", "start", context)
-      context.key === 1
-      context.value === "START"
+      channel.map("1", "start", channel.context)
+      channel.context.key === 1
+      channel.context.value === "START"
     }
 
     e2 := {
@@ -92,9 +92,9 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       aRoot(mt1, mt2)
 
       val channel = floatingInputChannel(l1)
-      channel.map("1", "stARt", context)
-      context.keys must beDistinct
-      context.values === Seq("START", "start")
+      channel.map("1", "stARt", channel.context)
+      channel.context.keys must beDistinct
+      channel.context.values === Seq("START", "start")
     }
 
     e3 := {
@@ -102,8 +102,8 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       gbk(pd2)
 
       val channel = floatingInputChannel(l1)
-      channel.map("1", "stARt", context)
-      context.values === Seq("START now")
+      channel.map("1", "stARt", channel.context)
+      channel.context.values === Seq("START now")
     }
 
     e4 := {
@@ -113,11 +113,19 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       aRoot(gbk1, gbk2)
 
       val channel = gbkInputChannel(l1, Seq(gbk1, gbk2))
-      channel.map("1", "stARt", context)
-      context.values === Seq("START now", "START later")
+      channel.map("1", "stARt", channel.context)
+      channel.context.values === Seq("START now", "START later")
     }
 
-    val context = new InputOutputContext(null) {
+  }
+
+  trait MockInputChannel extends MscrInputChannel {
+    tks = Map[Int, TaggedKey]().withDefaultValue(new MetadataTaggedKey { def metadataPath = "" }: TaggedKey)
+    tvs = Map[Int, TaggedValue]().withDefaultValue(new MetadataTaggedValue { def metadataPath = ""  }: TaggedValue)
+    environments = Map[Int, Any]().withDefaultValue(())
+    emitters = Map[Int, EmitterWriter]().withDefaultValue(createEmitter(0, context))
+
+    lazy val context = new InputOutputContext(null) {
       var key: Any = _
       var value: Any = _
       var tag: Int = _
@@ -133,11 +141,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       }
       override def configuration = new Configuration
     }
-  }
 
-  trait MockInputChannel extends MscrInputChannel {
-    tk = new MetadataTaggedKey { def metadataPath = "" }
-    tv = new MetadataTaggedValue { def metadataPath = ""  }
     override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
   def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode) with MockInputChannel

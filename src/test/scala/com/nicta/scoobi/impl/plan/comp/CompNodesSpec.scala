@@ -61,7 +61,7 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
 
   def pdMap(pd: ParallelDo, value: Any): Any = {
     val emitter = VectorEmitterWriter()
-    pd.map(value, emitter)(configuration)
+    pd.map(("",""), value, emitter)
     emitter.result
   }
   /** this configuration doesn't store any value in the environment */

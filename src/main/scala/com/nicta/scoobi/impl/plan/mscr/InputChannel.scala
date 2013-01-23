@@ -13,6 +13,9 @@ import rtt._
 import control.Functions._
 import Channel._
 import core.InputOutputContext
+import org.apache.commons.logging.LogFactory
+import monitor.Loggable
+import Loggable._
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
@@ -75,6 +78,8 @@ trait InputChannel {
  * Common implementation of InputChannel for GbkInputChannel and FloatingInputChannel
  */
 trait MscrInputChannel extends InputChannel {
+  implicit lazy val logger = LogFactory.getLog("scoobi.InputChannel")
+
   /** attributes used to determine if parallelDos are floating */
   private val nodes = new MscrsDefinition {}; import nodes._
 
@@ -100,22 +105,33 @@ trait MscrInputChannel extends InputChannel {
   /** flattened tree of mappers using this source */
   lazy val mappers = mappersUses(sourceNode)
 
-  protected var tk: TaggedKey = _
-  protected var tv: TaggedValue = _
+  protected var tks: Map[Int, TaggedKey] = Map()
+  protected var tvs: Map[Int, TaggedValue] = Map()
+  protected var emitters: Map[Int, EmitterWriter] = Map()
+  protected var environments: Map[Int, Any] = Map()
+  protected val vectorEmitter = VectorEmitterWriter()
+  protected implicit var configuration: Configuration = _
+  protected implicit var scoobiConfiguration: ScoobiConfiguration = _
 
   /** store the current TaggedKey/TaggedValue which are going to be a container for all key/values to map, by tag */
   def setup(context: InputOutputContext) {
-    tk = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
-    tv = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
+    logger.debug("setting up the mapper")
+    configuration = context.configuration
+    scoobiConfiguration = scoobiConfiguration(configuration)
+    tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
+    tvs = Map(tags.map(t => { val value = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
+    emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
+    environments = Map(mappers.map(mapper => (mapper.id, mapper.environment(scoobiConfiguration))):_*)
+
+    mappers.foreach(_.setup)
+
+    logger.debug("end - setting up the mapper")
   }
 
   protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
 
   /** map a given key/value and emit it */
   def map(key: Any, value: Any, context: InputOutputContext) {
-    implicit val configuration = context.configuration
-    implicit val sc = scoobiConfiguration(configuration)
-
     /**
      * map the input key/value using the full tree of mappers.
      *
@@ -125,27 +141,33 @@ trait MscrInputChannel extends InputChannel {
      *  - the internal mapper nodes are using a VectorEmitterWriter to compute values and leave them in memory
      *  - the in memory values are finally mapped with the "lastMappers" and emitted to disk
      */
-    def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = node match {
-      case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
-      case mapper: ParallelDo   =>
-        val previousNode = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).contains(n)).head
-        val mappedValues = computeMappers(previousNode, emitter)
+    def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = {
+      val result = node match {
+        case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
+        case mapper: ParallelDo   =>
+          val previousNode = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).contains(n)).head
+          val mappedValues = computeMappers(previousNode, emitter)
 
-        if (mappers.size > 1 && isInsideMapper(mapper)) VectorEmitterWriter().map(mappedValues, mapper)
-        else                                            mappedValues.map(v => mapper.map(v, emitter))
-      case _                    => Seq()
+          if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper.id), mappedValues, mapper)
+          else                                            mappedValues.map(v => mapper.map(environments(mapper.id), v, emitter))
+        case _                    => Seq()
+      }
+      result
     }
 
-    lastMappers.foreach(mapper => computeMappers(mapper, createEmitter(outputTag(mapper), context)))
+    lastMappers.foreach(mapper => computeMappers(mapper, emitters(outputTag(mapper))))
 
     if (lastMappers.isEmpty)
-      tags.map(t => createEmitter(t, context).write(source.fromKeyValueConverter.asValue(context, key, value)))
+      tags.map(t => emitters(t).write(source.fromKeyValueConverter.asValue(context, key, value)))
   }
 
   /** @return the output tag for a given "last" mapper */
   protected def outputTag(mapper: ParallelDo): Int
 
-  def cleanup(context: InputOutputContext) {}
+  def cleanup(context: InputOutputContext) {
+    logger.debug("cleaning up the mapper")
+    emitters.values.foreach(emitter => mappers.foreach(_.cleanup(emitter))).debug("finished cleaning up the mapper")
+  }
 
   /**
    * create an emitter for a given output tag, which will either emit values with auto-generated keys for a FloatingInputChannel,
@@ -167,12 +189,13 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
   lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
+    val (key, value) = (tks(tag), tvs(tag))
     def write(x: Any) {
       x match {
         case (x1, x2) =>
-          tk.set(tag, x1)
-          tv.set(tag, x2)
-          context.write(tk, tv)
+          key.set(x1)
+          value.set(x2)
+          context.write(key, value)
       }
     }
   }
@@ -192,10 +215,12 @@ class FloatingInputChannel(val sourceNode: CompNode) extends MscrInputChannel {
   lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
+    val (key, value) = (tks(tag), tvs(tag))
+
     def write(x: Any) {
-      tk.set(tag, rollingInt.get)
-      tv.set(tag, x)
-      context.write(tk, tv)
+      key.set(rollingInt.get)
+      value.set(x)
+      context.write(key, value)
     }
   }
   protected def outputTag(mapper: ParallelDo): Int = mapper.id
