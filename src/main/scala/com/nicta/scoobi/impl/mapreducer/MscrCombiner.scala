@@ -51,7 +51,8 @@ class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedVal
 
       /* Do the combining. */
       val reduction = combiner.combine(untaggedValues)
-      tv.set(tag, reduction)
+      tv.setTag(tag)
+      tv.set(reduction)
 
       context.write(key, tv)
     } else {
