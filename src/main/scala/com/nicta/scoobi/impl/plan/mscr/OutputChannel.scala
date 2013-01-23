@@ -6,11 +6,13 @@ package mscr
 import core._
 import comp._
 import scalaz.Equal
-import impl.io.FileSystems
+import io.FileSystems
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
+import org.apache.commons.logging.LogFactory
 import mapreducer._
 import ChannelOutputFormat._
+import monitor.Loggable._
 
 /**
  * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
@@ -47,6 +49,7 @@ trait OutputChannel {
  * Implementation of an OutputChannel for a Mscr
  */
 trait MscrOutputChannel extends OutputChannel {
+  protected implicit lazy val logger = LogFactory.getLog("scoobi.OutputChannel")
 
   override def equals(a: Any) = a match {
     case o: OutputChannel => o.tag == tag
@@ -55,7 +58,7 @@ trait MscrOutputChannel extends OutputChannel {
   override def hashCode = tag.hashCode
 
   /** @return the bridgeStore + all the sinks defined by the nodes of the input channel */
-  def sinks = bridgeStore +: nodeSinks
+  lazy val sinks = bridgeStore +: nodeSinks
   /** list of all the sinks defined by the channel nodes */
   protected def nodeSinks: Seq[Sink]
 
@@ -134,10 +137,22 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   lazy val inputNodes = reducer.toSeq.map(_.env)
   lazy val bridgeStore = lastNode.bridgeStore
 
+  /** store the reducer environment during the setup if there is one */
+  protected var environment: Any = _
+  protected implicit var scoobiConfiguration: ScoobiConfiguration = _
+
   /** only the reducer needs to be setup if there is one */
   override def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    logger.debug("setting up the reducer")
+
     super.setup(channelOutput)
-    reducer.foreach(_.setup(scoobiConfiguration(configuration)))
+    scoobiConfiguration = scoobiConfiguration(configuration)
+    reducer.foreach { r =>
+      environment = r.environment(scoobiConfiguration)
+      r.setup(environment)(scoobiConfiguration)
+    }
+
+    logger.debug("end - setting up the reducer")
   }
 
   /**
@@ -147,10 +162,9 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
    * The key and values are untagged. The emitter is in charge of writing them to the proper tag, which is the channel's tag
    */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    implicit val sc = scoobiConfiguration(configuration)
     val combinedValues = combiner.map(c => c.combine(values)).getOrElse(values)
 
-    reducer.map(_.reduce(key, combinedValues, emitter)).getOrElse {
+    reducer.map(_.reduce(environment, key, combinedValues, emitter)).getOrElse {
       combiner.map(c => emitter.write((key, combinedValues))).getOrElse {
         emitter.write((key, combinedValues))
       }
@@ -159,8 +173,7 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
 
   /** invoke the reducer cleanup if there is one */
   def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    implicit val sc = scoobiConfiguration(configuration)
-    reducer.foreach(_.cleanup(emitter))
+    reducer.foreach(_.cleanup(environment, emitter))
   }
 
   /** @return the last node of this channel */

@@ -108,7 +108,7 @@ trait MscrInputChannel extends InputChannel {
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
   protected var emitters: Map[Int, EmitterWriter] = Map()
-  protected var environments: Map[Int, Any] = Map()
+  protected var environments: Map[ParallelDo, Any] = Map()
   protected val vectorEmitter = VectorEmitterWriter()
   protected implicit var configuration: Configuration = _
   protected implicit var scoobiConfiguration: ScoobiConfiguration = _
@@ -121,9 +121,9 @@ trait MscrInputChannel extends InputChannel {
     tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
     tvs = Map(tags.map(t => { val value = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
-    environments = Map(mappers.map(mapper => (mapper.id, mapper.environment(scoobiConfiguration))):_*)
+    environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
 
-    mappers.foreach(_.setup)
+    mappers.foreach(m => m.setup(environments(m)))
 
     logger.debug("end - setting up the mapper")
   }
@@ -148,8 +148,8 @@ trait MscrInputChannel extends InputChannel {
           val previousNode = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).contains(n)).head
           val mappedValues = computeMappers(previousNode, emitter)
 
-          if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper.id), mappedValues, mapper)
-          else                                            mappedValues.map(v => mapper.map(environments(mapper.id), v, emitter))
+          if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)
+          else                                            mappedValues.map(v => mapper.map(environments(mapper), v, emitter))
         case _                    => Seq()
       }
       result
@@ -166,7 +166,7 @@ trait MscrInputChannel extends InputChannel {
 
   def cleanup(context: InputOutputContext) {
     logger.debug("cleaning up the mapper")
-    emitters.values.foreach(emitter => mappers.foreach(_.cleanup(emitter))).debug("finished cleaning up the mapper")
+    emitters.values.foreach(emitter => mappers.foreach(m => m.cleanup(environments(m), emitter))).debug("finished cleaning up the mapper")
   }
 
   /**

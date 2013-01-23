@@ -5,7 +5,7 @@ package mscr
 
 import testing.UnitSpecification
 import org.specs2.specification.Groups
-import comp.{GroupByKey, factory}
+import comp.{ParallelDo, GroupByKey, factory}
 import org.specs2.matcher.{Matcher, ThrownExpectations}
 import core.{EmitterWriter, MapFunction, InputOutputContext, CompNode}
 import org.apache.hadoop.conf.Configuration
@@ -122,7 +122,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
   trait MockInputChannel extends MscrInputChannel {
     tks = Map[Int, TaggedKey]().withDefaultValue(new MetadataTaggedKey { def metadataPath = "" }: TaggedKey)
     tvs = Map[Int, TaggedValue]().withDefaultValue(new MetadataTaggedValue { def metadataPath = ""  }: TaggedValue)
-    environments = Map[Int, Any]().withDefaultValue(())
+    environments = Map[ParallelDo, Any]().withDefaultValue(())
     emitters = Map[Int, EmitterWriter]().withDefaultValue(createEmitter(0, context))
 
     lazy val context = new InputOutputContext(null) {
