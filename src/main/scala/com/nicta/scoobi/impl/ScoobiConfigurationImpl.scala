@@ -63,7 +63,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 
   /** The job name for a step in the current Scoobi, i.e. a single MapReduce job */
   def jobStep(mscrId: Int) = {
-    configuration.set(JOB_STEP, jobId + " (Mscr-" + mscrId + ")")
+    configuration.set(JOB_STEP, jobId + "(Mscr-" + mscrId + ")")
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
     configuration.get(JOB_STEP).debug("the job step is")
   }
