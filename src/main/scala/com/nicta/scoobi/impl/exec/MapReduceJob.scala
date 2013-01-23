@@ -67,7 +67,7 @@ case class MapReduceJob(mscr: Mscr)(implicit val configuration: ScoobiConfigurat
     // RUNNING state has not been set
     val successful = tryOrElse(job.isSuccessful)(false)
     if(!successful) {
-      throw new JobExecException("MapReduce job '" + job.getJobID + "' failed! Please see " + job.getTrackingURL + " for more info.")
+      throw new JobExecException("MapReduce job '" + job.getJobID + "' failed!" + tryOrElse(" Please see " + job.getTrackingURL + " for more info.")(""))
     }
     this
   }
