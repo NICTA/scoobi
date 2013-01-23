@@ -36,6 +36,7 @@ trait Loggable {
 
     def info (display: T => String)          : T = { logger.info(display(evaluated)); evaluated }
     def info (pre: String, post: String = ""): T = info(v => pre+" "+v+" "+post)
+    def info                                 : T = info(v => v.toString)
 
     def warn (display: T => String)          : T = { logger.warn(display(evaluated)); evaluated }
     def warn (pre: String, post: String = ""): T = warn(v => pre+" "+v+" "+post)

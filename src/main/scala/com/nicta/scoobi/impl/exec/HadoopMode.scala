@@ -25,7 +25,7 @@ import control.Exceptions._
  *  - executing each layer in sequence
  */
 private[scoobi]
-case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode {
+case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode with ExecutionMode {
   implicit lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
 
   /** execute a DList, storing the results in DataSinks */
@@ -40,6 +40,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
    */
   private
   lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
+    checkSourceAndSinks(node)(sc)
     optimise(node.debug("Raw nodes", prettyGraph)).debug("Optimised nodes", prettyGraph)
   }
 
@@ -98,15 +99,11 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     /** configure a Mscr */
     private def configureMscr = (mscr: Mscr) => {
       implicit val mscrConfiguration = sc.duplicate
-      debug("Checking sources for mscr "+mscr.id+"\n"+mscr.sources.mkString("\n"))
-      mscr.sources.foreach(_.inputCheck)
-
-      debug("Checking the outputs for mscr "+mscr.id+"\n"+mscr.sinks.mkString("\n"))
-      mscr.sinks.foreach(_.outputCheck)
 
       debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
       mscr.inputNodes.foreach(load)
 
+      debug("Configuring mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
       MapReduceJob(mscr).configure
     }
 

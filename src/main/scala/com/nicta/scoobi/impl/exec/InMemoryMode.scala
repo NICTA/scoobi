@@ -24,7 +24,7 @@ import scalaz.Scalaz._
 /**
  * A fast local mode for execution of Scoobi applications.
  */
-case class InMemoryMode() extends ShowNode {
+case class InMemoryMode() extends ShowNode with ExecutionMode {
 
   implicit lazy val logger = LogFactory.getLog("scoobi.InMemoryMode")
 
@@ -38,17 +38,8 @@ case class InMemoryMode() extends ShowNode {
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     initAttributable(node).debug("nodes\n", prettyGraph)
-
-    node -> prepare(sc)
     node -> computeValue(sc)
   }
-
-  private
-  lazy val prepare: ScoobiConfiguration => CompNode => Unit =
-    paramAttr("prepare") { sc: ScoobiConfiguration => { node: CompNode =>
-      node match { case n: ProcessNode => n.sinks.foreach(_.outputCheck(sc)); case _ => () }
-      children(node).foreach(_ -> prepare(sc))
-    }}
 
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
