@@ -13,7 +13,7 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
   }.set(minTestsOk -> 20)
 
   def compareExecutions(l1: DList[String]) = {
-    val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
+    val locally  = duplicate(l1).run(configureForLocal(ScoobiConfiguration()))
     val inMemory = duplicate(l1).run(configureForInMemory(ScoobiConfiguration()))
 
     locally aka "the local hadoop results" must haveTheSameElementsAs(inMemory)
