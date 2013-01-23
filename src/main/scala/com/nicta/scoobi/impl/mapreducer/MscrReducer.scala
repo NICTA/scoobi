@@ -39,7 +39,7 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
     channelOutput = new ChannelOutputFormat(context)
 
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)
-    outputChannels.setup(context.getConfiguration)
+    outputChannels.setup(channelOutput)(context.getConfiguration)
   }
 
   override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {

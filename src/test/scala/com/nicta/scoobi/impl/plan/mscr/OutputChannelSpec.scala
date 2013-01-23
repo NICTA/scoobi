@@ -91,14 +91,16 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
       case other  => ("nokey", other)
     }
 
-    def reduce(key: Any, values: Iterable[Any]): Seq[Any] = {
-      val outputFormat = new ChannelOutputFormat(null) {
-        val keyValues = new ListBuffer[Any]
-        override def write[K, V](tag: Int, sinkId: Int, kv: (K, V)) {
-          keyValues.append((kv._1, kv._2))
-        }
-        override def close() { }
+    lazy val outputFormat = new ChannelOutputFormat(null) {
+      val keyValues = new ListBuffer[Any]
+      override def write[K, V](tag: Int, sinkId: Int, kv: (K, V)) {
+        keyValues.append((kv._1, kv._2))
       }
+      override def close() { }
+    }
+    setup(outputFormat)(new Configuration)
+
+    def reduce(key: Any, values: Iterable[Any]): Seq[Any] = {
       outer.reduce(key, values, outputFormat)(new Configuration)
       outputFormat.keyValues.toList
     }

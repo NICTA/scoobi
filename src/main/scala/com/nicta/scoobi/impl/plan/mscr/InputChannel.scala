@@ -256,6 +256,6 @@ case class InputChannels(channels: Seq[InputChannel]) {
 
 case class OutputChannels(channels: Seq[OutputChannel]) {
   def channel(n: Int) = channels.find(c => c.tag == n)
-  def setup(implicit configuration: Configuration) { channels.foreach(_.setup) }
+  def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) { channels.foreach(_.setup(channelOutput)) }
   def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) { channels.foreach(_.cleanup(channelOutput)) }
 }

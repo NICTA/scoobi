@@ -33,7 +33,7 @@ trait OutputChannel {
   def inputNodes: Seq[CompNode]
 
   /** setup the nodes of the channel before writing data */
-  def setup(implicit configuration: Configuration)
+  def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
   /** reduce key/values, given the current output format */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
   /** cleanup the channel, given the current output format */
@@ -58,6 +58,12 @@ trait MscrOutputChannel extends OutputChannel {
   def sinks = bridgeStore +: nodeSinks
   /** list of all the sinks defined by the channel nodes */
   protected def nodeSinks: Seq[Sink]
+
+  protected var emitter: EmitterWriter = _
+
+  def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    emitter = createEmitter(channelOutput)
+  }
 
   /** copy all outputs files to the destinations specified by sink files */
   def collectOutputs(outputFiles: Seq[Path])(implicit configuration: ScoobiConfiguration, fileSystems: FileSystems) {
@@ -129,7 +135,10 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   lazy val bridgeStore = lastNode.bridgeStore
 
   /** only the reducer needs to be setup if there is one */
-  def setup(implicit configuration: Configuration) { reducer.foreach(_.setup(scoobiConfiguration(configuration))) }
+  override def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    super.setup(channelOutput)
+    reducer.foreach(_.setup(scoobiConfiguration(configuration)))
+  }
 
   /**
    * reduce all the key/values with either the reducer, or the combiner
@@ -139,7 +148,6 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
    */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     implicit val sc = scoobiConfiguration(configuration)
-    val emitter: EmitterWriter = createEmitter(channelOutput)
     val combinedValues = combiner.map(c => c.combine(values)).getOrElse(values)
 
     reducer.map(_.reduce(key, combinedValues, emitter)).getOrElse {
@@ -152,7 +160,6 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   /** invoke the reducer cleanup if there is one */
   def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     implicit val sc = scoobiConfiguration(configuration)
-    val emitter = createEmitter(channelOutput)
     reducer.foreach(_.cleanup(emitter))
   }
 
@@ -181,14 +188,10 @@ case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
   /** return the bridge store of the input node */
   lazy val bridgeStore = input.bridgeStore
 
-  /** no set-up is required because this node has already been setup as a mapper */
-  def setup(implicit configuration: Configuration) { }
-
   /**
    * Just emit the values to the sink, the key is irrelevant since it is a RollingInt in that case
    */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    val emitter = createEmitter(channelOutput)
     values foreach emitter.write
   }
 
