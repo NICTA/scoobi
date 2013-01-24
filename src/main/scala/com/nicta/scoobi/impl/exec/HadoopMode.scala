@@ -84,6 +84,8 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
     private def runMscrs(mscrs: Seq[Mscr]): Unit = {
+      ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).debug
+
       val configured = mscrs.filterNot(isFilled).toList.map(configureMscr)
       val executed = if (sc.concurrentJobs) configured.map(executeMscr).sequence.get
                      else                   configured.map(_.execute)

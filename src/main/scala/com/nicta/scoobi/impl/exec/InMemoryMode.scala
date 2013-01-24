@@ -38,6 +38,7 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     initAttributable(node).debug("nodes\n", prettyGraph)
+    checkSourceAndSinks(node)
     node -> computeValue(sc)
   }
 
