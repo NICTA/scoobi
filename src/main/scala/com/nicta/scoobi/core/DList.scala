@@ -158,7 +158,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       * same values are grouped together. This Grouping instance will provide that
       */
     implicit val grouping = new Grouping[A] {
-      def groupCompare(x: A, y: A) = scalaz.Ordering.fromInt(x.hashCode - y.hashCode)
+      def groupCompare(x: A, y: A) = scalaz.Ordering.fromInt(x.hashCode.compare(y.hashCode))
     }
 
     parallelDo(dropCached).groupByKey.map(_._1)

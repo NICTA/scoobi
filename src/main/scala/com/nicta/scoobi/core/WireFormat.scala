@@ -54,6 +54,8 @@ trait WireFormat[A] extends WireReaderWriter { outer =>
 
       def fromWire(in: DataInput) =
         f(outer.fromWire(in))
+
+      override def toString = outer.toString+"->B"
     }
 
   /**

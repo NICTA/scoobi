@@ -27,7 +27,7 @@ trait Persist { outer =>
    *    run(obj)
    *   ```
    */
-  def run[T](p: =>core.Persistent[T])(implicit configuration: core.ScoobiConfiguration): T = {
+  def run[T](p: core.Persistent[T])(implicit configuration: core.ScoobiConfiguration): T = {
     p match {
       case list: core.DList[_] => Vector(persist(list.materialise).toSeq:_*)
       case o: DObject[_]       => persist(o)
