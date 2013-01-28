@@ -38,7 +38,7 @@ trait Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse = repeat(sometd(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty =>
+    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty && !hasBeenFilled(p1.bridgeStore) =>
       ParallelDo.fuse(p1.debug("parDoFuse"), p2)
   }))
 
@@ -75,15 +75,36 @@ trait Optimiser extends CompNodes with Rewriter {
   /**
    * optimise just one node which is the output of a graph.
    *
-   * It is very import to duplicate the whole graph first to avoid execution information to become attached to the original
+   * It is very important to duplicate the whole graph first to avoid execution information to become attached to the original
    * nodes. Because if the main graph is augmented, the execution information we want to retrieve (like which nodes are using
    * another node as an environment) may change.
    */
   private[scoobi]
   def optimise(node: CompNode): CompNode = {
-    val optimised = reinitAttributable(optimise(Seq(reinitAttributable(duplicate(node)))).headOption.getOrElse(node))
     reinitUses
-    optimised
+    val result = reinitAttributable(optimise(Seq(reinitAttributable(node))).headOption.getOrElse(node))
+    reinitUses
+    result
   }
+
+  /** remove nodes from the tree based on a predicate */
+  def truncate(node: CompNode)(condition: Term => Boolean) = {
+    def truncateNode(n: Term): Term =
+      n match {
+        case pd: ParallelDo   => pd.copy(ins = Seq(Return.unit))
+        case cb: Combine      => cb.copy(in = Return.unit)
+        case gbk: GroupByKey  => gbk.copy(in = Return.unit)
+        case other            => other
+      }
+
+    val truncateRule = rule { case n: Term =>
+      if (condition(n)) truncateNode(n)
+      else              n
+    }
+    val result = reinitAttributable(rewrite(topdown(truncateRule))(node))
+    reinitUses
+    result
+  }
+
 }
 object Optimiser extends Optimiser

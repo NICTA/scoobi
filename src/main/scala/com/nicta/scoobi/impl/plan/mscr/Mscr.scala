@@ -44,8 +44,8 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
 
   override def toString =
     Seq(id.toString,
-        if (inputChannels.isEmpty)  "" else inputChannels.mkString("  inputs: ", "\n          ", ""),
-        if (outputChannels.isEmpty) "" else outputChannels.mkString("  outputs: ",  "\n           ", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")\n")
+        if (inputChannels.isEmpty)  "" else inputChannels.mkString("\n  inputs: ", "\n          ", ""),
+        if (outputChannels.isEmpty) "" else outputChannels.mkString("\n  outputs: ",  "\n           ", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")\n")
 
   /** @return all the combiners of this mscr */
   def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_) => combiner }

@@ -143,16 +143,12 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
 
   /** only the reducer needs to be setup if there is one */
   override def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
-    logger.debug("setting up the reducer")
-
     super.setup(channelOutput)
     scoobiConfiguration = scoobiConfiguration(configuration)
     reducer.foreach { r =>
       environment = r.environment(scoobiConfiguration)
       r.setup(environment)(scoobiConfiguration)
     }
-
-    logger.debug("end - setting up the reducer")
   }
 
   /**

@@ -47,9 +47,9 @@ case class ParallelDo(ins:           Seq[CompNode],
 
   lazy val wf = wfb
   lazy val wfe = env.wf
-  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "]"
+  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "]" + "(bridge " + bridgeStoreId.takeRight(5).mkString +")"
 
-  def source = ins.collect(isALoad).headOption
+  lazy val source = ins.collect(isALoad).headOption
 
   lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
@@ -111,7 +111,7 @@ object ParallelDo {
     def fuseEnv(fExp: CompNode, gExp: CompNode): ValueNode =
       Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(pd1.wfe, pd2.wfe))
 
-    // create a new ParallelDo node fusing functions and environments */
+    // create a new ParallelDo node fusing functions and environments
     new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env), fuseDoFunction(pd1.dofn, pd2.dofn),
                    pd1.wfa, pd2.wfb,
                    pd1.sinks ++ pd2.sinks,
@@ -134,10 +134,10 @@ object ParallelDo1 {
  * function to the values of an existing key-values CompNode
  */
 case class Combine(in: CompNode, f: (Any, Any) => Any,
-                          wfk:   WireReaderWriter,
-                          wfv:   WireReaderWriter,
-                          sinks:              Seq[Sink] = Seq(),
-                          bridgeStoreId:      String = randomUUID.toString) extends ProcessNode {
+                   wfk:   WireReaderWriter,
+                   wfv:   WireReaderWriter,
+                   sinks:              Seq[Sink] = Seq(),
+                   bridgeStoreId:      String = randomUUID.toString) extends ProcessNode {
 
   lazy val wf = pair(wfk, wfv)
   override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"

@@ -84,7 +84,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
       val layer1    = layers(aRoot(gbk1, gbk2, gbk3)).head
 
-      mscrInputChannels(layer1) must  have size(1)
+      gbkInputChannels(layer1) must  have size(1)
     }
 
     e2 := {

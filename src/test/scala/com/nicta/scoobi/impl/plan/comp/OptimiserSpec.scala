@@ -23,7 +23,7 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
   "Successive ParallelDos must be fused" >> prop { (node: CompNode, f: factory) => import f._
     val optimised = optimise(parDoFuse, node).head
     collectSuccessiveParDos(optimised) must beEmpty
-  };p
+  }
 
   implicit def arbitraryFactory: Arbitrary[factory] = Arbitrary(Gen.value(new factory{}))
 }

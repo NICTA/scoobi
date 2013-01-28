@@ -37,11 +37,13 @@ import ScoobiConfiguration._
 import mapreducer.BridgeStore
 import MapReduceJob.configureJar
 import control.Exceptions._
+import monitor.Loggable
+import Loggable._
 
 /**
  * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
  */
-case class MapReduceJob(mscr: Mscr)(implicit val configuration: ScoobiConfiguration) {
+case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: ScoobiConfiguration) {
 
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
@@ -57,6 +59,7 @@ case class MapReduceJob(mscr: Mscr)(implicit val configuration: ScoobiConfigurat
 
   /** execute the Hadoop job and collect results */
   def execute = {
+    ("executing mscr "+mscr.id+" on layer "+layerId).debug
     executeJob
     collectOutputs
   }

@@ -40,9 +40,17 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
    */
   private
   lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
-    checkSourceAndSinks(node)(sc)
-    optimise(node.debug("Raw nodes", prettyGraph)).debug("Optimised nodes", prettyGraph)
+    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
+    checkSourceAndSinks(toExecute)(sc)
+    val optimised = optimise(toExecute.debug("Active nodes", prettyGraph))
+    optimised.debug("Optimised nodes", prettyGraph)
   }
+
+  private def truncateAlreadyExecutedNodes(node: CompNode) =
+    truncate(node) {
+      case process: ProcessNode => hasBeenFilled(process.bridgeStore)
+      case other                => false
+    }
 
   /**
    * execute a computation node
@@ -54,7 +62,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     }
     // execute value nodes recursively, other nodes start a "layer" execution
     attr("executeNode") {
-      case node @ Op1(in1, in2)    => node.execute(executeNode(in1), executeNode(in2)).debug("result for op "+node.id+": ")
+      case node @ Op1(in1, in2)    => node.execute(executeNode(in1), executeNode(in2))
       case node @ Return1(in)      => in
       case node @ Materialise1(in) => executeLayers(node); read(in.bridgeStore)
       case node                    => executeLayers(node)
@@ -62,7 +70,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
   }
 
   private lazy val executeLayer: Layer[T] => Any =
-    attr("executeLayer") { case layer => Execution(layer).execute }
+    attr("executeLayer") { case layer =>
+      ("executing layer "+layer.id).debug
+      Execution(layer).execute
+    }
 
   /**
    * Execution of a "layer" of Mscrs
@@ -70,11 +81,11 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
   private case class Execution(layer: Layer[T]) {
 
     def execute: Seq[Any] = {
-      if (layerBridgesAreFilled) debug("Skipping layer\n"+layer.id+" because all sinks have been filled")
-      else                       runMscrs(mscrs(layer)).debug("Executing layer\n"+layer)
+      ("Executing layer\n"+layer).debug
+      runMscrs(mscrs(layer))
 
-      layerBridges(layer).foreach(markBridgeAsFilled)
-      layerBridges(layer).debug("Layer bridges: ").map(read).toSeq
+      layerBridgeSinks(layer).debug("Layer bridges sinks: ").foreach(markBridgeAsFilled)
+      layerBridgeSinks(layer).map(read).toSeq
     }
 
     /**
@@ -86,27 +97,21 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     private def runMscrs(mscrs: Seq[Mscr]): Unit = {
       ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).debug
 
-      val configured = mscrs.filterNot(isFilled).toList.map(configureMscr)
+      val configured = mscrs.toList.map(configureMscr)
       val executed = if (sc.concurrentJobs) configured.map(executeMscr).sequence.get
                      else                   configured.map(_.execute)
       executed.map(reportMscr)
     }
 
-    /** @return true if the layer has bridges are they're all already filled by previous computations */
-    private def layerBridgesAreFilled = layerBridges(layer).nonEmpty && layerBridges(layer).forall(hasBeenFilled)
-
-    private def isFilled = (mscr: Mscr) =>
-      (mscr.bridges.nonEmpty && mscr.bridges.forall(hasBeenFilled)).debug("Skipping Mscr\n"+mscr.id+" because all the sinks have been filled")
-
     /** configure a Mscr */
     private def configureMscr = (mscr: Mscr) => {
       implicit val mscrConfiguration = sc.duplicate
 
-      debug("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
+      ("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n")).debug
       mscr.inputNodes.foreach(load)
 
-      debug("Configuring mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n"))
-      MapReduceJob(mscr).configure
+      ("Configuring mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n")).debug
+      MapReduceJob(mscr, layer.id).configure
     }
 
     /** execute a Mscr */
@@ -120,20 +125,18 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     }
   }
 
-  /** mark a bridge as filled so it doesn't have to be recomputed */
-  private def markBridgeAsFilled = (b: Bridge) => filledBridge(b.bridgeStoreId)
-  /** this attributes store the fact that a Bridge has received data */
-  private lazy val filledBridge: CachedAttribute[String, String] = attr("filled bridge")(identity)
-  /** @return true if a given Bridge has already received data */
-  private def hasBeenFilled(b: Bridge)= filledBridge.hasBeenComputedAt(b.bridgeStoreId)
   /** @return the content of a Bridge as an Iterable */
-  private lazy val read: Bridge => Any = attr("read") { case bs => bs.readAsIterable(sc) }
+  private def read(bs: Bridge): Any = {
+    ("reading bridge "+bs.bridgeStoreId).debug
+    val result = Vector(bs.readAsIterable(sc).toSeq:_*)
+    result
+  }
 
   /** make sure that all inputs environments are fully loaded */
   private def load(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     node match {
       case rt @ Return1(in)      => pushEnv(rt, in)
-      case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)).debug("result for op "+op.id+": "))
+      case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)))
       case mt @ Materialise1(in) => pushEnv(mt, read(in.bridgeStore))
       case other                 => ()
     }

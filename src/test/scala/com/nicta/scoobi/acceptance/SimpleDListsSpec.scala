@@ -6,6 +6,7 @@ import com.nicta.scoobi.Scoobi._
 import impl.plan.DListImpl
 import com.nicta.scoobi.impl.plan.comp.factory._
 import impl.plan.comp.CompNodeData
+import CompNodeData._
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 

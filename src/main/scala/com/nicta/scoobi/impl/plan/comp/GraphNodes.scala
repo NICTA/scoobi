@@ -72,8 +72,8 @@ trait GraphNodes extends Attribution {
 
   /** reinit usages */
   protected def reinitUses {
-    Seq[CachedAttribute[_,_]](root, parent, parents, children, descendents, usesTable, uses, transitiveUses, isUsedAtMostOnce, isCyclic).foreach(_.reset)
-    Seq[CachedParamAttribute[_,_,_]](isParentOf, isStrictParentOf).foreach(_.reset)
+    Seq[CachedAttribute[_,_]](root, parent, parents, children, descendents, usesTable, uses, transitiveUses, isUsedAtMostOnce, isCyclic, vertices, edges).foreach(_.reset)
+    Seq[CachedParamAttribute[_,_,_]](isParentOf, isStrictParentOf, descendentsUntil).foreach(_.reset)
   }
 
   /**
@@ -96,13 +96,13 @@ trait GraphNodes extends Attribution {
 
   /** compute the vertices starting from a node */
   private[impl]
-  lazy val vertices: T => Seq[T] = circular("vertices")(Seq[T]()) { case node =>
+  lazy val vertices: CachedAttribute[T, Seq[T]] = attr("vertices") { case node =>
     ((node +: children(node).flatMap(n => n -> vertices).toSeq) ++ children(node)).distinct // make the vertices unique
   }
 
   /** compute all the edges which compose this graph */
   private[impl]
-  lazy val edges: T => Seq[(T, T)]= circular("edges")(Seq[(T, T)]()) { case node =>
+  lazy val edges: CachedAttribute[T, Seq[(T, T)]] = attr("edges") { case node =>
     (children(node).map(n => node -> n) ++ children(node).flatMap(n => n -> edges)).distinct // make the edges unique
   }
 

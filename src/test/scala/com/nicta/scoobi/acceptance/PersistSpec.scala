@@ -5,8 +5,9 @@ import testing.mutable.NictaSimpleJobs
 import testing.TempFiles
 import Scoobi._
 import impl.plan.comp.CompNodeData
+import CompNodeData._
 
-class PersistSpec extends NictaSimpleJobs with CompNodeData {
+class PersistSpec extends NictaSimpleJobs {
   // make this spec sequential to avoid lack of connections on the cluster
   sequential
 
@@ -36,7 +37,7 @@ class PersistSpec extends NictaSimpleJobs with CompNodeData {
   }
   endp
 
-  "5. 2 materialised lists with a common ancestor" >> {
+  "5. Two materialised lists with a common ancestor" >> {
     "5.1 when we only want one list, only the computations for that list must be executed" >> { implicit sc: ScoobiConfiguration =>
       val l1 = DList(1, 2, 3).map(_ * 10)
       val l2 = l1.map(_ + 1 )

@@ -27,6 +27,12 @@ trait CompNodes extends GraphNodes with CollectFunctions {
     uses(node).collect { case pd: ParallelDo if pd.env == node => pd }.toSeq
   }
 
+  /** mark a bridge as filled so it doesn't have to be recomputed */
+  protected def markBridgeAsFilled = (b: Bridge) => filledBridge(b.bridgeStoreId)
+  /** this attribute stores the fact that a Bridge has received data */
+  protected lazy val filledBridge: CachedAttribute[String, String] = attr("filled bridge")(identity)
+  /** @return true if a given Bridge has already received data */
+  protected def hasBeenFilled(b: Bridge)= filledBridge.hasBeenComputedAt(b.bridgeStoreId)
 }
 object CompNodes extends CompNodes
 
@@ -50,6 +56,8 @@ trait CollectFunctions {
   lazy val isAGroupByKey: PartialFunction[Any, GroupByKey] = { case gbk: GroupByKey => gbk }
   /** return true if a CompNode is a Materialise */
   lazy val isMaterialise: CompNode => Boolean = { case m: Materialise => true; case other => false }
+  /** return true if a CompNode is a Root */
+  lazy val isRoot: CompNode => Boolean = { case r: Root => true; case other => false }
   /** return true if a CompNode is a Return */
   lazy val isReturn: CompNode => Boolean = { case r: Return=> true; case other => false }
   /** return true if a CompNode needs to be persisted */

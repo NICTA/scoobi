@@ -32,7 +32,7 @@ trait ShowNode extends CompNodes {
       case GroupByKey1(in)       => showNode(node) <> braces (nest (line <> show(in) <> line))
       case Materialise1(in)      => showNode(node) <> braces (nest (line <> show(in) <> line))
       case Op1(in1, in2)         => showNode(node) <> braces (nest (line <> "1. " <> show(in1) <> line <> "2. " <> show(in2)))
-      case other                 => value(other)
+      case Root(ins)             => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i)), line <> "+")))
     }
 
   /** show a single node */
@@ -41,8 +41,9 @@ trait ShowNode extends CompNodes {
 
   /** show the structure without the ids or type annotations */
   lazy val showStructure = (n: CompNode) => pretty(n).
-    replaceAll("\\d", "").          // remove ids
-    replaceAll("\\[[^\\s]+\\]", "") // remove type annotations
+    replaceAll("\\d", "").             // remove ids
+    replaceAll("bridge\\s*\\w*", "").  // remove bridge ids
+    replaceAll("\\[[^\\s]+\\]", "")    // remove type annotations
   
   /**
    * Show instance for a CompNode
@@ -62,11 +63,11 @@ trait ShowNode extends CompNodes {
 
   /** @return an ASCII representation of the nodes graph */
   def showGraph(node : CompNode) = tryOrElse {
-    if (descendents(node).size <= 30) {
+    if (descendents(node).size <= 50) {
       val graph = Graph((node -> vertices).toList.map(v => showNode(v)), (node -> edges).toList.map { case (v1, v2) => showNode(v1) -> showNode(v2) })
       Layouter.renderGraph(graph)
-    } else "cannot represent the node as a graph because it is too big\n"+pretty(node)
-  }("cannot represent the node as a graph "+(if (isCyclic(node)) "(because there is a cycle)" else "")+"\n"+pretty(node))
+    } else "cannot represent the node as a graph because it is too big\n"
+  }("cannot represent the node as a graph "+(if (isCyclic(node)) "(because there is a cycle)" else ""))
 
 }
 

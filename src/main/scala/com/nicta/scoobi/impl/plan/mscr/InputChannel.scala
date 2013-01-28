@@ -80,8 +80,7 @@ trait InputChannel {
 trait MscrInputChannel extends InputChannel {
   implicit lazy val logger = LogFactory.getLog("scoobi.InputChannel")
 
-  /** attributes used to determine if parallelDos are floating */
-  private val nodes = new MscrsDefinition {}; import nodes._
+  protected val nodes = new MscrsDefinition {}; import nodes._
 
   lazy val id: Int = sourceNode.id
 
@@ -103,7 +102,7 @@ trait MscrInputChannel extends InputChannel {
     else                   mappers.filterNot(m => (isParallelDo && mappers.contains)(m.parent[CompNode]))
 
   /** flattened tree of mappers using this source */
-  lazy val mappers = mappersUses(sourceNode)
+  def mappers: Seq[ParallelDo]
 
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
@@ -115,7 +114,6 @@ trait MscrInputChannel extends InputChannel {
 
   /** store the current TaggedKey/TaggedValue which are going to be a container for all key/values to map, by tag */
   def setup(context: InputOutputContext) {
-    logger.debug("setting up the mapper")
     configuration = context.configuration
     scoobiConfiguration = scoobiConfiguration(configuration)
     tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
@@ -124,8 +122,6 @@ trait MscrInputChannel extends InputChannel {
     environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
 
     mappers.foreach(m => m.setup(environments(m)))
-
-    logger.debug("end - setting up the mapper")
   }
 
   protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
@@ -144,9 +140,11 @@ trait MscrInputChannel extends InputChannel {
     def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = {
       val result = node match {
         case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
-        case mapper: ParallelDo   =>
-          val previousNode = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).contains(n)).head
-          val mappedValues = computeMappers(previousNode, emitter)
+        case mapper: ParallelDo if !isReducer(mapper) =>
+          val previousNodes = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).filter(isParallelDo).contains(n))
+          if (previousNodes.isEmpty)
+            "is empty"
+          val mappedValues = previousNodes.foldLeft(Seq[Any]()) { (res, cur) => res ++ computeMappers(cur, emitter) }
 
           if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)
           else                                            mappedValues.map(v => mapper.map(environments(mapper), v, emitter))
@@ -165,8 +163,7 @@ trait MscrInputChannel extends InputChannel {
   protected def outputTag(mapper: ParallelDo): Int
 
   def cleanup(context: InputOutputContext) {
-    logger.debug("cleaning up the mapper")
-    emitters.values.foreach(emitter => mappers.foreach(m => m.cleanup(environments(m), emitter))).debug("finished cleaning up the mapper")
+    lastMappers.foreach(m => m.cleanup(environments(m), emitters(outputTag(m)))).debug("finished cleaning up the mapper")
   }
 
   /**
@@ -180,13 +177,20 @@ trait MscrInputChannel extends InputChannel {
  * This input channel is a tree of Mappers which are all connected to Gbk nodes
  */
 class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
-  override def toString = "GbkInputChannel("+sourceNode+")"
+  import nodes._
+
+  override def toString = "GbkInputChannel("+sourceNode+")\n    mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
+  lazy val mappers = mappersUses(sourceNode).filter { pd =>
+    val groupByKeyUses = transitiveUses(pd).collect(isAGroupByKey)
+    groupByKeyUses.exists(groupByKeys.contains) && groupByKeyUses.forall(gbk => !transitiveUses(gbk).exists(groupByKeys.contains))
+  }
 
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
   lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
+
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     val (key, value) = (tks(tag), tvs(tag))
@@ -206,10 +210,13 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
 class FloatingInputChannel(val sourceNode: CompNode) extends MscrInputChannel {
-  override def toString = "FloatingInputChannel("+sourceNode+")"
+  import nodes._
+
+  override def toString = "FloatingInputChannel("+sourceNode+")\n   mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
+  lazy val mappers = Seq(sourceNode).collect(isAParallelDo) ++ mappersUses(sourceNode).filter(n => !isFloating(n) || n.children.contains(sourceNode))
 
   lazy val keyTypes   = lastMappers.foldLeft(KeyTypes())   { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
   lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
@@ -228,18 +235,6 @@ class FloatingInputChannel(val sourceNode: CompNode) extends MscrInputChannel {
 
 
 object InputChannel {
-  def create(sourceNode: CompNode): MscrInputChannel = {
-    /** attributes used to determine if parallelDos are floating */
-    val nodes = new MscrsDefinition {}; import nodes._
-
-    lazy val groupByKeys: Seq[GroupByKey] = groupByKeysUses(sourceNode)
-    lazy val groupByKeysUses: CompNode => Seq[GroupByKey] = attr { case node =>
-      val (gbks, nonGbks) = uses(node).partition(isGroupByKey)
-      gbks.collect(isAGroupByKey).toSeq ++ nonGbks.filterNot(isMaterialise).flatMap(groupByKeysUses)
-    }
-    if (groupByKeys.isEmpty) new FloatingInputChannel(sourceNode)
-    else                     new GbkInputChannel(sourceNode, groupByKeys)
-  }
 
   implicit def inputChannelEqual = new Equal[InputChannel] {
     def equal(a1: InputChannel, a2: InputChannel) = a1.id == a2.id
