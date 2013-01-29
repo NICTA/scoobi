@@ -13,13 +13,13 @@ import rtt.{MetadataTaggedValue, MetadataTaggedKey, TaggedValue, TaggedKey}
 import scala.collection.mutable.ListBuffer
 
 class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is = sequential ^
-  """
+                                                                                                                        """
   An InputChannel encapsulates parallelDo nodes which have a common source node.
   There are 2 types of InputChannels:
 
    * Mapper: which connects to Gbks
    * Floating: which connects to other types of Nodes
-  """^
+                                                                                                                        """^
                                                                                                                         p^
   "2 input channels with 2 different source nodes must be different"                                                    ! g1().e1^
   "the source of the input channel is the Load source if the sourceNode is a Load"                                      ! g1().e2^
@@ -38,6 +38,11 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     "if there are 2 independent mappers"                                                                                ! g2().e2^
     "if there are 2 consecutive mappers"                                                                                ! g2().e3^
     "if there are 3 mappers as a tree"                                                                                  ! g2().e4^
+                                                                                                                        endp^
+  "A gbk input channel has mappers defined by the parallelDos connected to its source"                                  ^
+    "load -> pd1 -> gbk1 -> pd2 -> gbk2"                                                                                ! g3().e1^
+    "load -> pd1 -> gbk1; pd1 -> gbk2"                                                                                  ! g3().e2^
+    "load -> pd1 -> gbk1 -> pd2 -> gbk2; pd1 -> gbk2"                                                                   ! g3().e3^
                                                                                                                         end
 
   "general properties of input channels" - new g1 with factory {
@@ -116,7 +121,37 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       channel.map("1", "stARt", channel.context)
       channel.context.values === Seq("START now", "START later")
     }
+  }
 
+  "gbk and floating input channels" - new g3 with factory {
+    e1 := {
+      // load -> pd1 -> gbk1 -> pd2 -> gbk2
+      val l1 = load
+      val pd1 = pd(l1)
+      val gbk1 = gbk(pd1)
+      val pd2 = pd(gbk1)
+      val gbk2 = gbk(pd2)
+      gbkInputChannel(l1, Seq(gbk1)).mappers === Seq(pd1)
+    }
+    e2 := {
+      // load -> pd1 -> gbk1 -> pd2 -> gbk2
+      //          |  -> gbk2
+      val l1 = load
+      val pd1 = pd(l1)
+      val (gbk1, gbk2) = (gbk(pd1), gbk(pd1))
+      val pd2 = pd(gbk1)
+      gbkInputChannel(l1, Seq(gbk1, gbk2)).mappers === Seq(pd1)
+    }
+    e3 := {
+      // load -> pd1 -> gbk1 -> pd2
+      //          |          -> pd2 -> gbk2
+      val l1 = load
+      val pd1 = pd(l1)
+      val gbk1 = gbk(pd1)
+      val pd2 = pd(gbk1, pd1)
+      val gbk2 = gbk(pd2)
+      gbkInputChannel(l1, Seq(gbk1)).mappers === Seq(pd1)
+    }
   }
 
   trait MockInputChannel extends MscrInputChannel {

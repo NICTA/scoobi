@@ -181,9 +181,11 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
 
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
+
+  /** collect all the mappers which are connected to the source node and connect to one of the input channel gbks */
   lazy val mappers = mappersUses(sourceNode).filter { pd =>
     val groupByKeyUses = transitiveUses(pd).collect(isAGroupByKey)
-    groupByKeyUses.exists(groupByKeys.contains) && groupByKeyUses.forall(gbk => !transitiveUses(gbk).exists(groupByKeys.contains))
+    groupByKeyUses.exists(groupByKeys.contains) && !groupByKeyUses.exists(gbk => transitiveUses(gbk).exists(groupByKeys.contains))
   }
 
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
