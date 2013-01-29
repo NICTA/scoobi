@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package guide
 
 class Grouping extends ScoobiPage { def is = "Grouping".title ^
-                                                                                                                        """
+  """
 
 The sort and shuffle phase of MapReduce is abstracted by `DList.groupByKey`, it allows us to have a `DList[(K, V)]` and obtain a `DList[(K, Iterable[V])]` where all the values *"with the same"* K are grouped together. Grouping is a scala trait, that defines exactly what constitutes *"with the same K"* means.
 
@@ -87,6 +87,8 @@ Your first instinct might be to *move* the information to the key, e.g. make the
 
 Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need to provide a `Grouping` object for. Our goal is to make sure that two keys with the same FirstName evaluate to being the same, so `groupCompare` and `partition` should only consider the FirstName part. However, `sortCompare` should put everything in the correct order (so it should consider both parts).
 
+    import scalaz.Ordering._
+
     val grouping = new Grouping[(FirstName, LastName)] {
 
       override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {
@@ -100,13 +102,12 @@ Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need 
       }
 
 
-      override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): Int = {
+      override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): scalaz.Ordering = {
         // Ok, here's where the fun is! Everything that is sent to the same reducer now needs
-        // an ordering. So this function is called. Here we return -1 if 'a' should be before 'b',
-        // and 0 if they're they same, and 1 if they're different.
+        // an ordering. So this function is called. Here we return `scalaz.Ordering.LT` if 'a' should be before 'b',
+        // `scalaz.Ordering.EQ` if they're they same, and `scalaz.Ordering.GT` if they're different.
 
         // So the first thing we want to do, is look at first names
-
         val firstNameOrdering = a._1.compareTo(b._1)
 
         firstNameOrdering match {
@@ -114,9 +115,9 @@ Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need 
             // Interesting! Here the firstName's are the same. So what we want to do, is order by
             // the lastNames
 
-            a._2.compareTo(b._2)
+            fromInt(a._2.compareTo(b._2))
           }
-          case x => x // otherwise, just return the result for which of the FirstName's is first
+          case x => fromInt(x) // otherwise, just return the result for which of the FirstName's is first
         }
       }
 
@@ -124,14 +125,14 @@ Now the key part of `bigKey` is `(FirstName, LastName)` so this is what we need 
         // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)
         // now hadoop allows us to "collapse" everything that is logically the same. So two keys are logically
         // the same if the FirstName's are equal
-        a._1.compareTo(b._1)
+        fromInt(a._1.compareTo(b._1))
       }
 
     }
 
-Now calling `bigKey.groupByKeyWith(grouping)` will work as intended, with all lastNames arriving in order. Note, that instead
-  of explicitly passing in `grouping` it's possible to use implicits and the plain `groupByKey`, just becareful the correct one
-  is being picked up.
+Now calling `bigKey.groupByKeyWith(grouping)` will work as intended, with all lastNames arriving in order. Note, that instead of explicitly passing in `grouping` it's possible to use implicits and the plain `groupByKey`, just be careful the correct one is being picked up.
 
-                                                                                                                        """
+
+
+  """
 }
