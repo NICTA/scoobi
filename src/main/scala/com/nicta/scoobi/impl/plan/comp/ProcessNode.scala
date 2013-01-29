@@ -18,8 +18,11 @@ import ScoobiConfigurationImpl._
  */
 trait ProcessNode extends CompNode {
   lazy val id: Int = UniqueId.get
+
+  /** unique identifier for the bridgeStore storing data for this node */
+  protected def bridgeStoreId: String
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
-  def bridgeStore: Bridge
+  lazy val bridgeStore = sinks.headOption.flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId))).getOrElse(BridgeStore(bridgeStoreId, wf))
   /** list of additional sinks for this node */
   def sinks : Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
@@ -51,7 +54,6 @@ case class ParallelDo(ins:           Seq[CompNode],
 
   lazy val source = ins.collect(isALoad).headOption
 
-  lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   /** Use this ParallelDo as a Mapper */
@@ -142,7 +144,6 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
   lazy val wf = pair(wfk, wfv)
   override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
-  lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 
   /** combine values: this is used in a Reducer */
@@ -173,7 +174,6 @@ case class GroupByKey(in: CompNode, wfk: WireReaderWriter, gpk: KeyGrouping, wfv
   lazy val wf = pair(wfk, iterable(wfv))
   override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
-  lazy val bridgeStore = BridgeStore(bridgeStoreId, wf)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object GroupByKey1 {

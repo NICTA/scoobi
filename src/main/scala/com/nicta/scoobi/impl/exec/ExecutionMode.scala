@@ -10,7 +10,7 @@ trait ExecutionMode extends CompNodes {
   def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration) {
     initAttributable(node)
     node match {
-      case process: ProcessNode => process.sinks.foreach(_.outputCheck)
+      case process: ProcessNode => process.sinks.filterNot { case b: Bridge => hasBeenFilled(b); case _ => true }.foreach(_.outputCheck)
       case load: Load           => load.source.inputCheck
       case _                    => ()
     }

@@ -12,11 +12,11 @@ class PersistSpec extends NictaSimpleJobs {
   "There are many ways to execute computations with DLists or DObjects".txt
 
   "1. a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: ScoobiConfiguration =>
-    val resultFile = TempFiles.createTempFile("test")
-    val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
+    val resultDir = TempFiles.createTempFilePath("test")
+    val list = DList(1, 2, 3).toTextFile(resultDir, overwrite = true)
 
     list.persist
-    resultFile must exist
+    resultDir must beAnExistingPath
   }
   "2. a single DObject" >> { implicit sc: ScoobiConfiguration =>
     val o1 = DList(1, 2, 3).sum
@@ -27,7 +27,7 @@ class PersistSpec extends NictaSimpleJobs {
     list.run.normalise === "Vector(1, 2, 3)"
   }
   "4. a list, having a sink and also materialised" >> { implicit sc: ScoobiConfiguration =>
-    val resultFile = TempFiles.createTempFile("test")
+    val resultFile = TempFiles.createTempDir("test")
     val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
 
     resultFile must exist
@@ -103,5 +103,23 @@ class PersistSpec extends NictaSimpleJobs {
     // execute the computation graph for the 2 DObjects and one DList
     val (sum, max, plus1) = run(list.sum, list.max, plusOne)
     (sum, max, plus1.normalise) === (6, 3, "Vector(2, 3, 4)")
+  }
+
+  "8. A user-specified sink must be used to save data when specified" >> { implicit sc: ScoobiConfiguration =>
+    val sink = TempFiles.createTempFilePath("user")
+    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(sink)
+
+    persist(plusOne)
+    sink must beAnExistingPath
+  }
+
+  "9. A user-specified sink can be used as a source when a second persist is done" >> { implicit sc: ScoobiConfiguration =>
+    val sink = TempFiles.createTempFilePath("user")
+    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(sink)
+
+    persist(plusOne)
+
+    val plusTwo = plusOne.map(_ + 2)
+    normalise(plusTwo.run) === "Vector(4, 5, 6)"
   }
 }
