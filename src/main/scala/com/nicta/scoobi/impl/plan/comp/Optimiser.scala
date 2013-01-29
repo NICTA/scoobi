@@ -37,9 +37,9 @@ trait Optimiser extends CompNodes with Rewriter {
    *
    * This rule is repeated until nothing can be fused anymore
    */
-  def parDoFuse = repeat(sometd(rule {
+  def parDoFuse = repeat(oncebu(rule {
     case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty && !hasBeenFilled(p1.bridgeStore) =>
-      ParallelDo.fuse(p1.debug("parDoFuse"), p2)
+      ParallelDo.fuse(p1.debug("parDoFuse with "+p2), p2)
   }))
 
   /**

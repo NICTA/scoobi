@@ -142,8 +142,6 @@ trait MscrInputChannel extends InputChannel {
         case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
         case mapper: ParallelDo if !isReducer(mapper) =>
           val previousNodes = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).filter(isParallelDo).contains(n))
-          if (previousNodes.isEmpty)
-            "is empty"
           val mappedValues = previousNodes.foldLeft(Seq[Any]()) { (res, cur) => res ++ computeMappers(cur, emitter) }
 
           if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)
