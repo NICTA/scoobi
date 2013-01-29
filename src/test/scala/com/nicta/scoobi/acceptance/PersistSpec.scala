@@ -8,9 +8,7 @@ import impl.plan.comp.CompNodeData
 import CompNodeData._
 
 class PersistSpec extends NictaSimpleJobs {
-  // make this spec sequential to avoid lack of connections on the cluster
-  sequential
-
+  
   "There are many ways to execute computations with DLists or DObjects".txt
 
   "1. a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: ScoobiConfiguration =>
