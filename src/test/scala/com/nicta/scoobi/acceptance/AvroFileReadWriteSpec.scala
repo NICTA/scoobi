@@ -23,7 +23,7 @@ import org.apache.avro.file.DataFileWriter
 
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
-import testing.TestFiles
+import testing.{TempFiles, TestFiles}
 import impl.exec.JobExecException
 import impl.ScoobiConfiguration._
 
@@ -58,7 +58,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Writing (String, List[(Double,Boolean,String)], Array[Long]) Avro file" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -74,7 +74,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Expecting exception because of miss match in expected and actual schema" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -90,7 +90,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Not checking schema, and hence expecting an exception in the mapper" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -106,7 +106,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Reading a subset of fields that have been written" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -127,7 +127,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Avro file written through non scoobi API with a union type in the schema, then read through scoobi" >> { implicit sc: SC =>
-    val filePath = new Path(createTempFile())
+    val filePath = new Path(TempFiles.createTempFilePath("test"))
 
     val jsonSchema = """{
                          "name": "record1",
@@ -166,13 +166,10 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
    */
 
   def createTempAvroFile[T](input: DList[T])(implicit sc: SC, as: AvroSchema[T]): String = {
-    val initialTmpFile = createTempFile()
-    persist(input.toAvroFile(initialTmpFile, overwrite = true))
-    initialTmpFile
+    val dir = TempFiles.createTempDir("test").getPath
+    persist(input.toAvroFile(dir, overwrite = true))
+    dir
   }
-
-  def createTempFile(prefix: String = "iotest")(implicit sc: SC): String =
-    TestFiles.path(TestFiles.createTempFile(prefix))
 
   val equality = (t1: Any, t2: Any) => (t1, t2) match {
     case (tt1: Array[_], tt2: Array[_])       => tt1.toSeq == tt2.toSeq

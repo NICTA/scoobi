@@ -115,7 +115,7 @@ object SequenceInput {
     * that the type parameters K and V must match the type key-value type of the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in
     * that directory. */
-  def fromSequenceFile[K <: Writable : WireFormat : Manifest, V <: Writable : WireFormat : Manifest](paths: List[String], checkFileTypes: Boolean = true): DList[(K, V)] = {
+  def fromSequenceFile[K <: Writable : WireFormat : Manifest, V <: Writable : WireFormat : Manifest](paths: Seq[String], checkFileTypes: Boolean = true): DList[(K, V)] = {
     val converter = new InputConverter[K, V, (K, V)] {
       def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
     }
@@ -125,7 +125,7 @@ object SequenceInput {
 
 
   /* Class that abstracts all the common functionality of reading from sequence files. */
-  private class SeqSource[K : Manifest, V : Manifest, A : WireFormat](paths: List[String], converter: InputConverter[K, V, A], checkFileTypes: Boolean)
+  private class SeqSource[K : Manifest, V : Manifest, A : WireFormat](paths: Seq[String], converter: InputConverter[K, V, A], checkFileTypes: Boolean)
     extends DataSource[K, V, A] {
 
     private val inputPaths = paths.map(p => new Path(p))

@@ -48,7 +48,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   "Reading Text -> IntWritable, Writing BytesWritable -> DoubleWritable" >> { implicit sc: SC =>
     // store test data in a sequence file
     val tmpSeqFile = createTempSeqFile(DList(("a", 1), ("b", 2)))
-    val outPath    = createTempFile("iotest.out")
+    val outPath    = createTempDir("iotest.out").getPath
 
     // load test data from the sequence file
     fromSequenceFile[Text, IntWritable](tmpSeqFile).
@@ -61,7 +61,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Expecting exception when Writing FloatWritable -> BooleanWritable, Reading Text -> BooleanWritable" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempFilePath("test")
 
     DList((1.2f, false), (2.5f, true)).
       map(kv => (new FloatWritable(kv._1), new BooleanWritable(kv._2))).toSequenceFile(filePath, overwrite = true).run
@@ -73,13 +73,13 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   "Not checking sequence file types, and catching the exception in the mapper" >> { implicit sc: SC =>
     if (sc.isInMemory) ok
     else {
-      val filePath = createTempFile()
+      val filePath = TempFiles.createTempFilePath("test")
 
       DList((1.2f, false), (2.5f, true)).
         map(kv => (new FloatWritable(kv._1), new BooleanWritable(kv._2))).toSequenceFile(filePath, overwrite = true).run
 
       // load test data from the sequence file, then persist to force execution and expect a ClassCastException in the mapper
-      fromSequenceFile[Text, BooleanWritable](List(filePath), checkKeyValueTypes = false).
+      fromSequenceFile[Text, BooleanWritable](Seq(filePath), checkKeyValueTypes = false).
         map(d => trye(d._1.charAt(0))(_.getClass.getSimpleName)).run.toSeq ===
         Seq(Left("ClassCastException"), Left("ClassCastException"))
     }
@@ -89,9 +89,9 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
    * Helper methods and classes
    */
   def createTempSeqFile[K, V](input: DList[(K, V)])(implicit sc: SC, ks: SeqSchema[K], vs: SeqSchema[V]): String = {
-    val initialTmpFile = createTempFile()
-    persist(input.convertToSequenceFile(initialTmpFile, overwrite = true))
-    initialTmpFile
+    val dir = createTempDir("test").getPath
+    persist(input.convertToSequenceFile(dir, overwrite = true))
+    dir
   }
 
   def createTempFile(prefix: String = "iotest")(implicit sc: SC): String = TestFiles.path(TestFiles.createTempFile(prefix))
