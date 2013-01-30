@@ -22,9 +22,14 @@ trait ProcessNode extends CompNode {
   /** unique identifier for the bridgeStore storing data for this node */
   protected def bridgeStoreId: String
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
-  lazy val bridgeStore = sinks.headOption.flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId))).getOrElse(BridgeStore(bridgeStoreId, wf))
+  lazy val bridgeStore = firstSinkAsBridge.getOrElse(BridgeStore(bridgeStoreId, wf))
+
+  /** transform the first sink into a Bridge if possible */
+  private lazy val firstSinkAsBridge: Option[Bridge] = nodeSinks.headOption.flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId)))
+  /** @return all the additional sinks + the bridgeStore */
+  lazy val sinks = if (firstSinkAsBridge.isDefined) (firstSinkAsBridge.toSeq ++ nodeSinks.drop(1)) else (bridgeStore +: nodeSinks)
   /** list of additional sinks for this node */
-  def sinks : Seq[Sink]
+  def nodeSinks : Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
   def updateSinks(f: Seq[Sink] => Seq[Sink]): ProcessNode
 }
@@ -45,7 +50,7 @@ case class ParallelDo(ins:           Seq[CompNode],
                       dofn:          DoFunction,
                       wfa:           WireReaderWriter,
                       wfb:           WireReaderWriter,
-                      sinks:         Seq[Sink] = Seq(),
+                      nodeSinks:     Seq[Sink] = Seq(),
                       bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
 
   lazy val wf = wfb
@@ -54,7 +59,7 @@ case class ParallelDo(ins:           Seq[CompNode],
 
   lazy val source = ins.collect(isALoad).headOption
 
-  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 
   /** Use this ParallelDo as a Mapper */
   def map(environment: Any, value: Any, emitter: EmitterWriter) {
@@ -116,7 +121,7 @@ object ParallelDo {
     // create a new ParallelDo node fusing functions and environments
     new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env), fuseDoFunction(pd1.dofn, pd2.dofn),
                    pd1.wfa, pd2.wfb,
-                   pd1.sinks ++ pd2.sinks,
+                   pd2.nodeSinks,
                    pd2.bridgeStoreId)
   }
 
@@ -138,13 +143,13 @@ object ParallelDo1 {
 case class Combine(in: CompNode, f: (Any, Any) => Any,
                    wfk:   WireReaderWriter,
                    wfv:   WireReaderWriter,
-                   sinks:              Seq[Sink] = Seq(),
-                   bridgeStoreId:      String = randomUUID.toString) extends ProcessNode {
+                   nodeSinks:     Seq[Sink] = Seq(),
+                   bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
 
   lazy val wf = pair(wfk, wfv)
   override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
-  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 
   /** combine values: this is used in a Reducer */
   def combine(values: Iterable[Any]) = values.reduce(f)
@@ -169,12 +174,12 @@ object Combine1 {
  * key-value CompNode by key
  */
 case class GroupByKey(in: CompNode, wfk: WireReaderWriter, gpk: KeyGrouping, wfv: WireReaderWriter,
-                      sinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
+                      nodeSinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends ProcessNode {
 
   lazy val wf = pair(wfk, iterable(wfv))
   override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
 
-  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 }
 object GroupByKey1 {
   def unapply(gbk: GroupByKey): Option[CompNode] = Some(gbk.in)

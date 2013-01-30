@@ -23,8 +23,6 @@ trait OutputChannel {
   /** unique identifier for the Channel */
   def tag: Int
 
-  /** an output channel write data to a bridge */
-  def bridgeStore: Bridge
   /** sequence of the bridgeStore + additional sinks of the last node of the output channel */
   def sinks: Seq[Sink]
 
@@ -57,10 +55,8 @@ trait MscrOutputChannel extends OutputChannel {
   }
   override def hashCode = tag.hashCode
 
-  /** @return the bridgeStore + all the sinks defined by the nodes of the input channel */
-  lazy val sinks = bridgeStore +: nodeSinks
-  /** list of all the sinks defined by the channel nodes */
-  protected def nodeSinks: Seq[Sink]
+  /** @return all the sinks defined by the nodes of the input channel */
+  def sinks: Seq[Sink]
 
   protected var emitter: EmitterWriter = _
 
@@ -132,10 +128,9 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   /** the tag identifying a GbkOutputChannel is the groupByKey id */
   lazy val tag = groupByKey.id
   /** collect the sinks of the last node of this output channel */
-  lazy val nodeSinks = lastNode.sinks
+  lazy val sinks = lastNode.sinks
   /** return the reducer environment if there is one */
   lazy val inputNodes = reducer.toSeq.map(_.env)
-  lazy val bridgeStore = lastNode.bridgeStore
 
   /** store the reducer environment during the setup if there is one */
   protected var environment: Any = _
@@ -190,12 +185,10 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
 case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
   /** the tag identifying a BypassOutputChannel is the parallelDo id */
   lazy val tag = input.id
-  /** collect additional sinks on the input node */
-  lazy val nodeSinks = input.sinks
+  /** collect sinks on the input node */
+  lazy val sinks = input.sinks
   /** return the environment of the input node */
   lazy val inputNodes = Seq(input.env)
-  /** return the bridge store of the input node */
-  lazy val bridgeStore = input.bridgeStore
 
   /**
    * Just emit the values to the sink, the key is irrelevant since it is a RollingInt in that case
