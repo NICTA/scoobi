@@ -55,12 +55,15 @@ object AvroInput extends AvroParsingImplicits {
     * DList must conform to the schema types allowed by Avro, as constrained by the 'AvroSchema' type
     * class. In the case of a directory being specified, the input forms all the files in
     * that directory. */
-  def fromAvroFile[A : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true): DList[A] = {
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true): DList[A] =
+    DListImpl(source(paths, checkSchemas)(implicitly[AvroSchema[A]]))
+
+  def source[A : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = {
     val sch = implicitly[AvroSchema[A]]
     val converter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
       def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
     }
-    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
+    new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
 
       private val inputPaths = paths.map(p => new Path(p))
       override def toString = "Avro("+id+")"+inputPaths.mkString("\n", "\n", "\n")
@@ -101,7 +104,7 @@ object AvroInput extends AvroParsingImplicits {
                   throw new AvroTypeException("Incompatible reader and writer schemas. Reader schema '" +
                     readerSchema + "'. Writer schema '" + writerSchema + "'. Errors:\n" + errors)
               } finally {
-                avroFile.close();
+                avroFile.close
               }
             }
           }
@@ -118,6 +121,6 @@ object AvroInput extends AvroParsingImplicits {
       lazy val inputConverter = converter
     }
 
-    DListImpl(source)
+
   }
 }

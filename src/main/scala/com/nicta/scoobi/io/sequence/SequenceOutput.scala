@@ -29,6 +29,8 @@ import org.apache.hadoop.mapreduce.Job
 import core._
 import impl.ScoobiConfiguration._
 import impl.io.Helper
+import avro.AvroInput
+import sequence.SequenceInput.SeqSource
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 object SequenceOutput {
@@ -129,5 +131,7 @@ object SequenceOutput {
     }
 
     lazy val outputConverter = converter
+
+    override def toSource: Option[Source] = Some(SequenceInput.source(Seq(path)))
   }
 }

@@ -27,6 +27,7 @@ import org.apache.hadoop.mapreduce.Job
 
 import core._
 import impl.io.Helper
+import avro.AvroInput
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
@@ -73,6 +74,8 @@ object TextOutput {
       lazy val outputConverter = new OutputConverter[NullWritable, A, A] {
         def toKeyValue(x: A) = (NullWritable.get, x)
       }
+
+      override def toSource: Option[Source] = Some(TextInput.source(Seq(path)))
     }
   }
 

@@ -8,6 +8,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.Configuration
 import Data._
+import io.text.TextInput
 
 /**
  * An output store from a MapReduce job
@@ -37,6 +38,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
       configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
       this
     }
+
+    override def toSource: Option[Source] = outer.toSource
   }
 
   /** configure the compression for a given job */

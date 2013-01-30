@@ -44,14 +44,15 @@ object TextInput {
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). */
-  def fromTextFile(paths: List[String]): DList[String] = {
+  def fromTextFile(paths: List[String]): DList[String] = DListImpl(source(paths))
+
+  /** create a text source */
+  def source(paths: Seq[String]) = {
     val converter = new InputConverter[LongWritable, Text, String] {
       def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
     }
-
-    DListImpl(new TextSource(paths, converter))
+    new TextSource(paths, converter)
   }
-
 
   /** Create a distributed list from one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
@@ -122,7 +123,7 @@ object TextInput {
 
 
   /* Class that abstracts all the common functionality of reading from text files. */
-  class TextSource[A : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
+  class TextSource[A : WireFormat](paths: Seq[String], converter: InputConverter[LongWritable, Text, A])
     extends DataSource[LongWritable, Text, A] {
 
     private val inputPaths = paths.map(p => new Path(p))

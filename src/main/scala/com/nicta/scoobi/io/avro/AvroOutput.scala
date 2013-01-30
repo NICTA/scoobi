@@ -72,6 +72,8 @@ object AvroOutput {
       }
 
       lazy val outputConverter = converter
+
+      override def toSource: Option[Source] = Some(AvroInput.source(Seq(path), checkSchemas = false)(implicitly[AvroSchema[B]]))
     }
   }
 }
