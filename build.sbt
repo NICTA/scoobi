@@ -1,3 +1,8 @@
+import com.jsuereth.sbtsite.SiteKeys._
+import com.jsuereth.git.{GitKeys,GitRunner}
+import GitKeys.{gitBranch, gitRemoteRepo}
+import com.jsuereth.ghpages.GhPages.ghpages._
+
 /** Definition */
 name := "scoobi"
 
@@ -7,6 +12,7 @@ version := "0.7.0-cdh4-FUTURE-SNAPSHOT"
 
 scalaVersion := "2.9.2"
 
+/** Dependencies */
 libraryDependencies ++= Seq(
   "javassist" % "javassist" % "3.12.1.GA",
   "org.apache.avro" % "avro-mapred" % "1.7.3.1",
@@ -31,19 +37,20 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-compress" % "1.0" % "test"
 )
 
-(sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen
-
 resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "sonatype" at "http://oss.sonatype.org/content/repositories/snapshots")
 
 /** Compilation */
+(sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen
+
 scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
 
 /** Testing */
 testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") ||
                                      Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains)))
 
+// run each test in its own jvm
 fork in Test := true
 
 javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
@@ -53,18 +60,95 @@ javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
                     "-XX:MaxPermSize=768m",
                     "-XX:ReservedCodeCacheSize=1536m")
 
-publishArtifact in packageDoc := false // disable building docs, as it takes so much time
+/** Site building */
+site.settings
 
-pomExtra :=
+seq(site.settings:_*)
+
+siteSourceDirectory <<= target (_ / "specs2-reports")
+
+// depending on the version, copy the api files to a different directory
+siteMappings <++= (mappings in packageDoc in Compile, version) map { (m, v) =>
+  for((f, d) <- m) yield (f, if (v.trim.endsWith("SNAPSHOT")) ("api/master/" + d) else ("api/SCOOBI-"+v+"/"+d))
+}
+
+/** Site publication */
+seq(ghpages.settings:_*)
+
+// override the synchLocal task to avoid removing the existing files
+synchLocal <<= (privateMappings, updatedRepository, GitKeys.gitRunner, streams) map { (mappings, repo, git, s) =>
+  val betterMappings = mappings map { case (file, target) => (file, repo / target) }
+  IO.copy(betterMappings)
+  repo
+}
+
+git.remoteRepo := "git@github.com:NICTA/scoobi.git"
+
+/** Notification */
+seq(lsSettings :_*)
+
+(LsKeys.ghBranch in LsKeys.lsync) := Some("master-publish") 
+
+(LsKeys.ghUser in LsKeys.lsync) := Some("nicta")
+
+(LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
+
+/** Publishing */
+publishTo <<= version { v: String =>
+  val nexus = "https://oss.sonatype.org/"
+  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else                             Some("staging" at nexus + "service/local/staging/deploy/maven2")
+}
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { x => false }
+
+pomExtra := (
     <build>
         <plugins>
-             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <configuration>
-                    <header>notes/header.txt</header>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+          <plugin>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+          <configuration>
+            <header>notes/header.txt</header>
+          </configuration>
+        </plugin>
+      </plugins>
+  </build>
+  <url>http://nicta.github.com/scoobi</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>http://www.opensource.org/licenses/Apache-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://github.com/NICTA/scoobi</url>
+    <connection>scm:http:http://NICTA@github.com/NICTA/scoobi.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>blever</id>
+      <name>Ben Lever</name>
+      <url>http://github.com/blever</url>
+    </developer>
+     <developer>
+      <id>espringe</id>
+      <name>Eric Springer</name>
+      <url>http://github.com/espringe</url>
+    </developer>
+    <developer>
+      <id>etorreborre</id>
+      <name>Eric Torreborre</name>
+      <url>http://etorreborre.blogspot.com/</url>
+    </developer>
+  </developers>
+)
+
+/** Release process */
+releaseSettings
 
