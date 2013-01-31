@@ -113,9 +113,19 @@ class PersistSpec extends NictaSimpleJobs {
     sink must beAnExistingPath
   }
 
-  "9. A user-specified sink can be used as a source when a second persist is done" >> { implicit sc: ScoobiConfiguration =>
+  "9. A user-specified sink can be used as a source when a second persist is done" >> {
+    "9.1 with a sequence file" >> { implicit sc: ScoobiConfiguration =>
+      persistTwice((list, sink) => list.toSequenceFile(sink))
+    }
+    "9.2 with an Avro file" >> { implicit sc: ScoobiConfiguration =>
+      persistTwice((list, sink) => list.toAvroFile(sink))
+    }
+
+  }
+
+  def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: ScoobiConfiguration) = {
     val sink = TempFiles.createTempFilePath("user")
-    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(sink)
+    val plusOne = withFile(DList(1, 2, 3).map(_ + 1), sink)
 
     persist(plusOne)
 

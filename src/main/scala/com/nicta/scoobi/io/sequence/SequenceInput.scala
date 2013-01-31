@@ -20,7 +20,7 @@ package sequence
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.{Writable, SequenceFile}
+import org.apache.hadoop.io.{NullWritable, Writable, SequenceFile}
 import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, SequenceFileInputFormat}
 import org.apache.hadoop.mapreduce.Job
 
@@ -125,6 +125,15 @@ object SequenceInput {
       def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
     }
     new SeqSource[K, V, (K, V)](paths, converter)
+  }
+
+  def valueSource[V : SeqSchema](paths: Seq[String]) = {
+    val convV = implicitly[SeqSchema[V]]
+
+    val converter = new InputConverter[Writable, convV.SeqType, V] {
+      def fromKeyValue(context: InputContext, k: Writable, v: convV.SeqType) = convV.fromWritable(v)
+    }
+    new SeqSource(paths, converter)
   }
 
   /* Class that abstracts all the common functionality of reading from sequence files. */

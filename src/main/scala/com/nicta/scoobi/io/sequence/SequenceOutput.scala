@@ -58,14 +58,11 @@ object SequenceOutput {
     dl.addSink(valueSchemaSequenceFile(path, overwrite))
 
   def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) = {
-
-    val keyClass = classOf[NullWritable]
     val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
-
     val converter = new OutputConverter[NullWritable, convV.SeqType, V] {
       def toKeyValue(v: V) = (NullWritable.get, convV.toWritable(v))
     }
-    new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite)
+    new ValueSeqSink[convV.SeqType, V](path, valueClass, converter, overwrite)(convV)
   }
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
@@ -98,6 +95,11 @@ object SequenceOutput {
     new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite)
   }
 
+  class ValueSeqSink[V, B : SeqSchema](path: String, valueClass: Class[V], converter: OutputConverter[NullWritable, V, B], overwrite: Boolean) extends
+    SeqSink[NullWritable, V, B](path, classOf[NullWritable], valueClass, converter, overwrite) {
+
+    override def toSource = Some(SequenceInput.valueSource(Seq(path))(implicitly[SeqSchema[B]]))
+  }
 
     /* Class that abstracts all the common functionality of persisting to sequence files. */
   class SeqSink[K, V, B](

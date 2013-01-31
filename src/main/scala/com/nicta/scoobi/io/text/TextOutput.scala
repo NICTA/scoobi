@@ -75,7 +75,11 @@ object TextOutput {
         def toKeyValue(x: A) = (NullWritable.get, x)
       }
 
-      override def toSource: Option[Source] = Some(TextInput.source(Seq(path)))
+      /**
+       * it is not possible to transform a Text sink, storing objects of type A to strings, to a Text source that could load
+       * strings into objects of type A because we don't know at this stage how to go from String => A
+       */
+      override def toSource: Option[Source] = None
     }
   }
 

@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package io
 package text
 
-import java.io.IOException
+import java.io.{DataInput, IOException}
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
@@ -32,6 +32,7 @@ import impl.plan.DListImpl
 import impl.mapreducer.TaggedInputSplit
 import impl.ScoobiConfiguration._
 import impl.io.Helper
+import WireFormat._
 
 /** Smart functions for materialising distributed lists by loading text files. */
 object TextInput {
