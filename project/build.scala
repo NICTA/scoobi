@@ -161,6 +161,7 @@ object build extends Build {
     tagName <<= (version in ThisBuild) map (v => "SCOOBI-" + v),
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,              // : ReleaseStep
+      updateLicences,
       inquireVersions,                        // : ReleaseStep
       setReleaseVersion,                      // : ReleaseStep
       commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
@@ -171,6 +172,11 @@ object build extends Build {
       pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
     )
   )
+
+  lazy val updateLicences = ReleaseStep { state =>
+    "mvn license:format".!
+    state
+  }
 }
 
 
