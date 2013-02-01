@@ -56,6 +56,8 @@ trait CollectFunctions {
   lazy val isAGroupByKey: PartialFunction[Any, GroupByKey] = { case gbk: GroupByKey => gbk }
   /** return true if a CompNode is a Materialise */
   lazy val isMaterialise: CompNode => Boolean = { case m: Materialise => true; case other => false }
+  /** return the node if a CompNode is a Materialise */
+  lazy val isAMaterialise: PartialFunction[Any, Materialise] = { case m: Materialise => m }
   /** return true if a CompNode is a Root */
   lazy val isRoot: CompNode => Boolean = { case r: Root => true; case other => false }
   /** return true if a CompNode is a Return */

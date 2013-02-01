@@ -16,6 +16,7 @@ class ProcessNodeSpec extends UnitSpecification with Grouped { def is =
     "it is possible to add a Sink to a node"                                                       ! g1.e1^
     "it is possible to create a BridgeStore for a node"                                            ! g1.e2^
     "it is possible to update all the sinks to add compression for example"                        ! g1.e3^
+    "if the only available sink is a TextFile then no bridgeStore must be available"               ! g1.e4^
                                                                                                    end
 
   "sinks" - new g1 {
@@ -24,6 +25,7 @@ class ProcessNodeSpec extends UnitSpecification with Grouped { def is =
     e1 := parallelDo.addSink(StringSink()).nodeSinks === Seq(StringSink())
     e2 := parallelDo.bridgeStore must beSome
     e3 := parallelDo.addSink(StringSink()).updateSinks(s => s.map(_.compress)).nodeSinks.map(_.isCompressed) === Seq(true)
+    e4 := parallelDo.addSink(TextOutput.textFileSink("path")).bridgeStore must beNone
   }
 
 }
