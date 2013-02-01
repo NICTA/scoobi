@@ -160,23 +160,35 @@ object build extends Build {
   lazy val releaseSettings = ReleasePlugin.releaseSettings ++ Seq(
     tagName <<= (version in ThisBuild) map (v => "SCOOBI-" + v),
     releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,              // : ReleaseStep
+      checkSnapshotDependencies,
       updateLicences,
-      inquireVersions,                        // : ReleaseStep
-      setReleaseVersion,                      // : ReleaseStep
-      commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
-      tagRelease,                             // : ReleaseStep
-      publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-      setNextVersion,                         // : ReleaseStep
-      commitNextVersion,                      // : ReleaseStep
-      pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      publishArtifacts,
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
     )
   )
 
-  lazy val updateLicences = ReleaseStep { state =>
+  lazy val updateLicences = ReleaseStep { st =>
     "mvn license:format".!
-    state
+    commitCurrent("added license headers where missing")
   }
+
+  private def commitCurrent(commitMessage: String) = { st: State =>
+    vcs(st).add(".") !! st.log
+    val status = (vcs(st).status !!) trim
+
+    if (status.nonEmpty) {
+      val (state, msg) = st.extract.runTask(commitMessage, st)
+      vcs(state).commit(msg) ! st.log
+      state
+    } else st
+  }
+
 }
 
 
