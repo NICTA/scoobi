@@ -172,7 +172,7 @@ object build extends Build {
 
   lazy val generateSite = ReleaseStep { st: State =>
     st.log.info("Generating the documentation")
-    "sbt 'test-only *Index* -- include unit html'" !! st.log
+    "sbt test-only com.nicta.scoobi.guide.Index -- html" !! st.log
     st
   }
 
