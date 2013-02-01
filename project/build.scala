@@ -12,6 +12,7 @@ import ReleasePlugin._
 import ReleaseKeys._
 import ReleaseStateTransformations._
 import ls.Plugin._
+import Utilities._
 
 object build extends Build {
   type Settings = Project.Setting[_]
@@ -174,19 +175,22 @@ object build extends Build {
   )
 
   lazy val updateLicences = ReleaseStep { st =>
-    "mvn license:format".!
-    commitCurrent("added license headers where missing")
+    "mvn license:format" !! st.log
+    commitCurrent("added license headers where missing")(st)
   }
 
-  private def commitCurrent(commitMessage: String) = { st: State =>
+  private def commitCurrent(commitMessage: String): State => State = { st: State =>
     vcs(st).add(".") !! st.log
     val status = (vcs(st).status !!) trim
 
     if (status.nonEmpty) {
-      val (state, msg) = st.extract.runTask(commitMessage, st)
-      vcs(state).commit(msg) ! st.log
-      state
+      vcs(st).commit(commitMessage) ! st.log
+      st
     } else st
+  }
+
+  private def vcs(st: State): Vcs = {
+    st.extract.get(versionControlSystem).getOrElse(sys.error("Aborting release. Working directory is not a repository of a recognized VCS."))
   }
 
 }
