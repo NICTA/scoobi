@@ -114,17 +114,6 @@ object build extends Build {
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
     pomExtra := (
-        <build>
-            <plugins>
-              <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-              <configuration>
-                <header>notes/header.txt</header>
-              </configuration>
-            </plugin>
-          </plugins>
-      </build>
       <url>http://nicta.github.com/scoobi</url>
       <licenses>
         <license>
