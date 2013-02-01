@@ -152,6 +152,7 @@ object build extends Build {
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       updateLicences,
+      generateSite,
       inquireVersions,
       setReleaseVersion,
       commitReleaseVersion,
@@ -167,6 +168,12 @@ object build extends Build {
     st.log.info("Updating the license headers")
     "mvn license:format" !! st.log
     commitCurrent("added license headers where missing")(st)
+  }
+
+  lazy val generateSite = ReleaseStep { st: State =>
+    st.log.info("Generating the documentation")
+    "sbt test-only *Index -- html checkurls" !! st.log
+    st
   }
 
   private def commitCurrent(commitMessage: String): State => State = { st: State =>
