@@ -175,7 +175,7 @@ object build extends Build {
     val extracted = Project.extract(st)
     val ref: ProjectRef = extracted.get(thisProjectRef)
     val testState = reapply(Seq(testOptions ++= Seq(Tests.Filter(name => false), Tests.Argument("include notfound"))), st)
-    extracted.runTask(test in GlobalScope in ref, testState)._1
+    extracted.runTask(test in Test, testState)._1
   }
 
   val guideTask = TaskKey[Unit]("guide")
