@@ -164,6 +164,7 @@ object build extends Build {
   )
 
   lazy val updateLicences = ReleaseStep { st =>
+    st.log.info("Updating the license headers")
     "mvn license:format" !! st.log
     commitCurrent("added license headers where missing")(st)
   }
