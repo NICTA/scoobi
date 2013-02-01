@@ -172,9 +172,15 @@ object build extends Build {
 
   lazy val generateSite = ReleaseStep { st: State =>
     st.log.info("Generating the documentation")
-    "sbt test-only com.nicta.scoobi.guide.Index -- html" !! st.log
-    st
+    val extracted = Project.extract(st)
+    val ref: ProjectRef = extracted.get(thisProjectRef)
+    val testState = reapply(Seq[Setting[_]](
+      testOptions +=  Tests.Argument("xonly")
+    ), st)
+    extracted.runTask(test in Test in ref, testState)._1
   }
+
+  val guideTask = TaskKey[Unit]("guide")
 
   private def commitCurrent(commitMessage: String): State => State = { st: State =>
     vcs(st).add(".") !! st.log
