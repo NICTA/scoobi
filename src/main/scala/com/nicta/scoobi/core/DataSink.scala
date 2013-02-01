@@ -137,7 +137,7 @@ trait Bridge extends Source with Sink {
 object Bridge {
   def create(source: Source, sink: Sink, bridgeId: String): Bridge = new Bridge {
     def bridgeStoreId = bridgeId
-    override def id = source.id
+    override def id = sink.id
 
     def inputFormat = source.inputFormat
     def inputCheck(implicit sc: ScoobiConfiguration) = source.inputCheck

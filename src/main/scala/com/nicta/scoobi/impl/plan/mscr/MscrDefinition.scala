@@ -147,10 +147,10 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val isReducer: ParallelDo => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd if hasBeenFilled(pd.bridgeStore)                   => true
-    case _                                                     => false
+    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest)    => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)              => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd if pd.bridgeStore.map(hasBeenFilled).getOrElse(false) => true
+    case _                                                        => false
   }
 
 }

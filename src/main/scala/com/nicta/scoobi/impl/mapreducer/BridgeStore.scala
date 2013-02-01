@@ -129,6 +129,8 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   }
 
   override def hashCode = bridgeStoreId.hashCode
+
+  override def toSource: Option[Source] = Some(this)
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,

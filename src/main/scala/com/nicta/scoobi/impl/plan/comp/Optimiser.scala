@@ -38,16 +38,24 @@ trait Optimiser extends CompNodes with Rewriter {
    * This rule is repeated until nothing can be fused anymore
    */
   def parDoFuse = repeat(oncebu(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty && !hasBeenFilled(p1.bridgeStore) =>
+    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if uses(p1).filterNot(_ == p2).isEmpty && rest.isEmpty && !p1.bridgeStore.map(hasBeenFilled).getOrElse(false) =>
       ParallelDo.fuse(p1.debug("parDoFuse with "+p2), p2)
   }))
+
+  /**
+   * add a bridgeStore if necessary
+   */
+  def addBridgeStore = everywhere(rule {
+    case m @ Materialise1(p: ProcessNode) if !p.bridgeStore.isDefined => m.copy(p.addSink(p.createBridgeStore)).debug("add bridgestore to "+p)
+  })
 
   /**
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Seq[CompNode]) =
     attempt(combineToParDo) <*
-    attempt(parDoFuse     )
+    attempt(parDoFuse     ) <*
+    attempt(addBridgeStore)
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs

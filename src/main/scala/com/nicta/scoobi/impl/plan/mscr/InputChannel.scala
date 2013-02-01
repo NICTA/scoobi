@@ -87,7 +87,7 @@ trait MscrInputChannel extends InputChannel {
   /** data source for this input channel */
   lazy val source = sourceNode match {
     case n: Load        => n.source
-    case n: ProcessNode => n.bridgeStore
+    case n: ProcessNode => n.bridgeStore.getOrElse(n.createBridgeStore)
   }
 
   /** sourceNode + environments for the parallelDo nodes */

@@ -8,9 +8,9 @@ import WireFormat._
 import mapreducer._
 import java.util.UUID._
 import CollectFunctions._
-import org.apache.hadoop.conf.Configuration
 import ScoobiConfigurationImpl._
-
+import scalaz._
+import Scalaz._
 /**
  * Processing node in the computation graph.
  *
@@ -22,12 +22,13 @@ trait ProcessNode extends CompNode {
   /** unique identifier for the bridgeStore storing data for this node */
   protected def bridgeStoreId: String
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
-  lazy val bridgeStore = firstSinkAsBridge.getOrElse(BridgeStore(bridgeStoreId, wf))
-
-  /** transform the first sink into a Bridge if possible */
-  private lazy val firstSinkAsBridge: Option[Bridge] = nodeSinks.headOption.flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId)))
+  lazy val bridgeStore = if (nodeSinks.isEmpty) Some(createBridgeStore) else oneSinkAsBridge
+  /** create a new bridgeStore if necessary */
+  def createBridgeStore = BridgeStore(bridgeStoreId, wf)
+  /** transform one sink into a Bridge if possible */
+  private lazy val oneSinkAsBridge: Option[Bridge] = nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId)))
   /** @return all the additional sinks + the bridgeStore */
-  lazy val sinks = if (firstSinkAsBridge.isDefined) (firstSinkAsBridge.toSeq ++ nodeSinks.drop(1)) else (bridgeStore +: nodeSinks)
+  lazy val sinks = oneSinkAsBridge.fold(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)
   /** list of additional sinks for this node */
   def nodeSinks : Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)

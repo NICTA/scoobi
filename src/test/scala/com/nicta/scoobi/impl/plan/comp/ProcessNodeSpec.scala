@@ -22,7 +22,7 @@ class ProcessNodeSpec extends UnitSpecification with Grouped { def is =
     def parallelDo = ParallelDo.create(Return.unit)(wireFormat[String])
 
     e1 := parallelDo.addSink(StringSink()).nodeSinks === Seq(StringSink())
-    e2 := parallelDo.bridgeStore must not(beNull)
+    e2 := parallelDo.bridgeStore must beSome
     e3 := parallelDo.addSink(StringSink()).updateSinks(s => s.map(_.compress)).nodeSinks.map(_.isCompressed) === Seq(true)
   }
 

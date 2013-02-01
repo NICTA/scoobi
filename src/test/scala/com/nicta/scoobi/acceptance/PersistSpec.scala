@@ -120,6 +120,9 @@ class PersistSpec extends NictaSimpleJobs {
     "9.2 with an Avro file" >> { implicit sc: ScoobiConfiguration =>
       persistTwice((list, sink) => list.toAvroFile(sink))
     }
+    "9.3 with a Text file" >> { implicit sc: ScoobiConfiguration =>
+      persistTwice((list, sink) => list.toTextFile(sink))
+    }
 
   }
 

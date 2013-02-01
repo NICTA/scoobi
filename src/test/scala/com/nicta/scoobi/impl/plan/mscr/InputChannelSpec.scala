@@ -57,7 +57,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     }
 
     e2 := { gbkInputChannel(l1).source === l1.source }
-    e3 := { gbkInputChannel(gbk1).source === gbk1.bridgeStore }
+    e3 := { gbkInputChannel(gbk1).source === gbk1.bridgeStore.get }
     e4 := { gbkInputChannel(l1, Seq(gbk1, gbk2)).inputNodes === Seq(l1, pd1.env, pd2.env) }
     e5 := { gbkInputChannel(l1, Seq(gbk1, gbk2)).tags === Seq(gbk1.id, gbk2.id) }
     e6 := {
