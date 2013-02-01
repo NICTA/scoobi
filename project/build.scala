@@ -174,8 +174,8 @@ object build extends Build {
     st.log.info("Generating the documentation")
     val extracted = Project.extract(st)
     val ref: ProjectRef = extracted.get(thisProjectRef)
-    val testState = reapply(Seq[Setting[_]](testOptions ++= Seq(Tests.Filter(name => false), Tests.Argument("include notfound"))), st)
-    extracted.runTask(test in Test in ref, testState)._1
+    val testState = reapply(Seq(testOptions ++= Seq(Tests.Filter(name => false), Tests.Argument("include notfound"))), st)
+    extracted.runTask(test in GlobalScope in ref, testState)._1
   }
 
   val guideTask = TaskKey[Unit]("guide")
