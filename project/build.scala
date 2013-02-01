@@ -172,7 +172,7 @@ object build extends Build {
 
   lazy val generateSite = ReleaseStep { st: State =>
     st.log.info("Generating the documentation")
-    "sbt test-only *Index* -- html checkurls" !! st.log
+    "sbt test-only '*Index* -- html checkurls'" !! st.log
     st
   }
 
