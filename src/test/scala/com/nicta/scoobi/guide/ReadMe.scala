@@ -40,7 +40,7 @@ val counts = lines.flatMap(_.split(" "))
                 .groupByKey
                 .combine(_+_)
 
-persist(toTextFile(counts, "hdfs://out/...", overwrite=true))
+persist(counts.toTextFile("hdfs://out/...", overwrite=true))
 ```
 
 This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write **what** you want rather than **how** to do it.

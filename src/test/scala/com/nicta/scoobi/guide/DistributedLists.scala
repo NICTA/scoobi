@@ -56,7 +56,7 @@ object WordCount extends ScoobiApp {
                                             .groupByKey
                                             .combine(_+_)
 
-    persist(toTextFile(counts, args(1)))
+    persist(counts.toTextFile(args(1)))
   }
 }
 ```
@@ -75,7 +75,7 @@ The second task is to compute a `DList` of word counts given all the lines of te
 
 4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterised by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
 
-The final task is to take the `counts` object, which represents counts for each word, and *persist* it.  In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`. Note that `toTextFile` is used within `persist`. Although not demonstrated in this example, `persist` takes a variable number of arguments, each of which specifies what `DList` is being persisted and how.
+The final task is to take the `counts` object, which represents counts for each word, and *persist* it.  In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`.
 
 Until `persist` is called, our application will only be running on the local client. The act of calling `persist`, along with the `DList`(s) to be persisted, will trigger Scoobi's staging compiler to take the sequence of `DList` transformations and turn them into one or more Hadoop MapReduce jobs. In this example Scoobi will generate a single MapReduce job that would be executed:
 

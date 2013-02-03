@@ -38,12 +38,14 @@ To bring the contents of such a `DList` on to the client, you can use the `mater
 
 ```scala
 val xs: DList[Int] = ...
-val ys: DObject[Iterable[Int]] = persist(xs.materialise)
+val ys: DObject[Iterable[Int]] = xs.materialise
+val ws: Iterable[Int] = ys.run
+
 // do something on the client
-val zs: Iterable[Int] = ys map { .... }
+val zs: Iterable[Int] = ws map { .... }
 ```
 
-The `DList` `materialise` method applied to a `DList[A]` will return a `DObject[Iterable[A]]`. Persisting the `DObject` will force it, and its dependencies, to be computed, and returin an `Iterable[A]`. The `Iterable` can then be used as the basis for client-based computations.
+The `DList` `materialise` method applied to a `DList[A]` will return a `DObject[Iterable[A]]`. Persisting the `DObject` (with the `run` method) will force it, and its dependencies, to be computed, and returning an `Iterable[A]`. The `Iterable` can then be used as the basis for client-based computations.
 
 
 ### Reduction operations
@@ -52,7 +54,7 @@ In addition to `materialise`, the `DList` trait implements a series or *reductio
 
 ```scala
 val floats: DList[Float] = ...
-val total = persist(floats.sum)
+val total = floats.sum.run
 ```
 
 The complete list of reduction operators are:
@@ -168,7 +170,7 @@ val total: DObject[Int] = ints.sum
 val num: DObject[Int] = ints.size
 val average: DObject[Float] = (total, num) map { case (t, s) => t / s }
 val bigger: DList[Int] = (average join ints) filter { case (a, i) => i > a } .values
-persist(toTextFile(bigger, "hdfs://all/my/big-integers"))
+persist(bigger.toTextFile("hdfs://all/my/big-integers"))
 ```
 
 In this example, we first encounter the use of `DObject` as the return value of the `DList` `sum` method. Rather than returning a `DList[Int]` with a single entry, `sum` instead returns a `DObject[Int]`. This `DObject` represents a delayed computation that if executed would calculate the sum of the intergers in `ints`. Similarly for `num` which is the result of the `DList` method `size`.
@@ -178,11 +180,11 @@ The average interger value can be calculated using `total` and `num`, however, i
 
 ### Persisting Distributed Objects
 
-We've seen previously that the way to "get inside" a `DObject` is to persist - that is, compute it:
+We've seen previously that the way to "get inside" a `DObject` is to `run` it - that is, compute it:
 
 ```scala
 val x: DObject[A] = ...
-val y: A = persist(x)
+val y: A = x.run
 ```
 
 Like `DLists`, it's also possible to persist multiple `DObjects` at a time. This similarly has the advantage of jointly optimising the dependency graph formed by all `DObjects`.
@@ -191,17 +193,19 @@ Like `DLists`, it's also possible to persist multiple `DObjects` at a time. This
 val a: DObject[A] = ...
 val b: DObject[B] = ...
 val c: DObject[C] = ...
-val (aR: A, bR: B, cR: C) = persist(a, b, c)
+val (aR: A, bR: B, cR: C) = run(a, b, c)
 ```
 
-Finally, it's also possible to persist both `DLists` and `DObjects` together:
+Finally, it's also possible to persist both `DLists` and `DObjects` together by persisting the whole graph as one `persist` operation, then call `run` on specific `DObjects` to extract the relevant values (this will not re-run computations but merely read values from the output files):
 
 ```scala
 val a: DObject[A] = ...
 val bs: DList[B] = ...
 val c: DObject[C] = ...
 val ds: DList[D] = ...
-val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, "hdfs://..."), c, toTextFile(ds, "hfds://..."))
+
+persist(a, bs.toTextFile("hdfs://..."), c, ds.toTextFile("hfds://..."))
+val (aR: A, cR: C) = (a.run, c.run)
 ```
 
 Note that persisting a `DList` does not return a value, hence the underscore.
@@ -209,10 +213,3 @@ Note that persisting a `DList` does not return a value, hence the underscore.
   """
 
 }
-
-//- Do we need a "stats" library for Scoobi - a peer to the "join" library?
-//  - general statistics metrics over large data sets:
-//    - average: mean + median
-//    - standard deviation
-//    - variance
-//    - etc

@@ -59,8 +59,6 @@ trait InputsOutputs {
 
   implicit def convertValueListToSequenceFile[V : SeqSchema](list: core.DList[V]): ConvertValueListToSequenceFile[V] = new ConvertValueListToSequenceFile[V](list)
   case class ConvertValueListToSequenceFile[V : SeqSchema](list: core.DList[V]) {
-    /** save values to a "value" sequence file */
-    def toSequenceFile(path: String, overwrite: Boolean = false) = convertValueToSequenceFile(path, overwrite)
     def convertValueToSequenceFile(path: String, overwrite: Boolean = false) =
       list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
   }
