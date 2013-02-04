@@ -219,6 +219,19 @@ This variation creates 12 MapReduce jobs: 4 to map the list on each iteration, 4
 
 In this case we get a handle on the `maximum` `DObject` and accessing his value with `run` is just a matter of reading the persisted information hence the number of MapReduce jobs is 8, as in case 2.
 
+##### Interim files
+
+It might be useful, for debugging reasons, to save the output of each intermediary step:
+
+     val ints = DList(12, 5, 8, 13, 11)
+
+     def iterate1(list: DList[Int]): DList[Int] = {
+       persist(list.toAvroFile("out"))
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+
   """ ^ end
 
 
@@ -229,9 +242,8 @@ class DecrementUntilSpec extends NictaSimpleJobs {
     val ints = DList(13, 5, 8, 11, 12)
 
     def iterate(list: DList[Int]): DList[Int] = {
-      val maxList = list.max
-      persist(list, maxList)
-      if (maxList.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+      persist(list.toAvroFile("out", overwrite = true))
+      if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
       else                   list
     }
 
