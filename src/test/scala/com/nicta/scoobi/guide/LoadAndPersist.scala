@@ -16,6 +16,10 @@
 package com.nicta.scoobi
 package guide
 
+import testing.mutable.NictaSimpleJobs
+import Scoobi._
+import com.nicta.scoobi.impl.plan.comp.CompNodeData._
+
 class LoadAndPersist extends ScoobiPage { def is = "Loading and persisting data".title^
   """
 `DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the [WordCount example](Application.html) we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally *loaded* from files and the results *persisted* to files. Let's see how to specify this.
@@ -157,6 +161,80 @@ Finally, when you have several `DObjects` and `DLists` which are part of the sam
     // (6, 3, Seq(2, 3, 4))
     (sum.run, max.run, plusOne.run)
 
-  """^
-                                                                                                                        end
+#### Iterations
+
+Many distributed algorithms (such as PageRank) require to iterate over DList computations. You evaluate the results of a DList computation, and based on that, you decide if you should go on with more computations.
+
+For example, let's say we want to remove 1 to a list of positive elements (and nothing if the element is already 0) until the maximum is 10.
+
+There are several ways to write this, which we are going to evaluate:
+
+     val ints = DList(12, 5, 8, 13, 11)
+
+     def iterate1(list: DList[Int]): DList[Int] = {
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+     def iterate2(list: DList[Int]): DList[Int] = {
+       persist(list)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+     def iterate3(list: DList[Int]): DList[Int] = {
+       persist(list, list.max)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+     def iterate4(list: DList[Int]): DList[Int] = {
+       val maximum = list.max
+       persist(list, maximum)
+       if (maximum.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                  list
+     }
+
+     persist(iterate1(ints).toTextFile("path"))
+     persist(iterate2(ints).toTextFile("path"))
+     persist(iterate3(ints).toTextFile("path"))
+     persist(iterate4(ints).toTextFile("path"))
+
+ 1. no intermediary call to `persist`
+
+In that case we get the least amount of generated MapReduce jobs, 5 jobs only: 4 jobs for the 4 main iterations, to do mapping + maximum, plus one job to write out the data to a text file
+
+The big disadvantage of this method is that the `DList` being computed is getting bigger and bigger all being re-computed all over for each new iteration.
+
+ 2. one call to persist the intermediate `DList`
+
+Here, before trying to evaluate the maximum value of the list, we save the mapped list first because later on we know we want to resume the computations from that stage, then we compute the maximum.
+This generates 8 MapReduce jobs: 4 jobs to map the list each time we enter the loop + 4 jobs to compute the maximum. However, if we compare with 1. the computations are reduced to a mimimum for each job because we reuse previously saved data.
+
+ 3. one call to persist the intermediate `DList` and the maximum
+
+This variation creates 12 MapReduce jobs: 4 to map the list on each iteration, 4 to compute the maximum on each iteration (because even if the list and its maximum are persisted at the same time, one depends on the other) and 4 to recompute the maximum and bring it to memory! The issue here is that we call `list.max` twice, hereby effectively creating 2 similar but duplicate `DObject`s.
+
+ 4. one call to persist the intermediate `DList` and the maximum as a variable
+
+In this case we get a handle on the `maximum` `DObject` and accessing his value with `run` is just a matter of reading the persisted information hence the number of MapReduce jobs is 8, as in case 2.
+
+  """ ^ end
+
+
+}
+
+class DecrementUntilSpec extends NictaSimpleJobs {
+  "Decrement the values of a DList[Int] until we reach a maximum value" >> { implicit sc: ScoobiConfiguration =>
+    val ints = DList(13, 5, 8, 11, 12)
+
+    def iterate(list: DList[Int]): DList[Int] = {
+      val maxList = list.max
+      persist(list, maxList)
+      if (maxList.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+      else                   list
+    }
+
+    normalise(iterate(ints).toTextFile("path").run) === "Vector(10, 2, 5, 8, 9)"
+  }
 }

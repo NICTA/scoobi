@@ -17,8 +17,10 @@ trait MscrsDefinition extends Layering {
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise) || uses(pd).exists(isRoot) || !parent(pd).isDefined) &&
-                           !isReducer(pd) &&
-                           (!isInsideMapper(pd) || descendents(pd.env).exists(isGroupByKey) || hasMaterialisedEnv(pd))
+                            !isReducer(pd) &&
+                           (!inputs(pd).exists(isFloating)) ||
+                            descendents(pd.env).exists(isGroupByKey) ||
+                            hasMaterialisedEnv(pd)
     case _              => false
   }
 
@@ -31,9 +33,18 @@ trait MscrsDefinition extends Layering {
 
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
-    val inputChannels = floatingParallelDos(layer).flatMap(pd => pd.ins.map(source => new FloatingInputChannel(source)))
+    val inputChannels = floatingParallelDos(layer).flatMap(pd => pd.ins.map(source => new FloatingInputChannel(source, floatingMappers(source))))
     val outputChannels = inputChannels.flatMap(_.lastMappers.map(BypassOutputChannel(_)))
     makeMscrs(inputChannels, outputChannels)
+  }
+
+  private [scoobi]
+  def floatingMappers(sourceNode: CompNode) = {
+    val floatings =
+      if (isFloating(sourceNode)) Seq(sourceNode)
+      else                        uses(sourceNode).filter(isFloating)
+
+    (floatings ++ floatings.flatMap(mappersUses).filterNot(isFloating)).collect(isAParallelDo).toSeq
   }
 
   /** Mscrs for mscrs built around gbk nodes */

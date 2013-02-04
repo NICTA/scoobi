@@ -209,14 +209,13 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
 /**
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
-class FloatingInputChannel(val sourceNode: CompNode) extends MscrInputChannel {
+class FloatingInputChannel(val sourceNode: CompNode, val mappers: Seq[ParallelDo]) extends MscrInputChannel {
   import nodes._
 
   override def toString = "FloatingInputChannel("+sourceNode+")\n   mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
-  lazy val mappers = Seq(sourceNode).collect(isAParallelDo) ++ mappersUses(sourceNode).filter(n => !isFloating(n) || n.children.contains(sourceNode))
 
   lazy val keyTypes   = lastMappers.foldLeft(KeyTypes())   { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
   lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }

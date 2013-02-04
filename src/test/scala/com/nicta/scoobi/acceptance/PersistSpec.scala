@@ -115,13 +115,13 @@ class PersistSpec extends NictaSimpleJobs {
 
   "9. A user-specified sink can be used as a source when a second persist is done" >> {
     "9.1 with a sequence file" >> { implicit sc: ScoobiConfiguration =>
-      persistTwice((list, sink) => list.convertValueToSequenceFile(sink))
+      persistTwice((list, sink) => list.convertValueToSequenceFile(sink, overwrite = true))
     }
     "9.2 with an Avro file" >> { implicit sc: ScoobiConfiguration =>
-      persistTwice((list, sink) => list.toAvroFile(sink))
+      persistTwice((list, sink) => list.toAvroFile(sink, overwrite = true))
     }
     "9.3 with a Text file" >> { implicit sc: ScoobiConfiguration =>
-      persistTwice((list, sink) => list.toTextFile(sink))
+      persistTwice((list, sink) => list.toTextFile(sink, overwrite = true))
     }
 
   }

@@ -86,6 +86,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
       runMscrs(mscrs(layer))
 
       layerBridgeSinks(layer).debug("Layer bridges sinks: ").foreach(markBridgeAsFilled)
+      ("===== END OF LAYER "+layer.id+" ======").debug
     }
 
     /**
@@ -94,7 +95,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
      * Only the execution part is done concurrently, not the configuration.
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
-    private def runMscrs(mscrs: Seq[Mscr]): Unit = {
+    private def runMscrs(mscrs: Seq[Mscr]) {
       ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).debug
 
       val configured = mscrs.toList.map(configureMscr)
@@ -122,6 +123,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     /** report the execution of a Mscr */
     protected def reportMscr = (job: MapReduceJob) => {
       job.report
+      ("===== END OF MSCR "+job.mscr.id+" ======").debug
     }
   }
 

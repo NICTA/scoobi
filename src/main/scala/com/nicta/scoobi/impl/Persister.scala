@@ -14,19 +14,21 @@ class Persister(sc: ScoobiConfiguration) {
   private val inMemoryMode = InMemoryMode()
   private val hadoopMode   = HadoopMode(sc)
 
-  def persist[A](ps: Seq[Persistent[_]]) {
+  def persist[A](ps: Seq[Persistent[_]]) = {
     val asOne = Root(ps.map(_.getComp))
     sc.mode match {
       case InMemory        => inMemoryMode.execute(asOne)
       case Local | Cluster => hadoopMode  .execute(asOne)
     }
+    ps
   }
 
-  def persist[A](list: DList[A]) {
+  def persist[A](list: DList[A]) = {
     sc.mode match {
       case InMemory        => inMemoryMode.execute(list)
       case Local | Cluster => hadoopMode  .execute(list)
     }
+    list
   }
 
   def persist[A](o: DObject[A]): A = {

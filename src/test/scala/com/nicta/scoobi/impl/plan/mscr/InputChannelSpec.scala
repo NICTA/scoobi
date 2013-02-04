@@ -27,22 +27,28 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
   "the input nodes of the input channel are: the source node+the environments of all the channel mappers"               ! g1().e4^
   "an input channel defines tags which are all the gbks ids it relates to"                                              ! g1().e5^
   "an input channel defines the types of keys emitted by tag"                                                           ^
-    "as the types of the gbks key for a GbkInputChannel"                                                                ! g1().e6^
-    "as Int for a FloatingInputChannel"                                                                                 ! g1().e7^p^
+    "as the types of the gbks key for a GbkInputChannel"                                                                ! g2().e1^
+    "as Int for a FloatingInputChannel"                                                                                 ! g3().e1^p^
   "an input channel defines the types of values emitted by tag"                                                         ^
-    "as the types of the gbks values for a GbkInputChannel"                                                             ! g1().e8^
-    "as the types of the last mappers for a FloatingInputChannel"                                                       ! g1().e9^
+    "as the types of the gbks values for a GbkInputChannel"                                                             ! g2().e2^
+    "as the types of the last mappers for a FloatingInputChannel"                                                       ! g3().e2^
                                                                                                                         endp^
   "An input channel must map key/values based on the mappers connected to its source"                                   ^
-    "if there is only one mapper"                                                                                       ! g2().e1^
-    "if there are 2 independent mappers"                                                                                ! g2().e2^
-    "if there are 2 consecutive mappers"                                                                                ! g2().e3^
-    "if there are 3 mappers as a tree"                                                                                  ! g2().e4^
+    "if there is only one mapper"                                                                                       ! g4().e1^
+    "if there are 2 independent mappers"                                                                                ! g4().e2^
+    "if there are 2 consecutive mappers"                                                                                ! g4().e3^
+    "if there are 3 mappers as a tree"                                                                                  ! g4().e4^
                                                                                                                         endp^
   "A gbk input channel has mappers defined by the parallelDos connected to its source"                                  ^
-    "load -> pd1 -> gbk1 -> pd2 -> gbk2"                                                                                ! g3().e1^
-    "load -> pd1 -> gbk1; pd1 -> gbk2"                                                                                  ! g3().e2^
-    "load -> pd1 -> gbk1 -> pd2 -> gbk2; pd1 -> gbk2"                                                                   ! g3().e3^
+    "load -> pd1 -> gbk1 -> pd2 -> gbk2"                                                                                ! g5().e1^
+    "load -> pd1 -> gbk1; pd1 -> gbk2"                                                                                  ! g5().e2^
+    "load -> pd1 -> gbk1 -> pd2 -> gbk2; pd1 -> gbk2"                                                                   ! g5().e3^
+                                                                                                                        endp^
+  "A floating input channel has mappers defined by the parallelDos connected to its source"                             ^
+    "load -> pd1 floating -> pd2 -> mat"                                                                                ! g6().e1^
+    "load -> pd1 floating -> pd2 floating -> mat"                                                                       ! g6().e2^
+    "pd1 floating -> pd2 -> mat"                                                                                        ! g6().e3^
+    "pd1 floating -> pd2 floating -> mat"                                                                               ! g6().e4^
                                                                                                                         end
 
   "general properties of input channels" - new g1 with factory {
@@ -60,26 +66,39 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     e3 := { gbkInputChannel(gbk1).source === gbk1.bridgeStore.get }
     e4 := { gbkInputChannel(l1, Seq(gbk1, gbk2)).inputNodes === Seq(l1, pd1.env, pd2.env) }
     e5 := { gbkInputChannel(l1, Seq(gbk1, gbk2)).tags === Seq(gbk1.id, gbk2.id) }
-    e6 := {
+  }
+  "gbk input channels key/values" - new g2 with factory {
+    val (l1, l2) = (load, load)
+    val pd1 = pd(l1)
+    val (pd2, gbk1) = (pd(pd1), gbk(pd1))
+    val gbk2 = gbk(pd2)
+
+    e1 := {
       gbkInputChannel(l1, Seq(gbk1, gbk2)).keyTypes.tags === Seq(gbk1.id, gbk2.id)
       gbkInputChannel(l1, Seq(gbk1, gbk2)).keyTypes.types.values.toList === Seq((gbk1.wfk, gbk1.gpk), (gbk2.wfk, gbk2.gpk))
     }
-    e7 := {
-      floatingInputChannel(l1).keyTypes.tags === Seq(pd2.id)
-      floatingInputChannel(l1).keyTypes.types.values.toList.mkString(",") === "(Int,AllGrouping)"
-    }
-    e8 := {
+    e2 := {
       gbkInputChannel(l1, Seq(gbk1, gbk2)).valueTypes.tags === Seq(gbk1.id, gbk2.id)
       gbkInputChannel(l1, Seq(gbk1, gbk2)).valueTypes.types.values.toList === Seq(Tuple1(gbk1.wfv), Tuple1(gbk2.wfv))
     }
-    e9 := {
+  }
+  "floating input channels key/values" - new g3 with factory {
+    val l1 = load
+    val pd1 = pd(l1)
+    val pd2 = pd(pd1)
+    val mat1 = mt(pd2)
+
+    e1 := {
+      floatingInputChannel(l1).keyTypes.tags === Seq(pd2.id)
+      floatingInputChannel(l1).keyTypes.types.values.toList.mkString(",") === "(Int,AllGrouping)"
+    }
+    e2 := {
       floatingInputChannel(l1).valueTypes.tags === Seq(pd2.id)
       floatingInputChannel(l1).valueTypes.types.values.toList === Seq(Tuple1(pd2.wf))
     }
-
   }
 
-  "mapping values" - new g2 with factory {
+  "mapping values" - new g4 with factory {
     val (l1, l2) = (load, load)
     val pd1 = pd(l1).copy(dofn = MapFunction(_.toString.toUpperCase))
 
@@ -104,7 +123,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
 
     e3 := {
       val pd2 = pd(pd1).copy(dofn = MapFunction(_.toString+" now"))
-      gbk(pd2)
+      mt(pd2)
 
       val channel = floatingInputChannel(l1)
       channel.map("1", "stARt", channel.context)
@@ -123,7 +142,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     }
   }
 
-  "gbk and floating input channels" - new g3 with factory {
+  "mappers of gbk input channels" - new g5 with factory {
     e1 := {
       // load -> pd1 -> gbk1 -> pd2 -> gbk2
       val l1 = load
@@ -154,6 +173,41 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     }
   }
 
+  "mappers of floating input channels" - new g6 with factory {
+
+    e1 := {
+      // load -> pd1 floating -> pd2 -> mat
+      val l1 = load
+      val pd1 = pd(l1)
+      val pd2 = pd(pd1)
+      val mat1 = mt(pd2)
+      floatingInputChannel(l1).mappers === Seq(pd1, pd2)
+    }
+    e2 := {
+      // load -> pd1 floating -> pd2 floating -> mat
+      val l1 = load
+      val pd1 = pd(l1)
+      val pd2 = pdWithEnv(pd1, mt(gbk(load)))
+      val mat1 = mt(pd2)
+      floatingInputChannel(l1).mappers === Seq(pd1)
+    }
+    e3 := {
+      // pd1 floating -> pd2 -> mat
+      val pd1 = pd(rt)
+      val pd2 = pd(pd1)
+      val mat1 = mt(pd2)
+      floatingInputChannel(pd1).mappers === Seq(pd1, pd2)
+    }
+
+    e4 := {
+      // pd1 floating -> pd2 floating -> mat
+      val pd1 = pd(rt)
+      val pd2 = pdWithEnv(pd1, mt(gbk(load)))
+      val mat1 = mt(pd2)
+      floatingInputChannel(pd1).mappers === Seq(pd1)
+    }
+  }
+
   trait MockInputChannel extends MscrInputChannel {
     tks = Map[Int, TaggedKey]().withDefaultValue(new MetadataTaggedKey { def metadataPath = "" }: TaggedKey)
     tvs = Map[Int, TaggedValue]().withDefaultValue(new MetadataTaggedValue { def metadataPath = ""  }: TaggedValue)
@@ -179,7 +233,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
 
     override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
-  def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode) with MockInputChannel
+  def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode, new MscrsDefinition{}.floatingMappers(sourceNode)) with MockInputChannel
   def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys) with MockInputChannel
 
   def beDistinct[T]: Matcher[Seq[T]] = (seq: Seq[T]) => (seq.distinct.size == seq.size, "The sequence contains duplicated elements:\n"+seq)

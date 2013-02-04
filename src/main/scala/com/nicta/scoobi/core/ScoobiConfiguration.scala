@@ -66,8 +66,8 @@ trait ScoobiConfiguration {
   def fs: FileSystem = fileSystem
   def newEnv(wf: WireReaderWriter): Environment
 
-  def persist[A](ps: Seq[Persistent[_]])
-  def persist[A](list: DList[A])
+  def persist[A](ps: Seq[Persistent[_]]): Seq[Persistent[_]]
+  def persist[A](list: DList[A]): DList[A]
   def persist[A](o: DObject[A]): A
   def duplicate: ScoobiConfiguration
 }

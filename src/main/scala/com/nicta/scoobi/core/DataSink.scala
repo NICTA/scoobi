@@ -140,23 +140,23 @@ object Bridge {
     override def id = sink.id
 
     def inputFormat = source.inputFormat
-    def inputCheck(implicit sc: ScoobiConfiguration) = source.inputCheck
-    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = source.inputConfigure(job)
+    def inputCheck(implicit sc: ScoobiConfiguration) { source.inputCheck }
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { source.inputConfigure(job) }
     def inputSize(implicit sc: ScoobiConfiguration) = source.inputSize
     def fromKeyValueConverter = source.fromKeyValueConverter
-    private[scoobi] def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit) = source.read(reader, mapContext, read)
+    private[scoobi] def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit) { source.read(reader, mapContext, read) }
 
     def outputFormat = sink.outputFormat
     def outputKeyClass = sink.outputKeyClass
     def outputValueClass = sink.outputValueClass
     def outputConverter = sink.outputConverter
-    def outputCheck(implicit sc: ScoobiConfiguration) {}
-    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = sink.outputConfigure(job)
+    def outputCheck(implicit sc: ScoobiConfiguration) { sink.outputCheck }
+    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { sink.outputConfigure(job) }
     def outputPath(implicit sc: ScoobiConfiguration) = sink.outputPath
     def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = sink.outputCompression(codec, compressionType)
     def configureCompression(configuration: Configuration) = sink.configureCompression(configuration)
     private[scoobi] def isCompressed = sink.isCompressed
-    private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_]) = sink.write(values, recordWriter)
+    private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_]) { sink.write(values, recordWriter) }
     override def toSource: Option[Source] = Some(source)
 
     def readAsIterable(implicit sc: ScoobiConfiguration) =
