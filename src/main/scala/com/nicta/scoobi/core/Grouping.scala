@@ -96,8 +96,8 @@ trait Grouping[K] extends KeyGrouping {
         Grouping.this.groupCompare(f(x), f(y))
     }
 
-  /** Combine two groupings to a grouping of product type. */
-  def ***[L](q: Grouping[L]): Grouping[(K, L)] =
+  /** Combine two groupings to a grouping of product type. Alias for `***` */
+  def zip[L](q: Grouping[L]): Grouping[(K, L)] =
     new Grouping[(K, L)] {
       override def partition(key: (K, L), num: Int): Int =
         q.partition(key._2, Grouping.this.partition(key._1, num))
@@ -106,6 +106,10 @@ trait Grouping[K] extends KeyGrouping {
       def groupCompare(x: (K, L), y: (K, L)): SOrdering =
         Grouping.this.groupCompare(x._1, y._1) |+| q.groupCompare(x._2, y._2)
     }
+
+  /** Combine two groupings to a grouping of product type. Alias for `zip` */
+  def ***[L](q: Grouping[L]): Grouping[(K, L)] =
+    zip(q)
 
   /** Add two groupings together. */
   def |+|(q: Grouping[K]): Grouping[K] =
