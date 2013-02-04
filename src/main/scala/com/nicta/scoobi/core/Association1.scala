@@ -62,14 +62,14 @@ sealed trait Association1[+K, +V] {
   /**
    * Zip the values of this association with the given association to produce an iterable of pairs. Alias for `***`.
    */
-  def product[KK >: K, W](w: Association1[KK, W])(implicit S: Semigroup[KK]): Association1[KK, (V, W)] =
+  def zip[KK >: K, W](w: Association1[KK, W])(implicit S: Semigroup[KK]): Association1[KK, (V, W)] =
     Association1(S.append(key, w.key), values zip w.values)
 
   /**
-   * Zip the values of this association with the given association to produce an iterable of pairs. Alias for `product`.
+   * Zip the values of this association with the given association to produce an iterable of pairs. Alias for `zip`.
    */
   def ***[KK >: K, W](w: Association1[KK, W])(implicit S: Semigroup[KK]): Association1[KK, (V, W)] =
-    product(w)
+    zip(w)
 
   /**
    * Zip the key of this association with the given association to produce an iterable of pairs.
@@ -186,7 +186,7 @@ object Association1 {
   implicit def Association1Zip[K: Semigroup]: Zip[({type λ[α] = Association1[K, α]})#λ] =
     new Zip[({type λ[α] = Association1[K, α]})#λ] {
       def zip[A, B](a: => Association1[K, A], b: => Association1[K, B]) =
-        a product b
+        a zip b
     }
 
   implicit def Association1ApplyZip[K: Semigroup]: Zip[({type λ[α] = Association1[K, α]})#λ] with Apply[({type λ[α] = Association1[K, α]})#λ] =
@@ -194,7 +194,7 @@ object Association1 {
       override def map[A, B](a: Association1[K, A])(f: A => B) =
         a map f
       override def zip[A, B](a: => Association1[K, A], b: => Association1[K, B]) =
-        a product b
+        a zip b
       def ap[A, B](a: => Association1[K, A])(f: => Association1[K, A => B]) =
         a ap f
     }
