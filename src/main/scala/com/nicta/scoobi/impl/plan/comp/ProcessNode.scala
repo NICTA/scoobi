@@ -26,7 +26,7 @@ trait ProcessNode extends CompNode {
   /** create a new bridgeStore if necessary */
   def createBridgeStore = BridgeStore(bridgeStoreId, wf)
   /** transform one sink into a Bridge if possible */
-  private lazy val oneSinkAsBridge: Option[Bridge] = nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId)))
+  private lazy val oneSinkAsBridge: Option[Bridge] = nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId, wf)))
   /** @return all the additional sinks + the bridgeStore */
   lazy val sinks = oneSinkAsBridge.fold(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)
   /** list of additional sinks for this node */
@@ -102,38 +102,27 @@ object ParallelDo {
     def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
       /** fusion of the setup functions */
       def setupFunction(env: Any) {
-        val (env1, env2) = env match {
-          case (e1, e2) => (e1, e2)
-          case e        => (e, e)
-        }
+        val (env1, env2) = env match { case (e1, e2) => (e1, e2); case e => (e, e) }
         f.setupFunction(env1); g.setupFunction(env2)
       }
       /** fusion of the process functions */
       def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
-        val (env1, env2) = env match {
-          case (e1, e2) => (e1, e2)
-          case e        => (e, e)
-        }
+        val (env1, env2) = env match { case (e1, e2) => (e1, e2); case e => (e, e) }
         f.processFunction(env1, input, new EmitterWriter { def write(value: Any) { g.processFunction(env2, value, emitter) } } )
       }
       /** fusion of the cleanup functions */
       def cleanupFunction(env: Any, emitter: EmitterWriter) {
-        val (env1, env2) = env match {
-          case (e1, e2) => (e1, e2)
-          case e        => (e, e)
-        }
+        val (env1, env2) = env match { case (e1, e2) => (e1, e2); case e => (e, e) }
         f.cleanupFunction(env1, new EmitterWriter { def write(value: Any) { g.processFunction(env2, value, emitter) } })
         g.cleanupFunction(env2, emitter)
       }
     }
 
-    /** Fusion of the environments as an pairing Operation */
+    /** Fusion of the environments as a pairing Operation */
     def fuseEnv(fExp: CompNode, gExp: CompNode): ValueNode =
       (fExp, gExp) match {
-        case (f @ Return1(()), Return1(()))       => f
-        case (Return1(()),     g: ValueNode)      => g
-        case (f: ValueNode,    Return1(()))       => f
-        case _ => Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(pd1.wfe, pd2.wfe))
+        case (Return1(a), Return1(b)) => Return((a, b), pair(pd1.wfe, pd2.wfe))
+        case _                        => Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(pd1.wfe, pd2.wfe))
       }
 
 

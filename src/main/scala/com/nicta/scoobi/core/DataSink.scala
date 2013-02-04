@@ -9,6 +9,8 @@ import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.Configuration
 import Data._
 import io.text.TextInput
+import impl.ScoobiConfigurationImpl
+import impl.rtt.ScoobiWritable
 
 /**
  * An output store from a MapReduce job
@@ -132,12 +134,23 @@ private[scoobi]
 trait Bridge extends Source with Sink {
   def bridgeStoreId: String
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
+
+  /** datatype saved with this Bridge */
+  def wf: WireReaderWriter
+  /** rtClass will be created at runtime as part of building the MapReduce job. */
+  def rtClass(implicit sc: ScoobiConfiguration = new ScoobiConfigurationImpl) =
+    scalaz.Memo.mutableHashMapMemo((name: String) => ScoobiWritable(typeName, wf)).apply(typeName)
+
+  /** type of the generated class for this Bridge */
+  lazy val typeName = "BS" + bridgeStoreId
+
 }
 
 object Bridge {
-  def create(source: Source, sink: Sink, bridgeId: String): Bridge = new Bridge {
+  def create(source: Source, sink: Sink, bridgeId: String, wireFormat: WireReaderWriter): Bridge = new Bridge {
     def bridgeStoreId = bridgeId
     override def id = sink.id
+    lazy val wf = wireFormat
 
     def inputFormat = source.inputFormat
     def inputCheck(implicit sc: ScoobiConfiguration) { source.inputCheck }
