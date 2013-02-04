@@ -154,6 +154,9 @@ trait Configurations {
     /** @return a string with all the key/values, one per line */
     def show = conf.getValByRegex(".*").entrySet().mkString("\n")
 
+    /** @return the updated configuration with distinct values */
+    def distinctValues(key: String, separator: String): Configuration =
+      conf.updateWith(update = { case (`key`, values: String) => (key, values.split("\\Q"+separator+"\\E").distinct.mkString(separator)) })
   }
 
   /**

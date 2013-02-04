@@ -120,6 +120,9 @@ trait LibJars {
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
     configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
+
+    configuration.distinctValues("mapred.classpath", separator = System.getProperty("path.separator"))
+    configuration.distinctValues("mapred.job.classpath.files", separator = System.getProperty("path.separator"))
   }
 }
 object LibJars extends LibJars

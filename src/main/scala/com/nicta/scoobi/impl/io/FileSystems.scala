@@ -26,17 +26,14 @@ trait FileSystems {
    */
   def uploadNewJars(sourceFiles: Seq[File], dest: String)(implicit configuration: ScoobiConfiguration): Seq[File] = {
     DistributedCache.createSymlink(configuration)
-    uploadNewFiles(sourceFiles, dest) { path =>
-      DistributedCache.addFileToClassPath(path, configuration)
-      path
-    }
+    uploadNewFiles(sourceFiles, dest)
   }
 
   /**
    * Upload additional local files to a destination directory on the hdfs
    */
-  def uploadNewFiles(sourceFiles: Seq[File], dest: String)
-                    (onRemoteFiles: Path => Path = identity)(implicit configuration: ScoobiConfiguration): Seq[File] = {
+  def uploadNewFiles(sourceFiles: Seq[File], dest: String,
+                     onRemoteFiles: Path => Path = identity)(implicit configuration: ScoobiConfiguration): Seq[File] = {
 
     val uploaded = listPaths(dest)
 

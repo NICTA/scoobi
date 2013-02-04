@@ -68,6 +68,11 @@ class ConfigurationsSpec extends UnitSpecification {
     }
   }
 
+  "If a key has a list of separated values, those values can be made distinct" >> {
+    configuration("classpath" -> "f1:f2:f1:f3:f2").distinctValues("classpath", ":") must beTheSameAs(
+      configuration("classpath" -> "f1:f2:f3"))
+  }
+
   def beTheSameAs(other: Configuration): Matcher[Configuration] = (c: Configuration) =>
     (c.show == other.show, c.show+"\n\nis not the same as\n\n"+other.show)
 }
