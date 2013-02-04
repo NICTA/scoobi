@@ -101,23 +101,41 @@ object ParallelDo {
     /** Create a new ParallelDo function that is the fusion of two connected ParallelDo functions. */
     def fuseDoFunction(f: DoFunction, g: DoFunction): DoFunction = new DoFunction {
       /** fusion of the setup functions */
-      def setupFunction(env: Any) { env match { case (e1, e2) => f.setupFunction(e1); g.setupFunction(e2) } }
+      def setupFunction(env: Any) {
+        val (env1, env2) = env match {
+          case (e1, e2) => (e1, e2)
+          case e        => (e, e)
+        }
+        f.setupFunction(env1); g.setupFunction(env2)
+      }
       /** fusion of the process functions */
       def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
-        env match { case (e1, e2) => f.processFunction(e1, input, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } } ) }
+        val (env1, env2) = env match {
+          case (e1, e2) => (e1, e2)
+          case e        => (e, e)
+        }
+        f.processFunction(env1, input, new EmitterWriter { def write(value: Any) { g.processFunction(env2, value, emitter) } } )
       }
       /** fusion of the cleanup functions */
       def cleanupFunction(env: Any, emitter: EmitterWriter) {
-        env match { case (e1, e2) =>
-          f.cleanupFunction(e1, new EmitterWriter { def write(value: Any) { g.processFunction(e2, value, emitter) } })
-          g.cleanupFunction(e2, emitter)
+        val (env1, env2) = env match {
+          case (e1, e2) => (e1, e2)
+          case e        => (e, e)
         }
+        f.cleanupFunction(env1, new EmitterWriter { def write(value: Any) { g.processFunction(env2, value, emitter) } })
+        g.cleanupFunction(env2, emitter)
       }
     }
 
     /** Fusion of the environments as an pairing Operation */
     def fuseEnv(fExp: CompNode, gExp: CompNode): ValueNode =
-      Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(pd1.wfe, pd2.wfe))
+      (fExp, gExp) match {
+        case (f @ Return1(()), Return1(()))       => f
+        case (Return1(()),     g: ValueNode)      => g
+        case (f: ValueNode,    Return1(()))       => f
+        case _ => Op(fExp, gExp, (f: Any, g: Any) => (f, g), pair(pd1.wfe, pd2.wfe))
+      }
+
 
     // create a new ParallelDo node fusing functions and environments
     new ParallelDo(pd1.ins, fuseEnv(pd1.env, pd2.env), fuseDoFunction(pd1.dofn, pd2.dofn),
