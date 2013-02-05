@@ -37,7 +37,7 @@ trait DObject[A] extends Persistent[A] {
   def join[B : WireFormat](o: DObject[B]): DObject[(A, B)]
 
   def toSingleElementDList: DList[A]
-  def toDList[B](implicit ev: A <:< Iterable[B], wfb: WireFormat[B]): DList[B] = toSingleElementDList.flatMap(x => x)
+  def toDList[B](implicit ev: A <:< Iterable[B], wfb: WireFormat[B]): DList[B] = toSingleElementDList.mapFlatten(x => x)
 }
 
 

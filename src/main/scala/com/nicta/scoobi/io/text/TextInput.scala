@@ -89,7 +89,7 @@ object TextInput {
     : DList[A] = {
 
     val lines = fromTextFile(path)
-    lines.flatMap { line =>
+    lines.mapFlatten { line =>
       val fields = line.split(sep).toList
       if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
     }

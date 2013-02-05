@@ -140,6 +140,7 @@ object Bridge {
   def create(source: Source, sink: Sink, bridgeId: String): Bridge = new Bridge {
     def bridgeStoreId = bridgeId
     override def id = sink.id
+    override def toString = "Bridge "+bridgeId
 
     def inputFormat = source.inputFormat
     def inputCheck(implicit sc: ScoobiConfiguration) { source.inputCheck }

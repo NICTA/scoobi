@@ -31,11 +31,11 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   }
 
   "6. flatMap" >> { implicit sc: SC =>
-    DList("hello", "world").flatMap(_.toSeq.filterNot(_ == 'l')).run.toSet === Set('h', 'e', 'o', 'w', 'r', 'd')
+    DList("hello", "world").mapFlatten(_.toSeq.filterNot(_ == 'l')).run.toSet === Set('h', 'e', 'o', 'w', 'r', 'd')
   }
 
   "7. flatMap + map" >> { implicit sc: SC =>
-    DList("hello", "world").flatMap(_.toSeq.filterNot(_ == 'l')).map(_.toUpper).run.toSet === Set('H', 'E', 'O', 'W', 'R', 'D')
+    DList("hello", "world").mapFlatten(_.toSeq.filterNot(_ == 'l')).map(_.toUpper).run.toSet === Set('H', 'E', 'O', 'W', 'R', 'D')
   }
 
   "8. groupByKey + filter" >> { implicit sc: SC =>
@@ -130,7 +130,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     normalise(l2.run) === "Vector((Vector(hello),(a,Vector(b))))"
   }
   "25. flatMap" >> { implicit sc: ScoobiConfiguration =>
-    normalise(DList("hello", "world").flatMap { w => Seq.fill(2)(w) }.run) ===
+    normalise(DList("hello", "world").mapFlatten { w => Seq.fill(2)(w) }.run) ===
     "Vector(hello, hello, world, world)"
   }
   "26. (l1 ++ l2).groupByKey === (l1.groupByKey ++ l2.groupByKey).map { case (k, vs) => (k, vs.flatten) }" >> { implicit sc: ScoobiConfiguration =>
