@@ -41,16 +41,19 @@ The `Grouping[T]` trait has a method called `sortCompare` that we will override.
 
 Sample code for our `Point`:
 
+    import scalaz.Ordering._
+
     implicit val pointGrouping = new Grouping[Point] {
-      override def sortCompare(first: Point, second: Point) {
+      override def groupCompare(first: Point, second: Point) = {
         val xResult = first.x.compareTo(second.x)
-        if (xResult != 0)
-          xResult
-        else {
-          val yResult = first.y.compareTo(second.y)
-          if (yResult != 0) yResult
-          else              0
-        }
+        val result =
+          if (xResult != 0) xResult
+          else {
+            val yResult = first.y.compareTo(second.y)
+            if (yResult != 0) yResult
+            else              0
+          }
+        fromInt(result)
       }
     }
 
