@@ -221,15 +221,26 @@ In this case we get a handle on the `maximum` `DObject` and accessing his value 
 
 ##### Interim files
 
-It might be useful, for debugging reasons, to save the output of each intermediary step:
+It might be useful, for debugging reasons, to save the output of each intermediary step. Here is how to do it:
 
      val ints = DList(12, 5, 8, 13, 11)
 
-     def iterate1(list: DList[Int]): DList[Int] = {
-       persist(list.toAvroFile("out"))
-       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+     def iterate5(list: DList[Int]): DList[Int] = {
+       persist(list)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out", overwrite = true))
        else                   list
      }
+     // no need to persist to a Text file since there is already an Avro file storing the results
+     persist(iterate5(ints))
+
+With the code above the intermediary results will be written to the same output directory. You can also create one output directory per iteration:
+
+     def iterate6(list: DList[Int], n: Int = 0): DList[Int] = {
+       persist(list)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out"+n, overwrite = true), n+1)
+       else                   list
+     }
+     persist(iterate6(ints))
 
 
   """ ^ end
@@ -237,16 +248,3 @@ It might be useful, for debugging reasons, to save the output of each intermedia
 
 }
 
-class DecrementUntilSpec extends NictaSimpleJobs {
-  "Decrement the values of a DList[Int] until we reach a maximum value" >> { implicit sc: ScoobiConfiguration =>
-    val ints = DList(13, 5, 8, 11, 12)
-
-    def iterate(list: DList[Int]): DList[Int] = {
-      persist(list.toAvroFile("out", overwrite = true))
-      if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
-      else                   list
-    }
-
-    normalise(iterate(ints).toTextFile("path").run) === "Vector(10, 2, 5, 8, 9)"
-  }
-}

@@ -85,7 +85,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
       ("Executing layer\n"+layer).debug
       runMscrs(mscrs(layer))
 
-      layerBridgeSinks(layer).debug("Layer bridges sinks: ").foreach(markBridgeAsFilled)
+      layerSinks(layer).debug("Layer sinks: ").foreach(markSinkAsFilled)
       ("===== END OF LAYER "+layer.id+" ======").debug
     }
 

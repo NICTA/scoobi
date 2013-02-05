@@ -17,6 +17,7 @@ import impl.rtt.ScoobiWritable
  */
 trait DataSink[K, V, B] extends Sink { outer =>
   lazy val id = ids.get
+  lazy val stringId = id.toString
 
   def outputFormat: Class[_ <: OutputFormat[K, V]]
   def outputKeyClass: Class[K]
@@ -32,6 +33,7 @@ trait DataSink[K, V, B] extends Sink { outer =>
     def outputConverter: OutputConverter[K, V, B]                   = outer.outputConverter
     def outputCheck(implicit sc: ScoobiConfiguration)               { outer.outputCheck(sc) }
     def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { outer.outputConfigure(job) }
+    override def outputSetup(implicit configuration: Configuration) { outer.outputSetup }
 
     /** configure the job so that the output is compressed */
     override def configureCompression(configuration: Configuration) = {
@@ -59,6 +61,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
     Option(FileOutputFormat.getOutputPath(jobCopy))
   }
 
+  def outputSetup(implicit configuration: Configuration) {}
+
   private [scoobi]
   def write(values: Seq[_], recordWriter: RecordWriter[_,_]) {
     values foreach { value =>
@@ -75,6 +79,8 @@ private[scoobi]
 trait Sink { outer =>
   /** unique id for this Sink */
   def id: Int
+  /** unique id for this Sink, as a string. Can be used to create a file path */
+  def stringId: String
   /** The OutputFormat specifying the type of output for this DataSink. */
   def outputFormat: Class[_ <: OutputFormat[_, _]]
   /** The Class of the OutputFormat's key. */
@@ -89,6 +95,8 @@ trait Sink { outer =>
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
   /** @return the path for this Sink. */
   def outputPath(implicit sc: ScoobiConfiguration): Option[Path]
+  /** This method is called just before writing data to the sink */
+  def outputSetup(implicit configuration: Configuration)
 
   /** Set the compression configuration */
   def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): Sink
@@ -133,6 +141,7 @@ trait DataSinks {
 private[scoobi]
 trait Bridge extends Source with Sink {
   def bridgeStoreId: String
+  def stringId = bridgeStoreId
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
 }
 
@@ -140,7 +149,7 @@ object Bridge {
   def create(source: Source, sink: Sink, bridgeId: String): Bridge = new Bridge {
     def bridgeStoreId = bridgeId
     override def id = sink.id
-    override def toString = "Bridge "+bridgeId
+    override def toString = "Bridge "+bridgeId+sink.outputPath(new ScoobiConfigurationImpl).map(path => " ("+path+")").getOrElse("")
 
     def inputFormat = source.inputFormat
     def inputCheck(implicit sc: ScoobiConfiguration) { source.inputCheck }
@@ -155,6 +164,7 @@ object Bridge {
     def outputConverter = sink.outputConverter
     def outputCheck(implicit sc: ScoobiConfiguration) { sink.outputCheck }
     def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { sink.outputConfigure(job) }
+    def outputSetup(implicit configuration: Configuration) { sink.outputSetup }
     def outputPath(implicit sc: ScoobiConfiguration) = sink.outputPath
     def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = sink.outputCompression(codec, compressionType)
     def configureCompression(configuration: Configuration) = sink.configureCompression(configuration)

@@ -39,6 +39,7 @@ trait ProcessNode extends CompNode {
   def bridgeStore: Option[Bridge]
   def createBridgeStore: Bridge
   def nodeSinks : Seq[Sink]
+  def nonBridgeSinks: Seq[Sink]
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
   def updateSinks(f: Seq[Sink] => Seq[Sink]): ProcessNode
 }

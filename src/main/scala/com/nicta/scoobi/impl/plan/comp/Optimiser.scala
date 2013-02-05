@@ -53,12 +53,21 @@ trait Optimiser extends CompNodes with Rewriter {
   })
 
   /**
+   * add a map to sink node if necessary
+   */
+  def addMapToSink = oncebu(rule {
+    case p: ProcessNode if p.bridgeStore.map(hasBeenFilled).getOrElse(false) && p.nonBridgeSinks.exists(s => !hasBeenFilled(s)) =>
+      ParallelDo.create(p)(p.wf).updateSinks(ss => p.nonBridgeSinks.filterNot(s => hasBeenFilled(s))).debug("add bridgestore to "+p)
+  })
+
+  /**
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Seq[CompNode]) =
     attempt(combineToParDo) <*
     attempt(parDoFuse     ) <*
-    attempt(addBridgeStore)
+    attempt(addBridgeStore) <*
+    attempt(addMapToSink)
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs
