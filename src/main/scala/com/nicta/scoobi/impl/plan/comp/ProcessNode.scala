@@ -247,9 +247,10 @@ trait WithEnvironment {
   private var _environment: Option[Environment] = None
 
   def environment(sc: ScoobiConfiguration): Environment = {
-    _environment match {
-      case Some(e) => e
-      case None    => val e = sc.newEnv(wf); _environment = Some(e); e
+    _environment getOrElse {
+      val e = sc.newEnv(wf)
+      _environment = Some(e)
+      e
     }
   }
 
