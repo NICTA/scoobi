@@ -45,7 +45,7 @@ class DObjectImpl[A](comp: ValueNode)(implicit val wf: WireFormat[A]) extends DO
 
   def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)
 
-  def join[B : WireFormat](o: DObject[B]): DObject[(A, B)] =
+  def zip[B : WireFormat](o: DObject[B]): DObject[(A, B)] =
     DObjectImpl.tupled2((this, o))
 }
 

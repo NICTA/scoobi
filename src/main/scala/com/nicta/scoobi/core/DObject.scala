@@ -34,7 +34,7 @@ trait DObject[A] extends Persistent[A] {
    * to every element within the provided distributed list
    */
   def join[B : WireFormat](list: DList[B]): DList[(A, B)]
-  def join[B : WireFormat](o: DObject[B]): DObject[(A, B)]
+  def zip[B : WireFormat](o: DObject[B]): DObject[(A, B)]
 
   def toSingleElementDList: DList[A]
   def toDList[B](implicit ev: A <:< Iterable[B], wfb: WireFormat[B]): DList[B] = toSingleElementDList.mapFlatten(x => x)
