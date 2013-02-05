@@ -21,12 +21,11 @@ import core._
 import comp._
 import source.SeqInput
 import WireFormat._
-import mapreducer._
 import core.DList
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
-class DObjectImpl[A](comp: ValueNode)(implicit val wf: WireFormat[A]) extends DObject[A] {
+class DObjectImpl[A](comp: ValueNode) extends DObject[A] {
   type C = ValueNode
 
   def getComp: C = comp
@@ -45,7 +44,7 @@ class DObjectImpl[A](comp: ValueNode)(implicit val wf: WireFormat[A]) extends DO
 
   def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)
 
-  def join[B : WireFormat](o: DObject[B]): DObject[(A, B)] =
+  def zip[B : WireFormat](o: DObject[B]): DObject[(A, B)] =
     DObjectImpl.tupled2((this, o))
 }
 

@@ -55,7 +55,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
   def genObject(depth: Int = 1): Gen[DObject[String]] =
     if (depth <= 1) DObjects("start")
     else            Gen.oneOf(genList(depth - 1).map(l => l.materialise.map(normalise)),
-                              ^(genObject(depth / 2), genObject(depth / 2))((_ join _)).map(o => o.map(_.toString))).memo
+                              ^(genObject(depth / 2), genObject(depth / 2))((_ zip _)).map(o => o.map(_.toString))).memo
 
   /** lists of elements with a type (K, V) */
   def genList2(depth: Int = 1): Gen[DList[(String, String)]] =

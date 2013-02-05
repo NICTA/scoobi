@@ -199,7 +199,7 @@ object LinearAlgebra {
     val all = dv join m
 
     val distributedVector =
-      all.flatMap {
+      all.mapFlatten {
         case (arr, (elem, vals)) => {
 
           val products =

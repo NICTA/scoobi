@@ -298,7 +298,7 @@ object Relational {
     }
 
     Relational.join(
-      left.flatMap{ case (k, v) => (0 until replicationFactor).map{ i => ((k, i), v) } },
+      left.mapFlatten { case (k, v) => (0 until replicationFactor).map{ i => ((k, i), v) } },
        right.parallelDo(addRandIntToKey[K, B](replicationFactor,0))
     )
     .map{case ((k,_),vs) => (k,vs)}

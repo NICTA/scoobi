@@ -73,7 +73,7 @@ trait PageRank extends NictaSimpleJobs {
 
   /** @return new rankings */
   def updateRankings[K](previous: DList[Ranking[K]], d: Float = 0.5f)(implicit configuration: ScoobiConfiguration, wf: WireFormat[K], grouping: Grouping[K]) = {
-    val outbound: DList[(K, Float)] = previous flatMap { case t @ (url, (pageRank, _, links)) =>
+    val outbound: DList[(K, Float)] = previous mapFlatten { case t @ (url, (pageRank, _, links)) =>
       links.map { link => (link, pageRank / links.size) }
     }
    (previous coGroup outbound) map { case (url, (prevData, outboundMass)) =>

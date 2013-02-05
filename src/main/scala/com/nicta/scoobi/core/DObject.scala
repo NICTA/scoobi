@@ -16,15 +16,13 @@
 package com.nicta.scoobi
 package core
 
-import impl.plan.comp.ValueNode
-
 /**
  *  A wrapper around an object that is part of the graph of a distributed computation
  */
 trait DObject[A] extends Persistent[A] {
   type C <: ValueNode
 
-  implicit def wf: WireFormat[A]
+  implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]
 
   /** Create a new distributed object by apply a function to this distributed object */
   def map[B : WireFormat](f: A => B): DObject[B]
@@ -34,10 +32,10 @@ trait DObject[A] extends Persistent[A] {
    * to every element within the provided distributed list
    */
   def join[B : WireFormat](list: DList[B]): DList[(A, B)]
-  def join[B : WireFormat](o: DObject[B]): DObject[(A, B)]
+  def zip[B : WireFormat](o: DObject[B]): DObject[(A, B)]
 
   def toSingleElementDList: DList[A]
-  def toDList[B](implicit ev: A <:< Iterable[B], wfb: WireFormat[B]): DList[B] = toSingleElementDList.flatMap(x => x)
+  def toDList[B](implicit ev: A <:< Iterable[B], wfb: WireFormat[B]): DList[B] = toSingleElementDList.mapFlatten(x => x)
 }
 
 

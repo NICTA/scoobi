@@ -28,7 +28,7 @@ class ShortestPathSpec extends NictaSimpleJobs {
 
     val paths: DList[(String, Int)] = {
       val edges = nodes.map { n => val a :: b :: _ = n.split(" ").toList; (Node(a), Node(b)) }
-      val adjacencies = edges.flatMap { case (first, second) => List((first, second), (second, first)) }
+      val adjacencies = edges.mapFlatten { case (first, second) => List((first, second), (second, first)) }
       val grouped = adjacencies.groupByKey[Node, Node]
       val startingPoint = Node("A")
 
@@ -40,7 +40,7 @@ class ShortestPathSpec extends NictaSimpleJobs {
       val iterations = 5
       val breadthResult = breadthFirst(formatted, iterations)
 
-      breadthResult map { case (n, ni) => for { v <- pathSize(ni.state) } yield (n.data, v) } flatMap { x => x }
+      breadthResult map { case (n, ni) => for { v <- pathSize(ni.state) } yield (n.data, v) } mapFlatten { x => x }
     }
 
     paths.run.sortBy(_._1) must_== Seq(("A", 0), ("B", 1), ("C", 1), ("D", 2), ("E", 2), ("F", 3), ("G", 3))
@@ -71,7 +71,7 @@ object ShortestPath {
   case class NodeInfo (edges: Iterable[Node], state: Progress)
 
   def breadthFirst(dlist: DList[(Node, NodeInfo)], depth: Int): DList[(Node, NodeInfo)] = {
-    val firstMap = dlist.flatMap { case (n: Node, ni: NodeInfo) =>
+    val firstMap = dlist.mapFlatten { case (n: Node, ni: NodeInfo) =>
       ni.state match {
         case Frontier(distance) =>
           List((n, NodeInfo(ni.edges, Done(distance)))) ++ ni.edges.map { edge => (edge, NodeInfo(List[Node](), Frontier(distance+1))) }

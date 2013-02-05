@@ -16,8 +16,6 @@
 package com.nicta.scoobi
 package core
 
-import impl.plan.comp.ProcessNode
-
 /**
  * A list that is distributed across multiple machines.
  *
@@ -39,7 +37,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   private[scoobi]
   def setComp(f: C => C): DList[A]
 
-  implicit def wf: WireFormat[A]
+  implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.
@@ -90,10 +88,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * applying a specified function. The resulting collection of elements form a
    * new distributed list
    */
-  def flatMap[B: WireFormat](f: A => Iterable[B]): DList[B] =
+  def mapFlatten[B : WireFormat](f: A => Iterable[B]): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => f(input).foreach {
       emitter.emit(_)
     })
+
+  @deprecated(message = "use mapFlatten instead because a 'real' flatMap operation would be A => DList[B]", since = "0.7.0")
+  def flatMap[B : WireFormat](f: A => Iterable[B]): DList[B] = mapFlatten(f)
 
   /**
    * For each element of the distributed list produce a new element by applying a
@@ -116,7 +117,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * Build a new DList by applying a partial function to all elements of this DList on
    * which the function is defined
    */
-  def collect[B: WireFormat](pf: PartialFunction[A, B]): DList[B] =
+  def collect[B : WireFormat](pf: PartialFunction[A, B]): DList[B] =
     basicParallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) {
       emitter.emit(pf(input))
     })
@@ -209,7 +210,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
       def setup() {}
 
-      def process(input: A, emitter: Emitter[A]) = {
+      def process(input: A, emitter: Emitter[A]) {
         acc = if (first) input else op(acc, input)
         first = false
       }

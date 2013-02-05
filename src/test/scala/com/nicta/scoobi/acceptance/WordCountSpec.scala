@@ -25,7 +25,7 @@ class WordCountSpec extends NictaSimpleJobs {
 
     val frequencies =
       DList(repeat("hello" -> 3, "world" -> 4, "universe" -> 2):_*).
-      flatMap(_.split(" ")).map((_, 1)).
+      mapFlatten(_.split(" ")).map((_, 1)).
       groupByKey.
       filter { case (word, n) => word.length < 6 }.
       combine((i: Int, j: Int) => i + j)
