@@ -26,7 +26,10 @@ trait ProcessNodeImpl extends ProcessNode {
   /** create a new bridgeStore if necessary */
   def createBridgeStore = BridgeStore(bridgeStoreId, wf)
   /** transform one sink into a Bridge if possible */
-  private lazy val oneSinkAsBridge: Option[Bridge] = nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId)))
+  private lazy val oneSinkAsBridge: Option[Bridge] =
+    nodeSinks.collect { case bs: BridgeStore[_] => bs }.headOption.
+      orElse(nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId))))
+
   /** @return all the additional sinks + the bridgeStore */
   lazy val sinks = oneSinkAsBridge.fold(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)
   /** @return all the nodes except the bridgestore */
