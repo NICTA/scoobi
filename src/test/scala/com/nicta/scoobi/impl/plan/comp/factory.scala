@@ -3,7 +3,7 @@ package impl
 package plan
 package comp
 
-import core.CompNode
+import core._
 import mscr.{MscrsDefinition, MscrAttributes}
 import org.kiama.rewriting.Rewriter
 

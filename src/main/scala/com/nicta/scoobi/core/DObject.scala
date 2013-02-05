@@ -16,8 +16,6 @@
 package com.nicta.scoobi
 package core
 
-import impl.plan.comp.ValueNode
-
 /**
  *  A wrapper around an object that is part of the graph of a distributed computation
  */

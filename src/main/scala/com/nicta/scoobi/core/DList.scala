@@ -16,8 +16,6 @@
 package com.nicta.scoobi
 package core
 
-import impl.plan.comp.ProcessNode
-
 /**
  * A list that is distributed across multiple machines.
  *

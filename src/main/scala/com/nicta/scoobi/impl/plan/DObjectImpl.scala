@@ -21,7 +21,6 @@ import core._
 import comp._
 import source.SeqInput
 import WireFormat._
-import mapreducer._
 import core.DList
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
