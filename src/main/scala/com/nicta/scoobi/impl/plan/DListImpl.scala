@@ -30,7 +30,7 @@ import com.nicta.scoobi.core
 
 /** An implementation of the DList trait that builds up a DAG of computation nodes. */
 private[scoobi]
-class DListImpl[A](comp: ProcessNode)(implicit val wf: WireFormat[A]) extends DList[A] {
+class DListImpl[A](comp: ProcessNode) extends DList[A] {
 
   type C = ProcessNode
 
@@ -42,7 +42,7 @@ class DListImpl[A](comp: ProcessNode)(implicit val wf: WireFormat[A]) extends DL
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
     setComp((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
 
-  def setComp(f: C => C) = new DListImpl[A](f(comp))(wf)
+  def setComp(f: C => C) = new DListImpl[A](f(comp))
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
@@ -55,7 +55,7 @@ class DListImpl[A](comp: ProcessNode)(implicit val wf: WireFormat[A]) extends DL
                 gpk:  Grouping[K],
                 wfv: WireFormat[V]): DList[(K, Iterable[V])] = {
 
-    new DListImpl(GroupByKey(comp, wfk, gpk, wfv))(wireFormat[(K, Iterable[V])])
+    new DListImpl(GroupByKey(comp, wfk, gpk, wfv))
   }
 
   def combine[K, V]

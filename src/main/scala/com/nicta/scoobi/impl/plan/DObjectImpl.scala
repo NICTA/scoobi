@@ -26,7 +26,7 @@ import core.DList
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
-class DObjectImpl[A](comp: ValueNode)(implicit val wf: WireFormat[A]) extends DObject[A] {
+class DObjectImpl[A](comp: ValueNode) extends DObject[A] {
   type C = ValueNode
 
   def getComp: C = comp

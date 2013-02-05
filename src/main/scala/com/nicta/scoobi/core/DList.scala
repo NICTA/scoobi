@@ -39,7 +39,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   private[scoobi]
   def setComp(f: C => C): DList[A]
 
-  implicit def wf: WireFormat[A]
+  implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Primitive functionality.

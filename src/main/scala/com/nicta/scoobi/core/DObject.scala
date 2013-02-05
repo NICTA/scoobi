@@ -24,7 +24,7 @@ import impl.plan.comp.ValueNode
 trait DObject[A] extends Persistent[A] {
   type C <: ValueNode
 
-  implicit def wf: WireFormat[A]
+  implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]
 
   /** Create a new distributed object by apply a function to this distributed object */
   def map[B : WireFormat](f: A => B): DObject[B]

@@ -23,7 +23,7 @@ class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
 
   // this duplicate is to avoid some yet unexplained undue failures when running the tests
   def duplicate(list: DList[String]) = {
-    new DListImpl[String](Optimiser.reinitAttributable(Optimiser.duplicate(list.getComp).asInstanceOf[ProcessNode]))(list.wf)
+    new DListImpl[String](Optimiser.reinitAttributable(Optimiser.duplicate(list.getComp).asInstanceOf[ProcessNode]))
   }
 
 }
