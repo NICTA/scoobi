@@ -59,19 +59,19 @@ trait WireFormat[A] extends WireReaderWriter { outer =>
     }
 
   /**
-   * Produce a wire format on products from this wire format and the given wire format. Synonym for `***`.
+   * Produce a wire format on products from this wire format and the given wire format. Alias for `***`.
    */
-  def product[B](b: WireFormat[B]): WireFormat[(A, B)] = {
+  def zip[B](b: WireFormat[B]): WireFormat[(A, B)] = {
     implicit val WA: WireFormat[A] = this
     implicit val WB: WireFormat[B] = b
     implicitly[WireFormat[(A, B)]]
   }
 
   /**
-   * Produce a wire format on products from this wire format and the given wire format. Synonym for `product`.
+   * Produce a wire format on products from this wire format and the given wire format. Alias for `zip`.
    */
   def ***[B](b: WireFormat[B]): WireFormat[(A, B)] =
-    product(b)
+    zip(b)
 }
 
 trait WireReaderWriter { this: WireFormat[_] =>
