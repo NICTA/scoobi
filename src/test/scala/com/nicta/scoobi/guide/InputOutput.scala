@@ -412,15 +412,11 @@ We have seen that Scoobi provides many *factory* methods for creaing `DList` obj
 
 `fromSource` takes as input an object implementing the `DataSource` trait. Implementing the `DataSource` trait is all that is required to create a `DList` from a custom data source. If we look at the `DataSource` trait, we can see that it is tightly coupled with the Hadoop `InputFormat` interface:
 
-    trait DataSource[K, V, A] {
+    trait DataSource[K, V, A] extends Source {
       def inputFormat: Class[_ <: InputFormat[K, V]]
-
       def inputConverter: InputConverter[K, V, A]
-
       def inputCheck()
-
       def inputConfigure(job: Job): Unit
-
       def inputSize(): Long
     }
 
@@ -460,7 +456,7 @@ We have seen that to persist a `DList` object we use the `persist` method:
 
 But what exactly does `toTextFile`, `toAvroFile` and the other output methods? Those methods simply add *Sinks* to the `DList`. Those sinks implement the `DataSink` trait. The `DataSink` trait is, not surpringly, the reverse of the `DataSource` trait. It is tightly coupled with the Hadoop `OutputFormat` interface and requires the specification of an `OutputConverter` that converts values contained within the `DList` to key-value records to be persisted by the `OutputFormat`:
 
-    trait DataSink[K, V, B] {
+    trait DataSink[K, V, B] extends Sink {
 
       def outputFormat: Class[_ <: OutputFormat[K, V]]
       def outputConverter: OutputConverter[K, V, B]
@@ -484,6 +480,7 @@ Again, we can follow the types through to get a sense of how it works:
 
  * `outputCheck`: This method is called before any MapReduce jobs are run. It is provided as a hook to check the validity of the target data output. For example, it could check if the output already exists and if so throw an exception
  * `outputConfigure`: This method is provided as a hook for configuring the `DataSink`. Typically it is used to configure the `OutputFormat` by adding or modifying properties in the job's `Configuration`. It is called prior to running the specific MapReduce job this `DataSink` consumes output data from
+ * there is also an `outputSetup` method which is called right before output data is created (doing nothing by default). This allows to do some last-minute cleanup before outputing the data.
 
 The following Scala objects provided great working examples of `DataSink` implementations in Scoobi:
 
