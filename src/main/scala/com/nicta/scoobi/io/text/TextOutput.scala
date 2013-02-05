@@ -28,6 +28,7 @@ import org.apache.hadoop.mapreduce.Job
 import core._
 import impl.io.Helper
 import avro.AvroInput
+import org.apache.hadoop.conf.Configuration
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
@@ -56,19 +57,20 @@ object TextOutput {
       }
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc.configuration))
-          if (overwrite) {
-            logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)(sc.configuration)
-          } else {
+        if (Helper.pathExists(outputPath)(sc.configuration) && !overwrite) {
             throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-          }
-        else
-          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+        } else logger.info("Output path: " + outputPath.toUri.toASCIIString)
       }
 
       def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         FileOutputFormat.setOutputPath(job, outputPath)
+      }
+
+      override def outputSetup(implicit configuration: Configuration) {
+        if (Helper.pathExists(outputPath)(configuration) && overwrite) {
+          logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
+          Helper.deletePath(outputPath)(configuration)
+        }
       }
 
       lazy val outputConverter = new OutputConverter[NullWritable, A, A] {

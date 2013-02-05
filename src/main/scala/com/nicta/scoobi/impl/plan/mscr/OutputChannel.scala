@@ -61,6 +61,7 @@ trait MscrOutputChannel extends OutputChannel {
   protected var emitter: EmitterWriter = _
 
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    sinks.foreach(_.outputSetup(configuration))
     emitter = createEmitter(channelOutput)
   }
 

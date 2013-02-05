@@ -28,6 +28,7 @@ import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
 import core._
 import impl.io.Helper
+import org.apache.hadoop.conf.Configuration
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -53,13 +54,8 @@ object AvroOutput {
       val outputValueClass = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc.configuration)) {
-          if (overwrite) {
-            logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)(sc.configuration)
-          } else {
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-          }
+        if (Helper.pathExists(outputPath)(sc.configuration) && !overwrite) {
+          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
         } else {
           logger.info("Output path: " + outputPath.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)
@@ -71,9 +67,17 @@ object AvroOutput {
         job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
 
+      override def outputSetup(implicit configuration: Configuration) {
+        if (Helper.pathExists(outputPath)(configuration) && overwrite) {
+          logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
+          Helper.deletePath(outputPath)(configuration)
+        }
+      }
+
       lazy val outputConverter = converter
 
       override def toSource: Option[Source] = Some(AvroInput.source(Seq(path), checkSchemas = false)(implicitly[AvroSchema[B]]))
     }
+
   }
 }
