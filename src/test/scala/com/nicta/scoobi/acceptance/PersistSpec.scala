@@ -12,11 +12,11 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   "There are many ways to execute computations with DLists or DObjects".txt
 
   "1. a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: ScoobiConfiguration =>
-    val resultDir = TempFiles.createTempFilePath("test")
-    val list = DList(1, 2, 3).toTextFile(resultDir, overwrite = true)
+    val resultDir = TestFiles.createTempDir("test")
+    val list = DList(1, 2, 3).toTextFile(resultDir.getPath, overwrite = true)
 
     list.persist
-    resultDir must beAnExistingPath
+    resultDir must containResults
   }
   "2. a single DObject" >> { implicit sc: ScoobiConfiguration =>
     val o1 = DList(1, 2, 3).sum
@@ -27,10 +27,10 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     list.run.normalise === "Vector(1, 2, 3)"
   }
   "4. a list, having a sink and also materialised" >> { implicit sc: ScoobiConfiguration =>
-    val resultFile = TempFiles.createTempDir("test")
-    val list = DList(1, 2, 3).toTextFile(resultFile.getPath, overwrite = true)
+    val resultDir = TestFiles.createTempDir("test")
+    val list = DList(1, 2, 3).toTextFile(resultDir.getPath, overwrite = true)
 
-    resultFile must exist
+    resultDir must containResults
     list.run.normalise === "Vector(1, 2, 3)"
   }
   endp
@@ -106,11 +106,11 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
 
   "8. A user-specified sink must be used to save data when specified" >> { implicit sc: ScoobiConfiguration =>
-    val sink = TempFiles.createTempFilePath("user")
-    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(sink)
+    val sink = TestFiles.createTempDir("user")
+    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(sink.getPath)
 
     persist(plusOne)
-    sink must beAnExistingPath
+    sink must containResults
   }
 
   "9. A user-specified sink can be used as a source when a second persist is done" >> {
