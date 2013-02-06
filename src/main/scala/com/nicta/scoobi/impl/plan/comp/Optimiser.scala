@@ -57,9 +57,9 @@ trait Optimiser extends CompNodes with Rewriter {
    * add a map to output values to non-filled sink nodes if there are some
    */
   def addParallelDoForNonFilledSinks = oncebu(rule {
-    case p: ProcessNode if p.sinks.exists(!hasBeenFilled) =>
+    case p: ProcessNode if p.sinks.exists(!hasBeenFilled) && p.sinks.exists(hasBeenFilled) =>
       logger.debug("add a parallelDo node to output non-filled sinks of "+p)
-      ParallelDo.create(p)(p.wf).copy(nodeSinks = p.sinks.filter(!hasBeenFilled))
+      ParallelDo.create(p)(p.wf).copy(nodeSinks = p.sinks.filterNot(hasBeenFilled))
   })
 
   /**

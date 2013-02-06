@@ -28,7 +28,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
   "4. a list, having a sink and also materialised" >> { implicit sc: ScoobiConfiguration =>
     val resultDir = TestFiles.createTempDir("test")
-    val list = DList(1, 2, 3).toTextFile(resultDir.getPath, overwrite = true)
+    val list = DList(1, 2, 3).toTextFile(resultDir.getPath, overwrite = true).persist
 
     resultDir must containResults
     list.run.normalise === "Vector(1, 2, 3)"
