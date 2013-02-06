@@ -47,7 +47,7 @@ trait ValueNodeImpl extends ValueNode with WithEnvironment {
  * The ParallelDo node type specifies the building of a CompNode as a result of applying a function to
  * all elements of an existing CompNode and concatenating the results
  */
-case class ParallelDo(ins:           Seq[CompNode],
+case class ParallelDo(ins: Seq[CompNode],
                       env:           ValueNode,
                       dofn:          DoFunction,
                       wfa:           WireReaderWriter,
