@@ -17,11 +17,7 @@ import Scalaz._
  * It has a unique id, a BridgeStore for its outputs and some possible additional sinks.
  */
 trait ProcessNodeImpl extends ProcessNode {
-  /** note: don't make this a lazy val!.
-    * since channels, containing mappers, are serialised, it has been observed that on deserialisation
-    * the id can get regenerated and conflict with the tags which were originally setup
-    */
-  val id: Int = UniqueId.get
+  lazy val id: Int = UniqueId.get
 
   /** unique identifier for the bridgeStore storing data for this node */
   protected def bridgeStoreId: String
@@ -44,7 +40,7 @@ trait ProcessNodeImpl extends ProcessNode {
  * Value node to either load or materialise a value
  */
 trait ValueNodeImpl extends ValueNode with WithEnvironment {
-  val id: Int = UniqueId.get
+  lazy val id: Int = UniqueId.get
 }
 
 /**
