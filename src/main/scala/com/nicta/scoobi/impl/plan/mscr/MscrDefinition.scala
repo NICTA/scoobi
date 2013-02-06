@@ -18,9 +18,9 @@ trait MscrsDefinition extends Layering {
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise) || uses(pd).exists(isRoot) || !parent(pd).isDefined) &&
                             !isReducer(pd) &&
-                            !inputs(pd).exists(isFloating)            ||
-                             descendents(pd.env).exists(isGroupByKey) ||
-                             hasMaterialisedEnv(pd)
+                           (!inputs(pd).exists(isFloating)) ||
+                            descendents(pd.env).exists(isGroupByKey) ||
+                            hasMaterialisedEnv(pd)
     case _              => false
   }
 

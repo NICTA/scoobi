@@ -169,24 +169,21 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * set a flag in order to know if jars have been uploaded before jobs are defined
    */
-  def setUploadedLibJars(uploaded: Boolean) = {
+  def setUploadedLibJars(uploaded: Boolean) {
     set(UPLOADED_LIBJARS, uploaded.toString)
-    this
   }
 
   /** Set an upper bound for the number of reducers to be used in M/R jobs */
-  def setMaxReducers(maxReducers: Int) = {
+  def setMaxReducers(maxReducers: Int) {
     configuration.setInt(MAPREDUCE_REDUCERS_MAX, maxReducers)
-    this
   }
 
   /** Get the max number of reducers to use in M/R jobs */
   def getMaxReducers = configuration.getInt(MAPREDUCE_REDUCERS_MAX, Int.MaxValue)
 
   /** Set a lower bound for the number of reducers to be used in M/R jobs */
-  def setMinReducers(minReducers: Int) = {
+  def setMinReducers(minReducers: Int) {
     configuration.setInt(MAPREDUCE_REDUCERS_MIN, minReducers)
-    this
   }
 
   /** Get the min number of reducers to use in M/R jobs */
@@ -196,9 +193,8 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
    * Set the number of input bytes per reducer. This is used to control the number of
    * reducers based off the size of the input data to the M/R job.
    */
-  def setBytesPerReducer(sizeInBytes: Long) = {
+  def setBytesPerReducer(sizeInBytes: Long) {
     configuration.setLong(MAPREDUCE_REDUCERS_BYTESPERREDUCER, sizeInBytes)
-    this
   }
 
   /**
@@ -209,9 +205,8 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * set a new job name to help recognize the job better
    */
-  def jobNameIs(name: String) = {
+  def jobNameIs(name: String) {
     set(JOB_NAME, name)
-    this
   }
 
   /** @return the file system for this configuration, either a local or a remote one */

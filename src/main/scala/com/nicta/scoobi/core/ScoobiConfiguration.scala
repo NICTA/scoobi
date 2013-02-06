@@ -34,14 +34,14 @@ trait ScoobiConfiguration {
   def modeIs(mode: Mode.Value): ScoobiConfiguration
   def mode: Mode.Value
   def uploadedLibJars: Boolean
-  def setUploadedLibJars(uploaded: Boolean): ScoobiConfiguration
-  def setMaxReducers(maxReducers: Int): ScoobiConfiguration
+  def setUploadedLibJars(uploaded: Boolean)
+  def setMaxReducers(maxReducers: Int)
   def getMaxReducers: Int
-  def setMinReducers(minReducers: Int): ScoobiConfiguration
+  def setMinReducers(minReducers: Int)
   def getMinReducers: Int
-  def setBytesPerReducer(sizeInBytes: Long): ScoobiConfiguration
+  def setBytesPerReducer(sizeInBytes: Long)
   def getBytesPerReducer: Long
-  def jobNameIs(name: String): ScoobiConfiguration
+  def jobNameIs(name: String)
   def jobName: Option[String]
   def jobId: String
   def jobStep(mscrId: Int): String
