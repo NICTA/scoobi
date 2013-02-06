@@ -50,7 +50,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter) extends D
   /** type of the generated class for this Bridge */
   lazy val typeName = "BS" + bridgeStoreId
 
-  private var scoobiConfiguration: ScoobiConfiguration = new ScoobiConfigurationImpl
+  private var scoobiConfiguration: ScoobiConfiguration = _
 
   def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
 

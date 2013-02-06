@@ -42,7 +42,6 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     implicit val sc = ScoobiConfiguration().setAsLocal
     val job = new Job(sc.configuration, "id")
     val jarBuilder = mock[JarBuilder]
-    jarBuilder.configuration returns sc
 
     val (source1, source2) = (stringDataSource("one"), aBridgeStore)
     val configuration = configureSources(job, jarBuilder, Seq(source1, source2)).toMap.
