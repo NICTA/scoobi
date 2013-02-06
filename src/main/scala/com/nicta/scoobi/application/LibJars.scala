@@ -119,10 +119,12 @@ trait LibJars {
     uploadedJars.foreach(path => DistributedCache.addFileToClassPath(path, configuration))
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
+    // add new jars to the classpath and make sure that values are still unique for cache files and classpath entries
     configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
 
-    configuration.distinctValues("mapred.classpath", separator = System.getProperty("path.separator"))
-    configuration.distinctValues("mapred.job.classpath.files", separator = System.getProperty("path.separator"))
+    configuration.distinctValues("mapred.cache.files",         separator = ",")
+    configuration.distinctValues("mapred.classpath",           separator = ":")
+    configuration.distinctValues("mapred.job.classpath.files", separator = ":")
   }
 }
 object LibJars extends LibJars
