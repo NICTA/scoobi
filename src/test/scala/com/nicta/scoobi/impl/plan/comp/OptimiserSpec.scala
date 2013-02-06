@@ -3,12 +3,13 @@ package impl
 package plan
 package comp
 
-import org.scalacheck.{Gen, Arbitrary, Prop}
-import org.kiama.rewriting._
+import org.scalacheck.{Gen, Arbitrary}
 import core._
 import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables
 import com.nicta.scoobi.io.text.TextOutput
+import TextOutput._
+import control.Functions._
 
 class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
 
@@ -27,9 +28,17 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
   }
 
   "If the input node of a Materialise node has no bridgeStore we need to create one" >> new optimiser {
-    val materialise = mt(pd(load).addSink(TextOutput.textFileSink("path")))
+    val materialise = mt(pd(load).addSink(textFileSink("path")))
     materialise.in.bridgeStore must beNone
     optimise(addBridgeStore, materialise).collect(isAMaterialise).head.in.bridgeStore must beSome
+  }
+
+  "If some of the sinks of a node have not been filled, a new node must be created for it" >> new optimiser {
+    val list = pd(load).addSink(markSinkAsFilled(textFileSink("path")))
+
+    val sinks = optimise(addParallelDoForNonFilledSinks, list.addSink(textFileSink("path"))).collect(isAParallelDo).head.nodeSinks
+    sinks must haveSize(1)
+    forall(sinks) { sink => hasBeenFilled(sink) must beFalse }
   }
 
   trait optimiser extends factory with Optimiser

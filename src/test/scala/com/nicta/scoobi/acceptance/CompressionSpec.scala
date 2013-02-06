@@ -6,7 +6,7 @@ import java.util.zip.GZIPOutputStream
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.compress.GzipCodec
-import org.specs2.matcher.Matcher
+import org.specs2.matcher.{MustThrownMatchers, MustMatchers, Matcher}
 import testing.mutable.NictaSimpleJobs
 import testing.{TestFiles, TempFiles}
 import impl.io.FileSystems
@@ -14,7 +14,7 @@ import impl.io.FileSystems
 import impl.control.Exceptions._
 import Scoobi._
 
-class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
+class CompressionSpec extends NictaSimpleJobs with CompressedFiles with ResultFiles {
 
   "INPUTS".txt
   "gzipped files can be used as an input to a Scoobi job, just using fromTextFile" >> { implicit sc: SC =>
@@ -53,6 +53,12 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
   "Reducer outputs can also be compressed" in pending
 
 
+}
+
+trait ResultFiles extends MustThrownMatchers {
+  def containResults: Matcher[File] = (resultDir: File) =>  {
+    resultDir.list must not (beEmpty)
+  }
   def containFiles(extension: String): Matcher[File] = (resultDir: File) =>  {
     resultDir.list must not (beEmpty)
     resultDir.listFiles.toSeq.filter(_.getName.matches("ch.*"+extension)) must not (beEmpty)
@@ -65,7 +71,7 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
     resultDir.list must not (beEmpty)
     resultDir.listFiles.toSeq.filter(_.getName.matches("ch[^\\.]*")) must not(beEmpty)
   }
-  def copyResults(resultDir: File)(implicit sc: SC) = {
+  def copyResults(resultDir: File)(implicit sc: ScoobiConfiguration) = {
     if (sc.isRemote) {
       sc.fileSystem.listStatus(new Path(resultDir.getName)).foreach { f =>
         sc.fileSystem.copyToLocalFile(f.getPath, new Path(resultDir.getPath))
@@ -74,7 +80,7 @@ class CompressionSpec extends NictaSimpleJobs with CompressedFiles {
     resultDir
   }
 
-  private def outputPath(resultDir: File)(implicit sc: ScoobiConfiguration): String =
+  def outputPath(resultDir: File)(implicit sc: ScoobiConfiguration): String =
     if (sc.isRemote) resultDir.getName
     else             resultDir.getPath
 }

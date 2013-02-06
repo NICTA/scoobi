@@ -7,7 +7,7 @@ import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 
-class PersistSpec extends NictaSimpleJobs {
+class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
   "There are many ways to execute computations with DLists or DObjects".txt
 
@@ -137,7 +137,14 @@ class PersistSpec extends NictaSimpleJobs {
       }
       normalise(iterate(ints).run) === "Vector(10, 2, 5, 8, 9)"
     }
+  }
 
+  "11. adding a sink on an already computed list" >> { implicit sc: ScoobiConfiguration =>
+    val list = DList(1, 2, 3)
+    val l2 = list.persist
+    val out = TestFiles.createTempDir("out")
+    l2.toTextFile(out.getPath).persist
+    out must containResults
   }
 
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: ScoobiConfiguration) = {

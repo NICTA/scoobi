@@ -8,6 +8,7 @@ import core._
 import monitor.Loggable._
 import org.kiama.rewriting.Rewriter
 import collection.+:
+import control.Functions._
 
 /**
  * Optimiser for the CompNode graph
@@ -46,28 +47,29 @@ trait Optimiser extends CompNodes with Rewriter {
   }))
 
   /**
-   * add a bridgeStore if necessary
+   * add a bridgeStore if it is necessary to materialise a value and no bridge is available
    */
   def addBridgeStore = everywhere(rule {
     case m @ Materialise1(p: ProcessNode) if !p.bridgeStore.isDefined => m.copy(p.addSink(p.createBridgeStore)).debug("add bridgestore to "+p)
   })
 
   /**
-   * add a map to sink node if necessary
+   * add a map to output values to non-filled sink nodes if there are some
    */
-  def addMapToSink = oncebu(rule {
-    case p: ProcessNode if p.bridgeStore.map(hasBeenFilled).getOrElse(false) && p.nonBridgeSinks.exists(s => !hasBeenFilled(s)) =>
-      ParallelDo.create(p)(p.wf).updateSinks(ss => p.nonBridgeSinks.filterNot(s => hasBeenFilled(s))).debug("add bridgestore to "+p)
+  def addParallelDoForNonFilledSinks = oncebu(rule {
+    case p: ProcessNode if p.sinks.exists(!hasBeenFilled) =>
+      logger.debug("add a parallelDo node to output non-filled sinks of "+p)
+      ParallelDo.create(p)(p.wf).copy(nodeSinks = p.sinks.filter(!hasBeenFilled))
   })
 
   /**
    * all the strategies to apply, in sequence
    */
   def allStrategies(outputs: Seq[CompNode]) =
-    attempt(combineToParDo) <*
-    attempt(parDoFuse     ) <*
-    attempt(addBridgeStore) <*
-    attempt(addMapToSink)
+    attempt(combineToParDo)                 <*
+    attempt(parDoFuse     )                 <*
+    attempt(addBridgeStore)                 <*
+    attempt(addParallelDoForNonFilledSinks)
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs

@@ -28,11 +28,11 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   }
 
   /** mark a sink as filled so it doesn't have to be recomputed */
-  protected def markSinkAsFilled = (s: Sink) => filledSink(s.stringId)
+  protected def markSinkAsFilled = (s: Sink) => { filledSink(s.stringId); s }
   /** this attribute stores the fact that a Sink has received data */
   protected lazy val filledSink: CachedAttribute[String, String] = attr("filled sink")(identity)
   /** @return true if a given Sink has already received data */
-  protected def hasBeenFilled(s: Sink)= filledSink.hasBeenComputedAt(s.stringId)
+  protected lazy val hasBeenFilled = (s: Sink) => filledSink.hasBeenComputedAt(s.stringId)
 }
 object CompNodes extends CompNodes
 
