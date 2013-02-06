@@ -137,4 +137,31 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val (l1, l2) = (DList(1 -> "hello", 2 -> "world"), DList(1 -> "hi", 2 -> "you"))
     normalise((l1 ++ l2).groupByKey.run) === normalise((l1.groupByKey ++ l2.groupByKey).groupByKey.map { case (k, vs) => (k, vs.flatten) }.run)
   }
+  "27. Can get the unique elements from a DList" >> { implicit sc: SC =>
+
+    val uniques = ('a' to 'z').toSeq
+
+    val input = for {
+      i <- 0 until 100
+      c <- shuffle(i)(uniques)
+      cs <- Seq.fill(3)(c)
+    } yield (cs.toString * 20)
+
+    input.toDList.distinct.run(sc.setMinReducers(2)).map(_.head).sorted must_== uniques
+  }
+
+  def shuffle[A](seed: Int)(xs: Seq[A]): Seq[A] = {
+    xs.length match {
+      case 0 => xs
+      case 1 => xs
+      case l => {
+        val split = seed % l
+        val (left, right) = xs.splitAt(split)
+        if (split % 2 == 0) shuffle(split - 1)(left) ++ shuffle(split + 1)(right)
+        else                shuffle(split + 1)(right) ++ shuffle(seed - 1)(left)
+      }
+    }
+  }
+
+
 }
