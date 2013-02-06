@@ -36,9 +36,8 @@ import ScoobiConfiguration._
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
-  extends DataSource[NullWritable, ScoobiWritable[A], A]
-  with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
+case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter) extends DataSource[NullWritable, ScoobiWritable[A], A] with
+  DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
 
   override lazy val id: Int = Data.ids.get
   override lazy val stringId = bridgeStoreId
@@ -46,19 +45,22 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  def rtClass(implicit sc: ScoobiConfiguration = new ScoobiConfigurationImpl) =
-    scalaz.Memo.mutableHashMapMemo((name: String) => ScoobiWritable(typeName, wf)).apply(typeName)
+  def rtClass(implicit sc: ScoobiConfiguration) = ScoobiWritable(typeName, wf)
 
   /** type of the generated class for this Bridge */
   lazy val typeName = "BS" + bridgeStoreId
+
+  private var scoobiConfiguration: ScoobiConfiguration = _
 
   def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
 
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
-  def outputValueClass = rtClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
-  def outputCheck(implicit sc: ScoobiConfiguration) {}
+  def outputValueClass = rtClass(scoobiConfiguration).clazz.asInstanceOf[Class[ScoobiWritable[A]]]
+  def outputCheck(implicit sc: ScoobiConfiguration) {
+    scoobiConfiguration = sc
+  }
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     FileOutputFormat.setOutputPath(job, path)
   }
@@ -92,6 +94,8 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
    * at a time
    */
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[A] = new Iterable[A] {
+    lazy val rtClazz = rtClass(sc).clazz
+
     def iterator = new Iterator[A] {
 
       val fs = FileSystem.get(path.toUri, sc)
@@ -102,8 +106,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
       val key = NullWritable.get
 
       /** instantiate a ScoobiWritable from the Writable class generated for this BridgeStore */
-      lazy val value: ScoobiWritable[A] =
-        rtClass.clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
+      lazy val value: ScoobiWritable[A] = rtClazz.newInstance.asInstanceOf[ScoobiWritable[A]]
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()

@@ -64,7 +64,7 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
   /** The compile-time representation of the class once built. */
   private lazy val builtCtClass = { build; ctClass }
 
-  private def build(implicit sc: ScoobiConfiguration) {
+  private def build {
     val metadataPath = ScoobiMetadata.saveMetadata("scoobi.metadata."+className, metaData)
     addMethod("java.lang.String", "metadataPath", "return \""+metadataPath+"\";")
   }
