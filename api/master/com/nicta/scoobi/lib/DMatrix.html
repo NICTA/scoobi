@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">DMatrix</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="Value">Value</span>]</span><span class="params">(<span name="data">data: DList[((Elem, Elem), Value)]</span>, <span name="evidence$42">evidence$42: Manifest[Elem]</span>, <span name="evidence$43">evidence$43: WireFormat[Elem]</span>, <span name="evidence$44">evidence$44: Ordering[Elem]</span>, <span name="evidence$45">evidence$45: Manifest[Value]</span>, <span name="evidence$46">evidence$46: WireFormat[Value]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">DMatrix</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="Value">Value</span>]</span><span class="params">(<span name="data">data: DList[((Elem, Elem), Value)]</span>, <span name="evidence$24">evidence$24: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Elem]</span>, <span name="evidence$25">evidence$25: Ordering[Elem]</span>, <span name="evidence$26">evidence$26: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Value]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -67,7 +67,7 @@ Operations are optimised assuming the matrix is both large and sparse, but shoul
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DMatrix</span><span class="params">(<span name="data">data: DList[((Elem, Elem), Value)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[Value]</span>, <span name="arg4">arg4: WireFormat[Value]</span>)</span>
+        <span class="name">DMatrix</span><span class="params">(<span name="data">data: DList[((Elem, Elem), Value)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Elem]</span>, <span name="arg1">arg1: Ordering[Elem]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Value]</span>)</span>
       </span>
       </h4>
       
@@ -153,50 +153,50 @@ Operations are optimised assuming the matrix is both large and sparse, but shoul
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.DMatrix#byMatrix" data-isabs="false">
-      <a id="byMatrix[V, Q](DMatrix[Elem, V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(Manifest[V],WireFormat[V],Manifest[Q],WireFormat[Q]):DMatrix[Elem, Q]"></a>
+      <a id="byMatrix[V, Q](DMatrix[Elem, V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(WireFormat[V],WireFormat[Q]):DMatrix[Elem, Q]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byMatrix</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="">DMatrix</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: WireFormat[V]</span>, <span name="arg2">arg2: Manifest[Q]</span>, <span name="arg3">arg3: WireFormat[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="">DMatrix</a>[Elem, Q]</span>
+        <span class="name">byMatrix</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="">DMatrix</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DMatrix" class="extype" href="">DMatrix</a>[Elem, Q]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.lib.DMatrix#byVector" data-isabs="false">
-      <a id="byVector[V, Q](DVector[Elem, V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(Manifest[V],WireFormat[V],Manifest[Q],WireFormat[Q],Ordering[Q]):DVector[Elem, Q]"></a>
+      <a id="byVector[V, Q](DVector[Elem, V],(Value, V) ⇒ Q,(Q, Q) ⇒ Q)(WireFormat[V],WireFormat[Q],Ordering[Q]):DVector[Elem, Q]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="v">v: <a name="com.nicta.scoobi.lib.DVector" class="extype" href="DVector.html">DVector</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: WireFormat[V]</span>, <span name="arg2">arg2: Manifest[Q]</span>, <span name="arg3">arg3: WireFormat[Q]</span>, <span name="arg4">arg4: Ordering[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DVector" class="extype" href="DVector.html">DVector</a>[Elem, Q]</span>
+        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="v">v: <a name="com.nicta.scoobi.lib.DVector" class="extype" href="DVector.html">DVector</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Q]</span>, <span name="arg2">arg2: Ordering[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.DVector" class="extype" href="DVector.html">DVector</a>[Elem, Q]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.lib.DMatrix#byVector" data-isabs="false">
-      <a id="byVector[V, R](InMemVector[Elem, V],(Value, V) ⇒ R,(R, R) ⇒ R)(Manifest[V],WireFormat[V],Ordering[V],Manifest[R],WireFormat[R],Ordering[R]):InMemVector[Elem, R]"></a>
+      <a id="byVector[V, R](InMemVector[Elem, V],(Value, V) ⇒ R,(R, R) ⇒ R)(WireFormat[V],Ordering[V],WireFormat[R],Ordering[R]):InMemVector[Elem, R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: WireFormat[V]</span>, <span name="arg2">arg2: Ordering[V]</span>, <span name="arg3">arg3: Manifest[R]</span>, <span name="arg4">arg4: WireFormat[R]</span>, <span name="arg5">arg5: Ordering[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, R]</span>
+        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, V]</span>, <span name="mult">mult: (Value, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg1">arg1: Ordering[V]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[R]</span>, <span name="arg3">arg3: Ordering[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, R]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.lib.DMatrix#byVector" data-isabs="false">
-      <a id="byVector[V, R](InMemDenseVector[V],R,(Value, V) ⇒ R,(R, R) ⇒ R)(&lt;:&lt;[DList[((Elem, Elem), Value)], DList[((Int, Int), Value)]],Manifest[V],WireFormat[V],Manifest[R],WireFormat[R]):InMemDenseVector[R]"></a>
+      <a id="byVector[V, R](InMemDenseVector[V],R,(Value, V) ⇒ R,(R, R) ⇒ R)(&lt;:&lt;[DList[((Elem, Elem), Value)], DList[((Int, Int), Value)]],WireFormat[V],WireFormat[R]):InMemDenseVector[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[V]</span>, <span name="zero">zero: R</span>, <span name="mult">mult: (Value, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[DList[((Elem, Elem), Value)], DList[((<span name="scala.Int" class="extype">Int</span>, <span name="scala.Int" class="extype">Int</span>), Value)]]</span>, <span name="vm">vm: Manifest[V]</span>, <span name="vw">vw: WireFormat[V]</span>, <span name="rm">rm: Manifest[R]</span>, <span name="rw">rw: WireFormat[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[R]</span>
+        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[V]</span>, <span name="zero">zero: R</span>, <span name="mult">mult: (Value, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[DList[((Elem, Elem), Value)], DList[((<span name="scala.Int" class="extype">Int</span>, <span name="scala.Int" class="extype">Int</span>), Value)]]</span>, <span name="vm">vm: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="rm">rm: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[R]</span>
       </span>
       </h4>
       

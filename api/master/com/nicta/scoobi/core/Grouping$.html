@@ -25,13 +25,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Grouping</span><span class="result"> extends <a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></span>
+        <span class="name">Grouping</span><span class="result"> extends <a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a> with <a name="com.nicta.scoobi.core.GroupingFunctions" class="extype" href="GroupingFunctions.html">GroupingFunctions</a></span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.core.GroupingFunctions" class="extype" href="GroupingFunctions.html">GroupingFunctions</a>, <a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.Grouping" class="in"><span>Grouping</span></li><li name="com.nicta.scoobi.core.GroupingImplicits" class="in"><span>GroupingImplicits</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.Grouping" class="in"><span>Grouping</span></li><li name="com.nicta.scoobi.core.GroupingFunctions" class="in"><span>GroupingFunctions</span></li><li name="com.nicta.scoobi.core.GroupingImplicits" class="in"><span>GroupingImplicits</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -57,7 +57,22 @@
         <div id="allMembers">
         
 
-        
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.Grouping.AllGrouping" data-isabs="false">
+      <a id="AllGrouping:AllGrouping[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Grouping$$AllGrouping.html"><span class="name">AllGrouping</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="result"> extends Grouping[K]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -151,6 +166,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       <p class="shortcomment cmt">An implicitly Grouping type class instance where sorting is implemented via an Ordering
 type class instance.</p><div class="fullcomment"><div class="comment cmt"><p>An implicitly Grouping type class instance where sorting is implemented via an Ordering
 type class instance. Partitioning and grouping use the default implementation.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#all" data-isabs="false">
+      <a id="all[K]:AllGrouping[Nothing]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">all</span><span class="tparams">[<span name="K">K</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping.AllGrouping" class="extype" href="Grouping$$AllGrouping.html">AllGrouping</a>[<span name="scala.Nothing" class="extype">Nothing</span>]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -229,6 +256,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingFunctions#groupingId" data-isabs="false">
+      <a id="groupingId[K]:Grouping[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">groupingId</span><span class="tparams">[<span name="K">K</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="Grouping.html">Grouping</a>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The identity grouping.</p><div class="fullcomment"><div class="comment cmt"><p>The identity grouping.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingFunctions" class="extype" href="GroupingFunctions.html">GroupingFunctions</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -253,102 +292,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2, A3, A4, A5, A6, A7, A8]((A1, A2, A3, A4, A5, A6, A7, A8) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6, A7, A8)])(Ordering[A1],Ordering[A2],Ordering[A3],Ordering[A4],Ordering[A5],Ordering[A6],Ordering[A7],Ordering[A8]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>, <span name="A6">A6</span>, <span name="A7">A7</span>, <span name="A8">A8</span>]</span><span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5, A6, A7, A8) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5, A6, A7, A8)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>, <span name="arg2">arg2: Ordering[A3]</span>, <span name="arg3">arg3: Ordering[A4]</span>, <span name="arg4">arg4: Ordering[A5]</span>, <span name="arg5">arg5: Ordering[A6]</span>, <span name="arg6">arg6: Ordering[A7]</span>, <span name="arg7">arg7: Ordering[A8]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2, A3, A4, A5, A6, A7]((A1, A2, A3, A4, A5, A6, A7) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6, A7)])(Ordering[A1],Ordering[A2],Ordering[A3],Ordering[A4],Ordering[A5],Ordering[A6],Ordering[A7]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>, <span name="A6">A6</span>, <span name="A7">A7</span>]</span><span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5, A6, A7) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5, A6, A7)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>, <span name="arg2">arg2: Ordering[A3]</span>, <span name="arg3">arg3: Ordering[A4]</span>, <span name="arg4">arg4: Ordering[A5]</span>, <span name="arg5">arg5: Ordering[A6]</span>, <span name="arg6">arg6: Ordering[A7]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2, A3, A4, A5, A6]((A1, A2, A3, A4, A5, A6) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5, A6)])(Ordering[A1],Ordering[A2],Ordering[A3],Ordering[A4],Ordering[A5],Ordering[A6]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>, <span name="A6">A6</span>]</span><span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5, A6) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5, A6)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>, <span name="arg2">arg2: Ordering[A3]</span>, <span name="arg3">arg3: Ordering[A4]</span>, <span name="arg4">arg4: Ordering[A5]</span>, <span name="arg5">arg5: Ordering[A6]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2, A3, A4, A5]((A1, A2, A3, A4, A5) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4, A5)])(Ordering[A1],Ordering[A2],Ordering[A3],Ordering[A4],Ordering[A5]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>, <span name="A5">A5</span>]</span><span class="params">(<span name="apply">apply: (A1, A2, A3, A4, A5) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4, A5)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>, <span name="arg2">arg2: Ordering[A3]</span>, <span name="arg3">arg3: Ordering[A4]</span>, <span name="arg4">arg4: Ordering[A5]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2, A3, A4]((A1, A2, A3, A4) ⇒ T,(T) ⇒ Option[(A1, A2, A3, A4)])(Ordering[A1],Ordering[A2],Ordering[A3],Ordering[A4]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>, <span name="A4">A4</span>]</span><span class="params">(<span name="apply">apply: (A1, A2, A3, A4) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3, A4)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>, <span name="arg2">arg2: Ordering[A3]</span>, <span name="arg3">arg3: Ordering[A4]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2, A3]((A1, A2, A3) ⇒ T,(T) ⇒ Option[(A1, A2, A3)])(Ordering[A1],Ordering[A2],Ordering[A3]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>, <span name="A3">A3</span>]</span><span class="params">(<span name="apply">apply: (A1, A2, A3) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2, A3)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>, <span name="arg2">arg2: Ordering[A3]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1, A2]((A1, A2) ⇒ T,(T) ⇒ Option[(A1, A2)])(Ordering[A1],Ordering[A2]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>, <span name="A2">A2</span>]</span><span class="params">(<span name="apply">apply: (A1, A2) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[(A1, A2)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>, <span name="arg1">arg1: Ordering[A2]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits#mkCaseOrdering" data-isabs="false">
-      <a id="mkCaseOrdering[T, A1]((A1) ⇒ T,(T) ⇒ Option[A1])(Ordering[A1]):Ordering[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkCaseOrdering</span><span class="tparams">[<span name="T">T</span>, <span name="A1">A1</span>]</span><span class="params">(<span name="apply">apply: (A1) ⇒ T</span>, <span name="unapply">unapply: (T) ⇒ <span name="scala.Option" class="extype">Option</span>[A1]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Ordering[A1]</span>)</span><span class="result">: Ordering[T]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Helpers for creating Ordering instances for cases classes.</p><div class="fullcomment"><div class="comment cmt"><p>Helpers for creating Ordering instances for cases classes.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -385,6 +328,18 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingFunctions#partition" data-isabs="false">
+      <a id="partition[A, B](Grouping[\/[A, B]]):(Grouping[A], Grouping[B])"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partition</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="q">q: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="Grouping.html">Grouping</a>[<span name="scalaz.\/" class="extype">\/</span>[A, B]]</span>)</span><span class="result">: (<a name="com.nicta.scoobi.core.Grouping" class="extype" href="Grouping.html">Grouping</a>[A], <a name="com.nicta.scoobi.core.Grouping" class="extype" href="Grouping.html">Grouping</a>[B])</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Partition a grouping of sums into a product of groupings.</p><div class="fullcomment"><div class="comment cmt"><p>Partition a grouping of sums into a product of groupings.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.GroupingFunctions" class="extype" href="GroupingFunctions.html">GroupingFunctions</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -485,7 +440,9 @@ type class instance. Partitioning and grouping use the default implementation.</
         </div>
 
         <div id="inheritedMembers">
-        <div name="com.nicta.scoobi.core.GroupingImplicits" class="parent">
+        <div name="com.nicta.scoobi.core.GroupingFunctions" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.core.GroupingFunctions" class="extype" href="GroupingFunctions.html">GroupingFunctions</a></h3>
+            </div><div name="com.nicta.scoobi.core.GroupingImplicits" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.core.GroupingImplicits" class="extype" href="GroupingImplicits.html">GroupingImplicits</a></h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>

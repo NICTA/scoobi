@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html">DistributedLists</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="635489240">Distributed Lists</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parameterised by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterised by higher-order functions. For example:</p>
+                       <div class="col1"><div id="central"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="481509709">Distributed Lists</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parameterised by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterised by higher-order functions. For example:</p>
 <pre><code class="prettyprint">// Converting a List[Int] to a List[String] keeping only evens
 val stringList = intList filter { _ % 2 == 0 } map { _.toString }
 
@@ -86,7 +86,7 @@ object WordCount extends ScoobiApp {
                                             .groupByKey
                                             .combine(_+_)
 
-    persist(toTextFile(counts, args(1)))
+    persist(counts.toTextFile(args(1)))
   }
 }
 </code></pre><p>Our word count example is implemented by the object <code class="prettyprint">WordCount</code>, wich extends a <code class="prettyprint">ScoobiApp</code>. This is a convience in Scoobi to avoid having to create configuration objects, as well as automatically handling arguments intended for hadoop. The remaining arguments are available as <code class="prettyprint">args</code></p><p>Within the implementation guts, the first task is to construct a <code class="prettyprint">DList</code> representing the data located at the input directory. In this situation, because the input data are simple text files, we can use the <code class="prettyprint">fromTextFile</code> method that takes our input directory as an argument and returns a <code class="prettyprint">DList[String]</code> object. Here our <code class="prettyprint">DList</code> object is a distributed collection where each collection element is a line from the input data and is assigned to <code class="prettyprint">lines</code>.</p><p>The second task is to compute a <code class="prettyprint">DList</code> of word counts given all the lines of text from our input data. This is implemented in four steps:</p>
@@ -95,7 +95,7 @@ object WordCount extends ScoobiApp {
   <li><p>A <code class="prettyprint">map</code> is performed on the distributed collection of words. Like <code class="prettyprint">List</code>'s <code class="prettyprint">map</code>, a parameterizing function is supplied which takes as its input a given word (a <code class="prettyprint">String</code>) and will return another value. In this case the supplied function takes the input word and returns a pair: the word and the value 1. The resulting object is a new distributed collection of type <code class="prettyprint">DList[(String, Int)]</code>.</p></li>
   <li><p>A <code class="prettyprint">groupByKey</code> is performed on the <code class="prettyprint">(String, Int)</code> distributed collection. <code class="prettyprint">groupByKey</code> has no direct counterpart in <code class="prettyprint">List</code> (although there is a <code class="prettyprint">groupBy</code> defined on <code class="prettyprint">DList</code>s). <code class="prettyprint">groupByKey</code> must be called on a key-value <code class="prettyprint">DList</code> object else the program will not type check. The effect of <code class="prettyprint">groupByKey</code> is to collect all distributed collection values with the same key. In this case the <code class="prettyprint">DList</code> object is of type <code class="prettyprint">(String, Int)</code> so a new <code class="prettyprint">DList</code> object will be returned of type <code class="prettyprint">(String, Iterable[Int])</code>. That is, the counts for the same words will be grouped together.</p></li>
   <li><p>To get the total count for each word, a <code class="prettyprint">combine</code> is performed. <code class="prettyprint">combine</code> also has no counterpart in <code class="prettyprint">List</code> but its semantics are to take a <code class="prettyprint">DList[(K, Iterable[V])]</code> and return a <code class="prettyprint">DList[(K, V)]</code> by reducing all the values. It is parameterised by a function of type <code class="prettyprint">(V, V) =&gt; V</code> that must be associative. In our case we are simply performing addition to sum all the counts.</p></li>
-</ol><p>The final task is to take the <code class="prettyprint">counts</code> object, which represents counts for each word, and <em>persist</em> it. In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using <code class="prettyprint">toTextFile</code>. Note that <code class="prettyprint">toTextFile</code> is used within <code class="prettyprint">persist</code>. Although not demonstrated in this example, <code class="prettyprint">persist</code> takes a variable number of arguments, each of which specifies what <code class="prettyprint">DList</code> is being persisted and how.</p><p>Until <code class="prettyprint">persist</code> is called, our application will only be running on the local client. The act of calling <code class="prettyprint">persist</code>, along with the <code class="prettyprint">DList</code>(s) to be persisted, will trigger Scoobi's staging compiler to take the sequence of <code class="prettyprint">DList</code> transformations and turn them into one or more Hadoop MapReduce jobs. In this example Scoobi will generate a single MapReduce job that would be executed:</p>
+</ol><p>The final task is to take the <code class="prettyprint">counts</code> object, which represents counts for each word, and <em>persist</em> it. In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using <code class="prettyprint">toTextFile</code>.</p><p>Until <code class="prettyprint">persist</code> is called, our application will only be running on the local client. The act of calling <code class="prettyprint">persist</code>, along with the <code class="prettyprint">DList</code>(s) to be persisted, will trigger Scoobi's staging compiler to take the sequence of <code class="prettyprint">DList</code> transformations and turn them into one or more Hadoop MapReduce jobs. In this example Scoobi will generate a single MapReduce job that would be executed:</p>
 <ul>
   <li>The functionality associated with the <code class="prettyprint">flatMap</code> and <code class="prettyprint">map</code> will become part of a <em>mapper</em> tasks;</li>
   <li>The transformation associated with <code class="prettyprint">groupByKey</code> will be occur as a consequence of the <em>sort-and-shuffle</em> phase;</li>
@@ -137,7 +137,7 @@ val top10ints: DList[Int] = ints.parallelDo(new DoFn[Int, Int] {
   def cleanup(emitter: Emitter[Int]) { top foreach { emitter.emit(_) } }
 })
 
-</code></pre><p>Whilst the <code class="prettyprint">parallelDo</code> and <code class="prettyprint">DoFn</code> APIs provide greater flexibility, it is best practcie to use the collections-style APIs where possible.</p><a name="Grouping"><h3>Grouping</h3></a><p>We have already seen the <code class="prettyprint">groupByKey</code> method. <code class="prettyprint">DList</code> also has a <code class="prettyprint">groupBy</code> method that allows you to specicfy how the key is determined:</p>
+</code></pre><p>Whilst the <code class="prettyprint">parallelDo</code> and <code class="prettyprint">DoFn</code> APIs provide greater flexibility, it is best practice to use the collections-style APIs where possible.</p><a name="Grouping"><h3>Grouping</h3></a><p>We have already seen the <code class="prettyprint">groupByKey</code> method. <code class="prettyprint">DList</code> also has a <code class="prettyprint">groupBy</code> method that allows you to specicfy how the key is determined:</p>
 <pre><code class="prettyprint">case class Person(name: String, age: Int)
 val people: DList[Person] = ...
 val peoplebyAge: DList[(Int, Person)] = people.groupBy(_.age)
@@ -158,8 +158,8 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
         toTextFile(rankings_example, &quot;hdfs://path/to/output-example&quot;))
 </code></pre></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1407844613"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="129612776"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="2003773061"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="693413734"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -169,7 +169,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="635489240"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="481509709"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -183,10 +183,10 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1905228535"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1688453432"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materialising">Materialising</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Reduction+operations">Reduction operations</a>
             
@@ -197,7 +197,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="699025662"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1899471367"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -229,7 +229,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
             
           </li></ul>
           </li></ul>
-          </li><li id="2282005"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="974272305"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -241,7 +241,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
             
           </li></ul>
           </li></ul>
-          </li><li id="2075530176"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="569174478"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -249,7 +249,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1195776041"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="794583197"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -265,7 +265,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1184713508"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="720002121"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -287,7 +287,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="565997377"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1688840446"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -315,7 +315,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="2071304118"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="2106889756"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -331,7 +331,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1711218892"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1110096153"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -339,7 +339,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1267749701"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1715084401"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -353,7 +353,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1407844613','635489240'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['2003773061','481509709'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>

@@ -29,7 +29,7 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Smart functions for materializing distributed lists by loading Avro files.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Smart functions for materialising distributed lists by loading Avro files.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
@@ -190,14 +190,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroInput#fromAvroFile" data-isabs="false">
-      <a id="fromAvroFile[A](List[String],Boolean)(Manifest[A],WireFormat[A],AvroSchema[A]):DList[A]"></a>
+      <a id="fromAvroFile[A](Seq[String],Boolean)(WireFormat[A],AvroSchema[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: List[String]</span>, <span name="checkSchemas">checkSchemas: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
+        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: Seq[String]</span>, <span name="checkSchemas">checkSchemas: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Avro files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Avro files. The type of the
@@ -205,14 +205,14 @@ DList must conform to the schema types allowed by Avro, as constrained by the 'A
 class. In the case of a directory being specified, the input forms all the files in
 that directory.</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroInput#fromAvroFile" data-isabs="false">
-      <a id="fromAvroFile[A](String*)(Manifest[A],WireFormat[A],AvroSchema[A]):DList[A]"></a>
+      <a id="fromAvroFile[A](String*)(WireFormat[A],AvroSchema[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
+        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: String*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Create a new DList from the contents of one or more Avro files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of one or more Avro files. The type of the DList must conform to
@@ -314,6 +314,18 @@ being specified, the input forms all the files in that directory.</p></div></div
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.io.avro.AvroParsingImplicits" class="extype" href="AvroParsingImplicits.html">AvroParsingImplicits</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroInput#source" data-isabs="false">
+      <a id="source[A](Seq[String],Boolean)(AvroSchema[A]):$anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSource[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,A]{val inputFormat: java.lang.Class[org.apache.avro.mapreduce.AvroKeyInputFormat[sch.AvroType]]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[A] }"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">source</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: Seq[String]</span>, <span name="checkSchemas">checkSchemas: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[A]</span>)</span><span class="result">: $anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSource[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,A]{val inputFormat: java.lang.Class[org.apache.avro.mapreduce.AvroKeyInputFormat[sch.AvroType]]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[A] }</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

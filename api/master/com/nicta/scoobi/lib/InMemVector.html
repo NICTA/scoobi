@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">InMemVector</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DObject[Map[Elem, T]]</span>, <span name="evidence$16">evidence$16: Manifest[Elem]</span>, <span name="evidence$17">evidence$17: WireFormat[Elem]</span>, <span name="evidence$18">evidence$18: Ordering[Elem]</span>, <span name="evidence$19">evidence$19: Manifest[T]</span>, <span name="evidence$20">evidence$20: WireFormat[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">InMemVector</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DObject[Map[Elem, T]]</span>, <span name="evidence$10">evidence$10: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Elem]</span>, <span name="evidence$11">evidence$11: Ordering[Elem]</span>, <span name="evidence$12">evidence$12: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -66,7 +66,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InMemVector</span><span class="params">(<span name="data">data: DObject[Map[Elem, T]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span>
+        <span class="name">InMemVector</span><span class="params">(<span name="data">data: DObject[Map[Elem, T]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Elem]</span>, <span name="arg1">arg1: Ordering[Elem]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[T]</span>)</span>
       </span>
       </h4>
       
@@ -152,14 +152,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemVector#byMatrix" data-isabs="false">
-      <a id="byMatrix[V, Q](DColWiseMatrix[Elem, V],Q,(T, V) ⇒ Q,(Q, Q) ⇒ Q)(Manifest[V],WireFormat[V],Manifest[Q],WireFormat[Q]):InMemVector[Elem, Q]"></a>
+      <a id="byMatrix[V, Q](DColWiseMatrix[Elem, V],Q,(T, V) ⇒ Q,(Q, Q) ⇒ Q)(WireFormat[V],WireFormat[Q]):InMemVector[Elem, Q]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byMatrix</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DColWiseMatrix" class="extype" href="DColWiseMatrix.html">DColWiseMatrix</a>[Elem, V]</span>, <span name="zero">zero: Q</span>, <span name="mult">mult: (T, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: WireFormat[V]</span>, <span name="arg2">arg2: Manifest[Q]</span>, <span name="arg3">arg3: WireFormat[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="">InMemVector</a>[Elem, Q]</span>
+        <span class="name">byMatrix</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DColWiseMatrix" class="extype" href="DColWiseMatrix.html">DColWiseMatrix</a>[Elem, V]</span>, <span name="zero">zero: Q</span>, <span name="mult">mult: (T, V) ⇒ Q</span>, <span name="add">add: (Q, Q) ⇒ Q</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="">InMemVector</a>[Elem, Q]</span>
       </span>
       </h4>
       

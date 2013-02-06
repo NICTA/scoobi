@@ -285,15 +285,27 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextOutput#toDelimitedTextFile" data-isabs="false">
-      <a id="toDelimitedTextFile[A&lt;:Product](DList[A],String,String,Boolean)(Manifest[A]):DListPersister[String]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextOutput#textFileSink" data-isabs="false">
+      <a id="textFileSink[A](String,Boolean)(Manifest[A]):DataSink[NullWritable, A, A] { val outputFormat: java.lang.Class[org.apache.hadoop.mapreduce.lib.output.TextOutputFormat[org.apache.hadoop.io.NullWritable,A]] }"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toDelimitedTextFile</span><span class="tparams">[<span name="A">A &lt;: <span name="scala.Product" class="extype">Product</span></span>]</span><span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="sep">sep: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.DListPersister" class="extype" href="../../application/DListPersister.html">DListPersister</a>[String]</span>
+        <span class="name">textFileSink</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, A, A] { val outputFormat: java.lang.Class[org.apache.hadoop.mapreduce.lib.output.TextOutputFormat[org.apache.hadoop.io.NullWritable,A]] }</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextOutput#toDelimitedTextFile" data-isabs="false">
+      <a id="toDelimitedTextFile[A&lt;:Product](DList[A],String,String,Boolean)(Manifest[A]):DList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toDelimitedTextFile</span><span class="tparams">[<span name="A">A &lt;: <span name="scala.Product" class="extype">Product</span></span>]</span><span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="sep">sep: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[String]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Persist a distributed lists of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file.</p></div></div>
@@ -310,14 +322,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextOutput#toTextFile" data-isabs="false">
-      <a id="toTextFile[A](DList[A],String,Boolean)(Manifest[A]):DListPersister[A]"></a>
+      <a id="toTextFile[A](DList[A],String,Boolean)(Manifest[A]):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.DListPersister" class="extype" href="../../application/DListPersister.html">DListPersister</a>[A]</span>
+        <span class="name">toTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Persist a distributed list as a text file.</p>

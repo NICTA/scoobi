@@ -48,7 +48,19 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.core.BasicDoFn" data-isabs="true">
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.Association1" data-isabs="true">
+      <a id="Association1:Association1[K, V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Association1.html"><span class="name">Association1</span></a><span class="tparams">[<span name="K">+K</span>, <span name="V">+V</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An association of a key to 1 or many values.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.BasicDoFn" data-isabs="true">
       <a id="BasicDoFn:BasicDoFn[A, B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -60,7 +72,20 @@
       </span>
       </h4>
       <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
-environment with an do-nothing setup and cleanup phases.</p>
+environment with an do-nothing setup and cleanup phases
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.CompNode" data-isabs="true">
+      <a id="CompNode:CompNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CompNode.html"><span class="name">CompNode</span></a><span class="result"> extends Attributable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Base trait for &quot;computation nodes&quot; with no generic type information for easier rewriting</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList" data-isabs="true">
       <a id="DList:DList[A]"></a>
       <h4 class="signature">
@@ -69,7 +94,7 @@ environment with an do-nothing setup and cleanup phases.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DList.html"><span class="name">DList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="DList.html"><span class="name">DList</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends DataSinks with Persistent[Seq[A]]</span>
       </span>
       </h4>
       <p class="comment cmt">A list that is distributed across multiple machines.</p>
@@ -81,22 +106,49 @@ environment with an do-nothing setup and cleanup phases.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DObject.html"><span class="name">DObject</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="DObject.html"><span class="name">DObject</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends Persistent[A]</span>
       </span>
       </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DObjects" data-isabs="true">
-      <a id="DObjects:DObjects"></a>
+      <p class="comment cmt"> A wrapper around an object that is part of the graph of a distributed computation
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink" data-isabs="true">
+      <a id="DataSink:DataSink[K, V, B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DObjects.html"><span class="name">DObjects</span></a><span class="result"> extends AnyRef</span>
+        <a href="DataSink.html"><span class="name">DataSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends Sink</span>
       </span>
       </h4>
-      <p class="comment cmt">Implicit conversions for DObjects</p>
+      <p class="comment cmt">An output store from a MapReduce job
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSinks" data-isabs="true">
+      <a id="DataSinks:DataSinks"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="DataSinks.html"><span class="name">DataSinks</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">specify an object on which it is possible to add sinks and to compress them
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSource" data-isabs="true">
+      <a id="DataSource:DataSource[K, V, A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="DataSource.html"><span class="name">DataSource</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="result"> extends Source</span>
+      </span>
+      </h4>
+      <p class="comment cmt">DataSource for a computation graph.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DoFn" data-isabs="true">
       <a id="DoFn:DoFn[A, B]"></a>
       <h4 class="signature">
@@ -109,7 +161,8 @@ environment with an do-nothing setup and cleanup phases.</p>
       </span>
       </h4>
       <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
-environment.</p>
+environment
+</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Emitter" data-isabs="true">
       <a id="Emitter:Emitter[A]"></a>
       <h4 class="signature">
@@ -118,10 +171,10 @@ environment.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Emitter.html"><span class="name">Emitter</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="Emitter.html"><span class="name">Emitter</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends EmitterWriter</span>
       </span>
       </h4>
-      <p class="comment cmt">Interface for writing outputs from a DoFn.</p>
+      <p class="comment cmt">Interface for writing outputs from a DoFn</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.EnvDoFn" data-isabs="true">
       <a id="EnvDoFn:EnvDoFn[A, B, E]"></a>
       <h4 class="signature">
@@ -130,10 +183,35 @@ environment.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="EnvDoFn.html"><span class="name">EnvDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="EnvDoFn.html"><span class="name">EnvDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> extends DoFunction</span>
       </span>
       </h4>
       <p class="comment cmt">Interface for specifying parallel operation over DLists.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Environment" data-isabs="true">
+      <a id="Environment:Environment"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Environment.html"><span class="name">Environment</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An object holder which can hold a distributed value
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouped" data-isabs="true">
+      <a id="Grouped:Grouped[K, V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Grouped.html"><span class="name">Grouped</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A distributed list of associations.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping" data-isabs="true">
       <a id="Grouping:Grouping[K]"></a>
       <h4 class="signature">
@@ -142,10 +220,22 @@ environment.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Grouping.html"><span class="name">Grouping</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="Grouping.html"><span class="name">Grouping</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="result"> extends KeyGrouping</span>
       </span>
       </h4>
       <p class="comment cmt">Specify the way in which key-values are &quot;shuffled&quot;.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingFunctions" data-isabs="true">
+      <a id="GroupingFunctions:GroupingFunctions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GroupingFunctions.html"><span class="name">GroupingFunctions</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits" data-isabs="true">
       <a id="GroupingImplicits:GroupingImplicits"></a>
       <h4 class="signature">
@@ -158,6 +248,128 @@ environment.</p>
       </span>
       </h4>
       <p class="comment cmt">Implicit definitions of Grouping instances for common types.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.InputConverter" data-isabs="true">
+      <a id="InputConverter:InputConverter[K, V, A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="InputConverter.html"><span class="name">InputConverter</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="result"> extends FromKeyValueConverter</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Convert an InputFormat's key-value types to the type produced by a source
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.InputOutputContext" data-isabs="false">
+      <a id="InputOutputContext:InputOutputContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputOutputContext.html"><span class="name">InputOutputContext</span></a><span class="params">(<span name="context">context: MapContext[Any, Any, Any, Any]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Iterable1" data-isabs="true">
+      <a id="Iterable1:Iterable1[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Iterable1.html"><span class="name">Iterable1</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A non-empty iterable contains at least one element.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Iterator1" data-isabs="true">
+      <a id="Iterator1:Iterator1[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Iterator1.html"><span class="name">Iterator1</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends TraversableOnce[A]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A non-empty iterator contains at least one element.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.OutputConverter" data-isabs="true">
+      <a id="OutputConverter:OutputConverter[K, V, B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="OutputConverter.html"><span class="name">OutputConverter</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends ToKeyValueConverter</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Convert the type consumed by a DataSink into an OutputFormat's key-value types.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Persistent" data-isabs="true">
+      <a id="Persistent:Persistent[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Persistent.html"><span class="name">Persistent</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.ProcessNode" data-isabs="true">
+      <a id="ProcessNode:ProcessNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ProcessNode.html"><span class="name">ProcessNode</span></a><span class="result"> extends CompNode</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration" data-isabs="true">
+      <a id="ScoobiConfiguration:ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiConfiguration.html"><span class="name">ScoobiConfiguration</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
+added to the classpath.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.UniqueInt" data-isabs="true">
+      <a id="UniqueInt:UniqueInt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="UniqueInt.html"><span class="name">UniqueInt</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Trait that is sub-classed by objects to provide sets of unique identifiers.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.ValueNode" data-isabs="true">
+      <a id="ValueNode:ValueNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ValueNode.html"><span class="name">ValueNode</span></a><span class="result"> extends CompNode</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat" data-isabs="true">
       <a id="WireFormat:WireFormat[A]"></a>
       <h4 class="signature">
@@ -166,10 +378,10 @@ environment.</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="WireFormat.html"><span class="name">WireFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="WireFormat.html"><span class="name">WireFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends WireReaderWriter</span>
       </span>
       </h4>
-      <p class="comment cmt">Type-class for sending types across the Hadoop wire.</p>
+      <p class="comment cmt">Typeclass for sending types across the Hadoop wire</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormatImplicits" data-isabs="true">
       <a id="WireFormatImplicits:WireFormatImplicits"></a>
       <h4 class="signature">
@@ -182,6 +394,18 @@ environment.</p>
       </span>
       </h4>
       <p class="comment cmt">Implicit definitions of WireFormat instances for common types.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireReaderWriter" data-isabs="true">
+      <a id="WireReaderWriter:WireReaderWriter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="WireReaderWriter.html"><span class="name">WireReaderWriter</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 
@@ -189,30 +413,67 @@ environment.</p>
 
         <div class="values members" id="values">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.core.DList" data-isabs="false">
-      <a id="DList:DList"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.Association1" data-isabs="false">
+      <a id="Association1:Association1"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="DList$.html"><span class="name">DList</span></a><span class="result"> extends AnyRef</span>
+        <a href="Association1$.html"><span class="name">Association1</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">This object provides a set of operations to create distributed lists.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DObject" data-isabs="false">
-      <a id="DObject:DObject"></a>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Bridge" data-isabs="false">
+      <a id="Bridge:Bridge"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="DObject$.html"><span class="name">DObject</span></a><span class="result"> extends DObjects</span>
+        <a href="Bridge$.html"><span class="name">Bridge</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">This object provides a set of operations to create distributed objects.</p>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.CompNode" data-isabs="false">
+      <a id="CompNode:CompNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CompNode$.html"><span class="name">CompNode</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Definition of the Equal instance for CompNodes
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Data" data-isabs="false">
+      <a id="Data:Data"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Data$.html"><span class="name">Data</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouped" data-isabs="false">
+      <a id="Grouped:Grouped"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Grouped$.html"><span class="name">Grouped</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping" data-isabs="false">
       <a id="Grouping:Grouping"></a>
       <h4 class="signature">
@@ -221,7 +482,55 @@ environment.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Grouping$.html"><span class="name">Grouping</span></a><span class="result"> extends GroupingImplicits</span>
+        <a href="Grouping$.html"><span class="name">Grouping</span></a><span class="result"> extends GroupingImplicits with GroupingFunctions</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Iterable1" data-isabs="false">
+      <a id="Iterable1:Iterable1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Iterable1$.html"><span class="name">Iterable1</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Iterator1" data-isabs="false">
+      <a id="Iterator1:Iterator1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Iterator1$.html"><span class="name">Iterator1</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Mode" data-isabs="false">
+      <a id="Mode:Mode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Mode$.html"><span class="name">Mode</span></a><span class="result"> extends Enumeration</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.UniqueId" data-isabs="false">
+      <a id="UniqueId:UniqueId"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="UniqueId$.html"><span class="name">UniqueId</span></a><span class="result"> extends UniqueInt</span>
       </span>
       </h4>
       
@@ -234,6 +543,18 @@ environment.</p>
       </span>
       <span class="symbol">
         <a href="WireFormat$.html"><span class="name">WireFormat</span></a><span class="result"> extends WireFormatImplicits</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireReaderWriter" data-isabs="false">
+      <a id="WireReaderWriter:WireReaderWriter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="WireReaderWriter$.html"><span class="name">WireReaderWriter</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       

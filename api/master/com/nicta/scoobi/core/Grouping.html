@@ -25,12 +25,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Grouping</span><span class="tparams">[<span name="K">K</span>]</span><span class="result"> extends AnyRef</span>
+        <span class="name">Grouping</span><span class="tparams">[<span name="K">K</span>]</span><span class="result"> extends <span name="com.nicta.scoobi.core.KeyGrouping" class="extype">KeyGrouping</span></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Specify the way in which key-values are &quot;shuffled&quot;. Used by 'groupByKey' in
-'DList'.</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Specify the way in which key-values are &quot;shuffled&quot;. Used by <code>groupByKey</code> in <code>DList</code>
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@implicitNotFound</span><span class="args">(<span>
       
       <span name="&quot;Cannot find Grouping type class for ${K}&quot;" class="defval">...</span>
@@ -38,7 +38,10 @@
               
         </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="com.nicta.scoobi.core.KeyGrouping" class="extype">KeyGrouping</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.core.Grouping.AllGrouping" class="extype" href="Grouping$$AllGrouping.html">AllGrouping</a></div>
         </div></div>
     
 
@@ -52,7 +55,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.Grouping" class="in"><span>Grouping</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.Grouping" class="in"><span>Grouping</span></li><li name="com.nicta.scoobi.core.KeyGrouping" class="in"><span>KeyGrouping</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -69,14 +72,14 @@
         <div class="values members" id="values">
               <h3>Abstract Value Members</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.core.Grouping#groupCompare" data-isabs="true">
-      <a id="groupCompare(K,K):Int"></a>
+      <a id="groupCompare(K,K):Ordering"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">groupCompare</span><span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">groupCompare</span><span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scalaz.Ordering" class="extype">Ordering</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Specifies how values, for a given partition, are grouped together in
@@ -122,6 +125,18 @@ a given partition.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#***" data-isabs="false">
+      <a id="***[L](Grouping[L]):Grouping[(K, L)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $times$times$times">***</span><span class="tparams">[<span name="L">L</span>]</span><span class="params">(<span name="q">q: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[L]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[(K, L)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Combine two groupings to a grouping of product type.</p><div class="fullcomment"><div class="comment cmt"><p>Combine two groupings to a grouping of product type. Alias for <code>zip</code></p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#==" data-isabs="false">
       <a id="==(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -173,6 +188,18 @@ a given partition.</p>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#contramap" data-isabs="false">
+      <a id="contramap[L]((L) ⇒ K):Grouping[L]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contramap</span><span class="tparams">[<span name="L">L</span>]</span><span class="params">(<span name="f">f: (L) ⇒ K</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[L]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map on this grouping contravariantly.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -224,6 +251,30 @@ a given partition.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#groupOrder" data-isabs="false">
+      <a id="groupOrder:Order[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">groupOrder</span><span class="result">: <span name="scalaz.Order" class="extype">Order</span>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Interface to <code>scalaz.Order</code> on <code>groupCompare</code></p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#groupOrdering" data-isabs="false">
+      <a id="groupOrdering:Ordering[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">groupOrdering</span><span class="result">: Ordering[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Interface to <code>scala.Ordering</code> on <code>groupCompare</code></p>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
@@ -236,6 +287,42 @@ a given partition.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#isGroupEqual" data-isabs="false">
+      <a id="isGroupEqual(K,K):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isGroupEqual</span><span class="params">(<span name="k1">k1: K</span>, <span name="k2">k2: K</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does group compare produce equal elements?</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#isGroupGreaterThan" data-isabs="false">
+      <a id="isGroupGreaterThan(K,K):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isGroupGreaterThan</span><span class="params">(<span name="k1">k1: K</span>, <span name="k2">k2: K</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does group compare produce the first greater than the second?</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#isGroupLessThan" data-isabs="false">
+      <a id="isGroupLessThan(K,K):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isGroupLessThan</span><span class="params">(<span name="k1">k1: K</span>, <span name="k2">k2: K</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does group compare produce the first less than the second?</p>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -248,6 +335,42 @@ a given partition.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#isSortEqual" data-isabs="false">
+      <a id="isSortEqual(K,K):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isSortEqual</span><span class="params">(<span name="k1">k1: K</span>, <span name="k2">k2: K</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does sort compare produce equal elements?</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#isSortGreaterThan" data-isabs="false">
+      <a id="isSortGreaterThan(K,K):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isSortGreaterThan</span><span class="params">(<span name="k1">k1: K</span>, <span name="k2">k2: K</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does sort compare produce the first greater than the second?</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#isSortLessThan" data-isabs="false">
+      <a id="isSortLessThan(K,K):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isSortLessThan</span><span class="params">(<span name="k1">k1: K</span>, <span name="k2">k2: K</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does sort compare produce the first less than the second?</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -296,19 +419,55 @@ a given partition.</p>
       </span>
       </h4>
       <p class="shortcomment cmt">Specifies how key-values are partitioned among Reducer tasks.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#sortCompare" data-isabs="false">
-      <a id="sortCompare(K,K):Int"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#secondarySort" data-isabs="false">
+      <a id="secondarySort[L](Grouping[L]):Grouping[(K, L)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sortCompare</span><span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">secondarySort</span><span class="tparams">[<span name="L">L</span>]</span><span class="params">(<span name="q">q: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[L]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[(K, L)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Construct grouping for secondary sort.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#sortCompare" data-isabs="false">
+      <a id="sortCompare(K,K):Ordering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sortCompare</span><span class="params">(<span name="x">x: K</span>, <span name="y">y: K</span>)</span><span class="result">: <span name="scalaz.Ordering" class="extype">Ordering</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Specifies the order in which grouped values are presented to a Reducer
 task, for a given partition.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#sortOrder" data-isabs="false">
+      <a id="sortOrder:Order[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sortOrder</span><span class="result">: <span name="scalaz.Order" class="extype">Order</span>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Interface to <code>scalaz.Order</code> on <code>sortCompare</code></p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#sortOrdering" data-isabs="false">
+      <a id="sortOrdering:Ordering[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sortOrdering</span><span class="result">: Ordering[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Interface to <code>scala.Ordering</code> on <code>sortCompare</code></p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -378,6 +537,30 @@ task, for a given partition.</p>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#zip" data-isabs="false">
+      <a id="zip[L](Grouping[L]):Grouping[(K, L)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">zip</span><span class="tparams">[<span name="L">L</span>]</span><span class="params">(<span name="q">q: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[L]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[(K, L)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Combine two groupings to a grouping of product type.</p><div class="fullcomment"><div class="comment cmt"><p>Combine two groupings to a grouping of product type. Alias for <code>***</code></p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Grouping#|+|" data-isabs="false">
+      <a id="|+|(Grouping[K]):Grouping[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $bar$plus$bar">|+|</span><span class="params">(<span name="q">q: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="">Grouping</a>[K]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Add two groupings together.</p>
     </li></ol>
             </div>
 
@@ -385,7 +568,9 @@ task, for a given partition.</p>
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.core.KeyGrouping" class="parent">
+              <h3>Inherited from <span name="com.nicta.scoobi.core.KeyGrouping" class="extype">KeyGrouping</span></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

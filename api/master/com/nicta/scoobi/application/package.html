@@ -48,27 +48,15 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.application.package#@@" data-isabs="false">
-      <a id="@@:@@[T, U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name" title="gt4s: $at$at">@@</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> = T with Tagged[U]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.package.AsLevel" data-isabs="true">
-      <a id="AsLevel:AsLevel"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.application.Application" data-isabs="true">
+      <a id="Application:Application"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="package$$AsLevel.html"><span class="name">AsLevel</span></a><span class="result"> extends AnyRef</span>
+        <a href="Application.html"><span class="name">Application</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
@@ -110,18 +98,30 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.DListPersister" data-isabs="false">
-      <a id="DListPersister:DListPersister[A]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.DLists" data-isabs="true">
+      <a id="DLists:DLists"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DListPersister.html"><span class="name">DListPersister</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dlist">dlist: DList[A]</span>, <span name="sink">sink: com.nicta.scoobi.io.DataSink[_, _, A]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="DLists.html"><span class="name">DLists</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">The container for persisting a DList.</p>
+      <p class="comment cmt">This object provides a set of operations to create distributed lists.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.DObjects" data-isabs="true">
+      <a id="DObjects:DObjects"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="DObjects.html"><span class="name">DObjects</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Implicit conversions for DObjects</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.Hadoop" data-isabs="true">
       <a id="Hadoop:Hadoop"></a>
       <h4 class="signature">
@@ -170,18 +170,20 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.package#Level" data-isabs="false">
-      <a id="Level:Level"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs" data-isabs="true">
+      <a id="InputsOutputs:InputsOutputs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">type</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Level</span><span class="result"> = String with Tagged[<a name="com.nicta.scoobi.application.package.AsLevel" class="extype" href="package$$AsLevel.html">AsLevel</a>]</span>
+        <a href="InputsOutputs.html"><span class="name">InputsOutputs</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
+      <p class="comment cmt">This trait provides way to create DLists from files
+and to add sinks to DLists so that the results of computations can be saved to files
+</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars" data-isabs="true">
       <a id="LibJars:LibJars"></a>
       <h4 class="signature">
@@ -207,42 +209,30 @@
       </h4>
       <p class="comment cmt">Execute Hadoop code locally
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.LowImplicitsPersister" data-isabs="true">
-      <a id="LowImplicitsPersister:LowImplicitsPersister"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Orderings" data-isabs="true">
+      <a id="Orderings:Orderings"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="LowImplicitsPersister.html"><span class="name">LowImplicitsPersister</span></a><span class="result"> extends AnyRef</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Those additional implicits allow to pass tuples of persisters to persist at once with the persist method</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.PFn" data-isabs="true">
-      <a id="PFn:PFn[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">sealed </span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="PFn.html"><span class="name">PFn</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="Orderings.html"><span class="name">Orderings</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister" data-isabs="true">
-      <a id="Persister:Persister[In]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Persist" data-isabs="true">
+      <a id="Persist:Persist"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Persister.html"><span class="name">Persister</span></a><span class="tparams">[<span name="In">In</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="Persist.html"><span class="name">Persist</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">Type class for things that can be persisted.</p>
+      <p class="comment cmt">This trait provides operations and implicit definitions to persist DLists and DObjects.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiApp" data-isabs="true">
       <a id="ScoobiApp:ScoobiApp"></a>
       <h4 class="signature">
@@ -251,7 +241,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiApp.html"><span class="name">ScoobiApp</span></a><span class="result"> extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop with HadoopLogFactoryInitialisation</span>
+        <a href="ScoobiApp.html"><span class="name">ScoobiApp</span></a><span class="result"> extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop with HadoopLogFactoryInitialisation with Persist</span>
       </span>
       </h4>
       <p class="comment cmt">This trait can be extended to create an application running Scoobi code.</p>
@@ -294,19 +284,6 @@ $HADOOP_HOME/conf directory.</p>
       </h4>
       <p class="comment cmt">This trait can be mixed in an Application trait in order to store command-line arguments before any code is executed
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration" data-isabs="false">
-      <a id="ScoobiConfiguration:ScoobiConfiguration"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="ScoobiConfiguration.html"><span class="name">ScoobiConfiguration</span></a><span class="params">(<span name="configuration">configuration: Configuration</span>, <span name="userJars">userJars: Set[String]</span>, <span name="userDirs">userDirs: Set[String]</span>)</span><span class="result"> extends Product with Serializable</span>
-      </span>
-      </h4>
-      <p class="comment cmt">This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
-added to the classpath.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs" data-isabs="true">
       <a id="ScoobiUserArgs:ScoobiUserArgs"></a>
       <h4 class="signature">
@@ -320,18 +297,6 @@ added to the classpath.</p>
       </h4>
       <p class="comment cmt">Implementation of the ScoobiArgs trait taking the values from the command line arguments
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.package#Tagged" data-isabs="false">
-      <a id="Tagged:Tagged[U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Tagged</span><span class="tparams">[<span name="U">U</span>]</span><span class="result"> = AnyRef { type Tag = U }</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -339,42 +304,54 @@ added to the classpath.</p>
 
         <div class="values members" id="values">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.Orderings#BytesOrdering" data-isabs="false">
-      <a id="BytesOrdering:Ordering[BytesWritable]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">BytesOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.BytesWritable" class="extype">BytesWritable</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#DoubleOrdering" data-isabs="false">
-      <a id="DoubleOrdering:Ordering[DoubleWritable]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">DoubleOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.DoubleWritable" class="extype">DoubleWritable</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Eval" data-isabs="false">
-      <a id="Eval:Eval"></a>
+              <ol><li visbl="pub" name="com.nicta.scoobi.application.Application" data-isabs="false">
+      <a id="Application:Application"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Eval$.html"><span class="name">Eval</span></a><span class="result"> extends AnyRef</span>
+        <a href="Application$.html"><span class="name">Application</span></a><span class="result"> extends Application</span>
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.application.DList" data-isabs="false">
+      <a id="DList:DList"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DList$.html"><span class="name">DList</span></a><span class="result"> extends DLists</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.DLists" data-isabs="false">
+      <a id="DLists:DLists"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DLists$.html"><span class="name">DLists</span></a><span class="result"> extends DLists</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.DObjects" data-isabs="false">
+      <a id="DObjects:DObjects"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DObjects$.html"><span class="name">DObjects</span></a><span class="result"> extends DObjects</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This object provides a set of operations to create distributed objects.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.HadoopLogFactory" data-isabs="false">
       <a id="HadoopLogFactory:HadoopLogFactory"></a>
       <h4 class="signature">
@@ -387,18 +364,30 @@ added to the classpath.</p>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.HadoopMode" data-isabs="false">
-      <a id="HadoopMode:HadoopMode"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs" data-isabs="false">
+      <a id="InputsOutputs:InputsOutputs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="HadoopMode$.html"><span class="name">HadoopMode</span></a><span class="result"> extends AnyRef</span>
+        <a href="InputsOutputs$.html"><span class="name">InputsOutputs</span></a><span class="result"> extends InputsOutputs</span>
       </span>
       </h4>
-      <p class="comment cmt">Execution of Scoobi applications using Hadoop.</p>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Levels" data-isabs="false">
+      <a id="Levels:Levels"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Levels$.html"><span class="name">Levels</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.application.LibJars" data-isabs="false">
       <a id="LibJars:LibJars"></a>
       <h4 class="signature">
@@ -411,90 +400,30 @@ added to the classpath.</p>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Mode" data-isabs="false">
-      <a id="Mode:Mode"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Orderings" data-isabs="false">
+      <a id="Orderings:Orderings"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Mode$.html"><span class="name">Mode</span></a><span class="result"> extends Enumeration</span>
+        <a href="Orderings$.html"><span class="name">Orderings</span></a><span class="result"> extends Orderings</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.application.PFn" data-isabs="false">
-      <a id="PFn:PFn"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.Persist" data-isabs="false">
+      <a id="Persist:Persist"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="PFn$.html"><span class="name">PFn</span></a><span class="result"> extends AnyRef</span>
-      </span>
-      </h4>
-      <p class="comment cmt">PFn type class instances for DLists (i.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Persister" data-isabs="false">
-      <a id="Persister:Persister"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Persister$.html"><span class="name">Persister</span></a><span class="result"> extends LowImplicitsPersister</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Persister type class instances for tuples.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiConfiguration" data-isabs="false">
-      <a id="ScoobiConfiguration:ScoobiConfiguration"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="ScoobiConfiguration$.html"><span class="name">ScoobiConfiguration</span></a><span class="result"> extends Serializable</span>
+        <a href="Persist$.html"><span class="name">Persist</span></a><span class="result"> extends Persist</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.Orderings#TextOrdering" data-isabs="false">
-      <a id="TextOrdering:Ordering[Text]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">TextOrdering</span><span class="result">: Ordering[<span name="org.apache.hadoop.io.Text" class="extype">Text</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.Orderings" class="extype" href="../Orderings.html">Orderings</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.VectorMode" data-isabs="false">
-      <a id="VectorMode:VectorMode"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="VectorMode$.html"><span class="name">VectorMode</span></a><span class="result"> extends AnyRef</span>
-      </span>
-      </h4>
-      <p class="comment cmt">A fast local mode for execution of Scoobi applications.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.package#level" data-isabs="false">
-      <a id="level(String):Level"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">level</span><span class="params">(<span name="l">l: String</span>)</span><span class="result">: Level</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.package" class="extype" href="package$.html">package</a></dd></dl></div>
     </li></ol>
             </div>
 

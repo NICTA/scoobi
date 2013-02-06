@@ -25,13 +25,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">UnitDObject</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a>[<span name="scala.Unit" class="extype">Unit</span>]</span>
+        <span class="name">UnitDObject</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a>[<span name="scala.Unit" class="extype">Unit</span>], <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a>[<span name="scala.Unit" class="extype">Unit</span>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.plan.UnitDObject" class="in"><span>UnitDObject</span></li><li name="com.nicta.scoobi.impl.plan.DObjectImpl" class="in"><span>DObjectImpl</span></li><li name="com.nicta.scoobi.core.DObject" class="in"><span>DObject</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.plan.UnitDObject" class="in"><span>UnitDObject</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -225,44 +225,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DObjectImpl#join" data-isabs="false">
-      <a id="join[B](DList[B])(Manifest[B],WireFormat[B]):DList[(Unit, B)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">join</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[(<span name="scala.Unit" class="extype">Unit</span>, B)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new distributed list by replicating the value of this distributed object
-to every element within the provided distributed list.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new distributed list by replicating the value of this distributed object
-to every element within the provided distributed list.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a> → <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DObjectImpl#m" data-isabs="false">
-      <a id="m:Manifest[Unit]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">m</span><span class="result">: Manifest[<span name="scala.Unit" class="extype">Unit</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a> → <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DObjectImpl#map" data-isabs="false">
-      <a id="map[B]((Unit) ⇒ B)(Manifest[B],WireFormat[B]):DObject[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span name="scala.Unit" class="extype">Unit</span>) ⇒ B</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a>[B]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new distributed object by apply a function to this distributed object.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new distributed object by apply a function to this distributed object.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a> → <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -275,6 +237,18 @@ to every element within the provided distributed list.</p></div><dl class="attri
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.UnitDObject#newInstance" data-isabs="false">
+      <a id="newInstance:DObjectImpl[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">newInstance</span><span class="result">: <span name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype">DObjectImpl</span>[<span name="scala.Unit" class="extype">Unit</span>]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
       <a id="notify():Unit"></a>
       <h4 class="signature">
@@ -311,30 +285,6 @@ to every element within the provided distributed list.</p></div><dl class="attri
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DObject#toDList" data-isabs="false">
-      <a id="toDList[B](&lt;:&lt;[Unit, Iterable[B]],Manifest[B],WireFormat[B]):DList[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toDList</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[<span name="scala.Unit" class="extype">Unit</span>, Iterable[B]]</span>, <span name="bm">bm: Manifest[B]</span>, <span name="bwf">bwf: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[B]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DObject#toSingleElementDList" data-isabs="false">
-      <a id="toSingleElementDList:DList[Unit]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toSingleElementDList</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[<span name="scala.Unit" class="extype">Unit</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -392,18 +342,6 @@ to every element within the provided distributed list.</p></div><dl class="attri
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.DObjectImpl#wf" data-isabs="false">
-      <a id="wf:WireFormat[Unit]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">wf</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[<span name="scala.Unit" class="extype">Unit</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a> → <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -411,11 +349,7 @@ to every element within the provided distributed list.</p></div><dl class="attri
         </div>
 
         <div id="inheritedMembers">
-        <div name="com.nicta.scoobi.impl.plan.DObjectImpl" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.DObjectImpl" class="extype" href="DObjectImpl.html">DObjectImpl</a>[<span name="scala.Unit" class="extype">Unit</span>]</h3>
-            </div><div name="com.nicta.scoobi.core.DObject" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.core.DObject" class="extype" href="../../core/DObject.html">DObject</a>[<span name="scala.Unit" class="extype">Unit</span>]</h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

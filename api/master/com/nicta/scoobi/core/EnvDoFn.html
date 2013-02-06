@@ -25,7 +25,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">EnvDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> extends AnyRef</span>
+        <span class="name">EnvDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="E">E</span>]</span><span class="result"> extends <span name="com.nicta.scoobi.core.DoFunction" class="extype">DoFunction</span></span>
       </span>
       </h4>
       
@@ -34,9 +34,10 @@ of DoFn lifecycle are as follows:</p><p>For a given chunk of DList elements:
 1. 'setup' will be called;
 2. 'process' will be called for each element in the chunk;
 3. 'cleanup' will be called.</p><p>These 3 steps encapsulate the entire life-cycle of a DoFn. A DoFn object
-will not be referenced after these steps.</p></div><div class="toggleContainer block">
+will not be referenced after these steps
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a name="com.nicta.scoobi.core.EnvDoFn" class="extype" href="">EnvDoFn</a>[A, B, E]</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="com.nicta.scoobi.core.DoFunction" class="extype">DoFunction</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.core.BasicDoFn" class="extype" href="BasicDoFn.html">BasicDoFn</a>, <a name="com.nicta.scoobi.core.DoFn" class="extype" href="DoFn.html">DoFn</a></div>
@@ -53,7 +54,7 @@ will not be referenced after these steps.</p></div><div class="toggleContainer b
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.EnvDoFn" class="in"><span>EnvDoFn</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.EnvDoFn" class="in"><span>EnvDoFn</span></li><li name="com.nicta.scoobi.core.DoFunction" class="in"><span>DoFunction</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -384,7 +385,9 @@ will not be referenced after these steps.</p></div><div class="toggleContainer b
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
+        <div name="com.nicta.scoobi.core.DoFunction" class="parent">
+              <h3>Inherited from <span name="com.nicta.scoobi.core.DoFunction" class="extype">DoFunction</span></h3>
+            </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

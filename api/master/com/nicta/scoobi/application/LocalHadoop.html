@@ -189,7 +189,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureForInMemory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>
+        <span class="name">configureForInMemory</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with memory setup
@@ -202,7 +202,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureForLocal</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>
+        <span class="name">configureForLocal</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with local setup
@@ -263,7 +263,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">executeInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+        <span class="name">executeInMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code locally</p><div class="fullcomment"><div class="comment cmt"><p>execute some code locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
@@ -275,7 +275,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">executeOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+        <span class="name">executeOnLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code locally</p>
@@ -338,7 +338,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+        <span class="name">inMemory</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code in memory, using a collection backend, possibly showing execution times</p><div class="fullcomment"><div class="comment cmt"><p>execute some code in memory, using a collection backend, possibly showing execution times</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="InMemoryHadoop.html">InMemoryHadoop</a></dd></dl></div>
@@ -506,7 +506,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">onLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.application.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
+        <span class="name">onLocal</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="t">t: ⇒ T</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">execute some code locally, possibly showing execution times</p>

@@ -205,6 +205,18 @@ remove redundant values if there are any
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a key is defined
 </p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#distinctValues" data-isabs="false">
+      <a id="distinctValues(String,String):Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">distinctValues</span><span class="params">(<span name="key">key: String</span>, <span name="separator">separator: String</span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the updated configuration with distinct values</p></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -257,17 +269,30 @@ remove redundant values if there are any
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#getOrSet" data-isabs="false">
-      <a id="getOrSet(String,String):String"></a>
+      <a id="getOrSet(String,⇒ String):String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOrSet</span><span class="params">(<span name="key">key: String</span>, <span name="defaultValue">defaultValue: String</span>)</span><span class="result">: String</span>
+        <span class="name">getOrSet</span><span class="params">(<span name="key">key: String</span>, <span name="defaultValue">defaultValue: ⇒ String</span>)</span><span class="result">: String</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the value of the configuration for a given key or set it with a default value
+</p></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.Configurations.ExtendedConfiguration#getOrSetBoolean" data-isabs="false">
+      <a id="getOrSetBoolean(String,⇒ Boolean):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getOrSetBoolean</span><span class="params">(<span name="key">key: String</span>, <span name="defaultValue">defaultValue: ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the value of the configuration for a given Boolean key or set it with a default value
 </p></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>

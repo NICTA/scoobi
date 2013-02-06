@@ -31,7 +31,7 @@
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[TT], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[TT], <a name="com.nicta.scoobi.core.WireReaderWriter" class="extype" href="../core/WireReaderWriter.html">WireReaderWriter</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat" class="in"><span>Abstract8WireFormat</span></li><li name="com.nicta.scoobi.core.WireFormat" class="in"><span>WireFormat</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat" class="in"><span>Abstract8WireFormat</span></li><li name="com.nicta.scoobi.core.WireFormat" class="in"><span>WireFormat</span></li><li name="com.nicta.scoobi.core.WireReaderWriter" class="in"><span>WireReaderWriter</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -114,6 +114,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#***" data-isabs="false">
+      <a id="***[B](WireFormat[B]):WireFormat[(TT, B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $times$times$times">***</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[(TT, B)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Produce a wire format on products from this wire format and the given wire format.</p><div class="fullcomment"><div class="comment cmt"><p>Produce a wire format on products from this wire format and the given wire format. Alias for <code>zip</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#==" data-isabs="false">
       <a id="==(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -288,6 +301,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#read" data-isabs="false">
+      <a id="read(DataInput):TT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">read</span><span class="params">(<span name="in">in: <span name="java.io.DataInput" class="extype">DataInput</span></span>)</span><span class="result">: TT</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a> → <a name="com.nicta.scoobi.core.WireReaderWriter" class="extype" href="../core/WireReaderWriter.html">WireReaderWriter</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -300,7 +325,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -311,7 +336,7 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat" class="extype" href="">Abstract8WireFormat</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat#toWire" data-isabs="false">
       <a id="toWire(TT,DataOutput):Unit"></a>
       <h4 class="signature">
@@ -369,6 +394,44 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#write" data-isabs="false">
+      <a id="write(Any,DataOutput):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">write</span><span class="params">(<span name="x">x: <span name="scala.Any" class="extype">Any</span></span>, <span name="out">out: <span name="java.io.DataOutput" class="extype">DataOutput</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a> → <a name="com.nicta.scoobi.core.WireReaderWriter" class="extype" href="../core/WireReaderWriter.html">WireReaderWriter</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#xmap" data-isabs="false">
+      <a id="xmap[B]((TT) ⇒ B,(B) ⇒ TT):WireFormat[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">xmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (TT) ⇒ B</span>, <span name="g">g: (B) ⇒ TT</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map a pair of functions on this exponential functor to produce a new wire format.</p><div class="fullcomment"><div class="comment cmt"><p>Map a pair of functions on this exponential functor to produce a new wire format.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireFormat#zip" data-isabs="false">
+      <a id="zip[B](WireFormat[B]):WireFormat[(TT, B)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">zip</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[(TT, B)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Produce a wire format on products from this wire format and the given wire format.</p><div class="fullcomment"><div class="comment cmt"><p>Produce a wire format on products from this wire format and the given wire format. Alias for <code>***</code>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -378,6 +441,8 @@
         <div id="inheritedMembers">
         <div name="com.nicta.scoobi.core.WireFormat" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[TT]</h3>
+            </div><div name="com.nicta.scoobi.core.WireReaderWriter" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.core.WireReaderWriter" class="extype" href="../core/WireReaderWriter.html">WireReaderWriter</a></h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">

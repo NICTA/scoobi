@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">DRowWiseMatrix</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DList[(Elem, Iterable[(Elem, T)])]</span>, <span name="evidence$33">evidence$33: Manifest[Elem]</span>, <span name="evidence$34">evidence$34: WireFormat[Elem]</span>, <span name="evidence$35">evidence$35: Ordering[Elem]</span>, <span name="evidence$36">evidence$36: Manifest[T]</span>, <span name="evidence$37">evidence$37: WireFormat[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">DRowWiseMatrix</span><span class="tparams">[<span name="Elem">Elem</span>, <span name="T">T</span>]</span><span class="params">(<span name="data">data: DList[(Elem, Iterable[(Elem, T)])]</span>, <span name="evidence$19">evidence$19: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Elem]</span>, <span name="evidence$20">evidence$20: Ordering[Elem]</span>, <span name="evidence$21">evidence$21: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -67,7 +67,7 @@ must be small enough to fit in memory
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DRowWiseMatrix</span><span class="params">(<span name="data">data: DList[(Elem, Iterable[(Elem, T)])]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[Elem]</span>, <span name="arg1">arg1: WireFormat[Elem]</span>, <span name="arg2">arg2: Ordering[Elem]</span>, <span name="arg3">arg3: Manifest[T]</span>, <span name="arg4">arg4: WireFormat[T]</span>)</span>
+        <span class="name">DRowWiseMatrix</span><span class="params">(<span name="data">data: DList[(Elem, Iterable[(Elem, T)])]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Elem]</span>, <span name="arg1">arg1: Ordering[Elem]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[T]</span>)</span>
       </span>
       </h4>
       
@@ -153,26 +153,26 @@ must be small enough to fit in memory
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.DRowWiseMatrix#byVector" data-isabs="false">
-      <a id="byVector[V, R](InMemVector[Elem, V],(T, V) ⇒ R,(R, R) ⇒ R)(Manifest[V],WireFormat[V],Manifest[R],WireFormat[R]):InMemVector[Elem, R]"></a>
+      <a id="byVector[V, R](InMemVector[Elem, V],(T, V) ⇒ R,(R, R) ⇒ R)(WireFormat[V],WireFormat[R]):InMemVector[Elem, R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, V]</span>, <span name="mult">mult: (T, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[V]</span>, <span name="arg1">arg1: WireFormat[V]</span>, <span name="arg2">arg2: Manifest[R]</span>, <span name="arg3">arg3: WireFormat[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, R]</span>
+        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, V]</span>, <span name="mult">mult: (T, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="InMemVector.html">InMemVector</a>[Elem, R]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.lib.DRowWiseMatrix#byVector" data-isabs="false">
-      <a id="byVector[V, R](InMemDenseVector[V],R,(T, V) ⇒ R,(R, R) ⇒ R)(&lt;:&lt;[DRowWiseMatrix[Elem, T], DRowWiseMatrix[Int, T]],Manifest[V],WireFormat[V],Manifest[R],WireFormat[R]):InMemDenseVector[R]"></a>
+      <a id="byVector[V, R](InMemDenseVector[V],R,(T, V) ⇒ R,(R, R) ⇒ R)(&lt;:&lt;[DRowWiseMatrix[Elem, T], DRowWiseMatrix[Int, T]],WireFormat[V],WireFormat[R]):InMemDenseVector[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[V]</span>, <span name="zero">zero: R</span>, <span name="mult">mult: (T, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[<a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="">DRowWiseMatrix</a>[Elem, T], <a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="">DRowWiseMatrix</a>[<span name="scala.Int" class="extype">Int</span>, T]]</span>, <span name="vm">vm: Manifest[V]</span>, <span name="vw">vw: WireFormat[V]</span>, <span name="rm">rm: Manifest[R]</span>, <span name="rw">rw: WireFormat[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[R]</span>
+        <span class="name">byVector</span><span class="tparams">[<span name="V">V</span>, <span name="R">R</span>]</span><span class="params">(<span name="dv">dv: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[V]</span>, <span name="zero">zero: R</span>, <span name="mult">mult: (T, V) ⇒ R</span>, <span name="add">add: (R, R) ⇒ R</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[<a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="">DRowWiseMatrix</a>[Elem, T], <a name="com.nicta.scoobi.lib.DRowWiseMatrix" class="extype" href="">DRowWiseMatrix</a>[<span name="scala.Int" class="extype">Int</span>, T]]</span>, <span name="vw">vw: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="rw">rw: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[R]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="InMemDenseVector.html">InMemDenseVector</a>[R]</span>
       </span>
       </h4>
       

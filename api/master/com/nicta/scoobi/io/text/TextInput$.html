@@ -29,7 +29,7 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Smart functions for materializing distributed lists by loading text files.</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Smart functions for materialising distributed lists by loading text files.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
@@ -253,14 +253,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#fromDelimitedTextFile" data-isabs="false">
-      <a id="fromDelimitedTextFile[A](String,String)(PartialFunction[List[String], A])(Manifest[A],WireFormat[A]):DList[A]"></a>
+      <a id="fromDelimitedTextFile[A](String,String)(PartialFunction[List[String], A])(WireFormat[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromDelimitedTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: String</span>, <span name="sep">sep: String = <span class="symbol">&quot;\t&quot;</span></span>)</span><span class="params">(<span name="extractFn">extractFn: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[List[String], A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[A]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
+        <span class="name">fromDelimitedTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: String</span>, <span name="sep">sep: String = <span class="symbol">&quot;\t&quot;</span></span>)</span><span class="params">(<span name="extractFn">extractFn: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[List[String], A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../../core/WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Create a distributed list from a text file that is a number of fields delimited
@@ -409,6 +409,18 @@ text.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.text.TextInput#source" data-isabs="false">
+      <a id="source(Seq[String]):TextSource[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">source</span><span class="params">(<span name="paths">paths: Seq[String]</span>)</span><span class="result">: <a name="com.nicta.scoobi.io.text.TextInput.TextSource" class="extype" href="TextInput$$TextSource.html">TextSource</a>[String]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">create a text source</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

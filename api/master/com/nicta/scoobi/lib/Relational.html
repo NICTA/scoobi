@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Relational</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="left">left: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, A)]</span>, <span name="evidence$1">evidence$1: Manifest[K]</span>, <span name="evidence$2">evidence$2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="evidence$3">evidence$3: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../core/Grouping.html">Grouping</a>[K]</span>, <span name="evidence$4">evidence$4: Manifest[A]</span>, <span name="evidence$5">evidence$5: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">Relational</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="left">left: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, A)]</span>, <span name="evidence$1">evidence$1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="evidence$2">evidence$2: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../core/Grouping.html">Grouping</a>[K]</span>, <span name="evidence$3">evidence$3: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[A]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Relational</span><span class="params">(<span name="left">left: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, A)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../core/Grouping.html">Grouping</a>[K]</span>, <span name="arg3">arg3: Manifest[A]</span>, <span name="arg4">arg4: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[A]</span>)</span>
+        <span class="name">Relational</span><span class="params">(<span name="left">left: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, A)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[K]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.Grouping" class="extype" href="../core/Grouping.html">Grouping</a>[K]</span>, <span name="arg2">arg2: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[A]</span>)</span>
       </span>
       </h4>
       
@@ -150,6 +150,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#blockJoin" data-isabs="false">
+      <a id="blockJoin[B](DList[(K, B)])(WireFormat[B]):DList[(K, (A, B))]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">blockJoin</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, B))]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Perform an equijoin with another distributed list where this list is considerably smaller
+than the right (but too large to fit in memory), and where the keys of right may be
+particularly skewed.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#canEqual" data-isabs="false">
       <a id="canEqual(Any):Boolean"></a>
       <h4 class="signature">
@@ -178,14 +192,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#coGroup" data-isabs="false">
-      <a id="coGroup[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (Iterable[A], Iterable[B]))]"></a>
+      <a id="coGroup[B](DList[(K, B)])(WireFormat[B]):DList[(K, (Iterable[A], Iterable[B]))]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">coGroup</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (Iterable[A], Iterable[B]))]</span>
+        <span class="name">coGroup</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (Iterable[A], Iterable[B]))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform a co-group with another distributed lists</p>
@@ -265,54 +279,54 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#join" data-isabs="false">
-      <a id="join[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (A, B))]"></a>
+      <a id="join[B](DList[(K, B)])(WireFormat[B]):DList[(K, (A, B))]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">join</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, B))]</span>
+        <span class="name">join</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, B))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform an equijoin with another distributed lists.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinFullOuter" data-isabs="false">
-      <a id="joinFullOuter[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (Option[A], Option[B]))]"></a>
+      <a id="joinFullOuter[B](DList[(K, B)])(WireFormat[B]):DList[(K, (Option[A], Option[B]))]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">joinFullOuter</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (<span name="scala.Option" class="extype">Option</span>[A], <span name="scala.Option" class="extype">Option</span>[B]))]</span>
+        <span class="name">joinFullOuter</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (<span name="scala.Option" class="extype">Option</span>[A], <span name="scala.Option" class="extype">Option</span>[B]))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform a full outer-join of two distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a full outer-join of two distributed lists. Note how it returns an Option[A] and Option[B], but it
 shouldn't be possible for both to be None.
 </p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinFullOuter" data-isabs="false">
-      <a id="joinFullOuter[B, V](DList[(K, B)],(K, A) ⇒ V,(K, B) ⇒ V,(K, A, B) ⇒ V)(Manifest[B],WireFormat[B],Manifest[V],WireFormat[V]):DList[(K, V)]"></a>
+      <a id="joinFullOuter[B, V](DList[(K, B)],(K, A) ⇒ V,(K, B) ⇒ V,(K, A, B) ⇒ V)(WireFormat[B],WireFormat[V]):DList[(K, V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">joinFullOuter</span><span class="tparams">[<span name="B">B</span>, <span name="V">V</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>, <span name="hasLeft">hasLeft: (K, A) ⇒ V</span>, <span name="hasRight">hasRight: (K, B) ⇒ V</span>, <span name="hasBoth">hasBoth: (K, A, B) ⇒ V</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>, <span name="arg2">arg2: Manifest[V]</span>, <span name="arg3">arg3: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>
+        <span class="name">joinFullOuter</span><span class="tparams">[<span name="B">B</span>, <span name="V">V</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>, <span name="hasLeft">hasLeft: (K, A) ⇒ V</span>, <span name="hasRight">hasRight: (K, B) ⇒ V</span>, <span name="hasBoth">hasBoth: (K, A, B) ⇒ V</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform a full outer-join of two distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a full outer-join of two distributed lists. The default function specifies how
 to construct a A or B when there is none. Note at least one of the A or B should exist
 </p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinLeft" data-isabs="false">
-      <a id="joinLeft[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (A, Option[B]))]"></a>
+      <a id="joinLeft[B](DList[(K, B)])(WireFormat[B]):DList[(K, (A, Option[B]))]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">joinLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, <span name="scala.Option" class="extype">Option</span>[B]))]</span>
+        <span class="name">joinLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (A, <span name="scala.Option" class="extype">Option</span>[B]))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform a left outer-join of two (2) distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a left outer-join of two (2) distributed lists. Note the return type of Option[A]
@@ -320,14 +334,14 @@ as when there is no value in this dlist for a value on the right dlist, it will
 return none.
 </p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#joinRight" data-isabs="false">
-      <a id="joinRight[B](DList[(K, B)])(Manifest[B],WireFormat[B]):DList[(K, (Option[A], B))]"></a>
+      <a id="joinRight[B](DList[(K, B)])(WireFormat[B]):DList[(K, (Option[A], B))]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">joinRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[B]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (<span name="scala.Option" class="extype">Option</span>[A], B))]</span>
+        <span class="name">joinRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="right">right: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, B)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, (<span name="scala.Option" class="extype">Option</span>[A], B))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform a right outer-join of two (2) distributed lists.</p><div class="fullcomment"><div class="comment cmt"><p>Perform a right outer-join of two (2) distributed lists. Note the return type of Option[A]
@@ -430,6 +444,18 @@ return none.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.Relational" class="extype" href="">Relational</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.lib.Relational#replicateBy" data-isabs="false">
+      <a id="replicateBy(Int):Relational[K, A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">replicateBy</span><span class="params">(<span name="rep">rep: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.Relational" class="extype" href="">Relational</a>[K, A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Specify a replication factor on the left DList of a block join.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">

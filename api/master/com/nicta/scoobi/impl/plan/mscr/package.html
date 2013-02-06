@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.impl.plan.mscr</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+      <div id="definition">
+        <img src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../../package.html">impl</a>.<a name="com.nicta.scoobi.impl.plan" class="extype" href="../package.html">plan</a></p>
+        <h1>mscr</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mscr</span>
+      </span>
+      </h4>
+      
+      <div class="fullcommenttop" id="comment"></div>
+    
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div class="types members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.BypassOutputChannel" data-isabs="false">
+      <a id="BypassOutputChannel:BypassOutputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a><span class="params">(<span name="input">input: ParallelDo</span>)</span><span class="result"> extends MscrOutputChannel with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This output channel simply copy values coming from a ParallelDo input (a mapper in an Input channel)
+to this node sinks and bridgeStore
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel" data-isabs="false">
+      <a id="FloatingInputChannel:FloatingInputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="FloatingInputChannel.html"><span class="name">FloatingInputChannel</span></a><span class="result"> extends MscrInputChannel</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This input channel is a tree of Mappers which are not connected to Gbk nodes
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" data-isabs="false">
+      <a id="GbkInputChannel:GbkInputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GbkInputChannel.html"><span class="name">GbkInputChannel</span></a><span class="result"> extends MscrInputChannel</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This input channel is a tree of Mappers which are all connected to Gbk nodes
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel" data-isabs="false">
+      <a id="GbkOutputChannel:GbkOutputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GbkOutputChannel.html"><span class="name">GbkOutputChannel</span></a><span class="params">(<span name="groupByKey">groupByKey: GroupByKey</span>, <span name="combiner">combiner: Option[Combine]</span>, <span name="reducer">reducer: Option[ParallelDo]</span>)</span><span class="result"> extends MscrOutputChannel with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Output channel for a GroupByKey.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.InputChannel" data-isabs="true">
+      <a id="InputChannel:InputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="InputChannel.html"><span class="name">InputChannel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
+node from a previous Mscr for example).</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.InputChannels" data-isabs="false">
+      <a id="InputChannels:InputChannels"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputChannels.html"><span class="name">InputChannels</span></a><span class="params">(<span name="channels">channels: Seq[InputChannel]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.KeyTypes" data-isabs="false">
+      <a id="KeyTypes:KeyTypes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KeyTypes.html"><span class="name">KeyTypes</span></a><span class="params">(<span name="types">types: Map[Int, (WireReaderWriter, KeyGrouping)]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">encapsulation of expected key types for each tag</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering" data-isabs="true">
+      <a id="Layering:Layering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Layering.html"><span class="name">Layering</span></a><span class="result"> extends ShowNode</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Simple layering algorithm using the Longest path method to assign nodes to layers.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Mscr" data-isabs="false">
+      <a id="Mscr:Mscr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Mscr.html"><span class="name">Mscr</span></a><span class="params">(<span name="inputChannels">inputChannels: Seq[InputChannel]</span>, <span name="outputChannels">outputChannels: Seq[OutputChannel]</span>)</span><span class="result"> extends Attributable with Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This class represents an MSCR job with a Seq of input channels and a Seq of output channels</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" data-isabs="true">
+      <a id="MscrInputChannel:MscrInputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MscrInputChannel.html"><span class="name">MscrInputChannel</span></a><span class="result"> extends InputChannel</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Common implementation of InputChannel for GbkInputChannel and FloatingInputChannel
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel" data-isabs="true">
+      <a id="MscrOutputChannel:MscrOutputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MscrOutputChannel.html"><span class="name">MscrOutputChannel</span></a><span class="result"> extends OutputChannel</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Implementation of an OutputChannel for a Mscr
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition" data-isabs="true">
+      <a id="MscrsDefinition:MscrsDefinition"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MscrsDefinition.html"><span class="name">MscrsDefinition</span></a><span class="result"> extends Layering</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel" data-isabs="true">
+      <a id="OutputChannel:OutputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="OutputChannel.html"><span class="name">OutputChannel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.OutputChannels" data-isabs="false">
+      <a id="OutputChannels:OutputChannels"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="OutputChannels.html"><span class="name">OutputChannels</span></a><span class="params">(<span name="channels">channels: Seq[OutputChannel]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.ValueTypes" data-isabs="false">
+      <a id="ValueTypes:ValueTypes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ValueTypes.html"><span class="name">ValueTypes</span></a><span class="params">(<span name="types">types: Map[Int, (WireReaderWriter)]</span>)</span><span class="result"> extends Product with Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">encapsulation of expected value types for each tag</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div class="values members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Channel" data-isabs="false">
+      <a id="Channel:Channel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Channel$.html"><span class="name">Channel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.InputChannel" data-isabs="false">
+      <a id="InputChannel:InputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="InputChannel$.html"><span class="name">InputChannel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Mscr" data-isabs="false">
+      <a id="Mscr:Mscr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Mscr$.html"><span class="name">Mscr</span></a><span class="result"> extends Serializable</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Utility functions to create Mscrs
+</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel" data-isabs="false">
+      <a id="OutputChannel:OutputChannel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="OutputChannel$.html"><span class="name">OutputChannel</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Utility functions for Output channels
+</p>
+    </li></ol>
+            </div>
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

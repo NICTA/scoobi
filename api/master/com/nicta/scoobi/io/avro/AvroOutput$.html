@@ -135,6 +135,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroOutput#avroSink" data-isabs="false">
+      <a id="avroSink[B](String,Boolean)(AvroSchema[B]):$anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSink[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,B]{val outputFormat: java.lang.Class[org.apache.avro.mapreduce.AvroKeyOutputFormat[sch.AvroType]]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[B] }"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">avroSink</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[B]</span>)</span><span class="result">: $anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSink[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,B]{val outputFormat: java.lang.Class[org.apache.avro.mapreduce.AvroKeyOutputFormat[sch.AvroType]]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[B] }</span>
+      </span>
+      </h4>
+      
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -286,14 +298,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroOutput#toAvroFile" data-isabs="false">
-      <a id="toAvroFile[B](DList[B],String,Boolean)(AvroSchema[B]):DListPersister[B]"></a>
+      <a id="toAvroFile[B](DList[B],String,Boolean)(AvroSchema[B]):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toAvroFile</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[B]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.DListPersister" class="extype" href="../../application/DListPersister.html">DListPersister</a>[B]</span>
+        <span class="name">toAvroFile</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="dl">dl: <a name="com.nicta.scoobi.core.DList" class="extype" href="../../core/DList.html">DList</a>[B]</span>, <span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[B]</span>)</span><span class="result">: T</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Specify a distributed list to be persistent by storing it to disk as an Avro File.</p>
