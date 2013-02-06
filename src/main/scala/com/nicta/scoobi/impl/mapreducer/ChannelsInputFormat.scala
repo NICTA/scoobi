@@ -107,7 +107,7 @@ object ChannelsInputFormat {
 
   private def configureSourceRuntimeClass(jar: JarBuilder, source: Source) = (conf: Configuration) => {
     source match {
-      case bs : BridgeStore[_] => jar.addRuntimeClass(bs.rtClass(jar.configuration))
+      case bs : BridgeStore[_] => jar.addRuntimeClass(bs.rtClass)
       case _                   => ()
     }
     conf

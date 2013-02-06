@@ -35,7 +35,7 @@ import mapreducer._
 import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
 import mapreducer.BridgeStore
-import MapReduceJob.{configureJar, cleanConfiguration}
+import MapReduceJob.configureJar
 import control.Exceptions._
 import monitor.Loggable
 import Loggable._
@@ -86,7 +86,6 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     configureCombiners(jar)
     configureReducers(jar)
     configureJar(jar)
-    cleanConfiguration(configuration)
     jar.close(configuration)
 
     this
@@ -145,7 +144,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
    *       a BridgeStore and add to JAR
    *     - add a named output for each output channel */
   private def configureReducers(jar: JarBuilder) {
-    mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass(jar.configuration)) }
+    mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass) }
 
     mscr.outputChannels.foreach { out =>
       out.sinks.foreach(sink => ChannelOutputFormat.addOutputChannel(job, out.tag, sink))
@@ -225,12 +224,6 @@ object MapReduceJob {
     }
     configuration.userJars.foreach { jar.addJar(_) }
     configuration.userDirs.foreach { jar.addClassDirectory(_) }
-  }
-
-  def cleanConfiguration(implicit configuration: ScoobiConfiguration) {
-    configuration.distinctValues("mapred.cache.files",         separator = ",")
-    configuration.distinctValues("mapred.classpath",           separator = ":")
-    configuration.distinctValues("mapred.job.classpath.files", separator = ":")
   }
 }
 

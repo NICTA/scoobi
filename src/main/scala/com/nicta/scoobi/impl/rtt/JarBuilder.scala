@@ -30,7 +30,7 @@ import reflect.Classes._
 import ScoobiConfigurationImpl._
 
 /** Class to manage the creation of a new JAR file. */
-class JarBuilder(implicit val configuration: ScoobiConfiguration) {
+class JarBuilder(implicit configuration: ScoobiConfiguration) {
   private lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
 
   private val jos = new JarOutputStream(new FileOutputStream(configuration.temporaryJarFile.getAbsolutePath))
