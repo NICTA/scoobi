@@ -113,9 +113,9 @@ object SequenceOutput {
 
     protected val outputPath = new Path(path)
 
-    val outputFormat = classOf[SequenceFileOutputFormat[K, V]]
-    val outputKeyClass = keyClass
-    val outputValueClass = valueClass
+    def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[K, V]]
+    def outputKeyClass(implicit sc: ScoobiConfiguration) = keyClass
+    def outputValueClass(implicit sc: ScoobiConfiguration) = valueClass
 
     def outputCheck(implicit sc: ScoobiConfiguration) {
       if (Helper.pathExists(outputPath)(sc) && !overwrite) {

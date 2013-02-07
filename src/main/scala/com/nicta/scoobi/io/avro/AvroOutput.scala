@@ -49,9 +49,9 @@ object AvroOutput {
 
       protected val outputPath = new Path(path)
 
-      val outputFormat     = classOf[AvroKeyOutputFormat[sch.AvroType]]
-      val outputKeyClass   = classOf[AvroKey[sch.AvroType]]
-      val outputValueClass = classOf[NullWritable]
+      def outputFormat(implicit sc: ScoobiConfiguration)     = classOf[AvroKeyOutputFormat[sch.AvroType]]
+      def outputKeyClass(implicit sc: ScoobiConfiguration)   = classOf[AvroKey[sch.AvroType]]
+      def outputValueClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
         if (Helper.pathExists(outputPath)(sc.configuration) && !overwrite) {

@@ -8,9 +8,9 @@ import org.apache.hadoop.mapreduce._
 import scala.collection.mutable._
 
 case class StringSink() extends DataSink[String, String, String] {
-  def outputFormat: Class[_ <: OutputFormat[String, String]] = classOf[StringOutputFormat]
-  def outputKeyClass: Class[String]   = classOf[String]
-  def outputValueClass: Class[String] = classOf[String]
+  def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[String, String]] = classOf[StringOutputFormat]
+  def outputKeyClass(implicit sc: ScoobiConfiguration): Class[String]   = classOf[String]
+  def outputValueClass(implicit sc: ScoobiConfiguration): Class[String] = classOf[String]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
   def outputConverter: OutputConverter[String, String, String] = StringOutputConverter()

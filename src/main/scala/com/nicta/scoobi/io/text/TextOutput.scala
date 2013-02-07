@@ -42,9 +42,9 @@ object TextOutput {
     new DataSink[NullWritable, A, A] {
       private val outputPath = new Path(path)
 
-      val outputFormat = classOf[TextOutputFormat[NullWritable, A]]
-      val outputKeyClass = classOf[NullWritable]
-      val outputValueClass = implicitly[Manifest[A]] match {
+      def outputFormat(implicit sc: ScoobiConfiguration) = classOf[TextOutputFormat[NullWritable, A]]
+      def outputKeyClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
+      def outputValueClass(implicit sc: ScoobiConfiguration) = implicitly[Manifest[A]] match {
         case Manifest.Boolean => classOf[java.lang.Boolean].asInstanceOf[Class[A]]
         case Manifest.Char    => classOf[java.lang.Character].asInstanceOf[Class[A]]
         case Manifest.Short   => classOf[java.lang.Short].asInstanceOf[Class[A]]
