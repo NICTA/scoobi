@@ -60,7 +60,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
-  def outputValueClass = runtimeClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
+  def outputValueClass = (if (runtimeClass != null) runtimeClass else rtClass(new ScoobiConfigurationImpl)).clazz.asInstanceOf[Class[ScoobiWritable[A]]]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     FileOutputFormat.setOutputPath(job, path)
