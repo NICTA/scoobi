@@ -18,7 +18,7 @@ object ScoobiMetadata {
   def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = DistCache.pushObject(sc.configuration, metadata, metadataTag)
 
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
-  def metadata(path: String): Any = Memo.mutableHashMapMemo[String, Any]{ path: String =>
+  lazy val metadata = (path: String) => Memo.mutableHashMapMemo[String, Any]{ path: String =>
     DistCache.deserialise(new Configuration).apply(new Path(path)).get: Any
   }.apply(path)
 }
