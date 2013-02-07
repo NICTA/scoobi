@@ -106,7 +106,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
       /** instantiate a ScoobiWritable from the Writable class generated for this BridgeStore */
       lazy val value: ScoobiWritable[A] =
-        runtimeClass.clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
+        (if (runtimeClass == null) rtClass(new ScoobiConfigurationImpl) else runtimeClass).clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()
