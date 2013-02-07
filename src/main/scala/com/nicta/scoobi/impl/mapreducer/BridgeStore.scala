@@ -21,8 +21,7 @@ import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.FileStatus
-import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.io.SequenceFile
+import org.apache.hadoop.io.{Writable, NullWritable, SequenceFile}
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
@@ -45,8 +44,13 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
+  /** absolutely ugly */
+  private var runtimeClass: RuntimeClass = _
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  def rtClass(implicit sc: ScoobiConfiguration = new ScoobiConfigurationImpl) = ScoobiWritable(typeName, wf)
+  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = {
+    if (runtimeClass == null) runtimeClass = ScoobiWritable(typeName, wf)
+    runtimeClass
+  }
 
   /** type of the generated class for this Bridge */
   lazy val typeName = "BS" + bridgeStoreId
@@ -56,7 +60,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   /* Output (i.e. input to bridge) */
   val outputFormat = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
   val outputKeyClass = classOf[NullWritable]
-  def outputValueClass = rtClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
+  def outputValueClass = runtimeClass.clazz.asInstanceOf[Class[ScoobiWritable[A]]]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     FileOutputFormat.setOutputPath(job, path)
@@ -102,7 +106,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
       /** instantiate a ScoobiWritable from the Writable class generated for this BridgeStore */
       lazy val value: ScoobiWritable[A] =
-        rtClass.clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
+        runtimeClass.clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()
