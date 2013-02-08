@@ -16,7 +16,6 @@ import application._
 import WireFormat._
 import org.kiama.rewriting.Rewriter._
 import CompNodeData._
-import source.SeqInput
 
 trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArguments with CompNodeFactory { outer =>
 
@@ -46,7 +45,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
 
   /** lists of elements with a simple type A */
   def genList1(depth: Int = 1): Gen[DList[String]] =
-    if (depth <= 1) Gen.value(DList("start"))
+    if (depth <= 1) Gen.value(DListImpl(source))
     else            Gen.oneOf(genList1(depth - 1).map(l => l.map(identity)),
                               genList2(depth - 1).map(l => l.map(_._1)),
                               genList3(depth - 1).map(l => l.map(_._1)),
@@ -99,7 +98,8 @@ object CompNodeData { outer =>
  */
 trait CompNodeFactory extends Scope {
 
-  def loadWith(s: String)              = Load(SeqInput.sourceFromSeq(Seq(s))(wireFormat[String]), wireFormat[String])
+  def source                           = ConstantStringDataSource("start")
+  def loadWith(s: String)              = Load(ConstantStringDataSource(s), wireFormat[String])
   def load                             = loadWith("start")
   def aRoot(nodes: CompNode*)          = Root(nodes)
   def rt                               = Return("", wireFormat[String])
