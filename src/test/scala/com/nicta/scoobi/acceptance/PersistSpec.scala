@@ -6,14 +6,15 @@ import testing.{TestFiles, TempFiles}
 import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
+import TestFiles._
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
   "There are many ways to execute computations with DLists or DObjects".txt
 
   "1. a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: SC =>
-    val resultDir = TestFiles.createTempDir("test")
-    val list = DList(1, 2, 3).toTextFile(resultDir.getPath, overwrite = true)
+    val resultDir = createTempDir("test")
+    val list = DList(1, 2, 3).toTextFile(path(resultDir), overwrite = true)
 
     list.persist
     resultDir must containResults
@@ -27,8 +28,8 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     list.run.normalise === "Vector(1, 2, 3)"
   }
   "4. a list, having a sink and also materialised" >> { implicit sc: SC =>
-    val resultDir = TestFiles.createTempDir("test")
-    val list = DList(1, 2, 3).toTextFile(resultDir.getPath, overwrite = true).persist
+    val resultDir = createTempDir("test")
+    val list = DList(1, 2, 3).toTextFile(path(resultDir), overwrite = true).persist
 
     resultDir must containResults
     list.run.normalise === "Vector(1, 2, 3)"
@@ -106,8 +107,8 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
 
   "8. A user-specified sink must be used to save data when specified" >> { implicit sc: SC =>
-    val sink = TestFiles.createTempDir("user")
-    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(sink.getPath)
+    val sink = createTempDir("user")
+    val plusOne = DList(1, 2, 3).map(_ + 1).toTextFile(path(sink))
 
     persist(plusOne)
     sink must containResults
@@ -129,10 +130,10 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   "10. iterated computations" >> {
     "10.1 iterate 3 times on a DList while saving intermediate outputs" >> { implicit sc: SC =>
       val ints = DList(13, 5, 8, 11, 12)
-      val out = TestFiles.createTempDir("out")
+      val out = createTempDir("out")
       def iterate(list: DList[Int]): DList[Int] = {
         persist(list)
-        if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile(out.getPath, overwrite = true))
+        if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile(path(out), overwrite = true))
         else                   list
       }
       normalise(iterate(ints).run) === "Vector(10, 2, 5, 8, 9)"
