@@ -49,7 +49,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     }
 
     "5.2 when we want both lists, the shared computation must be computed only once" >> { implicit sc: SC =>
-      val l1 = DList(1, 2, 3).map(_ * 10)
+      val l1 = DList("1", "2", "3").map(_ * 10)
       val l2 = l1.map(_ + 1)
 
       var processedNumber = 0
@@ -67,6 +67,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
         (l2.run.normalise, l3.run.normalise) === ("Vector(11, 21, 31)", "Vector(12, 22, 32)")
       }
     }
+
     "5.3 when we iterate with several computations" >> { implicit sc: SC =>
       var list: DList[(Int, Int)] = DList((1, 1))
 
