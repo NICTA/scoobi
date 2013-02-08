@@ -39,9 +39,11 @@ trait SeqInput {
   lazy val logger = LogFactory.getLog("scoobi.SeqInput")
 
   /** Create a distributed list of a specified length whose elements are coming from a scala collection */
-  def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] = {
+  def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] =
+    DListImpl(sourceFromSeq(seq)).map(a => fromByteArray[A](a))
 
-    val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
+  def sourceFromSeq[A : WireFormat](seq: Seq[A]): DataSource[NullWritable, Array[Byte], Array[Byte]] = {
+    new DataSource[NullWritable, Array[Byte], Array[Byte]] {
 
       val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
       override def toString = "SeqInput("+id+")"
@@ -66,7 +68,6 @@ trait SeqInput {
         def fromKeyValue(context: InputContext, k: NullWritable, v: Array[Byte]) = v
       }
     }
-    DListImpl(source).map(a => fromByteArray[A](a))
   }
 
   private def fromByteArray[A](barr: Array[Byte])(implicit wf: WireFormat[A]): A = {

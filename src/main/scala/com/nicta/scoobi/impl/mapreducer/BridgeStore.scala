@@ -100,9 +100,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
       val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
         new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
       }
-
       val key = NullWritable.get
-
 
       var remainingReaders = readers.toList
       var empty = if (readers.isEmpty) true else !readNext()
@@ -114,7 +112,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
        * end of each SequenceFile.Reader is reached, move on to the next until they have all
        * been read. */
       def readNext(): Boolean = remainingReaders match {
-        case cur :: rest => if (cur.next(key, value)) true else { remainingReaders = rest; readNext() }
+        case cur :: rest => cur.next(key, value) || { remainingReaders = rest; readNext() }
         case Nil         => false
       }
     }

@@ -7,7 +7,7 @@ import impl.ScoobiConfiguration
 import core.{ProcessNode, DList}
 import impl.plan.DListImpl
 
-class RandomDListsSpecification extends NictaSimpleJobs with CompNodeData {
+class RandomDListsSpec extends NictaSimpleJobs with CompNodeData {
   "A DList must return an equivalent result, whether it's executed in memory or locally" >> prop { (l1: DList[String]) =>
     compareExecutions(l1)
   }.set(minTestsOk -> 20)
