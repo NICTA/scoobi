@@ -144,7 +144,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     val list = DList(1, 2, 3)
     val l2 = list.persist
     val out = TestFiles.createTempDir("out")
-    l2.toTextFile(out.getPath).persist
+    l2.toTextFile(path(out)).persist
     out must containResults
   }
 
