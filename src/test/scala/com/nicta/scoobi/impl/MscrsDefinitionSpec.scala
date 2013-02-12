@@ -44,7 +44,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
     e2 := forAll(genLayerPair) { (pair: (Layer[CompNode], Layer[CompNode])) => val (layer1, layer2) = pair
       val pairs = ^(layer1.gbks.toStream, layer2.gbks.toStream)((_,_))
-      val parentChild = pairs.find { case (n1, n2) => !(n1 -> isStrictParentOf(n2)) }
+      val parentChild = pairs.find { case (n1, n2) => !(n1 -> isStrictParentOf(n2)) && n1 != n2 }
       lazy val showParentChild = parentChild.collect { case (n1, n2) => (showGraph(n1)+"\n"+showGraph(n2)) }.getOrElse("")
 
       parentChild aka showParentChild must beNone
