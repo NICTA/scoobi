@@ -7,5 +7,5 @@ import application.ScoobiAppConfiguration
 /**
  * Hadoop specification with an acceptance specification
  */
-trait HadoopSpecification extends Specification with HadoopSpecificationStructure with ScoobiAppConfiguration
+abstract class HadoopSpecification extends Specification with HadoopSpecificationStructure with ScoobiAppConfiguration
 
