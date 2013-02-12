@@ -80,7 +80,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
         outer.logger.debug("creating directory "+outDir)
 
         val outputs = outputFiles.filter(isResultFile(tag, sink.id))
-        outer.logger.debug("outputs result files for tag "+tag+" and sink id "+id+" are "+outputs.map(_.getName).mkString("\n") )
+        outer.logger.debug("outputs result files for tag "+tag+" and sink id "+sink.id+" are "+outputs.map(_.getName).mkString("\n") )
         outputs.foreach(moveTo(outDir))
       }
     }
