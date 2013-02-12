@@ -76,7 +76,12 @@ trait MscrOutputChannel extends OutputChannel {
     sinks.foreach { sink =>
       sink.outputPath foreach { outDir =>
         fs.mkdirs(outDir)
-        outputFiles.filter(isResultFile(tag, sink.id)).foreach(moveTo(outDir))
+        logger.debug("creating directory "+outDir)
+        logger.debug("outputs files are "+outputFiles.mkString("\n") )
+
+        val outputs = outputFiles.filter(isResultFile(tag, sink.id))
+        logger.debug("outputs result files are "+outputs.map(_.getName).mkString("\n") )
+        outputs.foreach(moveTo(outDir))
       }
     }
     // copy the success file to every output directory
