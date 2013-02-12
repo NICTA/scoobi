@@ -46,7 +46,7 @@ trait OutputChannel {
 /**
  * Implementation of an OutputChannel for a Mscr
  */
-trait MscrOutputChannel extends OutputChannel {
+trait MscrOutputChannel extends OutputChannel { outer =>
   protected implicit lazy val logger = LogFactory.getLog("scoobi.OutputChannel")
 
   override def equals(a: Any) = a match {
@@ -76,11 +76,11 @@ trait MscrOutputChannel extends OutputChannel {
     sinks.foreach { sink =>
       sink.outputPath foreach { outDir =>
         fs.mkdirs(outDir)
-        logger.debug("creating directory "+outDir)
-        logger.debug("outputs files are "+outputFiles.mkString("\n") )
+        outer.logger.debug("creating directory "+outDir)
+        outer.logger.debug("outputs files are "+outputFiles.mkString("\n") )
 
         val outputs = outputFiles.filter(isResultFile(tag, sink.id))
-        logger.debug("outputs result files are "+outputs.map(_.getName).mkString("\n") )
+        outer.logger.debug("outputs result files are "+outputs.map(_.getName).mkString("\n") )
         outputs.foreach(moveTo(outDir))
       }
     }
