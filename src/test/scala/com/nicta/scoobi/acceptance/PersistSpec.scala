@@ -176,7 +176,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     }
     val list = DList(1, 2, 3)
     list.persist(scoobiConfiguration)
-    list.run(scoobiConfiguration)
+    list.run(scoobiConfiguration).take(10)
     scoobiConfiguration.get(JOB_STEP) must contain("Mscr-1").when(!sc.isInMemory)
   }
 }
