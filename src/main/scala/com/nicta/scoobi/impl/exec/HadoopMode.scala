@@ -108,10 +108,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     private def configureMscr = (mscr: Mscr) => {
       implicit val mscrConfiguration = sc.duplicate
 
-      ("Loading input nodes for mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n")).debug
+      ("Loading input nodes for mscr "+mscr.id).debug
       mscr.inputNodes.foreach(load)
 
-      ("Configuring mscr "+mscr.id+"\n"+mscr.inputNodes.mkString("\n")).debug
+      ("Configuring mscr "+mscr.id).debug
       MapReduceJob(mscr, layer.id).configure
     }
 
