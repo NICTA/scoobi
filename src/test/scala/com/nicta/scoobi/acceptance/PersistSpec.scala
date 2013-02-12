@@ -10,6 +10,7 @@ import TestFiles._
 import impl.Configurations._
 import impl.ScoobiConfigurationImpl
 import impl.plan.mscr.Mscr
+import collection.mutable.ListBuffer
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -172,13 +173,18 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
     // make sure that the configuration is not duplicated before executing the job
     // so that the job step stays configured
+    val jobIds = new ListBuffer[Int]
     val scoobiConfiguration = new ScoobiConfigurationImpl(sc.configuration) {
       override def duplicate = this
+      override def jobStep(mscrId: Int) = {
+        jobIds += mscrId
+        "Mscr-"+mscrId
+      }
     }
     val list = DList(1, 2, 3)
-    val nextMscrId = Mscr.ids.get + 1
     list.persist(scoobiConfiguration)
     list.run(scoobiConfiguration).take(10)
-    scoobiConfiguration.get(JOB_STEP) must contain("Mscr-"+nextMscrId).when(!sc.isInMemory)
+
+    "there was only one mscr job" ==> { jobIds.distinct.size must be_==(1).when(!sc.isInMemory) }
   }
 }
