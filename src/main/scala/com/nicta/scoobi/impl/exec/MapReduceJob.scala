@@ -203,8 +203,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
   private[scoobi] def collectOutputs = {
     /* Move named file-based sinks to their correct output paths. */
-    logger.debug("the temp output directory is "+configuration.temporaryOutputDirectory(job))
-    logger.debug("the output files are "+fileSystems.listPaths(configuration.temporaryOutputDirectory(job)).mkString("\n"))
+//    logger.debug("the temp output directory is "+configuration.temporaryOutputDirectory(job))
+//    logger.debug("the output files are "+fileSystems.listPaths(configuration.temporaryOutputDirectory(job)).mkString("\n"))
     mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
     configuration.deleteTemporaryOutputDirectory(job)
     this
