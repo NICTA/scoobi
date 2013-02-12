@@ -9,6 +9,7 @@ import CompNodeData._
 import TestFiles._
 import impl.Configurations._
 import impl.ScoobiConfigurationImpl
+import impl.plan.mscr.Mscr
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -175,8 +176,9 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       override def duplicate = this
     }
     val list = DList(1, 2, 3)
+    val nextMscrId = Mscr.ids.get + 1
     list.persist(scoobiConfiguration)
     list.run(scoobiConfiguration).take(10)
-    scoobiConfiguration.get(JOB_STEP) must contain("Mscr-1").when(!sc.isInMemory)
+    scoobiConfiguration.get(JOB_STEP) must contain("Mscr-"+nextMscrId).when(!sc.isInMemory)
   }
 }
