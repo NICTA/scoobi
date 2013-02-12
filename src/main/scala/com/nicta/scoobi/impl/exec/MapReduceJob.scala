@@ -77,8 +77,6 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
   /** configure the Hadoop job */
   def configure = {
-    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
-
     val jar = new JarBuilder
     job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
     configureKeysAndValues(jar)
@@ -88,6 +86,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     configureJar(jar)
     cleanConfiguration(configuration)
     jar.close(configuration)
+
+    FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
 
     this
   }

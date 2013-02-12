@@ -138,7 +138,7 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
 
       val outputFormat = sink.outputFormat.newInstance
 
-      FileOutputFormat.setOutputPath(job, sc.temporaryOutputDirectory(job))
+      sink.outputPath.foreach(FileOutputFormat.setOutputPath(job, _))
       job.setOutputFormatClass(sink.outputFormat)
       job.setOutputKeyClass(sink.outputKeyClass)
       job.setOutputValueClass(sink.outputValueClass)

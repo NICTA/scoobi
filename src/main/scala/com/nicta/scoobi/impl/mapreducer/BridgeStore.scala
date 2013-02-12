@@ -32,6 +32,7 @@ import core._
 import rtt._
 import io.Helper
 import ScoobiConfiguration._
+import org.apache.hadoop.conf.Configuration
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
@@ -57,9 +58,9 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   def outputKeyClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
   def outputValueClass(implicit sc: ScoobiConfiguration) = rtClass(sc).clazz.asInstanceOf[Class[ScoobiWritable[A]]]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
-  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-    FileOutputFormat.setOutputPath(job, path)
-  }
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
+  def outputPath(implicit sc: ScoobiConfiguration) = Some(path)
+
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
 
 

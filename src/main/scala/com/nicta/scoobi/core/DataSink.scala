@@ -31,6 +31,7 @@ trait DataSink[K, V, B] extends Sink { outer =>
     def outputKeyClass(implicit sc: ScoobiConfiguration): Class[K]                     = outer.outputKeyClass
     def outputValueClass(implicit sc: ScoobiConfiguration): Class[V]                   = outer.outputValueClass
     def outputConverter: OutputConverter[K, V, B]                                      = outer.outputConverter
+    def outputPath(implicit sc: ScoobiConfiguration): Option[Path]                     = outer.outputPath(sc)
     def outputCheck(implicit sc: ScoobiConfiguration)                                  { outer.outputCheck(sc) }
     def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)                    { outer.outputConfigure(job) }
     override def outputSetup(implicit configuration: Configuration)                    { outer.outputSetup }
@@ -53,12 +54,6 @@ trait DataSink[K, V, B] extends Sink { outer =>
     val configuration = new Configuration
     configureCompression(configuration)
     configuration.getBoolean("mapred.output.compress", false)
-  }
-
-  def outputPath(implicit sc: ScoobiConfiguration) = {
-    val jobCopy = new Job(sc.configuration)
-    outputConfigure(jobCopy)
-    Option(FileOutputFormat.getOutputPath(jobCopy))
   }
 
   def outputSetup(implicit configuration: Configuration) {}

@@ -31,6 +31,7 @@ import scala.collection.mutable.{Map => MMap}
 
 import core._
 import Configurations._
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
 /**
  * A class that simplifies writing output to different paths and with different types

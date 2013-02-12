@@ -6,6 +6,7 @@ package comp
 import com.nicta.scoobi.core._
 import org.apache.hadoop.mapreduce._
 import scala.collection.mutable._
+import org.apache.hadoop.fs.Path
 
 case class StringSink() extends DataSink[String, String, String] {
   def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[String, String]] = classOf[StringOutputFormat]
@@ -13,6 +14,7 @@ case class StringSink() extends DataSink[String, String, String] {
   def outputValueClass(implicit sc: ScoobiConfiguration): Class[String] = classOf[String]
   def outputCheck(implicit sc: ScoobiConfiguration) {}
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
+  def outputPath(implicit sc: ScoobiConfiguration): Option[Path] = None
   def outputConverter: OutputConverter[String, String, String] = StringOutputConverter()
 }
 

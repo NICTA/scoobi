@@ -111,26 +111,25 @@ object SequenceOutput {
       overwrite: Boolean)
     extends DataSink[K, V, B] {
 
-    protected val outputPath = new Path(path)
+    protected val output = new Path(path)
 
     def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[K, V]]
     def outputKeyClass(implicit sc: ScoobiConfiguration) = keyClass
     def outputValueClass(implicit sc: ScoobiConfiguration) = valueClass
 
     def outputCheck(implicit sc: ScoobiConfiguration) {
-      if (Helper.pathExists(outputPath)(sc) && !overwrite) {
-          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-      } else logger.info("Output path: " + outputPath.toUri.toASCIIString)
+      if (Helper.pathExists(output)(sc) && !overwrite) {
+          throw new FileAlreadyExistsException("Output path already exists: " + output)
+      } else logger.info("Output path: " + output.toUri.toASCIIString)
     }
+    def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 
-    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-      FileOutputFormat.setOutputPath(job, outputPath)
-    }
+    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
 
     override def outputSetup(implicit configuration: Configuration) {
-      if (Helper.pathExists(outputPath)(configuration) && overwrite) {
-        logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-        Helper.deletePath(outputPath)(configuration)
+      if (Helper.pathExists(output)(configuration) && overwrite) {
+        logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
+        Helper.deletePath(output)(configuration)
       }
     }
 

@@ -47,30 +47,30 @@ object AvroOutput {
 
     new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
 
-      protected val outputPath = new Path(path)
+      protected val output = new Path(path)
 
       def outputFormat(implicit sc: ScoobiConfiguration)     = classOf[AvroKeyOutputFormat[sch.AvroType]]
       def outputKeyClass(implicit sc: ScoobiConfiguration)   = classOf[AvroKey[sch.AvroType]]
       def outputValueClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc.configuration) && !overwrite) {
-          throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
+        if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
+          throw new FileAlreadyExistsException("Output path already exists: " + output)
         } else {
-          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+          logger.info("Output path: " + output.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)
         }
       }
+      def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 
       def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-        FileOutputFormat.setOutputPath(job, outputPath)
         job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
 
       override def outputSetup(implicit configuration: Configuration) {
-        if (Helper.pathExists(outputPath)(configuration) && overwrite) {
-          logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-          Helper.deletePath(outputPath)(configuration)
+        if (Helper.pathExists(output)(configuration) && overwrite) {
+          logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
+          Helper.deletePath(output)(configuration)
         }
       }
 
