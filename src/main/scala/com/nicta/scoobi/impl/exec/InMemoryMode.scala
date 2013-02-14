@@ -18,9 +18,10 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.{Job, TaskAttemptID}
+import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.TaskAttemptID
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 
@@ -160,8 +161,8 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
-      val tid = new TaskAttemptID
-      val taskContext: TaskAttemptContext = new TaskAttemptContext(job.getConfiguration, tid)
+      val tid = new TaskAttemptID()
+      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
       val rw = outputFormat.getRecordWriter(taskContext)
       val oc = outputFormat.getOutputCommitter(taskContext)
 
