@@ -194,6 +194,7 @@ object build extends Build {
       commitReleaseVersion,
       generateUserGuide,
       generateReadMe,
+      publishSite,
       tagRelease,
       publishSignedArtifacts,
       notifyLs,
@@ -235,6 +236,11 @@ object build extends Build {
 
   lazy val checkUrlsTask = TaskKey[Tests.Output]("check-urls", "check the User Guide urls")
   lazy val checkUrls     = executeStepTask(checkUrlsTask, "Checking the urls of the User Guide", Test)
+
+  lazy val publishSite = ReleaseStep { st: State =>
+    val st2 = executeStepTask(makeSite, "Making the site")(st)
+    val st3 = executeStepTask(pushSite, "Publishing the site")(st2)
+  }
 
   def testTaskDefinition(task: TaskKey[Tests.Output], options: Seq[TestOption]) =
     Seq(testTask(task))                          ++
