@@ -53,7 +53,6 @@ object build extends Build {
   lazy val scoobiSettings: Seq[Settings] = Seq(
     name := "scoobi",
     organization := "com.nicta",
-    version := "0.7.0-cdh4",
     scoobiVersion in GlobalScope <<= version,
     scalaVersion := "2.9.2")
 
