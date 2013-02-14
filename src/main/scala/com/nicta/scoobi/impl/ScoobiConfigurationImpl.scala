@@ -10,7 +10,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.util.GenericOptionsParser
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
-import org.apache.hadoop.fs.FileSystem._
+import org.apache.hadoop.fs.CommonConfigurationKeys._
 import org.apache.commons.logging.LogFactory._
 
 import core._
@@ -223,7 +223,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     logger.debug("setting the ScoobiConfiguration as local ")
 
     jobNameIs(getClass.getSimpleName)
-    set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+    set(FS_DEFAULT_NAME_KEY, FS_DEFAULT_NAME_DEFAULT)
     set("mapred.job.tracker", "local")
     setDirectories
   }
