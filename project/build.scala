@@ -186,7 +186,7 @@ object build extends Build {
     ReleasePlugin.releaseSettings ++ Seq(
     tagName <<= (version in ThisBuild) map (v => "SCOOBI-" + v),
     releaseVersion := (_+"-cdh4"),
-    nextReleaseVersion := (_+"-cdh4"),
+    nextVersion := (_+"-cdh4"),
     releaseProcess := Seq[ReleaseStep](
 //      checkSnapshotDependencies,
 //      updateLicences,
