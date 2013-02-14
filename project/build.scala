@@ -188,9 +188,9 @@ object build extends Build {
     releaseProcess := Seq[ReleaseStep](
 //      checkSnapshotDependencies,
 //      updateLicences,
-//      inquireVersions,
-//      setReleaseVersion,
-//      commitReleaseVersion,
+      inquireVersions,
+      setReleaseVersion,
+      commitReleaseVersion,
 //      publishSignedArtifacts,
 //      generateUserGuide,
 //      generateReadMe,
