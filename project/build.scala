@@ -281,7 +281,11 @@ object build extends Build {
       Process("herald &").lines; st.log.info("Starting herald to publish the release notes"); st
       commitCurrent("Updated the release notes")(st)
     },
-    check  = (st: State) => { if ("which herald".!<(st.log) != 0) sys.error("You must install 'herald': http://github.com/n8han/herald on your machine"); st }
+    check  = (st: State) => {
+      st.log.info("Checking if herald is installed")
+      if ("which herald".!<(st.log) != 0) sys.error("You must install 'herald': http://github.com/n8han/herald on your machine")
+      st
+    }
   )
 
   /**
