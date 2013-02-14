@@ -37,7 +37,7 @@ object Helper {
   }
 
   def getSingleFilePerDir(stats: Seq[FileStatus])(implicit conf: Configuration): Set[Path] = {
-    stats.groupBy(_.getPath.getParent).flatMap(_._2.filterNot(_.isDir).headOption.map(_.getPath)).toSet
+    stats.groupBy(_.getPath.getParent).flatMap(_._2.filterNot(_.isDirectory).headOption.map(_.getPath)).toSet
   }
 
   def deletePath(p: Path)(implicit conf: Configuration) = FileSystem.get(conf).delete(p, true)
