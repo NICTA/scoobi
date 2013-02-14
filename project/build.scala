@@ -239,7 +239,7 @@ object build extends Build {
 
   lazy val publishSite = ReleaseStep { st: State =>
     val st2 = executeStepTask(makeSite, "Making the site")(st)
-    val st3 = executeStepTask(pushSite, "Publishing the site")(st2)
+    executeStepTask(pushSite, "Publishing the site")(st2)
   }
 
   def testTaskDefinition(task: TaskKey[Tests.Output], options: Seq[TestOption]) =
