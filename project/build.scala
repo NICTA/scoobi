@@ -185,6 +185,7 @@ object build extends Build {
   lazy val releaseSettings =
     ReleasePlugin.releaseSettings ++ Seq(
     tagName <<= (version in ThisBuild) map (v => "SCOOBI-" + v),
+    releaseVersion := (_+"-cdh4"),
     releaseProcess := Seq[ReleaseStep](
 //      checkSnapshotDependencies,
 //      updateLicences,
