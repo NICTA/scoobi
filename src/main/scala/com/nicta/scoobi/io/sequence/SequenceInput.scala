@@ -174,7 +174,7 @@ object SequenceInput {
     override protected def checkInputPathType(p: Path)(implicit sc: ScoobiConfiguration) {
       if (checkFileTypes)
         Helper.getSingleFilePerDir(p)(sc) foreach { filePath =>
-          val seqReader: SequenceFile.Reader = new SequenceFile.Reader(sc, SequenceFile.Reader.file(filePath))
+          val seqReader: SequenceFile.Reader = new SequenceFile.Reader(sc.fileSystem, filePath, sc.configuration)
           checkType(seqReader.getKeyClass, manifest[K].erasure, "KEY")
           checkType(seqReader.getValueClass, manifest[V].erasure, "VALUE")
         }
