@@ -185,8 +185,8 @@ object build extends Build {
   lazy val releaseSettings =
     ReleasePlugin.releaseSettings ++ Seq(
     tagName <<= (version in ThisBuild) map (v => "SCOOBI-" + v),
-    releaseVersion := (_+"-cdh4"),
-    nextVersion := (_+"-cdh4"),
+    releaseVersion := cdh4Version,
+    nextVersion := cdh4Version,
     releaseProcess := Seq[ReleaseStep](
 //      checkSnapshotDependencies,
 //      updateLicences,
@@ -208,6 +208,7 @@ object build extends Build {
   ) ++
   documentationSettings
 
+  lazy val cdh4Version = (s: String) => { if (!(s contains "-cdh4")) (s+"-cdh4") else s }
   /**
    * DOCUMENTATION
    */
