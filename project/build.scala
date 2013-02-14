@@ -195,13 +195,13 @@ object build extends Build {
 //      generateUserGuide,
 //      generateReadMe,
 //      publishSite,
-      tagRelease,
-      notifyLs,
-      notifyHerald,
-      setNextVersion,
-      commitNextVersion,
-      pushChanges,
-      publishForCDH3
+      publishForCDH3//,
+//      tagRelease,
+//      notifyLs,
+//      notifyHerald,
+//      setNextVersion,
+//      commitNextVersion,
+//      pushChanges
     )
   ) ++
   documentationSettings
