@@ -61,22 +61,24 @@
            tabber code, then the init code -->
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../css/tabber.css" />
-    </head><body><div id="breadcrumbs"><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Distributed Objects.html">DistributedObjects</a></div><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Distributed Objects.html">DistributedObjects</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Distributed Objects</title><a name="Distributed+Objects"><h2 specId="1302165018">Distributed Objects</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>The distributed list abstraction is very useful for specifying operations that transform large data sets into another large data set. Because these data sets are so large they typically reside on systems such as HDFS. There are other operations, however, which involve transforming a large data set into a small data set that is able to fit within the memory of a single machine. Examples of such use case are:</p>
+                       <div class="col1"><div id="central"><title>Distributed Objects</title><a name="Distributed+Objects"><h2 specId="542738726">Distributed Objects</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Introduction"><h3>Introduction</h3></a><p>The distributed list abstraction is very useful for specifying operations that transform large data sets into another large data set. Because these data sets are so large they typically reside on systems such as HDFS. There are other operations, however, which involve transforming a large data set into a small data set that is able to fit within the memory of a single machine. Examples of such use case are:</p>
 <ul>
   <li>From a collection of numbers, computing the average value;</li>
   <li>From a collection of entity-score pairs, determining the ten entities with the highest scores;</li>
   <li>From a corpus of documents, compute word frequencies for words present in a 1000-word dictionary.</li>
-</ul><p>Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the <a href="http://nicta.github.com/scoobi/api/SCOOBI-0.6.1-cdh4/index.html#com.nicta.scoobi.DObject"><code class="prettyprint">DObject</code></a> trait.</p><a name="Materialising"><h3>Materialising</h3></a><p>After computing a <code class="prettyprint">DList</code> on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a <code class="prettyprint">DList</code> with relatively few entires, <em>relative</em> meaning the entries could fit into the memory of a single machine.</p><p>To bring the contents of such a <code class="prettyprint">DList</code> on to the client, you can use the <code class="prettyprint">materialise</code> method:</p>
+</ul><p>Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the [<code class="prettyprint">DObject</code>](<a href="http://nicta.github.com/scoobi/api/SCOOBI-">http://nicta.github.com/scoobi/api/SCOOBI-</a> /index.html#com.nicta.scoobi.DObject) trait.</p><a name="Materialising"><h3>Materialising</h3></a><p>After computing a <code class="prettyprint">DList</code> on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a <code class="prettyprint">DList</code> with relatively few entires, <em>relative</em> meaning the entries could fit into the memory of a single machine.</p><p>To bring the contents of such a <code class="prettyprint">DList</code> on to the client, you can use the <code class="prettyprint">materialise</code> method:</p>
 <pre><code class="prettyprint">val xs: DList[Int] = ...
-val ys: DObject[Iterable[Int]] = persist(xs.materialise)
+val ys: DObject[Iterable[Int]] = xs.materialise
+val ws: Iterable[Int] = ys.run
+
 // do something on the client
-val zs: Iterable[Int] = ys map { .... }
-</code></pre><p>The <code class="prettyprint">DList</code> <code class="prettyprint">materialise</code> method applied to a <code class="prettyprint">DList[A]</code> will return a <code class="prettyprint">DObject[Iterable[A]]</code>. Persisting the <code class="prettyprint">DObject</code> will force it, and its dependencies, to be computed, and returin an <code class="prettyprint">Iterable[A]</code>. The <code class="prettyprint">Iterable</code> can then be used as the basis for client-based computations.</p><a name="Reduction+operations"><h3>Reduction operations</h3></a><p>In addition to <code class="prettyprint">materialise</code>, the <code class="prettyprint">DList</code> trait implements a series or <em>reduction operators</em> which all return <code class="prettyprint">DObjects</code>. For example, <code class="prettyprint">sum</code> can be applied to any <code class="prettyprint">DList</code> of <code class="prettyprint">Numeric</code> types and returns a <code class="prettyprint">DObject</code> - a delayed computation of the sum of all elements in the <code class="prettyprint">DList</code>:</p>
+val zs: Iterable[Int] = ws map { .... }
+</code></pre><p>The <code class="prettyprint">DList</code> <code class="prettyprint">materialise</code> method applied to a <code class="prettyprint">DList[A]</code> will return a <code class="prettyprint">DObject[Iterable[A]]</code>. Persisting the <code class="prettyprint">DObject</code> (with the <code class="prettyprint">run</code> method) will force it, and its dependencies, to be computed, and returning an <code class="prettyprint">Iterable[A]</code>. The <code class="prettyprint">Iterable</code> can then be used as the basis for client-based computations.</p><a name="Reduction+operations"><h3>Reduction operations</h3></a><p>In addition to <code class="prettyprint">materialise</code>, the <code class="prettyprint">DList</code> trait implements a series or <em>reduction operators</em> which all return <code class="prettyprint">DObjects</code>. For example, <code class="prettyprint">sum</code> can be applied to any <code class="prettyprint">DList</code> of <code class="prettyprint">Numeric</code> types and returns a <code class="prettyprint">DObject</code> - a delayed computation of the sum of all elements in the <code class="prettyprint">DList</code>:</p>
 <pre><code class="prettyprint">val floats: DList[Float] = ...
-val total = persist(floats.sum)
+val total = floats.sum.run
 </code></pre><p>The complete list of reduction operators are:</p>
 <ul>
   <li>reduce</li>
@@ -139,25 +141,27 @@ val total: DObject[Int] = ints.sum
 val num: DObject[Int] = ints.size
 val average: DObject[Float] = (total, num) map { case (t, s) =&gt; t / s }
 val bigger: DList[Int] = (average join ints) filter { case (a, i) =&gt; i &gt; a } .values
-persist(toTextFile(bigger, &quot;hdfs://all/my/big-integers&quot;))
-</code></pre><p>In this example, we first encounter the use of <code class="prettyprint">DObject</code> as the return value of the <code class="prettyprint">DList</code> <code class="prettyprint">sum</code> method. Rather than returning a <code class="prettyprint">DList[Int]</code> with a single entry, <code class="prettyprint">sum</code> instead returns a <code class="prettyprint">DObject[Int]</code>. This <code class="prettyprint">DObject</code> represents a delayed computation that if executed would calculate the sum of the intergers in <code class="prettyprint">ints</code>. Similarly for <code class="prettyprint">num</code> which is the result of the <code class="prettyprint">DList</code> method <code class="prettyprint">size</code>.</p><p>The average interger value can be calculated using <code class="prettyprint">total</code> and <code class="prettyprint">num</code>, however, it too is a <code class="prettyprint">DObject</code> which means it's also a delayed computation. By pairing <code class="prettyprint">total</code> and <code class="prettyprint">size, we create a</code>DObject[(Int, Int)]<code class="prettyprint">object that can be mapped over to compute</code>average<code class="prettyprint">. Finally, in order to get access to</code>average<code class="prettyprint">when we filter the orignal</code>DList<code class="prettyprint">, we *join*</code>average<code class="prettyprint">(</code>DObject[Float]) with <code class="prettyprint">ints</code> (<code class="prettyprint">DList[Int]</code>) which results in a new <code class="prettyprint">DList</code> where every element is paired with the <code class="prettyprint">DObject</code>. In this case, <code class="prettyprint">filter</code> will operate on a <code class="prettyprint">DList[(Float, Int)]</code>.</p><a name="Persisting+Distributed+Objects"><h3>Persisting Distributed Objects</h3></a><p>We've seen previously that the way to &quot;get inside&quot; a <code class="prettyprint">DObject</code> is to persist - that is, compute it:</p>
+persist(bigger.toTextFile(&quot;hdfs://all/my/big-integers&quot;))
+</code></pre><p>In this example, we first encounter the use of <code class="prettyprint">DObject</code> as the return value of the <code class="prettyprint">DList</code> <code class="prettyprint">sum</code> method. Rather than returning a <code class="prettyprint">DList[Int]</code> with a single entry, <code class="prettyprint">sum</code> instead returns a <code class="prettyprint">DObject[Int]</code>. This <code class="prettyprint">DObject</code> represents a delayed computation that if executed would calculate the sum of the intergers in <code class="prettyprint">ints</code>. Similarly for <code class="prettyprint">num</code> which is the result of the <code class="prettyprint">DList</code> method <code class="prettyprint">size</code>.</p><p>The average interger value can be calculated using <code class="prettyprint">total</code> and <code class="prettyprint">num</code>, however, it too is a <code class="prettyprint">DObject</code> which means it's also a delayed computation. By pairing <code class="prettyprint">total</code> and <code class="prettyprint">size, we create a</code>DObject[(Int, Int)]<code class="prettyprint">object that can be mapped over to compute</code>average<code class="prettyprint">. Finally, in order to get access to</code>average<code class="prettyprint">when we filter the orignal</code>DList<code class="prettyprint">, we *join*</code>average<code class="prettyprint">(</code>DObject[Float]) with <code class="prettyprint">ints</code> (<code class="prettyprint">DList[Int]</code>) which results in a new <code class="prettyprint">DList</code> where every element is paired with the <code class="prettyprint">DObject</code>. In this case, <code class="prettyprint">filter</code> will operate on a <code class="prettyprint">DList[(Float, Int)]</code>.</p><a name="Persisting+Distributed+Objects"><h3>Persisting Distributed Objects</h3></a><p>We've seen previously that the way to &quot;get inside&quot; a <code class="prettyprint">DObject</code> is to <code class="prettyprint">run</code> it - that is, compute it:</p>
 <pre><code class="prettyprint">val x: DObject[A] = ...
-val y: A = persist(x)
+val y: A = x.run
 </code></pre><p>Like <code class="prettyprint">DLists</code>, it's also possible to persist multiple <code class="prettyprint">DObjects</code> at a time. This similarly has the advantage of jointly optimising the dependency graph formed by all <code class="prettyprint">DObjects</code>.</p>
 <pre><code class="prettyprint">val a: DObject[A] = ...
 val b: DObject[B] = ...
 val c: DObject[C] = ...
-val (aR: A, bR: B, cR: C) = persist(a, b, c)
-</code></pre><p>Finally, it's also possible to persist both <code class="prettyprint">DLists</code> and <code class="prettyprint">DObjects</code> together:</p>
+val (aR: A, bR: B, cR: C) = run(a, b, c)
+</code></pre><p>Finally, it's also possible to persist both <code class="prettyprint">DLists</code> and <code class="prettyprint">DObjects</code> together by persisting the whole graph as one <code class="prettyprint">persist</code> operation, then call <code class="prettyprint">run</code> on specific <code class="prettyprint">DObjects</code> to extract the relevant values (this will not re-run computations but merely read values from the output files):</p>
 <pre><code class="prettyprint">val a: DObject[A] = ...
 val bs: DList[B] = ...
 val c: DObject[C] = ...
 val ds: DList[D] = ...
-val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c, toTextFile(ds, &quot;hfds://...&quot;))
+
+persist(a, bs.toTextFile(&quot;hdfs://...&quot;), c, ds.toTextFile(&quot;hfds://...&quot;))
+val (aR: A, cR: C) = (a.run, c.run)
 </code></pre><p>Note that persisting a <code class="prettyprint">DList</code> does not return a value, hence the underscore.</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1998514976"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="655458653"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="2051017350"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="141776328"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -167,7 +171,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1519107941"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1304232999"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -181,7 +185,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1302165018"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="542738726"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Objects.html#Materialising">Materialising</a>
@@ -195,7 +199,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="446590548"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="389748374"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -227,7 +231,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
             
           </li></ul>
           </li></ul>
-          </li><li id="213919993"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1133391813"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
@@ -239,7 +243,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
             
           </li></ul>
           </li></ul>
-          </li><li id="2064809733"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="585770688"><a href="../guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -247,7 +251,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="2002487124"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1811507640"><a href="../guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Extensions.html#Grouping">Grouping</a>
@@ -263,7 +267,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1561440843"><a href="../guide/Application.html#Application">Application</a>
+          </li><li id="430528997"><a href="../guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/Application.html#Arguments">Arguments</a>
@@ -285,7 +289,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1962239134"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="483892971"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -313,7 +317,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="441224712"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="2059920023"><a href="../guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -329,7 +333,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1835289566"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="402501783"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/Advanced Notes.html#Static+References">Static References</a>
@@ -337,7 +341,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li><li id=""><a href="../guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="975220819"><a href="../guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="89466697"><a href="../guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -351,7 +355,7 @@ val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, &quot;hdfs://...&quot;), c,
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1998514976','1302165018'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['2051017350','542738726'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
