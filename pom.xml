@@ -18,6 +18,9 @@
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
                     <header>notes/header.txt</header>
+                    <includes>
+                        <include>src/**/*.scala</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
