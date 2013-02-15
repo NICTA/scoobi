@@ -197,12 +197,12 @@ object build extends Build {
 //      generateUserGuide,
 //      generateReadMe,
 //      publishSite,
-      publishForCDH3//,
-//      tagRelease,
+//      publishForCDH3//,
+      tagRelease,
 //      notifyLs,
 //      notifyHerald,
-//      setNextVersion,
-//      commitNextVersion,
+      setNextVersion,
+      commitNextVersion,
 //      pushChanges
     )
   ) ++
