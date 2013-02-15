@@ -202,7 +202,7 @@ object build extends Build {
 //      notifyLs,
 //      notifyHerald,
       setNextVersion,
-      commitNextVersion,
+      commitNextVersion//,
 //      pushChanges
     )
   ) ++
