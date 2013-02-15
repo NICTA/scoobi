@@ -188,22 +188,22 @@ object build extends Build {
     releaseVersion <<= (releaseVersion) { nv => (s: String) => cdh4Version(nv(s)) },
     nextVersion <<= (nextVersion) { nv => (s: String) => cdh4Version(nv(s).replace("-SNAPSHOT", ""))+"-SNAPSHOT" },
     releaseProcess := Seq[ReleaseStep](
-//      checkSnapshotDependencies,
-//      updateLicences,
+      checkSnapshotDependencies,
       inquireVersions,
       setReleaseVersion,
       commitReleaseVersion,
-//      publishSignedArtifacts,
-//      generateUserGuide,
-//      generateReadMe,
-//      publishSite,
-//      publishForCDH3//,
+      updateLicences,
+      publishSignedArtifacts,
+      publishForCDH3,
+      generateUserGuide,
+      generateReadMe,
+      publishSite,
+      notifyLs,
+      notifyHerald,
       tagRelease,
-//      notifyLs,
-//      notifyHerald,
       setNextVersion,
-      commitNextVersion//,
-//      pushChanges
+      commitNextVersion,
+      pushChanges
     )
   ) ++
   documentationSettings
