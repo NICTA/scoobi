@@ -64,7 +64,7 @@
     </head><body><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Scoobi</title><a name="Scoobi"><h2 specId="2140617865">Scoobi</h2></a><status class="ok"><div class="level0" style="display: show">Welcome!</div></status><status class="ok"><div class="level0" style="display: show"><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
+                       <div class="col1"><div id="central"><title>Scoobi</title><a name="Scoobi"><h2 specId="1732201596">Scoobi</h2></a><status class="ok"><div class="level0" style="display: show">Welcome!</div></status><status class="ok"><div class="level0" style="display: show"><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
 <pre><code class="prettyprint">val lines = fromTextFile(&quot;hdfs://in/...&quot;)
 
 val counts = lines.flatMap(_.split(&quot; &quot;))
@@ -72,7 +72,7 @@ val counts = lines.flatMap(_.split(&quot; &quot;))
                 .groupByKey
                 .combine(_+_)
 
-persist(toTextFile(counts, &quot;hdfs://out/...&quot;, overwrite=true))
+persist(counts.toTextFile(&quot;hdfs://out/...&quot;, overwrite=true))
 </code></pre><p>This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write <strong>what</strong> you want rather than <strong>how</strong> to do it.</p><p>Scoobi is a library that leverages the Scala programming language to provide a programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid development of analytics and machine-learning algorithms.</p><a name="Install"><h3>Install</h3></a><p>See the <a href="guide/Quick%20Start.html#Installing+Scoobi">install instructions</a> in the QuickStart section of the <a href="guide/User%20Guide.html">User Guide</a>.</p><a name="Features"><h3>Features</h3></a>
 <ul>
   <li><p>Familiar APIs - the <code class="prettyprint">DList</code> API is very similar to the standard Scala <code class="prettyprint">List</code> API</p></li>
@@ -87,11 +87,11 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;, overwrite=true))
   <li><a href="https://github.com/NICTA/scoobi/issues">Issues</a></li>
   <li><a href="http://notes.implicit.ly/tagged/scoobi">Change history</a></li>
   <li><a href="https://github.com/NICTA/scoobi">Source code (github)</a></li>
-  <li><a href="http://nicta.github.com/scoobi/api/SCOOBI-0.6.1-cdh4/index.html">API Documentation</a></li>
-  <li><a href="https://github.com/NICTA/scoobi/tree/SCOOBI-0.6.1-cdh4/examples">Examples</a></li>
+  <li>[API Documentation](<a href="http://nicta.github.com/scoobi/api/SCOOBI-">http://nicta.github.com/scoobi/api/SCOOBI-</a> /index.html)</li>
+  <li>[Examples](<a href="https://github.com/NICTA/scoobi/tree/SCOOBI-">https://github.com/NICTA/scoobi/tree/SCOOBI-</a> /examples)</li>
   <li>User Guide for the <a href="guide-SNAPSHOT/guide/User%20Guide.html">SNAPSHOT</a> version (<a href="http://nicta.github.com/scoobi/api/master/scala/index.html">latest api</a>)</li>
   <li>Mailing Lists: <a href="http://groups.google.com/group/scoobi-users">scoobi-users</a>, <a href="http://groups.google.com/group/scoobi-dev">scoobi-dev</a></li>
-</ul></div></status><subtoc specId="1407844613"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./images/icon_success_sml.gif" /> <a tooltip="" href="guide-SNAPSHOT/guide/User Guide.html">UserGuide</a></div></status></div></div>
+</ul></div></status><subtoc specId="1422188755"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./images/icon_success_sml.gif" /> <a tooltip="" href="guide/User Guide.html">UserGuide</a></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>

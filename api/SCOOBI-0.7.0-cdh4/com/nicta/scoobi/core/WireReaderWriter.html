@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>com.nicta.scoobi.core.WireReaderWriter</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
+      <div id="definition">
+        <a title="Go to companion" href="WireReaderWriter$.html"><img src="../../../../lib/trait_to_object_big.png" /></a>
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a></p>
+        <h1><a title="Go to companion" href="WireReaderWriter$.html">WireReaderWriter</a></h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WireReaderWriter</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+      <div class="fullcommenttop" id="comment"><dl class="attributes block"> <dt>Self Type</dt><dd>com.nicta.scoobi.core.WireFormat[_]</dd></dl><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract10WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract10WireFormat.html">Abstract10WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract11WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract11WireFormat.html">Abstract11WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract12WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract12WireFormat.html">Abstract12WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract13WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract13WireFormat.html">Abstract13WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract14WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract14WireFormat.html">Abstract14WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract15WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract15WireFormat.html">Abstract15WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract16WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract16WireFormat.html">Abstract16WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract17WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract17WireFormat.html">Abstract17WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract18WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract18WireFormat.html">Abstract18WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract19WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract19WireFormat.html">Abstract19WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract20WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract20WireFormat.html">Abstract20WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract21WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract21WireFormat.html">Abstract21WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract22WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract22WireFormat.html">Abstract22WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract2WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract2WireFormat.html">Abstract2WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract3WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract3WireFormat.html">Abstract3WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract4WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract4WireFormat.html">Abstract4WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract5WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract5WireFormat.html">Abstract5WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract6WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract6WireFormat.html">Abstract6WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract7WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract7WireFormat.html">Abstract7WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract8WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract8WireFormat.html">Abstract8WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Abstract9WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Abstract9WireFormat.html">Abstract9WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.AnythingWireFormat" class="extype" href="WireFormatImplicits$AnythingWireFormat.html">AnythingWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat" class="extype" href="WireFormatImplicits$AvroWireFormat.html">AvroWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.BooleanWireFormat" class="extype" href="WireFormatImplicits$BooleanWireFormat.html">BooleanWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.ByteWireFormat" class="extype" href="WireFormatImplicits$ByteWireFormat.html">ByteWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.Case0WireFormat" class="extype" href="WireFormatImplicits$Case0WireFormat.html">Case0WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case10WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case10WireFormat.html">Case10WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case11WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case11WireFormat.html">Case11WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case12WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case12WireFormat.html">Case12WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case13WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case13WireFormat.html">Case13WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case14WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case14WireFormat.html">Case14WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case15WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case15WireFormat.html">Case15WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case16WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case16WireFormat.html">Case16WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case17WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case17WireFormat.html">Case17WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case18WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case18WireFormat.html">Case18WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case19WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case19WireFormat.html">Case19WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.Case1WireFormat" class="extype" href="WireFormatImplicits$Case1WireFormat.html">Case1WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case20WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case20WireFormat.html">Case20WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case21WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case21WireFormat.html">Case21WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case22WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case22WireFormat.html">Case22WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case2WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case2WireFormat.html">Case2WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case3WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case3WireFormat.html">Case3WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case4WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case4WireFormat.html">Case4WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case5WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case5WireFormat.html">Case5WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case6WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case6WireFormat.html">Case6WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case7WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case7WireFormat.html">Case7WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case8WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case8WireFormat.html">Case8WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Case9WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Case9WireFormat.html">Case9WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.CharWireFormat" class="extype" href="WireFormatImplicits$CharWireFormat.html">CharWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.DoubleWireFormat" class="extype" href="WireFormatImplicits$DoubleWireFormat.html">DoubleWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.EitherWireFormat" class="extype" href="WireFormatImplicits$EitherWireFormat.html">EitherWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.FloatWireFormat" class="extype" href="WireFormatImplicits$FloatWireFormat.html">FloatWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.IntWireFormat" class="extype" href="WireFormatImplicits$IntWireFormat.html">IntWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.IntegerWireFormat" class="extype" href="WireFormatImplicits$IntegerWireFormat.html">IntegerWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.LongWireFormat" class="extype" href="WireFormatImplicits$LongWireFormat.html">LongWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.ObjectWireFormat" class="extype" href="WireFormatImplicits$ObjectWireFormat.html">ObjectWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.StringWireFormat" class="extype" href="WireFormatImplicits$StringWireFormat.html">StringWireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple10WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple10WireFormat.html">Tuple10WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple11WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple11WireFormat.html">Tuple11WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple12WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple12WireFormat.html">Tuple12WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple13WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple13WireFormat.html">Tuple13WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple14WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple14WireFormat.html">Tuple14WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple15WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple15WireFormat.html">Tuple15WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple16WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple16WireFormat.html">Tuple16WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple17WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple17WireFormat.html">Tuple17WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple18WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple18WireFormat.html">Tuple18WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple19WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple19WireFormat.html">Tuple19WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple20WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple20WireFormat.html">Tuple20WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple21WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple21WireFormat.html">Tuple21WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple22WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple22WireFormat.html">Tuple22WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple2WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple2WireFormat.html">Tuple2WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple3WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple3WireFormat.html">Tuple3WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple4WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple4WireFormat.html">Tuple4WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple5WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple5WireFormat.html">Tuple5WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple6WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple6WireFormat.html">Tuple6WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple7WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple7WireFormat.html">Tuple7WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple8WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple8WireFormat.html">Tuple8WireFormat</a>, <a name="com.nicta.scoobi.codegen.GeneratedWireFormats.Tuple9WireFormat" class="extype" href="../codegen/GeneratedWireFormats$Tuple9WireFormat.html">Tuple9WireFormat</a>, <a name="com.nicta.scoobi.core.WireFormatImplicits.UnitWireFormat" class="extype" href="WireFormatImplicits$UnitWireFormat.html">UnitWireFormat</a>, <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a></div>
+        </div></div>
+    
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol><li class="alpha in"><span>Alphabetic</span></li><li class="inherit out"><span>By inheritance</span></li></ol>
+            </div>
+        <div id="ancestors">
+              <span class="filtertype">Inherited</span>
+              <ol><li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.WireReaderWriter" class="in"><span>WireReaderWriter</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+            </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        <div class="values members" id="values">
+              <h3>Abstract Value Members</h3>
+              <ol><li visbl="pub" name="com.nicta.scoobi.core.WireReaderWriter#read" data-isabs="true">
+      <a id="read(DataInput):Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">read</span><span class="params">(<span name="in">in: <span name="java.io.DataInput" class="extype">DataInput</span></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.WireReaderWriter#write" data-isabs="true">
+      <a id="write(Any,DataOutput):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">write</span><span class="params">(<span name="a">a: <span name="scala.Any" class="extype">Any</span></span>, <span name="out">out: <span name="java.io.DataOutput" class="extype">DataOutput</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        <div class="values members" id="values">
+              <h3>Concrete Value Members</h3>
+              <ol><li visbl="pub" name="scala.AnyRef#!=" data-isabs="false">
+      <a id="!=(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $bang$eq">!=</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.Any#!=" data-isabs="false">
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $bang$eq">!=</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef###" data-isabs="false">
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $hash$hash">##</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#==" data-isabs="false">
+      <a id="==(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $eq$eq">==</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.Any#==" data-isabs="false">
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name" title="gt4s: $eq$eq">==</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: T0</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: AnyRef</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#equals" data-isabs="false">
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
+      <a id="getClass():java.lang.Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: java.lang.Class[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#notifyAll" data-isabs="false">
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
+      <a id="synchronized[T0](⇒ T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ T0</span>)</span><span class="result">: T0</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span name="scala.Long" class="extype">Long</span></span>, <span name="arg1">arg1: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span name="scala.Long" class="extype">Long</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div name="scala.AnyRef" class="parent">
+              <h3>Inherited from AnyRef</h3>
+            </div><div name="scala.Any" class="parent">
+              <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

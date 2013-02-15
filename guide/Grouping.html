@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/User Guide.html">UserGuide</a><t> / </t><a href="../guide/Grouping.html">Grouping</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="585770688">Grouping</h2></a><status class="ok"><div class="level0" style="display: show"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The [Grouping](<a href="http://nicta.github.com/scoobi/api/SCOOBI-">http://nicta.github.com/scoobi/api/SCOOBI-</a> /index.html]#com.nicta.scoobi.Grouping) type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
+                       <div class="col1"><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="941985721">Grouping</h2></a><status class="ok"><div class="level0" style="display: show"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The [Grouping](<a href="http://nicta.github.com/scoobi/api/SCOOBI-">http://nicta.github.com/scoobi/api/SCOOBI-</a> /index.html]#com.nicta.scoobi.Grouping) type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
 <ul>
   <li>Provide a <a href="http://www.scala-lang.org/api/milestone/scala/math/Ordering.html">scala.math.Ordering</a> for your type.</li>
   <li>Make your type extend <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html">java.lang.Comparable</a>.</li>
@@ -147,8 +147,8 @@ val grouping = new Grouping[(FirstName, LastName)] {
 }
 </code></pre><p>Now calling <code class="prettyprint">bigKey.groupByKeyWith(grouping)</code> will work as intended, with all lastNames arriving in order. Note, that instead of explicitly passing in <code class="prettyprint">grouping</code> it's possible to use implicits and the plain <code class="prettyprint">groupByKey</code>, just be careful the correct one is being picked up.</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="2051017350"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="141776328"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1422188755"><a href="../guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="2143336235"><a href="../guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -158,7 +158,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1304232999"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="916523362"><a href="../guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -172,7 +172,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="542738726"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1990613955"><a href="../guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Distributed Objects.html#Materialising">Materialising</a>
@@ -186,7 +186,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="389748374"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1527419887"><a href="../guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -218,7 +218,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
             
           </li></ul>
           </li></ul>
-          </li><li id="1133391813"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="75329107"><a href="../guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/Data Types.html#Custom+types">Custom types</a>
@@ -230,7 +230,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
             
           </li></ul>
           </li></ul>
-          </li><li id="585770688"><a href="../guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="941985721"><a href="../guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -238,7 +238,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1811507640"><a href="../guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="142456074"><a href="../guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Extensions.html#Grouping">Grouping</a>
@@ -254,7 +254,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="430528997"><a href="../guide/Application.html#Application">Application</a>
+          </li><li id="581796919"><a href="../guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/Application.html#Arguments">Arguments</a>
@@ -276,7 +276,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="483892971"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="2117375540"><a href="../guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -304,7 +304,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="2059920023"><a href="../guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="645758404"><a href="../guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -320,7 +320,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="402501783"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1873407949"><a href="../guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/Advanced Notes.html#Static+References">Static References</a>
@@ -328,7 +328,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li><li id=""><a href="../guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="89466697"><a href="../guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="819920562"><a href="../guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -342,7 +342,7 @@ val grouping = new Grouping[(FirstName, LastName)] {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['2051017350','585770688'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1422188755','941985721'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
