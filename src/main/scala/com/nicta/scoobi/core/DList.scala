@@ -204,13 +204,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * Reduce the elements of this distributed list using the specified associative binary operator. The
    * order in which the elements are reduced is unspecified and may be non-deterministic
    */
-  def reduce(op: (A, A) => A): DObject[A] = reduceOrElse(op, sys.error("the reduce operation is called on an empty list"))
+  def reduce(op: (A, A) => A): DObject[A] = reduceOption(op).map(_.getOrElse(sys.error("the reduce operation is called on an empty list")))
 
   /**
    * Reduce the elements of this distributed list using the specified associative binary operator and a default value if
    * the list is empty. The order in which the elements are reduced is unspecified and may be non-deterministic
    */
-  def reduceOrElse(op: (A, A) => A, defaultValue: A): DObject[A] = {
+  def reduceOption(op: (A, A) => A): DObject[Option[A]] = {
     /* First, perform in-mapper combining. */
     val imc: DList[A] = parallelDo(new DoFn[A, A] {
       var acc: A = _
@@ -233,14 +233,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     /* Group all elements together (so they go to the same reducer task) and then
      * combine them. */
     val x: DObject[Iterable[A]] = imc.groupBy(_ => 0).combine(op).map(_._2).materialise
-    x map (_.headOption getOrElse defaultValue)
+    x map (_.headOption)
   }
 
   /**Multiply up the elements of this distribute list. */
-  def product(implicit num: Numeric[A]): DObject[A] = reduceOrElse(num.times, num.one)
+  def product(implicit num: Numeric[A]): DObject[A] = reduceOption(num.times).map(_.getOrElse(num.one))
 
   /**Sum up the elements of this distribute list. */
-  def sum(implicit num: Numeric[A]): DObject[A] = reduceOrElse(num.plus, num.zero)
+  def sum(implicit num: Numeric[A]): DObject[A] = reduceOption(num.plus).map(_.getOrElse(num.zero))
 
   /**The length of the distributed list. */
   def length: DObject[Int] = map(_ => 1).sum
