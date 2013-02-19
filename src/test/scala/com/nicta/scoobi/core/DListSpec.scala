@@ -72,6 +72,11 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     (aa ++ bb).run.sorted must_== (1 to 10).toSeq
   }
 
+  tag("issue 194")
+  "Length of an empty list should be zero" >> { implicit sc: SC =>
+     DList[Int]().length.run === 0
+  }
+
   "DLists can be concatenated via reduce" >> {
     "without group by key" >> { implicit sc: SC =>
       Seq.fill(5)(DList(1 -> 2)).reduce(_++_).run === Seq.fill(5)(1 -> 2)
