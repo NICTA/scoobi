@@ -28,36 +28,28 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
   }
-
   "2. map" >> { implicit sc: SC =>
     DList("hello").map(_.size).run === Seq(5)
   }
-
   "3. groupByKey" >> { implicit sc: SC =>
     DList((1, "hello"), (1, "world")).groupByKey.run must be_==(Seq((1, Seq("hello", "world")))) or be_==(Seq((1, Seq("world", "hello"))))
   }
-
   "4. groupByKey + combine" >> { implicit sc: SC =>
     DList((1, "hello"), (1, "world")).groupByKey.combine((_:String)+(_:String)).run must be_==(Seq((1, "helloworld"))) or be_==(Seq((1, "worldhello")))
   }
-
   "5. filter" >> { implicit sc: SC =>
     DList("hello", "world").filter(_.startsWith("h")).run === Seq("hello")
   }
-
   "6. flatMap" >> { implicit sc: SC =>
     DList("hello", "world").mapFlatten(_.toSeq.filterNot(_ == 'l')).run.toSet === Set('h', 'e', 'o', 'w', 'r', 'd')
   }
-
   "7. flatMap + map" >> { implicit sc: SC =>
     DList("hello", "world").mapFlatten(_.toSeq.filterNot(_ == 'l')).map(_.toUpper).run.toSet === Set('H', 'E', 'O', 'W', 'R', 'D')
   }
-
   "8. groupByKey + filter" >> { implicit sc: SC =>
     DList((1, "hello"), (1, "world")).groupByKey.filter { case (k, v) => k >= 1 }.run must
       be_==(Seq((1, Seq("hello", "world")))) or be_==(Seq((1, Seq("world", "hello"))))
   }
-
   "9. combine + filter" >> { implicit sc: SC =>
     DList((1, Seq("hello", "world")), (2, Seq("universe"))).combine((_:String)+(_:String)).filter { case (k, v) => k >= 1 }.run.toSet must
       be_==(Set((1, "helloworld"), (2, "universe"))) or
@@ -151,5 +143,12 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   "26. (l1 ++ l2).groupByKey === (l1.groupByKey ++ l2.groupByKey).map { case (k, vs) => (k, vs.flatten) }" >> { implicit sc: ScoobiConfiguration =>
     val (l1, l2) = (DList(1 -> "hello", 2 -> "world"), DList(1 -> "hi", 2 -> "you"))
     normalise((l1 ++ l2).groupByKey.run) === normalise((l1.groupByKey ++ l2.groupByKey).groupByKey.map { case (k, vs) => (k, vs.flatten) }.run)
+  }
+  "27. a DList can be used in a for-comprehension" >> { implicit sc: ScoobiConfiguration =>
+    val list = for {
+      e  <- DList(1, 2, 3, 4) if (e % 2 == 0)
+    } yield e
+
+    normalise(list.run) === "Vector(2, 4)"
   }
 }

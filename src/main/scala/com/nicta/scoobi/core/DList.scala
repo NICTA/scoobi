@@ -110,6 +110,9 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       emitter.emit(input)
     })
 
+  /** the withFilter method */
+  def withFilter(p: A => Boolean): DList[A] = filter(p)
+
   /** Keep elements from the distributed list that do not pass a specified predicate function */
   def filterNot(p: A => Boolean): DList[A] = filter(p andThen (!_))
 
