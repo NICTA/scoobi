@@ -33,6 +33,11 @@ class DListSpec extends NictaSimpleJobs {
     run(DList[Int]().sum) must throwAn[Exception](message = "the reduce operation is called on an empty list")
   }
 
+  tag("issue 194")
+  "Length of an empty list should be zero" >> { implicit sc: SC =>
+    run(DList[Int]().length) === 0
+  }
+
   tag("issue 117")
   "A groupByKey with barrier followed by a groupByKey must be ok" >> { implicit sc: SC =>
     val list = DList.tabulate(5)((n: Int) => ("hello" -> "world")).groupByKey.groupBarrier.groupByKey
@@ -73,7 +78,6 @@ class DListSpec extends NictaSimpleJobs {
 
     (aa ++ bb).run.sorted must_== (1 to 10).toSeq
   }
-  
   
   "DLists can be concatenated via reduce" >> {
     "without group by key" >> { implicit sc: SC =>

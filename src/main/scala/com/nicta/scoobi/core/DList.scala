@@ -248,7 +248,7 @@ trait DList[A] {
   def sum(implicit num: Numeric[A]): DObject[A] = reduce(num.plus)
 
   /**The length of the distributed list. */
-  def length: DObject[Int] = map(_ => 1).sum
+  def length: DObject[Int] = (DList(0) ++ map(_ => 1)).sum
 
   /**The size of the distributed list. */
   def size: DObject[Int] = length
