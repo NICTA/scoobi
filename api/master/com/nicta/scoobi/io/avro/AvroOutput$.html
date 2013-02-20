@@ -136,14 +136,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroOutput#avroSink" data-isabs="false">
-      <a id="avroSink[B](String,Boolean)(AvroSchema[B]):$anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSink[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,B]{val outputFormat: java.lang.Class[org.apache.avro.mapreduce.AvroKeyOutputFormat[sch.AvroType]]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[B] }"></a>
+      <a id="avroSink[B](String,Boolean)(AvroSchema[B]):$anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSink[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,B]{def outputFormat(implicit sc: com.nicta.scoobi.core.ScoobiConfiguration): java.lang.Class[org.apache.avro.mapreduce.AvroKeyOutputFormat[sch.AvroType]]; def outputPath(implicit sc: com.nicta.scoobi.core.ScoobiConfiguration): Some[org.apache.hadoop.fs.Path]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[B] }"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">avroSink</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[B]</span>)</span><span class="result">: $anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSink[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,B]{val outputFormat: java.lang.Class[org.apache.avro.mapreduce.AvroKeyOutputFormat[sch.AvroType]]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[B] }</span>
+        <span class="name">avroSink</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.io.avro.AvroSchema" class="extype" href="AvroSchema.html">AvroSchema</a>[B]</span>)</span><span class="result">: $anon forSome { type $anon &lt;: java.lang.Object with com.nicta.scoobi.core.DataSink[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,B]{def outputFormat(implicit sc: com.nicta.scoobi.core.ScoobiConfiguration): java.lang.Class[org.apache.avro.mapreduce.AvroKeyOutputFormat[sch.AvroType]]; def outputPath(implicit sc: com.nicta.scoobi.core.ScoobiConfiguration): Some[org.apache.hadoop.fs.Path]}; val sch: com.nicta.scoobi.io.avro.AvroSchema[B] }</span>
       </span>
       </h4>
       

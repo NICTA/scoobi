@@ -506,41 +506,41 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputFormat" data-isabs="false">
-      <a id="outputFormat:Class[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputFormat</span><span class="result">: <span name="java.lang.Class" class="extype">Class</span>[<span name="org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat" class="extype">SequenceFileOutputFormat</span>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A]]]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The OutputFormat specifying the type of output for this DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>The OutputFormat specifying the type of output for this DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputKeyClass" data-isabs="false">
-      <a id="outputKeyClass:Class[NullWritable]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputKeyClass</span><span class="result">: <span name="java.lang.Class" class="extype">Class</span>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The Class of the OutputFormat's key.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's key.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputPath" data-isabs="false">
-      <a id="outputPath(ScoobiConfiguration):Option[Path]"></a>
+      <a id="outputFormat(ScoobiConfiguration):Class[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputPath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>]</span>
+        <span class="name">outputFormat</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="java.lang.Class" class="extype">Class</span>[<span name="org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat" class="extype">SequenceFileOutputFormat</span>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A]]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
+      <p class="shortcomment cmt">The OutputFormat specifying the type of output for this DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>The OutputFormat specifying the type of output for this DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputKeyClass" data-isabs="false">
+      <a id="outputKeyClass(ScoobiConfiguration):Class[NullWritable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputKeyClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="java.lang.Class" class="extype">Class</span>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The Class of the OutputFormat's key.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's key.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputPath" data-isabs="false">
+      <a id="outputPath(ScoobiConfiguration):Some[Path]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputPath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Some" class="extype">Some</span>[<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → Sink</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputSetup" data-isabs="false">
       <a id="outputSetup(Configuration):Unit"></a>
       <h4 class="signature">
@@ -554,14 +554,14 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </h4>
       <p class="shortcomment cmt">This method is called just before writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just before writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputValueClass" data-isabs="false">
-      <a id="outputValueClass:Class[ScoobiWritable[A]]"></a>
+      <a id="outputValueClass(ScoobiConfiguration):Class[ScoobiWritable[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputValueClass</span><span class="result">: Class[<a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A]]</span>
+        <span class="name">outputValueClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Class[<a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The Class of the OutputFormat's value.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's value.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.BridgeStore" class="extype" href="">BridgeStore</a> → <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a> → Sink</dd></dl></div>
@@ -648,7 +648,7 @@ at a time
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rtClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a> = <span class="symbol"><span class="name"><a href="../ScoobiConfigurationImpl$.html">new ScoobiConfigurationImpl</a></span></span></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="../rtt/RuntimeClass.html">RuntimeClass</a></span>
+        <span class="name">rtClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.rtt.RuntimeClass" class="extype" href="../rtt/RuntimeClass.html">RuntimeClass</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">rtClass will be created at runtime as part of building the MapReduce job.</p>

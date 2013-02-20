@@ -682,7 +682,23 @@ and the second of all elements that don't.</p></div></div>
       </span>
       </h4>
       <p class="shortcomment cmt">Reduce the elements of this distributed list using the specified associative binary operator.</p><div class="fullcomment"><div class="comment cmt"><p>Reduce the elements of this distributed list using the specified associative binary operator. The
-order in which the elements are reduced is unspecified and may be non-deterministic.</p></div></div>
+order in which the elements are reduced is unspecified and may be non-deterministic
+</p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#reduceOption" data-isabs="false">
+      <a id="reduceOption((A, A) ⇒ A):DObject[Option[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduceOption</span><span class="params">(<span name="op">op: (A, A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DObject" class="extype" href="DObject.html">DObject</a>[<span name="scala.Option" class="extype">Option</span>[A]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reduce the elements of this distributed list using the specified associative binary operator and a default value if
+the list is empty.</p><div class="fullcomment"><div class="comment cmt"><p>Reduce the elements of this distributed list using the specified associative binary operator and a default value if
+the list is empty. The order in which the elements are reduced is unspecified and may be non-deterministic
+</p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList#size" data-isabs="false">
       <a id="size:DObject[Int]"></a>
       <h4 class="signature">
@@ -800,6 +816,18 @@ order in which the elements are reduced is unspecified and may be non-determinis
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#withFilter" data-isabs="false">
+      <a id="withFilter((A) ⇒ Boolean):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withFilter</span><span class="params">(<span name="p">p: (A) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[A]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">the withFilter method</p>
     </li></ol>
             </div>
 

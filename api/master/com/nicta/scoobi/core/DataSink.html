@@ -102,38 +102,50 @@
       </h4>
       <p class="shortcomment cmt">Maps the type consumed by this DataSink to the key-values of its OutputFormat.</p><div class="fullcomment"><div class="comment cmt"><p>Maps the type consumed by this DataSink to the key-values of its OutputFormat.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="">DataSink</a> → Sink</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputFormat" data-isabs="true">
-      <a id="outputFormat:Class[_ &lt;: org.apache.hadoop.mapreduce.OutputFormat[K,V]]"></a>
+      <a id="outputFormat(ScoobiConfiguration):Class[_ &lt;: org.apache.hadoop.mapreduce.OutputFormat[K,V]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputFormat</span><span class="result">: Class[_ &lt;: org.apache.hadoop.mapreduce.OutputFormat[K,V]]</span>
+        <span class="name">outputFormat</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Class[_ &lt;: org.apache.hadoop.mapreduce.OutputFormat[K,V]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The OutputFormat specifying the type of output for this DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>The OutputFormat specifying the type of output for this DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="">DataSink</a> → Sink</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputKeyClass" data-isabs="true">
-      <a id="outputKeyClass:Class[K]"></a>
+      <a id="outputKeyClass(ScoobiConfiguration):Class[K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputKeyClass</span><span class="result">: Class[K]</span>
+        <span class="name">outputKeyClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Class[K]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The Class of the OutputFormat's key.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's key.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="">DataSink</a> → Sink</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputValueClass" data-isabs="true">
-      <a id="outputValueClass:Class[V]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Sink#outputPath" data-isabs="true">
+      <a id="outputPath(ScoobiConfiguration):Option[Path]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputValueClass</span><span class="result">: Class[V]</span>
+        <span class="name">outputPath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputValueClass" data-isabs="true">
+      <a id="outputValueClass(ScoobiConfiguration):Class[V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputValueClass</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: Class[V]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The Class of the OutputFormat's value.</p><div class="fullcomment"><div class="comment cmt"><p>The Class of the OutputFormat's value.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="">DataSink</a> → Sink</dd></dl></div>
@@ -412,18 +424,6 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Set the compression configuration</p><div class="fullcomment"><div class="comment cmt"><p>Set the compression configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="">DataSink</a> → Sink</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputPath" data-isabs="false">
-      <a id="outputPath(ScoobiConfiguration):Option[Path]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputPath</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[<span name="org.apache.hadoop.fs.Path" class="extype">Path</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSink" class="extype" href="">DataSink</a> → Sink</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DataSink#outputSetup" data-isabs="false">
       <a id="outputSetup(Configuration):Unit"></a>
       <h4 class="signature">
