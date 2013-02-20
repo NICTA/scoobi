@@ -46,6 +46,7 @@ In this user guide, you will find:                                              
    link("the supported"                    , inout - "Input and Output types"                ),
    link("how to support your own"          , data                                            ),
    link("how to use"                       , gp                                              ),
+   link("how to"                           , load                                            ),
    link(                                     ext - "extensions", "for db-like programming"   ),
    link("how to create"                    , app - "Scoobi applications"                     ),
    link("a"                                , ts - "testing guide"                            ),
@@ -80,7 +81,7 @@ In this user guide, you will find:                                              
     def - (linkName: String) = s.markdownLink(linkName).fromTop
   }
 
-  lazy val all = Seq(qs, dl, dobj, inout, data, gp, ext, app, ts, dply, adv, dev)
+  lazy val all = Seq(qs, dl, dobj, inout, data, gp, load, ext, app, ts, dply, adv, dev)
 
   val qs    = new QuickStart
   val app   = new Application
@@ -89,6 +90,7 @@ In this user guide, you will find:                                              
   val data  = new DataTypes
   val inout = new InputOutput
   val gp    = new Grouping
+  val load  = new LoadAndPersist
   val ext   = new Extensions
   val ts    = new Testing
   val dply  = new Deployment

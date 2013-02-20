@@ -20,7 +20,7 @@ import testing.mutable.NictaSimpleJobs
 import Scoobi._
 import com.nicta.scoobi.impl.plan.comp.CompNodeData._
 
-class LoadAndPersist extends ScoobiPage { def is = "Loading and persisting data".title^
+class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title^
   """
 `DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the [WordCount example](Application.html) we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally *loaded* from files and the results *persisted* to files. Let's see how to specify this.
 
