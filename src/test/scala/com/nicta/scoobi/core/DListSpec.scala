@@ -33,11 +33,6 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     run(list).map(_.toString).sorted must_== Seq("(key1,value1)", "(key2,value2)")
   }
 
-  tag("issue 104")
-  "Summing up an empty list should do something graceful" >> { implicit sc: SC =>
-    run(DList[Int]().sum) must throwAn[Exception](message = "the reduce operation is called on an empty list")
-  }
-
   tag("issue 117")
   "A complex graph example must not throw an exception" >> { implicit sc: SC =>
 
