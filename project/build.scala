@@ -71,7 +71,7 @@ object build extends Build {
       "com.github.mdr" %% "ascii-graphs" % "0.0.2",
       "org.scalaz" %% "scalaz-core" % "7.0.0-M7",
       "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M7",
-      "org.specs2" %% "specs2" % "1.12.3" % "optional",
+      "org.specs2" %% "specs2" % "1.14" % "optional",
       "org.specs2" % "classycle" % "1.4.1"% "test",
       "com.chuusai" %% "shapeless" % "1.2.2",
       "org.scalacheck" %% "scalacheck" % "1.9" % "test",
