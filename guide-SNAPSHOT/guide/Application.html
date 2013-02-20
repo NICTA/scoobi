@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Application.html">Application</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Application</title><a name="Application"><h2 specId="514957825">Application</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Creation"><h3>Creation</h3></a><p>Scoobi provides several traits to help building applications. <code class="prettyprint">ScoobiApp</code> brings them all together:</p>
+                       <div class="col1"><div id="central"><title>Application</title><a name="Application"><h2 specId="253655356">Application</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Creation"><h3>Creation</h3></a><p>Scoobi provides several traits to help building applications. <code class="prettyprint">ScoobiApp</code> brings them all together:</p>
 <pre><code class="prettyprint">object WordCount extends ScoobiApp {
   def run() {
     val lines = DList(repeat(&quot;hello&quot; -&gt; 3, &quot;world&quot; -&gt; 4):_*)
@@ -74,7 +74,7 @@
       .groupByKey
       .combine((a: Int, b: Int) =&gt; a + b).materialise
 
-    println(frequencies.run.sorted)
+    println(persist(frequencies).toList.sorted)
   }
 
   /** @return a Seq of strings where each key has been duplicated a number of times indicated by the value */
@@ -213,8 +213,8 @@ object MyApp extends ScoobiApp {
   <li><p>finally you can combine those flags: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn.times</code></p></li>
 </ul><p>Note that logs can be turned off by using the 'quiet' argument: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi quiet</code> (you can also override the <code class="prettyprint">quiet</code> method to return <code class="prettyprint">true</code>)</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="999186587"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1738692295"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1541092382"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="27607440"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -224,7 +224,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1391263288"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="539535919"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -238,10 +238,10 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="983625790"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="549456918"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materialising">Materialising</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Reduction+operations">Reduction operations</a>
             
@@ -252,7 +252,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="770457597"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="1799452725"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -284,7 +284,7 @@ object MyApp extends ScoobiApp {
             
           </li></ul>
           </li></ul>
-          </li><li id="1178060083"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="2001634124"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -296,7 +296,7 @@ object MyApp extends ScoobiApp {
             
           </li></ul>
           </li></ul>
-          </li><li id="991431869"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1698651358"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -304,7 +304,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1630700073"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1124639441"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -320,7 +320,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="514957825"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="253655356"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -342,7 +342,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1386178789"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1264472069"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -370,7 +370,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="438854940"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1188796352"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -386,7 +386,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1642125108"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="351783482"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -394,7 +394,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="750572020"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="214919793"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -408,7 +408,7 @@ object MyApp extends ScoobiApp {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['999186587','514957825'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1541092382','253655356'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
