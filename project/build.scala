@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 import sbt._
+import complete.DefaultParsers._
 import Keys._
 import com.typesafe.sbt._
 import pgp.PgpKeys._
+import sbt.Configuration
 import SbtSite._
+import scala.Some
 import SiteKeys._
 import SbtGit._
 import GitKeys._
@@ -205,9 +208,37 @@ object build extends Build {
       setNextVersion,
       commitNextVersion,
       pushChanges
-    )
+    ),
+    releaseSnapshotProcess := Seq[ReleaseStep](
+      generateUserGuide,
+      generateReadMe,
+      publishSite,
+      publishSignedArtifacts,
+      publishForCDH3),
+    commands += releaseSnapshotCommand
   ) ++
   documentationSettings
+
+  lazy val releaseSnapshotProcess = SettingKey[Seq[ReleaseStep]]("release-snapshot-process")
+  private lazy val releaseSnapshotCommandKey = "release-snapshot"
+  private val WithDefaults = "with-defaults"
+  private val SkipTests = "skip-tests"
+  private val releaseSnapshotParser = (Space ~> WithDefaults | Space ~> SkipTests).*
+
+  val releaseSnapshotCommand: Command = Command(releaseSnapshotCommandKey)(_ => releaseSnapshotParser) { (st, args) =>
+    val extracted = Project.extract(st)
+    val releaseParts = extracted.get(releaseSnapshotProcess)
+
+    val startState = st
+      .put(useDefaults, args.contains(WithDefaults))
+      .put(skipTests, args.contains(SkipTests))
+
+    val initialChecks = releaseParts.map(_.check)
+    val process = releaseParts.map(_.action)
+
+    initialChecks.foreach(_(startState))
+    Function.chain(process)(startState)
+  }
 
   lazy val cdh4Version = (s: String) => { if (!(s contains "-cdh4")) (s+"-cdh4") else s }
   /**
@@ -263,7 +294,7 @@ object build extends Build {
 
   lazy val publishForCDH3 = ReleaseStep { st: State =>
     // this specific commit changes the necessary files for working with CDH3
-      "git cherry-pick -n 5d24703" !! st.log
+    "git cherry-pick -n 5d24703" !! st.log
 
     try {
       val extracted = Project.extract(st)
