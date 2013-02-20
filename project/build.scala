@@ -85,7 +85,8 @@ object build extends Build {
     ) },
     resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
       "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-      "sonatype" at "http://oss.sonatype.org/content/repositories/snapshots")
+      "sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
+      "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
   )
 
   lazy val compilationSettings: Seq[Settings] = Seq(
