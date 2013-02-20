@@ -61,10 +61,10 @@
            tabber code, then the init code -->
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link type="text/css" media="screen" rel="stylesheet" href="./../../css/tabber.css" />
-    </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a></div><div class="colmask threecol">
+    </head><body><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>User Guide</title><a name="User+Guide"><h2 specId="1541092382">User Guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><notoc><a name="Scoobi+-+Bringing+the+productivity+of+Scala+to+Hadoop"><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></a></notoc></p><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
+                       <div class="col1"><div id="central"><title>User Guide</title><a name="User+Guide"><h2 specId="1665938982">User Guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><notoc><a name="Scoobi+-+Bringing+the+productivity+of+Scala+to+Hadoop"><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></a></notoc></p><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
 <pre><code class="prettyprint">val lines = fromTextFile(&quot;hdfs://in/...&quot;)
 
 val counts = lines.flatMap(_.split(&quot; &quot;))
@@ -75,20 +75,21 @@ val counts = lines.flatMap(_.split(&quot; &quot;))
 persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
 </code></pre><p>This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write <strong>what</strong> you want rather than <strong>how</strong> to do it.</p><p>Scoobi is a library that leverages the Scala programming language to provide a programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid development of analytics and machine-learning algorithms.</p><p>In this user guide, you will find: </p></div></status><status class="ok"><p></p></status><status class="ok"><div class="level0" style="display: show"><ul>
   <li>a <a href="../../guide-SNAPSHOT/guide/Quick%20Start.html">Quick Start</a> guide</li>
-  <li>an overview of Scoobi's concepts: <a href="../../guide-SNAPSHOT/guide/Distributed%20Lists.html">Distributed Lists</a>, <a href="../../guide-SNAPSHOT/guide/Distributed%20Objects.html">Distributed Objects</a></li>
+  <li>an overview of Scoobi's concepts: <a href="../../guide-SNAPSHOT/guide/Distributed%20Lists.html">Distributed Lists</a> , <a href="../../guide-SNAPSHOT/guide/Distributed%20Objects.html">Distributed Objects</a></li>
   <li>the supported <a href="../../guide-SNAPSHOT/guide/Input%20and%20Output.html">Input and Output types</a></li>
   <li>how to support your own <a href="../../guide-SNAPSHOT/guide/Data%20Types.html">Data Types</a></li>
   <li>how to use <a href="../../guide-SNAPSHOT/guide/Grouping.html">Grouping</a></li>
-  <li><a href="../../guide-SNAPSHOT/guide/Extensions.html">extensions </a>for db-like programming</li>
+  <li>how to <a href="../../guide-SNAPSHOT/guide/Load%20and%20persist%20data.html">Load and persist data</a></li>
+  <li><a href="../../guide-SNAPSHOT/guide/Extensions.html">extensions</a> for db-like programming</li>
   <li>how to create <a href="../../guide-SNAPSHOT/guide/Application.html">Scoobi applications</a></li>
   <li>a <a href="../../guide-SNAPSHOT/guide/Testing%20guide.html">testing guide</a></li>
   <li><a href="../../guide-SNAPSHOT/guide/Deployment.html">Deployment</a> instructions</li>
   <li>some <a href="../../guide-SNAPSHOT/guide/Advanced%20Notes.html">Advanced Notes</a></li>
   <li>get involved in <a href="../../guide-SNAPSHOT/guide/Scoobi%20Development.html">Scoobi Development</a></li>
-</ul></div></status><status class="ok"><p></p></status><subtoc specId="27607440"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Quick Start.html">QuickStart</a></div></status><subtoc specId="539535919"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Distributed Lists.html">DistributedLists</a></div></status><subtoc specId="549456918"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Distributed Objects.html">DistributedObjects</a></div></status><subtoc specId="1799452725"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Input and Output.html">InputOutput</a></div></status><subtoc specId="2001634124"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Data Types.html">DataTypes</a></div></status><subtoc specId="1698651358"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Grouping.html">Grouping</a></div></status><subtoc specId="1124639441"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Extensions.html">Extensions</a></div></status><subtoc specId="253655356"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Application.html">Application</a></div></status><subtoc specId="1264472069"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Testing guide.html">Testing</a></div></status><subtoc specId="1188796352"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Deployment.html">Deployment</a></div></status><subtoc specId="351783482"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Advanced Notes.html">Advanced</a></div></status><subtoc specId="214919793"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Scoobi Development.html">ScoobiDevelopment</a></div></status></div></div>
+</ul></div></status><status class="ok"><p></p></status><subtoc specId="457365186"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Quick Start.html">QuickStart</a></div></status><subtoc specId="429872628"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Distributed Lists.html">DistributedLists</a></div></status><subtoc specId="1978150850"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Distributed Objects.html">DistributedObjects</a></div></status><subtoc specId="2059818624"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Input and Output.html">InputOutput</a></div></status><subtoc specId="724054730"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Data Types.html">DataTypes</a></div></status><subtoc specId="51279156"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Grouping.html">Grouping</a></div></status><subtoc specId="165678067"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Load and persist data.html">LoadAndPersist</a></div></status><subtoc specId="993538983"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Extensions.html">Extensions</a></div></status><subtoc specId="433091111"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Application.html">Application</a></div></status><subtoc specId="932591801"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Testing guide.html">Testing</a></div></status><subtoc specId="1136867564"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Deployment.html">Deployment</a></div></status><subtoc specId="1496919724"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Advanced Notes.html">Advanced</a></div></status><subtoc specId="1195220378"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./../../images/icon_success_sml.gif" /> <a tooltip="" href="../../guide-SNAPSHOT/guide/Scoobi Development.html">ScoobiDevelopment</a></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1541092382"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="27607440"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1665938982"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="457365186"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -98,7 +99,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="539535919"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="429872628"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -112,10 +113,10 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="549456918"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1978150850"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materializing">Materializing</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materialising">Materialising</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Reduction+operations">Reduction operations</a>
             
@@ -126,7 +127,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1799452725"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="2059818624"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -158,7 +159,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
             
           </li></ul>
           </li></ul>
-          </li><li id="2001634124"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="724054730"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -170,7 +171,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
             
           </li></ul>
           </li></ul>
-          </li><li id="1698651358"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="51279156"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -178,7 +179,19 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1124639441"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="165678067"><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Load+and+persist+data">Load and persist data</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Loading">Loading</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Persisting">Persisting</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#DObjects">DObjects</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Iterations">Iterations</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Interim+files">Interim files</a>
+            
+          </li></ul>
+          </li></ul>
+          </li></ul>
+          </li><li id="993538983"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -194,7 +207,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="253655356"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="433091111"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -216,7 +229,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1264472069"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="932591801"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -244,7 +257,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1188796352"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1136867564"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -260,7 +273,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="351783482"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1496919724"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -268,7 +281,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="214919793"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1195220378"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -282,7 +295,7 @@ persist(toTextFile(counts, &quot;hdfs://out/...&quot;))
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1541092382','1541092382'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1665938982','1665938982'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
