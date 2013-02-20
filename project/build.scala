@@ -60,7 +60,7 @@ object build extends Build {
     scalaVersion := "2.9.2")
 
   lazy val dependenciesSettings: Seq[Settings] = Seq(
-    libraryDependencies <<= (version) { version =>
+    libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
       val hadoop =
         if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1")
         else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1",
@@ -74,6 +74,7 @@ object build extends Build {
       "com.github.mdr" %% "ascii-graphs" % "0.0.2",
       "org.scalaz" %% "scalaz-core" % "7.0.0-M7",
       "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M7",
+      "org.scala-lang" % "scala-compiler" % scalaVersion % "optional",
       "org.specs2" %% "specs2" % "1.12.4" % "optional",
       "org.specs2" % "classycle" % "1.4.1"% "test",
       "com.chuusai" %% "shapeless" % "1.2.2",
