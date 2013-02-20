@@ -49,7 +49,7 @@ trait ScoobiVariables {
   lazy val guidePage         = landingPage + guideDir
 
   private lazy val versionLine = buildSbt.flatMap(_.getLines.find(line => line contains "version"))
-  private def extractVersion(line: String) = "\\s*version(\\s|\\w)*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
+  private def extractVersion(line: String) = "\\s*version.*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
   private lazy val buildSbt = tryOr(Option(Source.fromFile("version.sbt")))((e:Exception) => { println("can't find the version.sbt file "+e.getMessage); None })
 
   implicit def toVersionedText(t: String): VersionedText = VersionedText(t)
