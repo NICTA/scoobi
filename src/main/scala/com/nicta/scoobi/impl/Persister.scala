@@ -18,11 +18,11 @@ package impl
 
 import org.apache.commons.logging.LogFactory
 import exec.{HadoopMode, InMemoryMode}
-import core.{DObject, DList, ScoobiConfiguration, Persistent}
+import core.{DObject, DList, Persistent}
 import plan.comp._
 import core.Mode._
 
-class Persister(sc: ScoobiConfiguration) {
+class Persister(sc: core.ScoobiConfiguration) {
   private implicit val configuration = sc
   private implicit lazy val logger = LogFactory.getLog("scoobi.Persister")
 
