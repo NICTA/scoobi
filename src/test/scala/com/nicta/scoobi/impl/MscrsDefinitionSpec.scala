@@ -59,10 +59,10 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
     e2 := forAll(genLayerPair) { (pair: (Layer[CompNode], Layer[CompNode])) => val (layer1, layer2) = pair
       val pairs = ^(layer1.gbks.toStream, layer2.gbks.toStream)((_,_))
-      val parentChild = pairs.find { case (n1, n2) => !(n1 -> isStrictParentOf(n2)) && n1 != n2 }
-      lazy val showParentChild = parentChild.collect { case (n1, n2) => (showGraph(n1)+"\n"+showGraph(n2)) }.getOrElse("")
 
-      parentChild aka showParentChild must beNone
+      forallWhen(pairs) { case (n1, n2) =>
+        (n1 -> isStrictParentOf(n2)) aka (showGraph(n1)+"\n"+showGraph(n2)) must beTrue
+      }
 
     }.set(minTestsOk -> 100, maxSize -> 6, maxDiscarded -> 150)
 
@@ -154,7 +154,7 @@ trait definition extends factory with CompNodeData {
     layers(gbk(pd(gbk(n)))) // generate at least 2 layers
   }
   val genLayer     = genLayers.flatMap(ls => Gen.pick(1, ls)).map(_.head)
-  val genLayerPair = genLayers.flatMap(ls => Gen.pick(2, ls)).map { ls => (ls(0), ls(1)) }
+  val genLayerPair = genLayers.flatMap(ls => Gen.pick(2, ls)).map(ls => (ls(0), ls(1))).filter { case (l1, l2) => l1 != l2 }
 
   def graph(layer: Layer[CompNode]) =
     if (layer.nodes.isEmpty) "empty layer - shouldn't happen"
