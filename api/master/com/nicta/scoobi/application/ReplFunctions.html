@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.application.Cluster</title>
+          <title>com.nicta.scoobi.application.ReplFunctions</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -16,7 +16,7 @@
       <div id="definition">
         <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.application" class="extype" href="package.html">application</a></p>
-        <h1>Cluster</h1>
+        <h1>ReplFunctions</h1>
       </div>
 
       <h4 class="signature" id="signature">
@@ -25,17 +25,16 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Cluster</span><span class="result"> extends AnyRef</span>
+        <span class="name">ReplFunctions</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Definition of the Cluster addresses: FileSystem + JobTracker
-</p></div><div class="toggleContainer block">
+      <div class="fullcommenttop" id="comment"><dl class="attributes block"> <dt>Self Type</dt><dd><a name="com.nicta.scoobi.application.ReplFunctions" class="extype" href="">ReplFunctions</a> with AnyRef { def configuration: com.nicta.scoobi.core.ScoobiConfiguration }</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.application.ClusterConfiguration" class="extype" href="ClusterConfiguration.html">ClusterConfiguration</a>, <a name="com.nicta.scoobi.application.Hadoop" class="extype" href="Hadoop.html">Hadoop</a>, <a name="com.nicta.scoobi.testing.HadoopExamples" class="extype" href="../testing/HadoopExamples.html">HadoopExamples</a>, <a name="com.nicta.scoobi.testing.mutable.HadoopSpecification" class="extype" href="../testing/mutable/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecification" class="extype" href="../testing/HadoopSpecification.html">HadoopSpecification</a>, <a name="com.nicta.scoobi.testing.HadoopSpecificationStructure" class="extype" href="../testing/HadoopSpecificationStructure.html">HadoopSpecificationStructure</a>, <a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="ScoobiApp.html">ScoobiApp</a>, <a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="ScoobiAppConfiguration.html">ScoobiAppConfiguration</a>, <a name="com.nicta.scoobi.application.ScoobiRepl" class="extype" href="ScoobiRepl$.html">ScoobiRepl</a>, <a name="com.nicta.scoobi.testing.UploadedLibJars" class="extype" href="../testing/UploadedLibJars.html">UploadedLibJars</a></div>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.application.ScoobiRepl" class="extype" href="ScoobiRepl$.html">ScoobiRepl</a></div>
         </div></div>
     
 
@@ -49,7 +48,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.application.Cluster" class="in"><span>Cluster</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.application.ReplFunctions" class="in"><span>ReplFunctions</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -63,37 +62,10 @@
 
         
 
-        <div class="values members" id="values">
-              <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.application.Cluster#fs" data-isabs="true">
-      <a id="fs:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fs</span><span class="result">: String</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the filesystem address</p></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.application.Cluster#jobTracker" data-isabs="true">
-      <a id="jobTracker:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">jobTracker</span><span class="result">: String</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the jobtracker address</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         <div class="values members" id="values">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li visbl="pub" name="scala.AnyRef#!=" data-isabs="false">
       <a id="!=(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -166,6 +138,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ReplFunctions#cat" data-isabs="false">
+      <a id="cat(String):Iterable[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cat</span><span class="params">(<span name="path">path: String</span>)</span><span class="result">: Iterable[String]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get the contents of a text file.</p>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -256,6 +240,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ReplFunctions#ls" data-isabs="false">
+      <a id="ls(String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ls</span><span class="params">(<span name="path">path: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">List a path .</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
