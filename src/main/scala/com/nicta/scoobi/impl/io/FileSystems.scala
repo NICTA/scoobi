@@ -87,14 +87,24 @@ trait FileSystems {
   /**
    * create a directory if it doesn't exist already
    */
-  def mkdir(dest: String)(implicit configuration: ScoobiConfiguration) {
+  def mkdir(dest: Path)(implicit sc: ScoobiConfiguration) {
     if (!exists(dest))
-      fileSystem.mkdirs(new Path(dest))
+      FileSystem.get(dest.toUri, sc.configuration).mkdirs(dest)
   }
 
+  /**
+   * create a directory if it doesn't exist already
+   */
+  def mkdir(dest: String)(implicit sc: ScoobiConfiguration) {
+    mkdir(new Path(dest))
+  }
+
+  def exists(path: Path)(implicit sc: ScoobiConfiguration): Boolean =
+    FileSystem.get(path.toUri, sc.configuration).exists(path)
+
   /** @return true if a Path exists with this name on the file system */
-  def exists(path: String)(implicit configuration: ScoobiConfiguration) =
-    fileSystem.exists(new Path(path))
+  def exists(path: String)(implicit configuration: ScoobiConfiguration): Boolean =
+    exists(new Path(path))
 
   /**
    * delete all the files in a given directory on the file system
