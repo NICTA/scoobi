@@ -18,6 +18,7 @@ package acceptance
 
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
+import core.Reduction._
 
 class MultipleMscrSpec extends NictaSimpleJobs {
 
@@ -42,7 +43,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
 
   "An MSCR can read from two intermediate outputs." >> { implicit c: SC =>
 
-    def unique[A : WireFormat : Grouping](x: DList[A]) = x.groupBy(identity).combine((a: A, b: A) => a)
+    def unique[A : WireFormat : Grouping](x: DList[A]) = x.groupBy(identity).combine(first)
 
     val words1 = List("hello", "world")
     val words2 = List("foo", "bar", "hello")

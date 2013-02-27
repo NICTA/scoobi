@@ -25,7 +25,7 @@ import matcher.ScalaCheckMatchers
 import specification.Scope
 import main.CommandLineArguments
 
-import core._
+import core._, Reduction._
 import com.nicta.scoobi.io.ConstantStringDataSource
 import application._
 import WireFormat._
@@ -77,7 +77,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
     if (depth <= 1) genList1(1).map(l => l.map(_.partition(c => c > 'a')))
     else            Gen.oneOf(genList1(depth - 1).map(l => l.map(_.partition(c => c > 'a'))),
                               genList2(depth - 1).map(l => l.map(identity)),
-                              genList3(depth - 1).map(l => l.combine((_:String) ++ (_:String))),
+                              genList3(depth - 1).map(l => l.combine(string)),
                               ^(genList2(depth / 2), genList2(depth / 2))((_ ++ _)),
                               ^(genObject(depth / 2), genList1(depth / 2))((_ join _))).memo
 
