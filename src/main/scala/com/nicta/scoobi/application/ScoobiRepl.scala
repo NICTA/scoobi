@@ -15,12 +15,18 @@ import scala.collection.JavaConversions._
 object ScoobiRepl extends ScoobiApp with ReplFunctions {
 
   class ScoobiILoop extends ILoop {
-    addThunk { intp.beQuietDuring {
+    override def prompt = "scoobi> "
+
+
+    addThunk {
+      println("\n === Please wait while Scoobi is initialising... ===")
+
+      intp.beQuietDuring {
       intp.addImports("java.lang.Math._")
       intp.addImports("com.nicta.scoobi.Scoobi._")
       intp.addImports("com.nicta.scoobi.application.ScoobiRepl._")
       intp.addImports("scala.collection.JavaConversions._")
-      configuration.addClassLoader(intp.classLoader)
+      replConfiguration.addClassLoader(intp.classLoader)
       woof()
     }}
   }
@@ -28,18 +34,13 @@ object ScoobiRepl extends ScoobiApp with ReplFunctions {
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
-
     new ScoobiILoop().process(settings)
   }
 
   def woof() {
     println(splash)
-    configuration.jobNameIs("REPL")
-    configureForCluster
+    println("\n === Ready, press Enter to start ===")
   }
-
-  override def jars = hadoopClasspathJars
-  override def useHadoopConfDir = true
 
   lazy val splash: String =
     """|
@@ -49,7 +50,7 @@ object ScoobiRepl extends ScoobiApp with ReplFunctions {
        |       ______________  ____  / /_  (_)   /\_(      .----'
        |      / ___/ ___/ __ \/ __ \/ __ \/ /     .' \____/
        |     (__  ) /__/ /_/ / /_/ / /_/ / /     /   /  / \
-       |    /____/\___/\____/\____/_.___/_/ ____:____\__\__\____________.""".stripMargin
+       |    /____/\___/\____/\____/_.___/_/ ____:____\__\__\____________""".stripMargin
 
 }
 

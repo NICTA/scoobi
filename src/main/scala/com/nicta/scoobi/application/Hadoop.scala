@@ -63,9 +63,10 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
    * @return a configuration with cluster setup
    */
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
+    setLogFactory()
+
     logger.debug("setting the configuration for cluster execution")
 
-    setLogFactory()
     if (!configuration.jobName.isDefined) configuration.jobNameIs(getClass.getSimpleName)
 
     logger.debug("setting the execution mode to "+Cluster)

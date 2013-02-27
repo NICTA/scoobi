@@ -197,5 +197,11 @@ By default, when extending the `Hadoop` trait, Hadoop and Scoobi logs will be sh
 
 Note that logs can be turned off by using the 'quiet' argument:  `run-main mypackage.MyApp [ARGS] -- scoobi quiet` (you can also override the `quiet` method to return `true`)
 
+### REPL
+
+A special kind of application is the REPL. In order to use the Scoobi REPL you need to create a Java script with the classpath of all the jars you are using invoking the `ScoobiRepl` class:
+
+    java -cp <all your jars here> com.nicta.scoobi.application.ScoobiRepl
+
   """
 }

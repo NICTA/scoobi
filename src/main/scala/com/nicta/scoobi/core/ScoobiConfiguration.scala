@@ -22,6 +22,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{Path, FileSystem}
 import org.apache.hadoop.mapreduce.Job
 import impl.ScoobiConfigurationImpl
+import tools.nsc.util.ScalaClassLoader
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -43,7 +44,7 @@ trait ScoobiConfiguration {
   def addJarByClass(clazz: Class[_]): ScoobiConfiguration
   def addUserDir(dir: String): ScoobiConfiguration
   def addUserDirs(dirs: Seq[String]): ScoobiConfiguration
-  def addClassLoader(classLoader: ClassLoader): ScoobiConfiguration
+  def addClassLoader(classLoader: ScalaClassLoader): ScoobiConfiguration
   def isRemote: Boolean
   def isLocal: Boolean
   def isInMemory: Boolean
