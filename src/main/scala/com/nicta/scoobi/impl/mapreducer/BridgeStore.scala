@@ -99,7 +99,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
       val fs = FileSystem.get(path.toUri, sc)
       val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
+        new SequenceFile.Reader(fs, stat.getPath, sc.configuration)
       }
 
       val key = NullWritable.get
