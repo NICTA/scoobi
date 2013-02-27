@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html">Advanced</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Advanced Notes</title><a name="Advanced+Notes"><h2 specId="1683902488">Advanced Notes</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Configuration+Options"><h3>Configuration Options</h3></a><p>Scoobi allows you to configure a few useful runtime settings:</p>
+                       <div class="col1"><div id="central"><title>Advanced Notes</title><a name="Advanced+Notes"><h2 specId="299734038">Advanced Notes</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Configuration+Options"><h3>Configuration Options</h3></a><p>Scoobi allows you to configure a few useful runtime settings:</p>
 <ul>
   <li>Use a non-standard working directory by passing <code class="prettyprint">-Dscoobi.workdir</code> to a <code class="prettyprint">ScoobiApp</code></li>
   <li>Set an upper-bound on the amount of reducers scoobi will use with <code class="prettyprint">ScoobiConfiguration.setMaxReducers</code></li>
@@ -72,8 +72,8 @@
   <li>Set the amount of reducers scoobi picks, with <code class="prettyprint">ScoobiConfiguration.setBytesPerReducer</code> (Note: this is based on the input to a MapReduce job, not the input to the reducer. Default is 1GiB)</li>
 </ul><p>Look in <code class="prettyprint">ScoobiConfiguration</code> for other useful runtime configuration options</p><a name="Static+References"><h3>Static References</h3></a><p>Values or objects that are behind a final static variable or reference won't get serialised properly. They get serialised in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a <code class="prettyprint">val</code> to a <code class="prettyprint">var</code> (especially considering variables are not shared between map-reduce jobs)</p><a name="DList+Covariance"><h3>DList Covariance</h3></a><p>At the moment DList is not covariant (that is, a <code class="prettyprint">DList[Apple]</code> is not a <code class="prettyprint">DList[Fruit]</code>). This is something we're slowly working on, but is quite a large issue because of its flow-on effects</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1189961117"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="612015103"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1779859946"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1897465981"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -83,7 +83,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1768673309"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1459945788"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -97,7 +97,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1319812141"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="2109295167"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materialising">Materialising</a>
@@ -111,7 +111,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1779408456"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="251941110"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -143,7 +143,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1542923582"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1456460106"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -155,7 +155,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1703408020"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="605358893"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -163,7 +163,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="641945593"><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1098189537"><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Loading">Loading</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Persisting">Persisting</a>
@@ -175,7 +175,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="423086909"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="383310624"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -191,7 +191,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="440948284"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="183215103"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -213,7 +213,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Logging">Logging</a>
             
           </li></ul>
-          </li><li id="1766816778"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="1319098503"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -241,7 +241,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1440755608"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="71120756"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -257,7 +257,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1683902488"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="299734038"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -265,7 +265,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1230902798"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1067991082"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -279,7 +279,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1189961117','1683902488'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1779859946','299734038'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
