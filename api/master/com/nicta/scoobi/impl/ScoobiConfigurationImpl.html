@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="userJars">userJars: Set[String]</span>, <span name="userDirs">userDirs: Set[String]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>, <span name="userJars">userJars: Set[String]</span>, <span name="userDirs">userDirs: Set[String]</span>, <span name="classLoader">classLoader: <span name="scala.Option" class="extype">Option</span>[<span name="scala.tools.nsc.util.ScalaClassLoader" class="extype">ScalaClassLoader</span>]</span>)</span><span class="result"> extends <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span> = <span name="new org.apache.hadoop.conf.Configuration()" class="defval">...</span></span>, <span name="userJars">userJars: Set[String] = <span name="scala.this.Predef.Set.apply[String]()" class="defval">...</span></span>, <span name="userDirs">userDirs: Set[String] = <span name="scala.this.Predef.Set.apply[String]()" class="defval">...</span></span>)</span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span> = <span name="new org.apache.hadoop.conf.Configuration()" class="defval">...</span></span>, <span name="userJars">userJars: Set[String] = <span name="scala.this.Predef.Set.apply[String]()" class="defval">...</span></span>, <span name="userDirs">userDirs: Set[String] = <span name="scala.this.Predef.Set.apply[String]()" class="defval">...</span></span>, <span name="classLoader">classLoader: <span name="scala.Option" class="extype">Option</span>[<span name="scala.tools.nsc.util.ScalaClassLoader" class="extype">ScalaClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span>
       </span>
       </h4>
       
@@ -138,6 +138,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#addClassLoader" data-isabs="false">
+      <a id="addClassLoader(ScalaClassLoader):ScoobiConfigurationImpl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addClassLoader</span><span class="params">(<span name="cl">cl: <span name="scala.tools.nsc.util.ScalaClassLoader" class="extype">ScalaClassLoader</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="">ScoobiConfigurationImpl</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">attach a classloader which classes must be put on the job classpath
+</p><div class="fullcomment"><div class="comment cmt"><p>attach a classloader which classes must be put on the job classpath
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="">ScoobiConfigurationImpl</a> → <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#addJar" data-isabs="false">
       <a id="addJar(String):ScoobiConfigurationImpl"></a>
       <h4 class="signature">
@@ -232,6 +246,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="">ScoobiConfigurationImpl</a> → Equals</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#classLoader" data-isabs="false">
+      <a id="classLoader:Option[ScalaClassLoader]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">classLoader</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[<span name="scala.tools.nsc.util.ScalaClassLoader" class="extype">ScalaClassLoader</span>]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -971,6 +997,18 @@ because all the paths will depend on that
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the dependent jars have been uploaded
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="">ScoobiConfigurationImpl</a> → <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#userClasses" data-isabs="false">
+      <a id="userClasses:Map[String, Array[Byte]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userClasses</span><span class="result">: Map[String, <span name="scala.Array" class="extype">Array</span>[<span name="scala.Byte" class="extype">Byte</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>user classes to add in the job jar, by class name (and corresponding bytecode)</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="">ScoobiConfigurationImpl</a> → <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../core/ScoobiConfiguration.html">ScoobiConfiguration</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#userDirs" data-isabs="false">
       <a id="userDirs:Set[String]"></a>
       <h4 class="signature">

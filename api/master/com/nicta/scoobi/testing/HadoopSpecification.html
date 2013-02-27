@@ -2289,14 +2289,14 @@
       </h4>
       <p class="shortcomment cmt">default configuration</p><div class="fullcomment"><div class="comment cmt"><p>default configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="../application/ScoobiAppConfiguration.html">ScoobiAppConfiguration</a> → <a name="com.nicta.scoobi.application.ClusterConfiguration" class="extype" href="../application/ClusterConfiguration.html">ClusterConfiguration</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiAppConfiguration#configurationFromConfigurationDirectory" data-isabs="false">
-      <a id="configurationFromConfigurationDirectory:Configuration"></a>
+      <a id="configurationFromConfigurationDirectory(Configuration):Configuration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configurationFromConfigurationDirectory</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+        <span class="name">configurationFromConfigurationDirectory</span><span class="params">(<span name="conf">conf: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="../application/ScoobiAppConfiguration.html">ScoobiAppConfiguration</a></dd></dl></div>
@@ -6035,6 +6035,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiAppConfiguration#setConfiguration" data-isabs="false">
+      <a id="setConfiguration(Configuration):Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setConfiguration</span><span class="params">(<span name="c">c: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">set the default configuration, depending on the arguments</p><div class="fullcomment"><div class="comment cmt"><p>set the default configuration, depending on the arguments</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.application.ScoobiAppConfiguration" class="extype" href="../application/ScoobiAppConfiguration.html">ScoobiAppConfiguration</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.InMemoryHadoop#setLogFactory" data-isabs="false">
       <a id="setLogFactory(String):Unit"></a>
       <h4 class="signature">
