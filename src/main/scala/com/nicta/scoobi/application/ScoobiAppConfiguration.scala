@@ -47,17 +47,20 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
   protected lazy val HADOOP_COMMAND = "which hadoop".lines_!.headOption
 
   /** default configuration */
-  implicit def configuration: ScoobiConfiguration = {
-    if (useHadoopConfDir) ScoobiConfiguration(configurationFromConfigurationDirectory)
-    else                  ScoobiConfiguration()
+  implicit def configuration: ScoobiConfiguration = ScoobiConfiguration(setConfiguration(new Configuration))
+
+  /** set the default configuration, depending on the arguments */
+  def setConfiguration(c: Configuration) =  {
+    if (useHadoopConfDir) configurationFromConfigurationDirectory(c)
+    else                  c
   }
 
-  def configurationFromConfigurationDirectory = {
+  def configurationFromConfigurationDirectory(conf: Configuration) = {
     val hadoopHomeDir =
       HADOOP_COMMAND.map(_.replaceAll("/bin/hadoop$", "").debug("got the hadoop directory from the hadoop executable")).
         getOrElse(HADOOP_HOME.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")))
 
-    val conf = new Configuration
+    conf.clear
     Seq("conf", "etc").map(d => hadoopHomeDir+"/"+d+"/").foreach { dir =>
       Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
         if (new File(dir+r).exists) {

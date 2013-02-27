@@ -203,5 +203,11 @@ A special kind of application is the REPL. In order to use the Scoobi REPL you n
 
     java -cp <all your jars here> com.nicta.scoobi.application.ScoobiRepl
 
+Once the REPL is initialized, you can start jobs by simply running `DLists`:
+
+    scoobi> DList(1, 2, 3).run
+
+The default execution mode is using the Cluster with the configuration found in `$HADOOP_HOME/conf` (if any). It is possible to switch between different execution modes by invoking `inmemory`, `local` at the prompt (and `cluster` to come back to the cluster execution mode). Note also that the `ScoobiConfiguration` is accessible with the `configuration` variable.
+
   """
 }
