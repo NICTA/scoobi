@@ -27,6 +27,7 @@ import monitor.Loggable._
 import org.apache.commons.logging.LogFactory
 
 import control.Exceptions._
+import tools.nsc.util.ScalaClassLoader
 
 /**
  * Utility methods for accessing classes and methods
@@ -98,6 +99,14 @@ trait Classes {
   /** Return the class file path string as specified in a JAR for a given class name. */
   def filePath(className: String): String =
     className.replaceAll("\\.", "/") + ".class"
+
+  /** @return the classes contained in a class loader, by class name */
+  def loadedClasses(classLoader: ScalaClassLoader) = {
+    val classesField = classOf[ClassLoader].getDeclaredField("classes")
+    classesField.setAccessible(true)
+    val classes = asScalaBuffer(classesField.get(classLoader).asInstanceOf[java.util.List[Class[_]]])
+    Map(classes.map(klass => (klass.getName, classLoader.classBytes(klass.getName))):_*)
+  }
 
   /** @return the file path corresponding to a full URL */
   private def filePath(url: URL): String =

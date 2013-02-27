@@ -33,6 +33,7 @@ trait ScoobiConfiguration {
   def conf: Configuration = configuration
   def userJars: Set[String]
   def userDirs: Set[String]
+  def userClasses: Map[String, Array[Byte]]
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration
   def loadDefaults: ScoobiConfiguration
   def includeLibJars(jars: Seq[URL]): ScoobiConfiguration
@@ -42,6 +43,7 @@ trait ScoobiConfiguration {
   def addJarByClass(clazz: Class[_]): ScoobiConfiguration
   def addUserDir(dir: String): ScoobiConfiguration
   def addUserDirs(dirs: Seq[String]): ScoobiConfiguration
+  def addClassLoader(classLoader: ClassLoader): ScoobiConfiguration
   def isRemote: Boolean
   def isLocal: Boolean
   def isInMemory: Boolean

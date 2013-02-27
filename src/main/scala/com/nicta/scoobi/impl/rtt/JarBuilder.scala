@@ -70,7 +70,7 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
 
   /** Add a single class to the JAR where its bytecode is given directly. */
   def addClassFromBytecode(className: String, bytecode: Array[Byte]) {
-    addEntryFromStream(className + ".class", new ByteArrayInputStream(bytecode))
+    addEntryFromStream(className.replace(".", "/") + ".class", new ByteArrayInputStream(bytecode))
   }
 
   /** Add a class to the JAR that was generated at runtime. */

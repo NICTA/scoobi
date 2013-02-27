@@ -3,9 +3,9 @@ package application
 
 import org.apache.hadoop.fs._
 import scala.tools.nsc.Settings
-import scala.tools.nsc.interpreter.ILoop
+import tools.nsc.interpreter.{AbstractFileClassLoader, ILoop}
 import core.ScoobiConfiguration
-
+import scala.collection.JavaConversions._
 
 /** A REPL for Scoobi.
   *
@@ -14,36 +14,36 @@ import core.ScoobiConfiguration
   * You're now good to go!! */
 object ScoobiRepl extends ScoobiApp with ReplFunctions {
 
-
   class ScoobiILoop extends ILoop {
     addThunk { intp.beQuietDuring {
       intp.addImports("java.lang.Math._")
       intp.addImports("com.nicta.scoobi.Scoobi._")
       intp.addImports("com.nicta.scoobi.application.ScoobiRepl._")
       intp.addImports("scala.collection.JavaConversions._")
+      configuration.addClassLoader(intp.classLoader)
+      woof()
     }}
   }
 
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
-    settings.deprecation.value = true
 
     new ScoobiILoop().process(settings)
-    woof()
   }
 
   def woof() {
+    println(splash)
     configuration.jobNameIs("REPL")
     configureForCluster
-    println(splash)
   }
 
   override def jars = hadoopClasspathJars
   override def useHadoopConfDir = true
 
   lazy val splash: String =
-    """|                                                     |\
+    """|
+       |                                                     |\
        |                                             /    /\/o\_
        |                              __    _       (.-.__.(   __o
        |       ______________  ____  / /_  (_)   /\_(      .----'
