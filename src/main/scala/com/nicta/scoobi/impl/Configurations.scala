@@ -60,7 +60,7 @@ trait Configurations {
      * remove redundant values if there are any
      */
     def addValues(key: String, values: Seq[String], separator: String): Configuration = {
-      conf.set(key, (toMap.get(key).toSeq.flatMap(_.split(separator)) ++ values).distinct.mkString(separator))
+      conf.set(key, (toMap.get(key).toSeq.flatMap(_.split(separator)).filterNot(_.trim.isEmpty) ++ values).distinct.mkString(separator))
       conf
     }
 

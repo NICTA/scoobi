@@ -197,5 +197,17 @@ By default, when extending the `Hadoop` trait, Hadoop and Scoobi logs will be sh
 
 Note that logs can be turned off by using the 'quiet' argument:  `run-main mypackage.MyApp [ARGS] -- scoobi quiet` (you can also override the `quiet` method to return `true`)
 
+### REPL
+
+A special kind of application is the REPL. In order to use the Scoobi REPL you need to create a Java script with the classpath of all the jars you are using invoking the `ScoobiRepl` class:
+
+    java -cp <all your jars here> com.nicta.scoobi.application.ScoobiRepl
+
+Once the REPL is initialized, you can start jobs by simply running `DLists`:
+
+    scoobi> DList(1, 2, 3).run
+
+The default execution mode is using the Cluster with the configuration found in `$HADOOP_HOME/conf` (if any). It is possible to switch between different execution modes by invoking `inmemory`, `local` at the prompt (and `cluster` to come back to the cluster execution mode). Note also that the `ScoobiConfiguration` is accessible with the `configuration` variable.
+
   """
 }

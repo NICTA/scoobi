@@ -36,10 +36,13 @@ import Configurations._
 import FileSystems._
 import monitor.Loggable._
 import org.apache.hadoop.mapreduce.Job
+import scala.Some
+import tools.nsc.util.ScalaClassLoader
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
-                                   var userDirs: Set[String] = Set()) extends ScoobiConfiguration {
+                                   var userDirs: Set[String] = Set(),
+                                   var classLoader: Option[ScalaClassLoader] = None) extends ScoobiConfiguration {
 
   /**
    * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
@@ -114,6 +117,9 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     this
   }
 
+  /** @return user classes to add in the job jar, by class name (and corresponding bytecode) */
+  def userClasses: Map[String, Array[Byte]] = classLoader.map(Classes.loadedClasses).getOrElse(Map())
+
   /**
    * add a new jar url (as a String) to the current configuration
    */
@@ -144,6 +150,11 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   /**
+   * attach a classloader which classes must be put on the job classpath
+   */
+  def addClassLoader(cl: ScalaClassLoader) = { classLoader = Some(cl); this }
+
+  /**
    * @return true if this configuration is used for a remote job execution
    */
   def isRemote = mode == Mode.Cluster
@@ -162,7 +173,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
    * set a flag in order to know that this configuration is for a in-memory, local or remote execution,
    */
   def modeIs(mode: Mode.Value) = {
-    logger.debug("setting the scoobi execution mode as "+mode)
+    logger.debug("setting the scoobi execution mode: "+mode)
 
     set(SCOOBI_MODE, mode.toString)
     this
@@ -230,13 +241,20 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * force a configuration to be an in-memory one, currently doing everything as in the local mode
    */
-  def setAsInMemory: ScoobiConfiguration = setAsLocal
+  def setAsInMemory: ScoobiConfiguration = {
+    logger.debug("setting the ScoobiConfiguration as InMemory")
+    setDefaultForInMemoryAndLocal
+  }
+
   /**
    * force a configuration to be a local one
    */
   def setAsLocal: ScoobiConfiguration = {
-    logger.debug("setting the ScoobiConfiguration as local ")
+    logger.debug("setting the ScoobiConfiguration as Local")
+    setDefaultForInMemoryAndLocal
+  }
 
+  private def setDefaultForInMemoryAndLocal = {
     jobNameIs(getClass.getSimpleName)
     set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
     set("mapred.job.tracker", "local")
@@ -291,7 +309,8 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 
   def duplicate = {
     val c = new Configuration(configuration)
-    ScoobiConfigurationImpl(c).addUserDirs(userDirs.toSeq).addJars(userJars.toSeq)
+    val duplicated = ScoobiConfigurationImpl(c).addUserDirs(userDirs.toSeq).addJars(userJars.toSeq)
+    classLoader.map(duplicated.addClassLoader).getOrElse(duplicated)
   }
 }
 

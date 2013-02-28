@@ -79,7 +79,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     }
   }
 
-  private def parseHadoopArguments(arguments: Array[String]) {
+  protected def parseHadoopArguments(arguments: Array[String]) {
     // arguments need to be stored before the configuration is even created
     // so that we know if configuration files must be read or not
     set(arguments)
