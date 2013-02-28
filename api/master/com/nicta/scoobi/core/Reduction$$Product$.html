@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.lib.InMemDenseVector</title>
+          <title>com.nicta.scoobi.core.Reduction.Product</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -12,27 +12,27 @@
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
       <div id="definition">
-        <a title="Go to companion" href="InMemDenseVector$.html"><img src="../../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.lib" class="extype" href="package.html">lib</a></p>
-        <h1><a title="Go to companion" href="InMemDenseVector$.html">InMemDenseVector</a></h1>
+        <img src="../../../../lib/object_big.png" />
+        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a>.<a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction$.html">Reduction</a></p>
+        <h1>Product</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">InMemDenseVector</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="data">data: DObject[IndexedSeq[T]]</span>, <span name="evidence$16">evidence$16: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">Product</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>An efficient, dense vector that needs to be small enough to fit in memory. It must be indexed by an int
+      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>Reductions that perform multiplication.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -46,7 +46,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.lib.InMemDenseVector" class="in"><span>InMemDenseVector</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.Product" class="in"><span>Product</span></li><li name="scala.Equals" class="in"><span>Equals</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.Reduction.Product" class="in"><span>Product</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -56,22 +56,7 @@
 
       <div id="template">
         <div id="allMembers">
-        <div class="members" id="constructors">
-              <h3>Instance Constructors</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#this" data-isabs="false">
-      <a id="this:InMemDenseVector[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">InMemDenseVector</span><span class="params">(<span name="data">data: DObject[IndexedSeq[T]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[T]</span>)</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -151,30 +136,54 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#byMatrix" data-isabs="false">
-      <a id="byMatrix[V, Q](DColWiseMatrix[Int, V],Q,(T, V) ⇒ Q,Reduction[Q])(WireFormat[V],WireFormat[Q]):InMemDenseVector[Q]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#bigint" data-isabs="false">
+      <a id="bigint:Reduction[BigInt]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">byMatrix</span><span class="tparams">[<span name="V">V</span>, <span name="Q">Q</span>]</span><span class="params">(<span name="m">m: <a name="com.nicta.scoobi.lib.DColWiseMatrix" class="extype" href="DColWiseMatrix.html">DColWiseMatrix</a>[<span name="scala.Int" class="extype">Int</span>, V]</span>, <span name="zero">zero: Q</span>, <span name="mult">mult: (T, V) ⇒ Q</span>, <span name="add">add: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="../core/Reduction.html">Reduction</a>[Q]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[V]</span>, <span name="arg1">arg1: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="../core/WireFormat.html">WireFormat</a>[Q]</span>)</span><span class="result">: <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a>[Q]</span>
+        <span class="name">bigint</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[BigInt]</span>
       </span>
       </h4>
-      
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#canEqual" data-isabs="false">
-      <a id="canEqual(Any):Boolean"></a>
+      <p class="shortcomment cmt">Reduction on big integers by multiplication.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#biginteger" data-isabs="false">
+      <a id="biginteger:Reduction[BigInteger]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">canEqual</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">biginteger</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="java.math.BigInteger" class="extype">BigInteger</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → Equals</dd></dl></div>
+      <p class="shortcomment cmt">Reduction on java big integers by multiplication.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#byte" data-isabs="false">
+      <a id="byte:Reduction[Byte]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">byte</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Byte" class="extype">Byte</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reduction on bytes by multiplication.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#char" data-isabs="false">
+      <a id="char:Reduction[Char]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">char</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Char" class="extype">Char</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reduction on chars by multiplication.</p>
     </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
@@ -190,18 +199,18 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#data" data-isabs="false">
-      <a id="data:DObject[IndexedSeq[T]]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#digit" data-isabs="false">
+      <a id="digit:Reduction[Digit]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">data</span><span class="result">: DObject[IndexedSeq[T]]</span>
+        <span class="name">digit</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Digit" class="extype">Digit</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Reduction on digits by multiplication.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -214,7 +223,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#equals" data-isabs="false">
+    </li><li visbl="pub" name="scala.AnyRef#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -225,7 +234,7 @@
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → Equals → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
       <a id="finalize():Unit"></a>
       <h4 class="signature">
@@ -253,7 +262,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#hashCode" data-isabs="false">
+    </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
       <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -264,7 +273,19 @@
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#int" data-isabs="false">
+      <a id="int:Reduction[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Int" class="extype">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reduction on integers by multiplication.</p>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -277,6 +298,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#long" data-isabs="false">
+      <a id="long:Reduction[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">long</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Long" class="extype">Long</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reduction on longs by multiplication.</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -313,54 +346,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#productArity" data-isabs="false">
-      <a id="productArity:Int"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction.Product#short" data-isabs="false">
+      <a id="short:Reduction[Short]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">productArity</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">short</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Short" class="extype">Short</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → Product</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#productElement" data-isabs="false">
-      <a id="productElement(Int):Any"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">productElement</span><span class="params">(<span name="arg0">arg0: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Any" class="extype">Any</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → Product</dd></dl></div>
-    </li><li visbl="pub" name="scala.Product#productIterator" data-isabs="false">
-      <a id="productIterator:Iterator[Any]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">productIterator</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#productPrefix" data-isabs="false">
-      <a id="productPrefix:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">productPrefix</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → Product</dd></dl></div>
+      <p class="shortcomment cmt">Reduction on shorts by multiplication.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -373,7 +370,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.lib.InMemDenseVector#toString" data-isabs="false">
+    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -381,10 +378,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: String</span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="">InMemDenseVector</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -433,37 +430,11 @@
     </li></ol>
             </div>
 
-        <div class="values members" id="values">
-              <h3>Deprecated Value Members</h3>
-              <ol><li visbl="pub" name="scala.Product#productElements" data-isabs="false">
-      <a id="productElements:Iterator[Any]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 2.8.0) use productIterator instead">productElements</span><span class="result">: Iterator[<span name="scala.Any" class="extype">Any</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Product</dd><dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.8.0)</i> use productIterator instead</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.Serializable" class="parent">
-              <h3>Inherited from <span name="scala.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="java.io.Serializable" class="parent">
-              <h3>Inherited from <span name="java.io.Serializable" class="extype">Serializable</span></h3>
-            </div><div name="scala.Product" class="parent">
-              <h3>Inherited from <span name="scala.Product" class="extype">Product</span></h3>
-            </div><div name="scala.Equals" class="parent">
-              <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
