@@ -296,6 +296,18 @@ $HADOOP_HOME/conf directory.</p>
       </h4>
       <p class="comment cmt">This trait can be mixed in an Application trait in order to store command-line arguments before any code is executed
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiInterpreter" data-isabs="true">
+      <a id="ScoobiInterpreter:ScoobiInterpreter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScoobiInterpreter.html"><span class="name">ScoobiInterpreter</span></a><span class="result"> extends ScoobiApp with ReplFunctions</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait can be extended if you want to provide alternative imports or behaviors</p>
     </li><li visbl="pub" name="com.nicta.scoobi.application.ScoobiUserArgs" data-isabs="true">
       <a id="ScoobiUserArgs:ScoobiUserArgs"></a>
       <h4 class="signature">
@@ -444,7 +456,7 @@ $HADOOP_HOME/conf directory.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiRepl$.html"><span class="name">ScoobiRepl</span></a><span class="result"> extends ScoobiApp with ReplFunctions</span>
+        <a href="ScoobiRepl$.html"><span class="name">ScoobiRepl</span></a><span class="result"> extends ScoobiInterpreter</span>
       </span>
       </h4>
       <p class="comment cmt">A REPL for Scoobi.</p>
