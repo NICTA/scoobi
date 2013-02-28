@@ -58,7 +58,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /**Apply an associative function to reduce the collection of values to a single value in a
    * key-value-collection distributed list. */
-  def combine[K, V](f: (V, V) => V)(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wv: WireFormat[V]): DList[(K, V)]
+  def combine[K, V](f: Reduction[V])(implicit ev: A <:< (K, Iterable[V]), wk: WireFormat[K], wv: WireFormat[V]): DList[(K, V)]
 
   @deprecated(message="use materialise instead", since="0.6.0")
   def materialize: DObject[Iterable[A]] = materialise
@@ -207,13 +207,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * Reduce the elements of this distributed list using the specified associative binary operator. The
    * order in which the elements are reduced is unspecified and may be non-deterministic
    */
-  def reduce(op: (A, A) => A): DObject[A] = reduceOption(op).map(_.getOrElse(sys.error("the reduce operation is called on an empty list")))
+  def reduce(op: Reduction[A]): DObject[A] = reduceOption(op).map(_.getOrElse(sys.error("the reduce operation is called on an empty list")))
 
   /**
    * Reduce the elements of this distributed list using the specified associative binary operator and a default value if
    * the list is empty. The order in which the elements are reduced is unspecified and may be non-deterministic
    */
-  def reduceOption(op: (A, A) => A): DObject[Option[A]] = {
+  def reduceOption(op: Reduction[A]): DObject[Option[A]] = {
     /* First, perform in-mapper combining. */
     val imc: DList[A] = parallelDo(new DoFn[A, A] {
       var acc: A = _
@@ -240,10 +240,12 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   }
 
   /**Multiply up the elements of this distribute list. */
-  def product(implicit num: Numeric[A]): DObject[A] = reduceOption(num.times).map(_.getOrElse(num.one))
+  def product(implicit num: Numeric[A]): DObject[A] =
+    reduceOption(Reduction(num.times)) map (_ getOrElse num.one)
 
   /**Sum up the elements of this distribute list. */
-  def sum(implicit num: Numeric[A]): DObject[A] = reduceOption(num.plus).map(_.getOrElse(num.zero))
+  def sum(implicit num: Numeric[A]): DObject[A] =
+    reduceOption(Reduction(num.plus)) map (_ getOrElse num.zero)
 
   /**The length of the distributed list. */
   def length: DObject[Int] = map(_ => 1).sum
@@ -255,18 +257,20 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def count(p: A => Boolean): DObject[Int] = filter(p).length
 
   /**Find the largest element in the distributed list. */
-  def max(implicit cmp: Ordering[A]): DObject[A] = reduce((x, y) => if (cmp.gteq(x, y)) x else y)
+  def max(implicit cmp: Ordering[A]): DObject[A] =
+    reduce(Reduction.maximumS)
 
   /**Find the largest element in the distributed list. */
   def maxBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
-    reduce((x, y) => if (cmp.gteq(f(x), f(y))) x else y)
+    reduce(Reduction.maximumS(cmp on f))
 
   /**Find the smallest element in the distributed list. */
-  def min(implicit cmp: Ordering[A]): DObject[A] = reduce((x, y) => if (cmp.lteq(x, y)) x else y)
+  def min(implicit cmp: Ordering[A]): DObject[A] =
+    reduce(Reduction.minimumS)
 
   /**Find the smallest element in the distributed list. */
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
-    reduce((x, y) => if (cmp.lteq(f(x), f(y))) x else y)
+    reduce(Reduction.minimumS(cmp on f))
 
   private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
     val dofn = new BasicDoFn[A, B] {

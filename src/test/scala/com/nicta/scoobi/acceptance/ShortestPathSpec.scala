@@ -19,6 +19,7 @@ package acceptance
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
 import ShortestPath._
+import core.Reduction
 
 class ShortestPathSpec extends NictaSimpleJobs {
 
@@ -79,9 +80,9 @@ object ShortestPath {
       }
     }
 
-    val firstCombiner = firstMap.groupByKey.combine { (n1: NodeInfo, n2: NodeInfo) =>
+    val firstCombiner = firstMap.groupByKey.combine(Reduction( (n1: NodeInfo, n2: NodeInfo) =>
       NodeInfo(if (n1.edges.isEmpty) n2.edges else n1.edges, furthest(n1.state, n2.state))
-    }
+    ))
     if (depth > 1) breadthFirst(firstCombiner, depth-1)
     else           firstCombiner
   }

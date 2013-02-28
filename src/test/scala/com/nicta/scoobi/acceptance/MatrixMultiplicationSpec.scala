@@ -31,10 +31,12 @@ import org.scalacheck.Prop
 import testing.mutable.NictaSimpleJobs
 import lib.{DMatrix, LinearAlgebra}
 import Scoobi._
+import core.Reduction, Reduction._
 
 import java.util.Random
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
+  /*
   skipAll
   "Sparse Int Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
     Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk -> 1)
@@ -184,4 +186,5 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
       print("(" + row + "," + col + ")=" + matrix.getEntry(row, col) + " | ")
     }
   }
+  */
 }
