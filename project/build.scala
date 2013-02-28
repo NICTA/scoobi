@@ -201,7 +201,7 @@ object build extends Build {
       setReleaseVersion,
       commitReleaseVersion,
       updateLicences,
-      generateUserGuide,
+      generateIndex,
       generateReadMe,
       publishSite,
       publishSignedArtifacts,
@@ -215,7 +215,6 @@ object build extends Build {
     ),
     releaseSnapshotProcess := Seq[ReleaseStep](
       generateUserGuide,
-      generateReadMe,
       publishSite,
       publishSignedArtifacts,
       publishForCDH3),
@@ -249,9 +248,9 @@ object build extends Build {
    * DOCUMENTATION
    */
   lazy val documentationSettings =
-    testTaskDefinition(generateUserGuideTask, Seq(Tests.Filter(_.endsWith("Index")), Tests.Argument("html"))) ++
+    testTaskDefinition(generateUserGuideTask, Seq(Tests.Filter(_.endsWith("UserGuide")), Tests.Argument("html"))) ++
     testTaskDefinition(generateReadMeTask, Seq(Tests.Filter(_.endsWith("ReadMe")), Tests.Argument("markup"))) ++
-    testTaskDefinition(checkUrlsTask, Seq(Tests.Filter(_.endsWith("Index")), Tests.Argument("html", "checkurls")))
+    testTaskDefinition(generateIndexTask, Seq(Tests.Filter(_.endsWith("Index")), Tests.Argument("html", "checkurls")))
 
   lazy val updateLicences = ReleaseStep { st =>
     st.log.info("Updating the license headers")
@@ -272,8 +271,8 @@ object build extends Build {
     commitCurrent("updated the README file")(st2)
   }
 
-  lazy val checkUrlsTask = TaskKey[Tests.Output]("check-urls", "check the User Guide urls")
-  lazy val checkUrls     = executeStepTask(checkUrlsTask, "Checking the urls of the User Guide", Test)
+  lazy val generateIndexTask = TaskKey[Tests.Output]("generate-index", "generate the index page, the User Guide and check the User Guide urls")
+  lazy val generateIndex     = executeStepTask(generateIndexTask, "Generating the index, the User Guide and checking the urls of the User Guide", Test)
 
   lazy val publishSite = ReleaseStep { st: State =>
     val st2 = executeStepTask(makeSite, "Making the site")(st)
