@@ -69,7 +69,7 @@ object build extends Build {
       "javassist" % "javassist" % "3.12.1.GA",
       "org.apache.avro" % "avro-mapred" % "1.7.3.1",
       "org.apache.avro" % "avro" % "1.7.3.1",
-      "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive(),
+      "com.thoughtworks.xstream" % "xstream" % "1.4.4" intransitive(),
       "com.googlecode.kiama" %% "kiama" % "1.4.0",
       "com.github.mdr" %% "ascii-graphs" % "0.0.2",
       "org.scalaz" %% "scalaz-core" % "7.0.0-M8",

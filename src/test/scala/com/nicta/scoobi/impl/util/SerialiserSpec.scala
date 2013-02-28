@@ -19,14 +19,25 @@ package util
 
 import testing.mutable.UnitSpecification
 import org.apache.hadoop.conf.Configuration
-import java.io.ByteArrayOutputStream
+import java.io.{OutputStream, InputStream, ByteArrayInputStream, ByteArrayOutputStream}
 
 class SerialiserSpec extends UnitSpecification {
   "it is possible to serialize a configuration object without its classloader" >> {
-    val configuration = new Configuration
-    val out = new ByteArrayOutputStream
+    serialise(new Configuration).toString must not contain("classLoader")
+  }
 
-    Serialiser.serialise(configuration, out)
-    out.toString must not contain("classLoader")
+  "a serialised object must not failed to be serialised even with unicode characters" >> {
+    deserialise(serialise("abc\001")) === "abc\001"
+  }
+
+  def serialise(a: Any): ByteArrayOutputStream = {
+    val out = new ByteArrayOutputStream
+    Serialiser.serialise(a, out)
+    out
+  }
+
+  def deserialise(in: ByteArrayOutputStream): Any = {
+    val input = new ByteArrayInputStream(in.toByteArray)
+    Serialiser.deserialise(input)
   }
 }
