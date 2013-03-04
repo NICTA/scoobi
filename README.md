@@ -1,7 +1,4 @@
-
-                   
-                     
-                       ## Welcome!
+## Welcome!
 ## ReadMe
 
 [Hadoop MapReduce](http://hadoop.apache.org/) is awesome, but it seems a little bit crazy when you have to write [this](http://wiki.apache.org/hadoop/WordCount) to count words. Wouldn't it be nicer if you could simply write what you want to do:
