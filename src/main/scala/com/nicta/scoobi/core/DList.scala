@@ -93,7 +93,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       emitter.emit(_)
     })
 
-  @deprecated(message = "use mapFlatten instead because a 'real' flatMap operation would be A => DList[B]", since = "0.7.0")
+  @deprecated(message = "use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A => DList[B]", since = "0.7.0")
   def flatMap[B : WireFormat](f: A => Iterable[B]): DList[B] = mapFlatten(f)
 
   /**
