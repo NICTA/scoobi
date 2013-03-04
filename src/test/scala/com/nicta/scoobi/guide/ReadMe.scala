@@ -25,7 +25,7 @@ import ScoobiVariables._
  */
 class ReadMe extends Specification { def is =
   "Welcome!".title.urlIs("README.md") ^
-  ReadMe
+  inline(ReadMe)
 }
 
 object ReadMe extends ScoobiPage { def is = args.report(notoc=true) ^
