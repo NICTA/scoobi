@@ -7,7 +7,7 @@ scalaVersion := "2.9.2"
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 libraryDependencies ++= 
-  Seq("com.nicta" %% "scoobi" % "0.6.2-cdh4",
+  Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT",
       "org.scala-lang" % "scala-swing" % "2.9.2",
       "jfree" % "jfreechart" % "1.0.13",
       "jfree" % "jcommon" % "1.0.16",

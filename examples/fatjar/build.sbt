@@ -12,7 +12,7 @@ scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 
 libraryDependencies ++= Seq(
-  "com.nicta" %% "scoobi" % "0.6.2-cdh4" intransitive(),
+  "com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT" intransitive(),
   "javassist" % "javassist" % "3.12.1.GA",
   "org.apache.avro" % "avro-mapred" % "1.7.3.1",
   "org.apache.avro" % "avro" % "1.7.3.1",
