@@ -174,7 +174,6 @@ class ReductionSpec extends NictaSimpleJobs {
       }
 
     }
-    List(a.compareTo(6) > 0, a.compareTo(7) > 0, a.compareTo(8) < 0, a.compareTo(9) < 0) forall (z => z)
   }
 
 }
