@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import core.WireFormat
+import core.{ScoobiConfiguration, WireFormat}
 import WireFormat._
 import impl.collection._
 
@@ -113,9 +113,9 @@ trait InputsOutputs {
   /** implicit definition to add a checkpoint method to a DList */
   implicit def setCheckpoint[T](dl: core.DList[T]): SetCheckpoint[T] = new SetCheckpoint(dl)
   case class SetCheckpoint[T](dl: core.DList[T]) {
-    def checkpoint(name: String) = dl.updateSinks { sinks =>
+    def checkpoint(implicit sc: ScoobiConfiguration) = dl.updateSinks { sinks =>
       sinks match {
-        case ss :+ sink => ss :+ sink.checkpoint(name: String)
+        case ss :+ sink => ss :+ sink.checkpoint
         case ss         => ss
       }
     }

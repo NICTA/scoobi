@@ -5,11 +5,13 @@ import testing.mutable.NictaSimpleJobs
 import testing.{TestFiles, TempFiles}
 import Scoobi._
 import impl.plan.comp.CompNodeData._
-import TestFiles._
+import testing.TestFiles._
 import CheckpointEvaluations1._
 import java.io.File
+import core.Reduction
+import Reduction._
 
-class CheckpointSpec  extends NictaSimpleJobs with ResultFiles { sequential
+class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 
   "1. It is possible to add checkpoint files which are reused on a subsequent run" >> { implicit sc: SC =>
     checkEvaluations()
@@ -17,6 +19,12 @@ class CheckpointSpec  extends NictaSimpleJobs with ResultFiles { sequential
 
   "2. A checkpoint must be used when the program is restarted" >> { implicit sc: SC =>
     checkEvaluations(restart = true)
+  }
+
+  "3. A checkpoint must work after a group by key" >> { implicit sc: SC =>
+    val sink = TempFiles.createTempDir("test")
+    val list = DList(1, 2, 3).map(i => (i.toString, i + 1)).toAvroFile(path(sink)(configuration), overwrite = true).checkpoint
+    list.groupByKey.combine(Sum.int).run.normalise === "Vector((1,2), (2,3), (3,4))"
   }
 
   def checkEvaluations(restart: Boolean = false)(implicit sc: SC) = {
@@ -43,7 +51,7 @@ class CheckpointSpec  extends NictaSimpleJobs with ResultFiles { sequential
     val list = DList(1, 2, 3).map { i =>
       if (i == 1) { evaluationsNb1 += 1 }
       "i"+i
-    }.toAvroFile(path(sink)(configuration), overwrite = true).checkpoint("name")
+    }.toAvroFile(path(sink)(configuration), overwrite = true).checkpoint
 
     val list2 = list.map(_ + "1")
     list2.run(configuration)

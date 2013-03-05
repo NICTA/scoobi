@@ -144,17 +144,16 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
   }
 
-  "10. iterated computations" >> {
-    "10.1 iterate 3 times on a DList while saving intermediate outputs" >> { implicit sc: SC =>
-      val ints = DList(13, 5, 8, 11, 12)
-      val out = createTempDir("out")
-      def iterate(list: DList[Int]): DList[Int] = {
-        persist(list)
-        if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile(path(out), overwrite = true))
-        else                   list
-      }
-      normalise(iterate(ints).run) === "Vector(10, 2, 5, 8, 9)"
+  "10. iterated computations" >> { implicit sc: SC =>
+    val ints = DList(13, 5, 8, 11, 12)
+    val out = createTempDir("out")
+    def iterate(list: DList[Int]): DList[Int] = {
+      persist(list)
+      val m = list.max.run
+      if (m > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile(path(out), overwrite = true))
+      else                   list
     }
+    normalise(iterate(ints).run) === "Vector(10, 2, 5, 8, 9)"
   }
 
   "11. adding a sink on an already computed list" >> { implicit sc: SC =>
