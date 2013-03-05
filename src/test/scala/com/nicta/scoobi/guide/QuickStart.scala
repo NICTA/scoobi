@@ -23,9 +23,9 @@ class QuickStart extends ScoobiPage { def is = "Quick Start".title^
 Before starting, you will need:
 
 * [Cloudera's Hadoop 4.0.1 (CDH4)](http://www.cloudera.com/hadoop/)
-* [Sbt 0.12.0](https://github.com/harrah/xsbt/wiki)
+* [Sbt 0.12.1](http://www.scala-sbt.org/)
 
-In addition to Hadoop, scoobi uses [sbt](https://github.com/harrah/xsbt/wiki) (version 0.12.0) to simplify building and packaging a project for running on Hadoop. We also provide an sbt plugin [sbt-scoobi](https://github.com/NICTA/sbt-scoobi) to allow you to contain a self-contained JAR for hadoop.
+In addition to Hadoop, scoobi uses [sbt](http://www.scala-sbt.org/) (version 0.12.1) to simplify building and packaging a project for running on Hadoop.
   
 ### Directory Structure  
   
