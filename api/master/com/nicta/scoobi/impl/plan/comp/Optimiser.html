@@ -36,7 +36,7 @@ Usually the rules are applied in a top-down fashion at every node where they can
           <div class="superTypes hiddenContent"><span name="org.kiama.rewriting.Rewriter" class="extype">Rewriter</span>, <a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="CompNodes.html">CompNodes</a>, <a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="CollectFunctions.html">CollectFunctions</a>, <a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="GraphNodes.html">GraphNodes</a>, <span name="org.kiama.attribution.Attribution" class="extype">Attribution</span>, <span name="org.kiama.attribution.AttributionBase" class="extype">AttributionBase</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="../../exec/InMemoryMode.html">InMemoryMode</a>, <a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="Optimiser$.html">Optimiser</a></div>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="../../exec/ExecutionMode.html">ExecutionMode</a>, <a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="../../exec/InMemoryMode.html">InMemoryMode</a>, <a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="Optimiser$.html">Optimiser</a></div>
         </div></div>
     
 
@@ -2198,18 +2198,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">remove nodes from the tree based on a predicate</p>
-    </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.Optimiser#truncateAlreadyExecutedNodes" data-isabs="false">
-      <a id="truncateAlreadyExecutedNodes(CompNode):CompNode"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#truncateAlreadyExecutedNodes" data-isabs="false">
+      <a id="truncateAlreadyExecutedNodes(CompNode)(ScoobiConfiguration):CompNode"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">truncateAlreadyExecutedNodes</span><span class="params">(<span name="node">node: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a></span>
+        <span class="name">truncateAlreadyExecutedNodes</span><span class="params">(<span name="node">node: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#uses" data-isabs="false">
       <a id="uses:CachedAttribute[T, Set[T]]"></a>
       <h4 class="signature">

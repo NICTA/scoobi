@@ -215,10 +215,18 @@ persist(sum, max, plusOne)
    else                   list
  }
  persist(iterate6(ints))
-</code></pre></div></status></div></div>
+</code></pre><a name="Checkpoints"><h4>Checkpoints</h4></a><p>When you have a big pipeline of consecutive computations it can be very time-consuming to start the process all over again if you've just changed some function down the track.</p><p>In order to avoid this you can create <em>checkpoints</em>, that is sinks which will persist data in between executions:</p>
+<pre><code class="prettyprint"> // before
+ val list = DList(1, 2, 3).map(_ + 1).
+                           filter(isEven)
+
+ // after
+ val list = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = true).checkpoint.
+                           filter(isEven)
+</code></pre><p>If you run the <code class="prettyprint">after</code> program twice, the second time the program is run, only the <code class="prettyprint">filter</code> operation will be executed taking its input data from the saved Avro file.</p><p><em>Important limitation</em>: you can't use a <code class="prettyprint">Text</code> sink as a checkpoint because Text file sinks can't not be used as source files.</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
       <ul><li id="780553795"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1300681493"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+            <ul><li id="1269982863"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -318,6 +326,8 @@ persist(sum, max, plusOne)
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Interim+files">Interim files</a>
             
           </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Checkpoints">Checkpoints</a>
+            
           </li></ul>
           </li></ul>
           </li><li id="2075569828"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
@@ -388,7 +398,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1400236507"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="1649169323"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -404,7 +414,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="193924578"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1557689947"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -412,7 +422,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1090271456"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1861884788"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>

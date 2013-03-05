@@ -31,7 +31,7 @@
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink" class="extype" href="SequenceOutput$$SeqSink.html">SeqSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, V, B], <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, V, B], <a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a>, <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink" class="extype" href="SequenceOutput$$SeqSink.html">SeqSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, V, B], <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, V, B], <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>, <a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.io.sequence.SequenceOutput.ValueSeqSink" class="in"><span>ValueSeqSink</span></li><li name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink" class="in"><span>SeqSink</span></li><li name="com.nicta.scoobi.core.DataSink" class="in"><span>DataSink</span></li><li name="com.nicta.scoobi.core.Checkpoint" class="in"><span>Checkpoint</span></li><li name="com.nicta.scoobi.core.Sink" class="in"><span>Sink</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.io.sequence.SequenceOutput.ValueSeqSink" class="in"><span>ValueSeqSink</span></li><li name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink" class="in"><span>SeqSink</span></li><li name="com.nicta.scoobi.core.DataSink" class="in"><span>DataSink</span></li><li name="com.nicta.scoobi.core.Sink" class="in"><span>Sink</span></li><li name="com.nicta.scoobi.core.Checkpoint" class="in"><span>Checkpoint</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -151,17 +151,29 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Checkpoint#checkpoint" data-isabs="false">
-      <a id="checkpoint(String):Checkpoint with Sink"></a>
+      <a id="checkpoint(ScoobiConfiguration):Sink"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">checkpoint</span><span class="params">(<span name="name">name: String</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a> with <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span></span>
+        <span class="name">checkpoint</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">set this sink as a checkpoint</p><div class="fullcomment"><div class="comment cmt"><p>set this sink as a checkpoint</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Checkpoint#checkpointExists" data-isabs="false">
+      <a id="checkpointExists(ScoobiConfiguration):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkpointExists</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink has been filled with data</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Checkpoint#checkpointName" data-isabs="false">
       <a id="checkpointName:Option[String]"></a>
       <h4 class="signature">
@@ -596,10 +608,10 @@
               <h3>Inherited from <a name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink" class="extype" href="SequenceOutput$$SeqSink.html">SeqSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, V, B]</h3>
             </div><div name="com.nicta.scoobi.core.DataSink" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.core.DataSink" class="extype" href="../../core/DataSink.html">DataSink</a>[<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, V, B]</h3>
-            </div><div name="com.nicta.scoobi.core.Checkpoint" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a></h3>
             </div><div name="com.nicta.scoobi.core.Sink" class="parent">
               <h3>Inherited from <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span></h3>
+            </div><div name="com.nicta.scoobi.core.Checkpoint" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.core.Checkpoint" class="extype" href="../../core/Checkpoint.html">Checkpoint</a></h3>
             </div><div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
