@@ -107,7 +107,7 @@ class ReductionSpec extends NictaSimpleJobs {
       string.pointwiseK[Option, Int]
     val a: Kleisli[Option, Int, String] =
       r.reduce(Kleisli(n => Some(n.toString)), Kleisli(n => Some((n * 10).toString)))
-    val b =
+    val b: Kleisli[Option, Int, String] =
       r.reduce(Kleisli(n => Some(n.toString)), Kleisli(_ => None))
     (a(43), b(43)) === (Some("43430"), None)
   }
