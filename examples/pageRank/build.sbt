@@ -4,10 +4,8 @@ version := "1.0"
 
 scalaVersion := "2.9.2"
 
-// replace this line with scoobiVersion := "0.7.0-cdh4" or another Scoobi version
-scoobiVersion <<= scoobiVersion in GlobalScope 
-
-libraryDependencies <+= (scoobiVersion) { "com.nicta" %% "scoobi" % _ }
+libraryDependencies ++= 
+  Seq("com.nicta" %% "scoobi" % "0.6.2-cdh4") 
 
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
