@@ -164,6 +164,16 @@ class ReductionSpec extends NictaSimpleJobs {
       comparable
     val a: Comparable[Int] =
       r(7, 8)
+    List((6, true), (7, true), (8, false), (9, false)) forall {
+      case (n, p) => {
+        val w = a.compareTo(n)
+        if(p)
+          w > 0
+        else
+          w < 0
+      }
+
+    }
     List(a.compareTo(6) > 0, a.compareTo(7) > 0, a.compareTo(8) < 0, a.compareTo(9) < 0) forall (z => z)
   }
 
