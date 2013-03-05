@@ -144,11 +144,12 @@ trait Optimiser extends CompNodes with Rewriter {
     result
   }
 
-  protected def truncateAlreadyExecutedNodes(node: CompNode) =
+  def truncateAlreadyExecutedNodes(node: CompNode)(implicit sc: ScoobiConfiguration) = {
+    allSinks(node).filter(_.checkpointExists).foreach(markSinkAsFilled)
     truncate(node) {
       case process: ProcessNode => process.bridgeStore.map(hasBeenFilled).getOrElse(false)
       case other                => false
     }
-
+  }
 }
 object Optimiser extends Optimiser

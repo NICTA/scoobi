@@ -55,6 +55,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   }
   /** this attribute stores the fact that a Sink has received data */
   protected lazy val filledSink: CachedAttribute[String, String] = attr("filled sink")(identity)
+
   /** @return true if a given Sink has already received data */
   protected lazy val hasBeenFilled = (s: Sink) => {
     filledSink.hasBeenComputedAt(s.stringId) ||

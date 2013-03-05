@@ -60,8 +60,10 @@ trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
     }
 
     override def toSource: Option[Source] = outer.toSource
-    override def isCheckpoint   = outer.isCheckpoint
-    override def checkpointName = outer.checkpointName
+
+    override def isCheckpoint                                       = outer.isCheckpoint
+    override def checkpointName                                     = outer.checkpointName
+    override def checkpointExists(implicit sc: ScoobiConfiguration) = outer.checkpointExists
   }
 
   /** configure the compression for a given job */
@@ -94,13 +96,17 @@ trait Checkpoint { outer: Sink =>
   def isCheckpoint: Boolean = name.isDefined
   /** @return true if this Sink is a checkpoint */
   def checkpointName: Option[String] = name
+  /** @return true if this Sink has been filled with data */
+  def checkpointExists(implicit sc: ScoobiConfiguration): Boolean = {
+    outputPath.exists(p => sc.fileSystem.exists(p) && Option(sc.fileSystem.listStatus(p)).map(_.nonEmpty).getOrElse(false))
+  }
 }
 
 /**
  * Internal untyped definition of a Sink to store result data
  */
 private[scoobi]
-trait Sink { outer =>
+trait Sink extends Checkpoint { outer =>
   /** unique id for this Sink */
   def id: Int
   /** unique id for this Sink, as a string. Can be used to create a file path */
@@ -140,13 +146,6 @@ trait Sink { outer =>
 
   /** implement this function if this sink can be turned into a Source */
   def toSource: Option[Source] = None
-
-  /** set this sink as a checkpoint, with specific name which should be unique */
-  def checkpoint(name: String): Sink
-  /** @return true if this Sink is a checkpoint */
-  def isCheckpoint: Boolean
-  /** @return the name of this checkpoint if defined */
-  def checkpointName: Option[String]
 }
 
 object Data {
@@ -203,8 +202,10 @@ object Bridge {
     private[scoobi] def isCompressed = sink.isCompressed
     private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_]) { sink.write(values, recordWriter) }
     override def toSource: Option[Source] = Some(source)
-    override def isCheckpoint   = sink.isCheckpoint
-    override def checkpointName = sink.checkpointName
+
+    override def isCheckpoint                                                = sink.isCheckpoint
+    override def checkpointName                                              = sink.checkpointName
+    override def checkpointExists(implicit sc: ScoobiConfiguration): Boolean = sink.checkpointExists
 
     def readAsIterable(implicit sc: ScoobiConfiguration) =
       new Iterable[Any] { def iterator = Source.read(source, (a: Any) => a).iterator }

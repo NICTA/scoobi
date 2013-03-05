@@ -37,9 +37,9 @@ import scalaz.Scalaz._
 /**
  * A fast local mode for execution of Scoobi applications.
  */
-case class InMemoryMode() extends ShowNode with ExecutionMode with Optimiser {
+case class InMemoryMode() extends ExecutionMode {
 
-  implicit lazy val logger = LogFactory.getLog("scoobi.InMemoryMode")
+  implicit lazy val modeLogger = LogFactory.getLog("scoobi.InMemoryMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {
     execute(list.getComp)
@@ -50,9 +50,7 @@ case class InMemoryMode() extends ShowNode with ExecutionMode with Optimiser {
   }
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
-    initAttributable(node)
-    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
-    checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph))
+    val toExecute = prepare(node)
     val result = toExecute -> computeValue(sc)
     allSinks(toExecute).debug("sinks: ").foreach(markSinkAsFilled)
     result
@@ -113,14 +111,14 @@ case class InMemoryMode() extends ShowNode with ExecutionMode with Optimiser {
       vbs map { _.result() }
     }
 
-    logger.debug("partitions:")
-    partitions.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+    modeLogger.debug("partitions:")
+    partitions.zipWithIndex foreach { case (p, ix) => modeLogger.debug(ix + ": " + p) }
 
     val sorted: IndexedSeq[Vector[(Any, Any)]] = partitions map { (v: Vector[(Any, Any)]) =>
       v.sortBy(_._1)(gpk.toSortOrdering)
     }
-    logger.debug("sorted:")
-    sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+    modeLogger.debug("sorted:")
+    sorted.zipWithIndex foreach { case (p, ix) => modeLogger.debug(ix + ": " + p) }
 
     val grouped: IndexedSeq[Vector[(Any, Vector[Any])]] =
       sorted map { kvs =>
@@ -141,8 +139,8 @@ case class InMemoryMode() extends ShowNode with ExecutionMode with Optimiser {
         vbMap map (_ :-> (_.result.map(_._2)))
       }
 
-    logger.debug("grouped:")
-    grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+    modeLogger.debug("grouped:")
+    grouped.zipWithIndex foreach { case (p, ix) => modeLogger.debug(ix + ": " + p) }
 
     /* Concatenate */
     Vector(grouped.flatten:_*).debug("computeGroupByKey")
