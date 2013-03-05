@@ -196,6 +196,18 @@ zero or more output elements.</p><div class="fullcomment"><div class="comment cm
 zero or more output elements. The resulting output elements from the many &quot;chunks&quot; form
 a new distributed list
 </p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSinks#updateSinks" data-isabs="true">
+      <a id="updateSinks((Seq[Sink]) ⇒ Seq[Sink]):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateSinks</span><span class="params">(<span name="f">f: (Seq[<span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>]) ⇒ Seq[<span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>]</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSinks" class="extype" href="DataSinks.html">DataSinks</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -841,13 +853,13 @@ the list is empty. The order in which the elements are reduced is unspecified an
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use mapFlatten instead because a 'real' flatMap operation would be A =&gt; DList[B]">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[B]</span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A =&gt; DList[B]">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[B]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> use mapFlatten instead because a 'real' flatMap operation would be A =&gt; DList[B]</p></dd></dl></div>
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A =&gt; DList[B]</p></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList#materialize" data-isabs="false">
       <a id="materialize:DObject[Iterable[A]]"></a>
       <h4 class="signature">
