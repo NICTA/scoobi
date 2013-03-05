@@ -143,21 +143,28 @@ class ReductionSpec extends NictaSimpleJobs {
     a(11) === (42, "abc11def")
   }
 
-  "writer reduction" >> {
-    true
-  }
-
   "reduction to applicative environment (apply)" >> {
-    true
+    val r: Apply[({type lam[a]=String})#lam] =
+      string.apply
+    val a: String =
+      r.ap("def")("abc")
+    a === "abcdef"
   }
 
   "reduction to composition environment (compose)" >> {
-    true
+    val r: Compose[({type lam[a,b]=String})#lam] =
+      string.compose
+    val a: String =
+      r.compose("abc", "def")
+    a === "abcdef"
   }
 
-  // digit
-  "comparator reduction" >> {
-    true
+  "comparable reduction" >> {
+    val r: Reduction[Comparable[Int]] =
+      comparable
+    val a: Comparable[Int] =
+      r(7, 8)
+    List(a.compareTo(6) > 0, a.compareTo(7) > 0, a.compareTo(8) < 0, a.compareTo(9) < 0) forall (z => z)
   }
 
 }
