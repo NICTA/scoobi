@@ -61,12 +61,6 @@ case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefin
     optimised.debug("Optimised nodes", prettyGraph)
   }
 
-  private def truncateAlreadyExecutedNodes(node: CompNode) =
-    truncate(node) {
-      case process: ProcessNode => process.bridgeStore.map(hasBeenFilled).getOrElse(false)
-      case other                => false
-    }
-
   /**
    * execute a computation node
    */

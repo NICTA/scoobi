@@ -18,6 +18,7 @@ package application
 
 import core.WireFormat
 import WireFormat._
+import impl.collection._
 
 /**
  * This trait provides way to create DLists from files
@@ -108,5 +109,16 @@ trait InputsOutputs {
   }
 
   def toAvroFile[B : AvroSchema](dl: core.DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
+
+  /** implicit definition to add a checkpoint method to a DList */
+  implicit def setCheckpoint[T](dl: core.DList[T]): SetCheckpoint[T] = new SetCheckpoint(dl)
+  case class SetCheckpoint[T](dl: core.DList[T]) {
+    def checkpoint(name: String) = dl.updateSinks { sinks =>
+      sinks match {
+        case ss :+ sink => ss :+ sink.checkpoint(name: String)
+        case ss         => ss
+      }
+    }
+  }
 }
 object InputsOutputs extends InputsOutputs

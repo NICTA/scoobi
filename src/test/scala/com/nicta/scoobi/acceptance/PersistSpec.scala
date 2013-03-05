@@ -22,6 +22,7 @@ import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
+import SequenceOutput._
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -192,5 +193,5 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       "there was only one mscr job" ==> { evaluationsNb must be_==(1) }
      } else success
   }
-}
 
+}

@@ -55,10 +55,11 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   def parDoFuse = repeat(oncebu(rule {
     case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if
-      uses(p1).filterNot(_ == p2).isEmpty                 &&
-      rest.isEmpty                                        &&
-      !p1.bridgeStore.map(hasBeenFilled).getOrElse(false) &&
-      p1.nodeSinks.isEmpty                                   => ParallelDo.fuse(p1.debug("parDoFuse with "+p2), p2)
+      uses(p1).filterNot(_ == p2).isEmpty                  &&
+      rest.isEmpty                                         &&
+      !p1.bridgeStore.map(hasBeenFilled).getOrElse(false)  &&
+      !p1.bridgeStore.map(_.isCheckpoint).getOrElse(false) &&
+      p1.nodeSinks.isEmpty                                 => ParallelDo.fuse(p1.debug("parDoFuse with "+p2), p2)
   }))
 
   /**
@@ -142,6 +143,12 @@ trait Optimiser extends CompNodes with Rewriter {
     reinitUses
     result
   }
+
+  protected def truncateAlreadyExecutedNodes(node: CompNode) =
+    truncate(node) {
+      case process: ProcessNode => process.bridgeStore.map(hasBeenFilled).getOrElse(false)
+      case other                => false
+    }
 
 }
 object Optimiser extends Optimiser

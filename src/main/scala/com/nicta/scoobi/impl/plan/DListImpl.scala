@@ -37,7 +37,10 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
   def getComp: C = comp
 
   def addSink(sink: Sink) =
-    setComp((c: C) => c.addSink(sink))
+    setComp(_.addSink(sink))
+
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) =
+    setComp(_.updateSinks(f))
 
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
     setComp((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))

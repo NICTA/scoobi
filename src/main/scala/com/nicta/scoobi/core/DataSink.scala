@@ -30,7 +30,7 @@ import impl.rtt.ScoobiWritable
 /**
  * An output store from a MapReduce job
  */
-trait DataSink[K, V, B] extends Sink { outer =>
+trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
   lazy val id = ids.get
   lazy val stringId = id.toString
 
@@ -60,6 +60,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
     }
 
     override def toSource: Option[Source] = outer.toSource
+    override def isCheckpoint   = outer.isCheckpoint
+    override def checkpointName = outer.checkpointName
   }
 
   /** configure the compression for a given job */
@@ -80,6 +82,18 @@ trait DataSink[K, V, B] extends Sink { outer =>
       recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
     }
   }
+
+}
+
+/** Marks a Sink as a possible checkpoint in the computations */
+trait Checkpoint { outer: Sink =>
+  private var name: Option[String] = None
+  /** set this sink as a checkpoint */
+  def checkpoint(name: String) = { outer.name = Some(name); this }
+  /** @return true if this Sink is a checkpoint */
+  def isCheckpoint: Boolean = name.isDefined
+  /** @return true if this Sink is a checkpoint */
+  def checkpointName: Option[String] = name
 }
 
 /**
@@ -126,6 +140,13 @@ trait Sink { outer =>
 
   /** implement this function if this sink can be turned into a Source */
   def toSource: Option[Source] = None
+
+  /** set this sink as a checkpoint, with specific name which should be unique */
+  def checkpoint(name: String): Sink
+  /** @return true if this Sink is a checkpoint */
+  def isCheckpoint: Boolean
+  /** @return the name of this checkpoint if defined */
+  def checkpointName: Option[String]
 }
 
 object Data {
@@ -137,6 +158,7 @@ object Data {
 trait DataSinks {
   type T
   def addSink(sink: Sink): T
+  def updateSinks(f: Seq[Sink] => Seq[Sink]): T
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): T
   def compress: T = compressWith(new GzipCodec)
 }
@@ -149,7 +171,7 @@ trait DataSinks {
  * The content of the Bridge can be read as an Iterable to retrieve materialised values
  */
 private[scoobi]
-trait Bridge extends Source with Sink {
+trait Bridge extends Source with Sink with Checkpoint {
   def bridgeStoreId: String
   def stringId = bridgeStoreId
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
@@ -181,6 +203,8 @@ object Bridge {
     private[scoobi] def isCompressed = sink.isCompressed
     private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_]) { sink.write(values, recordWriter) }
     override def toSource: Option[Source] = Some(source)
+    override def isCheckpoint   = sink.isCheckpoint
+    override def checkpointName = sink.checkpointName
 
     def readAsIterable(implicit sc: ScoobiConfiguration) =
       new Iterable[Any] { def iterator = Source.read(source, (a: Any) => a).iterator }
