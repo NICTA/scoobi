@@ -19,10 +19,25 @@ package exec
 
 import core._
 import plan.comp._
+import org.apache.commons.logging.Log
+import monitor.Loggable._
 
-trait ExecutionMode extends CompNodes {
+trait ExecutionMode extends ShowNode with Optimiser {
+  implicit def modeLogger: Log
 
-  def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration) {
+  /** prepare the execution graph by:
+    * - initialising the nodes
+    * - truncating the graph if some nodes have already been executed
+    * - checking the sources and sinks
+    */
+  protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) = {
+    initAttributable(node)
+    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
+    checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph))
+    toExecute
+  }
+
+  protected def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration) {
     initAttributable(node)
     node match {
       case process: ProcessNode => process.sinks.filterNot { case b: Bridge => hasBeenFilled(b); case _ => true }.foreach(_.outputCheck)
@@ -30,5 +45,9 @@ trait ExecutionMode extends CompNodes {
       case _                    => ()
     }
     children(node).foreach(n => checkSourceAndSinks(n))
+  }
+
+  def reset {
+    resetMemo()
   }
 }

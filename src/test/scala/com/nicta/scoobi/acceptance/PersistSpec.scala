@@ -22,6 +22,7 @@ import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
+import SequenceOutput._
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -143,17 +144,16 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
   }
 
-  "10. iterated computations" >> {
-    "10.1 iterate 3 times on a DList while saving intermediate outputs" >> { implicit sc: SC =>
-      val ints = DList(13, 5, 8, 11, 12)
-      val out = createTempDir("out")
-      def iterate(list: DList[Int]): DList[Int] = {
-        persist(list)
-        if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile(path(out), overwrite = true))
-        else                   list
-      }
-      normalise(iterate(ints).run) === "Vector(10, 2, 5, 8, 9)"
+  "10. iterated computations" >> { implicit sc: SC =>
+    val ints = DList(13, 5, 8, 11, 12)
+    val out = createTempDir("out")
+    def iterate(list: DList[Int]): DList[Int] = {
+      persist(list)
+      val m = list.max.run
+      if (m > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile(path(out), overwrite = true))
+      else                   list
     }
+    normalise(iterate(ints).run) === "Vector(10, 2, 5, 8, 9)"
   }
 
   "11. adding a sink on an already computed list" >> { implicit sc: SC =>
@@ -181,12 +181,16 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
 
   "13. When a list has been executed, no more map reduce job should be necessary to read data from it" >> { implicit sc: SC =>
-    var evaluationsNb = 0
-    val list = DList({ evaluationsNb +=1; 1 }, 2, 3)
-    list.persist(sc)
-    list.run(sc).take(10)
+    // there are classpath issues on the cluster sometimes
+    // but the test is relevant if ran locally only
+    if (sc.isLocal) {
+      var evaluationsNb = 0
+      val list = DList({ evaluationsNb +=1; 1 }, 2, 3)
+      list.persist(sc)
+      list.run(sc).take(10)
 
-    "there was only one mscr job" ==> { evaluationsNb must be_==(1).when(!sc.isInMemory) }
+      "there was only one mscr job" ==> { evaluationsNb must be_==(1) }
+     } else success
   }
-}
 
+}

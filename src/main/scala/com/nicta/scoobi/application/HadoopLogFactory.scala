@@ -33,7 +33,15 @@ class HadoopLogFactory() extends LogFactory {
   def quiet      = Option(getAttribute(QUIET)).map(_.asInstanceOf[Boolean]).getOrElse(true)
   def showTimes  = Option(getAttribute(SHOW_TIMES)).map(_.asInstanceOf[Boolean]).getOrElse(false)
   def logLevel   = Option(getAttribute(LOG_LEVEL)).map(_.asInstanceOf[Level]).getOrElse(INFO)
-  def categories = Option(getAttribute(LOG_CATEGORIES)).map(c => ".*"+c+".*").getOrElse(".*")
+  def categories = Option(getAttribute(LOG_CATEGORIES)).map { c =>
+    if (c == ".*") noNoise
+    else           ".*"+c.toString+".*"
+  }.getOrElse(noNoise)
+
+  // see the answer to this SOF question to understand this regular expression:
+  // http://stackoverflow.com/questions/406230/regular-expression-to-match-string-not-containing-a-word
+  private def noWords(words: String*) = "^((?!"+words.mkString("|")+").)*$"
+  private val noNoise = noWords("Client", "ProtobufRpcEngine", "RPC", "RemoteBlockReader2", "LeaseRenewer", "DFSClient", "HadoopMode")
 
   private val impl   = new LogFactoryImpl
   private val noOps  = new NoOpLog

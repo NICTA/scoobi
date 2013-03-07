@@ -72,7 +72,8 @@ case class ParallelDo(ins:           Seq[CompNode],
 
   lazy val wf = wfb
   lazy val wfe = env.wf
-  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "]" + "(bridge " + bridgeStoreId.takeRight(5).mkString +")"
+  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "]" +
+                          "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointName.map(" "+_)).getOrElse("")+")"
 
   lazy val source = ins.collect(isALoad).headOption
 

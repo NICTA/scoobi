@@ -42,12 +42,25 @@ trait CompNodes extends GraphNodes with CollectFunctions {
     uses(node).collect { case pd: ParallelDo if pd.env == node => pd }.toSeq
   }
 
+  /** collect all the sinks in the computation graph */
+  lazy val allSinks: CompNode => Seq[Sink] = attr("all sinks") {
+    case process: ProcessNode => process.sinks ++ children(process).flatMap(allSinks)
+    case other                => children(other).flatMap(allSinks)
+  }
+
   /** mark a sink as filled so it doesn't have to be recomputed */
-  protected def markSinkAsFilled = (s: Sink) => { filledSink(s.stringId); s }
+  protected def markSinkAsFilled = (s: Sink) => {
+    s.checkpointName.map(filledSink).getOrElse(filledSink(s.stringId))
+    s
+  }
   /** this attribute stores the fact that a Sink has received data */
   protected lazy val filledSink: CachedAttribute[String, String] = attr("filled sink")(identity)
+
   /** @return true if a given Sink has already received data */
-  protected lazy val hasBeenFilled = (s: Sink) => filledSink.hasBeenComputedAt(s.stringId)
+  protected lazy val hasBeenFilled = (s: Sink) => {
+    filledSink.hasBeenComputedAt(s.stringId) ||
+    s.checkpointName.map(filledSink.hasBeenComputedAt).getOrElse(false)
+  }
 }
 object CompNodes extends CompNodes
 

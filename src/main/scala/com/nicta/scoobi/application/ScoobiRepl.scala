@@ -3,9 +3,11 @@ package application
 
 import org.apache.hadoop.fs._
 import scala.tools.nsc.Settings
-import tools.nsc.interpreter.{AbstractFileClassLoader, ILoop}
+import tools.nsc.interpreter.{ReplReporter, AbstractFileClassLoader, ILoop}
 import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
+import tools.nsc.reporters.ConsoleReporter
+import tools.nsc.interpreter.IMain.ReplStrippingWriter
 
 /** A REPL for Scoobi.
   *
@@ -19,30 +21,6 @@ object ScoobiRepl extends ScoobiInterpreter
   */
 trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 
-  def imports: Seq[String] = Seq(
-    "com.nicta.scoobi.Scoobi._",
-    "com.nicta.scoobi.application.ScoobiRepl._",
-    "scala.collection.JavaConversions._")
-
-  /**
-   * definition of the interpreter loop
-   */
-  class ScoobiILoop extends ILoop {
-    override def prompt = if (intp.isInitializeComplete) "scoobi> " else ""
-    override def printWelcome() {
-      println("\n === Please wait while Scoobi is initialising... ===")
-    }
-
-    addThunk {
-      intp.beQuietDuring {
-        imports.foreach(i => intp.addImports(i))
-        configuration.addClassLoader(intp.classLoader)
-        configuration.jobNameIs("REPL")
-        woof()
-      }
-    }
-  }
-
   /** start the program but don't upload jars by default */
   override def main(args: Array[String]) {
     parseHadoopArguments(args)
@@ -55,15 +33,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
-    new ScoobiILoop().process(settings)
-  }
-
-  /**
-   * announce that the Scoobi REPL is ready
-   */
-  def woof() {
-    println(splash)
-    println("\n\n === Ready, press Enter to start ===")
+    new ScoobiILoop(configuration).process(settings)
   }
 
   def help =
@@ -93,6 +63,56 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   }
 
   override def useHadoopConfDir = true
+
+}
+
+/**
+ * definition of the interpreter loop
+ */
+class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
+
+  def imports: Seq[String] = Seq(
+    "com.nicta.scoobi.Scoobi._",
+    "com.nicta.scoobi.application.ScoobiRepl._",
+    "scala.collection.JavaConversions._")
+
+  override def prompt = if (intp.isInitializeComplete) "\nscoobi> " else ""
+  override def printWelcome() {
+    println("\n === Please wait while Scoobi is initialising... ===")
+  }
+
+  /** truncate the result if it is some Scoobi datatypes */
+  def truncateResult(result: String) = {
+    if (Seq("DList", "DObject").map("com.nicta.scoobi.core."+_).exists(result.contains)) result.split("=").head + "= ..."
+    else result
+  }
+
+  addThunk {
+    // create a new interpreter which will strip the output with a special function
+    intp = new ILoopInterpreter {
+      def strippingWriter = new ReplStrippingWriter(outer) {
+        override def truncate(str: String): String = {
+          val truncated =
+            if (isTruncating && str.length > maxStringLength) (str take maxStringLength - 3) + "..."
+            else str
+          truncateResult(truncated)
+        }
+      }
+      override lazy val reporter: ConsoleReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+    }
+    intp.beQuietDuring {
+      imports.foreach(i => intp.addImports(i))
+      configuration.addClassLoader(intp.classLoader)
+      configuration.jobNameIs("REPL")
+      woof()
+    }
+  }
+
+  /** announce that the Scoobi REPL is ready */
+  def woof() {
+    println(splash)
+    println("\n\n === Ready, press Enter to start ===")
+  }
 
   lazy val splash: String =
     """|

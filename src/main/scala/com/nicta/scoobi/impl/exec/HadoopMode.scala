@@ -40,32 +40,21 @@ import control.Exceptions._
  *  - executing each layer in sequence
  */
 private[scoobi]
-case class HadoopMode(sc: ScoobiConfiguration) extends Optimiser with MscrsDefinition with ShowNode with ExecutionMode {
-  implicit lazy val logger = LogFactory.getLog("scoobi.HadoopMode")
+case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with ExecutionMode {
+  implicit lazy val modeLogger = LogFactory.getLog("scoobi.HadoopMode")
 
   /** execute a DList, storing the results in DataSinks */
   def execute(list: DList[_]) { execute(list.getComp) }
   /** execute a DObject, reading the result from a BridgeStore */
   def execute(o: DObject[_]): Any = execute(o.getComp)
   /** execute a computation graph */
-  def execute(node: CompNode): Any = node |> prepare |> executeNode
+  def execute(node: CompNode): Any = prepare(node)(sc) |> executeNode
 
   /**
    * Prepare the execution of the graph by optimising it
    */
-  private
-  lazy val prepare: CompNode => CompNode = attr("prepare") { case node =>
-    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
-    checkSourceAndSinks(toExecute)(sc)
-    val optimised = optimise(toExecute.debug("Active nodes", prettyGraph))
-    optimised.debug("Optimised nodes", prettyGraph)
-  }
-
-  private def truncateAlreadyExecutedNodes(node: CompNode) =
-    truncate(node) {
-      case process: ProcessNode => process.bridgeStore.map(hasBeenFilled).getOrElse(false)
-      case other                => false
-    }
+  override protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) =
+    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph)
 
   /**
    * execute a computation node

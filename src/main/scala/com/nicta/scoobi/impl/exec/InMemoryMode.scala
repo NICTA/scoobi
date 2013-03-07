@@ -37,9 +37,9 @@ import scalaz.Scalaz._
 /**
  * A fast local mode for execution of Scoobi applications.
  */
-case class InMemoryMode() extends ShowNode with ExecutionMode {
+case class InMemoryMode() extends ExecutionMode {
 
-  implicit lazy val logger = LogFactory.getLog("scoobi.InMemoryMode")
+  implicit lazy val modeLogger = LogFactory.getLog("scoobi.InMemoryMode")
 
   def execute(list: DList[_])(implicit sc: ScoobiConfiguration) {
     execute(list.getComp)
@@ -50,15 +50,16 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
   }
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
-    initAttributable(node).debug("nodes\n", prettyGraph)
-    checkSourceAndSinks(node)
-    node -> computeValue(sc)
+    val toExecute = prepare(node)
+    val result = toExecute -> computeValue(sc)
+    allSinks(toExecute).debug("sinks: ").foreach(markSinkAsFilled)
+    result
   }
 
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
-    paramAttr("computeValue") { sc: ScoobiConfiguration => (n: CompNode) =>
-      (n -> compute(sc)).head
+    paramAttr("computeValue") { sc: ScoobiConfiguration => node: CompNode =>
+      (node -> compute(sc)).head
     }
 
   private
@@ -66,19 +67,23 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
     paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Load        => computeLoad(n)
-        case n: Root        => Vector(n.ins.map(_ -> computeValue(c)):_*)
-        case n: Return      => Vector(n.in)
-        case n: Op          => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
-        case n: Materialise => Vector(n.in -> compute(c))
-        case n: ParallelDo  => saveSinks(computeParallelDo(n), n.sinks)
-        case n: GroupByKey  => saveSinks(computeGroupByKey(n), n.sinks)
-        case n: Combine     => saveSinks(computeCombine(n)   , n.sinks)
+        case n: Load                                              => computeLoad(n)
+        case n: Root                                              => Vector(n.ins.map(_ -> computeValue(c)):_*)
+        case n: Return                                            => Vector(n.in)
+        case n: Op                                                => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
+        case n: Materialise                                       => Vector(n.in -> compute(c))
+        case n: GroupByKey                                        => saveSinks(computeGroupByKey(n), n.sinks)
+        case n: Combine                                           => saveSinks(computeCombine(n)   , n.sinks)
+        case n: ParallelDo if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
+        case n: ParallelDo                                        => saveSinks(computeParallelDo(n), n.sinks)
       }
     }
 
-  private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[_] =
-    Source.read(load.source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(load.wf)).debug("computeLoad")
+  private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
+    loadSource(load.source, load.wf).debug("computeLoad")
+
+  private def loadSource(source: Source, wf: WireReaderWriter)(implicit sc: ScoobiConfiguration): Seq[Any] =
+    Source.read(source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(wf)).debug("loadSource")
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
@@ -106,14 +111,14 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
       vbs map { _.result() }
     }
 
-    logger.debug("partitions:")
-    partitions.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+    modeLogger.debug("partitions:")
+    partitions.zipWithIndex foreach { case (p, ix) => modeLogger.debug(ix + ": " + p) }
 
     val sorted: IndexedSeq[Vector[(Any, Any)]] = partitions map { (v: Vector[(Any, Any)]) =>
       v.sortBy(_._1)(gpk.toSortOrdering)
     }
-    logger.debug("sorted:")
-    sorted.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+    modeLogger.debug("sorted:")
+    sorted.zipWithIndex foreach { case (p, ix) => modeLogger.debug(ix + ": " + p) }
 
     val grouped: IndexedSeq[Vector[(Any, Vector[Any])]] =
       sorted map { kvs =>
@@ -134,8 +139,8 @@ case class InMemoryMode() extends ShowNode with ExecutionMode {
         vbMap map (_ :-> (_.result.map(_._2)))
       }
 
-    logger.debug("grouped:")
-    grouped.zipWithIndex foreach { case (p, ix) => logger.debug(ix + ": " + p) }
+    modeLogger.debug("grouped:")
+    grouped.zipWithIndex foreach { case (p, ix) => modeLogger.debug(ix + ": " + p) }
 
     /* Concatenate */
     Vector(grouped.flatten:_*).debug("computeGroupByKey")

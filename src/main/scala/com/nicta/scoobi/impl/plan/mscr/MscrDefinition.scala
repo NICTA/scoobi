@@ -33,7 +33,8 @@ trait MscrsDefinition extends Layering {
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
     case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise) || uses(pd).exists(isRoot) || !parent(pd).isDefined) &&
                             !isReducer(pd) &&
-                           (!inputs(pd).exists(isFloating)) ||
+                            !inputs(pd).exists(isFloating) ||
+                             inputs(pd).collect(isAParallelDo).exists(_.sinks.exists(_.isCheckpoint))  ||
                             descendents(pd.env).exists(isGroupByKey) ||
                             hasMaterialisedEnv(pd)
     case _              => false
@@ -55,9 +56,12 @@ trait MscrsDefinition extends Layering {
 
   private [scoobi]
   def floatingMappers(sourceNode: CompNode) = {
-    val floatings =
-      if (isFloating(sourceNode)) Seq(sourceNode)
-      else                        uses(sourceNode).filter(isFloating)
+    val floatings = {
+      sourceNode match {
+        case pd: ProcessNode if isFloating(pd) && !pd.bridgeStore.exists(hasBeenFilled) => Seq(pd)
+        case _                                                                          => uses(sourceNode).filter(isFloating)
+      }
+    }
 
     (floatings ++ floatings.flatMap(mappersUses).filterNot(isFloating)).collect(isAParallelDo).toSeq
   }
@@ -173,10 +177,15 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val isReducer: ParallelDo => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest)    => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)              => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd if pd.bridgeStore.map(hasBeenFilled).getOrElse(false) => true
-    case _                                                        => false
+    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest)            => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                      => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd if pd.bridgeStore.map(b => hasBeenFilled(b)).getOrElse(false) => true
+    case _                                                                => false
+  }
+
+  lazy val isReducerNode: CompNode => Boolean = attr("isReducerNode") {
+    case pd @ ParallelDo1(_) => isReducer(pd)
+    case _                   => false
   }
 
 }
