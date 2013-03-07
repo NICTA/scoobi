@@ -49,7 +49,5 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
   def reset {
     resetMemo()
-    // temporary fix while waiting for https://code.google.com/p/kiama/issues/detail?id=59
-    filledSink.reset()
   }
 }
