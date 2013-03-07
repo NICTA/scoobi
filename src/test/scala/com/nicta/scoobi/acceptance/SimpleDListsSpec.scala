@@ -152,4 +152,13 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 
     normalise(list.run) === "Vector(2, 4)"
   }
+  "28. pd + gbk + distinct+size + join" >> { implicit sc: ScoobiConfiguration =>
+    val l0 = DList(1, 2, 1, 2)
+    val l1 = l0.map(_ + 1)
+    val l2 = l1.map(x => (x % 2, x))
+    val l3 = l2.groupByKey.combine(Sum.int)
+    val c = l1.distinct.size
+    val l4 = c join l3
+    normalise(l4.run) === "Vector((2,(0,4)), (2,(1,6)))"
+  }
 }
