@@ -187,7 +187,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
       case (key, values: Iterable[_]) => emitter.write((key, values.reduce(f)))
     })
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv))
+    ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), nodeSinks, bridgeStoreId)
   }
 }
 object Combine1 {
