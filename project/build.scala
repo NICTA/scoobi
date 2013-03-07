@@ -98,7 +98,7 @@ object build extends Build {
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
-    scalacOptions ++= Seq("-deprecation", "-unchecked")
+    scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions,reflectiveCalls,postfixOps,higherKinds,existentials")
   )
 
   lazy val testingSettings: Seq[Settings] = Seq(
