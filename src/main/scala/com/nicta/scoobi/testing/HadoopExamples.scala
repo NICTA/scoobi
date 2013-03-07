@@ -74,18 +74,18 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
     def outside = ScoobiConfiguration()
-    override def apply[R <% Result](a: ScoobiConfiguration => R) = {
+    override def apply[R : AsResult](a: ScoobiConfiguration => R) = {
       changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(a) })
     }
   }
   /** execute an example body on the cluster */
-  def remotely[R <% Result](r: =>R) = showResultTime("Cluster execution time", runOnCluster(r))
+  def remotely[R : AsResult](r: =>R) = showResultTime("Cluster execution time", runOnCluster(r))
 
   /** execute an example body locally */
-  def locally[R <% Result](r: =>R) = showResultTime("Local execution time", runOnLocal(r))
+  def locally[R : AsResult](r: =>R) = showResultTime("Local execution time", runOnLocal(r))
 
   /** execute an example body locally */
-  def inMemory[R <% Result](r: =>R) = showResultTime("In memory execution time", runInMemory(r))
+  def inMemory[R : AsResult](r: =>R) = showResultTime("In memory execution time", runInMemory(r))
 
   /**
    * Context for showing that an execution is skipped
@@ -93,7 +93,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   class SkippedHadoopContext(name: String) extends HadoopContext {
     def outside = configureForLocal(ScoobiConfiguration())
 
-    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
       Skipped("excluded", "No "+name+" execution"+time_?)
   }
   /**
@@ -102,7 +102,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   class InMemoryHadoopContext extends HadoopContext {
     def outside = configureForInMemory(ScoobiConfiguration())
 
-    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
       inMemory(cleanup(a).apply(outside))
   }
   /**
@@ -111,7 +111,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   class LocalHadoopContext extends HadoopContext {
     def outside = configureForLocal(ScoobiConfiguration())
 
-    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
       locally(cleanup(a).apply(outside))
   }
 
@@ -121,14 +121,14 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   class ClusterHadoopContext extends HadoopContext {
     def outside = configureForCluster(ScoobiConfiguration())
 
-    override def apply[R <% Result](a: ScoobiConfiguration => R) =
+    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
       remotely(cleanup(a).apply(outside))
 
     override def isRemote = true
   }
 
   /** @return a composed function cleaning up after the job execution */
-  def cleanup[R <% Result](a: ScoobiConfiguration => R): ScoobiConfiguration => R = {
+  def cleanup[R : AsResult](a: ScoobiConfiguration => R): ScoobiConfiguration => R = {
     if (!keepFiles) (c: ScoobiConfiguration) => try { a(c) } finally { cleanup(c) }
     else            a
   }
@@ -160,11 +160,11 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   /**
    * @return an executed Result updated with its execution time
    */
-  private def showResultTime[T <% Result](prefix: String, t: =>T): Result = {
+  private def showResultTime[T : AsResult](prefix: String, t: =>T): Result = {
     if (showTimes) {
-      val (result, timer) = withTimer(ResultExecution.execute(t)(implicitly[T => Result]))
+      val (result, timer) = withTimer(ResultExecution.execute(t)(AsResult(_)))
       result.updateExpected(prefix+": "+timer.time)
-    } else t
+    } else AsResult(t)
   }
 
 }

@@ -79,7 +79,7 @@ trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
 
   private [scoobi]
   def write(values: Seq[_], recordWriter: RecordWriter[_,_]) {
-    values foreach { value =>
+    values foreach { value: Any =>
       val (k, v) = outputConverter.toKeyValue(value.asInstanceOf[B])
       recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
     }

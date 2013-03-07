@@ -65,7 +65,7 @@ class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false) exten
     case Manifest.Float   => classOf[java.lang.Float].asInstanceOf[Class[A]]
     case Manifest.Double  => classOf[java.lang.Double].asInstanceOf[Class[A]]
     case Manifest.Byte    => classOf[java.lang.Byte].asInstanceOf[Class[A]]
-    case mf               => mf.erasure.asInstanceOf[Class[A]]
+    case mf               => mf.runtimeClass.asInstanceOf[Class[A]]
   }
 
   def outputCheck(implicit sc: ScoobiConfiguration) {

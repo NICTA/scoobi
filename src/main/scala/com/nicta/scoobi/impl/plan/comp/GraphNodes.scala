@@ -19,7 +19,7 @@ package plan
 package comp
 
 import scalaz.Scalaz._
-import scalaz.std.vector._
+import scalaz.std.vector.vectorSyntax._
 import org.kiama.attribution.{Attributable, Attribution}
 import control.Exceptions._
 

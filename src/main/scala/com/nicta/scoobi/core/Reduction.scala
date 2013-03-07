@@ -2,7 +2,7 @@ package com.nicta.scoobi
 package core
 
 import scalaz._, Scalaz._, BijectionT._
-
+import scala.reflect.ClassTag
 /*
  * A binary associative operation on a set. It is the responsibility of implementations to ensure associativity.
  */
@@ -612,7 +612,7 @@ object Reduction {
   /**
    * A reduction on arrays by appending.
    */
-  def array[A: ClassManifest]: Reduction[Array[A]] =
+  def array[A : ClassTag]: Reduction[Array[A]] =
     Reduction((c1, c2) => (c1 ++ c2).toArray)
 
   /**

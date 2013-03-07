@@ -146,7 +146,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
     val writerSchema = new Schema.Parser().parse(jsonSchema)
     val dataFileWriter = new DataFileWriter[GenericRecord](new GenericDatumWriter[GenericRecord](writerSchema))
-    dataFileWriter.create(writerSchema, FileSystem.get(filePath.toUri, sc).create(filePath, true))
+    dataFileWriter.create(writerSchema, FileSystem.get(filePath.toUri, sc.configuration).create(filePath, true))
 
     val record = new GenericData.Record(writerSchema)
     record.put("v0", 50)

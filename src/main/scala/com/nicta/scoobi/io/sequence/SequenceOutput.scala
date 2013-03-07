@@ -44,7 +44,7 @@ object SequenceOutput {
 
   def keySchemaSequenceFile[K](path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) = {
 
-    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.SeqType]]
+    val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
     val valueClass = classOf[NullWritable]
 
     val converter = new OutputConverter[convK.SeqType, NullWritable, K] {
@@ -59,7 +59,7 @@ object SequenceOutput {
     dl.addSink(valueSchemaSequenceFile(path, overwrite))
 
   def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) = {
-    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
+    val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
     val converter = new OutputConverter[NullWritable, convV.SeqType, V] {
       def toKeyValue(v: V) = (NullWritable.get, convV.toWritable(v))
     }
@@ -73,8 +73,8 @@ object SequenceOutput {
 
   def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V])= {
 
-    val keyClass = convK.mf.erasure.asInstanceOf[Class[convK.SeqType]]
-    val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
+    val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
+    val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
 
     val converter = new OutputConverter[convK.SeqType, convV.SeqType, (K, V)] {
       def toKeyValue(kv: (K, V)) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
@@ -87,8 +87,8 @@ object SequenceOutput {
     dl.addSink(sequenceSink[K, V](path, overwrite))
 
   def sequenceSink[K <: Writable : Manifest, V <: Writable : Manifest](path: String, overwrite: Boolean = false) = {
-    val keyClass = implicitly[Manifest[K]].erasure.asInstanceOf[Class[K]]
-    val valueClass = implicitly[Manifest[V]].erasure.asInstanceOf[Class[V]]
+    val keyClass = implicitly[Manifest[K]].runtimeClass.asInstanceOf[Class[K]]
+    val valueClass = implicitly[Manifest[V]].runtimeClass.asInstanceOf[Class[V]]
 
     val converter = new OutputConverter[K, V, (K, V)] {
       def toKeyValue(kv: (K, V)) = (kv._1, kv._2)

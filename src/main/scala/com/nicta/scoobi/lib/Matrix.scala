@@ -150,7 +150,10 @@ case class DMatrix[Elem : WireFormat: Ordering, Value : WireFormat](data: DList[
     add: Reduction[Q]): DVector[Elem, Q] = matrixByVector(this, v, mult, add)
 
 
-  def transpose: DMatrix[Elem, Value] = DMatrix(this.data map { case ((r, c), v) => ((c, r), v) })
+  def transpose: DMatrix[Elem, Value] = {
+    val wfpair = WireFormat.Tuple2Fmt(WireFormat.Tuple2Fmt(wireFormat[Elem], wireFormat[Elem]), wireFormat[Value])
+    DMatrix(this.data.map { case ((r, c), v) => ((c, r), v) }(wfpair))
+  }
 }
 
 object LinearAlgebra {

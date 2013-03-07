@@ -55,7 +55,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     e1 := prop { layer: Layer[CompNode] =>
       val nodes = layer.nodes
       nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n)))
-    }.set(minTestsOk -> 100)
+    }.set(minTestsOk = 100)
 
     e2 := forAll(genLayerPair) { (pair: (Layer[CompNode], Layer[CompNode])) => val (layer1, layer2) = pair
       val pairs = ^(layer1.gbks.toStream, layer2.gbks.toStream)((_,_))
@@ -64,7 +64,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
         (n1 -> isStrictParentOf(n2)) aka (showGraph(n1)+"\n"+showGraph(n2)) must beTrue
       }
 
-    }.set(minTestsOk -> 100, maxSize -> 6, maxDiscarded -> 150)
+    }.set(minTestsOk = 100, maxSize = 6, maxDiscardRatio = 7f)
 
   }
 

@@ -175,8 +175,8 @@ object SequenceInput {
       if (checkFileTypes)
         Helper.getSingleFilePerDir(p)(sc) foreach { filePath =>
           val seqReader: SequenceFile.Reader = new SequenceFile.Reader(sc, SequenceFile.Reader.file(filePath))
-          checkType(seqReader.getKeyClass, manifest[K].erasure, "KEY")
-          checkType(seqReader.getValueClass, manifest[V].erasure, "VALUE")
+          checkType(seqReader.getKeyClass, manifest[K].runtimeClass, "KEY")
+          checkType(seqReader.getValueClass, manifest[V].runtimeClass, "VALUE")
         }
     }
 
