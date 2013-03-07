@@ -57,7 +57,7 @@ object build extends Build {
     name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
-    scalaVersion := "2.9.2")
+    scalaVersion := "2.10.0")
 
   lazy val dependenciesSettings: Seq[Settings] = Seq(
     libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
@@ -71,17 +71,17 @@ object build extends Build {
       "org.apache.avro" % "avro" % "1.7.3.1",
       "com.thoughtworks.xstream" % "xstream" % "1.4.4" intransitive(),
       "com.googlecode.kiama" %% "kiama" % "1.5.0-SNAPSHOT",
-      "com.github.mdr" %% "ascii-graphs" % "0.0.2",
+      "com.github.mdr" % "ascii-graphs_2.10.0" % "0.0.2",
       "org.scalaz" %% "scalaz-core" % "7.0.0-M8",
       "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M8",
       "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M8" intransitive(),
       "org.scalaz" %% "scalaz-typelevel" % "7.0.0-M8" intransitive(),
       "org.scalaz" %% "scalaz-xml" % "7.0.0-M8" intransitive(),
       "org.scala-lang" % "scala-compiler" % scalaVersion % "optional",
-      "org.specs2" %% "specs2" % "1.12.4" % "optional",
+      "org.specs2" %% "specs2" % "1.14.1-SNAPSHOT" % "optional",
       "org.specs2" % "classycle" % "1.4.1"% "test",
-      "com.chuusai" %% "shapeless" % "1.2.2",
-      "org.scalacheck" %% "scalacheck" % "1.9" % "test",
+      "com.chuusai" %% "shapeless" % "1.2.3",
+      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
       "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
       "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
@@ -98,7 +98,7 @@ object build extends Build {
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
-    scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
+    scalacOptions ++= Seq("-deprecation", "-unchecked")
   )
 
   lazy val testingSettings: Seq[Settings] = Seq(
