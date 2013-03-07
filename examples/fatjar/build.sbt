@@ -23,10 +23,11 @@ libraryDependencies ++= Seq(
   "com.github.mdr" %% "ascii-graphs" % "0.0.2",
   "org.scalaz" %% "scalaz-core" % "7.0.0-M8",
   "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M8",
-  "org.specs2" %% "specs2" % "1.12.4-SNAPSHOT" % "optional",
+  "org.specs2" %% "specs2" % "1.12.4" % "optional",
   "org.specs2" % "classycle" % "1.4.1"% "test",
   "com.chuusai" %% "shapeless" % "1.2.2")
 
 resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
+                  "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "apache"   at "https://repository.apache.org/content/repositories/releases")

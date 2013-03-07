@@ -9,4 +9,6 @@ libraryDependencies ++=
 
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
-resolvers += "Sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"
+resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
+                  "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
+                  "cloudera" at "https://repository.cloudera.com/content/repositories/releases")
