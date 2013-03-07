@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Load and persist data.html">LoadAndPersist</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Load and persist data</title><a name="Load+and+persist+data"><h2 specId="1317890552">Load and persist data</h2></a><status class="ok"><div class="level0" style="display: show"><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the <a href="Application.html">WordCount example</a> we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally <em>loaded</em> from files and the results <em>persisted</em> to files. Let's see how to specify this.</p><a name="Loading"><h3>Loading</h3></a><p>Most of the time when we create <code class="prettyprint">DList</code> objects, it is the result of calling a method on another <code class="prettyprint">DList</code> object (e.g. <code class="prettyprint">map</code>). <em>Loading</em>, on the other hand, is the only way to create a <code class="prettyprint">DList</code> object that is not based on any others. It is the means by which we associate a <code class="prettyprint">DList</code> object with some data files on HDFS. Scoobi provides functions to create <code class="prettyprint">DList</code> objects associated with text files on HDFS, which are implemented in the object <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextInput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextInput</code></a>.</p><p>The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes a path (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed collection refers to one of the lines of text from the files.</p><p>Often we are interested in loading delimited text files, for example, comma separated value (CSV) files. In this case, we can use <code class="prettyprint">fromTextFile</code> followed by a <code class="prettyprint">map</code> to pull out fields of interest:</p>
+                       <div class="col1"><div id="central"><title>Load and persist data</title><a name="Load+and+persist+data"><h2 specId="347355891">Load and persist data</h2></a><status class="ok"><div class="level0" style="display: show"><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the <a href="Application.html">WordCount example</a> we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally <em>loaded</em> from files and the results <em>persisted</em> to files. Let's see how to specify this.</p><a name="Loading"><h3>Loading</h3></a><p>Most of the time when we create <code class="prettyprint">DList</code> objects, it is the result of calling a method on another <code class="prettyprint">DList</code> object (e.g. <code class="prettyprint">map</code>). <em>Loading</em>, on the other hand, is the only way to create a <code class="prettyprint">DList</code> object that is not based on any others. It is the means by which we associate a <code class="prettyprint">DList</code> object with some data files on HDFS. Scoobi provides functions to create <code class="prettyprint">DList</code> objects associated with text files on HDFS, which are implemented in the object <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextInput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextInput</code></a>.</p><p>The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes a path (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed collection refers to one of the lines of text from the files.</p><p>Often we are interested in loading delimited text files, for example, comma separated value (CSV) files. In this case, we can use <code class="prettyprint">fromTextFile</code> followed by a <code class="prettyprint">map</code> to pull out fields of interest:</p>
 <pre><code class="prettyprint">// load CSV with schema &quot;id,first_name,second_name,age&quot;
 val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/CVS/files/*&quot;)
 
@@ -225,8 +225,8 @@ persist(sum, max, plusOne)
                            filter(isEven)
 </code></pre><p>If you run the <code class="prettyprint">after</code> program twice, the second time the program is run, only the <code class="prettyprint">filter</code> operation will be executed taking its input data from the saved Avro file.</p><p><em>Important limitation</em>: you can't use a <code class="prettyprint">Text</code> sink as a checkpoint because Text file sinks can't not be used as source files.</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="780553795"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1269982863"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="1635375188"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1434457155"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -236,7 +236,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1701423197"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="2060056347"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -250,7 +250,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1352358703"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1081413168"><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Materialising">Materialising</a>
@@ -264,7 +264,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Objects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1628085679"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
+          </li><li id="90010579"><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Input and Output.html#Text+file+input">Text file input</a>
             
@@ -296,7 +296,7 @@ persist(sum, max, plusOne)
             
           </li></ul>
           </li></ul>
-          </li><li id="264493031"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
+          </li><li id="1947973636"><a href="../../guide-SNAPSHOT/guide/Data Types.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Data Types.html#Custom+types">Custom types</a>
@@ -308,7 +308,7 @@ persist(sum, max, plusOne)
             
           </li></ul>
           </li></ul>
-          </li><li id="483816842"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
+          </li><li id="1681036206"><a href="../../guide-SNAPSHOT/guide/Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Basic+grouping">Basic grouping</a>
@@ -316,7 +316,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1317890552"><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="347355891"><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Loading">Loading</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Load and persist data.html#Persisting">Persisting</a>
@@ -330,7 +330,7 @@ persist(sum, max, plusOne)
             
           </li></ul>
           </li></ul>
-          </li><li id="2075569828"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
+          </li><li id="1340523068"><a href="../../guide-SNAPSHOT/guide/Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#Grouping">Grouping</a>
@@ -346,7 +346,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1709879321"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
+          </li><li id="555832428"><a href="../../guide-SNAPSHOT/guide/Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#Arguments">Arguments</a>
@@ -370,7 +370,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="1513703413"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
+          </li><li id="188090464"><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Running+on+the+cluster">Running on the cluster</a>
@@ -398,7 +398,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1649169323"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="45060432"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -414,7 +414,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1557689947"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="518028573"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -422,7 +422,7 @@ persist(sum, max, plusOne)
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1861884788"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1698504930"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -436,7 +436,7 @@ persist(sum, max, plusOne)
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['780553795','1317890552'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1635375188','347355891'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
