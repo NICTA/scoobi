@@ -23,6 +23,7 @@ import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
 import SequenceOutput._
+import core.Reduction.Sum
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -191,6 +192,12 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
       "there was only one mscr job" ==> { evaluationsNb must be_==(1) }
      } else success
+  }
+
+  "14. 1 combine + 1 persist + 1 combine" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l1.run
+    l1.map(_._2).run.normalise === "Vector(2, 4)"
   }
 
 }
