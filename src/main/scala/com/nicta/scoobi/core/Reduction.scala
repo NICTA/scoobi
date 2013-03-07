@@ -4,7 +4,28 @@ package core
 import scalaz._, Scalaz._, BijectionT._
 
 /*
- * A binary associative operation on a set. It is the responsibility of implementations to ensure associativity.
+ * A closed, binary associative operation on a set. It is the responsibility of implementations to ensure associativity.
+ *
+ * Associativity
+ * =============
+ * Implementations of the `Reduction` trait supply a value for the reduce operation: (A, A) => A.
+ * This is typically done with the `Reduction#apply` function. This function is described as:
+ * - binary, since it accepts 2 arguments.
+ * - closed, since that operation accepts and returns arguments of the same type (set).
+ * - associative, since implementations must satisfy the law of asssociativity.
+ *
+ * Specifically,
+ * the compiler will not enforce this property, however, failure to adhere to it results in non-deterministic output
+ * from higher-level abstractions and functions.
+ *
+ * The associativity law on the `reduce` operation is given by:
+ * ∀ x y z. reduce(reduce(x, y), z) = reduce(x, reduce(y, z))
+ *
+ * Equivalence is defined here by extensional equivalence.
+ *
+ * Implementers can check adherence to the law of associativity given by the `Reduction#associative` method.
+ * For a given Reduction (`r`), `r.associative(x, y, z)` must always return `true`
+ * (within the bounds of extensional equivalence).
  */
 trait Reduction[A] {
   /**
