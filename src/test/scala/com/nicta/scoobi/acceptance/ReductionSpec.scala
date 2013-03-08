@@ -154,7 +154,7 @@ class ReductionSpec extends NictaSimpleJobs {
   }
 
   // pointwiseC reduction performs reduction on a function's argument type
-  // within some applicative environment.
+  // within some environment.
   "pointwiseC reduction" >> {
     // Construct a reduction on the result type of String and argument type of Int.
     val r: Reduction[Cokleisli[Option, Int, String]] =
