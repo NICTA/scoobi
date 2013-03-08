@@ -411,7 +411,8 @@ trait Reduction[A] {
 
 }
 
-object Reduction {
+object Reduction extends Reductions
+trait Reductions {
   /**
    * Construct a reduction from the given binary, associative operation.
    */

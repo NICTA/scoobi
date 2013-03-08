@@ -17,7 +17,6 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import core.Reduction._
 import testing.mutable.NictaSimpleJobs
 
 class WordCountSpec extends NictaSimpleJobs {

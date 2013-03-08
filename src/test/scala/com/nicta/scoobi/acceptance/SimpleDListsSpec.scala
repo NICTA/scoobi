@@ -22,7 +22,6 @@ import impl.plan.DListImpl
 import com.nicta.scoobi.impl.plan.comp.factory._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
-import core.Reduction._
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 

@@ -20,7 +20,6 @@ import testing.SimpleJobs
 import testing.mutable.HadoopSpecification
 import Scoobi._
 import impl.plan.comp._
-import core.Reduction._
 
 class InMemoryModeSpec extends HadoopSpecification with SimpleJobs with CompNodeData { sequential
 
