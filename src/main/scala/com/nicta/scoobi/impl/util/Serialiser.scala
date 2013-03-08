@@ -30,6 +30,7 @@ trait Serialiser {
   xstream.omitField(classOf[Configuration], "classLoader")
   xstream.omitField(classOf[Configuration], "CACHE_CLASSES")
   xstream.omitField(classOf[ScoobiConfiguration], "sc")
+  xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
 
   def serialise(obj: Any, out: OutputStream) {
     try { xstream.toXML(obj, out) }
