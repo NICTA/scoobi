@@ -77,7 +77,7 @@ object build extends Build {
       "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M8" intransitive(),
       "org.scalaz" %% "scalaz-typelevel" % "7.0.0-M8" intransitive(),
       "org.scalaz" %% "scalaz-xml" % "7.0.0-M8" intransitive(),
-      "org.scala-lang" % "scala-compiler" % scalaVersion % "optional",
+      "org.scala-lang" % "scala-compiler" % scalaVersion,
       "org.specs2" %% "specs2" % "1.12.4" % "optional",
       "org.specs2" % "classycle" % "1.4.1"% "test",
       "com.chuusai" %% "shapeless" % "1.2.2",
