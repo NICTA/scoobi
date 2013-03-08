@@ -9,7 +9,10 @@ import scalaz._, Scalaz._, BijectionT._
  * Associativity
  * =============
  * Implementations of the `Reduction` trait supply a value for the reduce operation: (A, A) => A.
- * This is typically done with the `Reduction#apply` function. This function is described as:
+ * This is typically done using the existing `Reduction` values,
+ * however a user can supply their own with the `Reduction#apply` function.
+ *
+ * This function is described as:
  * - binary, since it accepts 2 arguments.
  * - closed, since that operation accepts and returns arguments of the same type (set).
  * - associative, since implementations must satisfy the law of asssociativity.
