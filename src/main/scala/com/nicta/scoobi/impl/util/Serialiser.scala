@@ -22,10 +22,11 @@ import com.thoughtworks.xstream.io.binary.BinaryStreamDriver
 import org.apache.hadoop.conf.Configuration
 import java.io._
 import core.ScoobiConfiguration
+import com.thoughtworks.xstream.io.xml.StaxDriver
 
 trait Serialiser {
 
-  private val xstream = new XStream(new BinaryStreamDriver)
+  private val xstream = new XStream(new StaxDriver)
 
   xstream.omitField(classOf[Configuration], "classLoader")
   xstream.omitField(classOf[Configuration], "CACHE_CLASSES")
