@@ -22,15 +22,14 @@ import com.thoughtworks.xstream.io.binary.BinaryStreamDriver
 import org.apache.hadoop.conf.Configuration
 import java.io._
 import core.ScoobiConfiguration
-import com.thoughtworks.xstream.io.xml.StaxDriver
 
 trait Serialiser {
 
-  private val xstream = new XStream(new StaxDriver)
+  private val xstream = new XStream(new BinaryStreamDriver)
 
-  xstream.omitField(classOf[Configuration], "classLoader")
-  xstream.omitField(classOf[Configuration], "CACHE_CLASSES")
-  xstream.omitField(classOf[ScoobiConfiguration], "sc")
+  xstream.omitField(classOf[Configuration],           "classLoader")
+  xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
+  xstream.omitField(classOf[ScoobiConfiguration],     "sc")
   xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
 
   def serialise(obj: Any, out: OutputStream) {
