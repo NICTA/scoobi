@@ -78,6 +78,8 @@ trait CollectFunctions {
   lazy val isACombine: PartialFunction[Any, Combine] = { case c: Combine => c }
   /** return true if a CompNode is a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo] = { case p: ParallelDo => p }
+  /** return true if a CompNode is a ProcessNode */
+  lazy val isAProcessNode: PartialFunction[Any, ProcessNode] = { case p: ProcessNode => p }
   /** return true if a CompNode is a GroupByKey */
   lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey => true; case other => false }
   /** return true if a CompNode is a GroupByKey */

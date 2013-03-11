@@ -37,7 +37,7 @@ trait ProcessNodeImpl extends ProcessNode {
   /** unique identifier for the bridgeStore storing data for this node */
   protected def bridgeStoreId: String
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
-  lazy val bridgeStore = if (nodeSinks.isEmpty) Some(createBridgeStore) else oneSinkAsBridge
+  lazy val bridgeStore = oneSinkAsBridge.orElse(Some(createBridgeStore))
   /** create a new bridgeStore if necessary */
   def createBridgeStore = BridgeStore(bridgeStoreId, wf)
   /** transform one sink into a Bridge if possible */
@@ -46,7 +46,7 @@ trait ProcessNodeImpl extends ProcessNode {
       orElse(nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId))))
 
   /** @return all the additional sinks + the bridgeStore */
-  lazy val sinks = oneSinkAsBridge.cata(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)
+  lazy val sinks = (bridgeStore.toSeq ++ nodeSinks).distinct
   /** list of additional sinks for this node */
   def nodeSinks : Seq[Sink]
 }
