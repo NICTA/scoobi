@@ -155,8 +155,8 @@ trait MscrInputChannel extends InputChannel {
     def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = {
       val result = node match {
         case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
-        case mapper: ParallelDo if !isReducer(mapper) =>
-          val previousNodes = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).filter(isParallelDo).contains(n))
+        case mapper: ParallelDo if mappers.contains(mapper) =>
+          val previousNodes = mapper.ins.filter(n => sourceNode == n || mappers.contains(n))
           val mappedValues = previousNodes.foldLeft(Seq[Any]()) { (res, cur) => res ++ computeMappers(cur, emitter) }
 
           if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)
