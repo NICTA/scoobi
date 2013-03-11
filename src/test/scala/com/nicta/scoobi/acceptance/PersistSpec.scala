@@ -140,6 +140,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       persistTwice((list, sink) => list.toAvroFile(sink, overwrite = true))
     }
     "9.3 with a Text file" >> { implicit sc: SC =>
+      // in this case, a bridge store is used as a source, instead of the text file
       persistTwice((list, sink) => list.toTextFile(sink, overwrite = true))
     }
 
