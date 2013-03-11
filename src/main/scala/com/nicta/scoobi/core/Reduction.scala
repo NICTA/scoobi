@@ -4,7 +4,8 @@ package core
 import scalaz._, Scalaz._, BijectionT._
 
 /*
- * A closed, binary associative operation on a set. It is the responsibility of implementations to ensure associativity.
+ * A closed, binary operation on a set. Implementations may benefit by adhering to the law of associativity, however,
+ * this is *not* mandatory.
  *
  * Associativity
  * =============
@@ -15,11 +16,7 @@ import scalaz._, Scalaz._, BijectionT._
  * This function is described as:
  * - binary, since it accepts 2 arguments.
  * - closed, since that operation accepts and returns arguments of the same type (set).
- * - associative, since implementations must satisfy the law of asssociativity.
- *
- * Specifically,
- * the compiler will not enforce this property, however, failure to adhere to it results in non-deterministic output
- * from higher-level abstractions and functions.
+ * - implementations may satisfy the law of associativity.
  *
  * The associativity law on the `reduce` operation is given by:
  * ∀ x y z. reduce(reduce(x, y), z) = reduce(x, reduce(y, z))
@@ -27,53 +24,53 @@ import scalaz._, Scalaz._, BijectionT._
  * Equivalence is defined here by extensional equivalence.
  *
  * Implementers can check adherence to the law of associativity given by the `Reduction#associative` method.
- * For a given Reduction (`r`), `r.associative(x, y, z)` must always return `true`
+ * For a given Reduction (`r`), `r.associative(x, y, z)` always returns `true` if it is associative.
  * (within the bounds of extensional equivalence).
  */
 trait Reduction[A] {
   /**
-   * The binary associative operation.
+   * The binary operation.
    */
   val reduce: (A, A) => A
 
   /**
-   * The binary associative operation. Alias for `-\`.
+   * The binary operation. Alias for `-\`.
    */
   def apply(a1: A, a2: A): A =
     reduce(a1, a2)
 
   /**
-   * The binary associative operation. Alias for `apply`.
+   * The binary operation. Alias for `apply`.
    */
   def -\(a1: A, a2: A): A =
     apply(a1, a2)
 
   /**
-   * The binary associative operation in curried form.
+   * The binary operation in curried form.
    */
   def reduceC: A => A => A =
     reduce.curried
 
   /**
-   * Swaps the arguments to the binary associative operation. Alias for `unary_~`.
+   * Swaps the arguments to the binary operation. Alias for `unary_~`.
    */
   def dual: Reduction[A] =
     Reduction((a1, a2) => reduce(a2, a1))
 
   /**
-   * Swaps the arguments to the binary associative operation. Alias for `dual`.
+   * Swaps the arguments to the binary operation. Alias for `dual`.
    */
   def unary_~ : Reduction[A] =
     dual
 
   /**
-   * Return a unary operation that applies to both sides of the binary associative operation.
+   * Return a unary operation that applies to both sides of the binary operation.
    */
   def pair: A => A =
     a => reduce(a, a)
 
   /**
-   * Return a unary operation that applies to both sides of the binary associative operation as an endomorphism.
+   * Return a unary operation that applies to both sides of the binary operation as an endomorphism.
    */
   def pairE: Endo[A] =
     Endo(pair)
@@ -394,7 +391,7 @@ trait Reduction[A] {
   }
 
   /**
-   * Encodes the associative law that all reductions must satisfy.
+   * Encodes the associative law that reductions may satisfy.
    */
   class Associative {
     def apply(a1: A, a2: A, a3: A)(implicit E: Equal[A]): Boolean =
@@ -417,7 +414,7 @@ trait Reduction[A] {
 object Reduction extends Reductions
 trait Reductions {
   /**
-   * Construct a reduction from the given binary, associative operation.
+   * Construct a reduction from the given binary operation.
    */
   def apply[A](f: (A, A) => A): Reduction[A] =
     new Reduction[A] {
@@ -736,6 +733,38 @@ trait Reductions {
       Reduction(_ add _)
 
     /**
+     * Reduction on big decimals by addition.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def bigdec: Reduction[BigDecimal] =
+      Reduction(_ + _)
+
+    /**
+     * Reduction on java big decimals by addition.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def bigdecimal: Reduction[java.math.BigDecimal] =
+      Reduction(_ add _)
+
+    /**
+     * Reduction on floats by addition.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def float: Reduction[Float] =
+      Reduction((c1, c2) => c1 + c2)
+
+    /**
+     * Reduction on doubles by addition.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def double: Reduction[Double] =
+      Reduction((c1, c2) => c1 + c2)
+
+    /**
      * Reduction on bytes by addition.
      */
     def byte: Reduction[Byte] =
@@ -788,6 +817,38 @@ trait Reductions {
      */
     def biginteger: Reduction[java.math.BigInteger] =
       Reduction(_ multiply _)
+
+    /**
+     * Reduction on big decimals by multiplication.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def bigdec: Reduction[BigDecimal] =
+      Reduction(_ * _)
+
+    /**
+     * Reduction on java big decimals by multiplication.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def bigdecimal: Reduction[java.math.BigDecimal] =
+      Reduction(_ multiply _)
+
+    /**
+     * Reduction on floats by multiplication.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def float: Reduction[Float] =
+      Reduction((c1, c2) => c1 * c2)
+
+    /**
+     * Reduction on doubles by addition.
+     *
+     * _Note that this is not an associative operation._
+     */
+    def double: Reduction[Double] =
+      Reduction((c1, c2) => c1 * c2)
 
     /**
      * Reduction on bytes by multiplication.
