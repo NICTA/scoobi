@@ -8,8 +8,6 @@ import impl.plan.comp.CompNodeData._
 import testing.TestFiles._
 import CheckpointEvaluations1._
 import java.io.File
-import core.Reduction
-import Reduction._
 
 class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 
