@@ -19,6 +19,7 @@ package acceptance
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
 import JoinExample._
+import impl.plan.comp.CompNodeData._
 
 class JoinSpec extends NictaSimpleJobs {
 
@@ -38,6 +39,8 @@ class JoinSpec extends NictaSimpleJobs {
 
   def employeesByDepartmentId(implicit sc: SC) = employees.by(_.departmentId)
   def departmentsById(implicit sc: SC) = departments.by(_.id)
+  def employeesByDepartmentIdString(implicit sc: SC) = employees.by(_.departmentId).map { case (k, v) => (k.toString, v) }
+  def departmentsByIdString(implicit sc: SC) = departments.by(_.id).map { case (k, v) => (k.toString, v) }
 
   "Inner join" >> { implicit sc: SC =>
     (employeesByDepartmentId join departmentsById).run.mkString === Seq(
@@ -57,6 +60,11 @@ class JoinSpec extends NictaSimpleJobs {
       "(34,(Robinson,Some(Clerical)))",
       "(34,(Smith,Some(Clerical)))").mkString
   }
+
+    "xxx" >> { implicit sc: SC =>
+      (employeesByDepartmentIdString joinLeft departmentsByIdString).run.normalise ===
+        "Vector((-1,(John,None)), (31,(Rafferty,Some(Sales))), (33,(Jones,Some(Engineering))), (33,(Steinberg,Some(Engineering))), (34,(Robinson,Some(Clerical))), (34,(Smith,Some(Clerical))))"
+    }
 
   "Right join" >> { implicit sc: SC =>
     (employeesByDepartmentId joinRight departmentsById).run.mkString === Seq(
