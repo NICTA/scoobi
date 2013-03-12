@@ -201,4 +201,11 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     l1.map(_._2).run.normalise === "Vector(2, 4)"
   }
 
+  "15. complex flatten + gbk" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = (DList(1).sum join DList(4, 5, 6)).map(_._2)
+    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l3.map(_._2).run.normalise === "Vector(12, 9)"
+  }
+
 }
