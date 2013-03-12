@@ -71,8 +71,8 @@
 <pre><code class="prettyprint">  cp target/scala-2.9.2/src_managed/main/scoobi/codegen/* src/main/scala/
 </code></pre><p>This however, will break the build from within sbt (as it will see two versions of the code generated stuff). An easy solution is to simply comment out the line in build.sbt <code class="prettyprint">(sourceGenerators in Compile) &lt;+= (sourceManaged in Compile) map GenWireFormat.gen</code> just remember not to commit this.</p><p>Now after running <code class="prettyprint">sbt eclipse</code> and importing the project, you will get compile errors related to dependent types. This is <a href="https://github.com/typesafehub/sbteclipse/issues/115">issue #115</a> and can easily be worked around by right-clicking on the scoobi project, going to properties, then 'scala compiler and adding <code class="prettyprint">-Ydependent-method-types</code>. </p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1519652738"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
-            <ul><li id="1289070700"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
+      <ul><li id="780553795"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+            <ul><li id="1300681493"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Directory+Structure">Directory Structure</a>
@@ -282,7 +282,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1519652738','1187390176'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['780553795','1187390176'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
