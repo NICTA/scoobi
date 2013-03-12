@@ -32,12 +32,12 @@ trait Serialiser {
   xstream.omitField(classOf[ScoobiConfiguration],     "sc")
   xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
 
-  def serialise(obj: Any, out: OutputStream) {
+  def serialise(obj: Any, out: OutputStream) = synchronized {
     try { xstream.toXML(obj, out) }
     finally { out.close()  }
   }
 
-  def deserialise(in: InputStream) = {
+  def deserialise(in: InputStream) = synchronized {
     xstream.fromXML(in)
   }
 
