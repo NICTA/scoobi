@@ -208,4 +208,11 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     l3.map(_._2).run.normalise === "Vector(12, 9)"
   }
 
+  "16. possible truncate issue when new nodes are added and an intermediary list is persisted" >> { implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = l1.map(_+1)
+    l1.run
+    l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
+  }
+
 }
