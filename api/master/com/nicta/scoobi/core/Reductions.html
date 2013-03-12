@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.core.Reduction</title>
+          <title>com.nicta.scoobi.core.Reductions</title>
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
@@ -12,26 +12,29 @@
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
       <div id="definition">
-        <a title="Go to companion" href="Reduction.html"><img src="../../../../lib/object_to_trait_big.png" /></a>
+        <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a></p>
-        <h1><a title="Go to companion" href="Reduction.html">Reduction</a></h1>
+        <h1>Reductions</h1>
       </div>
 
       <h4 class="signature" id="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Reduction</span><span class="result"> extends <a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></span>
+        <span class="name">Reductions</span><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction$.html">Reduction</a>, <a name="com.nicta.scoobi.Scoobi" class="extype" href="../Scoobi$.html">Scoobi</a></div>
         </div></div>
     
 
@@ -45,7 +48,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.Reduction" class="in"><span>Reduction</span></li><li name="com.nicta.scoobi.core.Reductions" class="in"><span>Reductions</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.core.Reductions" class="in"><span>Reductions</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -158,8 +161,7 @@
         <span class="name">and</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Boolean" class="extype">Boolean</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that takes the conjunction of its two arguments.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that takes the conjunction of its two arguments.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that takes the conjunction of its two arguments.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#apply" data-isabs="false">
       <a id="apply[A]((A, A) ⇒ A):Reduction[A]"></a>
       <h4 class="signature">
@@ -171,8 +173,7 @@
         <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (A, A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Construct a reduction from the given binary operation.</p><div class="fullcomment"><div class="comment cmt"><p>Construct a reduction from the given binary operation.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Construct a reduction from the given binary operation.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#array" data-isabs="false">
       <a id="array[A](ClassManifest[A]):Reduction[Array[A]]"></a>
       <h4 class="signature">
@@ -184,8 +185,7 @@
         <span class="name">array</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: ClassManifest[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Array" class="extype">Array</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on arrays by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on arrays by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on arrays by appending.</p>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -224,8 +224,7 @@
         <span class="name">comparable</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="java.lang.Comparable" class="extype">Comparable</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on comparable values by first looking for <code>0</code>.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on comparable values by first looking for <code>0</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on comparable values by first looking for <code>0</code>.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#comparator" data-isabs="false">
       <a id="comparator[A]:Reduction[Comparator[A]]"></a>
       <h4 class="signature">
@@ -237,8 +236,7 @@
         <span class="name">comparator</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="java.util.Comparator" class="extype">Comparator</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on comparator values by first looking for <code>0</code>.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on comparator values by first looking for <code>0</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on comparator values by first looking for <code>0</code>.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#constant" data-isabs="false">
       <a id="constant[A](⇒ A):Reduction[A]"></a>
       <h4 class="signature">
@@ -250,8 +248,7 @@
         <span class="name">constant</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Construct a reduction that ignores its argument pair.</p><div class="fullcomment"><div class="comment cmt"><p>Construct a reduction that ignores its argument pair.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Construct a reduction that ignores its argument pair.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#differenceList" data-isabs="false">
       <a id="differenceList[A]:Reduction[DList[A]]"></a>
       <h4 class="signature">
@@ -263,8 +260,7 @@
         <span class="name">differenceList</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on difference lists by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on difference lists by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on difference lists by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#endo" data-isabs="false">
       <a id="endo[A]:Reduction[(A) ⇒ A]"></a>
       <h4 class="signature">
@@ -276,8 +272,7 @@
         <span class="name">endo</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[(A) ⇒ A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that composes two functions.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that composes two functions.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that composes two functions.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#endoE" data-isabs="false">
       <a id="endoE[A]:Reduction[Endo[A]]"></a>
       <h4 class="signature">
@@ -289,8 +284,7 @@
         <span class="name">endoE</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Endo" class="extype">Endo</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that composes two endomorphisms.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that composes two endomorphisms.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that composes two endomorphisms.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#ephemeralStream" data-isabs="false">
       <a id="ephemeralStream[A]:Reduction[EphemeralStream[A]]"></a>
       <h4 class="signature">
@@ -302,8 +296,7 @@
         <span class="name">ephemeralStream</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.EphemeralStream" class="extype">EphemeralStream</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on ephemeral streams by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on ephemeral streams by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on ephemeral streams by appending.</p>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -327,8 +320,7 @@
         <span class="name">equal</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Boolean" class="extype">Boolean</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Equal" class="extype">Equal</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Takes a boolean reduction to a reduction on equal instances.</p><div class="fullcomment"><div class="comment cmt"><p>Takes a boolean reduction to a reduction on equal instances.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Takes a boolean reduction to a reduction on equal instances.</p>
     </li><li visbl="pub" name="scala.AnyRef#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
@@ -367,8 +359,7 @@
         <span class="name">first</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that returns the first argument.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that returns the first argument.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that returns the first argument.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#firstOption" data-isabs="false">
       <a id="firstOption[A]:Reduction[Option[A]]"></a>
       <h4 class="signature">
@@ -380,8 +371,7 @@
         <span class="name">firstOption</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Option" class="extype">Option</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that tries the first option for <code>Some</code>, otherwise the last.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that tries the first option for <code>Some</code>, otherwise the last.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that tries the first option for <code>Some</code>, otherwise the last.</p>
     </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
       <a id="getClass():java.lang.Class[_]"></a>
       <h4 class="signature">
@@ -417,8 +407,7 @@
         <span class="name">hashmap</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.HashMap" class="extype">HashMap</span>[A, B]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on hash maps by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on hash maps by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on hash maps by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#hashset" data-isabs="false">
       <a id="hashset[A]:Reduction[HashSet[A]]"></a>
       <h4 class="signature">
@@ -430,8 +419,7 @@
         <span class="name">hashset</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.HashSet" class="extype">HashSet</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on hash sets by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on hash sets by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on hash sets by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#intmap" data-isabs="false">
       <a id="intmap[A]:Reduction[IntMap[A]]"></a>
       <h4 class="signature">
@@ -443,8 +431,7 @@
         <span class="name">intmap</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.IntMap" class="extype">IntMap</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on int maps by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on int maps by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on int maps by appending.</p>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -468,8 +455,7 @@
         <span class="name">last</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that returns the last argument.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that returns the last argument.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that returns the last argument.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#lastOption" data-isabs="false">
       <a id="lastOption[A]:Reduction[Option[A]]"></a>
       <h4 class="signature">
@@ -481,8 +467,7 @@
         <span class="name">lastOption</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Option" class="extype">Option</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that tries the last option for <code>Some</code>, otherwise the first.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that tries the last option for <code>Some</code>, otherwise the first.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that tries the last option for <code>Some</code>, otherwise the first.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#list" data-isabs="false">
       <a id="list[A]:Reduction[List[A]]"></a>
       <h4 class="signature">
@@ -494,8 +479,7 @@
         <span class="name">list</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[List[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on lists by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on lists by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on lists by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#listmap" data-isabs="false">
       <a id="listmap[A, B]:Reduction[ListMap[A, B]]"></a>
       <h4 class="signature">
@@ -507,8 +491,7 @@
         <span class="name">listmap</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.ListMap" class="extype">ListMap</span>[A, B]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on list maps by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on list maps by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on list maps by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#listset" data-isabs="false">
       <a id="listset[A]:Reduction[ListSet[A]]"></a>
       <h4 class="signature">
@@ -520,8 +503,7 @@
         <span class="name">listset</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.ListSet" class="extype">ListSet</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on list sets by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on list sets by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on list sets by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#longmap" data-isabs="false">
       <a id="longmap[A]:Reduction[LongMap[A]]"></a>
       <h4 class="signature">
@@ -533,8 +515,7 @@
         <span class="name">longmap</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.LongMap" class="extype">LongMap</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on long maps by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on long maps by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on long maps by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#maximum" data-isabs="false">
       <a id="maximum[A](Order[A]):Reduction[A]"></a>
       <h4 class="signature">
@@ -546,8 +527,7 @@
         <span class="name">maximum</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="O">O: <span name="scalaz.Order" class="extype">Order</span>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that produces the maximum value of its two arguments.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that produces the maximum value of its two arguments.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that produces the maximum value of its two arguments.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#maximumS" data-isabs="false">
       <a id="maximumS[A](Ordering[A]):Reduction[A]"></a>
       <h4 class="signature">
@@ -559,8 +539,7 @@
         <span class="name">maximumS</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="O">O: <span name="scala.math.Ordering" class="extype">Ordering</span>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that produces the maximum value of its two arguments.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that produces the maximum value of its two arguments.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that produces the maximum value of its two arguments.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#minimum" data-isabs="false">
       <a id="minimum[A](Order[A]):Reduction[A]"></a>
       <h4 class="signature">
@@ -572,8 +551,7 @@
         <span class="name">minimum</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="O">O: <span name="scalaz.Order" class="extype">Order</span>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that produces the minimum value of its two arguments.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that produces the minimum value of its two arguments.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that produces the minimum value of its two arguments.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#minimumS" data-isabs="false">
       <a id="minimumS[A](Ordering[A]):Reduction[A]"></a>
       <h4 class="signature">
@@ -585,8 +563,7 @@
         <span class="name">minimumS</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="O">O: <span name="scala.math.Ordering" class="extype">Ordering</span>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that produces the minimum value of its two arguments.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that produces the minimum value of its two arguments.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that produces the minimum value of its two arguments.</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -610,8 +587,7 @@
         <span class="name">nodeseq</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.xml.NodeSeq" class="extype">NodeSeq</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on xml node sequences by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on xml node sequences by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on xml node sequences by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#nonEmptyList" data-isabs="false">
       <a id="nonEmptyList[A]:Reduction[NonEmptyList[A]]"></a>
       <h4 class="signature">
@@ -623,8 +599,7 @@
         <span class="name">nonEmptyList</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.NonEmptyList" class="extype">NonEmptyList</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on non-empty lists by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on non-empty lists by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on non-empty lists by appending.</p>
     </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
       <a id="notify():Unit"></a>
       <h4 class="signature">
@@ -660,8 +635,7 @@
         <span class="name">or</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Boolean" class="extype">Boolean</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that takes the disjunction of its two arguments.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that takes the disjunction of its two arguments.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that takes the disjunction of its two arguments.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#order" data-isabs="false">
       <a id="order[A](Reduction[Ordering]):Reduction[Order[A]]"></a>
       <h4 class="signature">
@@ -673,8 +647,7 @@
         <span class="name">order</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Ordering" class="extype">Ordering</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Order" class="extype">Order</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Takes an ordering reduction to a reduction on order instances.</p><div class="fullcomment"><div class="comment cmt"><p>Takes an ordering reduction to a reduction on order instances.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Takes an ordering reduction to a reduction on order instances.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#ordering" data-isabs="false">
       <a id="ordering:Reduction[Ordering]"></a>
       <h4 class="signature">
@@ -686,8 +659,7 @@
         <span class="name">ordering</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Ordering" class="extype">Ordering</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on ordering (3) values by first looking for <code>EQ</code>.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on ordering (3) values by first looking for <code>EQ</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on ordering (3) values by first looking for <code>EQ</code>.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#orderingS" data-isabs="false">
       <a id="orderingS[A]:Reduction[Ordering[A]]"></a>
       <h4 class="signature">
@@ -699,8 +671,7 @@
         <span class="name">orderingS</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.math.Ordering" class="extype">Ordering</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on scala ordering by first looking for <code>0</code>.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on scala ordering by first looking for <code>0</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on scala ordering by first looking for <code>0</code>.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#queue" data-isabs="false">
       <a id="queue[A]:Reduction[Queue[A]]"></a>
       <h4 class="signature">
@@ -712,8 +683,7 @@
         <span class="name">queue</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.Queue" class="extype">Queue</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on queues by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on queues by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on queues by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#split1" data-isabs="false">
       <a id="split1[A]((A) ⇒ A):Reduction[A]"></a>
       <h4 class="signature">
@@ -725,8 +695,7 @@
         <span class="name">split1</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Construct a reduction that applies its first argument to the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Construct a reduction that applies its first argument to the given function.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Construct a reduction that applies its first argument to the given function.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#split1E" data-isabs="false">
       <a id="split1E[A](Endo[A]):Reduction[A]"></a>
       <h4 class="signature">
@@ -738,8 +707,7 @@
         <span class="name">split1E</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <span name="scalaz.Endo" class="extype">Endo</span>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Construct a reduction that applies its first argument to the given endomorphism.</p><div class="fullcomment"><div class="comment cmt"><p>Construct a reduction that applies its first argument to the given endomorphism.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Construct a reduction that applies its first argument to the given endomorphism.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#split2" data-isabs="false">
       <a id="split2[A]((A) ⇒ A):Reduction[A]"></a>
       <h4 class="signature">
@@ -751,8 +719,7 @@
         <span class="name">split2</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Construct a reduction that applies its second argument to the given function.</p><div class="fullcomment"><div class="comment cmt"><p>Construct a reduction that applies its second argument to the given function.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Construct a reduction that applies its second argument to the given function.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#split2E" data-isabs="false">
       <a id="split2E[A](Endo[A]):Reduction[A]"></a>
       <h4 class="signature">
@@ -764,8 +731,7 @@
         <span class="name">split2E</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <span name="scalaz.Endo" class="extype">Endo</span>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Construct a reduction that applies its second argument to the given endomorphism.</p><div class="fullcomment"><div class="comment cmt"><p>Construct a reduction that applies its second argument to the given endomorphism.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Construct a reduction that applies its second argument to the given endomorphism.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#stack" data-isabs="false">
       <a id="stack[A]:Reduction[Stack[A]]"></a>
       <h4 class="signature">
@@ -777,8 +743,7 @@
         <span class="name">stack</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.Stack" class="extype">Stack</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on stacks by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on stacks by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on stacks by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#stream" data-isabs="false">
       <a id="stream[A]:Reduction[Stream[A]]"></a>
       <h4 class="signature">
@@ -790,8 +755,7 @@
         <span class="name">stream</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[Stream[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on streams by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on streams by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on streams by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#string" data-isabs="false">
       <a id="string:Reduction[String]"></a>
       <h4 class="signature">
@@ -803,8 +767,7 @@
         <span class="name">string</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[String]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on strings by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on strings by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on strings by appending.</p>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -840,8 +803,7 @@
         <span class="name">treemap</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.TreeMap" class="extype">TreeMap</span>[A, B]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on tree maps by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on tree maps by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on tree maps by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#treeset" data-isabs="false">
       <a id="treeset[A]:Reduction[TreeSet[A]]"></a>
       <h4 class="signature">
@@ -853,8 +815,7 @@
         <span class="name">treeset</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.collection.immutable.TreeSet" class="extype">TreeSet</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on tree sets by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on tree sets by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on tree sets by appending.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#unequal" data-isabs="false">
       <a id="unequal[A](Reduction[Boolean]):Reduction[Equal[A]]"></a>
       <h4 class="signature">
@@ -866,8 +827,7 @@
         <span class="name">unequal</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="r">r: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Boolean" class="extype">Boolean</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scalaz.Equal" class="extype">Equal</span>[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Takes a boolean reduction to a reduction on unequal instances.</p><div class="fullcomment"><div class="comment cmt"><p>Takes a boolean reduction to a reduction on unequal instances.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">Takes a boolean reduction to a reduction on unequal instances.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#unit" data-isabs="false">
       <a id="unit:Reduction[Unit]"></a>
       <h4 class="signature">
@@ -879,8 +839,7 @@
         <span class="name">unit</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[<span name="scala.Unit" class="extype">Unit</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction that cancels.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction that cancels.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction that cancels.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions#vector" data-isabs="false">
       <a id="vector[A]:Reduction[Vector[A]]"></a>
       <h4 class="signature">
@@ -892,8 +851,7 @@
         <span class="name">vector</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[Vector[A]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A reduction on vectors by appending.</p><div class="fullcomment"><div class="comment cmt"><p>A reduction on vectors by appending.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></dd></dl></div>
+      <p class="shortcomment cmt">A reduction on vectors by appending.</p>
     </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
       <a id="wait():Unit"></a>
       <h4 class="signature">
@@ -946,9 +904,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div name="com.nicta.scoobi.core.Reductions" class="parent">
-              <h3>Inherited from <a name="com.nicta.scoobi.core.Reductions" class="extype" href="Reductions.html">Reductions</a></h3>
-            </div><div name="scala.AnyRef" class="parent">
+        <div name="scala.AnyRef" class="parent">
               <h3>Inherited from AnyRef</h3>
             </div><div name="scala.Any" class="parent">
               <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>

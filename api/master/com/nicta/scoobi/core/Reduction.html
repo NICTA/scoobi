@@ -70,7 +70,7 @@
         <a href="Reduction$Associative.html"><span class="name">Associative</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
-      <p class="comment cmt">Encodes the associative law that all reductions must satisfy.</p>
+      <p class="comment cmt">Encodes the associative law that reductions may satisfy.</p>
     </li></ol>
             </div>
 
@@ -87,7 +87,7 @@
         <span class="name">reduce</span><span class="result">: (A, A) ⇒ A</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The binary associative operation.</p>
+      <p class="shortcomment cmt">The binary operation.</p>
     </li></ol>
             </div>
 
@@ -153,7 +153,7 @@
         <span class="name" title="gt4s: $minus$bslash">-\</span><span class="params">(<span name="a1">a1: A</span>, <span name="a2">a2: A</span>)</span><span class="result">: A</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The binary associative operation.</p><div class="fullcomment"><div class="comment cmt"><p>The binary associative operation. Alias for <code>apply</code>.
+      <p class="shortcomment cmt">The binary operation.</p><div class="fullcomment"><div class="comment cmt"><p>The binary operation. Alias for <code>apply</code>.
 </p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#==" data-isabs="false">
       <a id="==(AnyRef):Boolean"></a>
@@ -202,7 +202,7 @@
         <span class="name">apply</span><span class="params">(<span name="a1">a1: A</span>, <span name="a2">a2: A</span>)</span><span class="result">: A</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The binary associative operation.</p><div class="fullcomment"><div class="comment cmt"><p>The binary associative operation. Alias for <code>-\</code>.
+      <p class="shortcomment cmt">The binary operation.</p><div class="fullcomment"><div class="comment cmt"><p>The binary operation. Alias for <code>-\</code>.
 </p></div></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -278,7 +278,7 @@
         <span class="name">dual</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Swaps the arguments to the binary associative operation.</p><div class="fullcomment"><div class="comment cmt"><p>Swaps the arguments to the binary associative operation. Alias for <code>unary_~</code>.
+      <p class="shortcomment cmt">Swaps the arguments to the binary operation.</p><div class="fullcomment"><div class="comment cmt"><p>Swaps the arguments to the binary operation. Alias for <code>unary_~</code>.
 </p></div></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
@@ -474,7 +474,7 @@
         <span class="name">pair</span><span class="result">: (A) ⇒ A</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Return a unary operation that applies to both sides of the binary associative operation.</p>
+      <p class="shortcomment cmt">Return a unary operation that applies to both sides of the binary operation.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction#pairE" data-isabs="false">
       <a id="pairE:Endo[A]"></a>
       <h4 class="signature">
@@ -486,7 +486,7 @@
         <span class="name">pairE</span><span class="result">: <span name="scalaz.Endo" class="extype">Endo</span>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Return a unary operation that applies to both sides of the binary associative operation as an endomorphism.</p>
+      <p class="shortcomment cmt">Return a unary operation that applies to both sides of the binary operation as an endomorphism.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction#pointwise" data-isabs="false">
       <a id="pointwise[B]:Reduction[(B) ⇒ A]"></a>
       <h4 class="signature">
@@ -678,7 +678,7 @@
         <span class="name">reduceC</span><span class="result">: (A) ⇒ (A) ⇒ A</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The binary associative operation in curried form.</p>
+      <p class="shortcomment cmt">The binary operation in curried form.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction#right" data-isabs="false">
       <a id="right[B](⇒ Reduction[B]):Reduction[\/[A, B]]"></a>
       <h4 class="signature">
@@ -762,7 +762,7 @@
         <span class="name" title="gt4s: unary_$tilde">unary_~</span><span class="result">: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="">Reduction</a>[A]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Swaps the arguments to the binary associative operation.</p><div class="fullcomment"><div class="comment cmt"><p>Swaps the arguments to the binary associative operation. Alias for <code>dual</code>.
+      <p class="shortcomment cmt">Swaps the arguments to the binary operation.</p><div class="fullcomment"><div class="comment cmt"><p>Swaps the arguments to the binary operation. Alias for <code>dual</code>.
 </p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction#validation" data-isabs="false">
       <a id="validation[B](Reduction[B]):Reduction[Validation[A, B]]"></a>
