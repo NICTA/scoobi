@@ -72,7 +72,7 @@
   <li>Set the amount of reducers scoobi picks, with <code class="prettyprint">ScoobiConfiguration.setBytesPerReducer</code> (Note: this is based on the input to a MapReduce job, not the input to the reducer. Default is 1GiB)</li>
 </ul><p>Look in <code class="prettyprint">ScoobiConfiguration</code> for other useful runtime configuration options</p><a name="Static+References"><h3>Static References</h3></a><p>Values or objects that are behind a final static variable or reference won't get serialised properly. They get serialised in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a <code class="prettyprint">val</code> to a <code class="prettyprint">var</code> (especially considering variables are not shared between map-reduce jobs)</p><a name="DList+Covariance"><h3>DList Covariance</h3></a><p>At the moment DList is not covariant (that is, a <code class="prettyprint">DList[Apple]</code> is not a <code class="prettyprint">DList[Fruit]</code>). This is something we're slowly working on, but is quite a large issue because of its flow-on effects</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1937516689"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
+      <ul><li id="1548452562"><a href="../../guide-SNAPSHOT/guide/User Guide.html#User+Guide">User Guide</a>
             <ul><li id="1317810038"><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Prerequisites">Prerequisites</a>
             
@@ -283,7 +283,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1937516689','1557689947'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1548452562','1557689947'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
