@@ -48,7 +48,7 @@ object SequenceOutput {
     val valueClass = classOf[NullWritable]
 
     val converter = new OutputConverter[convK.SeqType, NullWritable, K] {
-      def toKeyValue(k: K) = (convK.toWritable(k), NullWritable.get)
+      def toKeyValue(k: K)(implicit configuration: Configuration) = (convK.toWritable(k), NullWritable.get)
     }
     new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite)
   }
@@ -61,7 +61,7 @@ object SequenceOutput {
   def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) = {
     val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
     val converter = new OutputConverter[NullWritable, convV.SeqType, V] {
-      def toKeyValue(v: V) = (NullWritable.get, convV.toWritable(v))
+      def toKeyValue(v: V)(implicit configuration: Configuration) = (NullWritable.get, convV.toWritable(v))
     }
     new ValueSeqSink[convV.SeqType, V](path, valueClass, converter, overwrite)(convV)
   }
@@ -77,7 +77,7 @@ object SequenceOutput {
     val valueClass = convV.mf.erasure.asInstanceOf[Class[convV.SeqType]]
 
     val converter = new OutputConverter[convK.SeqType, convV.SeqType, (K, V)] {
-      def toKeyValue(kv: (K, V)) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
+      def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
     new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite)
   }
@@ -91,7 +91,7 @@ object SequenceOutput {
     val valueClass = implicitly[Manifest[V]].erasure.asInstanceOf[Class[V]]
 
     val converter = new OutputConverter[K, V, (K, V)] {
-      def toKeyValue(kv: (K, V)) = (kv._1, kv._2)
+      def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (kv._1, kv._2)
     }
     new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite)
   }

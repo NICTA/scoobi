@@ -45,6 +45,8 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
+    tk.configuration = context.getConfiguration
+    tv.configuration = context.getConfiguration
 
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
     logger.info("Starting on " + java.net.InetAddress.getLocalHost.getHostName)

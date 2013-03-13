@@ -174,7 +174,7 @@ case class InMemoryMode() extends ExecutionMode {
       oc.setupJob(job)
       oc.setupTask(taskContext)
 
-      sink.write(result, rw)
+      sink.write(result, rw)(job.getConfiguration)
 
       rw.close(taskContext)
       oc.commitTask(taskContext)

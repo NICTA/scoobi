@@ -159,7 +159,8 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
   * the Class for 'value' will exist and be known by the ClassLoader. */
 class ScoobiWritableOutputConverter[A](typeName: String) extends OutputConverter[NullWritable, ScoobiWritable[A], A] {
   lazy val value: ScoobiWritable[A] = Class.forName(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
-  def toKeyValue(x: A): (NullWritable, ScoobiWritable[A]) = {
+  def toKeyValue(x: A)(implicit configuration: Configuration): (NullWritable, ScoobiWritable[A]) = {
+    value.configuration = configuration
     value.set(x)
     (NullWritable.get, value)
   }

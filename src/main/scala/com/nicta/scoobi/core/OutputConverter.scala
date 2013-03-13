@@ -16,11 +16,13 @@
 package com.nicta.scoobi
 package core
 
+import org.apache.hadoop.conf.Configuration
+
 /** Convert the type consumed by a DataSink into an OutputFormat's key-value types. */
 trait OutputConverter[K, V, B] extends ToKeyValueConverter {
   protected[scoobi]
-  def asKeyValue(x: Any) = toKeyValue(x.asInstanceOf[B]).asInstanceOf[(Any, Any)]
-  def toKeyValue(x: B): (K, V)
+  def asKeyValue(x: Any)(implicit configuration: Configuration) = toKeyValue(x.asInstanceOf[B]).asInstanceOf[(Any, Any)]
+  def toKeyValue(x: B)(implicit configuration: Configuration): (K, V)
 }
 
 /**
@@ -29,7 +31,7 @@ trait OutputConverter[K, V, B] extends ToKeyValueConverter {
 private[scoobi]
 trait ToKeyValueConverter {
   protected[scoobi]
-  def asKeyValue(x: Any): (Any, Any)
+  def asKeyValue(x: Any)(implicit configuration: Configuration): (Any, Any)
 }
 
 

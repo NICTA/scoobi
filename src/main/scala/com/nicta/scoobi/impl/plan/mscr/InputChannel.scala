@@ -133,6 +133,9 @@ trait MscrInputChannel extends InputChannel {
     scoobiConfiguration = scoobiConfiguration(configuration)
     tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
     tvs = Map(tags.map(t => { val value = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
+    tks.map { case (t, k) => k.configuration = configuration }
+    tvs.map { case (t, v) => v.configuration = configuration }
+
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
     environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
 
