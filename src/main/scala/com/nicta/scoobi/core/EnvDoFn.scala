@@ -47,9 +47,9 @@ trait EnvDoFn[A, B, E] extends DoFunction { outer =>
  * environment
  */
 trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
-  def setup()
+  def setup() {}
   def process(input: A, emitter: Emitter[B])
-  def cleanup(emitter: Emitter[B])
+  def cleanup(emitter: Emitter[B]) {}
 
   final def setup(env: Unit) { setup() }
   final def process(env: Unit, input: A, emitter: Emitter[B]) { process(input, emitter) }
@@ -63,14 +63,8 @@ trait Emitter[A] extends EmitterWriter {
   def emit(value: A)
 }
 
-/**
- * Interface for specifying parallel operation over DLists in the absence of an
- * environment with an do-nothing setup and cleanup phases
- */
-trait BasicDoFn[A, B] extends DoFn[A, B] {
-  def setup() {}
-  def cleanup(emitter: Emitter[B]) {}
-}
+@deprecated("DoFn is a drop-in replacement", "0.7")
+trait BasicDoFn[A, B] extends DoFn[A, B]
 
 /**
  * Internal version of a EnvDoFn functions without type information

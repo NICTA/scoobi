@@ -41,6 +41,7 @@ object Scoobi extends core.WireFormatImplicits
   type DObject[A] = com.nicta.scoobi.core.DObject[A]
 
   type DoFn[A, B] = com.nicta.scoobi.core.DoFn[A, B]
+  @deprecated("DoFn is a drop in replacement", "0.7")
   type BasicDoFn[A, B] = com.nicta.scoobi.core.BasicDoFn[A, B]
   type EnvDoFn[A, B, E] = com.nicta.scoobi.core.EnvDoFn[A, B, E]
 
