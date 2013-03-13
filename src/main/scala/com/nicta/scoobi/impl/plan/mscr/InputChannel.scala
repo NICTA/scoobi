@@ -110,7 +110,7 @@ trait MscrInputChannel extends InputChannel {
 
   /**
    * last mappers in the "tree" of mappers using the input channel source node
-   * A mapper not the "last" if its parent is a parallelDo that is included in the list of mappers
+   * A mapper is not the "last" if its parent is a parallelDo that is included in the list of mappers
    */
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
