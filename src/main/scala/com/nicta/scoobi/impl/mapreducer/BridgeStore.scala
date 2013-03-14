@@ -118,12 +118,12 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
 
   private var initialised = false
   def init {
-    if (!initialised) {
+    if (!initialised)  {
       readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
         new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
       }
       remainingReaders = readers.toList
-      empty = if (readers.isEmpty) true else !readNext()
+      empty = readers.isEmpty || !readNext()
       initialised = true
     }
   }
@@ -149,12 +149,15 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
   private def readNext(): Boolean = {
     remainingReaders match {
       case cur :: rest =>
-        val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => cur.close(); false }
+        val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => e.printStackTrace; close; false }
         nextValueIsRead || { cur.close(); remainingReaders = rest; readNext() }
       case Nil         => false
     }
   }
 
+  def close {
+    Option(remainingReaders).map(rs => rs.foreach(_.close))
+  }
 }
 
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
