@@ -34,11 +34,13 @@ object ScoobiMetadata {
 
   private implicit val logger = LogFactory.getLog("scoobi.metadata")
 
-  def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = DistCache.pushObject(sc.configuration, metadata, metadataTag)
+  def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = {
+    DistCache.pushObject(sc.configuration, metadata, metadataTag).debug("saving metadata for path ")
+  }
 
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
   def metadata(implicit configuration: Configuration) = (path: String) => Memo.mutableHashMapMemo[String, Any]{ path: String =>
-    logger.debug("retrieving metadata for path "+path+" and configuration fileSystem "+configuration.get(FileSystem.FS_DEFAULT_NAME_KEY))
+    logger.debug("retrieving metadata for path "+path)
     DistCache.deserialise(configuration)(new Path(path)).get: Any
   }.apply(path)
 }
