@@ -148,7 +148,9 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
    * been read. */
   private def readNext(): Boolean = {
     remainingReaders match {
-      case cur :: rest => if (cur.next(key, value)) true else { remainingReaders = rest; readNext() }
+      case cur :: rest =>
+        val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => cur.close(); false }
+        nextValueIsRead || { cur.close(); remainingReaders = rest; readNext() }
       case Nil         => false
     }
   }
