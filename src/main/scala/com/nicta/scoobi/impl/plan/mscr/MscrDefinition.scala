@@ -27,7 +27,7 @@ import core._
 
 trait MscrsDefinition extends Layering {
 
-  def selectNode(n: CompNode) = isGroupByKey(n) || (n -> isFloating)
+  def selectNode(n: CompNode) = (isGroupByKey(n) || (n -> isFloating)) && !nodeHasBeenFilled(n)
 
   /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
   lazy val isFloating: CompNode => Boolean = attr("isFloating") {
@@ -58,8 +58,8 @@ trait MscrsDefinition extends Layering {
   def floatingMappers(sourceNode: CompNode) = {
     val floatings = {
       sourceNode match {
-        case pd: ProcessNode if isFloating(pd) && !pd.bridgeStore.exists(hasBeenFilled) => Seq(pd)
-        case _                                                                          => uses(sourceNode).filter(isFloating)
+        case pd: ProcessNode if isFloating(pd) && !nodeHasBeenFilled(pd) => Seq(pd)
+        case _                                                           => uses(sourceNode).filter(isFloating)
       }
     }
 
@@ -177,15 +177,8 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val isReducer: ParallelDo => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest)            => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                      => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd if pd.bridgeStore.map(b => hasBeenFilled(b)).getOrElse(false) => true
-    case _                                                                => false
+    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
+    case _                                                     => false
   }
-
-  lazy val isReducerNode: CompNode => Boolean = attr("isReducerNode") {
-    case pd @ ParallelDo1(_) => isReducer(pd)
-    case _                   => false
-  }
-
 }

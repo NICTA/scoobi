@@ -22,7 +22,7 @@ import core.WireFormat
 import java.io.{DataInput, DataOutput}
 
 /** A collection of types indexed by a tag */
-trait Tagged { self =>
+trait Tagged extends Configured { self =>
   private var t: Int = 0
   def tag = t
   def setTag(tag1: Int) { self.t = tag1 }

@@ -140,6 +140,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       persistTwice((list, sink) => list.toAvroFile(sink, overwrite = true))
     }
     "9.3 with a Text file" >> { implicit sc: SC =>
+      // in this case, a bridge store is used as a source, instead of the text file
       persistTwice((list, sink) => list.toTextFile(sink, overwrite = true))
     }
 
@@ -198,6 +199,20 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
     l1.run
     l1.map(_._2).run.normalise === "Vector(2, 4)"
+  }
+
+  "15. complex flatten + gbk" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = (DList(1).sum join DList(4, 5, 6)).map(_._2)
+    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l3.map(_._2).run.normalise === "Vector(12, 9)"
+  }
+
+  "16. possible truncate issue when new nodes are added and an intermediary list is persisted" >> { implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = l1.map(_+1)
+    l1.run
+    l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
   }
 
 }

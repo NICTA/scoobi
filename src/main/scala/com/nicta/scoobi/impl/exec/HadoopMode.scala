@@ -103,8 +103,8 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).debug
 
       val configured = mscrs.toList.map(configureMscr)
-      val executed = if (sc.concurrentJobs) configured.map(executeMscr).sequence.get
-                     else                   configured.map(_.execute)
+      val executed = if (sc.concurrentJobs) { "executing the Mscrs concurrently".debug; configured.map(executeMscr).sequence.get }
+                     else                   { "executing the Mscrs sequentially".debug; configured.map(_.execute) }
       executed.map(reportMscr)
     }
 

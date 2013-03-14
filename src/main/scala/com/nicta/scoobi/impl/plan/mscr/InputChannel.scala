@@ -110,7 +110,7 @@ trait MscrInputChannel extends InputChannel {
 
   /**
    * last mappers in the "tree" of mappers using the input channel source node
-   * A mapper not the "last" if its parent is a parallelDo that is included in the list of mappers
+   * A mapper is not the "last" if its parent is a parallelDo that is included in the list of mappers
    */
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
@@ -133,6 +133,9 @@ trait MscrInputChannel extends InputChannel {
     scoobiConfiguration = scoobiConfiguration(configuration)
     tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
     tvs = Map(tags.map(t => { val value = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
+    tks.map { case (t, k) => k.configuration = configuration }
+    tvs.map { case (t, v) => v.configuration = configuration }
+
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
     environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
 
@@ -155,8 +158,8 @@ trait MscrInputChannel extends InputChannel {
     def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = {
       val result = node match {
         case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
-        case mapper: ParallelDo if !isReducer(mapper) =>
-          val previousNodes = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).filter(isParallelDo).contains(n))
+        case mapper: ParallelDo if mappers.contains(mapper) =>
+          val previousNodes = mapper.ins.filter(n => sourceNode == n || mappers.contains(n))
           val mappedValues = previousNodes.foldLeft(Seq[Any]()) { (res, cur) => res ++ computeMappers(cur, emitter) }
 
           if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)

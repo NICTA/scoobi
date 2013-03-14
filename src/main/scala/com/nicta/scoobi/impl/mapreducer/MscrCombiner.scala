@@ -36,6 +36,7 @@ class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedVal
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
     combiners = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
     tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
+    tv.configuration = context.getConfiguration
   }
 
   override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {

@@ -32,7 +32,9 @@ import Scalaz._
  * It has a unique id, a BridgeStore for its outputs and some possible additional sinks.
  */
 trait ProcessNodeImpl extends ProcessNode {
-  lazy val id: Int = UniqueId.get
+  // this needs to be a val because a lazy val might not be serialised properly sometimes
+  // and get re-initialised to a different value! Of course this doesn't play well with setting tags in Channels.
+  val id: Int = UniqueId.get
 
   /** unique identifier for the bridgeStore storing data for this node */
   protected def bridgeStoreId: String

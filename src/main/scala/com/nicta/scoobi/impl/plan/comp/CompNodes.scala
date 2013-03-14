@@ -56,6 +56,11 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   /** this attribute stores the fact that a Sink has received data */
   protected lazy val filledSink: CachedAttribute[String, String] = attr("filled sink")(identity)
 
+  /** @return true if a process node has been filled */
+  protected def nodeHasBeenFilled(p: CompNode) = p match {
+    case pn: ProcessNode => pn.bridgeStore.exists(hasBeenFilled)
+    case other           => false
+  }
   /** @return true if a given Sink has already received data */
   protected lazy val hasBeenFilled = (s: Sink) => {
     filledSink.hasBeenComputedAt(s.stringId) ||
@@ -78,6 +83,8 @@ trait CollectFunctions {
   lazy val isACombine: PartialFunction[Any, Combine] = { case c: Combine => c }
   /** return true if a CompNode is a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo] = { case p: ParallelDo => p }
+  /** return true if a CompNode is a ProcessNode */
+  lazy val isAProcessNode: PartialFunction[Any, ProcessNode] = { case p: ProcessNode => p }
   /** return true if a CompNode is a GroupByKey */
   lazy val isGroupByKey: CompNode => Boolean = { case g: GroupByKey => true; case other => false }
   /** return true if a CompNode is a GroupByKey */
