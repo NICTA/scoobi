@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.nicta.scoobi.Scoobi._
+import com.nicta.scoobi.Scoobi._,
+import com.nicta.scoobi.core.Reduction._
 import app.Histogram._
 
 /**
@@ -25,7 +26,7 @@ object Tweets extends ScoobiApp {
     fromTextFile("tweets.txt").
       map(t => (t.size, 1)).
       groupByKey.
-      combine((_:Int)+(_:Int)).
+      combine(Sum.int).
       run.toHistogram("Tweet length", "Tweets number")
   }
 
