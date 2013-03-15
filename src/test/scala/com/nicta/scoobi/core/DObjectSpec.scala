@@ -16,8 +16,11 @@
 package com.nicta.scoobi
 package core
 
+import testing.{InputStringTestFile, TestFiles}
 import testing.mutable.NictaSimpleJobs
 import Scoobi._
+import impl.plan.comp.CompNodeData
+import CompNodeData._
 
 class DObjectSpec extends NictaSimpleJobs {
 
@@ -33,6 +36,12 @@ class DObjectSpec extends NictaSimpleJobs {
   "it must be possible to turn a DObject to a DList" >> { implicit sc: SC =>
     DObject(5).toSingleElementDList.run === Seq(5)
     DObject(Seq(10, 7, 5)).toDList.run === Seq(10, 7, 5)
+  }
+
+  tag("issue 210")
+  "zipping with itself" >> { implicit sc: SC =>
+    val input = InputStringTestFile(Seq("a", "b", "c")).lines
+    (input.size zip input.size).run.normalise === "(3,3)"
   }
 
 }

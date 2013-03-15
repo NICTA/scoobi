@@ -65,12 +65,19 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     def executeLayers(node: CompNode) {
       layers(node).debug("Executing layers", mkStrings).map(executeLayer)
     }
+
+    def getValue(node: CompNode): Any = {
+      node match {
+        case n @ Op1(a, b)        => n.execute(getValue(a), getValue(b))
+        case n @ Materialise1(in) => in.bridgeStore.map(read).getOrElse(Seq())
+        case n @ Return1(v)       => v
+        case other                => Seq()
+      }
+    }
     // execute value nodes recursively, other nodes start a "layer" execution
-    attr("executeNode") {
-      case node @ Op1(in1, in2)    => node.execute(executeNode(in1), executeNode(in2))
-      case node @ Return1(in)      => in
-      case node @ Materialise1(in) => executeLayers(node); in.bridgeStore.map(read).getOrElse(Seq())
-      case node                    => executeLayers(node)
+    attr("executeNode") { node =>
+      executeLayers(node)
+      getValue(node)
     }
   }
 
