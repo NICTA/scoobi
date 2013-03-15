@@ -172,6 +172,26 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
 
 
+  "13. 1 combine + 1 persist + 1 combine" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l1.run
+    l1.map(_._2).run.normalise === "Vector(2, 4)"
+  }
+
+  "14. complex flatten + gbk" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = (DList(1).sum join DList(4, 5, 6)).map(_._2)
+    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l3.map(_._2).run.normalise === "Vector(12, 9)"
+  }
+
+  "15. possible truncate issue when new nodes are added and an intermediary list is persisted" >> { implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = l1.map(_+1)
+    l1.run
+    l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
+  }
+
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {
     val sink = TempFiles.createTempFilePath("user")
     val plusOne = withFile(DList(1, 2, 3).map(_ + 1), sink)
@@ -180,39 +200,6 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
     val plusTwo = plusOne.map(_ + 2)
     normalise(plusTwo.run) === "Vector(4, 5, 6)"
-  }
-
-  "13. When a list has been executed, no more map reduce job should be necessary to read data from it" >> { implicit sc: SC =>
-    // there are classpath issues on the cluster sometimes
-    // but the test is relevant if ran locally only
-    if (sc.isLocal) {
-      var evaluationsNb = 0
-      val list = DList({ evaluationsNb +=1; 1 }, 2, 3)
-      list.persist(sc)
-      list.run(sc).take(10)
-
-      "there was only one mscr job" ==> { evaluationsNb must be_==(1) }
-     } else success
-  }.pendingUntilFixed("TO INVESTIGATE")
-
-  "14. 1 combine + 1 persist + 1 combine" >> {implicit sc: SC =>
-    val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
-    l1.run
-    l1.map(_._2).run.normalise === "Vector(2, 4)"
-  }
-
-  "15. complex flatten + gbk" >> {implicit sc: SC =>
-    val l1 = DList(1, 2, 3)
-    val l2 = (DList(1).sum join DList(4, 5, 6)).map(_._2)
-    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
-    l3.map(_._2).run.normalise === "Vector(12, 9)"
-  }
-
-  "16. possible truncate issue when new nodes are added and an intermediary list is persisted" >> { implicit sc: SC =>
-    val l1 = DList(1, 2, 3)
-    val l2 = l1.map(_+1)
-    l1.run
-    l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
   }
 
 }
