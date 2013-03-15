@@ -23,7 +23,6 @@ import org.apache.hadoop.conf.Configuration
 import java.io._
 import core.ScoobiConfiguration
 import com.thoughtworks.xstream.io.xml.StaxDriver
-import mapreducer.BridgeStoreIterator
 
 trait Serialiser {
 
@@ -33,9 +32,10 @@ trait Serialiser {
   xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
   xstream.omitField(classOf[ScoobiConfiguration],     "sc")
   xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
-  xstream.omitField(classOf[BridgeStoreIterator[_]],  "sc")
-  xstream.omitField(classOf[BridgeStoreIterator[_]],  "readers")
-  xstream.omitField(classOf[BridgeStoreIterator[_]],  "remainingReaders")
+  val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
+  xstream.omitField(bridgeStoreIteratorClass,  "sc")
+  xstream.omitField(bridgeStoreIteratorClass,  "readers")
+  xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
 
   def serialise(obj: Any, out: OutputStream) = synchronized {
     try { xstream.toXML(obj, out) }
