@@ -234,14 +234,14 @@ needing its environment
       </h4>
       <p class="shortcomment cmt">copy all outputs files to the destinations specified by sink files</p><div class="fullcomment"><div class="comment cmt"><p>copy all outputs files to the destinations specified by sink files</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel" class="extype" href="">MscrOutputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.OutputChannel" class="extype" href="OutputChannel.html">OutputChannel</a></dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#convert" data-isabs="false">
-      <a id="convert(Sink,Any):(Any, Any)"></a>
+      <a id="convert(Sink,Any)(Configuration):(Any, Any)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convert</span><span class="params">(<span name="sink">sink: <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span></span>, <span name="x">x: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: (<span name="scala.Any" class="extype">Any</span>, <span name="scala.Any" class="extype">Any</span>)</span>
+        <span class="name">convert</span><span class="params">(<span name="sink">sink: <span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span></span>, <span name="x">x: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: (<span name="scala.Any" class="extype">Any</span>, <span name="scala.Any" class="extype">Any</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">use the output converter of a sink to convert a value to a key/value</p><div class="fullcomment"><div class="comment cmt"><p>use the output converter of a sink to convert a value to a key/value</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>

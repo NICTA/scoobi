@@ -31,7 +31,7 @@
       
       <div class="fullcommenttop" id="comment"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.impl.rtt.MetadataGroupings" class="extype" href="MetadataGroupings.html">MetadataGroupings</a>, <a name="com.nicta.scoobi.impl.rtt.MetadataWireFormats" class="extype" href="MetadataWireFormats.html">MetadataWireFormats</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedMetadata" class="extype" href="TaggedMetadata.html">TaggedMetadata</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" class="extype" href="TaggedGroupingComparator.html">TaggedGroupingComparator</a>, <span name="org.apache.hadoop.io.RawComparator" class="extype">RawComparator</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>], <span name="java.util.Comparator" class="extype">Comparator</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a name="com.nicta.scoobi.impl.rtt.MetadataGroupings" class="extype" href="MetadataGroupings.html">MetadataGroupings</a>, <a name="com.nicta.scoobi.impl.rtt.MetadataWireFormats" class="extype" href="MetadataWireFormats.html">MetadataWireFormats</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedMetadata" class="extype" href="TaggedMetadata.html">TaggedMetadata</a>, <a name="com.nicta.scoobi.impl.rtt.Configured" class="extype" href="Configured.html">Configured</a>, <a name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" class="extype" href="TaggedGroupingComparator.html">TaggedGroupingComparator</a>, <span name="org.apache.hadoop.io.RawComparator" class="extype">RawComparator</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>], <span name="java.util.Comparator" class="extype">Comparator</span>[<a name="com.nicta.scoobi.impl.rtt.TaggedKey" class="extype" href="TaggedKey.html">TaggedKey</a>], AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -45,7 +45,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedGroupingComparator" class="in"><span>MetadataTaggedGroupingComparator</span></li><li name="com.nicta.scoobi.impl.rtt.MetadataGroupings" class="in"><span>MetadataGroupings</span></li><li name="com.nicta.scoobi.impl.rtt.MetadataWireFormats" class="in"><span>MetadataWireFormats</span></li><li name="com.nicta.scoobi.impl.rtt.TaggedMetadata" class="in"><span>TaggedMetadata</span></li><li name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" class="in"><span>TaggedGroupingComparator</span></li><li name="org.apache.hadoop.io.RawComparator" class="in"><span>RawComparator</span></li><li name="java.util.Comparator" class="in"><span>Comparator</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.rtt.MetadataTaggedGroupingComparator" class="in"><span>MetadataTaggedGroupingComparator</span></li><li name="com.nicta.scoobi.impl.rtt.MetadataGroupings" class="in"><span>MetadataGroupings</span></li><li name="com.nicta.scoobi.impl.rtt.MetadataWireFormats" class="in"><span>MetadataWireFormats</span></li><li name="com.nicta.scoobi.impl.rtt.TaggedMetadata" class="in"><span>TaggedMetadata</span></li><li name="com.nicta.scoobi.impl.rtt.Configured" class="in"><span>Configured</span></li><li name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" class="in"><span>TaggedGroupingComparator</span></li><li name="org.apache.hadoop.io.RawComparator" class="in"><span>RawComparator</span></li><li name="java.util.Comparator" class="in"><span>Comparator</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -234,6 +234,18 @@ If the tags are different we compare the tags.</p><div class="fullcomment"><div 
 If the tags are different we compare the tags. If they are the same we using the grouping instance for the
 current tag
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.MetadataTaggedGroupingComparator" class="extype" href="">MetadataTaggedGroupingComparator</a> → Comparator</dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.rtt.Configured#configuration" data-isabs="false">
+      <a id="configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configuration</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.rtt.Configured" class="extype" href="Configured.html">Configured</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -475,6 +487,8 @@ current tag
               <h3>Inherited from <a name="com.nicta.scoobi.impl.rtt.MetadataWireFormats" class="extype" href="MetadataWireFormats.html">MetadataWireFormats</a></h3>
             </div><div name="com.nicta.scoobi.impl.rtt.TaggedMetadata" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.impl.rtt.TaggedMetadata" class="extype" href="TaggedMetadata.html">TaggedMetadata</a></h3>
+            </div><div name="com.nicta.scoobi.impl.rtt.Configured" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.rtt.Configured" class="extype" href="Configured.html">Configured</a></h3>
             </div><div name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.impl.rtt.TaggedGroupingComparator" class="extype" href="TaggedGroupingComparator.html">TaggedGroupingComparator</a></h3>
             </div><div name="org.apache.hadoop.io.RawComparator" class="parent">
