@@ -192,6 +192,14 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
   }
 
+  "16. issue 215" >> { implicit sc: SC =>
+    val file = TempFiles.createTempFile("test.avro")
+    persist((1 to 2).toDList.map { x => x.toString -> x.toString }.toAvroFile(file.getPath, true))
+
+    val input = fromAvroFile[(String, String)](file.getPath)
+    (input.materialise join input.groupByKey).run.normalise === "Vector((Vector((1,1), (2,2)),(1,Vector(1))), (Vector((1,1), (2,2)),(2,Vector(2))))"
+  }
+
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {
     val sink = TempFiles.createTempFilePath("user")
     val plusOne = withFile(DList(1, 2, 3).map(_ + 1), sink)

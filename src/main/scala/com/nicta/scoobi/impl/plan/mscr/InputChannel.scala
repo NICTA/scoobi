@@ -169,17 +169,21 @@ trait MscrInputChannel extends InputChannel {
       result
     }
 
-    lastMappers.foreach(mapper => computeMappers(mapper, emitters(outputTag(mapper))))
+    lastMappers.foreach { mapper =>
+      outputTags(mapper).map(emitters).foreach(e => computeMappers(mapper, e))
+    }
 
     if (lastMappers.isEmpty)
       tags.map(t => emitters(t).write(source.fromKeyValueConverter.asValue(context, key, value)))
   }
 
   /** @return the output tag for a given "last" mapper */
-  protected def outputTag(mapper: ParallelDo): Int
+  protected def outputTags(mapper: ParallelDo): Seq[Int]
 
   def cleanup(context: InputOutputContext) {
-    lastMappers.foreach(m => m.cleanup(environments(m), emitters(outputTag(m)))).debug("finished cleaning up the mapper")
+    lastMappers.foreach { m =>
+      outputTags(m).foreach(t => m.cleanup(environments(m), emitters(t)))
+    }.debug("finished cleaning up the mapper")
   }
 
   /**
@@ -221,7 +225,7 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
       }
     }
   }
-  protected def outputTag(mapper: ParallelDo): Int = mapper.parent[CompNode].id
+  protected def outputTags(mapper: ParallelDo): Seq[Int] = uses(mapper).collect(isAGroupByKey).map(_.id).toSeq
 }
 
 /**
@@ -247,7 +251,7 @@ class FloatingInputChannel(val sourceNode: CompNode, val mappers: Seq[ParallelDo
       context.write(key, value)
     }
   }
-  protected def outputTag(mapper: ParallelDo): Int = mapper.id
+  protected def outputTags(mapper: ParallelDo): Seq[Int] = Seq(mapper.id)
 }
 
 
