@@ -67,15 +67,15 @@ case class InMemoryMode() extends ExecutionMode {
     paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
       implicit val c = sc
       n match {
-        case n: Load                                              => computeLoad(n)
-        case n: Root                                              => Vector(n.ins.map(_ -> computeValue(c)):_*)
-        case n: Return                                            => Vector(n.in)
-        case n: Op                                                => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
-        case n: Materialise                                       => Vector(n.in -> compute(c))
-        case n: GroupByKey                                        => saveSinks(computeGroupByKey(n), n.sinks)
-        case n: Combine                                           => saveSinks(computeCombine(n)   , n.sinks)
-        case n: ParallelDo if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
-        case n: ParallelDo                                        => saveSinks(computeParallelDo(n), n.sinks)
+        case n: Load                                               => computeLoad(n)
+        case n: Root                                               => Vector(n.ins.map(_ -> computeValue(c)):_*)
+        case n: Return                                             => Vector(n.in)
+        case n: Op                                                 => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
+        case n: Materialise                                        => Vector(n.in -> compute(c))
+        case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
+        case n: GroupByKey                                          => saveSinks(computeGroupByKey(n), n.sinks)
+        case n: Combine                                            => saveSinks(computeCombine(n)   , n.sinks)
+        case n: ParallelDo                                         => saveSinks(computeParallelDo(n), n.sinks)
       }
     }
 
