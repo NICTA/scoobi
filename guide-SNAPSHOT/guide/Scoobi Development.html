@@ -64,7 +64,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/User Guide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html">ScoobiDevelopment</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Scoobi Development</title><a name="Scoobi+Development"><h2 specId="1713411479">Scoobi Development</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Building"><h3>Building</h3></a><p>Building scoobi should be as easy as <code class="prettyprint">sbt publish-local</code> to build and install scoobi locally. An easy way to insure your applications are picking up your local version of scoobi, is by deleting the version that was downloaded from sonatype. It is stored at ~/.ivy2/cache/com.nicta.scoobi*:</p><a name="Run+the+tests"><h3>Run the tests</h3></a><p><code class="prettyprint">sbt test</code> will run the unit tests, as well as the tests in local mode. It's also possible to run the tests on a cluster too, with some fancy options (See testing guide)</p><a name="User+Guide+%2F+Docs"><h3>User Guide / Docs</h3></a><p>Are located at <code class="prettyprint">src/test/scala/com/nicta/scoobi/guide</code>. They can be built with the command:</p>
+                       <div class="col1"><div id="central"><title>Scoobi Development</title><a name="Scoobi+Development"><h2 specId="1698504930">Scoobi Development</h2></a><status class="ok"><div class="level0" style="display: show"><a name="Building"><h3>Building</h3></a><p>Building scoobi should be as easy as <code class="prettyprint">sbt publish-local</code> to build and install scoobi locally. An easy way to insure your applications are picking up your local version of scoobi, is by deleting the version that was downloaded from sonatype. It is stored at ~/.ivy2/cache/com.nicta.scoobi*:</p><a name="Run+the+tests"><h3>Run the tests</h3></a><p><code class="prettyprint">sbt test</code> will run the unit tests, as well as the tests in local mode. It's also possible to run the tests on a cluster too, with some fancy options (See testing guide)</p><a name="User+Guide+%2F+Docs"><h3>User Guide / Docs</h3></a><p>Are located at <code class="prettyprint">src/test/scala/com/nicta/scoobi/guide</code>. They can be built with the command:</p>
 <pre><code class="prettyprint">$ sbt
 &gt; test-only *UserGuide* -- html
 </code></pre><p>and are built into <code class="prettyprint">target/spec2-reports/guide-SNAPSHOT/guide</code></p><a name="Contributions"><h3>Contributions</h3></a><p>We welcome pull-requests on github. We rebase commits aggressively (up until the point they land on master) to have a clean and linear history. So don't be suprised if the sha1 changes when it lands. As such, it makes our lives a lot easier if your commit is already based on master and all squashed down into nice logical commits.</p><p>After landing on master, the commit will automatically get merged down into the cdh3 and publishing branches. Our build server will then run the full tests, on our internal cluster -- and if everything looks good, a new snapshot will be published.</p><a name="Eclipse"><h3>Eclipse</h3></a><p>The <a href="https://github.com/typesafehub/sbteclipse">sbteclipse plugin</a> can be used to generate an eclipse project. However, <a href="https://github.com/typesafehub/sbteclipse/issues/115">issue #115</a> means you will need to first build scoobi (<code class="prettyprint">sbt compile</code>) and then copy the auto-generated code to somewhere sbteclipse will find it:</p>
@@ -82,7 +82,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Quick Start.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="61964785"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1746249357"><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Distributed Lists.html#Word+count+decomposed">Word count decomposed</a>
@@ -244,7 +244,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Testing guide.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="17379832"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
+          </li><li id="45060432"><a href="../../guide-SNAPSHOT/guide/Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -260,7 +260,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="121798652"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="518028573"><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#Static+References">Static References</a>
@@ -268,7 +268,7 @@
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Advanced Notes.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1713411479"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1698504930"><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/Scoobi Development.html#Run+the+tests">Run the tests</a>
@@ -282,7 +282,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1635375188','1713411479'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1635375188','1698504930'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
