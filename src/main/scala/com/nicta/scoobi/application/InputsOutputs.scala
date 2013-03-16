@@ -67,28 +67,30 @@ trait InputsOutputs {
   def convertValueToSequenceFile[V : SeqSchema](dl: core.DList[V], path: String, overwrite: Boolean = false) = SequenceOutput.convertValueToSequenceFile(dl, path, overwrite)
   def convertToSequenceFile[K : SeqSchema, V : SeqSchema](dl: core.DList[(K, V)], path: String, overwrite: Boolean = false) = SequenceOutput.convertToSequenceFile(dl, path, overwrite)
 
-  implicit def convertKeyListToSequenceFile[K : SeqSchema](list: core.DList[K]): ConvertKeyListToSequenceFile[K] = new ConvertKeyListToSequenceFile[K](list)
-  case class ConvertKeyListToSequenceFile[K : SeqSchema](list: core.DList[K]) {
-    def convertKeyToSequenceFile(path: String, overwrite: Boolean = false) =
+  implicit def convertKeyListToSequenceFile[K](list: core.DList[K]): ConvertKeyListToSequenceFile[K] = new ConvertKeyListToSequenceFile[K](list)
+  case class ConvertKeyListToSequenceFile[K](list: core.DList[K]) {
+    def convertKeyToSequenceFile(path: String, overwrite: Boolean = false)(implicit ks: SeqSchema[K]) =
       list.addSink(SequenceOutput.keySchemaSequenceFile(path, overwrite))
   }
 
-  implicit def convertValueListToSequenceFile[V : SeqSchema](list: core.DList[V]): ConvertValueListToSequenceFile[V] = new ConvertValueListToSequenceFile[V](list)
-  case class ConvertValueListToSequenceFile[V : SeqSchema](list: core.DList[V]) {
-    def convertValueToSequenceFile(path: String, overwrite: Boolean = false) =
+  implicit def convertValueListToSequenceFile[V](list: core.DList[V]): ConvertValueListToSequenceFile[V] = new ConvertValueListToSequenceFile[V](list)
+  case class ConvertValueListToSequenceFile[V](list: core.DList[V]) {
+    def convertValueToSequenceFile(path: String, overwrite: Boolean = false)(implicit vs: SeqSchema[V]) =
       list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
   }
 
-  implicit def convertListToSequenceFile[K : SeqSchema, V : SeqSchema](list: core.DList[(K, V)]): ConvertListToSequenceFile[K, V] = new ConvertListToSequenceFile[K, V](list)
-  case class ConvertListToSequenceFile[K : SeqSchema, V : SeqSchema](list: core.DList[(K, V)]) {
-    def convertToSequenceFile(path: String, overwrite: Boolean = false) =
-      list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(implicitly[SeqSchema[K]], implicitly[SeqSchema[V]]))
+  implicit def convertListToSequenceFile[T](list: core.DList[T]): ConvertListToSequenceFile[T] = new ConvertListToSequenceFile[T](list)
+  case class ConvertListToSequenceFile[T](list: core.DList[T]) {
+    def convertToSequenceFile[K, V](path: String, overwrite: Boolean = false)
+      (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V])
+        = list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(implicitly[SeqSchema[K]], implicitly[SeqSchema[V]]))
   }
 
-  implicit def listToSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](list: core.DList[(K, V)]): ListToSequenceFile[K, V] = new ListToSequenceFile[K, V](list)
-  case class ListToSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](list: core.DList[(K, V)]) {
-    def toSequenceFile(path: String, overwrite: Boolean = false) =
-      list.addSink(SequenceOutput.sequenceSink[K, V](path, overwrite))
+  implicit def listToSequenceFile[T](list: core.DList[T]): ListToSequenceFile[T] = new ListToSequenceFile[T](list)
+  case class ListToSequenceFile[T](list: core.DList[T]) {
+    def toSequenceFile[K <: Writable, V <: Writable](path: String, overwrite: Boolean = false)
+    (implicit ev: T <:< (K, V), km: Manifest[K], vm: Manifest[V])
+      = list.addSink(SequenceOutput.sequenceSink[K, V](path, overwrite))
   }
 
   def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: core.DList[(K, V)], path: String, overwrite: Boolean = false) = SequenceOutput.toSequenceFile(dl, path, overwrite)
@@ -103,9 +105,9 @@ trait InputsOutputs {
   def fromAvroFile[A : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)(wireFormat[A], implicitly[AvroSchema[A]])
   def fromAvroFile[A : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)(wireFormat[A], implicitly[AvroSchema[A]])
 
-  implicit def listToAvroFile[A : AvroSchema](list: core.DList[A]): ListToAvroFile[A] = new ListToAvroFile[A](list)
-  case class ListToAvroFile[A : AvroSchema](list: core.DList[A]) {
-    def toAvroFile(path: String, overwrite: Boolean = false) = list.addSink(AvroOutput.avroSink(path, overwrite))
+  implicit def listToAvroFile[A](list: core.DList[A]): ListToAvroFile[A] = new ListToAvroFile[A](list)
+  case class ListToAvroFile[A](list: core.DList[A]) {
+    def toAvroFile(path: String, overwrite: Boolean = false)(implicit as: AvroSchema[A]) = list.addSink(AvroOutput.avroSink(path, overwrite))
   }
 
   def toAvroFile[B : AvroSchema](dl: core.DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
