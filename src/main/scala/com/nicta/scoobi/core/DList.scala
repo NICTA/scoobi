@@ -272,14 +272,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
     reduce(Reduction.minimumS(cmp on f))
 
-  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
-    val dofn = new BasicDoFn[A, B] {
-      def process(input: A, emitter: Emitter[B]) {
-        proc(input, emitter)
-      }
-    }
-    parallelDo(dofn)
-  }
+  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] =
+    parallelDo(BasicDoFn(proc))
 
 }
 
