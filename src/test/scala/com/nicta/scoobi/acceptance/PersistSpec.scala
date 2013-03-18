@@ -70,7 +70,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       val l2 = l1.map(_ + 1)
 
       var processedNumber = 0
-      val doFn = new BasicDoFn[Int, Int] {
+      val doFn = new DoFn[Int, Int] {
         def process(input: Int, emitter: Emitter[Int]) {
           processedNumber += 1
           if (processedNumber > 3) failure("too many computations")

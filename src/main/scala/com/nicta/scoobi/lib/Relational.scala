@@ -165,7 +165,7 @@ object Relational {
     }
   }
 
-  private def innerJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
+  private def innerJoin[T, A, B] = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
     def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
       var alist = new ArrayBuffer[A]
 
@@ -178,7 +178,7 @@ object Relational {
     }
   }
 
-  private def rightOuterJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (Option[A], B))] {
+  private def rightOuterJoin[T, A, B] = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (Option[A], B))] {
     def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (Option[A], B))]) {
       var alist = new ArrayBuffer[A]
 
@@ -199,7 +199,7 @@ object Relational {
   private def fullOuterJoin[T, A, B, V](
     hasLeft: (T, A) => V,
     hasRight: (T, B) => V,
-    hasBoth: (T, A, B) => V): BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] {
+    hasBoth: (T, A, B) => V): DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] = new DoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] {
     def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, V)]) {
       val alist = new ArrayBuffer[A]
       var bseen = false
@@ -233,7 +233,7 @@ object Relational {
                        B : WireFormat,
                        V : WireFormat](
     d1: DList[(K, A)],
-    d2: DList[(K, B)])(dofn: BasicDoFn[((K, Boolean), Iterable[Either[A, B]]), (K, V)]): DList[(K, V)] = {
+    d2: DList[(K, B)])(dofn: DoFn[((K, Boolean), Iterable[Either[A, B]]), (K, V)]): DList[(K, V)] = {
 
     /* Map left and right DLists to be of the same type. Label the left as 'true' and the
      * right as 'false'. Note the hack cause DList doesn't yet have the co/contravariance. */
@@ -282,12 +282,10 @@ object Relational {
      * restarted; otherwise you may lose records unknowingly. */
     def addRandIntToKey[A, B](ub: Int, seed: Int) = new DoFn[(A, B), ((A, Int), B)] {
       val rgen = new util.Random(seed)
-      def setup() {}
       def process(input: (A, B), emitter: Emitter[((A, Int), B)]) {
         val (a,b) = input
         emitter.emit(((a, rgen.nextInt(ub)), b))
       }
-      def cleanup(emitter: Emitter[((A, Int), B)]) {}
     }
 
     import scalaz._, Scalaz._

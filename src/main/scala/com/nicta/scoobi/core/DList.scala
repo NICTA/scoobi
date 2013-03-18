@@ -89,8 +89,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * new distributed list
    */
   def mapFlatten[B : WireFormat](f: A => Iterable[B]): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => f(input).foreach {
-      emitter.emit(_)
+    parallelDo(new DoFn[A,B] {
+      def process(input: A, emitter: Emitter[B]) = f(input).foreach { emitter.emit(_) }
     })
 
   @deprecated(message = "use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A => DList[B]", since = "0.7.0")
@@ -102,13 +102,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * distributed list
    */
   def map[B : WireFormat](f: A => B): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => emitter.emit(f(input)))
+    parallelDo(new DoFn[A,B] {
+      def process(input: A, emitter: Emitter[B]) = emitter.emit(f(input))
+    })
 
   /** Keep elements from the distributed list that pass a specified predicate function */
-  def filter(p: A => Boolean): DList[A] =
-    basicParallelDo((input: A, emitter: Emitter[A]) => if (p(input)) {
-      emitter.emit(input)
-    })
+  def filter(p: A => Boolean): DList[A] = parallelDo(new DoFn[A,A] {
+    def process(input: A, emitter: Emitter[A]) = if (p(input)) { emitter.emit(input) }
+  })
 
   /** the withFilter method */
   def withFilter(p: A => Boolean): DList[A] = filter(p)
@@ -120,10 +121,9 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * Build a new DList by applying a partial function to all elements of this DList on
    * which the function is defined
    */
-  def collect[B : WireFormat](pf: PartialFunction[A, B]): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) {
-      emitter.emit(pf(input))
-    })
+  def collect[B : WireFormat](pf: PartialFunction[A, B]): DList[B] = parallelDo(new DoFn[A,B] {
+    def process(input: A, emitter: Emitter[B]) = if (pf.isDefinedAt(input)) emitter.emit(pf(input))
+  })
 
   /**Partitions this distributed list into a pair of distributed lists according to some
    * predicate. The first distributed list consists of elements that satisfy the predicate
@@ -133,8 +133,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Converts a distributed list of iterable values into to a distributed list in which
    * all the values are concatenated. */
   def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => input.foreach {
-      emitter.emit(_)
+    parallelDo(new DoFn[A,B] {
+      def process(input: A, emitter: Emitter[B]) = input.foreach { emitter.emit(_) }
     })
 
   /** Build a new distributed list from this list without any duplicate elements. */
@@ -145,7 +145,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
      * seen (i.e. is cached), simply drop it.
      * TODO - make it an actual cache that has a fixed size and has a replacement
      * policy once it is full otherwise there is the risk of running out of memory. */
-    val dropCached = new BasicDoFn[A, (A, Int)] {
+    val dropCached = new DoFn[A, (A, Int)] {
       val cache: MSet[A] = MSet.empty
 
       def process(input: A, emitter: Emitter[(A, Int)]) {
@@ -219,14 +219,12 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       var acc: A = _
       var first = true
 
-      def setup() {}
-
       def process(input: A, emitter: Emitter[A]) {
         acc = if (first) input else op(acc, input)
         first = false
       }
 
-      def cleanup(emitter: Emitter[A]) {
+      override def cleanup(emitter: Emitter[A]) {
         if (!first) emitter.emit(acc)
         acc = null.asInstanceOf[A]
         first = true
@@ -271,16 +269,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Find the smallest element in the distributed list. */
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
     reduce(Reduction.minimumS(cmp on f))
-
-  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
-    val dofn = new BasicDoFn[A, B] {
-      def process(input: A, emitter: Emitter[B]) {
-        proc(input, emitter)
-      }
-    }
-    parallelDo(dofn)
-  }
-
 }
 
 trait Persistent[T] {

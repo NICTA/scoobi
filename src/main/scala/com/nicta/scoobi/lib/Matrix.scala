@@ -245,7 +245,7 @@ object LinearAlgebra {
       val left = matrix.by(_._1._2)
 
       left.groupByKey.parallelDo(
-        new BasicDoFn[(Elem, Iterable[((Elem, Elem), Value)]), ((Elem, Elem), Q)] {
+        new DoFn[(Elem, Iterable[((Elem, Elem), Value)]), ((Elem, Elem), Q)] {
           def process(input: (Elem, Iterable[((Elem, Elem), Value)]), emitter: Emitter[((Elem, Elem), Q)]) = {
             val bs = generateRow()
 
@@ -267,7 +267,7 @@ object LinearAlgebra {
       val left = matrix.map(a => (a._1._2, (a._1._1,a._2)))
 
       left.groupByKey.parallelDo(
-        new BasicDoFn[(Int, Iterable[(Int, Value)]), ((Int, Int), Q)] {
+        new DoFn[(Int, Iterable[(Int, Value)]), ((Int, Int), Q)] {
           def process(input: (Int, Iterable[(Int, Value)]), emitter: Emitter[((Int, Int), Q)]) = {
             val bs = generateRow()
 
@@ -290,7 +290,7 @@ object LinearAlgebra {
       val right = r.by(_._1._1).map(x => (x._1, Right(x._2): Either[((Elem, Elem), Value), ((Elem, Elem), V)]))
 
       (left ++ right).groupByKey.parallelDo(
-        new BasicDoFn[(Elem, Iterable[Either[((Elem, Elem), Value), ((Elem, Elem), V)]]), ((Elem, Elem), Q)] {
+        new DoFn[(Elem, Iterable[Either[((Elem, Elem), Value), ((Elem, Elem), V)]]), ((Elem, Elem), Q)] {
           def process(input: (Elem, Iterable[Either[((Elem, Elem), Value), ((Elem, Elem), V)]]), emitter: Emitter[((Elem, Elem), Q)]) = {
             val as: ArrayBuffer[((Elem, Elem), Value)] = new ArrayBuffer[((Elem, Elem), Value)]()
             val bs: ArrayBuffer[((Elem, Elem), V)] = new ArrayBuffer[((Elem, Elem), V)]()
