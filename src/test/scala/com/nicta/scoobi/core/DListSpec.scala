@@ -81,4 +81,33 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     }
   }
 
+  section("issue 190")
+  "Add DList#isEqual" >>  {
+    "equal 1" >> { implicit sc: SC =>
+      val aa = DList(1 to 10)
+      val bb = DList(1 to 10)
+
+      (aa isEqual bb).run
+    }
+    "equal 2" >> { implicit sc: SC =>
+      val aa = DList(1 to 10) ++ DList(5 to 15)
+      val bb = DList(1 to 10) ++ DList(5 to 15)
+
+      (aa isEqual bb).run
+    }
+    "not equal 1" >> { implicit sc: SC =>
+      val aa = DList(1 to 10)
+      val bb = DList(5 to 15)
+
+      (aa isEqual bb).run must_== false
+    }
+    "not equal 2" >> { implicit sc: SC =>
+      val aa = DList[Int]()
+      val bb = DList(5 to 15)
+
+      (aa isEqual bb).run must_== false
+    }
+  }
+  section("issue 190")
+
 }

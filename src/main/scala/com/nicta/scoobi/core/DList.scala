@@ -15,7 +15,6 @@
  */
 package com.nicta.scoobi
 package core
-
 /**
  * A list that is distributed across multiple machines.
  *
@@ -198,6 +197,16 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    mwv:  WireFormat[V])
   : DList[V] = map(ev(_)._2)
 
+  def isEqual(that: DList[A]) 
+  (implicit grouping: Grouping[A])
+  : DObject[Boolean] = {
+    val lists = (this.map (x => (x, (1, 0))))++(that.map (x => (x, (0, 1))))
+    lists.groupByKey.combine [A,(Int, Int)] {
+      Reduction.Sum.int.zip[Int](Reduction.Sum.int) 
+    }.map {
+      case (_, (ct, cf)) => ct == cf
+    }.reduce(Reduction.and)
+  }
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Derived functionality (reduction operations)
