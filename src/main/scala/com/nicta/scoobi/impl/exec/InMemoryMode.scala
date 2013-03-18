@@ -153,6 +153,7 @@ case class InMemoryMode() extends ExecutionMode {
     }.debug("computeCombine")
 
   private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
+    sinks.foreach(_.outputSetup(sc.configuration))
     sinks.foreach { sink =>
       val job = new Job(new Configuration(sc))
 
