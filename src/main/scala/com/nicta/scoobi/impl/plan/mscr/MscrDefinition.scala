@@ -59,7 +59,10 @@ trait MscrsDefinition extends Layering {
     val floatings = {
       sourceNode match {
         case pd: ProcessNode if isFloating(pd) && !nodeHasBeenFilled(pd) => Seq(pd)
-        case _                                                           => uses(sourceNode).filter(isFloating)
+        case _                                                           => {
+          val floatingUses = uses(sourceNode).filter(use => isFloating(use) && !nodeHasBeenFilled(use))
+          floatingUses.filterNot(p => descendents(p).exists(floatingUses.contains))
+        }
       }
     }
 
