@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ConvertKeyListToSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[K]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">ConvertKeyListToSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[K]</span>, <span name="evidence$33">evidence$33: SeqSchema[K]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ConvertKeyListToSequenceFile</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[K]</span>)</span>
+        <span class="name">ConvertKeyListToSequenceFile</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[K]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: SeqSchema[K]</span>)</span>
       </span>
       </h4>
       
@@ -178,14 +178,14 @@
               
         </dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ConvertKeyListToSequenceFile#convertKeyToSequenceFile" data-isabs="false">
-      <a id="convertKeyToSequenceFile(String,Boolean)(SeqSchema[K]):T"></a>
+      <a id="convertKeyToSequenceFile(String,Boolean):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertKeyToSequenceFile</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ks">ks: SeqSchema[K]</span>)</span><span class="result">: T</span>
+        <span class="name">convertKeyToSequenceFile</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       

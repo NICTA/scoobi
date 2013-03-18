@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ListToAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[A]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">ListToAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[A]</span>, <span name="evidence$51">evidence$51: AvroSchema[A]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -65,7 +65,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ListToAvroFile</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[A]</span>)</span>
+        <span class="name">ListToAvroFile</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: AvroSchema[A]</span>)</span>
       </span>
       </h4>
       
@@ -361,14 +361,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ListToAvroFile#toAvroFile" data-isabs="false">
-      <a id="toAvroFile(String,Boolean)(AvroSchema[A]):T"></a>
+      <a id="toAvroFile(String,Boolean):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toAvroFile</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="as">as: AvroSchema[A]</span>)</span><span class="result">: T</span>
+        <span class="name">toAvroFile</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: T</span>
       </span>
       </h4>
       

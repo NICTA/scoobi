@@ -96,19 +96,19 @@ and to add sinks to DLists so that the results of computations can be saved to f
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputsOutputs$ConvertKeyListToSequenceFile.html"><span class="name">ConvertKeyListToSequenceFile</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="list">list: DList[K]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="InputsOutputs$ConvertKeyListToSequenceFile.html"><span class="name">ConvertKeyListToSequenceFile</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="list">list: DList[K]</span>, <span name="evidence$33">evidence$33: SeqSchema[K]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile" data-isabs="false">
-      <a id="ConvertListToSequenceFile:ConvertListToSequenceFile[T]"></a>
+      <a id="ConvertListToSequenceFile:ConvertListToSequenceFile[K, V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputsOutputs$ConvertListToSequenceFile.html"><span class="name">ConvertListToSequenceFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="InputsOutputs$ConvertListToSequenceFile.html"><span class="name">ConvertListToSequenceFile</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="list">list: DList[(K, V)]</span>, <span name="evidence$38">evidence$38: SeqSchema[K]</span>, <span name="evidence$39">evidence$39: SeqSchema[V]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
@@ -120,7 +120,7 @@ and to add sinks to DLists so that the results of computations can be saved to f
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputsOutputs$ConvertValueListToSequenceFile.html"><span class="name">ConvertValueListToSequenceFile</span></a><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="list">list: DList[V]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="InputsOutputs$ConvertValueListToSequenceFile.html"><span class="name">ConvertValueListToSequenceFile</span></a><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="list">list: DList[V]</span>, <span name="evidence$35">evidence$35: SeqSchema[V]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
@@ -132,19 +132,19 @@ and to add sinks to DLists so that the results of computations can be saved to f
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputsOutputs$ListToAvroFile.html"><span class="name">ListToAvroFile</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: DList[A]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="InputsOutputs$ListToAvroFile.html"><span class="name">ListToAvroFile</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: DList[A]</span>, <span name="evidence$51">evidence$51: AvroSchema[A]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile" data-isabs="false">
-      <a id="ListToSequenceFile:ListToSequenceFile[T]"></a>
+      <a id="ListToSequenceFile:ListToSequenceFile[K, V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputsOutputs$ListToSequenceFile.html"><span class="name">ListToSequenceFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="InputsOutputs$ListToSequenceFile.html"><span class="name">ListToSequenceFile</span></a><span class="tparams">[<span name="K">K &lt;: Writable</span>, <span name="V">V &lt;: Writable</span>]</span><span class="params">(<span name="list">list: DList[(K, V)]</span>, <span name="evidence$42">evidence$42: Manifest[K]</span>, <span name="evidence$43">evidence$43: Manifest[V]</span>)</span><span class="result"> extends Product with Serializable</span>
       </span>
       </h4>
       
@@ -459,14 +459,14 @@ and to add sinks to DLists so that the results of computations can be saved to f
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs#convertKeyListToSequenceFile" data-isabs="false">
-      <a id="convertKeyListToSequenceFile[K](DList[K]):ConvertKeyListToSequenceFile[K]"></a>
+      <a id="convertKeyListToSequenceFile[K](DList[K])(SeqSchema[K]):ConvertKeyListToSequenceFile[K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertKeyListToSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ConvertKeyListToSequenceFile" class="extype" href="InputsOutputs$ConvertKeyListToSequenceFile.html">ConvertKeyListToSequenceFile</a>[K]</span>
+        <span class="name">convertKeyListToSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[K]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: SeqSchema[K]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ConvertKeyListToSequenceFile" class="extype" href="InputsOutputs$ConvertKeyListToSequenceFile.html">ConvertKeyListToSequenceFile</a>[K]</span>
       </span>
       </h4>
       
@@ -483,14 +483,14 @@ and to add sinks to DLists so that the results of computations can be saved to f
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs#convertListToSequenceFile" data-isabs="false">
-      <a id="convertListToSequenceFile[T](DList[T]):ConvertListToSequenceFile[T]"></a>
+      <a id="convertListToSequenceFile[K, V](DList[(K, V)])(SeqSchema[K],SeqSchema[V]):ConvertListToSequenceFile[K, V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertListToSequenceFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile" class="extype" href="InputsOutputs$ConvertListToSequenceFile.html">ConvertListToSequenceFile</a>[T]</span>
+        <span class="name">convertListToSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: SeqSchema[K]</span>, <span name="arg1">arg1: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile" class="extype" href="InputsOutputs$ConvertListToSequenceFile.html">ConvertListToSequenceFile</a>[K, V]</span>
       </span>
       </h4>
       
@@ -531,14 +531,14 @@ and to add sinks to DLists so that the results of computations can be saved to f
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs#convertValueListToSequenceFile" data-isabs="false">
-      <a id="convertValueListToSequenceFile[V](DList[V]):ConvertValueListToSequenceFile[V]"></a>
+      <a id="convertValueListToSequenceFile[V](DList[V])(SeqSchema[V]):ConvertValueListToSequenceFile[V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertValueListToSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ConvertValueListToSequenceFile" class="extype" href="InputsOutputs$ConvertValueListToSequenceFile.html">ConvertValueListToSequenceFile</a>[V]</span>
+        <span class="name">convertValueListToSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[V]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: SeqSchema[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ConvertValueListToSequenceFile" class="extype" href="InputsOutputs$ConvertValueListToSequenceFile.html">ConvertValueListToSequenceFile</a>[V]</span>
       </span>
       </h4>
       
@@ -714,26 +714,26 @@ and to add sinks to DLists so that the results of computations can be saved to f
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs#listToAvroFile" data-isabs="false">
-      <a id="listToAvroFile[A](DList[A]):ListToAvroFile[A]"></a>
+      <a id="listToAvroFile[A](DList[A])(AvroSchema[A]):ListToAvroFile[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">listToAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ListToAvroFile" class="extype" href="InputsOutputs$ListToAvroFile.html">ListToAvroFile</a>[A]</span>
+        <span class="name">listToAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[A]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: AvroSchema[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ListToAvroFile" class="extype" href="InputsOutputs$ListToAvroFile.html">ListToAvroFile</a>[A]</span>
       </span>
       </h4>
       
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs#listToSequenceFile" data-isabs="false">
-      <a id="listToSequenceFile[T](DList[T]):ListToSequenceFile[T]"></a>
+      <a id="listToSequenceFile[K&lt;:Writable, V&lt;:Writable](DList[(K, V)])(Manifest[K],Manifest[V]):ListToSequenceFile[K, V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">listToSequenceFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[T]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile" class="extype" href="InputsOutputs$ListToSequenceFile.html">ListToSequenceFile</a>[T]</span>
+        <span class="name">listToSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>, <span name="V">V &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: Manifest[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile" class="extype" href="InputsOutputs$ListToSequenceFile.html">ListToSequenceFile</a>[K, V]</span>
       </span>
       </h4>
       
