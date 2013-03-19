@@ -17,14 +17,16 @@ package com.nicta.scoobi
 package application
 
 import java.net.{URLClassLoader, URL}
-import com.nicta.scoobi.io.FileSystems
 import java.io.File
 import org.apache.hadoop.filecache.DistributedCache
 import org.apache.hadoop.fs.Path
+import core._
+import impl.io.FileSystems
+import impl.ScoobiConfiguration._
+import impl.ScoobiConfigurationImpl._
 import org.apache.commons.logging.LogFactory
-import impl.monitor.Loggable._
 import impl.control.SystemProperties
-
+import impl.monitor.Loggable._
 /**
  * This trait defines:
  *
@@ -117,6 +119,7 @@ trait LibJars {
     uploadedJars.foreach(path => DistributedCache.addFileToClassPath(path, configuration))
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
+    // add new jars to the classpath and make sure that values are still unique for cache files and classpath entries
     configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }
 }

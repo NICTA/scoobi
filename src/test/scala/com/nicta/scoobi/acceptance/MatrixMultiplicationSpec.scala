@@ -28,15 +28,15 @@ import org.specs2.ScalaCheck
 import org.scalacheck.Gen
 import org.scalacheck.Prop
 
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import lib.{DMatrix, LinearAlgebra}
 import Scoobi._
+import core.Reduction
 
 import java.util.Random
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
   skipAll
-
   "Sparse Int Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
     Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk -> 1)
   }
@@ -57,7 +57,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
         toDoubleDMatrix(matrix),
         randRowValGenerator(randomMatrixWidth)_,
         mult[Double],
-        add[Double])
+        Reduction.Sum.double)
 
     val apacheResultMatrix = toApacheRealMatrix(toEntrySet(resultMatrix))
     val randomMatrix = getRandomMatrix(apacheMatrix, apacheResultMatrix)
@@ -67,7 +67,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
   }
 
   def runMultTest(matrix1: Iterable[MatrixEntry[Int]], matrix2: Iterable[MatrixEntry[Int]])(implicit sc: ScoobiConfiguration): Boolean = {
-    val res: DMatrix[Int, Int] = toIntDMatrix(matrix1) byMatrix (toIntDMatrix(matrix2), mult[Int], add[Int]) // normal multiplication
+    val res: DMatrix[Int, Int] = toIntDMatrix(matrix1) byMatrix (toIntDMatrix(matrix2), mult[Int], Reduction.Sum.int) // normal multiplication
     val ref = toApacheMatrix(matrix1).multiply(toApacheMatrix(matrix2)) // sanity check
 
     toEntrySet(res) == toIntEntrySet(ref)
@@ -88,7 +88,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
     fromDelimitedInput(m.map(entry => entry.row + "," + entry.col + "," + entry.value).toSeq: _*).collect { case AnInt(r) :: AnInt(c) :: ADouble(v) :: _ => ((r, c), v) }
 
   def toEntrySet[V](m: DMatrix[Int, V])(implicit conf: ScoobiConfiguration, valV: Manifest[V], wfmtV: WireFormat[V]) =
-    Set[MatrixEntry[V]]() ++ Scoobi.persist(m.materialize).collect { case ((r, c), v) if v != 0 => MatrixEntry[V](r, c, v) }
+    Set[MatrixEntry[V]]() ++ m.materialise.run.collect { case ((r, c), v) if v != 0 => MatrixEntry[V](r, c, v) }
 
   def toIntEntrySet(m: FieldMatrix[BigReal]): Set[MatrixEntry[Int]] = {
 

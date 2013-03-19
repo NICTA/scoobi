@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package guide
 
 class InputOutput extends ScoobiPage { def is = "Input and Output".title ^
-                                                                                                                       """
+  """
 ### Text files
 
 Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which `DList`s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text [input](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$) and [output](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$).
@@ -100,21 +100,21 @@ The simplest mechanism for persisting a `DList` of any type is to store it as a 
     //    3984
     //    732
     val ints: DList[Int] = ...
-    persist(toTextFile(ints, "hdfs://path/to/output"))
+    persist(ints.toTextFile("hdfs://path/to/output"))
 
     // output text file of the form:
     //    (foo, 6)
     //    (bob, 23)
     //    (joe, 91)
     val stringsAndInts: DList[(String, Int)] = ...
-    persist(toTextFile(stringsAndInts, "hdfs://path/to/output"))
+    persist(stringsAndInts.toTextFile("hdfs://path/to/output"))
 
     // output text file of the form:
     //    (foo, List(6, 3, 2))
     //    (bob, List(23, 82, 1))
     //    (joe, List(91, 388, 3))
     val stringsAndListOfInts: DList[(String, List[Int])] = ...
-    persist(toTextFile(stringsAndListOfInts, "hdfs://path/to/output"))
+    persist(stringsAndListOfInts.toTextFile("hdfs://path/to/output"))
 
 In the same way that `toString` is used primarily for debugging purposes, `toTextFile` is best used for the same purpose. The reason is that the string representation for any reasonably complex type is generally
 not convenient for input parsing. For cases where text file output is still important, and the output must be easily parsed, there are two options.
@@ -127,7 +127,7 @@ The first is to simply `map` the `DList` elements to formatted strings that are 
     //    joe,91
     val stringsAndInts: DList[(String, Int)] = ...
     val formatted: DList[String] = stringAndInts map { case (s, i) => s + "," + i }
-    persist(toTextFile(stringsAndInts, "hdfs://path/to/output"))
+    persist(stringsAndInts.toTextFile("hdfs://path/to/output"))
 
 The second option is for cases when the desired output is a delimited text file, for example, a CSV or TSV. In this case, if the `DList` is parameterised on a `Tuple`, *case class*, or any `Product` type, `toDelimitedTextFile` can be used:
 
@@ -136,7 +136,7 @@ The second option is for cases when the desired output is a delimited text file,
     //    bob,23
     //    joe,91
     val stringsAndInts: DList[(String, Int)] = ...
-    persist(toDelimitedTextFile(stringsAndInts, "hdfs://path/to/output", ","))
+    persist(stringsAndInts.toDelimitedTextFile("hdfs://path/to/output", ","))
 
     // output text file of the form:
     //    foo,6
@@ -144,7 +144,7 @@ The second option is for cases when the desired output is a delimited text file,
     //    joe,91
     case class PeopleAges(name: String, age: Int)
     val peopleAndAges: DList[PeopleAges] = ...
-    persist(toDelimitedTextFile(peopleAndAges, "hdfs://path/to/output", ","))
+    persist(peopleAndAges.toDelimitedTextFile("hdfs://path/to/output", ","))
 
 ### Sequence files
 
@@ -221,31 +221,31 @@ Finally, two additional conversion methods are provided for loading only the key
 The available mechanism for persisting a `DList` to a Sequence file mirror those for persisting. The `toSequenceFile` method can be used to persist a `DList` of a `Writable` pair:
 
     val intText: DList[(IntWritable, Text)] = ...
-    persist(toSequenceFile(intText, "hdfs://path/to/output"))
+    persist(intText.toSequenceFile("hdfs://path/to/output"))
 
 In cases where we want to persist a `DList` to a Sequence file but its type parameter is not a `Writable` pair,  single `Writable` can be stored as the key or the value, the other being `NullWritable`:
 
     // persist as IntWritable-NullWritable Sequence file
     val ints: DList[IntWritable] = ...
-    persist(keyToSequenceFile(ints, "hdfs://path/to/output"))
+    persist(ints.keyToSequenceFile("hdfs://path/to/output"))
 
     // persist as NullWritable-IntWritable Sequence file
     val ints: DList[IntWritable] = ...
-    persist(valueToSequenceFile(ints, "hdfs://path/to/output"))
+    persist(ints.valueToSequenceFile("hdfs://path/to/output"))
 
 Like loading, `DList`s of simple Scala types can be automatically converted to `Writable` types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only veesions are also provided:
 
     // persist as Int-String Sequence fille
     val intString: DList[(Int, String)] = ...
-    persist(convertToSequenceFile(intString, "hdfs://path/to/output"))
+    persist(intString.convertToSequenceFile("hdfs://path/to/output"))
 
     // persist as Int-NullWritable Sequence fille
     val intString: DList[(Int, String)] = ...
-    persist(convetKeyToSequenceFile(intString, "hdfs://path/to/output"))
+    persist(intString.convetKeyToSequenceFile("hdfs://path/to/output"))
 
     // persist as NullWritable-Int Sequence fille
     val intString: DList[(Int, String)] = ...
-    persist(convertValueFromSequenceFile(intString, "hdfs://path/to/output"))
+    persist(intString.convertValueFromSequenceFile("hdfs://path/to/output"))
 
 ### Avro files
 
@@ -339,7 +339,7 @@ Note that for compilation to succeed, there must be an `AvroSchema` instance for
 
 However, there is is a scala-avro plugin to make this pretty painless (See: examples/avro for an example)
 
- 
+
 And naturally, `fromAvroFile` supports loading from multiple files:
 
     // load multiple Avro files
@@ -354,7 +354,7 @@ And naturally, `fromAvroFile` supports loading from multiple files:
 To persist a `DList` to an Avro file, Scoobi provides the method [`toAvroFile`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroOutput$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented:
 
     val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = ...
-    persist(toAvroFile(xs, "hdfs://path/to/file")
+    persist(xs.toAvroFile("hdfs://path/to/file")
 
 #### With a predefined avro schema
 
@@ -408,19 +408,15 @@ and sinks.
 
 We have seen that Scoobi provides many *factory* methods for creaing `DList` objects, for example, `fromTextFile` and `fromAvroFile`. At their heart, all of these methods are built upon a single primitive mechanism: `DList` companion object's `fromSource` factory method:
 
-    def fromSource[K, V, A : Manifest : WireFormat](source: DataSource[K, V, A]): DList[A]
+    def fromSource[K, V, A : WireFormat](source: DataSource[K, V, A]): DList[A]
 
 `fromSource` takes as input an object implementing the `DataSource` trait. Implementing the `DataSource` trait is all that is required to create a `DList` from a custom data source. If we look at the `DataSource` trait, we can see that it is tightly coupled with the Hadoop `InputFormat` interface:
 
-    trait DataSource[K, V, A] {
+    trait DataSource[K, V, A] extends Source {
       def inputFormat: Class[_ <: InputFormat[K, V]]
-
       def inputConverter: InputConverter[K, V, A]
-
       def inputCheck()
-
       def inputConfigure(job: Job): Unit
-
       def inputSize(): Long
     }
 
@@ -435,7 +431,7 @@ The core role of a `DataSource` is to provide a mechanism for taking the key-val
  * The `InputFormat` class will produce key-value records of type `K`-`V`
  * `inputConverter` specifies an `InputConverter` object
  * The `InputConverter` object implments `fromKeyValue` which converts a key of type `K` and a value of type `V` (as produced by the `InputFormat`) to a value of type `A`
- * Calling `fromSource` with this `DataSource` object will produce a `DList` parmaterized on type `A`
+ * Calling `fromSource` with this `DataSource` object will produce a `DList` parameterised on type `A`
 
 The other methods that must be implemented in the `DataSource` trait provide hooks for configuration and giving Scoobi some visibility of the data source:
 
@@ -456,15 +452,11 @@ The following Scala objects provided great working examples of `DataSource` impl
 
 We have seen that to persist a `DList` object we use the `persist` method:
 
-    persist(toTextFile(dogs, "hdfs://path/to/dogs"), toAvroFile(names, "hdfs://path/to/names))
+    persist(dogs.toTextFile("hdfs://path/to/dogs"), names.toAvroFile("hdfs://path/to/names))
 
-But what is the type of `toTextFile`, `toAvroFile` and the other output methods? The `persist` method takes as input one or more `DListPersister` objects:
+But what exactly does `toTextFile`, `toAvroFile` and the other output methods? Those methods simply add *Sinks* to the `DList`. Those sinks implement the `DataSink` trait. The `DataSink` trait is, not surpringly, the reverse of the `DataSource` trait. It is tightly coupled with the Hadoop `OutputFormat` interface and requires the specification of an `OutputConverter` that converts values contained within the `DList` to key-value records to be persisted by the `OutputFormat`:
 
-    case class DListPersister[A](dlist: DList[A], val sink: DataSink[_, _, A])
-
-The `DListPersister` class is simply the `DList` object to be persisted and an accompanying *sink* object that implements the `DataSink` trait. The `DataSink` trait is, not surpringly, the reverse of the `DataSource` trait. It is tightly coupled with the Hadoop `OutputFormat` interface and must requires the specification of an `OutputConverter` that converts values contained within the `DList` to key-value records to be persisted by the `OutputFormat`:
-
-    trait DataSink[K, V, B] {
+    trait DataSink[K, V, B] extends Sink {
 
       def outputFormat: Class[_ <: OutputFormat[K, V]]
       def outputConverter: OutputConverter[K, V, B]
@@ -480,14 +472,15 @@ The `DListPersister` class is simply the `DList` object to be persisted and an a
 
 Again, we can follow the types through to get a sense of how it works:
 
- * `persist` is called with a `DListPersister` object that is created from a `DList[B]` object and an object implementing the trait `DataSink[K, V, B]`
+ * `persist` is called with a `DList` object that specifies `Sinks` implementing the trait `DataSink[K, V, B]`
  * The `DataSink` object specifies the class of an `OutputFormat` that can persist or write key-values of type `K`-`V`, which are specified by `outputKeyClass` and `outputValueClass`, respectively
  * An object implementing the `OutputConverter[K, V, B]` trait is specified by `outputConverter`, which converts values of type `B` to `(K, V)`
 
- Like `DataSouce`, some additional methods are included in the `DataSink` trait that provide configuation hooks:
+ Like `DataSource`, some additional methods are included in the `DataSink` trait that provide configuration hooks:
 
  * `outputCheck`: This method is called before any MapReduce jobs are run. It is provided as a hook to check the validity of the target data output. For example, it could check if the output already exists and if so throw an exception
  * `outputConfigure`: This method is provided as a hook for configuring the `DataSink`. Typically it is used to configure the `OutputFormat` by adding or modifying properties in the job's `Configuration`. It is called prior to running the specific MapReduce job this `DataSink` consumes output data from
+ * there is also an `outputSetup` method which is called right before output data is created (doing nothing by default). This allows to do some last-minute cleanup before outputing the data.
 
 The following Scala objects provided great working examples of `DataSink` implementations in Scoobi:
 
@@ -495,6 +488,7 @@ The following Scala objects provided great working examples of `DataSink` implem
  * [SeqOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqOutput$)
  * [AvroOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroOutput$)
 
+  """
 
-                                                                                                                        """
+
 }

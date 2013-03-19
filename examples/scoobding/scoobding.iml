@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="scala" name="Scala">
+      <configuration>
+        <option name="compilerLibraryLevel" value="Global" />
+        <option name="compilerLibraryName" value="scala-2.9.2" />
+        <option name="languageLevel" value="Scala 2.9" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/scala-2.9.2/classes" />
+    <output-test url="file://$MODULE_DIR$/target/scala-2.9.2/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/out" />
+      <excludeFolder url="file://$MODULE_DIR$/project" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="scala-2.9.2" level="application" />
+    <orderEntry type="library" name="scoobi-dependencies-cdh4" level="application" />
+    <orderEntry type="module-library">
+      <library name="scoobi-2.9.2">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.ivy2/local/com.nicta/scoobi_2.9.2/0.7.0-cdh4-SNAPSHOT/jars/scoobi_2.9.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.ivy2/local/com.nicta/scoobi_2.9.2/0.7.0-cdh4-SNAPSHOT/srcs/scoobi_2.9.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="reactive-core_2.9.2" level="application" />
+    <orderEntry type="library" name="scalaz-core_2.9.2-7.0.0-M3" level="application" />
+    <orderEntry type="library" name="jfree-1.0.13" level="application" />
+  </component>
+</module>
+

@@ -16,73 +16,72 @@
 package com.nicta.scoobi
 package acceptance
 
-import Scoobi._
-import testing.NictaSimpleJobs
-import testing.TestFiles
 import org.apache.hadoop.io._
-import application._
 import java.io.IOException
+
+import Scoobi._
+import testing.mutable.NictaSimpleJobs
+import testing._
+import TempFiles._
+import application.Orderings._
+import impl.control.Exceptions._
 
 class SeqFileReadWriteSpec extends NictaSimpleJobs {
 
-  "Reading Text -> Text Sequence file" >> { implicit sc: SC =>
+  "Reading from a text sequence file" >> { implicit sc: SC =>
     // store test data in a sequence file
     val tmpSeqFile = createTempSeqFile(DList(("a", "b"), ("c", "d"), ("e", "f")))
 
     // load test data from the sequence file
-    val loadedTestData = fromSequenceFile[Text, Text](tmpSeqFile)
-    loadedTestData.run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"), ("e", "f"))
+    fromSequenceFile[Text, Text](tmpSeqFile).run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"), ("e", "f"))
   }
 
-  "Writing Text -> Text Sequence file" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+  "Writing to a text sequence file" >> { implicit sc: SC =>
+    val filePath = createTempFilePath("sequence-file")
 
-    val testDList: DList[(String, String)] = DList(("a", "b"), ("c", "d"))
-    persist(toSequenceFile(testDList.map((kv: (String, String)) => (new Text(kv._1), new Text(kv._2))), filePath, overwrite =true))
+    DList(("a", "b"), ("c", "d")).map(kv => (new Text(kv._1), new Text(kv._2))).toSequenceFile(filePath).run
 
     // load test data from the sequence file
-    val loadedTestData = fromSequenceFile[Text, Text](filePath)
-    loadedTestData.run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"))
+    fromSequenceFile[Text, Text](filePath).run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"))
   }
 
   "Reading Text -> IntWritable, Writing BytesWritable -> DoubleWritable" >> { implicit sc: SC =>
     // store test data in a sequence file
     val tmpSeqFile = createTempSeqFile(DList(("a", 1), ("b", 2)))
-    val outPath = createTempFile("iotest.out")
+    val outPath    = createTempDir("iotest.out").getPath
 
     // load test data from the sequence file
-    val loadedTestData = fromSequenceFile[Text, IntWritable](tmpSeqFile)
-    val mappedTestData = loadedTestData.map(x => (new BytesWritable(x._1.getBytes), new DoubleWritable(x._2.get)))
-    persist(toSequenceFile(mappedTestData, outPath, overwrite = true))
+    fromSequenceFile[Text, IntWritable](tmpSeqFile).
+      map(x => (new BytesWritable(x._1.getBytes), new DoubleWritable(x._2.get))).
+      toSequenceFile(outPath, overwrite = true).run
 
     // load data to check it was stored correctly
-    val writtenTestData = fromSequenceFile[BytesWritable, DoubleWritable](outPath)
-    writtenTestData.run.sorted must_== Seq[(BytesWritable, DoubleWritable)](("a".getBytes, 1.0), ("b".getBytes, 2.0))
+    fromSequenceFile[BytesWritable, DoubleWritable](outPath).run.sorted ===
+      Seq[(BytesWritable, DoubleWritable)](("a".getBytes, 1.0), ("b".getBytes, 2.0))
   }
 
   "Expecting exception when Writing FloatWritable -> BooleanWritable, Reading Text -> BooleanWritable" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempFilePath("test")
 
-    val testDList: DList[(Float, Boolean)] = DList((1.2f, false), (2.5f, true))
-    persist(toSequenceFile(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))), filePath, overwrite = true))
+    DList((1.2f, false), (2.5f, true)).
+      map(kv => (new FloatWritable(kv._1), new BooleanWritable(kv._2))).toSequenceFile(filePath, overwrite = true).run
 
     // load test data from the sequence file, then persist to force execution and expect an IOException
-    val loadedTestData = fromSequenceFile[Text, BooleanWritable](filePath)
-    loadedTestData.run must throwAn[IOException]
+    fromSequenceFile[Text, BooleanWritable](filePath).run must throwAn[IOException]
   }
 
   "Not checking sequence file types, and catching the exception in the mapper" >> { implicit sc: SC =>
     if (sc.isInMemory) ok
     else {
-      val filePath = createTempFile()
+      val filePath = TempFiles.createTempFilePath("test")
 
-      val testDList: DList[(Float, Boolean)] = DList((1.2f, false), (2.5f, true))
-      persist(toSequenceFile(testDList.map((kv: (Float, Boolean)) => (new FloatWritable(kv._1), new BooleanWritable(kv._2))), filePath, overwrite = true))
+      DList((1.2f, false), (2.5f, true)).
+        map(kv => (new FloatWritable(kv._1), new BooleanWritable(kv._2))).toSequenceFile(filePath, overwrite = true).run
 
       // load test data from the sequence file, then persist to force execution and expect a ClassCastException in the mapper
-      val loadedTestData = fromSequenceFile[Text, BooleanWritable](List(filePath), checkKeyValueTypes = false)
-      val mapResult = loadedTestData.map(d => try { Right(d._1.charAt(0)): Either[String, Int] } catch { case e => Left(e.getClass.getSimpleName) })
-      mapResult.run.toSeq must_== Seq(Left("ClassCastException"), Left("ClassCastException"))
+      fromSequenceFile[Text, BooleanWritable](Seq(filePath), checkKeyValueTypes = false).
+        map(d => trye(d._1.charAt(0))(_.getClass.getSimpleName)).run.toSeq ===
+        Seq(Left("ClassCastException"), Left("ClassCastException"))
     }
   }
 
@@ -90,9 +89,9 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
    * Helper methods and classes
    */
   def createTempSeqFile[K, V](input: DList[(K, V)])(implicit sc: SC, ks: SeqSchema[K], vs: SeqSchema[V]): String = {
-    val initialTmpFile = createTempFile()
-    persist(convertToSequenceFile(input, initialTmpFile, true))
-    initialTmpFile
+    val dir = createTempDir("test").getPath
+    persist(input.convertToSequenceFile(dir, overwrite = true))
+    dir
   }
 
   def createTempFile(prefix: String = "iotest")(implicit sc: SC): String = TestFiles.path(TestFiles.createTempFile(prefix))

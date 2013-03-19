@@ -26,9 +26,9 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.avro.mapred.AvroKey
 import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
-import application.DListPersister
 import core._
-import application.ScoobiConfiguration
+import impl.io.Helper
+import org.apache.hadoop.conf.Configuration
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -36,42 +36,48 @@ object AvroOutput {
 
 
   /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
-  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false): DListPersister[B] = {
-    val sch = implicitly[AvroSchema[B]]
+  def toAvroFile[B : AvroSchema](dl: DList[B], path: String, overwrite: Boolean = false) =
+    dl.addSink(avroSink(path, overwrite))
 
+  def avroSink[B : AvroSchema](path: String, overwrite: Boolean = false) = {
+    val sch = implicitly[AvroSchema[B]]
     val converter = new OutputConverter[AvroKey[sch.AvroType], NullWritable, B] {
-      def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
+      def toKeyValue(x: B)(implicit configuration: Configuration) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
-    val sink = new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
-      protected val outputPath = new Path(path)
+    new DataSink[AvroKey[sch.AvroType], NullWritable, B] {
 
-      val outputFormat = classOf[AvroKeyOutputFormat[sch.AvroType]]
-      val outputKeyClass = classOf[AvroKey[sch.AvroType]]
-      val outputValueClass = classOf[NullWritable]
+      protected val output = new Path(path)
+
+      def outputFormat(implicit sc: ScoobiConfiguration)     = classOf[AvroKeyOutputFormat[sch.AvroType]]
+      def outputKeyClass(implicit sc: ScoobiConfiguration)   = classOf[AvroKey[sch.AvroType]]
+      def outputValueClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
 
       def outputCheck(implicit sc: ScoobiConfiguration) {
-        if (Helper.pathExists(outputPath)(sc)) {
-          if (overwrite) {
-            logger.info("Deleting the pre-existing output path: " + outputPath.toUri.toASCIIString)
-            Helper.deletePath(outputPath)(sc)
-          } else {
-            throw new FileAlreadyExistsException("Output path already exists: " + outputPath)
-          }
+        if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
+          throw new FileAlreadyExistsException("Output path already exists: " + output)
         } else {
-          logger.info("Output path: " + outputPath.toUri.toASCIIString)
+          logger.info("Output path: " + output.toUri.toASCIIString)
           logger.debug("Output Schema: " + sch.schema)
         }
       }
+      def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 
       def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-        FileOutputFormat.setOutputPath(job, outputPath)
         job.getConfiguration.set("avro.schema.output.key", sch.schema.toString)
       }
 
+      override def outputSetup(implicit configuration: Configuration) {
+        if (Helper.pathExists(output)(configuration) && overwrite) {
+          logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
+          Helper.deletePath(output)(configuration)
+        }
+      }
+
       lazy val outputConverter = converter
+
+      override def toSource: Option[Source] = Some(AvroInput.source(Seq(path), checkSchemas = false)(implicitly[AvroSchema[B]]))
     }
 
-    new DListPersister(dl, sink)
   }
 }

@@ -18,39 +18,182 @@ package core
 
 import java.lang.Comparable
 import annotation.implicitNotFound
+import scalaz.{Ordering => SOrdering, _}, Scalaz._
+import scalaz.Ordering.{LT, EQ, GT}
 
-
-/** Specify the way in which key-values are "shuffled". Used by 'groupByKey' in
- * 'DList'. */
+/**
+  * Specify the way in which key-values are "shuffled". Used by `groupByKey` in `DList`
+ */
 @implicitNotFound(msg = "Cannot find Grouping type class for ${K}")
-trait Grouping[K] {
+trait Grouping[K] extends KeyGrouping {
+  private[scoobi] def partitionKey(k: Any, num: Int) = partition(k.asInstanceOf[K], num)
+  private[scoobi] def sortKey(k1: Any, k2: Any)      = sortCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
+  private[scoobi] def groupKey(k1: Any, k2: Any)     = groupCompare(k1.asInstanceOf[K], k2.asInstanceOf[K])
+
   /** Specifies how key-values are partitioned among Reducer tasks. */
   def partition(key: K, num: Int): Int = (key.hashCode & Int.MaxValue) % num
 
   /** Specifies the order in which grouped values are presented to a Reducer
    * task, for a given partition. */
-  def sortCompare(x: K, y: K): Int = groupCompare(x, y)
+  def sortCompare(x: K, y: K): SOrdering = groupCompare(x, y)
 
   /** Specifies how values, for a given partition, are grouped together in
    * a given partition. */
-  def groupCompare(x: K, y: K): Int
+  def groupCompare(x: K, y: K): SOrdering
+
+  /** Interface to `scalaz.Order` on `sortCompare` */
+  def sortOrder: Order[K] =
+    Order.order(sortCompare(_, _))
+
+  /** Interface to `scalaz.Order` on `groupCompare` */
+  def groupOrder: Order[K] =
+    Order.order(groupCompare(_, _))
+
+  /** Interface to `scala.Ordering` on `sortCompare` */
+  def sortOrdering: Ordering[K] =
+    new Ordering[K] {
+      def compare(x: K, y: K): Int = sortCompare(x, y).toInt
+    }
+
+  /** Interface to `scala.Ordering` on `groupCompare` */
+  def groupOrdering: Ordering[K] =
+    new Ordering[K] {
+      def compare(x: K, y: K): Int = groupCompare(x, y).toInt
+    }
+
+  /** Does sort compare produce equal elements? */
+  def isSortEqual(k1: K, k2: K): Boolean =
+    sortCompare(k1, k2) == EQ
+
+  /** Does group compare produce equal elements? */
+  def isGroupEqual(k1: K, k2: K): Boolean =
+    groupCompare(k1, k2) == EQ
+
+  /** Does sort compare produce the first less than the second? */
+  def isSortLessThan(k1: K, k2: K): Boolean =
+    sortCompare(k1, k2) == LT
+
+  /** Does group compare produce the first less than the second? */
+  def isGroupLessThan(k1: K, k2: K): Boolean =
+    groupCompare(k1, k2) == LT
+
+  /** Does sort compare produce the first greater than the second? */
+  def isSortGreaterThan(k1: K, k2: K): Boolean =
+    sortCompare(k1, k2) == GT
+
+  /** Does group compare produce the first greater than the second? */
+  def isGroupGreaterThan(k1: K, k2: K): Boolean =
+    groupCompare(k1, k2) == GT
+
+  /** Map on this grouping contravariantly. */
+  def contramap[L](f: L => K): Grouping[L] =
+    new Grouping[L] {
+      override def partition(key: L, num: Int): Int =
+        Grouping.this.partition(f(key), num)
+      override def sortCompare(x: L, y: L): SOrdering =
+        Grouping.this.sortCompare(f(x), f(y))
+      def groupCompare(x: L, y: L): SOrdering =
+        Grouping.this.groupCompare(f(x), f(y))
+    }
+
+  /** Combine two groupings to a grouping of product type. Alias for `***` */
+  def zip[L](q: Grouping[L]): Grouping[(K, L)] =
+    new Grouping[(K, L)] {
+      override def partition(key: (K, L), num: Int): Int =
+        q.partition(key._2, Grouping.this.partition(key._1, num))
+      override def sortCompare(x: (K, L), y: (K, L)): SOrdering =
+        Grouping.this.sortCompare(x._1, y._1) |+| q.sortCompare(x._2, y._2)
+      def groupCompare(x: (K, L), y: (K, L)): SOrdering =
+        Grouping.this.groupCompare(x._1, y._1) |+| q.groupCompare(x._2, y._2)
+    }
+
+  /** Combine two groupings to a grouping of product type. Alias for `zip` */
+  def ***[L](q: Grouping[L]): Grouping[(K, L)] =
+    zip(q)
+
+  /** Add two groupings together. */
+  def |+|(q: Grouping[K]): Grouping[K] =
+    new Grouping[K] {
+      override def partition(key: K, num: Int): Int =
+        q.partition(key, Grouping.this.partition(key, num))
+      override def sortCompare(x: K, y: K): SOrdering =
+        Grouping.this.sortCompare(x, y) |+| q.sortCompare(x, y)
+      def groupCompare(x: K, y: K): SOrdering =
+        Grouping.this.groupCompare(x, y) |+| q.groupCompare(x, y)
+    }
+
+  /** Construct grouping for secondary sort. */
+  def secondarySort[L](q: Grouping[L]): Grouping[(K, L)] =
+    new Grouping[(K, L)] {
+      override def partition(key: (K, L), num: Int): Int =
+        Grouping.this.partition(key._1, num)
+      override def sortCompare(x: (K, L), y: (K, L)): SOrdering =
+        groupCompare(x, y) |+| q.groupCompare(x._2, y._2)
+      def groupCompare(x: (K, L), y: (K, L)): SOrdering =
+        Grouping.this.groupCompare(x._1, y._1)
+    }
+
+
 }
 
-object Grouping extends GroupingImplicits
+object Grouping extends GroupingImplicits with GroupingFunctions {
+  def all[K] = new AllGrouping
+  class AllGrouping[K] extends Grouping[K] {
+    def groupCompare(x: K, y: K) = EQ
+    override def toString = "AllGrouping"
+  }
+}
+
+trait GroupingFunctions {
+  /** Partition a grouping of sums into a product of groupings. */
+  def partition[A, B](q: Grouping[A \/ B]): (Grouping[A], Grouping[B]) =
+    (
+      new Grouping[A] {
+        override def partition(key: A, num: Int): Int =
+          q.partition(key.left, num)
+        override def sortCompare(x: A, y: A): SOrdering =
+          q.sortCompare(x.left, y.left)
+        def groupCompare(x: A, y: A): SOrdering =
+          q.groupCompare(x.left, y.left)
+      }
+    , new Grouping[B] {
+        override def partition(key: B, num: Int): Int =
+          q.partition(key.right, num)
+        override def sortCompare(x: B, y: B): SOrdering =
+          q.sortCompare(x.right, y.right)
+        def groupCompare(x: B, y: B): SOrdering =
+          q.groupCompare(x.right, y.right)
+      }
+    )
+
+  /** The identity grouping. */
+  def groupingId[K]: Grouping[K] =
+    new Grouping[K] {
+      override def partition(key: K, num: Int): Int =
+        num
+      override def sortCompare(x: K, y: K): SOrdering =
+        Monoid[SOrdering].zero
+      def groupCompare(x: K, y: K): SOrdering =
+        Monoid[SOrdering].zero
+    }
+}
 
 /** Implicit definitions of Grouping instances for common types. */
-trait GroupingImplicits {
+trait GroupingImplicits extends GroupingImplicits0 {
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
-  implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
-    def groupCompare(x: T, y: T): Int = implicitly[Ordering[T]].compare(x, y)
+  implicit def OrderGrouping2[T : scalaz.Order]: Grouping[T] = new Grouping[T] {
+    override def toString = "OrderingGrouping"
+    def groupCompare(x: T, y: T) =
+      implicitly[Order[T]].order(x, y)
   }
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
-  implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
-    def groupCompare(x: T, y: T): Int = x.compareTo(y)
+  implicit def ComparableGrouping[T <: Comparable[T]]: Grouping[T] = new Grouping[T] {
+    override def toString = "ComparableGrouping"
+    def groupCompare(x: T, y: T) = SOrdering.fromInt(x.compareTo(y))
   }
 
   /** Instances for Shapeless tagged types. */
@@ -62,149 +205,34 @@ trait GroupingImplicits {
   implicit def taggedTypeOrdering[T : Ordering, U]: Ordering[T @@ U] =
     implicitly[Ordering[T]].asInstanceOf[Ordering[T @@ U]]
 
+}
 
-  /** Helpers for creating Ordering instances for cases classes. */
-  def mkCaseOrdering[T, A1: Ordering](apply: (A1) => T, unapply: T => Option[(A1)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
+trait GroupingImplicits0 {
 
-      val c1 = implicitly[Ordering[A1]].compare(first, second)
-      if (c1 != 0) return c1
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering](apply: (A1, A2) => T, unapply: T => Option[(A1, A2)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering, A3: Ordering](apply: (A1, A2, A3) => T, unapply: T => Option[(A1, A2, A3)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      val c3 = implicitly[Ordering[A3]].compare(first._3, second._3)
-      if (c3 != 0) return c3
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering, A3: Ordering, A4: Ordering](apply: (A1, A2, A3, A4) => T, unapply: T => Option[(A1, A2, A3, A4)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      val c3 = implicitly[Ordering[A3]].compare(first._3, second._3)
-      if (c3 != 0) return c3
-      val c4 = implicitly[Ordering[A4]].compare(first._4, second._4)
-      if (c4 != 0) return c4
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering, A3: Ordering, A4: Ordering, A5: Ordering](apply: (A1, A2, A3, A4, A5) => T, unapply: T => Option[(A1, A2, A3, A4, A5)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      val c3 = implicitly[Ordering[A3]].compare(first._3, second._3)
-      if (c3 != 0) return c3
-      val c4 = implicitly[Ordering[A4]].compare(first._4, second._4)
-      if (c4 != 0) return c4
-      val c5 = implicitly[Ordering[A5]].compare(first._5, second._5)
-      if (c5 != 0) return c5
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering, A3: Ordering, A4: Ordering, A5: Ordering, A6: Ordering](apply: (A1, A2, A3, A4, A5, A6) => T, unapply: T => Option[(A1, A2, A3, A4, A5, A6)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      val c3 = implicitly[Ordering[A3]].compare(first._3, second._3)
-      if (c3 != 0) return c3
-      val c4 = implicitly[Ordering[A4]].compare(first._4, second._4)
-      if (c4 != 0) return c4
-      val c5 = implicitly[Ordering[A5]].compare(first._5, second._5)
-      if (c5 != 0) return c5
-      val c6 = implicitly[Ordering[A6]].compare(first._6, second._6)
-      if (c6 != 0) return c6
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering, A3: Ordering, A4: Ordering, A5: Ordering, A6: Ordering, A7: Ordering](apply: (A1, A2, A3, A4, A5, A6, A7) => T, unapply: T => Option[(A1, A2, A3, A4, A5, A6, A7)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      val c3 = implicitly[Ordering[A3]].compare(first._3, second._3)
-      if (c3 != 0) return c3
-      val c4 = implicitly[Ordering[A4]].compare(first._4, second._4)
-      if (c4 != 0) return c4
-      val c5 = implicitly[Ordering[A5]].compare(first._5, second._5)
-      if (c5 != 0) return c5
-      val c6 = implicitly[Ordering[A6]].compare(first._6, second._6)
-      if (c6 != 0) return c6
-      val c7 = implicitly[Ordering[A7]].compare(first._7, second._7)
-      if (c7 != 0) return c7
-      0
-    }
-  }
-
-  def mkCaseOrdering[T, A1: Ordering, A2: Ordering, A3: Ordering, A4: Ordering, A5: Ordering, A6: Ordering, A7: Ordering, A8: Ordering](apply: (A1, A2, A3, A4, A5, A6, A7, A8) => T, unapply: T => Option[(A1, A2, A3, A4, A5, A6, A7, A8)]): Ordering[T] = new Ordering[T] {
-    def compare(x: T, y: T): Int = {
-      val first = unapply(x).get
-      val second = unapply(y).get
-
-      val c1 = implicitly[Ordering[A1]].compare(first._1, second._1)
-      if (c1 != 0) return c1
-      val c2 = implicitly[Ordering[A2]].compare(first._2, second._2)
-      if (c2 != 0) return c2
-      val c3 = implicitly[Ordering[A3]].compare(first._3, second._3)
-      if (c3 != 0) return c3
-      val c4 = implicitly[Ordering[A4]].compare(first._4, second._4)
-      if (c4 != 0) return c4
-      val c5 = implicitly[Ordering[A5]].compare(first._5, second._5)
-      if (c5 != 0) return c5
-      val c6 = implicitly[Ordering[A6]].compare(first._6, second._6)
-      if (c6 != 0) return c6
-      val c7 = implicitly[Ordering[A7]].compare(first._7, second._7)
-      if (c7 != 0) return c7
-      val c8 = implicitly[Ordering[A8]].compare(first._8, second._8)
-      if (c8 != 0) return c8
-      0
-    }
+  /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
+   * type class instance. Partitioning and grouping use the default implementation. */
+  implicit def OrderingGrouping[T : Ordering]: Grouping[T] = new Grouping[T] {
+      override def toString = "OrderingGrouping"
+    def groupCompare(x: T, y: T) =
+      SOrdering.fromInt(implicitly[Ordering[T]].compare(x, y))
   }
 }
+
+import scalaz.{Ordering => SOrdering}
+/**
+ * Internal untyped grouping typeclass
+ */
+private[scoobi]
+trait KeyGrouping {
+  private[scoobi] def partitionKey(k: Any, num: Int): Int
+  private[scoobi] def sortKey(k1: Any, k2: Any): SOrdering
+  private[scoobi] def groupKey(k1: Any, k2: Any): SOrdering
+
+  private[scoobi] def isEqualWithSort(k1: Any, k2: Any): Boolean  = sortKey(k1, k2) == EQ
+  private[scoobi] def isEqualWithGroup(k1: Any, k2: Any): Boolean = groupKey(k1, k2) == EQ
+  private[scoobi] def toSortOrder: Order[Any] = Order.order(sortKey(_, _))
+  private[scoobi] def toGroupOrder: Order[Any] = Order.order(groupKey(_, _))
+  private[scoobi] def toSortOrdering: Ordering[Any]  = new Ordering[Any] { def compare(x: Any, y: Any): Int = sortKey(x, y).toInt }
+  private[scoobi] def toGroupOrdering: Ordering[Any] = new Ordering[Any] { def compare(x: Any, y: Any): Int = groupKey(x, y).toInt  }
+}
+

@@ -16,16 +16,16 @@
 package com.nicta.scoobi
 package testing
 
+import core._
 import application._
-import mutable.SimpleJobs
 import org.specs2.specification.Fragments
-import org.specs2.mutable.Tags
+import org.specs2.specification.Tags
 
 /**
  * This trait can be used to create Hadoop specifications on the NictaCluster
  */
-trait NictaHadoop extends
-  mutable.HadoopSpecification with
+abstract class NictaHadoop extends
+  HadoopSpecification with
   Tags with
   NictaCluster {
 
@@ -48,4 +48,4 @@ trait NictaCluster extends Cluster {
 /**
  * A trait for simple jobs running on the NICTA cluster
  */
-trait NictaSimpleJobs extends NictaHadoop with SimpleJobs
+abstract class NictaSimpleJobs extends NictaHadoop with SimpleJobs

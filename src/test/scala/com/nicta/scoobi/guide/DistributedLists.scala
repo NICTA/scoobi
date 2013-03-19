@@ -17,11 +17,11 @@ package com.nicta.scoobi
 package guide
 
 class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
-                                                                                                                        """
+  """
 
 ### Introduction
 
-Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterized by a type and they provide methods that can be used to produce new `DList` objects, often parameterized by higher-order functions. For example:
+Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterised by a type and they provide methods that can be used to produce new `DList` objects, often parameterised by higher-order functions. For example:
 
 ```scala
 // Converting a List[Int] to a List[String] keeping only evens
@@ -56,7 +56,7 @@ object WordCount extends ScoobiApp {
                                             .groupByKey
                                             .combine(_+_)
 
-    persist(toTextFile(counts, args(1)))
+    persist(counts.toTextFile(args(1)))
   }
 }
 ```
@@ -73,9 +73,9 @@ The second task is to compute a `DList` of word counts given all the lines of te
 
 3. A `groupByKey` is performed on the `(String, Int)` distributed collection. `groupByKey` has no direct counterpart in `List` (although there is a `groupBy` defined on `DList`s). `groupByKey` must be called on a key-value `DList` object else the program will not type check. The effect of `groupByKey` is to collect all distributed collection values with the same key. In this case the `DList` object is of type `(String, Int)` so a new `DList` object will be returned of type `(String, Iterable[Int])`. That is, the counts for the same words will be grouped together.
 
-4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterized by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
+4. To get the total count for each word, a `combine` is performed. `combine` also has no counterpart in `List` but its semantics are to take a `DList[(K, Iterable[V])]` and return a `DList[(K, V)]` by reducing all the values. It is parameterised by a function of type `(V, V) => V` that must be associative. In our case we are simply performing addition to sum all the counts.
 
-The final task is to take the `counts` object, which represents counts for each word, and *persist* it.  In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`. Note that `toTextFile` is used within `persist`. Although not demonstrated in this example, `persist` takes a variable number of arguments, each of which specifies what `DList` is being persisted and how.
+The final task is to take the `counts` object, which represents counts for each word, and *persist* it.  In this case we will simply persist it as a text file, whose path is specified by the second command line argument, using `toTextFile`.
 
 Until `persist` is called, our application will only be running on the local client. The act of calling `persist`, along with the `DList`(s) to be persisted, will trigger Scoobi's staging compiler to take the sequence of `DList` transformations and turn them into one or more Hadoop MapReduce jobs. In this example Scoobi will generate a single MapReduce job that would be executed:
 
@@ -133,7 +133,7 @@ val top10ints: DList[Int] = ints.parallelDo(new DoFn[Int, Int] {
 
 ```
 
-Whilst the `parallelDo` and `DoFn` APIs provide greater flexibility, it is best practcie to use the collections-style APIs where possible.
+Whilst the `parallelDo` and `DoFn` APIs provide greater flexibility, it is best practice to use the collections-style APIs where possible.
 
 
 ### Grouping
@@ -154,6 +154,21 @@ The grouping methods abstract Hadoop's sort-and-shuffle phase. As such it is pos
 The `combine` method is Scoobi's abstraction of Hadoop's *combiner* functionality. For best results, `combine` should be
 called immediately after a `groupBy` or `groupByKey` method, as in the Word Count example.
 
+The `combine` method accepts an argument of the type `Reduction[V]` where `V` represents the type of value in the key/value pair. A reduction denotes a binary operation on a closed set (`(V, V) => V`). The `Reduction` class and object provide combinators for constructing reductions from existing ones.
+
+For example, to obtain a reduction that performs append on a list of strings (`Reduction[List[String]]`):
+
+    val red: Reduction[List[String]]
+      = Reduction.string.list
+
+Another example performs a reduction on a pair of integer addition and string append, then appending that pair in `Option`:
+
+   val red: Reduction[Option[(Int, String)]] =
+      = (Reduction.Sum.int zip Reduction.string).option
+
+The API for `Reduction` provides many more functions for combining and building reduction values. API documentation is provided for each.
+
+The acceptance tests for `Reduction` provide more usage examples with documentation (`com.nicta.scoobi.acceptance.ReductionSpec`). The automated tests for `Reduction` provide a specification for the algebraic program properties that reductions satisfy (`com.nicta.scoobi.core.ReductionSpec`).
 
 ### Creating and persisting DLists
 
@@ -185,5 +200,5 @@ persist(toTextFile(rankings,         "hdfs://path/to/output"),
         toTextFile(rankings_example, "hdfs://path/to/output-example"))
 ```
 
-                                                                                                                        """
+  """
 }

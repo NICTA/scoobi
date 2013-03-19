@@ -17,57 +17,65 @@ package com.nicta.scoobi
 package impl
 package plan
 
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
+
 import core._
-import io.DataSource
+import comp._
+import mapreducer._
+import collection.Seqs._
+import WireFormat._
+import WireFormat._
+import com.nicta.scoobi.core
 
+/** An implementation of the DList trait that builds up a DAG of computation nodes. */
+private[scoobi]
+class DListImpl[A](comp: ProcessNode) extends DList[A] {
 
-/** An implemenentation of the DList trait that builds up a DAG of computation nodes. */
-class DListImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A, Arr]) extends DList[A] {
+  type C = ProcessNode
 
-  val m = implicitly[Manifest[A]]
-  val wf = implicitly[WireFormat[A]]
+  def getComp: C = comp
 
-  private[scoobi]
-  def this(source: DataSource[_, _, A]) = {
-    this(Smart.ParallelDo(
-      Smart.Load(source),
-      UnitDObject.getComp,
-      new BasicDoFn[A, A] { def process(input: A, emitter: Emitter[A]) { emitter.emit(input) } }))
-  }
+  def addSink(sink: Sink) =
+    setComp(_.addSink(sink))
 
-  private[scoobi]
-  def getComp: Smart.DComp[A, Arr] = comp
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) =
+    setComp(_.updateSinks(f))
 
-  def parallelDo[B : Manifest : WireFormat, E : Manifest : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(Smart.ParallelDo(comp, env.getComp, dofn))
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
+    setComp((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
 
-  def ++(ins: DList[A]*): DList[A] = new DListImpl(Smart.Flatten(List(comp) ::: ins.map(_.getComp).toList))
+  def setComp(f: C => C) = new DListImpl[A](f(comp))
+
+  def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
+    new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
+
+  def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
 
   def groupByKey[K, V]
-      (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K, V), Arr],
-                mK:   Manifest[K],
-                wtK:  WireFormat[K],
-                grpK: Grouping[K],
-                mV:   Manifest[V],
-                wtV:  WireFormat[V]): DList[(K, Iterable[V])] = new DListImpl(Smart.GroupByKey(comp))
+      (implicit ev:   A <:< (K, V),
+                wfk: WireFormat[K],
+                gpk:  Grouping[K],
+                wfv: WireFormat[V]): DList[(K, Iterable[V])] = {
+
+    new DListImpl(GroupByKey(comp, wfk, gpk, wfv))
+  }
 
   def combine[K, V]
-      (f: (V, V) => V)
-      (implicit ev:   Smart.DComp[A, Arr] <:< Smart.DComp[(K,Iterable[V]), Arr],
-                mK:   Manifest[K],
-                wtK:  WireFormat[K],
-                grpK: Grouping[K],
-                mV:   Manifest[V],
-                wtV:  WireFormat[V]): DList[(K, V)] = new DListImpl(Smart.Combine(comp, f))
+      (f: Reduction[V])
+      (implicit ev:   A <:< (K,Iterable[V]),
+                wfk: WireFormat[K],
+                wfv: WireFormat[V]): DList[(K, V)] = new DListImpl(Combine(comp, (a1: Any, a2: Any) => f(a1.asInstanceOf[V], a2.asInstanceOf[V]), wfk, wfv))
 
-  def materialize: DObject[Iterable[A]] = new DObjectImpl(Smart.Materialize(comp))
+  lazy val materialise: DObject[Iterable[A]] = new DObjectImpl(Materialise(comp, wireFormat[Iterable[A]]))
 
-  def groupBarrier: DList[A] = {
-    val dofn = new DoFn[A, A] {
-      def setup() {}
-      def process(input: A, emitter: Emitter[A]) { emitter.emit(input) }
-      def cleanup(emitter: Emitter[A]) {}
-    }
-    new DListImpl(Smart.ParallelDo(comp, UnitDObject.getComp, dofn, groupBarrier = true))
-  }
+  def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B] = parallelDo(UnitDObject.newInstance, dofn)
+
+  override def toString = "\n"+ new ShowNode {}.pretty(comp)
+}
+
+private[scoobi]
+object DListImpl {
+  def apply[A](source: DataSource[_,_, A])(implicit wf: WireFormat[A]): DListImpl[A] = apply(Seq(Load(source, wf)))
+  def apply[A](ins: Seq[CompNode])(implicit wf: WireFormat[A]): DListImpl[A] =  new DListImpl[A](ParallelDo.create(ins:_*)(wf))
 }

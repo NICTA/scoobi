@@ -1,11 +1,24 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package impl
 package reflect
 
-import control.Exceptions._
 import java.util.jar.{JarEntry, JarInputStream}
-import java.io.{File, FileInputStream}
-import scala.Option
+import java.io.FileInputStream
 import java.net.{URL, URLDecoder}
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
@@ -13,9 +26,13 @@ import core.DList
 import monitor.Loggable._
 import org.apache.commons.logging.LogFactory
 
+import control.Exceptions._
+import tools.nsc.util.ScalaClassLoader
+
 /**
  * Utility methods for accessing classes and methods
  */
+private[scoobi]
 trait Classes {
 
   private implicit lazy val logger = LogFactory.getLog("scoobi.Classes")
@@ -83,6 +100,14 @@ trait Classes {
   def filePath(className: String): String =
     className.replaceAll("\\.", "/") + ".class"
 
+  /** @return the classes contained in a class loader, by class name */
+  def loadedClasses(classLoader: ScalaClassLoader) = {
+    val classesField = classOf[ClassLoader].getDeclaredField("classes")
+    classesField.setAccessible(true)
+    val classes = asScalaBuffer(classesField.get(classLoader).asInstanceOf[java.util.List[Class[_]]])
+    Map(classes.map(klass => (klass.getName, classLoader.classBytes(klass.getName))):_*)
+  }
+
   /** @return the file path corresponding to a full URL */
   private def filePath(url: URL): String =
     URLDecoder.decode(url.getPath.replaceAll("file:", "").replaceAll("\\+", "%2B").replaceAll("!.*$", ""), "UTF-8")
@@ -96,10 +121,14 @@ trait Classes {
 
   private def loadClassOption[T](name: String): Option[Class[T]] =
     Seq(getClass.getClassLoader, ClassLoader.getSystemClassLoader).view.map { loader =>
-      tryo(loader.loadClass(name).asInstanceOf[Class[T]]){ e =>
-        e.debug(ex => "could not load class "+name+" with classloader "+loader+" because "+e.getMessage)
-        Option(e.getCause).foreach(_.debug(c => "caused by "+c.getMessage))
-        e.getStackTrace.foreach(st => st.debug(""))
+      trye(loader.loadClass(name).asInstanceOf[Class[T]]) match {
+        case Left(e) => {
+          e.debug(ex => "could not load class "+name+" with classloader "+loader+" because "+e.getMessage)
+          Option(e.getCause).foreach(_.debug(c => "caused by "+c.getMessage))
+          e.getStackTrace.foreach(st => st.debug(""))
+          None
+        }
+        case Right(a) => Some(a)
       }
     }.flatten.headOption
 }

@@ -22,7 +22,7 @@ object WordCount extends ScoobiApp {
     // Nothing to see here, just a barebones scoobi app.
     // look at examples/fatjar/README.md for more information
     val d = DList("This", "is", "uninteresting")
-    persist(toTextFile(d, "test", overwrite=true))
+    persist(d.toTextFile("test", overwrite=true))
   }
 }
 

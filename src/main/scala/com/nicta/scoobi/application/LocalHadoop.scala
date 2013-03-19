@@ -16,10 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import org.apache.commons.logging.LogFactory
-import impl.time.SimpleTimer
-import HadoopLogFactory._
-import org.apache.hadoop.fs.FileSystem._
+import core._
 import Mode._
 
 /**

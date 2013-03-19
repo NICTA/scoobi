@@ -17,9 +17,10 @@ package com.nicta.scoobi
 package application
 
 import org.apache.hadoop.fs.FileSystem
+import core._
 import Mode._
 import org.apache.commons.logging.LogFactory
-
+import impl.ScoobiConfiguration._
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
  *
@@ -62,9 +63,10 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
    * @return a configuration with cluster setup
    */
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
+    setLogFactory()
+
     logger.debug("setting the configuration for cluster execution")
 
-    setLogFactory()
     if (!configuration.jobName.isDefined) configuration.jobNameIs(getClass.getSimpleName)
 
     logger.debug("setting the execution mode to "+Cluster)

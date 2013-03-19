@@ -18,40 +18,47 @@ package impl
 package plan
 
 import core._
+import comp._
+import source.SeqInput
+import WireFormat._
+import core.DList
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
-class DObjectImpl[A : Manifest : WireFormat] private[scoobi] (comp: Smart.DComp[A, Exp]) extends DObject[A] {
+private[scoobi]
+class DObjectImpl[A](comp: ValueNode) extends DObject[A] {
+  type C = ValueNode
 
-  val m = implicitly[Manifest[A]]
-  val wf = implicitly[WireFormat[A]]
+  def getComp: C = comp
 
-  private[scoobi]
-  def this(x: A) = this(Smart.Return(x))
+  def map[B : WireFormat](f: A => B): DObject[B] =
+    new DObjectImpl(Op(comp, Return.unit, (a: Any, any: Any) => f(a.asInstanceOf[A]), wireFormat[B]))
 
-  private[scoobi]
-  def getComp: Smart.DComp[A, Exp] = comp
-
-  def map[B : Manifest : WireFormat](f: A => B): DObject[B] =
-    new DObjectImpl(Smart.Op(comp, Smart.Return(()), (a: A, _: Unit) => f(a)))
-
-  def join[B : Manifest : WireFormat](list: DList[B]): DList[(A, B)] = {
-    val dofn = new EnvDoFn[B, (A, B), A] {
-      def setup(env: A) {}
-      def process(env: A, input: B, emitter: Emitter[(A, B)]) { emitter.emit((env, input)) }
-      def cleanup(env: A, emitter: Emitter[(A, B)]) {}
+  def join[B : WireFormat](list: DList[B]): DList[(A, B)] = {
+    val dofn = new DoFunction {
+      def setupFunction(env: Any) {}
+      def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write((env, input)) }
+      def cleanupFunction(env: Any, emitter: EmitterWriter) {}
     }
-    new DListImpl(Smart.ParallelDo(list.getComp, comp, dofn))
+    new DListImpl(ParallelDo(Seq(list.getComp), comp, dofn, wireFormat[B], wireFormat[(A, B)]))
   }
+
+  def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)
+
+  def zip[B : WireFormat](o: DObject[B]): DObject[(A, B)] =
+    DObjectImpl.tupled2((this, o))
 }
 
+object UnitDObject {
+  def newInstance = new DObjectImpl[Unit](Return.unit)
+}
 
-object UnitDObject extends DObjectImpl(())
-
-
-/** */
+private[scoobi]
 object DObjectImpl {
 
+  def apply[A : WireFormat](a: A) = new DObjectImpl[A](Return(a, wireFormat[A]))
+
   /* Implicit conversions from tuples of DObjects to DObject tuples. */
-  def tupled2[T1 : Manifest : WireFormat, T2 : Manifest : WireFormat] (tup: (DObject[T1], DObject[T2])): DObject[(T1, T2)] =
-      new DObjectImpl(Smart.Op(tup._1.getComp, tup._2.getComp, (a: T1, b: T2) => (a, b)))
+  def tupled2[T1 : WireFormat, T2 : WireFormat] (tup: (DObject[T1], DObject[T2])): DObject[(T1, T2)] =
+    new DObjectImpl[(T1, T2)](Op(tup._1.getComp, tup._2.getComp, (a1: Any, a2: Any) => (a1.asInstanceOf[T1], a2.asInstanceOf[T2]), wireFormat[(T1, T2)]))
+
 }

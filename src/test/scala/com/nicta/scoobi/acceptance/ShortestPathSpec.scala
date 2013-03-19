@@ -17,8 +17,9 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import ShortestPath._
+import core.Reduction
 
 class ShortestPathSpec extends NictaSimpleJobs {
 
@@ -28,7 +29,7 @@ class ShortestPathSpec extends NictaSimpleJobs {
 
     val paths: DList[(String, Int)] = {
       val edges = nodes.map { n => val a :: b :: _ = n.split(" ").toList; (Node(a), Node(b)) }
-      val adjacencies = edges.flatMap { case (first, second) => List((first, second), (second, first)) }
+      val adjacencies = edges.mapFlatten { case (first, second) => List((first, second), (second, first)) }
       val grouped = adjacencies.groupByKey[Node, Node]
       val startingPoint = Node("A")
 
@@ -40,7 +41,7 @@ class ShortestPathSpec extends NictaSimpleJobs {
       val iterations = 5
       val breadthResult = breadthFirst(formatted, iterations)
 
-      breadthResult map { case (n, ni) => for { v <- pathSize(ni.state) } yield (n.data, v) } flatMap { x => x }
+      breadthResult map { case (n, ni) => for { v <- pathSize(ni.state) } yield (n.data, v) } mapFlatten { x => x }
     }
 
     paths.run.sortBy(_._1) must_== Seq(("A", 0), ("B", 1), ("C", 1), ("D", 2), ("E", 2), ("F", 3), ("G", 3))
@@ -55,7 +56,7 @@ object ShortestPath {
   implicit val unprocessedFormat           : WireFormat[Unprocessed] = mkCaseWireFormat(Unprocessed, Unprocessed.unapply _)
   implicit val frontierFormat              : WireFormat[Frontier]    = mkCaseWireFormat(Frontier, Frontier.unapply _)
   implicit val doneFormat                  : WireFormat[Done]        = mkCaseWireFormat(Done, Done.unapply _)
-  implicit val progressFormat              : WireFormat[Progress]    = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]()
+  implicit val progressFormat              : WireFormat[Progress]    = mkAbstractWireFormat[Progress, Unprocessed, Frontier, Done]
   implicit val nodeFormat                  : WireFormat[Node]        = mkCaseWireFormat(Node, Node.unapply _)
   implicit val nodeInfoFormat              : WireFormat[NodeInfo]    = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
 
@@ -71,7 +72,7 @@ object ShortestPath {
   case class NodeInfo (edges: Iterable[Node], state: Progress)
 
   def breadthFirst(dlist: DList[(Node, NodeInfo)], depth: Int): DList[(Node, NodeInfo)] = {
-    val firstMap = dlist.flatMap { case (n: Node, ni: NodeInfo) =>
+    val firstMap = dlist.mapFlatten { case (n: Node, ni: NodeInfo) =>
       ni.state match {
         case Frontier(distance) =>
           List((n, NodeInfo(ni.edges, Done(distance)))) ++ ni.edges.map { edge => (edge, NodeInfo(List[Node](), Frontier(distance+1))) }
@@ -79,9 +80,9 @@ object ShortestPath {
       }
     }
 
-    val firstCombiner = firstMap.groupByKey.combine { (n1: NodeInfo, n2: NodeInfo) =>
+    val firstCombiner = firstMap.groupByKey.combine(Reduction( (n1: NodeInfo, n2: NodeInfo) =>
       NodeInfo(if (n1.edges.isEmpty) n2.edges else n1.edges, furthest(n1.state, n2.state))
-    }
+    ))
     if (depth > 1) breadthFirst(firstCombiner, depth-1)
     else           firstCombiner
   }

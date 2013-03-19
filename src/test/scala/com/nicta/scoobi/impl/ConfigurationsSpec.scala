@@ -17,11 +17,12 @@ package com.nicta.scoobi
 package impl
 
 import org.apache.hadoop.conf.Configuration
-import testing.mutable.UnitSpecification
-import Configurations._
 import org.specs2.matcher.Matcher
 
-class ConfigurationsSpec extends UnitSpecification{
+import testing.mutable.UnitSpecification
+import Configurations._
+
+class ConfigurationsSpec extends UnitSpecification {
 
   "A configuration can be updated with the keys existing in another configuration" >> {
     val updated = configuration("a" -> "1", "b" -> "2").updateWith(configuration("c" -> "3", "d" -> "4")) {
@@ -65,6 +66,11 @@ class ConfigurationsSpec extends UnitSpecification{
       "the key doesn't exist" ==> { c.getOrSet("b", "3") === "3" }
       "the default value has been set" ==> { c.get("b") === "3" }
     }
+  }
+
+  "If a key has a list of separated values, those values can be made distinct" >> {
+    configuration("classpath" -> "f1:f2:f1:f3:f2").distinctValues("classpath", ":") must beTheSameAs(
+      configuration("classpath" -> "f1:f2:f3"))
   }
 
   def beTheSameAs(other: Configuration): Matcher[Configuration] = (c: Configuration) =>

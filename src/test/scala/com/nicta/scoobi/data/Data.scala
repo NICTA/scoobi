@@ -16,14 +16,16 @@
 package com.nicta.scoobi
 package data
 
-import scalaz.Apply
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary._
+import Gen._
+import scalaz.Apply
+import scalaz.Scalaz._
 
 /**
  * Generic data functions
  */
-trait Data {
+trait Data { outer =>
 
   /**
    * allow the use of the applicative syntax to build generators:
@@ -44,6 +46,34 @@ trait Data {
   }
 
   lazy val nonNullString = arbitrary[String] suchThat (_ != null)
+
+  /**
+   * @return a new generator memoizing the previous values and returning old ones x % of the time
+   *         this allows to share existing generated data between other generators
+   */
+  def memo[T](g: Gen[T], ratio: Int = 30): Gen[T] = {
+    lazy val previousValues = new scala.collection.mutable.HashSet[T]
+    def memoizeValue(v: T) = { previousValues.add(v); v }
+    for {
+      v           <- g
+      usePrevious <- choose(0, 100)
+      n           <- choose(0, previousValues.size)
+    } yield {
+      if (usePrevious <= ratio && previousValues.nonEmpty)
+        if (n == previousValues.size) previousValues.toList(n - 1) else previousValues.toList(n)
+      else memoizeValue(v)
+    }
+  }
+
+  implicit def memoize[T](g: Gen[T]): MemoizedGen[T] = new MemoizedGen[T](g)
+  class MemoizedGen[T](g: Gen[T]) {
+    def memo =  outer.memo(g)
+    def memo(ratio: Int) = outer.memo(g, ratio)
+  }
+
+  def distinctPairs[T1 <: AnyRef](set1: Set[T1]): Set[(T1, T1)] = distinctPairs(set1, set1)
+  def distinctPairs[T1 <: AnyRef, T2  <: AnyRef](set1: Set[T1], set2: Set[T2]): Set[(T1, T2)] =
+    ^(set1.toList, set2.toList)((_,_)).filterNot(p => p._1 eq p._2).toSet
 
 }
 

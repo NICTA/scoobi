@@ -16,11 +16,11 @@
 package com.nicta.scoobi
 package impl
 
-import control.Exceptions
 import org.apache.hadoop.conf.Configuration
-import Exceptions._
 import scala.collection.JavaConversions._
+
 import collection.Maps._
+import control.Exceptions._
 
 /**
  * This trait adds functionalities to Hadoop's Configuration object
@@ -31,9 +31,13 @@ trait Configurations {
    * List of Scoobi properties which are stored in the Hadoop configuration object
    */
   val JOB_ID                             = "scoobi.jobid"
+  val JOB_STEP                           = "scoobi.jobstep"
+  val JOB_TIMESTAMP                      = "scoobi.jobtimestamp"
+  val JOB_UNIQUEID                       = "scoobi.uniqueid"
   val PROGRESS_TIME                      = "scoobi.progress.time"
   val JOB_NAME                           = "scoobi.jobname"
   val SCOOBI_MODE                        = "scoobi.mode"
+  val CONCURRENT_JOBS                    = "scoobi.concurrentjobs"
   val UPLOADED_LIBJARS                   = "scoobi.uploadedlibjars"
   val MAPREDUCE_REDUCERS_MIN             = "scoobi.mapreduce.reducers.min"
   val MAPREDUCE_REDUCERS_MAX             = "scoobi.mapreduce.reducers.max"
@@ -56,7 +60,7 @@ trait Configurations {
      * remove redundant values if there are any
      */
     def addValues(key: String, values: Seq[String], separator: String): Configuration = {
-      conf.set(key, (toMap.get(key).toSeq.flatMap(_.split(separator)) ++ values).distinct.mkString(separator))
+      conf.set(key, (toMap.get(key).toSeq.flatMap(_.split(separator)).filterNot(_.trim.isEmpty) ++ values).distinct.mkString(separator))
       conf
     }
 
@@ -129,9 +133,17 @@ trait Configurations {
     /**
      * @return the value of the configuration for a given key or set it with a default value
      */
-    def getOrSet(key: String, defaultValue: String): String = {
+    def getOrSet(key: String, defaultValue: =>String): String = {
       if (!conf.defines(key)) conf.set(key, defaultValue)
       conf.get(key)
+    }
+
+    /**
+     * @return the value of the configuration for a given Boolean key or set it with a default value
+     */
+    def getOrSetBoolean(key: String, defaultValue: =>Boolean): Boolean = {
+      if (!conf.defines(key)) conf.setBoolean(key, defaultValue)
+      conf.getBoolean(key, defaultValue)
     }
 
     /**
@@ -142,6 +154,9 @@ trait Configurations {
     /** @return a string with all the key/values, one per line */
     def show = conf.getValByRegex(".*").entrySet().mkString("\n")
 
+    /** @return the updated configuration with distinct values */
+    def distinctValues(key: String, separator: String): Configuration =
+      conf.updateWith(update = { case (`key`, values: String) => (key, values.split("\\Q"+separator+"\\E").distinct.mkString(separator)) })
   }
 
   /**

@@ -16,9 +16,11 @@
 package com.nicta.scoobi
 package application
 
-import testing.mutable.UnitSpecification
 import org.specs2.mutable.Tables
 import org.specs2.specification.Scope
+
+import testing.mutable.UnitSpecification
+import Scoobi._
 
 class ScoobiAppSpec extends UnitSpecification with Tables {
 
@@ -75,6 +77,14 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
           override def get(name: String)    = None
           override def getEnv(name: String) = None
         }
+      }
+    }
+    "The run method can be used to persist DLists and DObjects in a ScoobiApp" >> {
+      "this code compiles" ==> {
+        import Scoobi._ // this should work even in presence of the Scoobi import
+        new ScoobiApp {
+          def run() = run(DList(1, 2, 3))
+        }; ok
       }
     }
   }

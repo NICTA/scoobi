@@ -18,7 +18,7 @@
  * [issue 167](https://github.com/NICTA/scoobi/issues/167): added `Grouping`, `Ordering` and `WireFormat` instances for tagged types
  * [issue 167](https://github.com/NICTA/scoobi/issues/167): added lots of Scoobi debug log statements during the execution of a `ScoobiApp`
  * added [`WireFormat` instances for Shapeless tagged types](http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.core.WireFormatImplicits)
- * made the `Iterable` returned by `materialize` [lazy](http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.impl.exec.BridgeStore)
+ * made the `Iterable` returned by `materialise` [lazy](http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.impl.exec.BridgeStore)
  * tuples of DListPersisters [can be persisted as well](http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.application.Persister$)
  * support for `WireFormats` with [up to 22 arguments in tuples and case classes](http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.core.WireFormatImplicits)
  * extended the `DataSink` api to declare that [outputs must be compressed](http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.DataSink)

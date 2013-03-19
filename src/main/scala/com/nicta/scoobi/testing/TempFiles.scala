@@ -28,10 +28,14 @@ import impl.control.Exceptions._
 trait TempFiles {
 
   /** create a temporary file */
-  def createTempFile(prefix: String): File = createTempFile(prefix, "")
+  def createTempFile(prefix: String, suffix: String = ""): File = File.createTempFile(prefix, suffix)
+  /** create a temporary file path */
+  def createTempFilePath(prefix: String, suffix: String = ""): String = {
+    val file = createTempFile(prefix, suffix)
+    file.delete
+    file.getPath
+  }
 
-  /** create a temporary file */
-  def createTempFile(prefix: String, suffix: String): File = File.createTempFile(prefix, suffix)
   /**
    * create a temporary directory by creating a temporary file and using that name to create a directory
    * this functionality should be reimplemented with Files.createTempDirectory once Java 7 becomes the default jvm for

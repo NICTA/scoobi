@@ -20,7 +20,7 @@ import java.lang.Class
 import org.apache.commons.logging.{Log, LogFactory}
 import org.apache.commons.logging.impl.{SimpleLog, NoOpLog, LogFactoryImpl}
 import HadoopLogFactory._
-
+import Levels._
 /**
  * Log factory used for testing.
  *
@@ -33,7 +33,15 @@ class HadoopLogFactory() extends LogFactory {
   def quiet      = Option(getAttribute(QUIET)).map(_.asInstanceOf[Boolean]).getOrElse(true)
   def showTimes  = Option(getAttribute(SHOW_TIMES)).map(_.asInstanceOf[Boolean]).getOrElse(false)
   def logLevel   = Option(getAttribute(LOG_LEVEL)).map(_.asInstanceOf[Level]).getOrElse(INFO)
-  def categories = Option(getAttribute(LOG_CATEGORIES)).map(c => ".*"+c+".*").getOrElse(".*")
+  def categories = Option(getAttribute(LOG_CATEGORIES)).map { c =>
+    if (c == ".*") noNoise
+    else           ".*"+c.toString+".*"
+  }.getOrElse(noNoise)
+
+  // see the answer to this SOF question to understand this regular expression:
+  // http://stackoverflow.com/questions/406230/regular-expression-to-match-string-not-containing-a-word
+  private def noWords(words: String*) = "^((?!"+words.mkString("|")+").)*$"
+  private val noNoise = noWords("Client", "ProtobufRpcEngine", "RPC", "RemoteBlockReader2", "LeaseRenewer", "DFSClient", "HadoopMode")
 
   private val impl   = new LogFactoryImpl
   private val noOps  = new NoOpLog
@@ -118,12 +126,12 @@ object HadoopLogFactory {
 
   lazy val levelsMappings =
     Map(ALL     -> SimpleLog.LOG_LEVEL_ALL,
-      TRACE   -> SimpleLog.LOG_LEVEL_TRACE,
-      INFO    -> SimpleLog.LOG_LEVEL_INFO,
-      WARN    -> SimpleLog.LOG_LEVEL_WARN,
-      ERROR   -> SimpleLog.LOG_LEVEL_ERROR,
-      FATAL   -> SimpleLog.LOG_LEVEL_FATAL,
-      OFF     -> SimpleLog.LOG_LEVEL_OFF)
+        TRACE   -> SimpleLog.LOG_LEVEL_TRACE,
+        INFO    -> SimpleLog.LOG_LEVEL_INFO,
+        WARN    -> SimpleLog.LOG_LEVEL_WARN,
+        ERROR   -> SimpleLog.LOG_LEVEL_ERROR,
+        FATAL   -> SimpleLog.LOG_LEVEL_FATAL,
+        OFF     -> SimpleLog.LOG_LEVEL_OFF)
 
   lazy val allLevels = levelsMappings.keys.map(_.toString).toSet
 

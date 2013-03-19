@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package impl
 package monitor
@@ -30,17 +45,23 @@ trait Loggable {
     def debug(condition: T => Boolean, display: T => String): T    = if (condition(evaluated)) debug(display) else evaluated
     def debugNot(condition: T => Boolean, display: T => String): T = debug(!condition, display)
 
+    def debug(pre: String, d: T => String)   : T = debug((t: T) => pre+"\n"+d(t))
     def debug(display: T => String)          : T = { logger.debug(display(evaluated)); evaluated }
     def debug(pre: String, post: String = ""): T = debug(v => pre+" "+v+" "+post)
+    def debug                                : T = debug(_.toString)
 
     def info (display: T => String)          : T = { logger.info(display(evaluated)); evaluated }
     def info (pre: String, post: String = ""): T = info(v => pre+" "+v+" "+post)
+    def info                                 : T = info(_.toString)
 
     def warn (display: T => String)          : T = { logger.warn(display(evaluated)); evaluated }
     def warn (pre: String, post: String = ""): T = warn(v => pre+" "+v+" "+post)
+    def warn                                 : T = warn(_.toString)
 
     def error(display: T => String)          : T = { logger.error(display(evaluated)); evaluated }
     def error(pre: String, post: String = ""): T = error(v => pre+" "+v+" "+post)
+    def error                                : T = error(_.toString)
+
   }
 }
 object Loggable extends Loggable

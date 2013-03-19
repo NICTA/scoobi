@@ -21,8 +21,7 @@ import java.io.IOException
 
 import org.apache.commons.logging.LogFactory
 
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.Job
@@ -36,9 +35,12 @@ import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.file.DataFileReader
 
 import core._
-import application.ScoobiConfiguration
+import impl.plan.DListImpl
+import impl.ScoobiConfiguration._
+import impl.io.Helper
+import WireFormat._
 
-/** Smart functions for materializing distributed lists by loading Avro files. */
+/** Smart functions for materialising distributed lists by loading Avro files. */
 object AvroInput extends AvroParsingImplicits {
   lazy val logger = LogFactory.getLog("scoobi.AvroInput")
 
@@ -46,21 +48,25 @@ object AvroInput extends AvroParsingImplicits {
   /** Create a new DList from the contents of one or more Avro files. The type of the DList must conform to
     * the schema types allowed by Avro, as constrained by the 'AvroSchema' type class. In the case of a directory
     * being specified, the input forms all the files in that directory. */
-  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: String*): DList[A] = fromAvroFile(List(paths: _*))
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: String*): DList[A] = fromAvroFile(List(paths: _*))
 
 
   /** Create a new DList from the contents of a list of one or more Avro files. The type of the
     * DList must conform to the schema types allowed by Avro, as constrained by the 'AvroSchema' type
     * class. In the case of a directory being specified, the input forms all the files in
     * that directory. */
-  def fromAvroFile[A : Manifest : WireFormat : AvroSchema](paths: List[String], checkSchemas: Boolean = true): DList[A] = {
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true): DList[A] =
+    DListImpl(source(paths, checkSchemas)(implicitly[AvroSchema[A]]))
+
+  def source[A : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = {
     val sch = implicitly[AvroSchema[A]]
     val converter = new InputConverter[AvroKey[sch.AvroType], NullWritable, A] {
       def fromKeyValue(context: InputContext, k: AvroKey[sch.AvroType], v: NullWritable) = sch.fromAvro(k.datum)
     }
-    val source = new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
+    new DataSource[AvroKey[sch.AvroType], NullWritable, A] {
 
       private val inputPaths = paths.map(p => new Path(p))
+      override def toString = "Avro("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
       val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
 
@@ -98,14 +104,14 @@ object AvroInput extends AvroParsingImplicits {
                   throw new AvroTypeException("Incompatible reader and writer schemas. Reader schema '" +
                     readerSchema + "'. Writer schema '" + writerSchema + "'. Errors:\n" + errors)
               } finally {
-                avroFile.close();
+                avroFile.close
               }
             }
           }
         }
       }
 
-      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = {
+      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
         job.getConfiguration.set("avro.schema.input.key", sch.schema.toString)
       }
@@ -115,6 +121,6 @@ object AvroInput extends AvroParsingImplicits {
       lazy val inputConverter = converter
     }
 
-    DList.fromSource(source)
+
   }
 }

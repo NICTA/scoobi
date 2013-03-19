@@ -18,7 +18,7 @@ package application
 
 import HadoopLogFactory._
 import org.specs2.main.CommandLineArguments
-
+import Levels._
 /**
  * This trait defines all the options which can be used to modify the behavior of a Scoobi application
  */
@@ -73,17 +73,17 @@ trait ScoobiUserArgs extends ScoobiArgs {
   private[scoobi] def matches(argName: String) = argumentsValues.exists(_.matches(argName))
 
   private[scoobi]
-  lazy val argumentsValues = scoobiArgs
+  def argumentsValues = scoobiArgs
 
   private[scoobi]
   lazy val argumentsNames = Seq("times", "local", "!local", "useconfdir", "deletelibjars", "nolibjars",
-                                "keepfiles", "quiet", "verbose", "cluster", "inmemory", "!inmemory")
+                                "keepfiles", "quiet", "verbose", "cluster", "!cluster", "inmemory", "!inmemory")
 
   private[scoobi]
-  lazy val isVerbose = argumentsValues.exists(_ == "verbose")
+  def isVerbose = argumentsValues.exists(_ == "verbose")
 
   private[scoobi]
-  lazy val isQuiet = argumentsValues.exists(_ == "quiet")
+  def isQuiet = argumentsValues.exists(_ == "quiet")
 
   private[scoobi]
   def extractLevel(args: Seq[String]): Level =

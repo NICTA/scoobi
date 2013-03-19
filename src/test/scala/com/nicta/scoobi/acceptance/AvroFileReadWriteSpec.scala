@@ -16,22 +16,16 @@
 package com.nicta.scoobi
 package acceptance
 
-import Scoobi._
-import testing.{NictaSimpleJobs, TestFiles}
-import impl.exec.JobExecException
-
 import org.apache.hadoop.fs.{Path, FileSystem}
-import org.apache.hadoop.io._
-
-import org.specs2.matcher.{HaveTheSameElementsAs, MatchResult}
-
 import org.apache.avro.{AvroTypeException, Schema}
 import org.apache.avro.generic.{GenericDatumWriter, GenericRecord, GenericData}
 import org.apache.avro.file.DataFileWriter
 
-case class ThousandBytes(data: Array[Byte]) {
-  assert(data.length == 1000)
-}
+import Scoobi._
+import testing.mutable.NictaSimpleJobs
+import testing.{TempFiles, TestFiles}
+import impl.exec.JobExecException
+import impl.ScoobiConfiguration._
 
 class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
@@ -45,10 +39,10 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     }
    
     def newTb() = {
-	  val b = new Array[Byte](1000)
-	  scala.util.Random.nextBytes(b)
-	  ThousandBytes(b)
-	}
+	    val b = new Array[Byte](1000)
+	    scala.util.Random.nextBytes(b)
+	    ThousandBytes(b)
+	  }
     
     // create test data
     val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int], ThousandBytes)] = Seq(
@@ -64,7 +58,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Writing (String, List[(Double,Boolean,String)], Array[Long]) Avro file" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -72,7 +66,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean, String)], Array[Long])] = fromAvroFile(filePath)
@@ -80,7 +74,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Expecting exception because of miss match in expected and actual schema" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -88,7 +82,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(filePath)
@@ -96,7 +90,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Not checking schema, and hence expecting an exception in the mapper" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
@@ -104,7 +98,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(List(filePath), false)
@@ -112,19 +106,20 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Reading a subset of fields that have been written" >> { implicit sc: SC =>
-    val filePath = createTempFile()
+    val filePath = TempFiles.createTempDir("test").getPath
 
     // create test data
     val testData: Seq[(String, List[(Double, Boolean, String)], Array[Long])] = Seq(
-      ("abcd", List((6.9d, false, "qwerty")), Array(100l, 200l)),
-      ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
+      ("abcd",  List((6.9d,  false, "qwerty")), Array(100l, 200l)),
+      ("efghi", List((9.15d, true,  "dvorak")), Array(9999l, 11111l)))
 
-    val expectedData = testData.map{ t1 =>
+    val expectedData = testData.map { t1 =>
       (t1._1, t1._2.map(t2 => (t2._1, t2._2)))
     }
 
+
     // write the test data out
-    persist(toAvroFile(testData.toDList, filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).run
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean)])] = fromAvroFile(filePath)
@@ -132,7 +127,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Avro file written through non scoobi API with a union type in the schema, then read through scoobi" >> { implicit sc: SC =>
-    val filePath = new Path(createTempFile())
+    val filePath = new Path(TempFiles.createTempFilePath("test"))
 
     val jsonSchema = """{
                          "name": "record1",
@@ -163,7 +158,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     dataFileWriter.close()
 
     val loadedTestData: DList[(Long,String,Boolean,Double)] = fromAvroFile(filePath.toString)
-    run(loadedTestData) must_== Seq((50, "some test str", true, 3.7))
+    loadedTestData.run must_== Seq((50, "some test str", true, 3.7))
   }
 
   /**
@@ -171,18 +166,16 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
    */
 
   def createTempAvroFile[T](input: DList[T])(implicit sc: SC, as: AvroSchema[T]): String = {
-    val initialTmpFile = createTempFile()
-    persist(toAvroFile(input, initialTmpFile, overwrite = true))
-    initialTmpFile
+    val dir = TempFiles.createTempDir("test").getPath
+    persist(input.toAvroFile(dir, overwrite = true))
+    dir
   }
 
-  def createTempFile(prefix: String = "iotest")(implicit sc: SC): String = TestFiles.path(TestFiles.createTempFile(prefix))
-
   val equality = (t1: Any, t2: Any) => (t1, t2) match {
-    case (tt1: Array[_], tt2: Array[_]) => tt1.toSeq == tt2.toSeq
+    case (tt1: Array[_], tt2: Array[_])       => tt1.toSeq == tt2.toSeq
     case (tt1: Iterable[_], tt2: Iterable[_]) => iterablesEqual(tt1, tt2)
-    case (tt1: Product, tt2: Product) => productsEqual(tt1, tt2)
-    case other => t1 == t2
+    case (tt1: Product, tt2: Product)         => productsEqual(tt1, tt2)
+    case other                                => t1 == t2
   }
 
   def productsEqual(t1: Product, t2: Product): Boolean = {
@@ -202,4 +195,8 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       if (!equality(i1.next, i2.next)) false
     true
   }
+}
+
+case class ThousandBytes(data: Array[Byte]) {
+  assert(data.length == 1000)
 }

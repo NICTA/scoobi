@@ -17,7 +17,6 @@ package com.nicta.scoobi
 package impl
 package time
 
-
 import java.util.Calendar
 import text.Plural._
 import control.Exceptions._

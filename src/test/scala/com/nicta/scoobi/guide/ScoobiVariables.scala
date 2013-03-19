@@ -49,8 +49,8 @@ trait ScoobiVariables {
   lazy val guidePage         = landingPage + guideDir
 
   private lazy val versionLine = buildSbt.flatMap(_.getLines.find(line => line contains "version"))
-  private def extractVersion(line: String) = "version\\s*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
-  private lazy val buildSbt = tryo(Source.fromFile("build.sbt"))((e:Exception) => println("can't find the build.sbt file "+e.getMessage))
+  private def extractVersion(line: String) = "\\s*version.*\\:\\=\\s*\"(.*)\"".r.findFirstMatchIn(line).map(_.group(1))
+  private lazy val buildSbt = tryOr(Option(Source.fromFile("version.sbt")))((e:Exception) => { println("can't find the version.sbt file "+e.getMessage); None })
 
   implicit def toVersionedText(t: String): VersionedText = VersionedText(t)
   case class VersionedText(t: String) {

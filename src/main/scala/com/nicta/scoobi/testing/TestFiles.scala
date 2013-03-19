@@ -17,10 +17,14 @@ package com.nicta.scoobi
 package testing
 
 import java.io.File
-import scala.io.Source
 import org.apache.hadoop.fs.{Path, FileSystem}
+import scala.io.Source
 import Scoobi._
-import io.FileSystems
+import core.WireFormat
+import impl.io.FileSystems
+
+import impl.ScoobiConfiguration._
+import impl.ScoobiConfigurationImpl._
 
 /**
  * This trait creates input and output files which are temporary
@@ -95,13 +99,13 @@ object TestFiles extends TestFiles
 import TestFiles._
 
 class InputTestFile[S](ls: Seq[String], mapping: String => S)
-                      (implicit configuration: ScoobiConfiguration, m: Manifest[S], w: WireFormat[S]) {
+                      (implicit configuration: ScoobiConfiguration, m: WireFormat[S]) {
 
   lazy val file = createTempFile("test.input")
 
   def inputLines = fromTextFile(TempFiles.writeLines(file, ls, isRemote))
-  def map[T : Manifest : WireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
-  def collect[T : Manifest : WireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
+  def map[T : WireFormat](f: S => T) = new InputTestFile(ls, f compose mapping)
+  def collect[T : WireFormat](f: PartialFunction[S, T]) = new InputTestFile(ls, f compose mapping)
   def lines: DList[S] = inputLines.map(mapping)
 }
 
@@ -119,7 +123,7 @@ case class OutputTestFile[T](list: DList[T])
   def outputFiles     = getFiles(outputDir)
 
   lazy val lines: Either[String, Seq[String]] = {
-    persist(configuration)(toTextFile(list, outputPath, overwrite = true))
+//    persist(configuration)(toTextFile(list, outputPath, overwrite = true))
     if (outputFiles.isEmpty) Left("There are no output files in "+ outputDir.getName)
     else                     Right(Source.fromFile(outputFiles.head).getLines.toSeq)
   }

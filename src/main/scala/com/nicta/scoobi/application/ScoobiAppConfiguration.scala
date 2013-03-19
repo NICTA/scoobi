@@ -24,8 +24,12 @@ import impl.monitor.Loggable._
 import java.io.File
 import impl.control.SystemProperties
 
+import core._
+import impl.ScoobiConfiguration
+import core.ScoobiConfiguration
+
 /**
- * This trait provides a ScoobiConfiguration object initialized with the configuration files found in the
+ * This trait provides a ScoobiConfiguration object initialised with the configuration files found in the
  * $HADOOP_HOME/conf directory.
  *
  * If the ScoobiArgs indicates a local execution the configuration files are not added to the Hadoop configuration
@@ -43,17 +47,20 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
   protected lazy val HADOOP_COMMAND = "which hadoop".lines_!.headOption
 
   /** default configuration */
-  implicit def configuration: ScoobiConfiguration = {
-    if (useHadoopConfDir) ScoobiConfiguration(configurationFromConfigurationDirectory)
-    else                  ScoobiConfiguration()
+  implicit def configuration: ScoobiConfiguration = ScoobiConfiguration(setConfiguration(new Configuration))
+
+  /** set the default configuration, depending on the arguments */
+  def setConfiguration(c: Configuration) =  {
+    if (useHadoopConfDir) configurationFromConfigurationDirectory(c)
+    else                  c
   }
 
-  def configurationFromConfigurationDirectory = {
+  def configurationFromConfigurationDirectory(conf: Configuration) = {
     val hadoopHomeDir =
       HADOOP_COMMAND.map(_.replaceAll("/bin/hadoop$", "").debug("got the hadoop directory from the hadoop executable")).
         getOrElse(HADOOP_HOME.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")))
 
-    val conf = new Configuration
+    conf.clear
     Seq("conf", "etc").map(d => hadoopHomeDir+"/"+d+"/").foreach { dir =>
       Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
         if (new File(dir+r).exists) {
@@ -64,3 +71,4 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     conf
   }
 }
+

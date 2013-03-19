@@ -17,9 +17,8 @@ package com.nicta.scoobi
 package io
 package text
 
-import java.io.IOException
+import java.io.{DataInput, IOException}
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.io.LongWritable
@@ -28,11 +27,14 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileSplit
 
-import impl.exec.TaggedInputSplit
 import core._
-import application.ScoobiConfiguration
+import impl.plan.DListImpl
+import impl.mapreducer.TaggedInputSplit
+import impl.ScoobiConfiguration._
+import impl.io.Helper
+import WireFormat._
 
-/** Smart functions for materializing distributed lists by loading text files. */
+/** Smart functions for materialising distributed lists by loading text files. */
 object TextInput {
   lazy val logger = LogFactory.getLog("scoobi.TextInput")
 
@@ -43,14 +45,15 @@ object TextInput {
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). */
-  def fromTextFile(paths: List[String]): DList[String] = {
+  def fromTextFile(paths: List[String]): DList[String] = DListImpl(source(paths))
+
+  /** create a text source */
+  def source(paths: Seq[String]) = {
     val converter = new InputConverter[LongWritable, Text, String] {
       def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
     }
-
-    DList.fromSource(new TextSource(paths, converter))
+    new TextSource(paths, converter)
   }
-
 
   /** Create a distributed list from one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
@@ -73,20 +76,20 @@ object TextInput {
       }
     }
 
-    DList.fromSource(new TextSource(paths, converter))
+    DListImpl(new TextSource(paths, converter))
   }
 
 
   /** Create a distributed list from a text file that is a number of fields delimited
     * by some separator. Use an extractor function to pull out the required fields to
     * create the distributed list. */
-  def fromDelimitedTextFile[A : Manifest : WireFormat]
+  def fromDelimitedTextFile[A : WireFormat]
       (path: String, sep: String = "\t")
       (extractFn: PartialFunction[List[String], A])
     : DList[A] = {
 
     val lines = fromTextFile(path)
-    lines.flatMap { line =>
+    lines.mapFlatten { line =>
       val fields = line.split(sep).toList
       if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
     }
@@ -121,10 +124,11 @@ object TextInput {
 
 
   /* Class that abstracts all the common functionality of reading from text files. */
-  class TextSource[A : Manifest : WireFormat](paths: List[String], converter: InputConverter[LongWritable, Text, A])
+  class TextSource[A : WireFormat](paths: Seq[String], converter: InputConverter[LongWritable, Text, A])
     extends DataSource[LongWritable, Text, A] {
 
     private val inputPaths = paths.map(p => new Path(p))
+    override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
     val inputFormat = classOf[TextInputFormat]
 
@@ -137,7 +141,7 @@ object TextInput {
       }
     }
 
-    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) = {
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
       inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
     }
 

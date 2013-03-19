@@ -16,9 +16,13 @@
 package com.nicta.scoobi
 package guide
 
-class LoadAndPersist extends ScoobiPage { def is = "Loading and persisting data".title^
-                                                                                                                        """
-`DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with `fromTextFile(...)` and `persist(toTextFile(...))`. The former is an example of *loading* data and the latter is an example of *persisting* data.
+import testing.mutable.NictaSimpleJobs
+import Scoobi._
+import com.nicta.scoobi.impl.plan.comp.CompNodeData._
+
+class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title^
+  """
+`DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the [WordCount example](Application.html) we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally *loaded* from files and the results *persisted* to files. Let's see how to specify this.
 
 ### Loading
 
@@ -85,26 +89,179 @@ Here, the pattern will only match if the `id` (and `age`) field(s) can be conver
 
 *Persisting* is the mechanism Scoobi uses for specifying that the result of executing the computational graph associated with a `DList` object is to be associated with a particular data file on HDFS. There are two parts to persisting:
 
-1. Calling `persist`, which bundles all `DList` objects being persisted;
-2. Specifying how each `DList` object is to be persisted.
+1. Specifying how a `DList` object is to be persisted by using the numerous `toXXX` methods available (`toTextFile`, `toAvroFile`,...)
+2. Persisting the `DList`(s) by calling `persist`
 
-Scoobi currently only provides one mechanism for specifying how a `DList` is to be persisted. It is `toTextFile` and is implemented in the object [`com.nicta.scoobi.io.text.TextOutput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$). As we have seen previously, `toTextFile` takes two arguments: the `DList` object being persisted and the directory path to write the resulting data:
+This is an example of persisting a single `DList`:
 
     val rankings: DList[(String, Int)] = ...
 
-    persist(toTextFile(rankings, "hdfs://path/to/output"))
+    persist(rankings.toTextFile("hdfs://path/to/output"))
 
-`persist` can of course bundle together more than one `DList`. For example:
+And now with several `DLists`:
 
     val rankings: DList[(String, Int)] = ...
     val rankings_reverse: DList[(Int, String)] = rankings map { swap }
     val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) => (ranking, items.head) }
 
-    persist(toTextFile(rankings,         "hdfs://path/to/output"),
-            toTextFile(rankings_reverse, "hdfs://path/to/output-reverse"),
-            toTextFile(rankings_example, "hdfs://path/to/output-example"))
+    persist(rankings.        toTextFile("hdfs://path/to/output"),
+            rankings_reverse.toTextFile("hdfs://path/to/output-reverse"),
+            rankings_example.toTextFile("hdfs://path/to/output-example"))
 
 As mentioned previously, `persist` is the trigger for executing the computational graph associated with its `DList` objects. By bundling `DList` objects together, `persist` is able to determine computations that are shared by those outputs and ensure that they are only performed once.
-                                                                                                                        """^
-                                                                                                                        end
+
+#### DObjects
+
+`DObjects` are results of distributed computations and can be accessed in memory with the `run` method:
+
+    val list: DList[Int]  = DList(1, 2, 3)
+
+    // the sum of all values
+    val sum: DObject[Int] = list.sum
+
+    // execute the computation graph and collect the result
+    println(sum.run)
+
+The call to `run` above is equivalent to calling `persist` on the `DObject` to execute the computation, then collecting the result. If you call:
+
+    persist(sum)
+    sum.run
+
+then the first `persist` executes the computation and `run` merely retrieves the result.
+
+Similarly, if you want to access the value of a `DList` after computation, you can call `run` on that list:
+
+     val list: DList[Int]  = DList(1, 2, 3)
+
+     // returns Seq(1, 2, 3)
+     list.run
+
+The code above is merely a shorthand for:
+
+      val list: DList[Int]  = DList(1, 2, 3)
+
+      val materialisedList = list.materialise
+      // returns Seq(1, 2, 3)
+      materialisedList.run
+
+Finally, when you have several `DObjects` and `DLists` which are part of the same computation graph, you can persist them all at once:
+
+     val list: DList[Int]    = DList(1, 2, 3)
+     val plusOne: DList[Int] = list.map(_ + 1)
+
+     // the sum of all values
+     val sum: DObject[Int] = list.sum
+     // the max of all values
+     val max: DObject[Int] = list.max
+
+    // execute the computation graph for the 2 DObjects and one DList
+    persist(sum, max, plusOne)
+
+    // collect results
+    // (6, 3, Seq(2, 3, 4))
+    (sum.run, max.run, plusOne.run)
+
+#### Iterations
+
+Many distributed algorithms (such as PageRank) require to iterate over DList computations. You evaluate the results of a DList computation, and based on that, you decide if you should go on with more computations.
+
+For example, let's say we want to remove 1 to a list of positive elements (and nothing if the element is already 0) until the maximum is 10.
+
+There are several ways to write this, which we are going to evaluate:
+
+     val ints = DList(12, 5, 8, 13, 11)
+
+     def iterate1(list: DList[Int]): DList[Int] = {
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+     def iterate2(list: DList[Int]): DList[Int] = {
+       persist(list)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+     def iterate3(list: DList[Int]): DList[Int] = {
+       persist(list, list.max)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                   list
+     }
+
+     def iterate4(list: DList[Int]): DList[Int] = {
+       val maximum = list.max
+       persist(list, maximum)
+       if (maximum.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
+       else                  list
+     }
+
+     persist(iterate1(ints).toTextFile("path"))
+     persist(iterate2(ints).toTextFile("path"))
+     persist(iterate3(ints).toTextFile("path"))
+     persist(iterate4(ints).toTextFile("path"))
+
+ 1. no intermediary call to `persist`
+
+In that case we get the least amount of generated MapReduce jobs, 5 jobs only: 4 jobs for the 4 main iterations, to do mapping + maximum, plus one job to write out the data to a text file
+
+The big disadvantage of this method is that the `DList` being computed is getting bigger and bigger all being re-computed all over for each new iteration.
+
+ 2. one call to persist the intermediate `DList`
+
+Here, before trying to evaluate the maximum value of the list, we save the mapped list first because later on we know we want to resume the computations from that stage, then we compute the maximum.
+This generates 8 MapReduce jobs: 4 jobs to map the list each time we enter the loop + 4 jobs to compute the maximum. However, if we compare with 1. the computations are reduced to a mimimum for each job because we reuse previously saved data.
+
+ 3. one call to persist the intermediate `DList` and the maximum
+
+This variation creates 12 MapReduce jobs: 4 to map the list on each iteration, 4 to compute the maximum on each iteration (because even if the list and its maximum are persisted at the same time, one depends on the other) and 4 to recompute the maximum and bring it to memory! The issue here is that we call `list.max` twice, hereby effectively creating 2 similar but duplicate `DObject`s.
+
+ 4. one call to persist the intermediate `DList` and the maximum as a variable
+
+In this case we get a handle on the `maximum` `DObject` and accessing his value with `run` is just a matter of reading the persisted information hence the number of MapReduce jobs is 8, as in case 2.
+
+##### Interim files
+
+It might be useful, for debugging reasons, to save the output of each intermediary step. Here is how to do it:
+
+     val ints = DList(12, 5, 8, 13, 11)
+
+     def iterate5(list: DList[Int]): DList[Int] = {
+       persist(list)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out", overwrite = true))
+       else                   list
+     }
+     // no need to persist to a Text file since there is already an Avro file storing the results
+     persist(iterate5(ints))
+
+With the code above the intermediary results will be written to the same output directory. You can also create one output directory per iteration:
+
+     def iterate6(list: DList[Int], n: Int = 0): DList[Int] = {
+       persist(list)
+       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out"+n, overwrite = true), n+1)
+       else                   list
+     }
+     persist(iterate6(ints))
+
+#### Checkpoints
+
+When you have a big pipeline of consecutive computations it can be very time-consuming to start the process all over again if you've just changed some function down the track.
+
+In order to avoid this you can create *checkpoints*, that is sinks which will persist data in between executions:
+
+     // before
+     val list = DList(1, 2, 3).map(_ + 1).
+                               filter(isEven)
+
+     // after
+     val list = DList(1, 2, 3).map(_ + 1).toAvroFile("path", overwrite = true).checkpoint.
+                               filter(isEven)
+
+If you run the `after` program twice, the second time the program is run, only the `filter` operation will be executed taking its input data from the saved Avro file.
+
+*Important limitation*: you can't use a `Text` sink as a checkpoint because Text file sinks can't not be used as source files.
+
+  """ ^ end
+
+
 }
+

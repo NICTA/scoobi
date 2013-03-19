@@ -17,8 +17,9 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 import JoinExample._
+import impl.plan.comp.CompNodeData._
 
 class JoinSpec extends NictaSimpleJobs {
 
@@ -38,6 +39,8 @@ class JoinSpec extends NictaSimpleJobs {
 
   def employeesByDepartmentId(implicit sc: SC) = employees.by(_.departmentId)
   def departmentsById(implicit sc: SC) = departments.by(_.id)
+  def employeesByDepartmentIdString(implicit sc: SC) = employees.by(_.departmentId).map { case (k, v) => (k.toString, v) }
+  def departmentsByIdString(implicit sc: SC) = departments.by(_.id).map { case (k, v) => (k.toString, v) }
 
   "Inner join" >> { implicit sc: SC =>
     (employeesByDepartmentId join departmentsById).run.mkString === Seq(
@@ -77,6 +80,24 @@ class JoinSpec extends NictaSimpleJobs {
       "(34,(Some(Robinson),Some(Clerical)))",
       "(34,(Some(Smith),Some(Clerical)))",
       "(35,(None,Some(Marketing)))").mkString
+  }
+
+  "Block inner join" >> { implicit sc: SC =>
+    (employeesByDepartmentId blockJoin departmentsById).run.map(_.toString).sorted.mkString === Seq(
+      "(31,(Rafferty,Sales))",
+      "(33,(Jones,Engineering))",
+      "(33,(Steinberg,Engineering))",
+      "(34,(Robinson,Clerical))",
+      "(34,(Smith,Clerical))").sorted.mkString
+  }
+
+  "Block inner join with 3 replications" >> { implicit sc: SC =>
+    ((employeesByDepartmentId replicateBy 3) blockJoin departmentsById).run.map(_.toString).sorted.mkString === Seq(
+      "(31,(Rafferty,Sales))",
+      "(33,(Jones,Engineering))",
+      "(33,(Steinberg,Engineering))",
+      "(34,(Robinson,Clerical))",
+      "(34,(Smith,Clerical))").sorted.mkString
   }
 }
 

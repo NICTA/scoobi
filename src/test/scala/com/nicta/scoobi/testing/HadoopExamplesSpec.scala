@@ -17,14 +17,15 @@ package com.nicta.scoobi
 package testing
 
 import org.apache.commons.logging.LogFactory
-import application._
 import org.specs2.mock.Mockito
 import org.specs2.execute.Result
 import org.specs2.matcher.ResultMatchers
-import HadoopLogFactory._
-import testing.mutable.{UnitSpecification => UnitSpec}
 import org.specs2.main.Arguments
 import org.specs2.mutable.Specification
+import testing.mutable.{UnitSpecification => UnitSpec}
+import application._
+import core._
+import HadoopLogFactory._
 
 class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 

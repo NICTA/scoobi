@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package application
 
@@ -5,8 +20,9 @@ import testing.mutable.UnitSpecification
 import LibJars._
 import java.io.File
 import org.specs2.specification.Scope
-import io.FileSystems
+import impl.io.FileSystems
 import impl.control.SystemProperties
+import Scoobi._
 
 class LibJarsSpec extends UnitSpecification {
 
@@ -61,14 +77,14 @@ class LibJarsSpec extends UnitSpecification {
         if (path == "/tmp/lib") Seq("/tmp/lib/a.jar", "/tmp/lib/b.jar")
         else Seq("/tmp/lib0/a0.jar", "/tmp/lib0/b0.jar")
 
-      override def deleteFiles(dest: String)(implicit configuration: ScoobiConfiguration) {
+      override def deleteFiles(dest: String)(implicit configuration: core.ScoobiConfiguration) {
         deleted = Some(dest)
       }
 
       // don't create any directory for the tests
-      override def mkdir(dir: String)(implicit configuration: ScoobiConfiguration) {}
+      override def mkdir(dir: String)(implicit configuration: core.ScoobiConfiguration) {}
       // don't upload anything really
-      override def uploadNewJars(sourceFiles: Seq[File], dest: String)(implicit configuration: ScoobiConfiguration): Seq[File] = sourceFiles
+      override def uploadNewJars(sourceFiles: Seq[File], dest: String)(implicit configuration: core.ScoobiConfiguration): Seq[File] = sourceFiles
     }
   }
 }

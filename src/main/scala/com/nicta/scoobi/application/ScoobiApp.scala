@@ -16,8 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import io.FileSystems
-import impl.reflect.Classes._
+import impl.io.FileSystems
 import impl.reflect.Classes
 import org.apache.commons.logging.LogFactory
 import impl.monitor.Loggable._
@@ -45,7 +44,7 @@ import impl.monitor.Loggable._
  * (if not already there, @see LibJars for the details). This behavior can be switched off by overriding the `upload`
  * method: `override def upload = false` or by passing the 'nolibjars' argument on the command line
  */
-trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop with HadoopLogFactoryInitialisation {
+trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with Hadoop with HadoopLogFactoryInitialisation with Persist {
 
   private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiApp")
 
@@ -80,7 +79,7 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     }
   }
 
-  private def parseHadoopArguments(arguments: Array[String]) {
+  protected def parseHadoopArguments(arguments: Array[String]) {
     // arguments need to be stored before the configuration is even created
     // so that we know if configuration files must be read or not
     set(arguments)

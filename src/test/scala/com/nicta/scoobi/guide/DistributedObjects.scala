@@ -30,29 +30,31 @@ The distributed list abstraction is very useful for specifying operations that t
 Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the [`DObject`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DObject) trait.
 
 
-### Materializing
+### Materialising
 
 After computing a `DList` on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a `DList` with relatively few entires, *relative* meaning the entries could fit into the memory of a single machine.
 
-To bring the contents of such a `DList` on to the client, you can use the `materialize` method:
+To bring the contents of such a `DList` on to the client, you can use the `materialise` method:
 
 ```scala
 val xs: DList[Int] = ...
-val ys: DObject[Iterable[Int]] = persist(xs.materialize)
+val ys: DObject[Iterable[Int]] = xs.materialise
+val ws: Iterable[Int] = ys.run
+
 // do something on the client
-val zs: Iterable[Int] = ys map { .... }
+val zs: Iterable[Int] = ws map { .... }
 ```
 
-The `DList` `materialize` method applied to a `DList[A]` will return a `DObject[Iterable[A]]`. Persisting the `DObject` will force it, and its dependencies, to be computed, and returin an `Iterable[A]`. The `Iterable` can then be used as the basis for client-based computations.
+The `DList` `materialise` method applied to a `DList[A]` will return a `DObject[Iterable[A]]`. Persisting the `DObject` (with the `run` method) will force it, and its dependencies, to be computed, and returning an `Iterable[A]`. The `Iterable` can then be used as the basis for client-based computations.
 
 
 ### Reduction operations
 
-In addition to `materialize`, the `DList` trait implements a series or *reduction operators* which all return `DObjects`. For example, `sum` can be applied to any `DList` of `Numeric` types and returns a `DObject` - a delayed computation of the sum of all elements in the `DList`:
+In addition to `materialise`, the `DList` trait implements a series or *reduction operators* which all return `DObjects`. For example, `sum` can be applied to any `DList` of `Numeric` types and returns a `DObject` - a delayed computation of the sum of all elements in the `DList`:
 
 ```scala
 val floats: DList[Float] = ...
-val total = persist(floats.sum)
+val total = floats.sum.run
 ```
 
 The complete list of reduction operators are:
@@ -168,7 +170,7 @@ val total: DObject[Int] = ints.sum
 val num: DObject[Int] = ints.size
 val average: DObject[Float] = (total, num) map { case (t, s) => t / s }
 val bigger: DList[Int] = (average join ints) filter { case (a, i) => i > a } .values
-persist(toTextFile(bigger, "hdfs://all/my/big-integers"))
+persist(bigger.toTextFile("hdfs://all/my/big-integers"))
 ```
 
 In this example, we first encounter the use of `DObject` as the return value of the `DList` `sum` method. Rather than returning a `DList[Int]` with a single entry, `sum` instead returns a `DObject[Int]`. This `DObject` represents a delayed computation that if executed would calculate the sum of the intergers in `ints`. Similarly for `num` which is the result of the `DList` method `size`.
@@ -178,11 +180,11 @@ The average interger value can be calculated using `total` and `num`, however, i
 
 ### Persisting Distributed Objects
 
-We've seen previously that the way to "get inside" a `DObject` is to persist - that is, compute it:
+We've seen previously that the way to "get inside" a `DObject` is to `run` it - that is, compute it:
 
 ```scala
 val x: DObject[A] = ...
-val y: A = persist(x)
+val y: A = x.run
 ```
 
 Like `DLists`, it's also possible to persist multiple `DObjects` at a time. This similarly has the advantage of jointly optimising the dependency graph formed by all `DObjects`.
@@ -191,17 +193,19 @@ Like `DLists`, it's also possible to persist multiple `DObjects` at a time. This
 val a: DObject[A] = ...
 val b: DObject[B] = ...
 val c: DObject[C] = ...
-val (aR: A, bR: B, cR: C) = persist(a, b, c)
+val (aR: A, bR: B, cR: C) = run(a, b, c)
 ```
 
-Finally, it's also possible to persist both `DLists` and `DObjects` together:
+Finally, it's also possible to persist both `DLists` and `DObjects` together by persisting the whole graph as one `persist` operation, then call `run` on specific `DObjects` to extract the relevant values (this will not re-run computations but merely read values from the output files):
 
 ```scala
 val a: DObject[A] = ...
 val bs: DList[B] = ...
 val c: DObject[C] = ...
 val ds: DList[D] = ...
-val (aR: A, _, cR: C, _) = persist(a, toTextFile(bs, "hdfs://..."), c, toTextFile(ds, "hfds://..."))
+
+persist(a, bs.toTextFile("hdfs://..."), c, ds.toTextFile("hfds://..."))
+val (aR: A, cR: C) = (a.run, c.run)
 ```
 
 Note that persisting a `DList` does not return a value, hence the underscore.
@@ -209,10 +213,3 @@ Note that persisting a `DList` does not return a value, hence the underscore.
   """
 
 }
-
-//- Do we need a "stats" library for Scoobi - a peer to the "join" library?
-//  - general statistics metrics over large data sets:
-//    - average: mean + median
-//    - standard deviation
-//    - variance
-//    - etc

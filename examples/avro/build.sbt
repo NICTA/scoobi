@@ -1,4 +1,4 @@
-seq( sbtavro.SbtAvro.avroSettings : _*)
+seq(sbtavro.SbtAvro.avroSettings : _*)
 
 name := "Scoobi Avro Example"
 
@@ -13,7 +13,7 @@ resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "Radlab Repository" at "http://scads.knowsql.org/nexus/content/groups/public/")
 
-libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.6.0-cdh4-SNAPSHOT",
+libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT", 
                             "edu.berkeley.cs" %% "avro-plugin" % "2.1.4-SNAPSHOT")
 
 scalacOptions <++= update map { report =>

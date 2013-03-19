@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package guide
 
@@ -16,7 +31,7 @@ Look in `ScoobiConfiguration` for other useful runtime configuration options
 
 ### Static References
 
-Values or objects that are behind a final static variable or reference won't get serialized properly. They get serialized in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a `val` to a `var` (especially considering variables are not shared between map-reduce jobs)
+Values or objects that are behind a final static variable or reference won't get serialised properly. They get serialised in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a `val` to a `var` (especially considering variables are not shared between map-reduce jobs)
 
 
 ### DList Covariance

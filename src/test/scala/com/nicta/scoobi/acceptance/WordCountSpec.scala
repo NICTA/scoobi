@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package acceptance
 
 import Scoobi._
-import testing.NictaSimpleJobs
+import testing.mutable.NictaSimpleJobs
 
 class WordCountSpec extends NictaSimpleJobs {
 
@@ -25,15 +25,14 @@ class WordCountSpec extends NictaSimpleJobs {
 
     val frequencies =
       DList(repeat("hello" -> 3, "world" -> 4, "universe" -> 2):_*).
-      flatMap(_.split(" ")).map((_, 1)).
+      mapFlatten(_.split(" ")).map((_, 1)).
       groupByKey.
       filter { case (word, n) => word.length < 6 }.
-      combine((i: Int, j: Int) => i + j)
+      combine(Sum.int)
 
     frequencies.run.sorted must_== Seq(("hello", 3), ("world", 4))
 
   }
-
   /** @return a Seq of strings where each key has been duplicated a number of times indicated by the value */
   def repeat(m: (String, Int)*): Seq[String] = m.flatMap { case (k, v) => Seq.fill(v)(k) }
 
