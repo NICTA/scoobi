@@ -35,7 +35,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def getComp: C
 
   private[scoobi]
-  def setComp(f: C => C): DList[A]
+  def storeComp: scalaz.Store[C, DList[A]]
 
   implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]
 
@@ -170,13 +170,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
-    map(x => (f(x), x)).groupByKey
+    by(f).groupByKey
 
   /** Group the value of a distributed list according to some discriminator function
     * and some grouping function. */
   def groupWith[K : WireFormat](f: A => K)(gpk: Grouping[K]): DList[(K, Iterable[A])] = {
     implicit def grouping = gpk
-    map(x => (f(x), x)).groupByKey
+    by(f).groupByKey
   }
 
   /**Create a new distributed list that is keyed based on a specified function. */

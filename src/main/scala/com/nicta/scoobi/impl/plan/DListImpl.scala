@@ -36,16 +36,19 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
 
   def getComp: C = comp
 
+  import scalaz.Store
+
+  def storeComp: Store[C, DList[A]] =
+    Store(new DListImpl[A](_), comp)
+
   def addSink(sink: Sink) =
-    setComp(_.addSink(sink))
+    storeComp puts (_.addSink(sink))
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) =
-    setComp(_.updateSinks(f))
+    storeComp puts (_.updateSinks(f))
 
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
-    setComp((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
-
-  def setComp(f: C => C) = new DListImpl[A](f(comp))
+    storeComp puts ((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
     new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
@@ -56,10 +59,8 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
       (implicit ev:   A <:< (K, V),
                 wfk: WireFormat[K],
                 gpk:  Grouping[K],
-                wfv: WireFormat[V]): DList[(K, Iterable[V])] = {
-
+                wfv: WireFormat[V]): DList[(K, Iterable[V])] =
     new DListImpl(GroupByKey(comp, wfk, gpk, wfv))
-  }
 
   def combine[K, V]
       (f: Reduction[V])
