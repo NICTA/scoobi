@@ -34,7 +34,7 @@ trait MscrsDefinition extends Layering {
    *
    * - if output1 depends on output2 then output2 must be computed first
    */
-  def selectNode = isLayerNode && !nodeHasBeenFilled
+  def selectNode = !isValueNode && isLayerNode && !nodeHasBeenFilled
 
   def isLayerNode = (isMaterialised  || isGbkOutput || isEndNode || isCheckpoint)
 

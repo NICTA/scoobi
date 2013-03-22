@@ -51,6 +51,9 @@ trait ProcessNodeImpl extends ProcessNode {
   lazy val sinks = oneSinkAsBridge.cata(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)
   /** list of additional sinks for this node */
   def nodeSinks : Seq[Sink]
+
+  /** display the bridge id */
+  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointName.map(" "+_)).getOrElse("")+")"
 }
 
 /**
@@ -74,8 +77,8 @@ case class ParallelDo(ins:             Seq[CompNode],
 
   lazy val wf = wfb
   lazy val wfe = env.wf
-  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "]" +
-                          "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointName.map(" "+_)).getOrElse("")+")"
+  override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "] " +
+                          bridgeToString
 
   lazy val source = ins.collect(isALoad).headOption
 
@@ -180,7 +183,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
                    bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
   lazy val wf = pair(wfk, wfv)
-  override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
+  override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 
@@ -210,7 +213,7 @@ case class GroupByKey(in: CompNode, wfk: WireReaderWriter, gpk: KeyGrouping, wfv
                       nodeSinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
   lazy val wf = pair(wfk, iterable(wfv))
-  override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"]"
+  override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 }

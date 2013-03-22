@@ -112,9 +112,7 @@ trait MscrInputChannel extends InputChannel {
    * last mappers in the "tree" of mappers using the input channel source node
    * A mapper is not the "last" if its parent is a parallelDo that is included in the list of mappers
    */
-  lazy val lastMappers: Seq[ParallelDo] =
-    if (mappers.size <= 1) mappers
-    else                   mappers.filterNot(m => uses(m).exists(mappers.contains))
+  def lastMappers: Seq[ParallelDo]
 
   /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
   lazy val mappers =
@@ -173,14 +171,14 @@ trait MscrInputChannel extends InputChannel {
 
     def computeNext(node: CompNode, inputValues: Seq[Any]): Seq[Any] = {
       nextMappers(node).flatMap { m =>
-        if (isFinal(m)) { computeFinalMapper(m, inputValues); Seq() }
-        else            computeNext(m, computeMapper(m, inputValues))
+        val mapperResult = computeMapper(m, inputValues)
+        if (isFinal(m)) emitValues(m, mapperResult)
+        computeNext(m, mapperResult)
       }
     }
-    def computeFinalMapper(mapper: ParallelDo, inputValues: Seq[Any]) {
-      val env = environments(mapper)
+    def emitValues(mapper: ParallelDo, resultValues: Seq[Any]) {
       outputTags(mapper).map(emitters).foreach { emitter =>
-        inputValues.map((v: Any) => mapper.map(env, v, emitter))
+        resultValues.foreach(emitter.write)
       }
     }
 
@@ -220,6 +218,9 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
   lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
 
+  lazy val lastMappers: Seq[ParallelDo] =
+    if (mappers.size <= 1) mappers
+    else                   mappers.filter(m => uses(m).exists(terminalNodes.contains))
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     val (key, value) = (tks(tag), tvs(tag))
@@ -246,6 +247,10 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
 
   lazy val keyTypes   = lastMappers.foldLeft(KeyTypes())   { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
   lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
+
+  lazy val lastMappers: Seq[ParallelDo] =
+    if (mappers.size <= 1) mappers
+    else                   mappers.filter(terminalNodes.contains)
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     val (key, value) = (tks(tag), tvs(tag))
