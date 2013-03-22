@@ -129,6 +129,9 @@ trait MscrInputChannel extends InputChannel {
   /** nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel */
   def terminalNodes: Seq[CompNode]
 
+  private val indent = "\n          "
+  override def toString = getClass.getSimpleName+"("+sourceNode+")"+indent+"mappers"+mappers.mkString(indent, indent, indent)
+
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
   protected var emitters: Map[Int, EmitterWriter] = Map()
@@ -154,6 +157,14 @@ trait MscrInputChannel extends InputChannel {
 
   protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
 
+  /** memoise the mappers tree to improve performance */
+  private lazy val nextMappers: CompNode => Seq[ParallelDo] = attr("next mappers") {
+    case node => uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
+  }
+  /** memoise the final mappers tree to improve performance */
+  private lazy val isFinal: CompNode => Boolean = attr("next mappers") {
+    case node => lastMappers.contains(node)
+  }
   /** map a given key/value and emit it */
   def map(key: Any, value: Any, context: InputOutputContext) {
 
@@ -161,9 +172,10 @@ trait MscrInputChannel extends InputChannel {
     computeNext(sourceNode, Seq(sourceValue))
 
     def computeNext(node: CompNode, inputValues: Seq[Any]): Seq[Any] = {
-      val (finalMappers, nextMappers) = uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains).partition(lastMappers.contains)
-      finalMappers.foreach(m => computeFinalMapper(m, inputValues))
-      nextMappers.flatMap(m => computeNext(m, computeMapper(m, inputValues)))
+      nextMappers(node).flatMap { m =>
+        if (isFinal(m)) { computeFinalMapper(m, inputValues); Seq() }
+        else            computeNext(m, computeMapper(m, inputValues))
+      }
     }
     def computeFinalMapper(mapper: ParallelDo, inputValues: Seq[Any]) {
       val env = environments(mapper)
@@ -201,8 +213,6 @@ trait MscrInputChannel extends InputChannel {
 class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
   import nodes._
 
-  override def toString = "GbkInputChannel("+sourceNode+")\n          mappers"+mappers.mkString("\n          ", "\n    ", "\n    ")
-
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
 
@@ -230,8 +240,6 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
  */
 class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode]) extends MscrInputChannel {
   import nodes._
-
-  override def toString = "FloatingInputChannel("+sourceNode+")\n         mappers"+mappers.mkString("\n          ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
