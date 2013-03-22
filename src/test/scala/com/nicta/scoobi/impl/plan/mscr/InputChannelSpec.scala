@@ -221,11 +221,11 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
 
     override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
-  def floatingInputChannel(terminalNodes: Seq[CompNode], sourceNode: CompNode) =
-    new FloatingInputChannel(sourceNode, new MscrsDefinition{}.floatingMappers(terminalNodes, sourceNode)) with MockInputChannel
+  def floatingInputChannel(terminalNodes: Seq[CompNode], sourceNode: CompNode): FloatingInputChannel with MockInputChannel =
+    new FloatingInputChannel(sourceNode, terminalNodes) with MockInputChannel
 
-  def floatingInputChannel(terminalNode: CompNode, sourceNode: CompNode) =
-    new FloatingInputChannel(sourceNode, new MscrsDefinition{}.floatingMappers(Seq(terminalNode), sourceNode)) with MockInputChannel
+  def floatingInputChannel(terminalNode: CompNode, sourceNode: CompNode): FloatingInputChannel with MockInputChannel =
+    floatingInputChannel(Seq(terminalNode), sourceNode)
 
   def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys) with MockInputChannel
 

@@ -89,9 +89,6 @@ trait MscrsDefinition extends Layering {
     }.flatten
   }
 
-  private def hasMaterialisedEnv(pd: ParallelDo) =
-    (pd.env +: descendentsUntil(isGroupByKey || isParallelDo)(pd.env)).exists(isMaterialise)
-
   /** all the mscrs for a given layer */
   lazy val mscrs: Layer[T] => Seq[Mscr] =
     attr("mscrs") { case layer => gbkMscrs(layer) ++ pdMscrs(layer) }
@@ -99,22 +96,10 @@ trait MscrsDefinition extends Layering {
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
     val inputChannels = floatingParallelDos(layer).flatMap { pd =>
-      pd.ins.map(source => new FloatingInputChannel(source, floatingMappers(layer.nodes.filterNot(isGroupByKey), source)))
+      pd.ins.map(source => new FloatingInputChannel(source, layer.nodes.filterNot(isGroupByKey)))
     }
     val outputChannels = inputChannels.flatMap(_.lastMappers.map(BypassOutputChannel(_)))
     makeMscrs(inputChannels, outputChannels)
-  }
-
-  private [scoobi]
-  def floatingMappers(terminalNodes: Seq[CompNode], sourceNode: CompNode) = {
-    def mapperUses(n: CompNode): Seq[ParallelDo] = {
-      val pdUses = uses(n).toSeq.collect(isAParallelDo).filter { pd =>
-        terminalNodes.contains(pd) ||
-        uses(pd).exists(isParallelDo)
-      }
-      pdUses ++ pdUses.flatMap(mapperUses)
-    }
-    mapperUses(sourceNode).distinct
   }
 
   /** Mscrs for mscrs built around gbk nodes */

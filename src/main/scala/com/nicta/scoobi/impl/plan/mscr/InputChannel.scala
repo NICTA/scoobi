@@ -116,8 +116,18 @@ trait MscrInputChannel extends InputChannel {
     if (mappers.size <= 1) mappers
     else                   mappers.filterNot(m => uses(m).exists(mappers.contains))
 
-  /** flattened tree of mappers using this source */
-  def mappers: Seq[ParallelDo]
+  /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
+  lazy val mappers =
+    terminalNodes.flatMap(terminal => pathsToNode(sourceNode)(terminal)).
+      // drop the source node from the path
+      map(path => path.filterNot(_ == sourceNode)).
+      // retain only the paths which contain parallelDos or a terminal node
+      filter(_.forall(isParallelDo || terminalNodes.contains)).
+      flatten.collect(isAParallelDo).distinct
+
+
+  /** nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel */
+  def terminalNodes: Seq[CompNode]
 
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
@@ -191,23 +201,12 @@ trait MscrInputChannel extends InputChannel {
 class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
   import nodes._
 
-  override def toString = "GbkInputChannel("+sourceNode+")\n    mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
+  override def toString = "GbkInputChannel("+sourceNode+")\n          mappers"+mappers.mkString("\n          ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
 
-  /** collect all the mappers which are connected to the source node and connect to one of the input channel gbks */
-  lazy val mappers = {
-    def mapperUses(n: CompNode): Seq[ParallelDo] = {
-      val pdUses = uses(n).toSeq.collect(isAParallelDo).filter { pd =>
-        uses(pd).exists(p => groupByKeys.contains(p) || isParallelDo(p))
-      }
-      // recurse only if the pd is not connected to a groupByKey
-      pdUses ++ pdUses.filterNot(p => uses(p).exists(groupByKeys.contains)).flatMap(mapperUses)
-    }
-    mapperUses(sourceNode).distinct
-  }
-
+  lazy val terminalNodes = groupByKeys
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
   lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
 
@@ -229,10 +228,10 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
 /**
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
-class FloatingInputChannel(val sourceNode: CompNode, val mappers: Seq[ParallelDo]) extends MscrInputChannel {
+class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode]) extends MscrInputChannel {
   import nodes._
 
-  override def toString = "FloatingInputChannel("+sourceNode+")\n   mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
+  override def toString = "FloatingInputChannel("+sourceNode+")\n         mappers"+mappers.mkString("\n          ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
