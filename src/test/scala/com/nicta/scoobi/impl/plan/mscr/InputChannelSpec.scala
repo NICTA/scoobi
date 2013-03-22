@@ -192,7 +192,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       val pd1 = pd(l1)
       val pd2 = pd(pd1)
       val mat1 = mt(pd2)
-      floatingInputChannel(pd2, l1).mappers === Seq(pd1, pd2)
+      floatingInputChannel(pd2, l1).mappers === Seq(pd2, pd1)
     }
   }
 
