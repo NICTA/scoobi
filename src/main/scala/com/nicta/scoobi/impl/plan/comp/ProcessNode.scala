@@ -64,13 +64,13 @@ trait ValueNodeImpl extends ValueNode with WithEnvironment {
  * The ParallelDo node type specifies the building of a CompNode as a result of applying a function to
  * all elements of an existing CompNode and concatenating the results
  */
-case class ParallelDo(ins:           Seq[CompNode],
-                      env:           ValueNode,
-                      dofn:          DoFunction,
-                      wfa:           WireReaderWriter,
-                      wfb:           WireReaderWriter,
-                      nodeSinks:     Seq[Sink] = Seq(),
-                      bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
+case class ParallelDo(ins:             Seq[CompNode],
+                      env:             ValueNode,
+                      dofn:            DoFunction,
+                      wfa:             WireReaderWriter,
+                      wfb:             WireReaderWriter,
+                      nodeSinks:       Seq[Sink] = Seq(),
+                      bridgeStoreId:   String = randomUUID.toString) extends ProcessNodeImpl {
 
   lazy val wf = wfb
   lazy val wfe = env.wf
@@ -153,8 +153,14 @@ object ParallelDo {
   }
 
   private[scoobi]
-  def create(ins: CompNode*)(wf: WireReaderWriter) =
-    ParallelDo(ins, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf)
+  def create(ins: CompNode*)(wf: WireReaderWriter): ParallelDo =
+    new ParallelDo(ins, UnitDObject.newInstance.getComp, EmitterDoFunction, wf, wf)
+  def create(ins: Seq[CompNode], env: ValueNode, dofn: DoFunction, wfa: WireReaderWriter, wfb: WireReaderWriter): ParallelDo =
+    new ParallelDo(ins, env, dofn, wfa, wfb)
+  def create(ins: Seq[CompNode], env: ValueNode, dofn: DoFunction, wfa: WireReaderWriter, wfb: WireReaderWriter, bridgeStoreId: String): ParallelDo =
+    new ParallelDo(ins, env, dofn, wfa, wfb, Seq(), bridgeStoreId)
+  def create(ins: Seq[CompNode], env: ValueNode, dofn: DoFunction, wfa: WireReaderWriter, wfb: WireReaderWriter, nodeSinks: Seq[Sink], bridgeStoreId: String): ParallelDo =
+    new ParallelDo(ins, env, dofn, wfa, wfb, nodeSinks, bridgeStoreId)
 
 }
 
@@ -189,7 +195,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
       case (key, values: Iterable[_]) => emitter.write((key, values.reduce(f)))
     })
     // Return(()) is used as the Environment because there's no need for a specific value here
-    ParallelDo(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), nodeSinks, bridgeStoreId)
+    ParallelDo.create(Seq(in), Return.unit, dofn, pair(wfk, iterable(wfv)), pair(wfk, wfv), nodeSinks, bridgeStoreId)
   }
 }
 object Combine1 {

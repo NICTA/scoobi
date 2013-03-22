@@ -51,6 +51,7 @@ object CompNode {
 
 trait ProcessNode extends CompNode {
   def sinks: Seq[Sink]
+  def isCheckpoint = sinks.exists(_.isCheckpoint)
   def bridgeStore: Option[Bridge]
   def createBridgeStore: Bridge
   def nodeSinks : Seq[Sink]

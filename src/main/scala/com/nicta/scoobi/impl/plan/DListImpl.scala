@@ -51,7 +51,7 @@ class DListImpl[A](comp: ProcessNode) extends DList[A] {
     storeComp puts ((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
 
   def parallelDo[B : WireFormat, E : WireFormat](env: DObject[E], dofn: EnvDoFn[A, B, E]): DList[B] =
-    new DListImpl(ParallelDo(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
+    new DListImpl(ParallelDo.create(Seq(comp), env.getComp, dofn, wireFormat[A], wireFormat[B]))
 
   def ++(ins: DList[A]*): DList[A] = DListImpl.apply(comp +: ins.map(_.getComp))
 

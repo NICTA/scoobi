@@ -24,6 +24,10 @@ import monitor.Loggable._
 import org.kiama.rewriting.Rewriter
 import collection.+:
 import control.Functions._
+import scala.collection.mutable
+import org.kiama.util.Emitter
+import core.Emitter
+import org.kiama.attribution.Attributable
 
 /**
  * Optimiser for the CompNode graph
@@ -37,13 +41,15 @@ trait Optimiser extends CompNodes with Rewriter {
   /**
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
-  def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_,_,_,_) => c
-    case c: Combine                            => c.debug("combineToParDo").toParallelDo
+  val combineToParDo = traverseSomebu(strategy {
+    case c @ Combine(GroupByKey1(_),_,_,_,_,_) => None
+    case c: Combine                            => Some(c.toParallelDo.debug(p => "combineToParDo "+c.id+" to "+p.id))
   })
 
   /**
-   * Nested ParallelDos must be fused but only if pd1 is not used anywhere else
+   * Nested ParallelDos must be fused but only if pd1 is not used anywhere else.
+   *
+   * We use somebu to fuse the nodes "bottom-up" starting from all leaves of the tree at the same time
    *
    *    pd1 @ ParallelDo
    *          |
@@ -53,15 +59,68 @@ trait Optimiser extends CompNodes with Rewriter {
    *
    * This rule is repeated until nothing can be fused anymore
    */
-  def parDoFuse = repeat(oncebu(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if
-      uses(p1).filterNot(_ == p2).isEmpty                  &&
-      rest.isEmpty                                         &&
-      !p1.bridgeStore.map(hasBeenFilled).getOrElse(false)  &&
-      !p1.bridgeStore.map(_.isCheckpoint).getOrElse(false) &&
-      p1.nodeSinks.isEmpty                                 => ParallelDo.fuse(p1.debug("parDoFuse with "+p2), p2)
-  }))
+  def parDoFuse = traverseSomebu(parDoFuseRule)
 
+  def parDoFuseRule = rule {
+    case p2 @ ParallelDo((p1: ParallelDo) +: rest,_,_,_,_,_,_) if
+      rest.isEmpty                          &&
+      uses(p1).filterNot(_ == p2).isEmpty   &&
+      !mustBeRead(p1)                       => ParallelDo.fuse(p1, p2).debug(p => "Fused "+p2.id+" with "+p1.id+". Result is "+p.id)
+  }
+
+  /** @return true if this parallelDo must be read ==> can't be fused */
+  def mustBeRead(pd: ParallelDo): Boolean =
+    pd.bridgeStore.map(bs => hasBeenFilled(bs) || bs.isCheckpoint).getOrElse(false) || !pd.nodeSinks.isEmpty
+
+  def traverseOncebu(s: =>Strategy) = repeatTraversal(oncebu, s)
+  def traverseSomebu(s: =>Strategy) = repeatTraversal(somebu, s)
+  def traverseSometd(s: =>Strategy) = repeatTraversal(sometd, s)
+
+  /**
+   * apply a traversal strategy but make sure that:
+   *
+   * - after each pass the tree is reset in terms of attributable relationships and uses
+   * - the strategy to execute is memoised, i.e. if a node has already been processed its result must be reused
+   *   this ensures that rewritten shared nodes are not duplicated
+   */
+  def repeatTraversal(traversal: (=>Strategy) => Strategy, s: =>Strategy) = {
+    lazy val strategy = s
+    lazy val memoised = memoProcessNodes(strategy)
+    lazy val traversedMemoised = traversal(memoised)
+    lazy val result = resetTree(traversedMemoised)
+    repeat(result)
+  }
+
+  private def resetTree(s: =>Strategy): Strategy =  new Strategy {
+    def apply (t1 : Term) : Option[Term] = {
+      dupCache.clear
+      t1 match {
+        case c: CompNode => reinitAttributable(c)
+        case _           => ()
+      }
+      val result = s(t1)
+      dupCache.clear
+      result
+    }
+  }
+
+  def memoProcessNodes(s: Strategy): MemoStrategy = new MemoStrategy(s)
+
+  case class MemoStrategy(s: Strategy) extends Strategy {
+    val cache = new mutable.HashMap[Term,Option[Term]]
+    def apply(t : Term) : Option[Term] = {
+      t match {
+        case p: ProcessNode => cache.getOrElseUpdate(t, s(t))
+        case other          => s(t)
+      }
+    }
+  }
+
+  /** override the duplication strategy of Product elements so that an existing rewritten node is not rewritten twice */
+  private val dupCache = new mutable.HashMap[Any,Any]
+  override protected def dup[T <: Product](t: T, children: Array[AnyRef]): T = {
+    dupCache.getOrElseUpdate(t, super.dup(t, children)).asInstanceOf[T]
+  }
   /**
    * add a bridgeStore if it is necessary to materialise a value and no bridge is available
    */
@@ -81,7 +140,7 @@ trait Optimiser extends CompNodes with Rewriter {
   /**
    * all the strategies to apply, in sequence
    */
-  def allStrategies(outputs: Seq[CompNode]) =
+  def allStrategies =
     attempt(combineToParDo)                 <*
     attempt(parDoFuse     )                 <*
     attempt(addBridgeStore)                 <*
@@ -91,7 +150,9 @@ trait Optimiser extends CompNodes with Rewriter {
    * Optimise a set of CompNodes, starting from the set of outputs
    */
   def optimise(outputs: Seq[CompNode]): Seq[CompNode] =
-    rewrite(allStrategies(outputs))(outputs)
+    rewrite(allStrategies)(Root(outputs)) match {
+      case Root(ins) => ins
+    }
 
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
@@ -107,7 +168,9 @@ trait Optimiser extends CompNodes with Rewriter {
   /** apply one strategy to a list of Nodes. Used for testing */
   private[scoobi]
   def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
-    rewrite(strategy)(nodes).toList
+    rewrite(strategy)(Root(nodes)) match {
+      case Root(ins) => ins.toList
+    }
   }
 
   /**

@@ -114,7 +114,7 @@ trait MscrInputChannel extends InputChannel {
    */
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
-    else                   mappers.filterNot(m => (isParallelDo && mappers.contains)(m.parent[CompNode]))
+    else                   mappers.filterNot(m => uses(m).exists(mappers.contains))
 
   /** flattened tree of mappers using this source */
   def mappers: Seq[ParallelDo]
@@ -146,32 +146,24 @@ trait MscrInputChannel extends InputChannel {
 
   /** map a given key/value and emit it */
   def map(key: Any, value: Any, context: InputOutputContext) {
-    /**
-     * map the input key/value using the full tree of mappers.
-     *
-     * we start from the leaves of the tree and compute values up to the top:
-     *
-     *  - the top value is the key/value passed by the context and converted by the Source
-     *  - the internal mapper nodes are using a VectorEmitterWriter to compute values and leave them in memory
-     *  - the in memory values are finally mapped with the "lastMappers" and emitted to disk
-     */
-    def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = {
-      val result = node match {
-        case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
-        case mapper: ParallelDo if mappers.contains(mapper) =>
-          val previousNodes = mapper.ins.filter(n => sourceNode == n || mappers.contains(n))
-          val mappedValues = previousNodes.foldLeft(Seq[Any]()) { (res, cur) => res ++ computeMappers(cur, emitter) }
 
-          if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)
-          else                                            mappedValues.map(v => mapper.map(environments(mapper), v, emitter))
-        case _                    => Seq()
+    val sourceValue = source.fromKeyValueConverter.asValue(context, key, value)
+    computeNext(sourceNode, Seq(sourceValue))
+
+    def computeNext(node: CompNode, inputValues: Seq[Any]): Seq[Any] = {
+      val (finalMappers, nextMappers) = uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains).partition(lastMappers.contains)
+      finalMappers.foreach(m => computeFinalMapper(m, inputValues))
+      nextMappers.flatMap(m => computeNext(m, computeMapper(m, inputValues)))
+    }
+    def computeFinalMapper(mapper: ParallelDo, inputValues: Seq[Any]) {
+      val env = environments(mapper)
+      outputTags(mapper).map(emitters).foreach { emitter =>
+        inputValues.map((v: Any) => mapper.map(env, v, emitter))
       }
-      result
     }
 
-    lastMappers.foreach { mapper =>
-      outputTags(mapper).map(emitters).foreach(e => computeMappers(mapper, e))
-    }
+    def computeMapper(mapper: ParallelDo, inputValues: Seq[Any]): Seq[Any] =
+      vectorEmitter.map(environments(mapper), inputValues, mapper)
 
     if (lastMappers.isEmpty)
       tags.map(t => emitters(t).write(source.fromKeyValueConverter.asValue(context, key, value)))
@@ -205,9 +197,15 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
   lazy val tags = keyTypes.tags
 
   /** collect all the mappers which are connected to the source node and connect to one of the input channel gbks */
-  lazy val mappers = mappersUses(sourceNode).filter { pd =>
-    val groupByKeyUses = transitiveUses(pd).collect(isAGroupByKey)
-    groupByKeyUses.exists(groupByKeys.contains) && !groupByKeyUses.exists(gbk => transitiveUses(gbk).exists(groupByKeys.contains))
+  lazy val mappers = {
+    def mapperUses(n: CompNode): Seq[ParallelDo] = {
+      val pdUses = uses(n).toSeq.collect(isAParallelDo).filter { pd =>
+        uses(pd).exists(p => groupByKeys.contains(p) || isParallelDo(p))
+      }
+      // recurse only if the pd is not connected to a groupByKey
+      pdUses ++ pdUses.filterNot(p => uses(p).exists(groupByKeys.contains)).flatMap(mapperUses)
+    }
+    mapperUses(sourceNode).distinct
   }
 
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }

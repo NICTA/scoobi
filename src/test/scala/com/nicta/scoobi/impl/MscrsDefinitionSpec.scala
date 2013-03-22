@@ -42,7 +42,6 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
                                                                                                                         p^ section("outputs")^
     "Input channels"                                                                                                    ^
       "all mappers sharing the same input go to the same MscrInputChannel"                                              ! g3().e1^
-      "a mapper is defined as an 'inside' mapper if it is used by a non-floating mapper"                                ! g3().e2^
                                                                                                                         p^
     "Mscr creation"                                                                                                     ^ section("creation")^
       "there must be one mscr per set of related tags"                                                                  ! g4().e1^
@@ -100,14 +99,6 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
       val layer1    = layers(aRoot(gbk1, gbk2, gbk3)).head
 
       gbkInputChannels(layer1) must  have size(1)
-    }
-
-    e2 := {
-      "pd(load) is not an inside mapper" <==> { isInsideMapper(pd(load)) ==== false }
-
-      val pd1 = pd(load)
-      gbk(pd(pd1))
-      "pd1 is an inside mapper" <==> { isInsideMapper(pd1) ==== true }
     }
   }
 

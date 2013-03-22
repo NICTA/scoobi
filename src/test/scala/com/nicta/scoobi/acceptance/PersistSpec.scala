@@ -193,7 +193,15 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
   }
 
-  "16. issue 215" >> { implicit sc: SC =>
+  "16. issue 213" >> { implicit sc: SC =>
+    val r = scala.util.Random
+    val numbers  = DList(1, 2).map { i => r.nextInt(i*10) }
+    val numbers2 = numbers.map(identity)
+    val (a, b) = run(numbers.sum, numbers2.sum)
+    a must be_==(b)
+  }
+
+  "17. issue 215" >> { implicit sc: SC =>
     val dir = TempFiles.createTempDir("test.avro")
     persist((1 to 2).toDList.map { x => x.toString -> x.toString }.toAvroFile(dir.getPath, true))
 

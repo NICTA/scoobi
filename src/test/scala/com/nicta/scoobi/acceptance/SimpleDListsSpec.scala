@@ -133,7 +133,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
   }
   "24. join on a gbk" >> { implicit sc: SC =>
     val l1 = DList("hello").materialise
-    val l2 = l1 join DList("a" -> "b").groupByKey.map(_.toString)
+    val l2 = l1 join DList("a" -> "b").groupByKey.map(identity)// { case (a, bs) => (a, Vector(bs:_*)).toString }
     normalise(l2.run) === "Vector((Vector(hello),(a,Vector(b))))"
   }
   "25. flatMap" >> { implicit sc: SC =>

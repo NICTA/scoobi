@@ -33,7 +33,7 @@ trait Layering extends ShowNode {
   type T <: CompNode
 
   /** a function to select only some nodes in the graph. They must be of type T */
-  def selectNode(n: CompNode): Boolean
+  def selectNode: CompNode => Boolean
 
   lazy val selected: CompNode => Boolean = attr("selected node") { case n => selectNode(n) }
   lazy val select: PartialFunction[CompNode, T] = { case n if n -> selected => n.asInstanceOf[T] }
