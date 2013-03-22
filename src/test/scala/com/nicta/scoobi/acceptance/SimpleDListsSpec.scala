@@ -160,4 +160,15 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     val l4 = c join l3
     normalise(l4.run) === "Vector((2,(0,4)), (2,(1,6)))"
   }
+
+  "29. diamond of gbks" >> { implicit sc: SC =>
+    val l1 = DList(1, 2)
+    val (pd1, pd2)   = (l1.map(i => (i, i)), l1.map(i => (i, i)))
+    val (gbk1, gbk2) = (pd1.groupByKey, pd2.groupByKey)
+    val (pd3, pd4)   = (gbk1.map(identity), gbk2.map(identity))
+    val pd5          = pd3 ++ pd4
+    val gbk3         = pd5.groupByKey
+
+    gbk3.run.normalise === "Vector((1,Vector(Vector(1), Vector(1))), (2,Vector(Vector(2), Vector(2))))"
+  }
 }

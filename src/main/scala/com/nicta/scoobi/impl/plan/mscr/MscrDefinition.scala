@@ -54,7 +54,7 @@ trait MscrsDefinition extends Layering {
 
   def isGbkOutput: CompNode => Boolean = attr("isGbkOutput") {
     case pd: ParallelDo                       => isReducer(pd)
-    case cb @ Combine1(_: GroupByKey)         => parent(cb).map(!isReducingNode).getOrElse(true)
+    case cb @ Combine1(gbk: GroupByKey)       => parent(cb).map(!isReducingNode).getOrElse(true) && isUsedAtMostOnce(gbk)
     case gbk: GroupByKey                      => parent(gbk).map(!isReducingNode).getOrElse(true)
     case other                                => false
   }
@@ -194,8 +194,8 @@ trait MscrsDefinition extends Layering {
   }
 
   lazy val isReducer: ParallelDo => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd)
-    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)           => rest.isEmpty && isUsedAtMostOnce(pd)
-    case _                                                     => false
+    case pd @ ParallelDo1((cb @ Combine1((gbk: GroupByKey))) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && isUsedAtMostOnce(cb) && isUsedAtMostOnce(gbk)
+    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                  => rest.isEmpty && isUsedAtMostOnce(pd) && isUsedAtMostOnce(gbk)
+    case _                                                            => false
   }
 }
