@@ -93,18 +93,20 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <p class="shortcomment cmt">types of the keys which are emitted by this InputChannel, by tag</p><div class="fullcomment"><div class="comment cmt"><p>types of the keys which are emitted by this InputChannel, by tag</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#mappers" data-isabs="true">
-      <a id="mappers:Seq[ParallelDo]"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#lastMappers" data-isabs="true">
+      <a id="lastMappers:Seq[ParallelDo]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mappers</span><span class="result">: Seq[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
+        <span class="name">lastMappers</span><span class="result">: Seq[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">flattened tree of mappers using this source</p>
+      <p class="shortcomment cmt">last mappers in the &quot;tree&quot; of mappers using the input channel source node
+A mapper is not the &quot;last&quot; if its parent is a parallelDo that is included in the list of mappers
+</p>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#outputTags" data-isabs="true">
       <a id="outputTags(ParallelDo):Seq[Int]"></a>
       <h4 class="signature">
@@ -141,6 +143,18 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <p class="shortcomment cmt">set of tags, which are node ids consuming the values produced by this input channel</p><div class="fullcomment"><div class="comment cmt"><p>set of tags, which are node ids consuming the values produced by this input channel</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#terminalNodes" data-isabs="true">
+      <a id="terminalNodes:Seq[CompNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">terminalNodes</span><span class="result">: Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.InputChannel#valueTypes" data-isabs="true">
       <a id="valueTypes:ValueTypes"></a>
       <h4 class="signature">
@@ -392,20 +406,6 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#lastMappers" data-isabs="false">
-      <a id="lastMappers:Seq[ParallelDo]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">lastMappers</span><span class="result">: Seq[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">last mappers in the &quot;tree&quot; of mappers using the input channel source node
-A mapper is not the &quot;last&quot; if its parent is a parallelDo that is included in the list of mappers
-</p>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#logger" data-isabs="false">
       <a id="logger:Log"></a>
       <h4 class="signature">
@@ -430,6 +430,18 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
       </span>
       </h4>
       <p class="shortcomment cmt">map a given key/value and emit it</p><div class="fullcomment"><div class="comment cmt"><p>map a given key/value and emit it</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="">MscrInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#mappers" data-isabs="false">
+      <a id="mappers:Seq[ParallelDo]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mappers</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -550,7 +562,7 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -561,7 +573,7 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="">MscrInputChannel</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#tvs" data-isabs="false">
       <a id="tvs:Map[Int, TaggedValue]"></a>
       <h4 class="signature">

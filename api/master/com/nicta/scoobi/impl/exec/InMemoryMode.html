@@ -219,14 +219,14 @@
       </h4>
       <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#allStrategies" data-isabs="false">
-      <a id="allStrategies(Seq[CompNode]):Strategy"></a>
+      <a id="allStrategies:Strategy"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">allStrategies</span><span class="params">(<span name="outputs">outputs: Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+        <span class="name">allStrategies</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">all the strategies to apply, in sequence
@@ -576,7 +576,7 @@
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
         <span class="name">combineToParDo</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
@@ -769,7 +769,7 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
-    </li><li visbl="prt" name="org.kiama.rewriting.Rewriter#dup" data-isabs="false">
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.Optimiser#dup" data-isabs="false">
       <a id="dup[T&lt;:Product](T,Array[AnyRef]):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -780,7 +780,7 @@ They are all the recursive children reachable from this node
         <span class="name">dup</span><span class="tparams">[<span name="T">T &lt;: <span name="scala.Product" class="extype">Product</span></span>]</span><span class="params">(<span name="t">t: T</span>, <span name="children">children: <span name="scala.Array" class="extype">Array</span>[AnyRef]</span>)</span><span class="result">: T</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a> → Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#duplicate" data-isabs="false">
       <a id="duplicate:(CompNode) ⇒ CompNode"></a>
       <h4 class="signature">
@@ -1208,6 +1208,18 @@ For a ParallelDo node this does not consider its environment
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode is a ProcessNode</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a ProcessNode</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isCombine" data-isabs="false">
+      <a id="isCombine:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCombine</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return true if a CompNode is a Combine</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a Combine</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isComputedValueNode" data-isabs="false">
       <a id="isComputedValueNode:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -1632,6 +1644,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#mustBeRead" data-isabs="false">
+      <a id="mustBeRead(ParallelDo):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mustBeRead</span><span class="params">(<span name="pd">pd: <a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../plan/comp/ParallelDo.html">ParallelDo</a></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this parallelDo must be read ==&gt; can't be fused</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -1645,14 +1669,14 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.CompNodes#nodeHasBeenFilled" data-isabs="false">
-      <a id="nodeHasBeenFilled(CompNode):Boolean"></a>
+      <a id="nodeHasBeenFilled:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">nodeHasBeenFilled</span><span class="params">(<span name="p">p: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">nodeHasBeenFilled</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a process node has been filled</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a></dd></dl></div>
@@ -1789,11 +1813,23 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="name">parDoFuse</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Nested ParallelDos must be fused but only if pd1 is not used anywhere else</p><div class="fullcomment"><div class="comment cmt"><p>Nested ParallelDos must be fused but only if pd1 is not used anywhere else</p><p>   pd1 @ ParallelDo
+      <p class="shortcomment cmt">Nested ParallelDos must be fused but only if pd1 is not used anywhere else.</p><div class="fullcomment"><div class="comment cmt"><p>Nested ParallelDos must be fused but only if pd1 is not used anywhere else.</p><p>We use somebu to fuse the nodes &quot;bottom-up&quot; starting from all leaves of the tree at the same time</p><p>   pd1 @ ParallelDo
          |
    pd2 @ ParallelDo</p><h6>&gt;
    pd3 @ ParallelDo</h6><p>This rule is repeated until nothing can be fused anymore
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#parDoFuseRule" data-isabs="false">
+      <a id="parDoFuseRule:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parDoFuseRule</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#para" data-isabs="false">
       <a id="para[T]((Any, Seq[T]) ⇒ T):(Any) ⇒ T"></a>
       <h4 class="signature">
@@ -2090,6 +2126,21 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#repeatTraversal" data-isabs="false">
+      <a id="repeatTraversal((⇒ Strategy) ⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeatTraversal</span><span class="params">(<span name="traversal">traversal: (⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">apply a traversal strategy but make sure that:</p><div class="fullcomment"><div class="comment cmt"><p>apply a traversal strategy but make sure that:</p><p>- after each pass the tree is reset in terms of attributable relationships and uses
+- the strategy to execute is memoised, i.e. if a node has already been processed its result must be reused
+  this ensures that rewritten shared nodes are not duplicated
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeatuntil" data-isabs="false">
       <a id="repeatuntil(⇒ Strategy,⇒ Strategy):Strategy"></a>
       <h4 class="signature">
@@ -2430,6 +2481,42 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p><div class="fullcomment"><div class="comment cmt"><p>compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#traverseOncebu" data-isabs="false">
+      <a id="traverseOncebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseOncebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#traverseSomebu" data-isabs="false">
+      <a id="traverseSomebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseSomebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#traverseSometd" data-isabs="false">
+      <a id="traverseSometd(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseSometd</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#tree" data-isabs="false">
       <a id="tree[T&lt;:Attributable, U&lt;:Attributable](String)((T) ⇒ U):CachedAttribute[T, U]"></a>
       <h4 class="signature">

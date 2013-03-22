@@ -341,7 +341,7 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" class="extype" href="">GbkInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#lastMappers" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#lastMappers" data-isabs="false">
       <a id="lastMappers:Seq[ParallelDo]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -352,11 +352,7 @@ or key/values for a GbkInputChannel
         <span class="name">lastMappers</span><span class="result">: Seq[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">last mappers in the &quot;tree&quot; of mappers using the input channel source node
-A mapper is not the &quot;last&quot; if its parent is a parallelDo that is included in the list of mappers
-</p><div class="fullcomment"><div class="comment cmt"><p>last mappers in the &quot;tree&quot; of mappers using the input channel source node
-A mapper is not the &quot;last&quot; if its parent is a parallelDo that is included in the list of mappers
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" class="extype" href="">GbkInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#logger" data-isabs="false">
       <a id="logger:Log"></a>
       <h4 class="signature">
@@ -381,7 +377,7 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
       </span>
       </h4>
       <p class="shortcomment cmt">map a given key/value and emit it</p><div class="fullcomment"><div class="comment cmt"><p>map a given key/value and emit it</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#mappers" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#mappers" data-isabs="false">
       <a id="mappers:Seq[ParallelDo]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -392,7 +388,7 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
         <span class="name">mappers</span><span class="result">: <span name="scala.collection.Seq" class="extype">Seq</span>[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">collect all the mappers which are connected to the source node and connect to one of the input channel gbks</p><div class="fullcomment"><div class="comment cmt"><p>collect all the mappers which are connected to the source node and connect to one of the input channel gbks</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" class="extype" href="">GbkInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a></dd></dl></div>
+      <p class="shortcomment cmt">collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p><div class="fullcomment"><div class="comment cmt"><p>collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -537,6 +533,18 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
       </span>
       </h4>
       <p class="shortcomment cmt">collect all the tags accessible from this source node</p><div class="fullcomment"><div class="comment cmt"><p>collect all the tags accessible from this source node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" class="extype" href="">GbkInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.InputChannel" class="extype" href="InputChannel.html">InputChannel</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#terminalNodes" data-isabs="false">
+      <a id="terminalNodes:Seq[GroupByKey]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">terminalNodes</span><span class="result">: Seq[<a name="com.nicta.scoobi.impl.plan.comp.GroupByKey" class="extype" href="../comp/GroupByKey.html">GroupByKey</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" class="extype" href="">GbkInputChannel</a> → <a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a></dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#tks" data-isabs="false">
       <a id="tks:Map[Int, TaggedKey]"></a>
       <h4 class="signature">
@@ -549,7 +557,7 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#toString" data-isabs="false">
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -560,7 +568,7 @@ A mapper is not the &quot;last&quot; if its parent is a parallelDo that is inclu
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel" class="extype" href="">GbkInputChannel</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel" class="extype" href="MscrInputChannel.html">MscrInputChannel</a> → AnyRef → Any</dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#tvs" data-isabs="false">
       <a id="tvs:Map[Int, TaggedValue]"></a>
       <h4 class="signature">
