@@ -85,7 +85,7 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   def repeatTraversal(traversal: (=>Strategy) => Strategy, s: =>Strategy) = {
     lazy val strategy = s
-    lazy val memoised = memoProcessNodes(strategy)
+    lazy val memoised = memo(strategy)
     lazy val traversedMemoised = traversal(memoised)
     lazy val result = resetTree(traversedMemoised)
     repeat(result)
@@ -101,18 +101,6 @@ trait Optimiser extends CompNodes with Rewriter {
       val result = s(t1)
       dupCache.clear
       result
-    }
-  }
-
-  def memoProcessNodes(s: Strategy): MemoStrategy = new MemoStrategy(s)
-
-  case class MemoStrategy(s: Strategy) extends Strategy {
-    val cache = new mutable.HashMap[Term,Option[Term]]
-    def apply(t : Term) : Option[Term] = {
-      t match {
-        case p: ProcessNode => cache.getOrElseUpdate(t, s(t))
-        case other          => s(t)
-      }
     }
   }
 
