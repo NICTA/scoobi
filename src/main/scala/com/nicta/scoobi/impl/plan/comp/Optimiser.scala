@@ -188,9 +188,8 @@ trait Optimiser extends CompNodes with Rewriter {
       if (condition(n)) truncateNode(n)
       else              n
     }
-    val result = reinitAttributable(rewrite(topdown(truncateRule))(node))
     reinitUses
-    result
+    reinitAttributable(rewrite(topdown(truncateRule))(node))
   }
 
   def truncateAlreadyExecutedNodes(node: CompNode)(implicit sc: ScoobiConfiguration) = {

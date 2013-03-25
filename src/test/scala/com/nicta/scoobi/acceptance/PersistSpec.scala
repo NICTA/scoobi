@@ -17,13 +17,18 @@ package com.nicta.scoobi
 package acceptance
 
 import testing.mutable.NictaSimpleJobs
-import testing.{TestFiles, TempFiles}
+import testing.{InputStringTestFile, TestFiles, TempFiles}
 import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
 import SequenceOutput._
 import core.Reduction.Sum
+import io.text.TextInput.TextSource
+import org.apache.hadoop.mapreduce.RecordReader
+import core.{InputConverter, InputOutputContext}
+import impl.plan.DListImpl
+import org.apache.hadoop.io.{Text, LongWritable}
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -212,6 +217,36 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   "18. issue 216" >> { implicit sc: SC =>
     val input = (1 to 2).toDList
     (input.materialise join input).run.normalise === "Vector((Vector(1, 2),1), (Vector(1, 2),2))"
+  }
+
+  "19. an input must only be read once" >> { implicit sc: SC =>
+    if (sc.isInMemory) {
+      var checks = 0
+      var reads = 0
+      lazy val file = createTempFile("test.input")
+
+      TempFiles.writeLines(file, Seq("1", "2", "3"), isRemote)
+
+      val converter = new InputConverter[LongWritable, Text, String] {
+        def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
+      }
+      val source = new TextSource[String](Seq(file.getPath), converter) {
+        override def inputCheck(implicit sc: ScoobiConfiguration) {
+          checks = checks + 1
+          super.inputCheck(sc)
+        }
+        override def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit) {
+          super.read(reader, mapContext, (a: Any) => { reads = reads + 1; read(a) })
+        }
+
+      }
+      val input1 = DListImpl[String](source)
+      val (input2, input3) = (input1.map(identity), input1.map(identity))
+      run(input2, input3)
+
+      "there is only one check" ==> { checks === 1 }
+      "there are only 3 reads"  ==> { reads === 3 }
+    } else success
   }
 
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {

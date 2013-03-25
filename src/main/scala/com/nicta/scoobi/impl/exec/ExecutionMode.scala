@@ -34,18 +34,17 @@ trait ExecutionMode extends ShowNode with Optimiser {
     reinitAttributable(node)
     reinitUses
     val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
-    checkSourceAndSinks(toExecute.debug("Active nodes", prettyGraph))
+    checkSourceAndSinks(sc)(toExecute.debug("Active nodes", prettyGraph))
     toExecute
   }
 
-  protected def checkSourceAndSinks(node: CompNode)(implicit sc: ScoobiConfiguration) {
-    initAttributable(node)
+  protected lazy val checkSourceAndSinks: CachedParamAttribute[ScoobiConfiguration, CompNode, Unit] = paramAttr("checkSourceAndSinks") { sc: ScoobiConfiguration => node: CompNode =>
     node match {
-      case process: ProcessNode => process.sinks.filterNot { case b: Bridge => hasBeenFilled(b); case _ => true }.foreach(_.outputCheck)
-      case load: Load           => load.source.inputCheck
+      case process: ProcessNode => process.sinks.filterNot { case b: Bridge => hasBeenFilled(b); case _ => true }.foreach(_.outputCheck(sc))
+      case load: Load           => load.source.inputCheck(sc)
       case _                    => ()
     }
-    children(node).foreach(n => checkSourceAndSinks(n))
+    children(node).foreach(n => checkSourceAndSinks(sc)(n))
   }
 
   def reset {
