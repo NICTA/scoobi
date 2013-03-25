@@ -18,7 +18,6 @@ package acceptance
 
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
-import core.Reduction._
 
 class MultipleMscrSpec extends NictaSimpleJobs {
 

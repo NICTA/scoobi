@@ -17,7 +17,6 @@ package com.nicta.scoobi
 package examples
 
 import Scoobi._
-import core.Reduction._
 
 /**
  * This application is duplicated from the examples directory to ease testing from within sbt. Run with:

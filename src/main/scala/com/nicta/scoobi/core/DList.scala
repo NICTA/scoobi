@@ -35,7 +35,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def getComp: C
 
   private[scoobi]
-  def setComp(f: C => C): DList[A]
+  def storeComp: scalaz.Store[C, DList[A]]
 
   implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]
 
@@ -168,15 +168,57 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     parallelDo(dropCached).groupByKey.map(_._1)
   }
 
+  /**
+   * Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList
+   */
+  def zipWithIndex: DList[(A, Long)] = {
+
+    // First we give every element in the DList a 'mapperId'
+    // it doesn't affect the logic if there is collisions,
+    // but it's preferable for there not to be
+    val byMapper: DList[(Int, A)] = parallelDo(new DoFn[A, (Int, A)] {
+      var mapperId: Int = _
+
+      def setup()                                       { mapperId = scala.util.Random.nextInt()  }
+      def process(input: A, emitter: Emitter[(Int, A)]) { emitter.emit(mapperId -> input) }
+      def cleanup(emitter: Emitter[(Int, A)])           {}
+    })
+
+    // Now we can count how many elements each mapper saw
+    val taskCount = byMapper.map(_._1 -> 1).groupByKey.combine(Reduction.Sum.int).materialise
+
+    // ..and then convert it to a series of offsets
+    val taskMap = taskCount.map { x =>
+      x.foldLeft(Map[Int, Long]() -> 0l) { (state, next) =>
+        val newMap = state._1 + (next._1 -> state._2)
+        val newStartingPoint = (state._2 + next._2)
+        newMap -> newStartingPoint
+      }._1
+    }
+
+    // now simply send the data to the same (logical) mapper
+    // using our map to find the proper offset
+    (taskMap join byMapper.groupByKey).mapFlatten {
+      case (env, (task, vals)) =>
+
+        val index: Stream[Long] = {
+          def loop(v: Long): Stream[Long] = v #:: loop(v + 1)
+          loop(env(task))
+        }
+
+        vals.zip(index)
+    }
+  }
+
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
-    map(x => (f(x), x)).groupByKey
+    by(f).groupByKey
 
   /** Group the value of a distributed list according to some discriminator function
     * and some grouping function. */
   def groupWith[K : WireFormat](f: A => K)(gpk: Grouping[K]): DList[(K, Iterable[A])] = {
     implicit def grouping = gpk
-    map(x => (f(x), x)).groupByKey
+    by(f).groupByKey
   }
 
   /**Create a new distributed list that is keyed based on a specified function. */
@@ -272,14 +314,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
     reduce(Reduction.minimumS(cmp on f))
 
-  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] = {
-    val dofn = new BasicDoFn[A, B] {
-      def process(input: A, emitter: Emitter[B]) {
-        proc(input, emitter)
-      }
-    }
-    parallelDo(dofn)
-  }
+  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] =
+    parallelDo(BasicDoFn(proc))
 
 }
 

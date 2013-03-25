@@ -31,20 +31,19 @@ import org.scalacheck.Prop
 import testing.mutable.NictaSimpleJobs
 import lib.{DMatrix, LinearAlgebra}
 import Scoobi._
-import core.Reduction, Reduction._
+import core.Reduction
 
 import java.util.Random
 
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
-  /*
   skipAll
   "Sparse Int Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
-    Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk -> 1)
+    Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk = 1)
   }
 
   Seq(5, 50, 200) foreach { size =>
     "Dense Double Matrix of size " + size + "x" + size + " by Gaussian Random matrix" >> { implicit sc: ScoobiConfiguration =>
-      Prop.forAll(genDoubleDenseMatrixData)(runRandomMultTest).set(minTestsOk -> 1, minSize -> size, maxSize -> size)
+      Prop.forAll(genDoubleDenseMatrixData)(runRandomMultTest).set(minTestsOk = 1, minSize = size, maxSize = size)
     }
   }
 
@@ -58,7 +57,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
         toDoubleDMatrix(matrix),
         randRowValGenerator(randomMatrixWidth)_,
         mult[Double],
-        add[Double])
+        Reduction.Sum.double)
 
     val apacheResultMatrix = toApacheRealMatrix(toEntrySet(resultMatrix))
     val randomMatrix = getRandomMatrix(apacheMatrix, apacheResultMatrix)
@@ -68,7 +67,7 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
   }
 
   def runMultTest(matrix1: Iterable[MatrixEntry[Int]], matrix2: Iterable[MatrixEntry[Int]])(implicit sc: ScoobiConfiguration): Boolean = {
-    val res: DMatrix[Int, Int] = toIntDMatrix(matrix1) byMatrix (toIntDMatrix(matrix2), mult[Int], add[Int]) // normal multiplication
+    val res: DMatrix[Int, Int] = toIntDMatrix(matrix1) byMatrix (toIntDMatrix(matrix2), mult[Int], Reduction.Sum.int) // normal multiplication
     val ref = toApacheMatrix(matrix1).multiply(toApacheMatrix(matrix2)) // sanity check
 
     toEntrySet(res) == toIntEntrySet(ref)
@@ -186,5 +185,4 @@ class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
       print("(" + row + "," + col + ")=" + matrix.getEntry(row, col) + " | ")
     }
   }
-  */
 }

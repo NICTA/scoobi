@@ -42,8 +42,13 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     val data = DList((12 -> 13), (14 -> 15), (13 -> 55))
     val (a, b, c, d, e) = (data, data, data, data, data)
 
-    val q = simpleJoin(simpleJoin(a, b), simpleJoin(c, d))
-    val res = simpleJoin(q, simpleJoin(q, e).groupByKey)
+    // joinab = joincd = Vector((12,Vector(12, 12)), (13,Vector(13, 13)), (14,Vector(14,14)))
+    val (joinab, joincd) = (simpleJoin(a, b), simpleJoin(c, d))
+    // q = Vector((12,Vector(12, 12)), (13,Vector(13, 13)), (14,Vector(14,14)))
+    val q = simpleJoin(joinab, joincd)
+    // qe = Vector((12,Vector(12, 12)), (13,Vector(13, 13)), (14,Vector(14,14)))
+    val qe = simpleJoin(q, e).groupByKey
+    val res = simpleJoin(q, qe)
 
     normalise(res.run) === "Vector((12,Vector(12, 12)), (13,Vector(13, 13)), (14,Vector(14, 14)))"
   }
@@ -79,6 +84,23 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     "with a group by key" >> { implicit sc: SC =>
       Seq.fill(5)(DList(1 -> 2)).reduce(_++_).groupByKey.run.toList.toString === Seq(1 -> Vector.fill(5)(2)).toString
     }
+  }
+
+  "DList zipWithIndex works" >> { implicit sc: SC =>
+    val len   = 1
+    val dlist = DList(1 to len).map(_.toString)
+
+    val withIndexes = dlist.zipWithIndex
+    val words       = withIndexes.map(_._1)
+    val indexes     = withIndexes.map(_._2)
+
+
+    val (uniqueWords, minIndex, uniqueIndexes, maxIndex) = run(words.distinct.size, indexes.min, indexes.distinct.size, indexes.max)
+
+    uniqueWords   === len
+    minIndex      === 0
+    uniqueIndexes === len
+    maxIndex      === (len - 1)
   }
 
 }

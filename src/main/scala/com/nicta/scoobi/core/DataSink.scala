@@ -78,7 +78,7 @@ trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
   def outputSetup(implicit configuration: Configuration) {}
 
   private [scoobi]
-  def write(values: Seq[_], recordWriter: RecordWriter[_,_]) {
+  def write(values: Seq[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) {
     values foreach { value: Any =>
       val (k, v) = outputConverter.toKeyValue(value.asInstanceOf[B])
       recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
@@ -127,7 +127,7 @@ trait Sink extends Checkpoint { outer =>
 
   /** write values to this sink, using a specific record writer */
   private [scoobi]
-  def write(values: Seq[_], recordWriter: RecordWriter[_,_])
+  def write(values: Seq[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration)
 
   /** implement this function if this sink can be turned into a Source */
   def toSource: Option[Source] = None
@@ -185,7 +185,7 @@ object Bridge {
     def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = sink.outputCompression(codec, compressionType)
     def configureCompression(configuration: Configuration) = sink.configureCompression(configuration)
     private[scoobi] def isCompressed = sink.isCompressed
-    private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_]) { sink.write(values, recordWriter) }
+    private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) { sink.write(values, recordWriter) }
     override def toSource: Option[Source] = Some(source)
 
     override def isCheckpoint                                                = sink.isCheckpoint

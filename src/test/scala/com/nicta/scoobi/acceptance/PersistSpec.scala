@@ -23,6 +23,7 @@ import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
 import SequenceOutput._
+import core.Reduction.Sum
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
   
@@ -69,6 +70,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       val l2 = l1.map(_ + 1)
 
       var processedNumber = 0
+
       val doFn = new BasicDoFn[Int, Int] {
         def process(input: Int, emitter: Emitter[Int]) {
           processedNumber += 1
@@ -139,6 +141,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
       persistTwice((list, sink) => list.toAvroFile(sink, overwrite = true))
     }
     "9.3 with a Text file" >> { implicit sc: SC =>
+      // in this case, a bridge store is used as a source, instead of the text file
       persistTwice((list, sink) => list.toTextFile(sink, overwrite = true))
     }
 
@@ -170,6 +173,47 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
 
 
+  "13. 1 combine + 1 persist + 1 combine" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l1.run
+    l1.map(_._2).run.normalise === "Vector(2, 4)"
+  }
+
+  "14. complex flatten + gbk" >> {implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = (DList(1).sum join DList(4, 5, 6)).map(_._2)
+    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    l3.map(_._2).run.normalise === "Vector(12, 9)"
+  }
+
+  "15. possible truncate issue when new nodes are added and an intermediary list is persisted" >> { implicit sc: SC =>
+    val l1 = DList(1, 2, 3)
+    val l2 = l1.map(_+1)
+    l1.run
+    l2.map(_+2).run.normalise === "Vector(4, 5, 6)"
+  }
+
+  "16. issue 213" >> { implicit sc: SC =>
+    val r = scala.util.Random
+    val numbers  = DList(1, 2).map { i => r.nextInt(i*10) }
+    val numbers2 = numbers.map(identity)
+    val (a, b) = run(numbers.sum, numbers2.sum)
+    a must be_==(b)
+  }
+
+  "17. issue 215" >> { implicit sc: SC =>
+    val dir = TempFiles.createTempDir("test.avro")
+    persist((1 to 2).toDList.map { x => x.toString -> x.toString }.toAvroFile(dir.getPath, true))
+
+    val input = fromAvroFile[(String, String)](dir.getPath)
+    (input.materialise join input.groupByKey).run.normalise === "Vector((Vector((1,1), (2,2)),(1,Vector(1))), (Vector((1,1), (2,2)),(2,Vector(2))))"
+  }
+
+  "18. issue 216" >> { implicit sc: SC =>
+    val input = (1 to 2).toDList
+    (input.materialise join input).run.normalise === "Vector((Vector(1, 2),1), (Vector(1, 2),2))"
+  }
+
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {
     val sink = TempFiles.createTempFilePath("user")
     val plusOne = withFile(DList(1, 2, 3).map(_ + 1), sink)
@@ -178,19 +222,6 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
     val plusTwo = plusOne.map(_ + 2)
     normalise(plusTwo.run) === "Vector(4, 5, 6)"
-  }
-
-  "13. When a list has been executed, no more map reduce job should be necessary to read data from it" >> { implicit sc: SC =>
-    // there are classpath issues on the cluster sometimes
-    // but the test is relevant if ran locally only
-    if (sc.isLocal) {
-      var evaluationsNb = 0
-      val list = DList({ evaluationsNb +=1; 1 }, 2, 3)
-      list.persist(sc)
-      list.run(sc).take(10)
-
-      "there was only one mscr job" ==> { evaluationsNb must be_==(1) }
-     } else success
   }
 
 }

@@ -72,11 +72,11 @@ object build extends Build {
       "com.thoughtworks.xstream" % "xstream" % "1.4.4" intransitive(),
       "com.googlecode.kiama" %% "kiama" % "1.5.0-SNAPSHOT",
       "com.github.mdr" % "ascii-graphs_2.10.0" % "0.0.2",
-      "org.scalaz" %% "scalaz-core" % "7.0.0-M8",
-      "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M8",
-      "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M8" intransitive(),
-      "org.scalaz" %% "scalaz-typelevel" % "7.0.0-M8" intransitive(),
-      "org.scalaz" %% "scalaz-xml" % "7.0.0-M8" intransitive(),
+      "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
+      "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M9",
+      "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M9" intransitive(),
+      "org.scalaz" %% "scalaz-typelevel" % "7.0.0-M9" intransitive(),
+      "org.scalaz" %% "scalaz-xml" % "7.0.0-M9" intransitive(),
       "org.scala-lang" % "scala-compiler" % scalaVersion % "optional",
       "org.specs2" %% "specs2" % "1.14.1-SNAPSHOT" % "optional",
       "org.specs2" % "classycle" % "1.4.1"% "test",
@@ -297,7 +297,7 @@ object build extends Build {
 
   lazy val publishForCDH3 = ReleaseStep { st: State =>
     // this specific commit changes the necessary files for working with CDH3
-    "git cherry-pick -n f5d5f42" !! st.log
+    "git cherry-pick -n b118110" !! st.log
 
     try {
       val extracted = Project.extract(st)

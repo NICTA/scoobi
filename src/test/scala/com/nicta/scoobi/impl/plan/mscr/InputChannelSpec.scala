@@ -61,9 +61,6 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
                                                                                                                         endp^
   "A floating input channel has mappers defined by the parallelDos connected to its source"                             ^
     "load -> pd1 floating -> pd2 -> mat"                                                                                ! g6().e1^
-    "load -> pd1 floating -> pd2 floating -> mat"                                                                       ! g6().e2^
-    "pd1 floating -> pd2 -> mat"                                                                                        ! g6().e3^
-    "pd1 floating -> pd2 floating -> mat"                                                                               ! g6().e4^
                                                                                                                         end
 
   "general properties of input channels" - new g1 with factory {
@@ -104,12 +101,12 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
     val mat1 = mt(pd2)
 
     e1 := {
-      floatingInputChannel(l1).keyTypes.tags === Seq(pd2.id)
-      floatingInputChannel(l1).keyTypes.types.values.toList.mkString(",") === "(Int,AllGrouping)"
+      floatingInputChannel(pd2, l1).keyTypes.tags === Seq(pd2.id)
+      floatingInputChannel(pd2, l1).keyTypes.types.values.toList.mkString(",") === "(Int,AllGrouping)"
     }
     e2 := {
-      floatingInputChannel(l1).valueTypes.tags === Seq(pd2.id)
-      floatingInputChannel(l1).valueTypes.types.values.toList === Seq(Tuple1(pd2.wf))
+      floatingInputChannel(pd2, l1).valueTypes.tags === Seq(pd2.id)
+      floatingInputChannel(pd2, l1).valueTypes.types.values.toList === Seq(Tuple1(pd2.wf))
     }
   }
 
@@ -119,7 +116,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
 
     e1 := {
       mt(pd1)
-      val channel = floatingInputChannel(l1)
+      val channel = floatingInputChannel(pd1, l1)
       channel.map("1", "start", channel.context)
       channel.context.key === 1
       channel.context.value === "START"
@@ -130,7 +127,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       val (mt1, mt2) = (mt(pd1), mt(pd2))
       aRoot(mt1, mt2)
 
-      val channel = floatingInputChannel(l1)
+      val channel = floatingInputChannel(Seq(pd1, pd2), l1)
       channel.map("1", "stARt", channel.context)
       channel.context.keys must beDistinct
       channel.context.values === Seq("START", "start")
@@ -140,7 +137,7 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
       val pd2 = pd(pd1).copy(dofn = MapFunction(_.toString+" now"))
       mt(pd2)
 
-      val channel = floatingInputChannel(l1)
+      val channel = floatingInputChannel(pd2, l1)
       channel.map("1", "stARt", channel.context)
       channel.context.values === Seq("START now")
     }
@@ -189,37 +186,13 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
   }
 
   "mappers of floating input channels" - new g6 with factory {
-
     e1 := {
-      // load -> pd1 floating -> pd2 -> mat
+      // load -> pd1 -> pd2 -> mat
       val l1 = load
       val pd1 = pd(l1)
       val pd2 = pd(pd1)
       val mat1 = mt(pd2)
-      floatingInputChannel(l1).mappers === Seq(pd1, pd2)
-    }
-    e2 := {
-      // load -> pd1 floating -> pd2 floating -> mat
-      val l1 = load
-      val pd1 = pd(l1)
-      val pd2 = pdWithEnv(pd1, mt(gbk(load)))
-      val mat1 = mt(pd2)
-      floatingInputChannel(l1).mappers === Seq(pd1)
-    }
-    e3 := {
-      // pd1 floating -> pd2 -> mat
-      val pd1 = pd(rt)
-      val pd2 = pd(pd1)
-      val mat1 = mt(pd2)
-      floatingInputChannel(pd1).mappers === Seq(pd1, pd2)
-    }
-
-    e4 := {
-      // pd1 floating -> pd2 floating -> mat
-      val pd1 = pd(rt)
-      val pd2 = pdWithEnv(pd1, mt(gbk(load)))
-      val mat1 = mt(pd2)
-      floatingInputChannel(pd1).mappers === Seq(pd1)
+      floatingInputChannel(pd2, l1).mappers === Seq(pd2, pd1)
     }
   }
 
@@ -248,7 +221,12 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
 
     override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
-  def floatingInputChannel(sourceNode: CompNode) = new FloatingInputChannel(sourceNode, new MscrsDefinition{}.floatingMappers(sourceNode)) with MockInputChannel
+  def floatingInputChannel(terminalNodes: Seq[CompNode], sourceNode: CompNode): FloatingInputChannel with MockInputChannel =
+    new FloatingInputChannel(sourceNode, terminalNodes) with MockInputChannel
+
+  def floatingInputChannel(terminalNode: CompNode, sourceNode: CompNode): FloatingInputChannel with MockInputChannel =
+    floatingInputChannel(Seq(terminalNode), sourceNode)
+
   def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys) with MockInputChannel
 
   def beDistinct[T]: Matcher[Seq[T]] = (seq: Seq[T]) => (seq.distinct.size == seq.size, "The sequence contains duplicated elements:\n"+seq)

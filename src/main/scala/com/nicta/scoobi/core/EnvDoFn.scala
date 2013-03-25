@@ -72,6 +72,15 @@ trait BasicDoFn[A, B] extends DoFn[A, B] {
   def cleanup(emitter: Emitter[B]) {}
 }
 
+object BasicDoFn {
+  def apply[A, B](q: (A, Emitter[B]) => Unit): BasicDoFn[A, B] =
+    new BasicDoFn[A, B] {
+      def process(input: A, emitter: Emitter[B]) {
+        q(input, emitter)
+      }
+    }
+}
+
 /**
  * Internal version of a EnvDoFn functions without type information
  */

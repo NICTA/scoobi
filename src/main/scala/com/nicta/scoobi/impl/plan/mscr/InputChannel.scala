@@ -110,14 +110,25 @@ trait MscrInputChannel extends InputChannel {
 
   /**
    * last mappers in the "tree" of mappers using the input channel source node
-   * A mapper not the "last" if its parent is a parallelDo that is included in the list of mappers
+   * A mapper is not the "last" if its parent is a parallelDo that is included in the list of mappers
    */
-  lazy val lastMappers: Seq[ParallelDo] =
-    if (mappers.size <= 1) mappers
-    else                   mappers.filterNot(m => (isParallelDo && mappers.contains)(m.parent[CompNode]))
+  def lastMappers: Seq[ParallelDo]
 
-  /** flattened tree of mappers using this source */
-  def mappers: Seq[ParallelDo]
+  /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
+  lazy val mappers =
+    terminalNodes.flatMap(terminal => pathsToNode(sourceNode)(terminal)).
+      // drop the source node from the path
+      map(path => path.filterNot(_ == sourceNode)).
+      // retain only the paths which contain parallelDos or a terminal node
+      filter(_.forall(isParallelDo || terminalNodes.contains)).
+      flatten.collect(isAParallelDo).distinct
+
+
+  /** nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel */
+  def terminalNodes: Seq[CompNode]
+
+  private val indent = "\n          "
+  override def toString = getClass.getSimpleName+"("+sourceNode+")"+indent+"mappers"+mappers.mkString(indent, indent, indent)
 
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
@@ -133,6 +144,9 @@ trait MscrInputChannel extends InputChannel {
     scoobiConfiguration = scoobiConfiguration(configuration)
     tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
     tvs = Map(tags.map(t => { val value = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
+    tks.map { case (t, k) => k.configuration = configuration }
+    tvs.map { case (t, v) => v.configuration = configuration }
+
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
     environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
 
@@ -141,42 +155,47 @@ trait MscrInputChannel extends InputChannel {
 
   protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
 
+  /** memoise the mappers tree to improve performance */
+  private lazy val nextMappers: CompNode => Seq[ParallelDo] = attr("next mappers") {
+    case node => uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
+  }
+  /** memoise the final mappers tree to improve performance */
+  private lazy val isFinal: CompNode => Boolean = attr("next mappers") {
+    case node => lastMappers.contains(node)
+  }
   /** map a given key/value and emit it */
   def map(key: Any, value: Any, context: InputOutputContext) {
-    /**
-     * map the input key/value using the full tree of mappers.
-     *
-     * we start from the leaves of the tree and compute values up to the top:
-     *
-     *  - the top value is the key/value passed by the context and converted by the Source
-     *  - the internal mapper nodes are using a VectorEmitterWriter to compute values and leave them in memory
-     *  - the in memory values are finally mapped with the "lastMappers" and emitted to disk
-     */
-    def computeMappers(node: CompNode, emitter: EmitterWriter): Seq[Any] = {
-      val result = node match {
-        case n if n == sourceNode => Seq(source.fromKeyValueConverter.asValue(context, key, value))
-        case mapper: ParallelDo if !isReducer(mapper) =>
-          val previousNodes = mapper.ins.filter(n => sourceNode == n || transitiveUses(sourceNode).filter(isParallelDo).contains(n))
-          val mappedValues = previousNodes.foldLeft(Seq[Any]()) { (res, cur) => res ++ computeMappers(cur, emitter) }
 
-          if (mappers.size > 1 && isInsideMapper(mapper)) vectorEmitter.map(environments(mapper), mappedValues, mapper)
-          else                                            mappedValues.map(v => mapper.map(environments(mapper), v, emitter))
-        case _                    => Seq()
+    val sourceValue = source.fromKeyValueConverter.asValue(context, key, value)
+    computeNext(sourceNode, Seq(sourceValue))
+
+    def computeNext(node: CompNode, inputValues: Seq[Any]): Seq[Any] = {
+      nextMappers(node).flatMap { m =>
+        val mapperResult = computeMapper(m, inputValues)
+        if (isFinal(m)) emitValues(m, mapperResult)
+        computeNext(m, mapperResult)
       }
-      result
+    }
+    def emitValues(mapper: ParallelDo, resultValues: Seq[Any]) {
+      outputTags(mapper).map(emitters).foreach { emitter =>
+        resultValues.foreach(emitter.write)
+      }
     }
 
-    lastMappers.foreach(mapper => computeMappers(mapper, emitters(outputTag(mapper))))
+    def computeMapper(mapper: ParallelDo, inputValues: Seq[Any]): Seq[Any] =
+      vectorEmitter.map(environments(mapper), inputValues, mapper)
 
     if (lastMappers.isEmpty)
       tags.map(t => emitters(t).write(source.fromKeyValueConverter.asValue(context, key, value)))
   }
 
   /** @return the output tag for a given "last" mapper */
-  protected def outputTag(mapper: ParallelDo): Int
+  protected def outputTags(mapper: ParallelDo): Seq[Int]
 
   def cleanup(context: InputOutputContext) {
-    lastMappers.foreach(m => m.cleanup(environments(m), emitters(outputTag(m)))).debug("finished cleaning up the mapper")
+    lastMappers.foreach { m =>
+      outputTags(m).foreach(t => m.cleanup(environments(m), emitters(t)))
+    }.debug("finished cleaning up the mapper")
   }
 
   /**
@@ -192,20 +211,16 @@ trait MscrInputChannel extends InputChannel {
 class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
   import nodes._
 
-  override def toString = "GbkInputChannel("+sourceNode+")\n    mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
-
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
 
-  /** collect all the mappers which are connected to the source node and connect to one of the input channel gbks */
-  lazy val mappers = mappersUses(sourceNode).filter { pd =>
-    val groupByKeyUses = transitiveUses(pd).collect(isAGroupByKey)
-    groupByKeyUses.exists(groupByKeys.contains) && !groupByKeyUses.exists(gbk => transitiveUses(gbk).exists(groupByKeys.contains))
-  }
-
+  lazy val terminalNodes = groupByKeys
   lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
   lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
 
+  lazy val lastMappers: Seq[ParallelDo] =
+    if (mappers.size <= 1) mappers
+    else                   mappers.filter(m => uses(m).exists(terminalNodes.contains))
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     val (key, value) = (tks(tag), tvs(tag))
@@ -218,22 +233,24 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
       }
     }
   }
-  protected def outputTag(mapper: ParallelDo): Int = mapper.parent[CompNode].id
+  protected def outputTags(mapper: ParallelDo): Seq[Int] = uses(mapper).collect(isAGroupByKey).map(_.id).toSeq
 }
 
 /**
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
-class FloatingInputChannel(val sourceNode: CompNode, val mappers: Seq[ParallelDo]) extends MscrInputChannel {
+class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode]) extends MscrInputChannel {
   import nodes._
-
-  override def toString = "FloatingInputChannel("+sourceNode+")\n   mappers\n"+mappers.mkString("\n    ", "\n    ", "\n    ")
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
 
   lazy val keyTypes   = lastMappers.foldLeft(KeyTypes())   { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
   lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
+
+  lazy val lastMappers: Seq[ParallelDo] =
+    if (mappers.size <= 1) mappers
+    else                   mappers.filter(terminalNodes.contains)
 
   protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
     val (key, value) = (tks(tag), tvs(tag))
@@ -244,7 +261,7 @@ class FloatingInputChannel(val sourceNode: CompNode, val mappers: Seq[ParallelDo
       context.write(key, value)
     }
   }
-  protected def outputTag(mapper: ParallelDo): Int = mapper.id
+  protected def outputTags(mapper: ParallelDo): Seq[Int] = Seq(mapper.id)
 }
 
 

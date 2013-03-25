@@ -20,9 +20,11 @@ package rtt
 import scalaz.Memo
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.FileSystem
 import util.DistCache
 import core.ScoobiConfiguration
-
+import org.apache.commons.logging.LogFactory
+import monitor.Loggable._
 /**
  * This object stores and retrieves metadata from the Distributed cache.
  *
@@ -30,22 +32,28 @@ import core.ScoobiConfiguration
  */
 object ScoobiMetadata {
 
-  def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = DistCache.pushObject(sc.configuration, metadata, metadataTag)
+  private implicit val logger = LogFactory.getLog("scoobi.metadata")
+
+  def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = {
+    DistCache.pushObject(sc.configuration, metadata, metadataTag).debug("saving metadata for path ")
+  }
 
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
-  lazy val metadata = (path: String) => Memo.mutableHashMapMemo[String, Any]{ path: String =>
-    DistCache.deserialise(new Configuration).apply(new Path(path)).get: Any
+  def metadata(implicit configuration: Configuration) = (path: String) => Memo.mutableHashMapMemo[String, Any]{ path: String =>
+    logger.debug("retrieving metadata for path "+path)
+    DistCache.deserialise(configuration)(new Path(path)).get: Any
   }.apply(path)
 }
 
 /**
  * Set of metadata, which can be a different tuple for each tag (and all tuples don't have to have the same size)
  */
-trait TaggedMetadata {
-
+trait TaggedMetadata extends Configured {
   def metadataPath: String
-  lazy val metaDatas = ScoobiMetadata.metadata(metadataPath).asInstanceOf[Map[Int, Product]]
+  lazy val metaDatas = ScoobiMetadata.metadata(configuration)(metadataPath).asInstanceOf[Map[Int, Product]]
   lazy val tags = metaDatas.keySet.toSeq
-
 }
 
+trait Configured {
+  protected[scoobi] implicit var configuration = new Configuration
+}

@@ -22,7 +22,7 @@ import core._
 import java.io.{DataInput, DataOutput}
 
 /** The super-class of all "value" types used in Hadoop jobs. */
-abstract class ScoobiWritable[A](private var x: A) extends Writable { self =>
+abstract class ScoobiWritable[A](private var x: A) extends Writable with Configured { self =>
   def this() = this(null.asInstanceOf[A])
   def get: A = x
   def set(x: A) { self.x = x }
@@ -42,7 +42,7 @@ abstract class MetadataScoobiWritable extends ScoobiWritable[Any] {
 
   def metadataPath: String
 
-  lazy val wireFormat = ScoobiMetadata.metadata(metadataPath).asInstanceOf[WireReaderWriter]
+  lazy val wireFormat = ScoobiMetadata.metadata(configuration)(metadataPath).asInstanceOf[WireReaderWriter]
 
   def write(out: DataOutput) {
     wireFormat.write(get, out)

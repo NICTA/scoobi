@@ -16,11 +16,20 @@
 package com.nicta.scoobi
 
 import application._
+import core.Reductions
 import impl.ScoobiConfigurations
 import lib._
 
 /** Global Scoobi functions and values. */
-object Scoobi extends core.WireFormatImplicits with core.GroupingImplicits with Application with InputsOutputs with Persist with Library with DObjects with ScoobiConfigurations {
+object Scoobi extends core.WireFormatImplicits
+   with core.GroupingImplicits
+   with Application
+   with InputsOutputs
+   with Persist
+   with Library
+   with DObjects
+   with Reductions
+   with ScoobiConfigurations {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]

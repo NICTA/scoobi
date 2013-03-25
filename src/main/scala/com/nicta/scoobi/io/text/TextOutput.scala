@@ -85,7 +85,7 @@ class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false) exten
   }
 
   lazy val outputConverter = new OutputConverter[NullWritable, A, A] {
-    def toKeyValue(x: A) = (NullWritable.get, x)
+    def toKeyValue(x: A)(implicit configuration: Configuration) = (NullWritable.get, x)
   }
 
   /**

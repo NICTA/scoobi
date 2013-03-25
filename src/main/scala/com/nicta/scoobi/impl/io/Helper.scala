@@ -69,7 +69,9 @@ object Helper {
 
   /** Provide a nicely formatted string for a byte size. */
   def sizeString(bytes: Long): String = {
-    val gigabytes = (bytes / (1000 * 1000 * 1000).toDouble).toString
-    gigabytes + "GB"
+    val idx = (math.log(bytes) / math.log(1024)).toInt
+    Seq("bytes", "KiB", "MiB", "GiB", "TiB", "PiB").lift(idx).map { unit =>
+      ("%.2f " format (bytes / math.pow(1024, idx))) + unit
+    }.getOrElse(bytes + " bytes?!")
   }
 }

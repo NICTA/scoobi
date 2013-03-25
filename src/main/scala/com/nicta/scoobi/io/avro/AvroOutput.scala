@@ -42,7 +42,7 @@ object AvroOutput {
   def avroSink[B : AvroSchema](path: String, overwrite: Boolean = false) = {
     val sch = implicitly[AvroSchema[B]]
     val converter = new OutputConverter[AvroKey[sch.AvroType], NullWritable, B] {
-      def toKeyValue(x: B) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
+      def toKeyValue(x: B)(implicit configuration: Configuration) = (new AvroKey(sch.toAvro(x)), NullWritable.get)
     }
 
     new DataSink[AvroKey[sch.AvroType], NullWritable, B] {

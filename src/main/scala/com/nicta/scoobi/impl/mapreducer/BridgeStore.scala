@@ -95,30 +95,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
     lazy val value: ScoobiWritable[A] =
       rtClass(sc).clazz.newInstance.asInstanceOf[ScoobiWritable[A]]
 
-    def iterator = new Iterator[A] {
-
-      val fs = FileSystem.get(path.toUri, sc)
-      val readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
-      }
-
-      val key = NullWritable.get
-
-
-      var remainingReaders = readers.toList
-      var empty = if (readers.isEmpty) true else !readNext()
-
-      def next(): A = { val v = value.get; empty = !readNext(); v }
-      def hasNext(): Boolean = !empty
-
-      /* Attempt to read the next key-value and return true if successful, else false. As the
-       * end of each SequenceFile.Reader is reached, move on to the next until they have all
-       * been read. */
-      def readNext(): Boolean = remainingReaders match {
-        case cur :: rest => if (cur.next(key, value)) true else { remainingReaders = rest; readNext() }
-        case Nil         => false
-      }
-    }
+    def iterator = new BridgeStoreIterator[A](value, path, sc)
   }
 
 
@@ -136,11 +113,59 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   override def toSource: Option[Source] = Some(this)
 }
 
+class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
+  def fs = FileSystem.get(path.toUri, sc)
+
+  private var initialised = false
+  def init {
+    if (!initialised)  {
+      readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
+        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
+      }
+      remainingReaders = readers.toList
+      empty = readers.isEmpty || !readNext()
+      initialised = true
+    }
+  }
+  private var readers: Seq[SequenceFile.Reader] = _
+  private var remainingReaders: List[SequenceFile.Reader] = _
+  private var empty: Boolean = _
+  private val key = NullWritable.get
+
+  def next(): A = {
+    init
+    val v = value.get
+    empty = !readNext()
+    v
+  }
+  def hasNext(): Boolean = {
+    init
+    !empty
+  }
+
+  /* Attempt to read the next key-value and return true if successful, else false. As the
+   * end of each SequenceFile.Reader is reached, move on to the next until they have all
+   * been read. */
+  private def readNext(): Boolean = {
+    remainingReaders match {
+      case cur :: rest =>
+        val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => e.printStackTrace; close; false }
+        nextValueIsRead || { cur.close(); remainingReaders = rest; readNext() }
+      case Nil         => false
+    }
+  }
+
+  def close {
+    Option(remainingReaders).map(rs => rs.foreach(_.close))
+  }
+}
+
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
   * the Class for 'value' will exist and be known by the ClassLoader. */
 class ScoobiWritableOutputConverter[A](typeName: String) extends OutputConverter[NullWritable, ScoobiWritable[A], A] {
   lazy val value: ScoobiWritable[A] = Class.forName(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
-  def toKeyValue(x: A): (NullWritable, ScoobiWritable[A]) = {
+  def toKeyValue(x: A)(implicit configuration: Configuration): (NullWritable, ScoobiWritable[A]) = {
+    value.configuration = configuration
     value.set(x)
     (NullWritable.get, value)
   }

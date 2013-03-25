@@ -78,7 +78,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     logger.info("Outputs are " + sinks.map(_.outputPath(ScoobiConfiguration(configuration))).mkString("\n"))
 
-   sinks.foreach(_.outputSetup(configuration))
+    sinks.foreach(_.outputSetup(configuration))
     emitter = createEmitter(channelOutput)
   }
 
@@ -122,7 +122,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   }
 
   /** use the output converter of a sink to convert a value to a key/value */
-  protected def convert(sink: Sink, x: Any) = sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x)
+  protected def convert(sink: Sink, x: Any)(implicit configuration: Configuration) = sink.outputConverter.asInstanceOf[ToKeyValueConverter].asKeyValue(x)
 
   /** create a ScoobiConfiguration from a Hadoop one */
   protected def scoobiConfiguration(configuration: Configuration): ScoobiConfiguration = ScoobiConfigurationImpl(configuration)

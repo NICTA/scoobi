@@ -101,7 +101,7 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
   trait MockOutputChannel extends MscrOutputChannel { outer =>
 
     override protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
-    override protected def convert(sink: Sink, value: Any) = value match {
+    override protected def convert(sink: Sink, value: Any)(implicit configuration: Configuration) = value match {
       case (k, v) => (k, v)
       case other  => ("nokey", other)
     }

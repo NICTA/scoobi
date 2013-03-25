@@ -81,7 +81,7 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
 
   def pdFromFunction(in: CompNode, f: String => String) = {
     val dofn = BasicDoFunction((env: Any, input: Any, emitter: EmitterWriter) => emitter.write(f(input.toString)))
-    ParallelDo(Seq(load), rt, dofn, wireFormat[String], wireFormat[String])
+    ParallelDo.create(Seq(load), rt, dofn, wireFormat[String], wireFormat[String])
   }
 
   def pdMap(pd: ParallelDo, value: Any): Any = {

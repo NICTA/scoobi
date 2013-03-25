@@ -59,7 +59,6 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
 
   /** @return the java class */
   def toClass: Class[_] = {
-    ScoobiMetadata.saveMetadata("scoobi.metadata."+className, metaData)
     try { getClass.getClassLoader.loadClass(className) } catch { case e: Throwable => ctClass.toClass }
   }
 

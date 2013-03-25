@@ -27,43 +27,79 @@ import core._
 
 trait MscrsDefinition extends Layering {
 
-  def selectNode(n: CompNode) = isGroupByKey(n) || (n -> isFloating)
+  /**
+   * The nodes which are selected to define a layer are the nodes which delimitate outputs.
+   *
+   * What we want is to layer the computation graph so that output dependencies are respected:
+   *
+   * - if output1 depends on output2 then output2 must be computed first
+   */
+  def selectNode = !isValueNode && isLayerNode && !nodeHasBeenFilled
 
-  /** a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer */
-  lazy val isFloating: CompNode => Boolean = attr("isFloating") {
-    case pd: ParallelDo => (transitiveUses(pd).forall(!isGroupByKey) || uses(pd).exists(isMaterialise) || uses(pd).exists(isRoot) || !parent(pd).isDefined) &&
-                            !isReducer(pd) &&
-                            !inputs(pd).exists(isFloating) ||
-                             inputs(pd).collect(isAParallelDo).exists(_.sinks.exists(_.isCheckpoint))  ||
-                            descendents(pd.env).exists(isGroupByKey) ||
-                            hasMaterialisedEnv(pd)
-    case _              => false
+  def isLayerNode = (isMaterialised  || isGbkOutput || isEndNode || isCheckpoint)
+
+  /** node at the end of the graph */
+  def isEndNode: CompNode => Boolean = attr("isEndNode") { n =>
+    parent(n).map(isRoot).getOrElse(true)
   }
 
-  private def hasMaterialisedEnv(pd: ParallelDo) =
-    (pd.env +: descendentsUntil(isGroupByKey || isParallelDo)(pd.env)).exists(isMaterialise)
+  def isMaterialised: CompNode => Boolean = attr("is materialised") {
+    case n => uses(n).exists(isMaterialise || isOp)
+  }
+
+  def isCheckpoint: CompNode => Boolean = attr("is checkpoint") {
+    case p: ProcessNode => p.isCheckpoint
+    case other          => false
+  }
+
+  def isGbkOutput: CompNode => Boolean = attr("isGbkOutput") {
+    case pd: ParallelDo                       => isReducer(pd)
+    case cb @ Combine1(gbk: GroupByKey)       => parent(cb).map(!isReducingNode).getOrElse(true) && isUsedAtMostOnce(gbk)
+    case gbk: GroupByKey                      => parent(gbk).map(!isReducingNode).getOrElse(true)
+    case other                                => false
+  }
+
+  /**
+   * a node is said to be reducing if it is in a "reducing chain of nodes" after a gbk
+   *
+   *  - parallelDo(combine(gbk)) // parallelDo and combine are reducing
+   *  - combine(gbk)             // combine is reducing
+   *  - parallelDo(gbk)          // parallelDo is reducing
+   * @return
+   */
+  def isReducingNode: CompNode => Boolean = attr("isReducingNode") {
+    case pd: ParallelDo          => isReducer(pd)
+    case Combine1(_: GroupByKey) => true
+    case other                   => false
+  }
+
+  lazy val layerGbks: Layer[T] => Seq[GroupByKey] = attr("layer gbk") {
+    case layer => layer.nodes.collect {
+      case ParallelDo1(ins)          => (ins ++ ins.collect(isACombine).map(_.in)).collect(isAGroupByKey)
+      case Combine1(gbk: GroupByKey) => Seq(gbk)
+      case gbk: GroupByKey           => Seq(gbk)
+    }.flatten
+  }
+
+  def floatingParallelDos: Layer[T] => Seq[ParallelDo] = attr("layer floating paralleldos") {
+    case layer => layer.nodes.filter(isParallelDo).collect { case n => {
+        val childrenPds = (n +: (n -> descendentsUntil(selectNode || isGroupByKey))).collect(isAParallelDo).filterNot(isReducer || nodeHasBeenFilled)
+        childrenPds.filterNot(_.ins.exists(childrenPds.contains))
+      }
+    }.flatten
+  }
 
   /** all the mscrs for a given layer */
   lazy val mscrs: Layer[T] => Seq[Mscr] =
     attr("mscrs") { case layer => gbkMscrs(layer) ++ pdMscrs(layer) }
-
+  
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr("parallelDo mscrs") { case layer =>
-    val inputChannels = floatingParallelDos(layer).flatMap(pd => pd.ins.map(source => new FloatingInputChannel(source, floatingMappers(source))))
+    val inputChannels = floatingParallelDos(layer).flatMap { pd =>
+      pd.ins.map(source => new FloatingInputChannel(source, layer.nodes.filterNot(isGroupByKey)))
+    }
     val outputChannels = inputChannels.flatMap(_.lastMappers.map(BypassOutputChannel(_)))
     makeMscrs(inputChannels, outputChannels)
-  }
-
-  private [scoobi]
-  def floatingMappers(sourceNode: CompNode) = {
-    val floatings = {
-      sourceNode match {
-        case pd: ProcessNode if isFloating(pd) && !pd.bridgeStore.exists(hasBeenFilled) => Seq(pd)
-        case _                                                                          => uses(sourceNode).filter(isFloating)
-      }
-    }
-
-    (floatings ++ floatings.flatMap(mappersUses).filterNot(isFloating)).collect(isAParallelDo).toSeq
   }
 
   /** Mscrs for mscrs built around gbk nodes */
@@ -92,7 +128,7 @@ trait MscrsDefinition extends Layering {
   /** create a gbk output channel for each gbk in the layer */
   lazy val gbkOutputChannels: Layer[T] => Seq[OutputChannel] = {
     attr("gbk output channels") { case layer =>
-      layer.gbks.map(gbk => gbkOutputChannel(gbk))
+      layerGbks(layer).map(gbk => gbkOutputChannel(gbk))
     }
   }
 
@@ -110,22 +146,9 @@ trait MscrsDefinition extends Layering {
 
   lazy val gbkInputChannels: Layer[T] => Seq[MscrInputChannel] = attr("mscr input channels") { case layer =>
     layerGbkSourceNodes(layer).map { sourceNode =>
-      val groupByKeyUses = transitiveUses(sourceNode).collect(isAGroupByKey).filter(layer.gbks.contains).toSeq
+      val groupByKeyUses = transitiveUses(sourceNode).collect(isAGroupByKey).filter(layerGbks(layer).contains).toSeq
       new GbkInputChannel(sourceNode, groupByKeyUses)
     }
-  }
-
-  /**
-   * flattened tree of mappers using this a given node
-   */
-  lazy val mappersUses: CompNode => Seq[ParallelDo] = attr { case node =>
-    val (pds, _) = uses(node).partition(isParallelDo)
-    pds.collect(isAParallelDo).toSeq ++ pds.filter { pd => (isParallelDo && !isFloating)(pd.parent[CompNode]) }.flatMap(mappersUses)
-  }
-
-  /** @return true if a ParallelDo node is not a leaf of a tree of mappers connected to a given source node */
-  lazy val isInsideMapper: ParallelDo => Boolean = attr { case node =>
-    uses(node).nonEmpty && uses(node).forall(isParallelDo && !isFloating)
   }
 
   lazy val layerInputs: Layer[T] => Seq[CompNode] = attr("layer inputs") { case layer =>
@@ -140,15 +163,15 @@ trait MscrsDefinition extends Layering {
     layer.nodes.flatMap(sourceNodes).distinct.filterNot(isValueNode)
   }
   lazy val layerGbkSourceNodes: Layer[T] => Seq[CompNode] = attr("layer source nodes") { case layer =>
-    layer.gbks.flatMap(sourceNodes).distinct.filterNot(isValueNode)
+    layerGbks(layer).flatMap(sourceNodes).distinct.filterNot(isValueNode)
   }
   lazy val sourceNodes: CompNode => Seq[CompNode] = attr("node sources") { case node =>
     val (sources, nonSources) = (node -> children).partition(isSourceNode)
     (sources ++ nonSources.filter(isParallelDo).flatMap(sourceNodes)).distinct
   }
   lazy val isSourceNode: CompNode => Boolean = attr("isSource") {
-    case pd: ParallelDo => isReducer(pd)
-    case other          => true
+    case pd: ProcessNode => nodeHasBeenFilled(pd)
+    case other           => true
   }
   lazy val layerSinks: Layer[T] => Seq[Sink] =
     attr("layer sinks") { case layer => mscrs(layer).flatMap(_.sinks).distinct }
@@ -165,27 +188,14 @@ trait MscrsDefinition extends Layering {
   /** collect all input nodes to the gbks of this layer */
   lazy val gbkInputs: Layer[T] => Seq[CompNode] = attr("gbk inputs") { case layer =>
     layer.nodes.flatMap(_ -> inputs).flatMap {
-      case other          if layer.gbks.flatMap(_ -> inputs).contains(other) => Seq(other)
+      case other          if layerGbks(layer).flatMap(_ -> inputs).contains(other) => Seq(other)
       case other                                                             => Seq()
     }.distinct
   }
 
-  lazy val floatingParallelDos: Layer[T] => Seq[ParallelDo] = floatingNodes(isAParallelDo)
-
-  def floatingNodes[N <: CompNode](pf: PartialFunction[CompNode, N]): Layer[T] => Seq[N] = attr("floating nodes") { case layer =>
-    layer.nodes.collect(pf).filter(isFloating).toSeq
-  }
-
   lazy val isReducer: ParallelDo => Boolean = attr("isReducer") {
-    case pd @ ParallelDo1(Combine1((gbk: GroupByKey)) +: rest)            => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                      => rest.isEmpty && isUsedAtMostOnce(pd) && !hasMaterialisedEnv(pd)
-    case pd if pd.bridgeStore.map(b => hasBeenFilled(b)).getOrElse(false) => true
-    case _                                                                => false
+    case pd @ ParallelDo1((cb @ Combine1((gbk: GroupByKey))) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && isUsedAtMostOnce(cb) && isUsedAtMostOnce(gbk)
+    case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                  => rest.isEmpty && isUsedAtMostOnce(pd) && isUsedAtMostOnce(gbk)
+    case _                                                            => false
   }
-
-  lazy val isReducerNode: CompNode => Boolean = attr("isReducerNode") {
-    case pd @ ParallelDo1(_) => isReducer(pd)
-    case _                   => false
-  }
-
 }

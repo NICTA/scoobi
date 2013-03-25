@@ -22,6 +22,7 @@ import com.nicta.scoobi.core._
 import org.apache.hadoop.mapreduce._
 import scala.collection.mutable._
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.conf.Configuration
 
 case class StringSink() extends DataSink[String, String, String] {
   def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[String, String]] = classOf[StringOutputFormat]
@@ -37,7 +38,7 @@ object StringSink {
   val results: MultiMap[String, String] = new HashMap[String, Set[String]] with MultiMap[String, String]
 }
 case class StringOutputConverter() extends OutputConverter[String, String, String] {
-  def toKeyValue(x: String): (String, String) = ("nokey", x)
+  def toKeyValue(x: String)(implicit configuration: Configuration): (String, String) = ("nokey", x)
 }
 
 case class StringOutputFormat() extends OutputFormat[String, String] {

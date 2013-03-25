@@ -179,19 +179,19 @@ trait GroupingFunctions {
 }
 
 /** Implicit definitions of Grouping instances for common types. */
-trait GroupingImplicits {
+trait GroupingImplicits extends GroupingImplicits0 {
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
-  implicit def OrderingGrouping[T : Ordering] = new Grouping[T] {
-      override def toString = "OrderingGrouping"
+  implicit def OrderGrouping2[T : scalaz.Order]: Grouping[T] = new Grouping[T] {
+    override def toString = "OrderingGrouping"
     def groupCompare(x: T, y: T) =
-      SOrdering.fromInt(implicitly[Ordering[T]].compare(x, y))
+      implicitly[Order[T]].order(x, y)
   }
 
   /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
    * type class instance. Partitioning and grouping use the default implementation. */
-  implicit def ComparableGrouping[T <: Comparable[T]] = new Grouping[T] {
+  implicit def ComparableGrouping[T <: Comparable[T]]: Grouping[T] = new Grouping[T] {
     override def toString = "ComparableGrouping"
     def groupCompare(x: T, y: T) = SOrdering.fromInt(x.compareTo(y))
   }
@@ -205,6 +205,17 @@ trait GroupingImplicits {
   implicit def taggedTypeOrdering[T : Ordering, U]: Ordering[T @@ U] =
     implicitly[Ordering[T]].asInstanceOf[Ordering[T @@ U]]
 
+}
+
+trait GroupingImplicits0 {
+
+  /** An implicitly Grouping type class instance where sorting is implemented via an Ordering
+   * type class instance. Partitioning and grouping use the default implementation. */
+  implicit def OrderingGrouping[T : Ordering]: Grouping[T] = new Grouping[T] {
+      override def toString = "OrderingGrouping"
+    def groupCompare(x: T, y: T) =
+      SOrdering.fromInt(implicitly[Ordering[T]].compare(x, y))
+  }
 }
 
 import scalaz.{Ordering => SOrdering}
