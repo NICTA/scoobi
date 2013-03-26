@@ -41,7 +41,7 @@ class HadoopLogFactory() extends LogFactory {
   // see the answer to this SOF question to understand this regular expression:
   // http://stackoverflow.com/questions/406230/regular-expression-to-match-string-not-containing-a-word
   private def noWords(words: String*) = "^((?!"+words.mkString("|")+").)*$"
-  private val noNoise = noWords("Client", "ProtobufRpcEngine", "RPC", "RemoteBlockReader2", "LeaseRenewer", "DFSClient", "HadoopMode")
+  private val noNoise = noWords("Client", "ProtobufRpcEngine", "RPC", "RemoteBlockReader2", "LeaseRenewer", "DFSClient")
 
   private val impl   = new LogFactoryImpl
   private val noOps  = new NoOpLog
