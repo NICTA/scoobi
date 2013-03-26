@@ -13,6 +13,8 @@ import impl.plan.DListImpl
 import core.InputOutputContext
 import impl.plan.comp.CompNodeData._
 import java.io.File
+import impl.io.FileSystems
+import org.apache.hadoop.fs.Path
 
 class InputOutputsSpec extends NictaSimpleJobs {
 
@@ -47,14 +49,14 @@ class InputOutputsSpec extends NictaSimpleJobs {
   }
 
   "2. it is possible to read from a file or a directory of files" >> { implicit sc: SC =>
-    val singleFile = TempFiles.createTempFile("test")
-    TempFiles.writeLines(singleFile, Seq("a", "b"), isRemote)
-    fromTextFile(singleFile.getPath).run.normalise === "Vector(a, b)"
+//    val singleFile = TempFiles.writeLines(createTempFile("test"), Seq("a", "b"), isRemote)
+//    fromTextFile(singleFile).run.normalise === "Vector(a, b)"
 
-    val directory = TempFiles.createTempDir("test")
-    TempFiles.writeLines(new File(path(directory.getPath+"/file1.part")), Seq("a1"), isRemote)
-    TempFiles.writeLines(new File(path(directory.getPath+"/file2.part")), Seq("b1"), isRemote)
+    val directory = path(TempFiles.createTempDir("test").getPath)
+    FileSystems.fileSystem.mkdirs(new Path(directory))
+    TempFiles.writeLines(new File(directory+"/file1.part"), Seq("a1"), isRemote)
+    TempFiles.writeLines(new File(directory+"/file2.part"), Seq("b1"), isRemote)
 
-    fromTextFile(directory.getPath).run.normalise === "Vector(a1, b1)"
+    fromTextFile(directory).run.normalise === "Vector(a1, b1)"
   }
 }
