@@ -39,7 +39,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
    */
   import scalaz.Scalaz._
 
-  override def defaultParameters = Parameters(
+  override implicit def defaultParameters = Parameters(
     arguments.commandLine.int("mintestsok").                    getOrElse(1000),
     arguments.commandLine.int("maxsize").                       getOrElse(8),
     arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),

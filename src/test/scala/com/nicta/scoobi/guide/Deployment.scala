@@ -99,7 +99,7 @@ name := "Scoobi Word Count"
 
 version := "1.0"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.1"
 
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
@@ -110,7 +110,7 @@ libraryDependencies ++= Seq(
    "org.apache.avro" % "avro" % "1.7.3-SNAPSHOT",        // Note: add ' % "provided"'  if you don't need it 
    "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" % "provided",
    "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1" % "provided",
-   "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
+   "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
    "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
    )
 

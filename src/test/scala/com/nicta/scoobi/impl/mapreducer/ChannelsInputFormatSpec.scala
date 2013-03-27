@@ -70,26 +70,26 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
   }
 
   "Getting the splits for a ChannelsInputFormat" >> {
-
     "gets the splits for each source" >> {
       getSplits(ConstantStringDataSource("one"), ConstantStringDataSource("two")) must have size(2)
     }
     "return no splits when the data source returns no splits" >> {
       getSplits(FailingDataSource()) must beEmpty
     }
-
-    def getSplits(sources: DataSource[_,_,_]*) = new ChannelsInputFormat[String, Int].getSplits(jobContextFor(sources:_*)).toSeq
-
-    def jobContextFor(sources: DataSource[_,_,_]*) = {
-      implicit val sc = ScoobiConfiguration()
-      val job = new Job(sc.configuration, "id")
-      val jarBuilder = mock[JarBuilder]
-      val configuration = configureSources(job, jarBuilder, Seq(sources:_*))
-      new JobContextImpl(configuration, new JobID)
-    }
   }
 
   lazy val aBridgeStore = BridgeStore[String]("id", wireFormat[String])
+
+
+  def getSplits(sources: DataSource[_,_,_]*) = new ChannelsInputFormat[String, Int].getSplits(jobContextFor(sources:_*)).toSeq
+
+  def jobContextFor(sources: DataSource[_,_,_]*) = {
+    implicit val sc = ScoobiConfiguration()
+    val job = new Job(sc.configuration, "id")
+    val jarBuilder = mock[JarBuilder]
+    val configuration = configureSources(job, jarBuilder, Seq(sources:_*))
+    new JobContextImpl(configuration, new JobID)
+  }
 
   def stringDataSource(string: String) =  new ConstantStringDataSource(string) {
     override def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
