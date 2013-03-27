@@ -65,30 +65,35 @@ object build extends Build {
         if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1")
         else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1",
           "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1")
-      hadoop ++ Seq(
-      "javassist" % "javassist" % "3.12.1.GA",
-      "org.apache.avro" % "avro-mapred" % "1.7.3.1",
-      "org.apache.avro" % "avro" % "1.7.3.1",
-      "com.thoughtworks.xstream" % "xstream" % "1.4.4" intransitive(),
-      "com.googlecode.kiama" %% "kiama" % "1.5.0-SNAPSHOT",
-      "com.github.mdr" % "ascii-graphs_2.10.0" % "0.0.2",
-      "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
-      "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M9",
-      "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M9" intransitive(),
-      "org.scalaz" %% "scalaz-typelevel" % "7.0.0-M9" intransitive(),
-      "org.scalaz" %% "scalaz-xml" % "7.0.0-M9" intransitive(),
-      "org.scala-lang" % "scala-compiler" % scalaVersion % "optional",
-      "org.specs2" %% "specs2" % "1.15-SNAPSHOT" % "optional",
-      "org.specs2" % "classycle" % "1.4.1"% "test",
-      "com.chuusai" %% "shapeless" % "1.2.3",
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
-      "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "org.pegdown" % "pegdown" % "1.0.2" % "test",
-      "junit" % "junit" % "4.7" % "test",
-      "org.apache.commons" % "commons-math" % "2.2" % "test",
-      "org.apache.commons" % "commons-compress" % "1.0" % "test"
+
+      val scalaDependent =
+        if (scalaVersion.startsWith("2.10"))
+             Seq("org.specs2"     %% "specs2"     % "1.15-SNAPSHOT" % "optional")
+        else Seq("org.specs2"     %% "specs2"     % "1.12.4.1"      % "optional")
+
+      hadoop ++ scalaDependent ++
+      Seq(
+      "javassist"                %  "javassist"                 % "3.12.1.GA",
+      "org.apache.avro"          %  "avro-mapred"               % "1.7.3.1",
+      "org.apache.avro"          %  "avro"                      % "1.7.3.1",
+      "com.thoughtworks.xstream" %  "xstream"                   % "1.4.4"           intransitive(),
+      "com.googlecode.kiama"     %% "kiama"                     % "1.5.0-SNAPSHOT",
+      "com.github.mdr"           %  "ascii-graphs_2.10.0"       % "0.0.2",
+      "org.scalaz"               %% "scalaz-core"               % "7.0.0-M9",
+      "org.scalaz"               %% "scalaz-concurrent"         % "7.0.0-M9",
+      "org.scalaz"               %% "scalaz-scalacheck-binding" % "7.0.0-M9"         intransitive(),
+      "org.scalaz"               %% "scalaz-typelevel"          % "7.0.0-M9"         intransitive(),
+      "org.scalaz"               %% "scalaz-xml"                % "7.0.0-M9"         intransitive(),
+      "org.scala-lang"           %  "scala-compiler"            % scalaVersion       % "optional",
+      "org.specs2"               %  "classycle"                 % "1.4.1"            % "test",
+      "com.chuusai"              %% "shapeless"                 % "1.2.3",
+      "org.scala-tools.testing"  %  "test-interface"            % "0.5"              % "test",
+      "org.hamcrest"             %  "hamcrest-all"              % "1.1"              % "test",
+      "org.mockito"              %  "mockito-all"               % "1.9.0"            % "test",
+      "org.pegdown"              %  "pegdown"                   % "1.0.2"            % "test",
+      "junit"                    %  "junit"                     % "4.7"              % "test",
+      "org.apache.commons"       %  "commons-math"              % "2.2"              % "test",
+      "org.apache.commons"       %  "commons-compress"          % "1.0"              % "test"
     ) },
     resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
       "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
@@ -135,6 +140,7 @@ object build extends Build {
   )
 
   lazy val publicationSettings: Seq[Settings] = Seq(
+    crossScalaVersions := Seq("2.9.2", "2.9.3"),
     publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
