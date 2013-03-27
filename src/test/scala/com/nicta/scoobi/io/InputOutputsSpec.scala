@@ -19,6 +19,8 @@ import org.apache.hadoop.fs.Path
 class InputOutputsSpec extends NictaSimpleJobs {
 
   "1. an input must only be read once" >> { implicit sc: SC =>
+    implicit val fs = sc.fileSystem
+
     if (sc.isInMemory) {
       var checks = 0
       var reads = 0
@@ -49,8 +51,10 @@ class InputOutputsSpec extends NictaSimpleJobs {
   }
 
   "2. it is possible to read from a file or a directory of files" >> { implicit sc: SC =>
-//    val singleFile = TempFiles.writeLines(createTempFile("test"), Seq("a", "b"), isRemote)
-//    fromTextFile(singleFile).run.normalise === "Vector(a, b)"
+    implicit val fs = sc.fileSystem
+
+    val singleFile = TempFiles.writeLines(createTempFile("test"), Seq("a", "b"), isRemote)
+    fromTextFile(singleFile).run.normalise === "Vector(a, b)"
 
     val directory = path(TempFiles.createTempDir("test").getPath)
     FileSystems.fileSystem.mkdirs(new Path(directory))

@@ -105,7 +105,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   }
   end
 
-  "6. 2 objects and a list" >> { implicit sc: SC =>
+  "6.2 objects and a list" >> { implicit sc: SC =>
     val list: DList[Int]    = DList(1, 2, 3)
     val plusOne: DList[Int] = list.map(_ + 1)
 

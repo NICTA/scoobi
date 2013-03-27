@@ -226,7 +226,7 @@ object GroupByKey1 {
  * A DataSource object specifies how the loading is performed
  */
 case class Load(source: Source, wf: WireReaderWriter) extends ValueNodeImpl {
-  override val toString = "Load ("+id+")["+wf+"]"
+  override val toString = "Load ("+id+")["+wf+"] ("+source+")"
 }
 object Load1 {
   def unapply(load: Load): Option[Source] = Some(load.source)

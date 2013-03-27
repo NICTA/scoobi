@@ -49,7 +49,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = ScoobiWritable(typeName, wf)
 
   /** type of the generated class for this Bridge */
-  lazy val typeName = "BS" + bridgeStoreId
+  val typeName = "BS" + bridgeStoreId
 
   def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
 
