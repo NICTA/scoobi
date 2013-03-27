@@ -152,14 +152,14 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.core.OutputConverter#asKeyValue" data-isabs="false">
-      <a id="asKeyValue(Any):(Any, Any)"></a>
+      <a id="asKeyValue(Any)(Configuration):(Any, Any)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asKeyValue</span><span class="params">(<span name="x">x: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: (<span name="scala.Any" class="extype">Any</span>, <span name="scala.Any" class="extype">Any</span>)</span>
+        <span class="name">asKeyValue</span><span class="params">(<span name="x">x: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: (<span name="scala.Any" class="extype">Any</span>, <span name="scala.Any" class="extype">Any</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>] </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.OutputConverter" class="extype" href="../../core/OutputConverter.html">OutputConverter</a> → ToKeyValueConverter</dd></dl></div>
@@ -302,14 +302,14 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter#toKeyValue" data-isabs="false">
-      <a id="toKeyValue(A):(NullWritable, ScoobiWritable[A])"></a>
+      <a id="toKeyValue(A)(Configuration):(NullWritable, ScoobiWritable[A])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toKeyValue</span><span class="params">(<span name="x">x: A</span>)</span><span class="result">: (<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A])</span>
+        <span class="name">toKeyValue</span><span class="params">(<span name="x">x: A</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>)</span><span class="result">: (<span name="org.apache.hadoop.io.NullWritable" class="extype">NullWritable</span>, <a name="com.nicta.scoobi.impl.rtt.ScoobiWritable" class="extype" href="../rtt/ScoobiWritable.html">ScoobiWritable</a>[A])</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter" class="extype" href="">ScoobiWritableOutputConverter</a> → <a name="com.nicta.scoobi.core.OutputConverter" class="extype" href="../../core/OutputConverter.html">OutputConverter</a></dd></dl></div>

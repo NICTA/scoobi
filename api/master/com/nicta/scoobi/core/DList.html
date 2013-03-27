@@ -118,14 +118,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSinks" class="extype" href="DataSinks.html">DataSinks</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList#combine" data-isabs="true">
-      <a id="combine[K, V]((V, V) ⇒ V)(&lt;:&lt;[A, (K, Iterable[V])],WireFormat[K],WireFormat[V]):DList[(K, V)]"></a>
+      <a id="combine[K, V](Reduction[V])(&lt;:&lt;[A, (K, Iterable[V])],WireFormat[K],WireFormat[V]):DList[(K, V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">combine</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="f">f: (V, V) ⇒ V</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[A, (K, Iterable[V])]</span>, <span name="wk">wk: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[K]</span>, <span name="wv">wv: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[(K, V)]</span>
+        <span class="name">combine</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="f">f: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[V]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[A, (K, Iterable[V])]</span>, <span name="wk">wk: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[K]</span>, <span name="wv">wv: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[V]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[(K, V)]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Apply an associative function to reduce the collection of values to a single value in a
@@ -196,6 +196,18 @@ zero or more output elements.</p><div class="fullcomment"><div class="comment cm
 zero or more output elements. The resulting output elements from the many &quot;chunks&quot; form
 a new distributed list
 </p></div></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DataSinks#updateSinks" data-isabs="true">
+      <a id="updateSinks((Seq[Sink]) ⇒ Seq[Sink]):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateSinks</span><span class="params">(<span name="f">f: (Seq[<span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>]) ⇒ Seq[<span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>]</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.core.DataSinks" class="extype" href="DataSinks.html">DataSinks</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -671,28 +683,28 @@ and the second of all elements that don't.</p></div></div>
       </h4>
       <p class="shortcomment cmt">Multiply up the elements of this distribute list.</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList#reduce" data-isabs="false">
-      <a id="reduce((A, A) ⇒ A):DObject[A]"></a>
+      <a id="reduce(Reduction[A]):DObject[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduce</span><span class="params">(<span name="op">op: (A, A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DObject" class="extype" href="DObject.html">DObject</a>[A]</span>
+        <span class="name">reduce</span><span class="params">(<span name="op">op: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DObject" class="extype" href="DObject.html">DObject</a>[A]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Reduce the elements of this distributed list using the specified associative binary operator.</p><div class="fullcomment"><div class="comment cmt"><p>Reduce the elements of this distributed list using the specified associative binary operator. The
 order in which the elements are reduced is unspecified and may be non-deterministic
 </p></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList#reduceOption" data-isabs="false">
-      <a id="reduceOption((A, A) ⇒ A):DObject[Option[A]]"></a>
+      <a id="reduceOption(Reduction[A]):DObject[Option[A]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduceOption</span><span class="params">(<span name="op">op: (A, A) ⇒ A</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DObject" class="extype" href="DObject.html">DObject</a>[<span name="scala.Option" class="extype">Option</span>[A]]</span>
+        <span class="name">reduceOption</span><span class="params">(<span name="op">op: <a name="com.nicta.scoobi.core.Reduction" class="extype" href="Reduction.html">Reduction</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DObject" class="extype" href="DObject.html">DObject</a>[<span name="scala.Option" class="extype">Option</span>[A]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Reduce the elements of this distributed list using the specified associative binary operator and a default value if
@@ -828,6 +840,19 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </span>
       </h4>
       <p class="shortcomment cmt">the withFilter method</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.DList#zipWithIndex" data-isabs="false">
+      <a id="zipWithIndex:DList[(A, Long)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">zipWithIndex</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[(A, <span name="scala.Long" class="extype">Long</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Add an index (Long) to the DList where the index is between 0 and .</p><div class="fullcomment"><div class="comment cmt"><p>Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList
+</p></div></div>
     </li></ol>
             </div>
 
@@ -841,13 +866,13 @@ the list is empty. The order in which the elements are reduced is unspecified an
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use mapFlatten instead because a 'real' flatMap operation would be A =&gt; DList[B]">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[B]</span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A =&gt; DList[B]">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (A) ⇒ Iterable[B]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a name="com.nicta.scoobi.core.WireFormat" class="extype" href="WireFormat.html">WireFormat</a>[B]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="">DList</a>[B]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> use mapFlatten instead because a 'real' flatMap operation would be A =&gt; DList[B]</p></dd></dl></div>
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A =&gt; DList[B]</p></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.core.DList#materialize" data-isabs="false">
       <a id="materialize:DObject[Iterable[A]]"></a>
       <h4 class="signature">

@@ -26,7 +26,10 @@
       <div class="occurrences"><a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../com/nicta/scoobi/impl/plan/comp/ParallelDo$.html">ParallelDo</a> <a name="com.nicta.scoobi.impl.plan.comp.Return" class="extype" href="../com/nicta/scoobi/impl/plan/comp/Return$.html">Return</a> <a name="com.nicta.scoobi.impl.plan.mscr.Mscr" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/Mscr$.html">Mscr</a> <a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="../com/nicta/scoobi/impl/ScoobiConfigurationImpl$.html">ScoobiConfigurationImpl</a> <a name="com.nicta.scoobi.lib.InMemDenseVector" class="extype" href="../com/nicta/scoobi/lib/InMemDenseVector$.html">InMemDenseVector</a> <a name="com.nicta.scoobi.lib.InMemVector" class="extype" href="../com/nicta/scoobi/lib/InMemVector$.html">InMemVector</a> <a name="com.nicta.scoobi.lib.Relational" class="extype" href="../com/nicta/scoobi/lib/Relational$.html">Relational</a> </div>
     </div><div class="entry">
       <div class="name">reduce</div>
-      <div class="occurrences"><a name="com.nicta.scoobi.core.DList" class="extype" href="../com/nicta/scoobi/core/DList.html">DList</a> <a name="com.nicta.scoobi.impl.mapreducer.MscrCombiner" class="extype" href="../com/nicta/scoobi/impl/mapreducer/MscrCombiner.html">MscrCombiner</a> <a name="com.nicta.scoobi.impl.mapreducer.MscrReducer" class="extype" href="../com/nicta/scoobi/impl/mapreducer/MscrReducer.html">MscrReducer</a> <a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../com/nicta/scoobi/impl/plan/comp/ParallelDo.html">ParallelDo</a> <a name="com.nicta.scoobi.impl.plan.mscr.BypassOutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/BypassOutputChannel.html">BypassOutputChannel</a> <a name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/GbkOutputChannel.html">GbkOutputChannel</a> <a name="com.nicta.scoobi.impl.plan.mscr.OutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/OutputChannel.html">OutputChannel</a> </div>
+      <div class="occurrences"><a name="com.nicta.scoobi.core.DList" class="extype" href="../com/nicta/scoobi/core/DList.html">DList</a> <a name="com.nicta.scoobi.core.Reduction" class="extype" href="../com/nicta/scoobi/core/Reduction.html">Reduction</a> <a name="com.nicta.scoobi.impl.mapreducer.MscrCombiner" class="extype" href="../com/nicta/scoobi/impl/mapreducer/MscrCombiner.html">MscrCombiner</a> <a name="com.nicta.scoobi.impl.mapreducer.MscrReducer" class="extype" href="../com/nicta/scoobi/impl/mapreducer/MscrReducer.html">MscrReducer</a> <a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../com/nicta/scoobi/impl/plan/comp/ParallelDo.html">ParallelDo</a> <a name="com.nicta.scoobi.impl.plan.mscr.BypassOutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/BypassOutputChannel.html">BypassOutputChannel</a> <a name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/GbkOutputChannel.html">GbkOutputChannel</a> <a name="com.nicta.scoobi.impl.plan.mscr.OutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/OutputChannel.html">OutputChannel</a> </div>
+    </div><div class="entry">
+      <div class="name">reduceC</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.core.Reduction" class="extype" href="../com/nicta/scoobi/core/Reduction.html">Reduction</a> </div>
     </div><div class="entry">
       <div class="name">reduceLeft</div>
       <div class="occurrences"><a name="com.nicta.scoobi.core.Iterable1" class="extype" href="../com/nicta/scoobi/core/Iterable1.html">Iterable1</a> </div>
@@ -36,6 +39,12 @@
     </div><div class="entry">
       <div class="name">reducer</div>
       <div class="occurrences"><a name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel" class="extype" href="../com/nicta/scoobi/impl/plan/mscr/GbkOutputChannel.html">GbkOutputChannel</a> </div>
+    </div><div class="entry">
+      <div class="name">Reduction</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.core" class="extype" href="../com/nicta/scoobi/core/package.html">core</a> </div>
+    </div><div class="entry">
+      <div class="name">Reductions</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.core" class="extype" href="../com/nicta/scoobi/core/package.html">core</a> </div>
     </div><div class="entry">
       <div class="name">reflect</div>
       <div class="occurrences"><a name="com.nicta.scoobi.impl" class="extype" href="../com/nicta/scoobi/impl/package.html">impl</a> </div>
@@ -70,11 +79,20 @@
       <div class="name">removeAttribute</div>
       <div class="occurrences"><a name="com.nicta.scoobi.application.HadoopLogFactory" class="extype" href="../com/nicta/scoobi/application/HadoopLogFactory.html">HadoopLogFactory</a> </div>
     </div><div class="entry">
+      <div class="name">repeatTraversal</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../com/nicta/scoobi/impl/plan/comp/Optimiser.html">Optimiser</a> </div>
+    </div><div class="entry">
+      <div class="name">ReplFunctions</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.application" class="extype" href="../com/nicta/scoobi/application/package.html">application</a> </div>
+    </div><div class="entry">
       <div class="name">replicateBy</div>
       <div class="occurrences"><a name="com.nicta.scoobi.lib.Relational" class="extype" href="../com/nicta/scoobi/lib/Relational.html">Relational</a> </div>
     </div><div class="entry">
       <div class="name">report</div>
       <div class="occurrences"><a name="com.nicta.scoobi.impl.exec.MapReduceJob" class="extype" href="../com/nicta/scoobi/impl/exec/MapReduceJob.html">MapReduceJob</a> </div>
+    </div><div class="entry">
+      <div class="name">reset</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="../com/nicta/scoobi/impl/exec/ExecutionMode.html">ExecutionMode</a> <a name="com.nicta.scoobi.impl.Persister" class="extype" href="../com/nicta/scoobi/impl/Persister.html">Persister</a> </div>
     </div><div class="entry">
       <div class="name">result</div>
       <div class="occurrences"><a name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter" class="extype" href="../com/nicta/scoobi/impl/mapreducer/VectorEmitterWriter.html">VectorEmitterWriter</a> </div>
@@ -90,6 +108,9 @@
     </div><div class="entry">
       <div class="name">RichIterator</div>
       <div class="occurrences"><a name="com.nicta.scoobi.core.Iterator1" class="extype" href="../com/nicta/scoobi/core/Iterator1$.html">Iterator1</a> </div>
+    </div><div class="entry">
+      <div class="name">right</div>
+      <div class="occurrences"><a name="com.nicta.scoobi.core.Reduction" class="extype" href="../com/nicta/scoobi/core/Reduction.html">Reduction</a> </div>
     </div><div class="entry">
       <div class="name">RightBreakIterable1</div>
       <div class="occurrences"><a name="com.nicta.scoobi.core.Iterable1" class="extype" href="../com/nicta/scoobi/core/Iterable1$.html">Iterable1</a> </div>
@@ -113,7 +134,7 @@
       <div class="occurrences"><a name="com.nicta.scoobi.impl" class="extype" href="../com/nicta/scoobi/impl/package.html">impl</a> </div>
     </div><div class="entry">
       <div class="name">run</div>
-      <div class="occurrences"><a name="com.nicta.scoobi.application.Persist" class="extype" href="../com/nicta/scoobi/application/Persist.html">Persist</a> <a name="com.nicta.scoobi.application.Persist.RunnableDList" class="extype" href="../com/nicta/scoobi/application/Persist$RunnableDList.html">RunnableDList</a> <a name="com.nicta.scoobi.application.Persist.RunnableDObject" class="extype" href="../com/nicta/scoobi/application/Persist$RunnableDObject.html">RunnableDObject</a> <a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="../com/nicta/scoobi/application/ScoobiApp.html">ScoobiApp</a> <a name="com.nicta.scoobi.impl.exec.MapReduceJob" class="extype" href="../com/nicta/scoobi/impl/exec/MapReduceJob.html">MapReduceJob</a> </div>
+      <div class="occurrences"><a name="com.nicta.scoobi.application.Persist" class="extype" href="../com/nicta/scoobi/application/Persist.html">Persist</a> <a name="com.nicta.scoobi.application.Persist.RunnableDList" class="extype" href="../com/nicta/scoobi/application/Persist$RunnableDList.html">RunnableDList</a> <a name="com.nicta.scoobi.application.Persist.RunnableDObject" class="extype" href="../com/nicta/scoobi/application/Persist$RunnableDObject.html">RunnableDObject</a> <a name="com.nicta.scoobi.application.ScoobiApp" class="extype" href="../com/nicta/scoobi/application/ScoobiApp.html">ScoobiApp</a> <a name="com.nicta.scoobi.application.ScoobiInterpreter" class="extype" href="../com/nicta/scoobi/application/ScoobiInterpreter.html">ScoobiInterpreter</a> <a name="com.nicta.scoobi.impl.exec.MapReduceJob" class="extype" href="../com/nicta/scoobi/impl/exec/MapReduceJob.html">MapReduceJob</a> </div>
     </div><div class="entry">
       <div class="name">runInMemory</div>
       <div class="occurrences"><a name="com.nicta.scoobi.application.InMemoryHadoop" class="extype" href="../com/nicta/scoobi/application/InMemoryHadoop.html">InMemoryHadoop</a> </div>

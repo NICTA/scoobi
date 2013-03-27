@@ -162,6 +162,18 @@
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CompNodes#allSinks" data-isabs="false">
+      <a id="allSinks:(CompNode) ⇒ Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allSinks</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ Seq[<span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../comp/CompNodes.html">CompNodes</a></dd></dl></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -460,24 +472,12 @@ They are all the recursive children reachable from this node
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#floatingNodes" data-isabs="false">
-      <a id="floatingNodes[N&lt;:CompNode](PartialFunction[CompNode, N]):(Layer[T]) ⇒ Seq[N]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">floatingNodes</span><span class="tparams">[<span name="N">N &lt;: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a></span>]</span><span class="params">(<span name="pf">pf: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>, N]</span>)</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer" class="extype" href="Layering$Layer.html">Layer</a>[T]) ⇒ Seq[N]</span>
-      </span>
-      </h4>
-      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#floatingParallelDos" data-isabs="false">
       <a id="floatingParallelDos:(Layer[T]) ⇒ Seq[ParallelDo]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">floatingParallelDos</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer" class="extype" href="Layering$Layer.html">Layer</a>[T]) ⇒ Seq[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
@@ -706,6 +706,42 @@ For a ParallelDo node this does not consider its environment
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode is a ParallelDo</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a ParallelDo</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isAProcessNode" data-isabs="false">
+      <a id="isAProcessNode:PartialFunction[Any, ProcessNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isAProcessNode</span><span class="result">: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[<span name="scala.Any" class="extype">Any</span>, <a name="com.nicta.scoobi.core.ProcessNode" class="extype" href="../../../core/ProcessNode.html">ProcessNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return true if a CompNode is a ProcessNode</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a ProcessNode</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isCheckpoint" data-isabs="false">
+      <a id="isCheckpoint:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCheckpoint</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isCombine" data-isabs="false">
+      <a id="isCombine:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCombine</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return true if a CompNode is a Combine</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a Combine</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isComputedValueNode" data-isabs="false">
       <a id="isComputedValueNode:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -734,18 +770,30 @@ this will be detected by Kiama throwing an exception when fetching the descenden
 </p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode has a cycle in its graph,
 this will be detected by Kiama throwing an exception when fetching the descendents of a node
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isFloating" data-isabs="false">
-      <a id="isFloating:(CompNode) ⇒ Boolean"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isEndNode" data-isabs="false">
+      <a id="isEndNode:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isFloating</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isEndNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">a floating node is a parallelDo node that's not a descendent of a gbk node and is not a reducer</p>
+      <p class="shortcomment cmt">node at the end of the graph</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isGbkOutput" data-isabs="false">
+      <a id="isGbkOutput:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isGbkOutput</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isGroupByKey" data-isabs="false">
       <a id="isGroupByKey:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -758,18 +806,6 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode is a GroupByKey</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a GroupByKey</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isInsideMapper" data-isabs="false">
-      <a id="isInsideMapper:(ParallelDo) ⇒ Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isInsideMapper</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a ParallelDo node is not a leaf of a tree of mappers connected to a given source node</p></dd></dl></div>
     </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
@@ -782,6 +818,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isLayerNode" data-isabs="false">
+      <a id="isLayerNode:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isLayerNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isLoad" data-isabs="false">
       <a id="isLoad:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -806,6 +854,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode is a Materialise</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a Materialise</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isMaterialised" data-isabs="false">
+      <a id="isMaterialised:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isMaterialised</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isOp" data-isabs="false">
       <a id="isOp:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -842,6 +902,20 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#isReducingNode" data-isabs="false">
+      <a id="isReducingNode:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isReducingNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">a node is said to be reducing if it is in a &quot;reducing chain of nodes&quot; after a gbk</p><div class="fullcomment"><div class="comment cmt"><p>a node is said to be reducing if it is in a &quot;reducing chain of nodes&quot; after a gbk</p><ul><li>parallelDo(combine(gbk)) // parallelDo and combine are reducing</li><li>combine(gbk)             // combine is reducing</li><li>parallelDo(gbk)          // parallelDo is reducing
+@return
+</li></ul></div></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isReturn" data-isabs="false">
       <a id="isReturn:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -962,6 +1036,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#layerGbks" data-isabs="false">
+      <a id="layerGbks:(Layer[T]) ⇒ Seq[GroupByKey]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">layerGbks</span><span class="result">: (<a name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer" class="extype" href="Layering$Layer.html">Layer</a>[T]) ⇒ Seq[<a name="com.nicta.scoobi.impl.plan.comp.GroupByKey" class="extype" href="../comp/GroupByKey.html">GroupByKey</a>]</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#layerInputs" data-isabs="false">
       <a id="layerInputs:(Layer[T]) ⇒ Seq[CompNode]"></a>
       <h4 class="signature">
@@ -1022,43 +1108,42 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#longestPathTo" data-isabs="false">
-      <a id="longestPathTo:(Seq[CompNode]) ⇒ (CompNode) ⇒ Int"></a>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#longestPathSizeTo" data-isabs="false">
+      <a id="longestPathSizeTo:(Seq[CompNode]) ⇒ (CompNode) ⇒ Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">longestPathTo</span><span class="result">: (Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>]) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">longestPathSizeTo</span><span class="result">: (Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>]) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#longestPathSizeToNode" data-isabs="false">
+      <a id="longestPathSizeToNode:(CompNode) ⇒ (CompNode) ⇒ Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">longestPathSizeToNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Int" class="extype">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#longestPathToNode" data-isabs="false">
-      <a id="longestPathToNode:(CompNode) ⇒ (CompNode) ⇒ Int"></a>
+      <a id="longestPathToNode:(CompNode) ⇒ (CompNode) ⇒ Seq[CompNode]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">longestPathToNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">longestPathToNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#mappersUses" data-isabs="false">
-      <a id="mappersUses:(CompNode) ⇒ Seq[ParallelDo]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mappersUses</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ Seq[<a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../comp/ParallelDo.html">ParallelDo</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">flattened tree of mappers using this a given node
-</p>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.CompNodes#markSinkAsFilled" data-isabs="false">
       <a id="markSinkAsFilled:(Sink) ⇒ Sink"></a>
       <h4 class="signature">
@@ -1095,6 +1180,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.CompNodes#nodeHasBeenFilled" data-isabs="false">
+      <a id="nodeHasBeenFilled:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodeHasBeenFilled</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a process node has been filled</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../comp/CompNodes.html">CompNodes</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
       <a id="notify():Unit"></a>
       <h4 class="signature">
@@ -1179,6 +1276,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p><div class="fullcomment"><div class="comment cmt"><p>compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#pathsToNode" data-isabs="false">
+      <a id="pathsToNode:(CompNode) ⇒ (CompNode) ⇒ Seq[Seq[CompNode]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pathsToNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ Seq[Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#pdMscrs" data-isabs="false">
       <a id="pdMscrs:(Layer[T]) ⇒ Seq[Mscr]"></a>
       <h4 class="signature">
@@ -1288,17 +1397,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition#selectNode" data-isabs="false">
-      <a id="selectNode(CompNode):Boolean"></a>
+      <a id="selectNode:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">selectNode</span><span class="params">(<span name="n">n: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">selectNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">a function to select only some nodes in the graph.</p><div class="fullcomment"><div class="comment cmt"><p>a function to select only some nodes in the graph. They must be of type T</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition" class="extype" href="">MscrsDefinition</a> → <a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
+      <p class="shortcomment cmt">The nodes which are selected to define a layer are the nodes which delimitate outputs.</p><div class="fullcomment"><div class="comment cmt"><p>The nodes which are selected to define a layer are the nodes which delimitate outputs.</p><p>What we want is to layer the computation graph so that output dependencies are respected:</p><p>- if output1 depends on output2 then output2 must be computed first
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition" class="extype" href="">MscrsDefinition</a> → <a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#selected" data-isabs="false">
       <a id="selected:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -1320,6 +1430,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       <span class="symbol">
         <span class="name">selectedDescendents</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ Seq[T]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.mscr.Layering#shortestPathToNode" data-isabs="false">
+      <a id="shortestPathToNode:(CompNode) ⇒ (CompNode) ⇒ Seq[CompNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shortestPathToNode</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>) ⇒ Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../../core/CompNode.html">CompNode</a>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.mscr.Layering" class="extype" href="Layering.html">Layering</a></dd></dl></div>

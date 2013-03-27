@@ -25,14 +25,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">InMemoryMode</span><span class="params">()</span><span class="result"> extends <a name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="extype" href="../plan/comp/ShowNode.html">ShowNode</a> with <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">InMemoryMode</span><span class="params">()</span><span class="result"> extends <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
       <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>A fast local mode for execution of Scoobi applications.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a>, <a name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="extype" href="../plan/comp/ShowNode.html">ShowNode</a>, <a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a>, <a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a>, <a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a>, <span name="org.kiama.attribution.Attribution" class="extype">Attribution</span>, <span name="org.kiama.attribution.AttributionBase" class="extype">AttributionBase</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><span name="scala.Serializable" class="extype">Serializable</span>, <span name="java.io.Serializable" class="extype">Serializable</span>, <span name="scala.Product" class="extype">Product</span>, <span name="scala.Equals" class="extype">Equals</span>, <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a>, <a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a>, <span name="org.kiama.rewriting.Rewriter" class="extype">Rewriter</span>, <a name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="extype" href="../plan/comp/ShowNode.html">ShowNode</a>, <a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a>, <a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a>, <a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a>, <span name="org.kiama.attribution.Attribution" class="extype">Attribution</span>, <span name="org.kiama.attribution.AttributionBase" class="extype">AttributionBase</span>, AnyRef, <span name="scala.Any" class="extype">Any</span></div>
         </div></div>
     
 
@@ -46,7 +46,7 @@
               <span class="filtertype">Inherited</span>
               <ol><li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.InMemoryMode" class="in"><span>InMemoryMode</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.Product" class="in"><span>Product</span></li><li name="scala.Equals" class="in"><span>Equals</span></li><li name="com.nicta.scoobi.impl.exec.ExecutionMode" class="in"><span>ExecutionMode</span></li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="in"><span>ShowNode</span></li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="in"><span>CompNodes</span></li><li name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="in"><span>CollectFunctions</span></li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="in"><span>GraphNodes</span></li><li name="org.kiama.attribution.Attribution" class="in"><span>Attribution</span></li><li name="org.kiama.attribution.AttributionBase" class="in"><span>AttributionBase</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
+              <ol id="linearization"><li name="com.nicta.scoobi.impl.exec.InMemoryMode" class="in"><span>InMemoryMode</span></li><li name="scala.Serializable" class="in"><span>Serializable</span></li><li name="java.io.Serializable" class="in"><span>Serializable</span></li><li name="scala.Product" class="in"><span>Product</span></li><li name="scala.Equals" class="in"><span>Equals</span></li><li name="com.nicta.scoobi.impl.exec.ExecutionMode" class="in"><span>ExecutionMode</span></li><li name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="in"><span>Optimiser</span></li><li name="org.kiama.rewriting.Rewriter" class="in"><span>Rewriter</span></li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="in"><span>ShowNode</span></li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="in"><span>CompNodes</span></li><li name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="in"><span>CollectFunctions</span></li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="in"><span>GraphNodes</span></li><li name="org.kiama.attribution.Attribution" class="in"><span>Attribution</span></li><li name="org.kiama.attribution.AttributionBase" class="in"><span>AttributionBase</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
             </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -87,6 +87,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a> → <a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#Term" data-isabs="false">
+      <a id="Term:Term"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Term</span><span class="result"> = <span name="scala.Any" class="extype">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li></ol>
             </div>
 
@@ -154,6 +166,132 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#addBridgeStore" data-isabs="false">
+      <a id="addBridgeStore:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addBridgeStore</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">add a bridgeStore if it is necessary to materialise a value and no bridge is available
+</p><div class="fullcomment"><div class="comment cmt"><p>add a bridgeStore if it is necessary to materialise a value and no bridge is available
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#addParallelDoForNonFilledSinks" data-isabs="false">
+      <a id="addParallelDoForNonFilledSinks:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addParallelDoForNonFilledSinks</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">add a map to output values to non-filled sink nodes if there are some
+</p><div class="fullcomment"><div class="comment cmt"><p>add a map to output values to non-filled sink nodes if there are some
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#all" data-isabs="false">
+      <a id="all(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">all</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CompNodes#allSinks" data-isabs="false">
+      <a id="allSinks:(CompNode) ⇒ Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allSinks</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>) ⇒ Seq[<span name="com.nicta.scoobi.core.Sink" class="extype">Sink</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#allStrategies" data-isabs="false">
+      <a id="allStrategies:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allStrategies</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">all the strategies to apply, in sequence
+</p><div class="fullcomment"><div class="comment cmt"><p>all the strategies to apply, in sequence
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#allbu" data-isabs="false">
+      <a id="allbu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allbu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#alldownup2" data-isabs="false">
+      <a id="alldownup2(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">alldownup2</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#alltd" data-isabs="false">
+      <a id="alltd(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">alltd</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#alltdfold" data-isabs="false">
+      <a id="alltdfold(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">alltdfold</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#and" data-isabs="false">
+      <a id="and(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">and</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
@@ -166,6 +304,18 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#attempt" data-isabs="false">
+      <a id="attempt(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">attempt</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#attr" data-isabs="false">
       <a id="attr[T&lt;:AnyRef, U](String)((T) ⇒ U):CachedAttribute[T, U]"></a>
       <h4 class="signature">
@@ -202,6 +352,54 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#bottomup" data-isabs="false">
+      <a id="bottomup(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bottomup</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#bottomupS" data-isabs="false">
+      <a id="bottomupS(⇒ Strategy,(⇒ Strategy) ⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bottomupS</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="stop">stop: (⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#breadthfirst" data-isabs="false">
+      <a id="breadthfirst(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">breadthfirst</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#build" data-isabs="false">
+      <a id="build(⇒ Term):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">build</span><span class="params">(<span name="t">t: ⇒ Term</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode#canEqual" data-isabs="false">
       <a id="canEqual(Any):Boolean"></a>
       <h4 class="signature">
@@ -214,18 +412,30 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → Equals</dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ExecutionMode#checkSourceAndSinks" data-isabs="false">
-      <a id="checkSourceAndSinks(CompNode)(ScoobiConfiguration):Unit"></a>
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.exec.ExecutionMode#checkSourceAndSinks" data-isabs="false">
+      <a id="checkSourceAndSinks:CachedParamAttribute[ScoobiConfiguration, CompNode, Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkSourceAndSinks</span><span class="result">: <span name="org.kiama.attribution.Attribution.CachedParamAttribute" class="extype">CachedParamAttribute</span>[<a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a>, <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>, <span name="scala.Unit" class="extype">Unit</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#child" data-isabs="false">
+      <a id="child(Int,Strategy):Strategy"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">checkSourceAndSinks</span><span class="params">(<span name="node">node: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">child</span><span class="params">(<span name="i">i: <span name="scala.Int" class="extype">Int</span></span>, <span name="s">s: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#childAttr" data-isabs="false">
       <a id="childAttr[T&lt;:Attributable, U](String)((T) ⇒ (Attributable) ⇒ U):CachedAttribute[T, U]"></a>
       <h4 class="signature">
@@ -325,6 +535,68 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#collect" data-isabs="false">
+      <a id="collect[CC&lt;:Traversable[U], T](==&gt;[Term, T])(CanBuildFrom[CC[T], T, CC[T]]):(Term) ⇒ CC[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collect</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="U">U</span>]</span> &lt;: Traversable[U]</span>, <span name="T">T</span>]</span><span class="params">(<span name="f">f: ==&gt;[Term, T]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span name="scala.collection.generic.CanBuildFrom" class="extype">CanBuildFrom</span>[CC[T], T, CC[T]]</span>)</span><span class="result">: (Term) ⇒ CC[T]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#collectl" data-isabs="false">
+      <a id="collectl[T](==&gt;[Term, T]):(Term) ⇒ List[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collectl</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: ==&gt;[Term, T]</span>)</span><span class="result">: (Term) ⇒ List[T]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#collects" data-isabs="false">
+      <a id="collects[T](==&gt;[Term, T]):(Term) ⇒ Set[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">collects</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: ==&gt;[Term, T]</span>)</span><span class="result">: (Term) ⇒ Set[T]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#combineToParDo" data-isabs="false">
+      <a id="combineToParDo:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">combineToParDo</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
+</p><div class="fullcomment"><div class="comment cmt"><p>Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#congruence" data-isabs="false">
+      <a id="congruence(Strategy*):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">congruence</span><span class="params">(<span name="ss">ss: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>*</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.AttributionBase#constant" data-isabs="false">
       <a id="constant[T&lt;:AnyRef, U](String)(⇒ U):Attribute[T, U]"></a>
       <h4 class="signature">
@@ -361,6 +633,42 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+    </li><li visbl="prt" name="org.kiama.rewriting.Rewriter#constrcache" data-isabs="false">
+      <a id="constrcache:WeakHashMap[java.lang.Class[_], java.lang.reflect.Constructor[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constrcache</span><span class="result">: <span name="scala.collection.mutable.WeakHashMap" class="extype">WeakHashMap</span>[java.lang.Class[_], java.lang.reflect.Constructor[_]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#count" data-isabs="false">
+      <a id="count(==&gt;[Term, Int]):(Term) ⇒ Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">count</span><span class="params">(<span name="f">f: ==&gt;[Term, <span name="scala.Int" class="extype">Int</span>]</span>)</span><span class="result">: (Term) ⇒ <span name="scala.Int" class="extype">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#debug" data-isabs="false">
+      <a id="debug(String,Emitter):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: String</span>, <span name="emitter">emitter: <span name="org.kiama.util.Emitter" class="extype">Emitter</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#descendents" data-isabs="false">
       <a id="descendents:CachedAttribute[T, Seq[T]]"></a>
       <h4 class="signature">
@@ -389,6 +697,102 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#doloop" data-isabs="false">
+      <a id="doloop(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">doloop</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#dontstop" data-isabs="false">
+      <a id="dontstop(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dontstop</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#downup" data-isabs="false">
+      <a id="downup(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downup</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#downup" data-isabs="false">
+      <a id="downup(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downup</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#downupS" data-isabs="false">
+      <a id="downupS(⇒ Strategy,⇒ Strategy,(⇒ Strategy) ⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downupS</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="stop">stop: (⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#downupS" data-isabs="false">
+      <a id="downupS(⇒ Strategy,(⇒ Strategy) ⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">downupS</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="stop">stop: (⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.Optimiser#dup" data-isabs="false">
+      <a id="dup[T&lt;:Product](T,Array[AnyRef]):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dup</span><span class="tparams">[<span name="T">T &lt;: <span name="scala.Product" class="extype">Product</span></span>]</span><span class="params">(<span name="t">t: T</span>, <span name="children">children: <span name="scala.Array" class="extype">Array</span>[AnyRef]</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a> → Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#duplicate" data-isabs="false">
+      <a id="duplicate:(CompNode) ⇒ CompNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">duplicate</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>) ⇒ <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">duplicate the whole graph by copying all nodes</p><div class="fullcomment"><div class="comment cmt"><p>duplicate the whole graph by copying all nodes</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#dynAttr" data-isabs="false">
       <a id="dynAttr[T&lt;:AnyRef, U](String)((T) ⇒ U):CachedDynamicAttribute[T, U]"></a>
       <h4 class="signature">
@@ -437,6 +841,30 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#eq" data-isabs="false">
+      <a id="eq:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#equal" data-isabs="false">
+      <a id="equal:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equal</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode#equals" data-isabs="false">
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
@@ -449,6 +877,54 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → Equals → AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#everything" data-isabs="false">
+      <a id="everything[T](T)((T, T) ⇒ T)(==&gt;[Term, T])(Term):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">everything</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="v">v: T</span>)</span><span class="params">(<span name="f">f: (T, T) ⇒ T</span>)</span><span class="params">(<span name="g">g: ==&gt;[Term, T]</span>)</span><span class="params">(<span name="t">t: Term</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#everywhere" data-isabs="false">
+      <a id="everywhere(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">everywhere</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#everywherebu" data-isabs="false">
+      <a id="everywherebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">everywherebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#everywheretd" data-isabs="false">
+      <a id="everywheretd(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">everywheretd</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode#execute" data-isabs="false">
       <a id="execute(CompNode)(ScoobiConfiguration):Any"></a>
       <h4 class="signature">
@@ -485,6 +961,18 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#fail" data-isabs="false">
+      <a id="fail:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fail</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.CompNodes#filledSink" data-isabs="false">
       <a id="filledSink:CachedAttribute[String, String]"></a>
       <h4 class="signature">
@@ -548,6 +1036,18 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#id" data-isabs="false">
+      <a id="id:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">id</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#initAttributable" data-isabs="false">
       <a id="initAttributable[A&lt;:Attributable](A):A"></a>
       <h4 class="signature">
@@ -572,6 +1072,30 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#innermost" data-isabs="false">
+      <a id="innermost(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">innermost</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#innermost2" data-isabs="false">
+      <a id="innermost2(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">innermost2</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CompNodes#inputs" data-isabs="false">
       <a id="inputs:(CompNode) ⇒ Seq[CompNode]"></a>
       <h4 class="signature">
@@ -600,6 +1124,18 @@ For a ParallelDo node this does not consider its environment
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#ior" data-isabs="false">
+      <a id="ior(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ior</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isACombine" data-isabs="false">
       <a id="isACombine:PartialFunction[Any, Combine]"></a>
       <h4 class="signature">
@@ -660,6 +1196,30 @@ For a ParallelDo node this does not consider its environment
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode is a ParallelDo</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a ParallelDo</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isAProcessNode" data-isabs="false">
+      <a id="isAProcessNode:PartialFunction[Any, ProcessNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isAProcessNode</span><span class="result">: <span name="scala.PartialFunction" class="extype">PartialFunction</span>[<span name="scala.Any" class="extype">Any</span>, <a name="com.nicta.scoobi.core.ProcessNode" class="extype" href="../../core/ProcessNode.html">ProcessNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return true if a CompNode is a ProcessNode</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a ProcessNode</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isCombine" data-isabs="false">
+      <a id="isCombine:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCombine</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return true if a CompNode is a Combine</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode is a Combine</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isComputedValueNode" data-isabs="false">
       <a id="isComputedValueNode:(CompNode) ⇒ Boolean"></a>
       <h4 class="signature">
@@ -820,18 +1380,234 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode needs to be loaded</p><div class="fullcomment"><div class="comment cmt"><p>return true if a CompNode needs to be loaded</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" class="extype" href="../plan/comp/CollectFunctions.html">CollectFunctions</a></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode#logger" data-isabs="false">
-      <a id="logger:Log"></a>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#isinnernode" data-isabs="false">
+      <a id="isinnernode:Strategy"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">lazy val</span>
+        <span class="modifier"></span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span name="org.apache.commons.logging.Log" class="extype">Log</span></span>
+        <span class="name">isinnernode</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#isleaf" data-isabs="false">
+      <a id="isleaf:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isleaf</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#ispropersubterm" data-isabs="false">
+      <a id="ispropersubterm:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ispropersubterm</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#ispropersuperterm" data-isabs="false">
+      <a id="ispropersuperterm:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ispropersuperterm</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#issubterm" data-isabs="false">
+      <a id="issubterm:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">issubterm</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#issuperterm" data-isabs="false">
+      <a id="issuperterm:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">issuperterm</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#lastly" data-isabs="false">
+      <a id="lastly(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lastly</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="f">f: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#leaves" data-isabs="false">
+      <a id="leaves(⇒ Strategy,⇒ Strategy,(Strategy) ⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leaves</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="isleaf">isleaf: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="skip">skip: (<span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#leaves" data-isabs="false">
+      <a id="leaves(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leaves</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="isleaf">isleaf: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#log" data-isabs="false">
+      <a id="log[T](⇒ Strategy,String,Emitter):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">log</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="msg">msg: String</span>, <span name="emitter">emitter: <span name="org.kiama.util.Emitter" class="extype">Emitter</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#logfail" data-isabs="false">
+      <a id="logfail[T](⇒ Strategy,String,Emitter):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logfail</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="msg">msg: String</span>, <span name="emitter">emitter: <span name="org.kiama.util.Emitter" class="extype">Emitter</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#loop" data-isabs="false">
+      <a id="loop(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loop</span><span class="params">(<span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#loopiter" data-isabs="false">
+      <a id="loopiter((Int) ⇒ Strategy,Int,Int):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loopiter</span><span class="params">(<span name="s">s: (<span name="scala.Int" class="extype">Int</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="low">low: <span name="scala.Int" class="extype">Int</span></span>, <span name="high">high: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#loopiter" data-isabs="false">
+      <a id="loopiter(⇒ Strategy,⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loopiter</span><span class="params">(<span name="i">i: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#loopnot" data-isabs="false">
+      <a id="loopnot(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loopnot</span><span class="params">(<span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="prt" name="org.kiama.rewriting.Rewriter#makechild" data-isabs="false">
+      <a id="makechild(Any):AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">makechild</span><span class="params">(<span name="c">c: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: AnyRef</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#manybu" data-isabs="false">
+      <a id="manybu(Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">manybu</span><span class="params">(<span name="s">s: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#manytd" data-isabs="false">
+      <a id="manytd(Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">manytd</span><span class="params">(<span name="s">s: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#map" data-isabs="false">
+      <a id="map(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">map</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.CompNodes#markSinkAsFilled" data-isabs="false">
       <a id="markSinkAsFilled:(Sink) ⇒ Sink"></a>
       <h4 class="signature">
@@ -844,6 +1620,42 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">mark a sink as filled so it doesn't have to be recomputed</p><div class="fullcomment"><div class="comment cmt"><p>mark a sink as filled so it doesn't have to be recomputed</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#memo" data-isabs="false">
+      <a id="memo(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">memo</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode#modeLogger" data-isabs="false">
+      <a id="modeLogger:Log"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">modeLogger</span><span class="result">: <span name="org.apache.commons.logging.Log" class="extype">Log</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#mustBeRead" data-isabs="false">
+      <a id="mustBeRead(ParallelDo):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mustBeRead</span><span class="params">(<span name="pd">pd: <a name="com.nicta.scoobi.impl.plan.comp.ParallelDo" class="extype" href="../plan/comp/ParallelDo.html">ParallelDo</a></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this parallelDo must be read ==&gt; can't be fused</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
@@ -856,6 +1668,30 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.plan.comp.CompNodes#nodeHasBeenFilled" data-isabs="false">
+      <a id="nodeHasBeenFilled:(CompNode) ⇒ Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodeHasBeenFilled</span><span class="result">: (<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if a process node has been filled</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="extype" href="../plan/comp/CompNodes.html">CompNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#not" data-isabs="false">
+      <a id="not(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">not</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
       <a id="notify():Unit"></a>
       <h4 class="signature">
@@ -880,6 +1716,132 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#oncebu" data-isabs="false">
+      <a id="oncebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">oncebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#oncetd" data-isabs="false">
+      <a id="oncetd(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">oncetd</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#one" data-isabs="false">
+      <a id="one(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">one</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#optimise" data-isabs="false">
+      <a id="optimise(Seq[CompNode]):Seq[CompNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">optimise</span><span class="params">(<span name="outputs">outputs: Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>]</span>)</span><span class="result">: Seq[<a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Optimise a set of CompNodes, starting from the set of outputs
+</p><div class="fullcomment"><div class="comment cmt"><p>Optimise a set of CompNodes, starting from the set of outputs
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#option" data-isabs="false">
+      <a id="option(⇒ Option[Term]):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">option</span><span class="params">(<span name="o">o: ⇒ <span name="scala.Option" class="extype">Option</span>[Term]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#or" data-isabs="false">
+      <a id="or(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">or</span><span class="params">(<span name="s1">s1: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s2">s2: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#outermost" data-isabs="false">
+      <a id="outermost(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outermost</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#parDoFuse" data-isabs="false">
+      <a id="parDoFuse:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parDoFuse</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Nested ParallelDos must be fused but only if pd1 is not used anywhere else.</p><div class="fullcomment"><div class="comment cmt"><p>Nested ParallelDos must be fused but only if pd1 is not used anywhere else.</p><p>We use somebu to fuse the nodes &quot;bottom-up&quot; starting from all leaves of the tree at the same time</p><p>   pd1 @ ParallelDo
+         |
+   pd2 @ ParallelDo</p><h6>&gt;
+   pd3 @ ParallelDo</h6><p>This rule is repeated until nothing can be fused anymore
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#parDoFuseRule" data-isabs="false">
+      <a id="parDoFuseRule:Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parDoFuseRule</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#para" data-isabs="false">
+      <a id="para[T]((Any, Seq[T]) ⇒ T):(Any) ⇒ T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">para</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (<span name="scala.Any" class="extype">Any</span>, Seq[T]) ⇒ T</span>)</span><span class="result">: (<span name="scala.Any" class="extype">Any</span>) ⇒ T</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#paramAttr" data-isabs="false">
       <a id="paramAttr[A, T&lt;:AnyRef, U](String)((A) ⇒ (T) ⇒ U):CachedParamAttribute[A, T, U]"></a>
       <h4 class="signature">
@@ -940,6 +1902,26 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p><div class="fullcomment"><div class="comment cmt"><p>compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="prt" name="com.nicta.scoobi.impl.exec.ExecutionMode#prepare" data-isabs="false">
+      <a id="prepare(CompNode)(ScoobiConfiguration):CompNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">prepare</span><span class="params">(<span name="node">node: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">prepare the execution graph by:
+- initialising the nodes
+- truncating the graph if some nodes have already been executed
+- checking the sources and sinks
+</p><div class="fullcomment"><div class="comment cmt"><p>prepare the execution graph by:
+- initialising the nodes
+- truncating the graph if some nodes have already been executed
+- checking the sources and sinks
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.ShowNode#pretty" data-isabs="false">
       <a id="pretty(CompNode):Layout"></a>
       <h4 class="signature">
@@ -1024,6 +2006,42 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → Product</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#query" data-isabs="false">
+      <a id="query[T](==&gt;[Term, T]):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">query</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: ==&gt;[Term, T]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#queryf" data-isabs="false">
+      <a id="queryf[T]((Term) ⇒ T):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">queryf</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="f">f: (Term) ⇒ T</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#reduce" data-isabs="false">
+      <a id="reduce(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reduce</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#reinitAttributable" data-isabs="false">
       <a id="reinitAttributable[A&lt;:Attributable](A):A"></a>
       <h4 class="signature">
@@ -1048,6 +2066,105 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">reinit usages</p><div class="fullcomment"><div class="comment cmt"><p>reinit usages</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeat" data-isabs="false">
+      <a id="repeat(⇒ Strategy,Int):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeat</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="n">n: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeat" data-isabs="false">
+      <a id="repeat(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeat</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeat" data-isabs="false">
+      <a id="repeat(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeat</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeat1" data-isabs="false">
+      <a id="repeat1(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeat1</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeat1" data-isabs="false">
+      <a id="repeat1(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeat1</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#repeatTraversal" data-isabs="false">
+      <a id="repeatTraversal((⇒ Strategy) ⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeatTraversal</span><span class="params">(<span name="traversal">traversal: (⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">apply a traversal strategy but make sure that:</p><div class="fullcomment"><div class="comment cmt"><p>apply a traversal strategy but make sure that:</p><p>- after each pass the tree is reset in terms of attributable relationships and uses
+- the strategy to execute is memoised, i.e. if a node has already been processed its result must be reused
+  this ensures that rewritten shared nodes are not duplicated
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#repeatuntil" data-isabs="false">
+      <a id="repeatuntil(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeatuntil</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="c">c: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.ExecutionMode#reset" data-isabs="false">
+      <a id="reset:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reset</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#resetMemo" data-isabs="false">
       <a id="resetMemo():Unit"></a>
       <h4 class="signature">
@@ -1060,6 +2177,42 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#restore" data-isabs="false">
+      <a id="restore(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">restore</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="rest">rest: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#restorealways" data-isabs="false">
+      <a id="restorealways(⇒ Strategy,⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">restorealways</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="rest">rest: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#rewrite" data-isabs="false">
+      <a id="rewrite[T](⇒ Strategy)(T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rewrite</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="params">(<span name="t">t: T</span>)</span><span class="result">: T</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#root" data-isabs="false">
       <a id="root:CachedAttribute[T, T]"></a>
       <h4 class="signature">
@@ -1072,6 +2225,54 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">the root of the graph, computed from a given node</p><div class="fullcomment"><div class="comment cmt"><p>the root of the graph, computed from a given node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#rule" data-isabs="false">
+      <a id="rule(==&gt;[Term, Term]):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rule</span><span class="params">(<span name="f">f: ==&gt;[Term, Term]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#rulef" data-isabs="false">
+      <a id="rulef((Term) ⇒ Term):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rulef</span><span class="params">(<span name="f">f: (Term) ⇒ Term</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#rulefs" data-isabs="false">
+      <a id="rulefs(==&gt;[Term, Strategy]):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rulefs</span><span class="params">(<span name="f">f: ==&gt;[Term, <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="prt" name="org.kiama.rewriting.Rewriter#same" data-isabs="false">
+      <a id="same(Any,Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">same</span><span class="params">(<span name="v1">v1: <span name="scala.Any" class="extype">Any</span></span>, <span name="v2">v2: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.ShowNode#showCompNode" data-isabs="false">
       <a id="showCompNode:Show[CompNode]"></a>
       <h4 class="signature">
@@ -1124,6 +2325,78 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">show the structure without the ids or type annotations</p><div class="fullcomment"><div class="comment cmt"><p>show the structure without the ids or type annotations</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="extype" href="../plan/comp/ShowNode.html">ShowNode</a></dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#some" data-isabs="false">
+      <a id="some(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">some</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#somebu" data-isabs="false">
+      <a id="somebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">somebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#somedownup" data-isabs="false">
+      <a id="somedownup(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">somedownup</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#sometd" data-isabs="false">
+      <a id="sometd(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sometd</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#strategy" data-isabs="false">
+      <a id="strategy(==&gt;[Term, Option[Term]]):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">strategy</span><span class="params">(<span name="f">f: ==&gt;[Term, <span name="scala.Option" class="extype">Option</span>[Term]]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#strategyf" data-isabs="false">
+      <a id="strategyf((Term) ⇒ Option[Term]):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">strategyf</span><span class="params">(<span name="f">f: (Term) ⇒ <span name="scala.Option" class="extype">Option</span>[Term]</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
       <a id="synchronized[T0](⇒ T0):T0"></a>
       <h4 class="signature">
@@ -1136,6 +2409,30 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#term" data-isabs="false">
+      <a id="term(Term):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">term</span><span class="params">(<span name="t">t: Term</span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#test" data-isabs="false">
+      <a id="test(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">test</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode#toString" data-isabs="false">
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -1148,6 +2445,30 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.exec.InMemoryMode" class="extype" href="">InMemoryMode</a> → AnyRef → Any</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#topdown" data-isabs="false">
+      <a id="topdown(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">topdown</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#topdownS" data-isabs="false">
+      <a id="topdownS(⇒ Strategy,(⇒ Strategy) ⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">topdownS</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>, <span name="stop">stop: (⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span>) ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#transitiveUses" data-isabs="false">
       <a id="transitiveUses:CachedAttribute[T, Set[T]]"></a>
       <h4 class="signature">
@@ -1160,6 +2481,42 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p><div class="fullcomment"><div class="comment cmt"><p>compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.GraphNodes" class="extype" href="../plan/comp/GraphNodes.html">GraphNodes</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#traverseOncebu" data-isabs="false">
+      <a id="traverseOncebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseOncebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#traverseSomebu" data-isabs="false">
+      <a id="traverseSomebu(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseSomebu</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#traverseSometd" data-isabs="false">
+      <a id="traverseSometd(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">traverseSometd</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="org.kiama.attribution.Attribution#tree" data-isabs="false">
       <a id="tree[T&lt;:Attributable, U&lt;:Attributable](String)((T) ⇒ U):CachedAttribute[T, U]"></a>
       <h4 class="signature">
@@ -1196,6 +2553,30 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#truncate" data-isabs="false">
+      <a id="truncate(CompNode)((Term) ⇒ Boolean):CompNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">truncate</span><span class="params">(<span name="node">node: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>)</span><span class="params">(<span name="condition">condition: (Term) ⇒ <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">remove nodes from the tree based on a predicate</p><div class="fullcomment"><div class="comment cmt"><p>remove nodes from the tree based on a predicate</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.Optimiser#truncateAlreadyExecutedNodes" data-isabs="false">
+      <a id="truncateAlreadyExecutedNodes(CompNode)(ScoobiConfiguration):CompNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">truncateAlreadyExecutedNodes</span><span class="params">(<span name="node">node: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="../../core/ScoobiConfiguration.html">ScoobiConfiguration</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.CompNode" class="extype" href="../../core/CompNode.html">CompNode</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.comp.GraphNodes#uses" data-isabs="false">
       <a id="uses:CachedAttribute[T, Set[T]]"></a>
       <h4 class="signature">
@@ -1266,6 +2647,18 @@ this will be detected by Kiama throwing an exception when fetching the descenden
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li visbl="pub" name="org.kiama.rewriting.Rewriter#where" data-isabs="false">
+      <a id="where(⇒ Strategy):Strategy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">where</span><span class="params">(<span name="s">s: ⇒ <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>)</span><span class="result">: <span name="org.kiama.rewriting.Rewriter.Strategy" class="extype">Strategy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
     </li></ol>
             </div>
 
@@ -1301,6 +2694,10 @@ this will be detected by Kiama throwing an exception when fetching the descenden
               <h3>Inherited from <span name="scala.Equals" class="extype">Equals</span></h3>
             </div><div name="com.nicta.scoobi.impl.exec.ExecutionMode" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.impl.exec.ExecutionMode" class="extype" href="ExecutionMode.html">ExecutionMode</a></h3>
+            </div><div name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="parent">
+              <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.comp.Optimiser" class="extype" href="../plan/comp/Optimiser.html">Optimiser</a></h3>
+            </div><div name="org.kiama.rewriting.Rewriter" class="parent">
+              <h3>Inherited from <span name="org.kiama.rewriting.Rewriter" class="extype">Rewriter</span></h3>
             </div><div name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="parent">
               <h3>Inherited from <a name="com.nicta.scoobi.impl.plan.comp.ShowNode" class="extype" href="../plan/comp/ShowNode.html">ShowNode</a></h3>
             </div><div name="com.nicta.scoobi.impl.plan.comp.CompNodes" class="parent">

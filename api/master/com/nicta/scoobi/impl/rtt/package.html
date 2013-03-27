@@ -48,7 +48,19 @@
 
         <div class="types members" id="types">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.JarBuilder" data-isabs="false">
+              <ol><li visbl="pub" name="com.nicta.scoobi.impl.rtt.Configured" data-isabs="true">
+      <a id="Configured:Configured"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Configured.html"><span class="name">Configured</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt.JarBuilder" data-isabs="false">
       <a id="JarBuilder:JarBuilder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -193,7 +205,7 @@ and having WireFormats accessible for each tag
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiWritable.html"><span class="name">ScoobiWritable</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends Writable</span>
+        <a href="ScoobiWritable.html"><span class="name">ScoobiWritable</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends Writable with Configured</span>
       </span>
       </h4>
       <p class="comment cmt">The super-class of all &quot;value&quot; types used in Hadoop jobs.</p>
@@ -205,7 +217,7 @@ and having WireFormats accessible for each tag
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Tagged.html"><span class="name">Tagged</span></a><span class="result"> extends AnyRef</span>
+        <a href="Tagged.html"><span class="name">Tagged</span></a><span class="result"> extends Configured</span>
       </span>
       </h4>
       <p class="comment cmt">A collection of types indexed by a tag</p>
@@ -241,7 +253,7 @@ and having WireFormats accessible for each tag
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="TaggedMetadata.html"><span class="name">TaggedMetadata</span></a><span class="result"> extends AnyRef</span>
+        <a href="TaggedMetadata.html"><span class="name">TaggedMetadata</span></a><span class="result"> extends Configured</span>
       </span>
       </h4>
       <p class="comment cmt">Set of metadata, which can be a different tuple for each tag (and all tuples don't have to have the same size)

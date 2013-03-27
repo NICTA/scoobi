@@ -74,6 +74,18 @@
       <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
 environment with an do-nothing setup and cleanup phases
 </p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Checkpoint" data-isabs="true">
+      <a id="Checkpoint:Checkpoint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Checkpoint.html"><span class="name">Checkpoint</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Marks a Sink as a possible checkpoint in the computations</p>
     </li><li visbl="pub" name="com.nicta.scoobi.core.CompNode" data-isabs="true">
       <a id="CompNode:CompNode"></a>
       <h4 class="signature">
@@ -119,7 +131,7 @@ environment with an do-nothing setup and cleanup phases
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DataSink.html"><span class="name">DataSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends Sink</span>
+        <a href="DataSink.html"><span class="name">DataSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends Sink with Checkpoint</span>
       </span>
       </h4>
       <p class="comment cmt">An output store from a MapReduce job
@@ -244,10 +256,22 @@ environment
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="GroupingImplicits.html"><span class="name">GroupingImplicits</span></a><span class="result"> extends AnyRef</span>
+        <a href="GroupingImplicits.html"><span class="name">GroupingImplicits</span></a><span class="result"> extends GroupingImplicits0</span>
       </span>
       </h4>
       <p class="comment cmt">Implicit definitions of Grouping instances for common types.</p>
+    </li><li visbl="pub" name="com.nicta.scoobi.core.GroupingImplicits0" data-isabs="true">
+      <a id="GroupingImplicits0:GroupingImplicits0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GroupingImplicits0.html"><span class="name">GroupingImplicits0</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
     </li><li visbl="pub" name="com.nicta.scoobi.core.InputConverter" data-isabs="true">
       <a id="InputConverter:InputConverter[K, V, A]"></a>
       <h4 class="signature">
@@ -330,6 +354,30 @@ environment
       </span>
       <span class="symbol">
         <a href="ProcessNode.html"><span class="name">ProcessNode</span></a><span class="result"> extends CompNode</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction" data-isabs="true">
+      <a id="Reduction:Reduction[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Reduction.html"><span class="name">Reduction</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reductions" data-isabs="true">
+      <a id="Reductions:Reductions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Reductions.html"><span class="name">Reductions</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
@@ -422,6 +470,18 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="Association1$.html"><span class="name">Association1</span></a><span class="result"> extends AnyRef</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.BasicDoFn" data-isabs="false">
+      <a id="BasicDoFn:BasicDoFn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BasicDoFn$.html"><span class="name">BasicDoFn</span></a><span class="result"> extends AnyRef</span>
       </span>
       </h4>
       
@@ -519,6 +579,18 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="Mode$.html"><span class="name">Mode</span></a><span class="result"> extends Enumeration</span>
+      </span>
+      </h4>
+      
+    </li><li visbl="pub" name="com.nicta.scoobi.core.Reduction" data-isabs="false">
+      <a id="Reduction:Reduction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Reduction$.html"><span class="name">Reduction</span></a><span class="result"> extends Reductions</span>
       </span>
       </h4>
       

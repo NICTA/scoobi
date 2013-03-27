@@ -25,7 +25,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ListToSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>, <span name="V">V &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>, <span name="evidence$42">evidence$42: Manifest[K]</span>, <span name="evidence$43">evidence$43: Manifest[V]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
+        <span class="name">ListToSequenceFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[T]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span>
       </span>
       </h4>
       
@@ -58,14 +58,14 @@
         <div class="members" id="constructors">
               <h3>Instance Constructors</h3>
               <ol><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile#this" data-isabs="false">
-      <a id="this:ListToSequenceFile[K, V]"></a>
+      <a id="this:ListToSequenceFile[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ListToSequenceFile</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: Manifest[K]</span>, <span name="arg1">arg1: Manifest[V]</span>)</span>
+        <span class="name">ListToSequenceFile</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[T]</span>)</span>
       </span>
       </h4>
       
@@ -253,14 +253,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile#list" data-isabs="false">
-      <a id="list:DList[(K, V)]"></a>
+      <a id="list:DList[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">list</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[(K, V)]</span>
+        <span class="name">list</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="../core/DList.html">DList</a>[T]</span>
       </span>
       </h4>
       
@@ -361,14 +361,14 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li visbl="pub" name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile#toSequenceFile" data-isabs="false">
-      <a id="toSequenceFile(String,Boolean):T"></a>
+      <a id="toSequenceFile[K&lt;:Writable, V&lt;:Writable](String,Boolean)(&lt;:&lt;[T, (K, V)],Manifest[K],Manifest[V]):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toSequenceFile</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: T</span>
+        <span class="name">toSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>, <span name="V">V &lt;: <span name="org.apache.hadoop.io.Writable" class="extype">Writable</span></span>]</span><span class="params">(<span name="path">path: String</span>, <span name="overwrite">overwrite: <span name="scala.Boolean" class="extype">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span name="scala.Predef.&lt;:&lt;" class="extype">&lt;:&lt;</span>[T, (K, V)]</span>, <span name="km">km: Manifest[K]</span>, <span name="vm">vm: Manifest[V]</span>)</span><span class="result">: T</span>
       </span>
       </h4>
       
