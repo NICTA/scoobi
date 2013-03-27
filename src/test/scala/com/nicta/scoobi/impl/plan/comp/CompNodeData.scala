@@ -41,9 +41,9 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
 
   override implicit def defaultParameters = Parameters(
     arguments.commandLine.int("mintestsok").                    getOrElse(1000),
-    arguments.commandLine.int("maxsize").                       getOrElse(8),
-    arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
     arguments.commandLine.int("minsize").                       getOrElse(1),
+    arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
+    arguments.commandLine.int("maxsize").                       getOrElse(8),
     arguments.commandLine.int("workers").                       getOrElse(1))
 
   import Gen._
