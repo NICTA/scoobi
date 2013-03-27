@@ -2,24 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.plan.source</title>
+          <title>source - com.nicta.scoobi.impl.plan.source</title>
+          <meta name="description" content="source - com.nicta.scoobi.impl.plan.source" />
+          <meta name="keywords" content="source com.nicta.scoobi.impl.plan.source" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../../../lib/jquery.js"></script>
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.plan.source.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body class="value">
       <div id="definition">
         <img src="../../../../../../lib/package_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../../package.html">impl</a>.<a name="com.nicta.scoobi.impl.plan" class="extype" href="../package.html">plan</a></p>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a></p>
         <h1>source</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">package</span>
@@ -29,11 +44,11 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"></div>
-    
+          <div id="comment" class="fullcommenttop"></div>
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         
         
         <div id="visbl">
@@ -46,9 +61,10 @@
         <div id="allMembers">
         
 
-        <div class="types members" id="types">
+        <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.FunctionInput" data-isabs="true">
+              <ol><li name="com.nicta.scoobi.impl.plan.source.FunctionInput" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="FunctionInputextendsObject"></a>
       <a id="FunctionInput:FunctionInput"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -56,47 +72,51 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="FunctionInput.html"><span class="name">FunctionInput</span></a><span class="result"> extends AnyRef</span>
+        <a href="FunctionInput.html"><span class="name">FunctionInput</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Smart function for creating a distributed lists from a Scala function.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.FunctionInputFormat" data-isabs="false">
-      <a id="FunctionInputFormat:FunctionInputFormat[A]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="FunctionInputFormat[A]:FunctionInputFormat[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="FunctionInputFormat.html"><span class="name">FunctionInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends InputFormat[NullWritable, A]</span>
+        <a href="FunctionInputFormat.html"><span class="name">FunctionInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInputFormat.A">A</span>]</span>
       </span>
       </h4>
       <p class="comment cmt">InputFormat for producing values based on a function.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit" data-isabs="false">
-      <a id="FunctionInputSplit:FunctionInputSplit[A]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionInputSplit" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionInputSplit[A]extendsInputSplitwithWritable"></a>
+      <a id="FunctionInputSplit[A]:FunctionInputSplit[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="FunctionInputSplit.html"><span class="name">FunctionInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends InputSplit with Writable</span>
+        <a href="FunctionInputSplit.html"><span class="name">FunctionInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>
       </span>
       </h4>
       <p class="comment cmt">InputSplit for a range of values produced by a function.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader" data-isabs="false">
-      <a id="FunctionRecordReader:FunctionRecordReader[A]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionRecordReader[A]extendsRecordReader[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="FunctionRecordReader[A]:FunctionRecordReader[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="FunctionRecordReader.html"><span class="name">FunctionRecordReader</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends RecordReader[NullWritable, A]</span>
+        <a href="FunctionRecordReader.html"><span class="name">FunctionRecordReader</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader.A">A</span>]</span>
       </span>
       </h4>
       <p class="comment cmt">RecordReader for producing values based on a function.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.SeqInput" data-isabs="true">
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SeqInputextendsObject"></a>
       <a id="SeqInput:SeqInput"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -104,43 +124,46 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="SeqInput.html"><span class="name">SeqInput</span></a><span class="result"> extends AnyRef</span>
+        <a href="SeqInput.html"><span class="name">SeqInput</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Function for creating a distributed lists from a scala.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.SeqInputFormat" data-isabs="false">
-      <a id="SeqInputFormat:SeqInputFormat[A]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqInputFormat[A]extendsInputFormat[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="SeqInputFormat[A]:SeqInputFormat[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="SeqInputFormat.html"><span class="name">SeqInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends InputFormat[NullWritable, A]</span>
+        <a href="SeqInputFormat.html"><span class="name">SeqInputFormat</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInputFormat.A">A</span>]</span>
       </span>
       </h4>
       <p class="comment cmt">InputFormat for producing values based on a sequence.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.SeqInputSplit" data-isabs="false">
-      <a id="SeqInputSplit:SeqInputSplit[A]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInputSplit" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqInputSplit[A]extendsInputSplitwithWritable"></a>
+      <a id="SeqInputSplit[A]:SeqInputSplit[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="SeqInputSplit.html"><span class="name">SeqInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends InputSplit with Writable</span>
+        <a href="SeqInputSplit.html"><span class="name">SeqInputSplit</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span> with <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>
       </span>
       </h4>
       <p class="comment cmt">InputSplit for a range of values produced by a sequence.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.SeqRecordReader" data-isabs="false">
-      <a id="SeqRecordReader:SeqRecordReader[A]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqRecordReader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqRecordReader[A]extendsRecordReader[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="SeqRecordReader[A]:SeqRecordReader[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="SeqRecordReader.html"><span class="name">SeqRecordReader</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends RecordReader[NullWritable, A]</span>
+        <a href="SeqRecordReader.html"><span class="name">SeqRecordReader</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqRecordReader.A">A</span>]</span>
       </span>
       </h4>
       <p class="comment cmt">RecordReader for producing sequences</p>
@@ -149,9 +172,10 @@
 
         
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.FunctionInput" data-isabs="false">
+              <ol><li name="com.nicta.scoobi.impl.plan.source.FunctionInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionInput"></a>
       <a id="FunctionInput:FunctionInput"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -159,11 +183,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="FunctionInput$.html"><span class="name">FunctionInput</span></a><span class="result"> extends FunctionInput</span>
+        <a href="FunctionInput$.html"><span class="name">FunctionInput</span></a><span class="result"> extends <a href="FunctionInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionInput">FunctionInput</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan.source.SeqInput" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqInput"></a>
       <a id="SeqInput:SeqInput"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -171,7 +196,7 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="SeqInput$.html"><span class="name">SeqInput</span></a><span class="result"> extends SeqInput</span>
+        <a href="SeqInput$.html"><span class="name">SeqInput</span></a><span class="result"> extends <a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></span>
       </span>
       </h4>
       
@@ -179,10 +204,20 @@
             </div>
 
         
+
+        
         </div>
 
         <div id="inheritedMembers">
         
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
         </div>
 
       </div>

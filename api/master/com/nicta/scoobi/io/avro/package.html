@@ -2,24 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.io.avro</title>
+          <title>avro - com.nicta.scoobi.io.avro</title>
+          <meta name="description" content="avro - com.nicta.scoobi.io.avro" />
+          <meta name="keywords" content="avro com.nicta.scoobi.io.avro" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js"></script>
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.nicta.scoobi.io.avro.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body class="value">
       <div id="definition">
         <img src="../../../../../lib/package_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.io" class="extype" href="../package.html">io</a></p>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a></p>
         <h1>avro</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">package</span>
@@ -29,11 +44,11 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"></div>
-    
+          <div id="comment" class="fullcommenttop"></div>
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         
         
         <div id="visbl">
@@ -46,21 +61,23 @@
         <div id="allMembers">
         
 
-        <div class="types members" id="types">
+        <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroFixed" data-isabs="true">
-      <a id="AvroFixed:AvroFixed[T]"></a>
+              <ol><li name="com.nicta.scoobi.io.avro.AvroFixed" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AvroFixed[T]extendsObject"></a>
+      <a id="AvroFixed[T]:AvroFixed[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="AvroFixed.html"><span class="name">AvroFixed</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="AvroFixed.html"><span class="name">AvroFixed</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Provide an implicit of this, if your type is a fixed.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroParsingImplicits" data-isabs="true">
+    </li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AvroParsingImplicitsextendsObject"></a>
       <a id="AvroParsingImplicits:AvroParsingImplicits"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -68,23 +85,25 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="AvroParsingImplicits.html"><span class="name">AvroParsingImplicits</span></a><span class="result"> extends AnyRef</span>
+        <a href="AvroParsingImplicits.html"><span class="name">AvroParsingImplicits</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema" data-isabs="true">
-      <a id="AvroSchema:AvroSchema[A]"></a>
+    </li><li name="com.nicta.scoobi.io.avro.AvroSchema" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AvroSchema[A]extendsObject"></a>
+      <a id="AvroSchema[A]:AvroSchema[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="AvroSchema.html"><span class="name">AvroSchema</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="AvroSchema.html"><span class="name">AvroSchema</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Defines the Avro schema for a given Scala type.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.EnhancedSymbol" data-isabs="false">
+    </li><li name="com.nicta.scoobi.io.avro.EnhancedSymbol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EnhancedSymbolextendsAvroParsingImplicits"></a>
       <a id="EnhancedSymbol:EnhancedSymbol"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,7 +111,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="EnhancedSymbol.html"><span class="name">EnhancedSymbol</span></a><span class="result"> extends AvroParsingImplicits</span>
+        <a href="EnhancedSymbol.html"><span class="name">EnhancedSymbol</span></a><span class="result"> extends <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></span>
       </span>
       </h4>
       
@@ -101,9 +120,10 @@
 
         
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroInput" data-isabs="false">
+              <ol><li name="com.nicta.scoobi.io.avro.AvroInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AvroInput"></a>
       <a id="AvroInput:AvroInput"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -111,11 +131,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="AvroInput$.html"><span class="name">AvroInput</span></a><span class="result"> extends AvroParsingImplicits</span>
+        <a href="AvroInput$.html"><span class="name">AvroInput</span></a><span class="result"> extends <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></span>
       </span>
       </h4>
       <p class="comment cmt">Smart functions for materialising distributed lists by loading Avro files.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroOutput" data-isabs="false">
+    </li><li name="com.nicta.scoobi.io.avro.AvroOutput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AvroOutput"></a>
       <a id="AvroOutput:AvroOutput"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -123,11 +144,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="AvroOutput$.html"><span class="name">AvroOutput</span></a><span class="result"> extends AnyRef</span>
+        <a href="AvroOutput$.html"><span class="name">AvroOutput</span></a>
       </span>
       </h4>
       <p class="comment cmt">Smart functions for persisting distributed lists by storing them as Avro files.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.io.avro.AvroSchema" data-isabs="false">
+    </li><li name="com.nicta.scoobi.io.avro.AvroSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AvroSchema"></a>
       <a id="AvroSchema:AvroSchema"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -135,7 +157,7 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="AvroSchema$.html"><span class="name">AvroSchema</span></a><span class="result"> extends AnyRef</span>
+        <a href="AvroSchema$.html"><span class="name">AvroSchema</span></a>
       </span>
       </h4>
       
@@ -143,10 +165,20 @@
             </div>
 
         
+
+        
         </div>
 
         <div id="inheritedMembers">
         
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
         </div>
 
       </div>

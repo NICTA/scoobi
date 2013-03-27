@@ -2,24 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl</title>
+          <title>impl - com.nicta.scoobi.impl</title>
+          <meta name="description" content="impl - com.nicta.scoobi.impl" />
+          <meta name="keywords" content="impl com.nicta.scoobi.impl" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body class="value">
       <div id="definition">
         <img src="../../../../lib/package_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a></p>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a></p>
         <h1>impl</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">package</span>
@@ -29,11 +44,11 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"></div>
-    
+          <div id="comment" class="fullcommenttop"></div>
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         
         
         <div id="visbl">
@@ -46,9 +61,10 @@
         <div id="allMembers">
         
 
-        <div class="types members" id="types">
+        <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.Configurations" data-isabs="true">
+              <ol><li name="com.nicta.scoobi.impl.Configurations" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ConfigurationsextendsObject"></a>
       <a id="Configurations:Configurations"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -56,12 +72,13 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Configurations.html"><span class="name">Configurations</span></a><span class="result"> extends AnyRef</span>
+        <a href="Configurations.html"><span class="name">Configurations</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait adds functionalities to Hadoop's Configuration object
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.Persister" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.Persister" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PersisterextendsObject"></a>
       <a id="Persister:Persister"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -69,11 +86,12 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="Persister.html"><span class="name">Persister</span></a><span class="result"> extends AnyRef</span>
+        <a href="Persister.html"><span class="name">Persister</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScoobiConfigurationImplextendsScoobiConfigurationwithProductwithSerializable"></a>
       <a id="ScoobiConfigurationImpl:ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -81,11 +99,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiConfigurationImpl.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: Configuration</span>, <span name="userJars">userJars: Set[String]</span>, <span name="userDirs">userDirs: Set[String]</span>, <span name="classLoader">classLoader: Option[ScalaClassLoader]</span>)</span><span class="result"> extends ScoobiConfiguration with Product with Serializable</span>
+        <a href="ScoobiConfigurationImpl.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurations" data-isabs="true">
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurations" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ScoobiConfigurationsextendsObject"></a>
       <a id="ScoobiConfigurations:ScoobiConfigurations"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +112,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiConfigurations.html"><span class="name">ScoobiConfigurations</span></a><span class="result"> extends AnyRef</span>
+        <a href="ScoobiConfigurations.html"><span class="name">ScoobiConfigurations</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
@@ -102,9 +121,10 @@
 
         
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.Configurations" data-isabs="false">
+              <ol><li name="com.nicta.scoobi.impl.Configurations" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Configurations"></a>
       <a id="Configurations:Configurations"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -112,11 +132,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Configurations$.html"><span class="name">Configurations</span></a><span class="result"> extends Configurations</span>
+        <a href="Configurations$.html"><span class="name">Configurations</span></a><span class="result"> extends <a href="Configurations.html" class="extype" name="com.nicta.scoobi.impl.Configurations">Configurations</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfiguration" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfiguration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScoobiConfiguration"></a>
       <a id="ScoobiConfiguration:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -124,11 +145,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiConfiguration$.html"><span class="name">ScoobiConfiguration</span></a><span class="result"> extends ScoobiConfigurations</span>
+        <a href="ScoobiConfiguration$.html"><span class="name">ScoobiConfiguration</span></a><span class="result"> extends <a href="ScoobiConfigurations.html" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurations">ScoobiConfigurations</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScoobiConfigurationImpl"></a>
       <a id="ScoobiConfigurationImpl:ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -136,11 +158,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="ScoobiConfigurationImpl$.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="result"> extends Serializable</span>
+        <a href="ScoobiConfigurationImpl$.html"><span class="name">ScoobiConfigurationImpl</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.collection" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.collection" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="collection"></a>
       <a id="collection:collection"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -152,7 +175,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.control" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.control" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="control"></a>
       <a id="control:control"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -164,7 +188,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.exec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="exec"></a>
       <a id="exec:exec"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -176,7 +201,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.io" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.io" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="io"></a>
       <a id="io:io"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -188,7 +214,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.mapreducer" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.mapreducer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mapreducer"></a>
       <a id="mapreducer:mapreducer"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -200,7 +227,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.monitor" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.monitor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="monitor"></a>
       <a id="monitor:monitor"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -212,7 +240,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.plan" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.plan" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="plan"></a>
       <a id="plan:plan"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -224,7 +253,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.reflect" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.reflect" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reflect"></a>
       <a id="reflect:reflect"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -236,7 +266,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.rtt" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.rtt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rtt"></a>
       <a id="rtt:rtt"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -248,7 +279,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.text" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.text" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="text"></a>
       <a id="text:text"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -260,7 +292,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.util" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="util"></a>
       <a id="util:util"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -276,10 +309,20 @@
             </div>
 
         
+
+        
         </div>
 
         <div id="inheritedMembers">
         
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
         </div>
 
       </div>

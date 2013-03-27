@@ -2,24 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi</title>
+          <title>scoobi - com.nicta.scoobi</title>
+          <meta name="description" content="scoobi - com.nicta.scoobi" />
+          <meta name="keywords" content="scoobi com.nicta.scoobi" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../lib/template.css" />
-      <script type="text/javascript" src="../../../lib/jquery.js"></script>
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'com.nicta.scoobi.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body class="value">
       <div id="definition">
         <img src="../../../lib/package_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../package.html">com</a>.<a name="com.nicta" class="extype" href="../package.html">nicta</a></p>
+        <p id="owner"><a href="../../package.html" class="extype" name="com">com</a>.<a href="../package.html" class="extype" name="com.nicta">nicta</a></p>
         <h1>scoobi</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">package</span>
@@ -29,11 +44,11 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"></div>
-    
+          <div id="comment" class="fullcommenttop"></div>
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         
         
         <div id="visbl">
@@ -50,9 +65,10 @@
 
         
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.Scoobi" data-isabs="false">
+              <ol><li name="com.nicta.scoobi.Scoobi" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Scoobi"></a>
       <a id="Scoobi:Scoobi"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -60,11 +76,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="Scoobi$.html"><span class="name">Scoobi</span></a><span class="result"> extends WireFormatImplicits with GroupingImplicits with Application with InputsOutputs with Persist with Library with DObjects with Reductions with ScoobiConfigurations</span>
+        <a href="Scoobi$.html"><span class="name">Scoobi</span></a><span class="result"> extends <a href="core/WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a> with <a href="core/GroupingImplicits.html" class="extype" name="com.nicta.scoobi.core.GroupingImplicits">GroupingImplicits</a> with <a href="application/Application.html" class="extype" name="com.nicta.scoobi.application.Application">Application</a> with <a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a> with <a href="application/Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a> with <a href="lib/Library.html" class="extype" name="com.nicta.scoobi.lib.Library">Library</a> with <a href="application/DObjects.html" class="extype" name="com.nicta.scoobi.application.DObjects">DObjects</a> with <a href="core/Reductions.html" class="extype" name="com.nicta.scoobi.core.Reductions">Reductions</a> with <a href="impl/ScoobiConfigurations.html" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurations">ScoobiConfigurations</a></span>
       </span>
       </h4>
       <p class="comment cmt">Global Scoobi functions and values.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.application" data-isabs="false">
+    </li><li name="com.nicta.scoobi.application" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="application"></a>
       <a id="application:application"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -76,7 +93,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.codegen" data-isabs="false">
+    </li><li name="com.nicta.scoobi.codegen" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="codegen"></a>
       <a id="codegen:codegen"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +106,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core" data-isabs="false">
+    </li><li name="com.nicta.scoobi.core" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="core"></a>
       <a id="core:core"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -100,7 +119,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="impl"></a>
       <a id="impl:impl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -112,7 +132,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.io" data-isabs="false">
+    </li><li name="com.nicta.scoobi.io" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="io"></a>
       <a id="io:io"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -124,7 +145,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.lib" data-isabs="false">
+    </li><li name="com.nicta.scoobi.lib" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="lib"></a>
       <a id="lib:lib"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -136,7 +158,8 @@
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing" data-isabs="false">
+    </li><li name="com.nicta.scoobi.testing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="testing"></a>
       <a id="testing:testing"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -152,10 +175,20 @@
             </div>
 
         
+
+        
         </div>
 
         <div id="inheritedMembers">
         
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
         </div>
 
       </div>

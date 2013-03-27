@@ -1,0 +1,700 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../../css/maven-base.css');
+        @import url('./../../css/maven-theme.css');
+      </style>
+      <link href="./../../css/prettify.css" type="text/css" rel="stylesheet" />
+      <script type="text/javascript" src="./../../css/prettify.js"></script>
+      <link rel="stylesheet" href="./../../css/print.css" type="text/css" media="print" />
+      <link href="./../../css/tooltip.css" rel="stylesheet" type="text/css" />
+      <link href="./../../css/specs2-user.css" type="text/css" rel="stylesheet" />
+
+      <script type="text/javascript" src="./../../css/jquery.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = image.src.replace('expanded', 'collapsed');
+        else 
+          image.src = image.src.replace('collapsed', 'expanded');
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../../css/tabber.js"></script>
+      <link rel="stylesheet" href="./../../css/tabber.css" type="text/css" media="screen" />
+      <title>Input and Output</title>
+    </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html">InputOutput</a></div><div class="colmask threecol">
+                   <div class="colmid">
+                     <div class="colleft">
+                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="1222016353">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
+<pre><code class="prettyprint">// load a single text file
+val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/file&quot;)
+
+// load multiple text files
+val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/file1&quot;, &quot;hdfs://path/to/file2&quot;)
+
+// load from a list of text files
+val textFiles = List(&quot;hdfs://path/to/file1&quot;, &quot;hdfs://path/to/file2&quot;)
+val lines: DList[String] = fromTextFile(textFiles)
+</code></pre><p>In the case where mulitple paths are specified, in out <code class="prettyprint">DList</code> we may also want to know which file a particular line of text orginated from. This can be achieved with <code class="prettyprint">fromTextFileWithPath</code>:</p>
+<pre><code class="prettyprint">// load a list of text files
+val textFiles = List(&quot;hdfs://path/to/file1&quot;, &quot;hdfs://path/to/file2&quot;)
+val lines: DList[(String, String)] = fromTextFileWithPath(textFiles)
+</code></pre><p>The resultant <code class="prettyprint">DList</code> in this example is of type <code class="prettyprint">(String, String)</code>. Here the second part of the pair is a line of text, just as you would have if <code class="prettyprint">fromTextFile</code> was used. The first part of the pair is the path of the file the text file originated from.</p><p>Whilst some problems involve working with entire lines of text, often it's the case that we are interested in loading delimited text files, for example, comma separated value (CSV) or tab separated value (TSV) files and want to extract values from <em>fields</em>. In this case, we could use <code class="prettyprint">fromTextFile</code> followed by a <code class="prettyprint">map</code> that pulls out fields of interest:</p>
+<pre><code class="prettyprint">// load CSV with schema &quot;id,first_name,second_name,age&quot;
+val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/CVS/files/*&quot;)
+
+// pull out id and second_name
+val names: DList[(Int, String)] = lines map { line =&gt;
+  val fields = line.split(&quot;,&quot;)
+  (fields(0).toInt, fields(2))
+}
+</code></pre><p>Given that these types of field extractions from delimited text files are such a common task, Scoobi provides a more convenient mechanism for achieving this:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CVS/files/*&quot;, &quot;,&quot;) {
+  case Int(id) :: first_name :: second_name :: age :: _ =&gt; (id, second_name)
+}
+</code></pre><p>As this example illustrates, the call to <code class="prettyprint">fromDelimitedTextFile</code> takes a number of arguements. The first argument specifies the path and the second is the delimiter, in this case a comma. Following is a second <em>parameter list</em> that is used to specify how to extract fields once they are separated out. This is specified by supplying a <em>partial function</em> that takes a list of separated <code class="prettyprint">String</code> fields as its input and returns a value whose type will set the type of the resulting <code class="prettyprint">DList</code> - i.e. a <code class="prettyprint">PartialFunction[List[String], A]</code> will create a <code class="prettyprint">DList[A]</code> (where <code class="prettyprint">A</code> is <code class="prettyprint">(Int, String)</code> above). In this example, we use Scala's <a href="http://www.scala-lang.org/node/120">pattern matching</a> feature to <em>pull out</em> the four fields and return the first and third.</p><p>In addition Scoobi also provides a number of <a href="http://www.scala-lang.org/node/112">extractors</a> for automatically checking and converting of fields to an expected type. In the above example, the <code class="prettyprint">Int</code> extractor is used to specify that the <code class="prettyprint">id</code> field must be an integer in order for the <code class="prettyprint">case</code> statement to match. In the case of a match, it also has the effect of typing <code class="prettyprint">id</code> as an <code class="prettyprint">Int</code>. Field extractors are provided for <code class="prettyprint">Int</code>, <code class="prettyprint">Long</code>, <code class="prettyprint">Double</code> and <code class="prettyprint">Float</code>.</p><p>One of the advantages of using <code class="prettyprint">fromDelimitedTextFile</code> is that we have at our disposal all of the Scala pattern matching features, and because we are providing a partial function, any fields that don't match against the supplied pattern will not be present in the returned <code class="prettyprint">DList</code>. This allows us to implement simple filtering inline with the extraction:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name if first_name is &quot;Harry&quot;
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case Int(id) :: &quot;Harry&quot; :: second_name :: age :: _ =&gt; (id, second_name)
+}
+</code></pre><p>We can of course supply multiple patterns:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name if first_name is &quot;Harry&quot; or &quot;Lucy&quot;
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case Int(id) :: &quot;Harry&quot; :: second_name :: age :: _ =&gt; (id, second_name)
+  case Int(id) :: &quot;Lucy&quot;  :: second_name :: age :: _ =&gt; (id, second_name)
+}
+</code></pre><p>And, a more interesting example is when the value of one field influences the semantics of another. For example:</p>
+<pre><code class="prettyprint">val thisYear: Int = ...
+
+// load CSV with schema &quot;event,year,year_designation&quot; and pull out event and how many years ago it occurred
+val yearsAgo: DList[(String, Int)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case event :: Int(year) :: &quot;BC&quot; :: _ =&gt; (event, thisYear + year - 1) // No 0 AD
+  case event :: Int(year) :: &quot;AD&quot; :: _ =&gt; (event, thisYear - year)
+}
+</code></pre><a name="Text+file+output"><h4>Text file output</h4></a><p>The simplest mechanism for persisting a <code class="prettyprint">DList</code> of any type is to store it as a text file using <code class="prettyprint">toTextFile</code>. This will simply invoke the <code class="prettyprint">toString</code> method of the type that the <code class="prettyprint">DList</code> is parameterised on:</p>
+<pre><code class="prettyprint">// output text file of the form:
+//    34
+//    3984
+//    732
+val ints: DList[Int] = ...
+persist(ints.toTextFile(&quot;hdfs://path/to/output&quot;))
+
+// output text file of the form:
+//    (foo, 6)
+//    (bob, 23)
+//    (joe, 91)
+val stringsAndInts: DList[(String, Int)] = ...
+persist(stringsAndInts.toTextFile(&quot;hdfs://path/to/output&quot;))
+
+// output text file of the form:
+//    (foo, List(6, 3, 2))
+//    (bob, List(23, 82, 1))
+//    (joe, List(91, 388, 3))
+val stringsAndListOfInts: DList[(String, List[Int])] = ...
+persist(stringsAndListOfInts.toTextFile(&quot;hdfs://path/to/output&quot;))
+</code></pre><p>In the same way that <code class="prettyprint">toString</code> is used primarily for debugging purposes, <code class="prettyprint">toTextFile</code> is best used for the same purpose. The reason is that the string representation for any reasonably complex type is generally<br />not convenient for input parsing. For cases where text file output is still important, and the output must be easily parsed, there are two options.</p><p>The first is to simply <code class="prettyprint">map</code> the <code class="prettyprint">DList</code> elements to formatted strings that are easily parsed. For example:</p>
+<pre><code class="prettyprint">// output text file of the form:
+//    foo,6
+//    bob,23
+//    joe,91
+val stringsAndInts: DList[(String, Int)] = ...
+val formatted: DList[String] = stringAndInts map { case (s, i) =&gt; s + &quot;,&quot; + i }
+persist(stringsAndInts.toTextFile(&quot;hdfs://path/to/output&quot;))
+</code></pre><p>The second option is for cases when the desired output is a delimited text file, for example, a CSV or TSV. In this case, if the <code class="prettyprint">DList</code> is parameterised on a <code class="prettyprint">Tuple</code>, <em>case class</em>, or any <code class="prettyprint">Product</code> type, <code class="prettyprint">toDelimitedTextFile</code> can be used:</p>
+<pre><code class="prettyprint">// output text file of the form:
+//    foo,6
+//    bob,23
+//    joe,91
+val stringsAndInts: DList[(String, Int)] = ...
+persist(stringsAndInts.toDelimitedTextFile(&quot;hdfs://path/to/output&quot;, &quot;,&quot;))
+
+// output text file of the form:
+//    foo,6
+//    bob,23
+//    joe,91
+case class PeopleAges(name: String, age: Int)
+val peopleAndAges: DList[PeopleAges] = ...
+persist(peopleAndAges.toDelimitedTextFile(&quot;hdfs://path/to/output&quot;, &quot;,&quot;))
+</code></pre><a name="Sequence+files"><h3>Sequence files</h3></a><p>Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as <code class="prettyprint">DList</code>s as well as for persisting <code class="prettyprint">DList</code>s as Sequence files. For more detail refer to the API docs for both Sequence file <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.sequence.SeqInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.sequence.SeqOutput$">output</a>.</p><a name="Sequence+file+input"><h4>Sequence file input</h4></a><p>A Sequence file is a binary file of key-value pairs where the types of the key and value must be <code class="prettyprint">Writable</code> (i.e. are classes that implement the <code class="prettyprint">Writable</code> interface). Given a Sequence file of <code class="prettyprint">Writable</code> key-value pairs, a <code class="prettyprint">DList</code> can be constructed:</p>
+<pre><code class="prettyprint">// load a sequence file
+val events: DList[(TimestampWritable, TransactionWritable)] = fromSequenceFile(&quot;hdfs://path/to/transactions&quot;)
+
+// alternatively
+val events = fromSequenceFile[(TimestampWritable, TransactionWritable)](&quot;hdfs://path/to/transactions&quot;)
+</code></pre><p>In this example, a Sequence file is being loaded where the key is of type <code class="prettyprint">TimestampWritable</code> and the value is of type <code class="prettyprint">TransactionWritable</code>. The result is a <code class="prettyprint">DList</code> paramterised by the same key-value types. Note that whilst the classes associated with the key and value are specified within the header of a Sequence file, when using <code class="prettyprint">fromSequenceFile</code> they must also be specified. The signature of <code class="prettyprint">fromSequenceFile</code> will enforce that the key and value types do implement the <code class="prettyprint">Writable</code> interface, however, there are no static checks to ensure that the specified types actually match the contents of a Sequence file. It is the responsibility of the user to ensure there is a match else a run-time error will result.</p><p>Like <code class="prettyprint">fromTextFile</code>, <code class="prettyprint">fromSequenceFile</code> can also be passed multiple input paths as long as all files contain keys and values of the same type:</p>
+<pre><code class="prettyprint">// load multiple sequence file
+val events: DList[(TimestampWritable, TransactionWritable)] =
+  fromSequenceFile(&quot;hdfs://path/to/transactions1&quot;, &quot;hdfs://path/to/transaction2&quot;)
+
+// load from a list of sequence file
+val transactionFiles = List(&quot;hdfs://path/to/transactions1&quot;, &quot;hdfs://path/to/transaction2&quot;)
+val events: DList[(TimestampWritable, TransactionWritable)] = fromSequenceFile(transactionFiles)
+</code></pre><p>In some situations only the key or value needs to be loaded. To make this use case more convient, Scoobi provides two additional methods: <code class="prettyprint">keyFromSequenceFile</code> and <code class="prettyprint">valueFromSequnceFile</code>. When using <code class="prettyprint">keyFromSequenceFile</code> or<br /><code class="prettyprint">valueFromSequnceFile</code>, Scoobi ignores the value or key, respectively, assuming it is just some <code class="prettyprint">Writable</code> type:</p>
+<pre><code class="prettyprint">// load keys only from an IntWritable-Text Sequence file
+val ints: DList[IntWritable] = keyFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+
+// load values only from an IntWritable-Text Sequence file
+val strings: DList[Text] = valueFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+</code></pre><p>Hadoop's Sequence files provide a convenient mechanism for persisting data of custom types (so long as they implement <code class="prettyprint">Writable</code>) in a binary file format. Hadoop also includes a number of a number of common <code class="prettyprint">Writable</code> types, such as <code class="prettyprint">IntWritable</code> and <code class="prettyprint">Text</code> that can be used within an application. For Sequence files containing keys and/or values of these common types, Scoobi provides additional convenience methods for constructing a <code class="prettyprint">DList</code> and<br />automatically converting values to common Scala types:</p>
+<pre><code class="prettyprint">// load a IntWritable-Text sequence file
+val data: DList[(Int, String)] = convertFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+</code></pre><p>In the above code, a Sequence file of <code class="prettyprint">IntWritable</code>-<code class="prettyprint">Text</code> pairs is being loaded as a <code class="prettyprint">DList</code> of <code class="prettyprint">Int</code>-<code class="prettyprint">String</code> pairs. Just as with <code class="prettyprint">fromSequenceFile</code>, type annotations are necessary, but in this case, the <code class="prettyprint">(Int, String)</code> annotation is signalling that the Sequence file is contains <code class="prettyprint">IntWritable</code>-<code class="prettyprint">Text</code> pairs, not <code class="prettyprint">Int</code>-<code class="prettyprint">String</code> pairs. The table below lists the <code class="prettyprint">Writable</code> conversions supported by <code class="prettyprint">convertFromSequenceFile</code>:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Writable type </th>
+      <th>Scala type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="prettyprint">BooleanWritable</code> </td>
+      <td><code class="prettyprint">Boolean</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">IntWritable</code> </td>
+      <td><code class="prettyprint">Int</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">FloatWritable</code> </td>
+      <td><code class="prettyprint">Float</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">LongWritable</code> </td>
+      <td><code class="prettyprint">Long</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">DoubleWritable</code> </td>
+      <td><code class="prettyprint">Double</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Text</code> </td>
+      <td><code class="prettyprint">String</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">ByteWritable</code> </td>
+      <td><code class="prettyprint">Byte</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">BytesWritable</code> </td>
+      <td><code class="prettyprint">Traversable[Byte]</code></td>
+    </tr>
+  </tbody>
+</table><p>Conversion support for <code class="prettyprint">BytesWritable</code> is interesting as the type of Scala collection it converts to is not fixed and can be controlled by the user. For example, it is possible to specify conversion to <code class="prettyprint">List[Byte]</code> or <code class="prettyprint">Seq[Byte]</code>:</p>
+<pre><code class="prettyprint">// load a DoubleWritable-BytesWritable sequence file
+val data: DList[(Double, List[Byte])] = convertFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+
+// also ok
+val data: DList[(Double, Seq[Byte])] = convertFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+</code></pre><p>Finally, two additional conversion methods are provided for loading only the key or value component, <code class="prettyprint">convertKeyFromSequenceFile</code> and <code class="prettyprint">convertValueToSequenceFile</code>:</p>
+<pre><code class="prettyprint">// load keys only from an IntWritable-Text Sequence file
+val ints: DList[Int] = convertKeyFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+
+// load values only from an IntWritable-Text Sequence file
+val strings: DList[String] = convertValueFromSequenceFile(&quot;hdfs://path/to/file&quot;)
+</code></pre><a name="Sequence+file+output"><h4>Sequence file output</h4></a><p>The available mechanism for persisting a <code class="prettyprint">DList</code> to a Sequence file mirror those for persisting. The <code class="prettyprint">toSequenceFile</code> method can be used to persist a <code class="prettyprint">DList</code> of a <code class="prettyprint">Writable</code> pair:</p>
+<pre><code class="prettyprint">val intText: DList[(IntWritable, Text)] = ...
+persist(intText.toSequenceFile(&quot;hdfs://path/to/output&quot;))
+</code></pre><p>In cases where we want to persist a <code class="prettyprint">DList</code> to a Sequence file but its type parameter is not a <code class="prettyprint">Writable</code> pair, single <code class="prettyprint">Writable</code> can be stored as the key or the value, the other being <code class="prettyprint">NullWritable</code>:</p>
+<pre><code class="prettyprint">// persist as IntWritable-NullWritable Sequence file
+val ints: DList[IntWritable] = ...
+persist(ints.keyToSequenceFile(&quot;hdfs://path/to/output&quot;))
+
+// persist as NullWritable-IntWritable Sequence file
+val ints: DList[IntWritable] = ...
+persist(ints.valueToSequenceFile(&quot;hdfs://path/to/output&quot;))
+</code></pre><p>Like loading, <code class="prettyprint">DList</code>s of simple Scala types can be automatically converted to <code class="prettyprint">Writable</code> types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only veesions are also provided:</p>
+<pre><code class="prettyprint">// persist as Int-String Sequence fille
+val intString: DList[(Int, String)] = ...
+persist(intString.convertToSequenceFile(&quot;hdfs://path/to/output&quot;))
+
+// persist as Int-NullWritable Sequence fille
+val intString: DList[(Int, String)] = ...
+persist(intString.convetKeyToSequenceFile(&quot;hdfs://path/to/output&quot;))
+
+// persist as NullWritable-Int Sequence fille
+val intString: DList[(Int, String)] = ...
+persist(intString.convertValueFromSequenceFile(&quot;hdfs://path/to/output&quot;))
+</code></pre><a name="Avro+files"><h3>Avro files</h3></a><p><a href="http://avro.apache.org/">Avro</a> is a language-agnostic specification for data serialization. From a Hadoop perspective it has a lot of the attributes of Sequence files with the addition of features such as evolvable schemas.</p><p>Avro <em>schemas</em> describe the structure of data and are the key to creating or loading an Avro file. Scoobi provides a mechansim for mapping between Avro schemas and Scala types such that an Avro file can be easily loaded as a <code class="prettyprint">DList</code> with the correct type parameterization, and a <code class="prettyprint">DList</code> can be easily persisted as an Avro file with the correct schema.</p><a name="Avro+schemas"><h4>Avro schemas</h4></a><p>The mechanism for mapping between Avro schemas and Scala types is the <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.avro.AvroSchema"><code class="prettyprint">AvroSchema</code></a> type class. Instances are provided for all Scala types that have sensbile mappings to Avro schema elements:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Scala type </th>
+      <th>Avro Schema</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="prettyprint">Boolean</code> </td>
+      <td><code class="prettyprint">boolean</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Int</code> </td>
+      <td><code class="prettyprint">int</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Float</code> </td>
+      <td><code class="prettyprint">gloat</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Long</code> </td>
+      <td><code class="prettyprint">long</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Double</code> </td>
+      <td><code class="prettyprint">double</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">String</code> </td>
+      <td><code class="prettyprint">string</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Traversable[_]</code> </td>
+      <td><code class="prettyprint">array</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Array[_]</code> </td>
+      <td><code class="prettyprint">array</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Map[_,_]</code> </td>
+      <td><code class="prettyprint">map</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple2[_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple3[_,_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple4[_,_,_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple5[_,_,_,_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple6[_,_,_,_,_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple7[_,_,_,_,_,_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+    <tr>
+      <td><code class="prettyprint">Tuple8[_,_,_,_,_,_,_,_]</code> </td>
+      <td><code class="prettyprint">record</code></td>
+    </tr>
+  </tbody>
+</table><p>Note that, like Avro schemas, the Scala types can be fully nested. For example, the Scala type:</p>
+<pre><code class="prettyprint">(Int, Seq[(Float, String)], Map[String, Int])
+</code></pre><p>would map to the Avro schema:</p>
+<pre><code class="prettyprint">{
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;name&quot;: &quot;tup74132vn1nc193418&quot;,      // Scoobi-generated UUID
+  &quot;fields&quot; : [
+    {
+      &quot;name&quot;: &quot;v0&quot;,
+      &quot;type&quot;: &quot;int&quot;
+    },
+    {
+      &quot;name&quot;: &quot;v1&quot;,
+      &quot;type&quot;: {
+        &quot;type&quot;: &quot;array&quot;,
+        &quot;items&quot;: {
+          &quot;type&quot;: {
+            &quot;type&quot;: &quot;record&quot;,
+            &quot;name&quot;: &quot;tup44132vr1ng198419&quot;,
+            &quot;fields&quot;: [
+              {
+                &quot;name&quot;: &quot;v0&quot;,
+                &quot;type&quot;: &quot;float&quot;
+              },
+              {
+                &quot;name&quot;: &quot;v1&quot;,
+                &quot;type&quot;: &quot;string&quot;
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      &quot;name&quot;: &quot;v2&quot;,
+      &quot;type&quot;: {
+        &quot;type&quot;: &quot;map&quot;,
+        &quot;values&quot;: &quot;int&quot;
+      }
+    }
+  ]
+}
+</code></pre><a name="Avro+file+input"><h4>Avro file input</h4></a><p>The method <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.avro.AvroInput$"><code class="prettyprint">fromAvroFile</code></a> is used to load an Avro file as a <code class="prettyprint">DList</code>:</p>
+<pre><code class="prettyprint">val xs = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])](&quot;hdfs://path/to/file&quot;)
+</code></pre><p>As with <code class="prettyprint">fromSequenceFile</code>, the compiler needs to know the type of avroFile you are loading. If the file doesn't match this schema, a runtime error will occur. <code class="prettyprint">fromAvroFile</code> has a default argument <code class="prettyprint">checkSchemas</code> that tries to fail-fast by verifying the schema matches. </p><p>Note that for compilation to succeed, there must be an <code class="prettyprint">AvroSchema</code> instance for the particular type you are using. For example, the following will fail unless an <code class="prettyprint">AvroSchema</code> type class instance for <code class="prettyprint">Person</code> is implemented and in scope:</p>
+<pre><code class="prettyprint">case class Person(name: String, age: Int)
+
+// will not compile, unless you provide an AvroSchema
+val people = fromAvroFile[Person](&quot;hdfs://path/to/file&quot;)
+</code></pre><p>However, there is is a scala-avro plugin to make this pretty painless (See: examples/avro for an example)</p><p>And naturally, <code class="prettyprint">fromAvroFile</code> supports loading from multiple files:</p>
+<pre><code class="prettyprint">// load multiple Avro files
+val xs: DList[(Int, String, Float)] = fromAvroFile(&quot;hdfs://path/to/file1&quot;, &quot;hdfs://path/to/file2&quot;)
+
+// load from a list of Avro file
+val files = List(&quot;hdfs://path/to/file1&quot;, &quot;hdfs://path/to/file2&quot;)
+val xs: DList[(Int, String, Float)] = fromAvroFile(files)
+</code></pre><a name="Avro+file+output"><h4>Avro file output</h4></a><p>To persist a <code class="prettyprint">DList</code> to an Avro file, Scoobi provides the method <a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.avro.AvroOutput$"><code class="prettyprint">toAvroFile</code></a>. Again, in order for compilation to succeed, the <code class="prettyprint">DList</code> must be paramterised on a type that has an <code class="prettyprint">AvroSchema</code> type class instance implemented:</p>
+<pre><code class="prettyprint">val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = ...
+persist(xs.toAvroFile(&quot;hdfs://path/to/file&quot;)
+</code></pre><a name="With+a+predefined+avro+schema"><h4>With a predefined avro schema</h4></a><p>Any type that extends org.apache.avro.generic.GenericContainer scoobi knows how to generate a WireFormat for. This means that scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given avro record/protocol. See <code class="prettyprint">examples/avro</code> for an example of this plugin in action</p><a name="Without+files"><h3>Without files</h3></a><p>Because Scoobi is a library for constructing Hadoop applications, <em>data</em> input and ouput is typically synonymous with <em>file</em> input and output. Whilst Scoobi provides numerous mechanism for creating new <code class="prettyprint">DList</code> objects from files (and multiple file types), it also has some simple ways for constructing a <code class="prettyprint">DList</code> without files.</p><p>The simplest way of creating a new <code class="prettyprint">DList</code> object is to use the <code class="prettyprint">DList</code> companion object's <code class="prettyprint">apply</code> method. This behaves just like the Scala <code class="prettyprint">List</code> version:</p>
+<pre><code class="prettyprint">// create a DList[Int] object
+val ints = DList(1, 2, 3, 4)
+
+// create a DList[String] object
+val strings = DList(&quot;bob&quot;, &quot;mary&quot;, &quot;jane&quot;, &quot;fred&quot;)
+
+// create a DList[(String, Int)] object
+val ages = DList((&quot;bob&quot;, 12), (&quot;mary&quot;, 33), (&quot;jane&quot;, 61), (&quot;fred&quot;, 24))
+</code></pre><p>As a convenience, the <code class="prettyprint">apply</code> method is also overloaded to handle the special case of integer ranges. This allows a <code class="prettyprint">DList</code> of <code class="prettyprint">Int</code> values to be constructed than can span a range:</p>
+<pre><code class="prettyprint">// all integers from 0 to 1023
+val manyInts: DList[Int] = DList(0 to 1023)
+</code></pre><p>Whilst using <code class="prettyprint">apply</code> is simple, this is typically not all that useful in practice. The purpose of a <code class="prettyprint">DList</code> is to abstract large volumes of data. Using the <code class="prettyprint">apply</code> method in this way, only memory-bound data sizes can be handled. As an alternative, the <code class="prettyprint">tabulate</code> method can be used to create much larger <code class="prettyprint">DList</code> objects where an element <em>value</em> can be specified by a function applied to an element <em>index</em>. This is particularly useful for creating randomized <code class="prettyprint">DList</code> objects:</p>
+<pre><code class="prettyprint">// random integer values
+val randomInts = DList.tabulate(1000 * 1000)(_ =&gt; Random.nextInt())
+
+// words pairs taken randomly from a bag of words
+val words: Set[String] = ...
+def hash(i: Int) = (i * 314 + 56) % words.size
+val randomWords: DList[(String, String)] = DList.tabulate(1000 * 1000)(ix =&gt; (hash(ix), hash(ix + 1)))
+</code></pre><p>Finally, for pure convenience, with Scoobi all Scala <code class="prettyprint">Traversable</code> collections can be converted to <code class="prettyprint">DList</code> objects via <em>pimping</em> and <code class="prettyprint">toDList</code>:</p>
+<pre><code class="prettyprint">val wordList = List(&quot;hello&quot;, &quot;big&quot;, &quot;data&quot;, &quot;world&quot;)
+val wordDList: DList[String] = wordList.toDList
+
+val numbersMap = Map(&quot;one&quot; -&gt; 1, &quot;two&quot; -&gt; 2, &quot;three&quot; -&gt; 3)
+val numbersDList: DList[(String, Int)] = numbersMap.toDList
+</code></pre><a name="Custom+sources+and+sinks"><h3>Custom sources and sinks</h3></a><p>Scoobi is not locked to loading and persisting the data sources and sinks that have been described. Instead,<br />the Scoobi API is designed in a way to make it relatively simple to implement support for custom data sources<br />and sinks.</p><a name="Custom+input+sources"><h4>Custom input sources</h4></a><p>We have seen that Scoobi provides many <em>factory</em> methods for creaing <code class="prettyprint">DList</code> objects, for example, <code class="prettyprint">fromTextFile</code> and <code class="prettyprint">fromAvroFile</code>. At their heart, all of these methods are built upon a single primitive mechanism: <code class="prettyprint">DList</code> companion object's <code class="prettyprint">fromSource</code> factory method:</p>
+<pre><code class="prettyprint">def fromSource[K, V, A : WireFormat](source: DataSource[K, V, A]): DList[A]
+</code></pre><p><code class="prettyprint">fromSource</code> takes as input an object implementing the <code class="prettyprint">DataSource</code> trait. Implementing the <code class="prettyprint">DataSource</code> trait is all that is required to create a <code class="prettyprint">DList</code> from a custom data source. If we look at the <code class="prettyprint">DataSource</code> trait, we can see that it is tightly coupled with the Hadoop <code class="prettyprint">InputFormat</code> interface:</p>
+<pre><code class="prettyprint">trait DataSource[K, V, A] extends Source {
+  def inputFormat: Class[_ &lt;: InputFormat[K, V]]
+  def inputConverter: InputConverter[K, V, A]
+  def inputCheck()
+  def inputConfigure(job: Job): Unit
+  def inputSize(): Long
+}
+
+trait InputConverter[K, V, A] {
+  type InputContext = MapContext[K, V, _, _]
+  def fromKeyValue(context: InputContext, key: K, value: V): A
+}
+</code></pre><p>The core role of a <code class="prettyprint">DataSource</code> is to provide a mechanism for taking the key-value records produced by an <code class="prettyprint">InputFormat</code> and converting them into the values contained within a <code class="prettyprint">DList</code>. Following the type parameters is a good way to understand this:</p>
+<ul>
+  <li><code class="prettyprint">inputFormat</code> specifies an <code class="prettyprint">InputFormat</code> class</li>
+  <li>The <code class="prettyprint">InputFormat</code> class will produce key-value records of type <code class="prettyprint">K</code>-<code class="prettyprint">V</code></li>
+  <li><code class="prettyprint">inputConverter</code> specifies an <code class="prettyprint">InputConverter</code> object</li>
+  <li>The <code class="prettyprint">InputConverter</code> object implments <code class="prettyprint">fromKeyValue</code> which converts a key of type <code class="prettyprint">K</code> and a value of type <code class="prettyprint">V</code> (as produced by the <code class="prettyprint">InputFormat</code>) to a value of type <code class="prettyprint">A</code></li>
+  <li>Calling <code class="prettyprint">fromSource</code> with this <code class="prettyprint">DataSource</code> object will produce a <code class="prettyprint">DList</code> parameterised on type <code class="prettyprint">A</code></li>
+</ul><p>The other methods that must be implemented in the <code class="prettyprint">DataSource</code> trait provide hooks for configuration and giving Scoobi some visibility of the data source:</p>
+<ul>
+  <li><code class="prettyprint">inputCheck</code>: This method is called before any MapReduce jobs are run. It is provided as a hook to check the valiidity of data source input. For example, it could check that the input exists and if not<br />throw an exception.</li>
+  <li><code class="prettyprint">inputConfigure</code>: This method is provided as a hook to configure the <code class="prettyprint">DataSource</code>. Typically it is used to configure the <code class="prettyprint">InputFormat</code> by adding or modifying properties in the job's <code class="prettyprint">Configuration</code>. It<br />is called prior to running the specific MapReduce job this <code class="prettyprint">DataSoure</code> provides input data to.</li>
+  <li><code class="prettyprint">inputSize</code>: This method should returns an estimate of the size in bytes of the input data source. It does not need to be exact. Scoobi will use this value as one metric in determining how to configure the execution of MapReduce jobs.</li>
+</ul><p>The following Scala objects provided great working examples of <code class="prettyprint">DataSource</code> implementations in Scoobi:</p>
+<ul>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextInput$">TextInput</a></li>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.sequence.SeqInput$">SeqInput</a></li>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.avro.AvroInput$">AvroInput</a></li>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.func.FunctionInput$">FunctionInput</a></li>
+</ul><a name="Custom+output+sources"><h4>Custom output sources</h4></a><p>We have seen that to persist a <code class="prettyprint">DList</code> object we use the <code class="prettyprint">persist</code> method:</p>
+<pre><code class="prettyprint">persist(dogs.toTextFile(&quot;hdfs://path/to/dogs&quot;), names.toAvroFile(&quot;hdfs://path/to/names))
+</code></pre><p>But what exactly does <code class="prettyprint">toTextFile</code>, <code class="prettyprint">toAvroFile</code> and the other output methods? Those methods simply add <em>Sinks</em> to the <code class="prettyprint">DList</code>. Those sinks implement the <code class="prettyprint">DataSink</code> trait. The <code class="prettyprint">DataSink</code> trait is, not surpringly, the reverse of the <code class="prettyprint">DataSource</code> trait. It is tightly coupled with the Hadoop <code class="prettyprint">OutputFormat</code> interface and requires the specification of an <code class="prettyprint">OutputConverter</code> that converts values contained within the <code class="prettyprint">DList</code> to key-value records to be persisted by the <code class="prettyprint">OutputFormat</code>:</p>
+<pre><code class="prettyprint">trait DataSink[K, V, B] extends Sink {
+
+  def outputFormat: Class[_ &lt;: OutputFormat[K, V]]
+  def outputConverter: OutputConverter[K, V, B]
+  def outputKeyClass: Class[K]
+  def outputValueClass: Class[V]
+  def outputCheck()
+  def outputConfigure(job: Job): Unit
+}
+
+trait OutputConverter[K, V, B] {
+  def toKeyValue(x: B): (K, V)
+}
+</code></pre><p>Again, we can follow the types through to get a sense of how it works:</p>
+<ul>
+  <li><code class="prettyprint">persist</code> is called with a <code class="prettyprint">DList</code> object that specifies <code class="prettyprint">Sinks</code> implementing the trait <code class="prettyprint">DataSink[K, V, B]</code></li>
+  <li>The <code class="prettyprint">DataSink</code> object specifies the class of an <code class="prettyprint">OutputFormat</code> that can persist or write key-values of type <code class="prettyprint">K</code>-<code class="prettyprint">V</code>, which are specified by <code class="prettyprint">outputKeyClass</code> and <code class="prettyprint">outputValueClass</code>, respectively</li>
+  <li>An object implementing the <code class="prettyprint">OutputConverter[K, V, B]</code> trait is specified by <code class="prettyprint">outputConverter</code>, which converts values of type <code class="prettyprint">B</code> to <code class="prettyprint">(K, V)</code></li>
+</ul><p>Like <code class="prettyprint">DataSource</code>, some additional methods are included in the <code class="prettyprint">DataSink</code> trait that provide configuration hooks:</p>
+<ul>
+  <li><code class="prettyprint">outputCheck</code>: This method is called before any MapReduce jobs are run. It is provided as a hook to check the validity of the target data output. For example, it could check if the output already exists and if so throw an exception</li>
+  <li><code class="prettyprint">outputConfigure</code>: This method is provided as a hook for configuring the <code class="prettyprint">DataSink</code>. Typically it is used to configure the <code class="prettyprint">OutputFormat</code> by adding or modifying properties in the job's <code class="prettyprint">Configuration</code>. It is called prior to running the specific MapReduce job this <code class="prettyprint">DataSink</code> consumes output data from</li>
+  <li>there is also an <code class="prettyprint">outputSetup</code> method which is called right before output data is created (doing nothing by default). This allows to do some last-minute cleanup before outputing the data.</li>
+</ul><p>The following Scala objects provided great working examples of <code class="prettyprint">DataSink</code> implementations in Scoobi:</p>
+<ul>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.text.TextOutput$">TextOutput</a></li>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.sequence.SeqOutput$">SeqOutput</a></li>
+  <li><a href="http://nicta.github.com/scoobi/api/master/scala/index.html#com.nicta.scoobi.io.avro.AvroOutput$">AvroOutput</a></li>
+</ul></p></div></status></div></div>
+                       <div class="col2"><div id="leftcolumn"><div id="tree">
+      <ul><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="2012412927"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Write+your+code">Write your code</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Parallel+operations">Parallel operations</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Combining">Combining</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Reduction+operations">Reduction operations</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Working+with+Distributed+Objects">Working with Distributed Objects</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Example">Example</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Avro+file+output">Avro file output</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#With+a+predefined+avro+schema">With a predefined avro schema</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#For+case+classes">For case classes</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Default+WireFormat">Default WireFormat</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Persisting">Persisting</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#DObjects">DObjects</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Iterations">Iterations</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Interim+files">Interim files</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Checkpoints">Checkpoints</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Joins">Joins</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Cogroup">Cogroup</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#DMatrix">DMatrix</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#DVector">DVector</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Scoobi+Configuration+Arguments">Scoobi Configuration Arguments</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Dependencies">Dependencies</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#%22Fat%22+jar">&quot;Fat&quot; jar</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Dependencies+uploading">Dependencies uploading</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#LibJars+usage">LibJars usage</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Configuration">Configuration</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Local+execution">Local execution</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#With+specs2">With specs2</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Simple+jobs">Simple jobs</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#With+your+own+library">With your own library</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Quick+Hack">Quick Hack</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Ugly+Hack">Ugly Hack</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Maven+assembly">Maven assembly</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Running">Running</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
+            
+          </li></ul>
+          </li><li id="403316091"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
+            
+          </li></ul>
+          </li><li id="1370651006"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#User+Guide+%2F+Docs">User Guide / Docs</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Contributions">Contributions</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Eclipse">Eclipse</a>
+            
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['403316091','1222016353'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div></div>
+                       <div class="col3"><div id="rightcolumn"></div></div>
+                     </div>
+                   </div>
+                 </div></body></html>
