@@ -38,12 +38,12 @@ import java.util.Random
 class MatrixMultiplicationSpec extends NictaSimpleJobs with ScalaCheck {
   skipAll
   "Sparse Int Matrix multiplication should work" >> { implicit sc: ScoobiConfiguration =>
-    Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk -> 1)
+    Prop.forAll(genIntSparseMatrixData, genIntSparseMatrixData)(runMultTest).set(minTestsOk = 1)
   }
 
   Seq(5, 50, 200) foreach { size =>
     "Dense Double Matrix of size " + size + "x" + size + " by Gaussian Random matrix" >> { implicit sc: ScoobiConfiguration =>
-      Prop.forAll(genDoubleDenseMatrixData)(runRandomMultTest).set(minTestsOk -> 1, minSize -> size, maxSize -> size)
+      Prop.forAll(genDoubleDenseMatrixData)(runRandomMultTest).set(minTestsOk = 1, minSize = size, maxSize = size)
     }
   }
 

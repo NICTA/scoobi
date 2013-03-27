@@ -63,21 +63,6 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
         lazy val execution = application.main(Array("scoobi", "useconfdir"))
         execution must throwAn[Exception]("The HADOOP_HOME variable is must be set to access the configuration files")
       }
-      trait run extends Scope { outer =>
-        var inMemory  = false
-        var onLocal   = false
-        var onCluster = false
-        val application = new ScoobiApp {
-          def run() { }
-          override def inMemory[T](t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.inMemory = true; t }
-          override def onLocal[T] (t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.onLocal = true; t }
-          override def onCluster[T] (t: =>T)(implicit configuration: ScoobiConfiguration) = { outer.onCluster = true; t }
-          // simulate the non existence of the HADOOP_HOME variable to test the useconfdir argument
-          override lazy val HADOOP_COMMAND = None
-          override def get(name: String)    = None
-          override def getEnv(name: String) = None
-        }
-      }
     }
     "The run method can be used to persist DLists and DObjects in a ScoobiApp" >> {
       "this code compiles" ==> {
@@ -135,4 +120,21 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
       app.upload must be_==(upload)
     }
   }
+
+  trait run extends Scope { outer =>
+    var inMemory  = false
+    var onLocal   = false
+    var onCluster = false
+    val application = new ScoobiApp {
+      def run() { }
+      override def inMemory[T](t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.inMemory = true; t }
+      override def onLocal[T] (t: =>T)(implicit configuration: ScoobiConfiguration)   = { outer.onLocal = true; t }
+      override def onCluster[T] (t: =>T)(implicit configuration: ScoobiConfiguration) = { outer.onCluster = true; t }
+      // simulate the non existence of the HADOOP_HOME variable to test the useconfdir argument
+      override lazy val HADOOP_COMMAND = None
+      override def get(name: String)    = None
+      override def getEnv(name: String) = None
+    }
+  }
+
 }

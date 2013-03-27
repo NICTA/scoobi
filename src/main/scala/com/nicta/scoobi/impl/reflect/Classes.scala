@@ -18,7 +18,7 @@ package impl
 package reflect
 
 import java.util.jar.{JarEntry, JarInputStream}
-import java.io.FileInputStream
+import java.io.{File, FileInputStream}
 import java.net.{URL, URLDecoder}
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
@@ -74,6 +74,22 @@ trait Classes {
     }
     jis.close()
     entries
+  }
+
+  /** Find the location of director that contains a particular class file */
+  def findContainingDirectory(clazz: Class[_]): Option[String] =
+    getResource(clazz).map(url => url.toString.replace(classFile(clazz.getName), "").replace("file:", ""))
+
+  /** @return the path of the file containing the class */
+  def getResource(clazz: Class[_]): Option[URL] = {
+    val classLoader = loader(clazz)
+    Option(classLoader.getResource(classFile(clazz.getName)))
+  }
+
+  /** @return the path of the file containing the class */
+  def classFile(className: String) = {
+    val splitted = className.split("\\.")
+    splitted.dropRight(1).mkString("", "/", "/") + splitted.lastOption.getOrElse(className) + ".class"
   }
 
   /** Find the location of JAR that contains a particular class. */

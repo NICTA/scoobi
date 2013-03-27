@@ -119,14 +119,14 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   class ObjectWireFormat[T : Manifest](val x: T) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}
     override def fromWire(in: DataInput): T = x
-    override def toString = implicitly[Manifest[T]].erasure.getSimpleName
+    override def toString = implicitly[Manifest[T]].runtimeClass.getSimpleName
   }
   def mkObjectWireFormat[T : Manifest](x: T): WireFormat[T] = new ObjectWireFormat(x)
 
   class Case0WireFormat[T : Manifest](val apply: () => T, val unapply: T => Boolean) extends WireFormat[T] {
     override def toWire(obj: T, out: DataOutput) {}
     override def fromWire(in: DataInput): T = apply()
-    override def toString = implicitly[Manifest[T]].erasure.getSimpleName
+    override def toString = implicitly[Manifest[T]].runtimeClass.getSimpleName
   }
 
   def mkCaseWireFormat[T : Manifest](apply: () => T, unapply: T => Boolean): WireFormat[T] = new Case0WireFormat(apply, unapply)
@@ -179,17 +179,17 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     def toWire(x: T, out: DataOutput) { x.write(out) }
     def fromWire(in: DataInput): T = {
 
-      val x: T = try { implicitly[Manifest[T]].erasure.newInstance.asInstanceOf[T] } catch {
+      val x: T = try { implicitly[Manifest[T]].runtimeClass.newInstance.asInstanceOf[T] } catch {
         case _: Throwable =>
           sys.error("Hadoop does not support using a Writable type (" +
-            implicitly[Manifest[T]].erasure.getCanonicalName() +
+            implicitly[Manifest[T]].runtimeClass.getCanonicalName() +
             ") unless it can be constructed with an empty-argument constructor. One simple way to get around this," +
             " is by creating a new type by inheriting from, and making sure that subclass has a (working) no-argument constructor")
       }
       x.readFields(in)
       x
     }
-    override def toString = "Writable["+implicitly[Manifest[T]].erasure.getSimpleName+"]"
+    override def toString = "Writable["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
   }
   
   /**
@@ -216,7 +216,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       val reader : SpecificDatumReader[T] = new SpecificDatumReader(sch)
       reader.read(null.asInstanceOf[T], decoder)
     }
-    override def toString = "Avro["+implicitly[Manifest[T]].erasure.getSimpleName+"]"
+    override def toString = "Avro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
   }
 
 

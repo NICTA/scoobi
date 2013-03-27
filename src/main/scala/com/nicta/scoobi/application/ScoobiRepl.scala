@@ -98,7 +98,12 @@ class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
           truncateResult(truncated)
         }
       }
-      override lazy val reporter: ConsoleReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+      override lazy val reporter = new ReplReporter(outer) {
+        val realReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+        override def printMessage(message: String) { realReporter.printMessage(message) }
+        override def displayPrompt() { realReporter.displayPrompt() }
+        override def flush() { realReporter.flush() }
+      }
     }
     intp.beQuietDuring {
       imports.foreach(i => intp.addImports(i))

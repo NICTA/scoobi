@@ -21,6 +21,8 @@ import core._
 import Mode._
 import org.apache.commons.logging.LogFactory
 import impl.ScoobiConfiguration._
+import impl.reflect.Classes
+
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
  *
@@ -38,7 +40,11 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
   def includeLibJars = false
 
   /** @return the classes directories to include on a job classpath */
-  def classDirs: Seq[String] = Seq("classes", "test-classes").map("target/scala-"+util.Properties.releaseVersion.getOrElse("2.9.2")+"/"+_)
+  def classDirs: Seq[String] = {
+    val classesDirectory = Classes.findContainingDirectory(classOf[ScoobiApp]).getOrElse("target/scala-2.10/classes/")
+    val targetScalaDirectory = classesDirectory.replace("classes/", "")
+    Seq("classes", "test-classes").map(targetScalaDirectory+_)
+  }
 
   /** execute some code on the cluster, possibly showing the execution time */
   def onCluster[T](t: =>T)(implicit configuration: ScoobiConfiguration) =

@@ -50,7 +50,7 @@ After landing on master, the commit will automatically get merged down into the 
 The [sbteclipse plugin](https://github.com/typesafehub/sbteclipse) can be used to generate an eclipse project. However, [issue #115](https://github.com/typesafehub/sbteclipse/issues/115) means you will need to first build scoobi (`sbt compile`) and then copy the auto-generated code to somewhere sbteclipse will find it:
 
 ```
-  cp target/scala-2.9.2/src_managed/main/scoobi/codegen/* src/main/scala/
+  cp target/scala-2.10/src_managed/main/scoobi/codegen/* src/main/scala/
 ```
   
 This however, will break the build from within sbt (as it will see two versions of the code generated stuff). An easy solution is to simply comment out the line in build.sbt `(sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen` just remember not to commit this.

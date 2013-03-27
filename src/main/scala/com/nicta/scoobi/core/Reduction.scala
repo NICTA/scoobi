@@ -2,7 +2,7 @@ package com.nicta.scoobi
 package core
 
 import scalaz._, Scalaz._, BijectionT._
-
+import scala.reflect.ClassTag
 /*
  * A closed, binary operation on a set. Implementations may benefit by adhering to the law of associativity, however,
  * this is *not* mandatory.
@@ -634,7 +634,7 @@ trait Reductions {
   /**
    * A reduction on arrays by appending.
    */
-  def array[A: ClassManifest]: Reduction[Array[A]] =
+  def array[A : ClassTag]: Reduction[Array[A]] =
     Reduction((c1, c2) => (c1 ++ c2).toArray)
 
   /**

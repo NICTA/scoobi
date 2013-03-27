@@ -21,7 +21,7 @@ package comp
 import data.Data
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2._
-import matcher.ScalaCheckMatchers
+import matcher._
 import specification.Scope
 import main.CommandLineArguments
 
@@ -39,12 +39,12 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
    */
   import scalaz.Scalaz._
 
-  override def defaultValues = Map(
-    minTestsOk   -> arguments.commandLine.int("mintestsok").  getOrElse(1000),
-    maxSize      -> arguments.commandLine.int("maxsize").     getOrElse(8),
-    minSize      -> arguments.commandLine.int("minsize").     getOrElse(1),
-    maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(50),
-    workers      -> arguments.commandLine.int("workers").     getOrElse(1))
+  override implicit def defaultParameters = Parameters(
+    arguments.commandLine.int("mintestsok").                    getOrElse(1000),
+    arguments.commandLine.int("maxsize").                       getOrElse(8),
+    arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
+    arguments.commandLine.int("minsize").                       getOrElse(1),
+    arguments.commandLine.int("workers").                       getOrElse(1))
 
   import Gen._
   implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinitAttributable))

@@ -372,7 +372,7 @@ object AvroSchema {
 
   /* Actual Avro Generic/SpecificRecord support */
   implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
-    val sclass = r.erasure.asInstanceOf[Class[T]]
+    val sclass = r.runtimeClass.asInstanceOf[Class[T]]
     def schema: Schema = try { sclass.newInstance().getSchema }
     catch {
       case _: Throwable => sys.error("Could not construct a: " + r + " does it have a no-argument constructor?")

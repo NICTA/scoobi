@@ -62,7 +62,7 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
     try { getClass.getClassLoader.loadClass(className) } catch { case e: Throwable => ctClass.toClass }
   }
 
-  private lazy val parentClassName = implicitly[Manifest[T]].erasure.getName
+  private lazy val parentClassName = implicitly[Manifest[T]].runtimeClass.getName
   /** The compile-time representation of the class being built. */
   private lazy val ctClass: CtClass = { val ct = pool.makeClass(className, pool.get(parentClassName)); build(ct) }
 

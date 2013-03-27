@@ -71,7 +71,7 @@ object DistCache {
     val dis = path.getFileSystem(configuration).open(path)
     try {
       Some(Serialiser.deserialise(dis).asInstanceOf[T])
-    } catch { case e => { e.printStackTrace(); None } }
+    } catch { case e: Throwable => { e.printStackTrace(); None } }
     finally { dis.close() }
   }
 }
