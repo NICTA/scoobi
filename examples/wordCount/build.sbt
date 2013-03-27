@@ -2,9 +2,9 @@ name := "ScoobiWordCount"
 
 version := "1.0"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.0"
 
-scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
+scalacOptions ++= Seq("-deprecation")
 
 libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT")
 
