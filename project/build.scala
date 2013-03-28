@@ -80,7 +80,7 @@ object build extends Build {
       "org.scalaz"               %% "scalaz-scalacheck-binding" % "7.0.0-M9"         intransitive(),
       "org.scalaz"               %% "scalaz-typelevel"          % "7.0.0-M9"         intransitive(),
       "org.scalaz"               %% "scalaz-xml"                % "7.0.0-M9"         intransitive(),
-      "org.scala-lang"           %  "scala-compiler"            % scalaVersion       % "optional",
+      "org.scala-lang"           %  "scala-compiler"            % scalaVersion,
       "org.scalacheck"           %% "scalacheck"                % "1.10.0"           % "optional",
       "org.specs2"               %% "specs2"                    % "1.15-SNAPSHOT"    % "optional",
       "org.mockito"              %  "mockito-all"               % "1.9.0"            % "optional",
