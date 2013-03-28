@@ -16,7 +16,9 @@ import java.io.File
 import impl.io.FileSystems
 import org.apache.hadoop.fs.Path
 
-class InputOutputsSpec extends NictaSimpleJobs {
+class InputsOutputsSpec extends NictaSimpleJobs {
+
+  override def isCluster = false
 
   "1. an input must only be read once" >> { implicit sc: SC =>
     implicit val fs = sc.fileSystem
