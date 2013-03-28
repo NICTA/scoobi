@@ -2,24 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.testing</title>
+          <title>testing - com.nicta.scoobi.testing</title>
+          <meta name="description" content="testing - com.nicta.scoobi.testing" />
+          <meta name="keywords" content="testing com.nicta.scoobi.testing" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.nicta.scoobi.testing.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body class="value">
       <div id="definition">
         <img src="../../../../lib/package_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a></p>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a></p>
         <h1>testing</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">package</span>
@@ -29,11 +44,11 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"></div>
-    
+          <div id="comment" class="fullcommenttop"></div>
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         
         
         <div id="visbl">
@@ -46,9 +61,10 @@
         <div id="allMembers">
         
 
-        <div class="types members" id="types">
+        <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" data-isabs="true">
+              <ol><li name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CommandLineHadoopLogFactoryextendsHadoopLogFactorySetupwithCommandLineScoobiUserArgs"></a>
       <a id="CommandLineHadoopLogFactory:CommandLineHadoopLogFactory"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -56,11 +72,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="CommandLineHadoopLogFactory.html"><span class="name">CommandLineHadoopLogFactory</span></a><span class="result"> extends HadoopLogFactorySetup with CommandLineScoobiUserArgs</span>
+        <a href="CommandLineHadoopLogFactory.html"><span class="name">CommandLineHadoopLogFactory</span></a><span class="result"> extends <a href="HadoopLogFactorySetup.html" class="extype" name="com.nicta.scoobi.testing.HadoopLogFactorySetup">HadoopLogFactorySetup</a> with <a href="../application/CommandLineScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs">CommandLineScoobiUserArgs</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopExamples" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.HadoopExamples" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HadoopExamplesextendsHadoopwithCommandLineScoobiUserArgswithCluster"></a>
       <a id="HadoopExamples:HadoopExamples"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -68,11 +85,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopExamples.html"><span class="name">HadoopExamples</span></a><span class="result"> extends Hadoop with CommandLineScoobiUserArgs with Cluster</span>
+        <a href="HadoopExamples.html"><span class="name">HadoopExamples</span></a><span class="result"> extends <a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a> with <a href="../application/CommandLineScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs">CommandLineScoobiUserArgs</a> with <a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait provides an Around context to be used in a Specification</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopLogFactorySetup" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.HadoopLogFactorySetup" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HadoopLogFactorySetupextendsLocalHadoopwithSpecificationStructure"></a>
       <a id="HadoopLogFactorySetup:HadoopLogFactorySetup"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -80,11 +98,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopLogFactorySetup.html"><span class="name">HadoopLogFactorySetup</span></a><span class="result"> extends LocalHadoop with SpecificationStructure</span>
+        <a href="HadoopLogFactorySetup.html"><span class="name">HadoopLogFactorySetup</span></a><span class="result"> extends <a href="../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a> with <span class="extype" name="org.specs2.specification.SpecificationStructure">SpecificationStructure</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopSpecification" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.HadoopSpecification" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HadoopSpecificationextendsSpecificationwithHadoopSpecificationStructurewithScoobiAppConfiguration"></a>
       <a id="HadoopSpecification:HadoopSpecification"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,12 +111,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="HadoopSpecification.html"><span class="name">HadoopSpecification</span></a><span class="result"> extends Specification with HadoopSpecificationStructure with ScoobiAppConfiguration</span>
+        <a href="HadoopSpecification.html"><span class="name">HadoopSpecification</span></a><span class="result"> extends <span class="extype" name="org.specs2.Specification">Specification</span> with <a href="HadoopSpecificationStructure.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationStructure">HadoopSpecificationStructure</a> with <a href="../application/ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></span>
       </span>
       </h4>
       <p class="comment cmt">Hadoop specification with an acceptance specification
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.HadoopSpecificationStructure" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.HadoopSpecificationStructure" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HadoopSpecificationStructureextendsClusterwithHadoopExampleswithUploadedLibJarswithHadoopLogFactorySetupwithCommandLineHadoopLogFactory"></a>
       <a id="HadoopSpecificationStructure:HadoopSpecificationStructure"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -105,11 +125,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopSpecificationStructure.html"><span class="name">HadoopSpecificationStructure</span></a><span class="result"> extends Cluster with HadoopExamples with UploadedLibJars with HadoopLogFactorySetup with CommandLineHadoopLogFactory</span>
+        <a href="HadoopSpecificationStructure.html"><span class="name">HadoopSpecificationStructure</span></a><span class="result"> extends <a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a> with <a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a> with <a href="UploadedLibJars.html" class="extype" name="com.nicta.scoobi.testing.UploadedLibJars">UploadedLibJars</a> with <a href="HadoopLogFactorySetup.html" class="extype" name="com.nicta.scoobi.testing.HadoopLogFactorySetup">HadoopLogFactorySetup</a> with <a href="CommandLineHadoopLogFactory.html" class="extype" name="com.nicta.scoobi.testing.CommandLineHadoopLogFactory">CommandLineHadoopLogFactory</a></span>
       </span>
       </h4>
       <p class="comment cmt">You can use this abstract class to create your own specification class, specifying:</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.InputStringTestFile" data-isabs="false">
+    </li><li name="com.nicta.scoobi.testing.InputStringTestFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputStringTestFileextendsInputTestFile[String]withProductwithSerializable"></a>
       <a id="InputStringTestFile:InputStringTestFile"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -117,35 +138,38 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InputStringTestFile.html"><span class="name">InputStringTestFile</span></a><span class="params">(<span name="ls">ls: Seq[String]</span>, <span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result"> extends InputTestFile[String] with Product with Serializable</span>
+        <a href="InputStringTestFile.html"><span class="name">InputStringTestFile</span></a><span class="params">(<span name="ls">ls: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../Scoobi$.html#ScoobiConfiguration=com.nicta.scoobi.core.ScoobiConfiguration" class="extmbr" name="com.nicta.scoobi.Scoobi.ScoobiConfiguration">Scoobi.ScoobiConfiguration</a></span>)</span><span class="result"> extends <a href="InputTestFile.html" class="extype" name="com.nicta.scoobi.testing.InputTestFile">InputTestFile</a>[<span class="extype" name="scala.Predef.String">String</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.InputTestFile" data-isabs="false">
-      <a id="InputTestFile:InputTestFile[S]"></a>
+    </li><li name="com.nicta.scoobi.testing.InputTestFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputTestFile[S]extendsObject"></a>
+      <a id="InputTestFile[S]:InputTestFile[S]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="InputTestFile.html"><span class="name">InputTestFile</span></a><span class="tparams">[<span name="S">S</span>]</span><span class="result"> extends AnyRef</span>
+        <a href="InputTestFile.html"><span class="name">InputTestFile</span></a><span class="tparams">[<span name="S">S</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.OutputTestFile" data-isabs="false">
-      <a id="OutputTestFile:OutputTestFile[T]"></a>
+    </li><li name="com.nicta.scoobi.testing.OutputTestFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OutputTestFile[T]extendsProductwithSerializable"></a>
+      <a id="OutputTestFile[T]:OutputTestFile[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="OutputTestFile.html"><span class="name">OutputTestFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: DList[T]</span>, <span name="configuration">configuration: ScoobiConfiguration</span>, <span name="m">m: Manifest[T]</span>, <span name="w">w: WireFormat[T]</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="OutputTestFile.html"><span class="name">OutputTestFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a href="../Scoobi$.html#DList[A]=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.Scoobi.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.testing.OutputTestFile.T">T</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../Scoobi$.html#ScoobiConfiguration=com.nicta.scoobi.core.ScoobiConfiguration" class="extmbr" name="com.nicta.scoobi.Scoobi.ScoobiConfiguration">Scoobi.ScoobiConfiguration</a></span>, <span name="m">m: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.testing.OutputTestFile.T">T</span>]</span>, <span name="w">w: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.testing.OutputTestFile.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.SimpleJobs" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.SimpleJobs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SimpleJobsextendsPersist"></a>
       <a id="SimpleJobs:SimpleJobs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -153,11 +177,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="SimpleJobs.html"><span class="name">SimpleJobs</span></a><span class="result"> extends Persist</span>
+        <a href="SimpleJobs.html"><span class="name">SimpleJobs</span></a><span class="result"> extends <a href="../application/Persist.html" class="extype" name="com.nicta.scoobi.application.Persist">Persist</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TempFiles" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.TempFiles" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TempFilesextendsObject"></a>
       <a id="TempFiles:TempFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -165,12 +190,13 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="TempFiles.html"><span class="name">TempFiles</span></a><span class="result"> extends AnyRef</span>
+        <a href="TempFiles.html"><span class="name">TempFiles</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait helps with the creation of temporary files and directories
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.TestFiles" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TestFilesextendsObject"></a>
       <a id="TestFiles:TestFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -178,13 +204,14 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="TestFiles.html"><span class="name">TestFiles</span></a><span class="result"> extends AnyRef</span>
+        <a href="TestFiles.html"><span class="name">TestFiles</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait creates input and output files which are temporary
 The files paths are registered in the configuration so that they can be deleted when the job has been executed
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.UploadedLibJars" data-isabs="true">
+    </li><li name="com.nicta.scoobi.testing.UploadedLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="UploadedLibJarsextendsSpecificationStructurewithHadoopExampleswithScoobiUserArgs"></a>
       <a id="UploadedLibJars:UploadedLibJars"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -192,7 +219,7 @@ The files paths are registered in the configuration so that they can be deleted 
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="UploadedLibJars.html"><span class="name">UploadedLibJars</span></a><span class="result"> extends SpecificationStructure with HadoopExamples with ScoobiUserArgs</span>
+        <a href="UploadedLibJars.html"><span class="name">UploadedLibJars</span></a><span class="result"> extends <span class="extype" name="org.specs2.specification.SpecificationStructure">SpecificationStructure</span> with <a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a> with <a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait can be mixed in a Specification to automatically add a setup step uploading the library jars to the cluster
@@ -202,9 +229,10 @@ The files paths are registered in the configuration so that they can be deleted 
 
         
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.testing.TempFiles" data-isabs="false">
+              <ol><li name="com.nicta.scoobi.testing.TempFiles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TempFiles"></a>
       <a id="TempFiles:TempFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -212,11 +240,12 @@ The files paths are registered in the configuration so that they can be deleted 
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="TempFiles$.html"><span class="name">TempFiles</span></a><span class="result"> extends TempFiles</span>
+        <a href="TempFiles$.html"><span class="name">TempFiles</span></a><span class="result"> extends <a href="TempFiles.html" class="extype" name="com.nicta.scoobi.testing.TempFiles">TempFiles</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.TestFiles" data-isabs="false">
+    </li><li name="com.nicta.scoobi.testing.TestFiles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TestFiles"></a>
       <a id="TestFiles:TestFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -224,11 +253,12 @@ The files paths are registered in the configuration so that they can be deleted 
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="TestFiles$.html"><span class="name">TestFiles</span></a><span class="result"> extends TestFiles</span>
+        <a href="TestFiles$.html"><span class="name">TestFiles</span></a><span class="result"> extends <a href="TestFiles.html" class="extype" name="com.nicta.scoobi.testing.TestFiles">TestFiles</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.testing.mutable" data-isabs="false">
+    </li><li name="com.nicta.scoobi.testing.mutable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mutable"></a>
       <a id="mutable:mutable"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -244,10 +274,20 @@ The files paths are registered in the configuration so that they can be deleted 
             </div>
 
         
+
+        
         </div>
 
         <div id="inheritedMembers">
         
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
         </div>
 
       </div>

@@ -2,56 +2,83 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.core.ScoobiConfiguration</title>
+          <title>ScoobiConfiguration - com.nicta.scoobi.core.ScoobiConfiguration</title>
+          <meta name="description" content="ScoobiConfiguration - com.nicta.scoobi.core.ScoobiConfiguration" />
+          <meta name="keywords" content="ScoobiConfiguration com.nicta.scoobi.core.ScoobiConfiguration" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js"></script>
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.nicta.scoobi.core.ScoobiConfiguration';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="type">
+        <body class="type">
       <div id="definition">
         <img src="../../../../lib/trait_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../package.html">scoobi</a>.<a name="com.nicta.scoobi.core" class="extype" href="package.html">core</a></p>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
         <h1>ScoobiConfiguration</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfiguration</span><span class="result"> extends AnyRef</span>
+        <span class="name">ScoobiConfiguration</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"><div class="comment cmt"><p>This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
 added to the classpath.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">AnyRef, <span name="scala.Any" class="extype">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a name="com.nicta.scoobi.impl.ScoobiConfigurationImpl" class="extype" href="../impl/ScoobiConfigurationImpl.html">ScoobiConfigurationImpl</a></div>
+          <div class="subClasses hiddenContent"><a href="../impl/ScoobiConfigurationImpl.html" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></div>
         </div></div>
-    
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         <div id="order">
               <span class="filtertype">Ordering</span>
-              <ol><li class="alpha in"><span>Alphabetic</span></li><li class="inherit out"><span>By inheritance</span></li></ol>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
             </div>
         <div id="ancestors">
-              <span class="filtertype">Inherited</span>
-              <ol><li class="hideall out"><span>Hide All</span></li>
-              <li class="showall in"><span>Show all</span></li></ol>
-              <ol id="linearization"><li name="com.nicta.scoobi.core.ScoobiConfiguration" class="in"><span>ScoobiConfiguration</span></li><li name="scala.AnyRef" class="in"><span>AnyRef</span></li><li name="scala.Any" class="in"><span>Any</span></li></ol>
-            </div>
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.nicta.scoobi.core.ScoobiConfiguration"><span>ScoobiConfiguration</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
             <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
@@ -64,9 +91,23 @@ added to the classpath.
 
         
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#addJar" data-isabs="true">
+              <ol><li name="com.nicta.scoobi.core.ScoobiConfiguration#addClassLoader" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addClassLoader(classLoader:scala.tools.nsc.util.ScalaClassLoader):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="addClassLoader(ScalaClassLoader):ScoobiConfiguration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addClassLoader</span><span class="params">(<span name="classLoader">classLoader: <span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addJar" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addJar(jar:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="addJar(String):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -74,11 +115,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addJar</span><span class="params">(<span name="jar">jar: String</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">addJar</span><span class="params">(<span name="jar">jar: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#addJarByClass" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addJarByClass" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addJarByClass(clazz:Class[_]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="addJarByClass(Class[_]):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -86,11 +128,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addJarByClass</span><span class="params">(<span name="clazz">clazz: Class[_]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">addJarByClass</span><span class="params">(<span name="clazz">clazz: <span class="extype" name="scala.Predef.Class">Class</span>[_]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#addJars" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addJars(jars:Seq[String]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="addJars(Seq[String]):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,11 +141,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addJars</span><span class="params">(<span name="jars">jars: Seq[String]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">addJars</span><span class="params">(<span name="jars">jars: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#addUserDir" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addUserDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addUserDir(dir:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="addUserDir(String):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -110,11 +154,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addUserDir</span><span class="params">(<span name="dir">dir: String</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">addUserDir</span><span class="params">(<span name="dir">dir: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#addUserDirs" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#addUserDirs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addUserDirs(dirs:Seq[String]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="addUserDirs(Seq[String]):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -122,11 +167,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addUserDirs</span><span class="params">(<span name="dirs">dirs: Seq[String]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">addUserDirs</span><span class="params">(<span name="dirs">dirs: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#concurrentJobs" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#concurrentJobs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="concurrentJobs:Boolean"></a>
       <a id="concurrentJobs:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -134,11 +180,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">concurrentJobs</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">concurrentJobs</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#configuration" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#configuration" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
       <a id="configuration:Configuration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -146,11 +193,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configuration</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+        <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#deleteScoobiDirectory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#deleteScoobiDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="deleteScoobiDirectory:Boolean"></a>
       <a id="deleteScoobiDirectory:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -158,11 +206,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deleteScoobiDirectory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">deleteScoobiDirectory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#deleteTemporaryOutputDirectory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#deleteTemporaryOutputDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="deleteTemporaryOutputDirectory(job:org.apache.hadoop.mapreduce.Job):Boolean"></a>
       <a id="deleteTemporaryOutputDirectory(Job):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -170,11 +219,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deleteTemporaryOutputDirectory</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">deleteTemporaryOutputDirectory</span><span class="params">(<span name="job">job: <span class="extype" name="org.apache.hadoop.mapreduce.Job">Job</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#deleteWorkingDirectory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#deleteWorkingDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="deleteWorkingDirectory:Boolean"></a>
       <a id="deleteWorkingDirectory:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -182,11 +232,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deleteWorkingDirectory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">deleteWorkingDirectory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#duplicate" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#duplicate" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="duplicate:com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="duplicate:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -194,11 +245,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">duplicate</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">duplicate</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#fileSystem" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#fileSystem" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="fileSystem:org.apache.hadoop.fs.FileSystem"></a>
       <a id="fileSystem:FileSystem"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -206,11 +258,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fileSystem</span><span class="result">: <span name="org.apache.hadoop.fs.FileSystem" class="extype">FileSystem</span></span>
+        <span class="name">fileSystem</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.FileSystem">FileSystem</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#getBytesPerReducer" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#getBytesPerReducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getBytesPerReducer:Long"></a>
       <a id="getBytesPerReducer:Long"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -218,11 +271,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getBytesPerReducer</span><span class="result">: <span name="scala.Long" class="extype">Long</span></span>
+        <span class="name">getBytesPerReducer</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#getMaxReducers" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#getMaxReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getMaxReducers:Int"></a>
       <a id="getMaxReducers:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -230,11 +284,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getMaxReducers</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">getMaxReducers</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#getMinReducers" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#getMinReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getMinReducers:Int"></a>
       <a id="getMinReducers:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -242,11 +297,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getMinReducers</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">getMinReducers</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#includeLibJars" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#includeLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="includeLibJars(jars:Seq[java.net.URL]):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="includeLibJars(Seq[URL]):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -254,11 +310,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">includeLibJars</span><span class="params">(<span name="jars">jars: Seq[<span name="java.net.URL" class="extype">URL</span>]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">includeLibJars</span><span class="params">(<span name="jars">jars: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.net.URL">URL</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#isInMemory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#isInMemory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isInMemory:Boolean"></a>
       <a id="isInMemory:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -266,11 +323,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInMemory</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isInMemory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#isLocal" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#isLocal" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isLocal:Boolean"></a>
       <a id="isLocal:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -278,11 +336,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isLocal</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isLocal</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#isRemote" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#isRemote" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="isRemote:Boolean"></a>
       <a id="isRemote:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -290,11 +349,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isRemote</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isRemote</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#jobId" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobId" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="jobId:String"></a>
       <a id="jobId:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -302,11 +362,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jobId</span><span class="result">: String</span>
+        <span class="name">jobId</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#jobName" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobName" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="jobName:Option[String]"></a>
       <a id="jobName:Option[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -314,11 +375,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jobName</span><span class="result">: <span name="scala.Option" class="extype">Option</span>[String]</span>
+        <span class="name">jobName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#jobNameIs" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobNameIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="jobNameIs(name:String):Unit"></a>
       <a id="jobNameIs(String):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -326,11 +388,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jobNameIs</span><span class="params">(<span name="name">name: String</span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">jobNameIs</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#jobStep" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#jobStep" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="jobStep(mscrId:Int):String"></a>
       <a id="jobStep(Int):String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -338,11 +401,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jobStep</span><span class="params">(<span name="mscrId">mscrId: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: String</span>
+        <span class="name">jobStep</span><span class="params">(<span name="mscrId">mscrId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#loadDefaults" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#loadDefaults" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="loadDefaults:com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="loadDefaults:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -350,35 +414,38 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadDefaults</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">loadDefaults</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#mode" data-isabs="true">
-      <a id="mode:Value"></a>
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#mode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="mode:com.nicta.scoobi.core.Mode.Value"></a>
+      <a id="mode:Mode.Value"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mode</span><span class="result">: <span name="scala.Enumeration.Value" class="extype">Value</span></span>
+        <span class="name">mode</span><span class="result">: <a href="Mode$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.nicta.scoobi.core.Mode.Value">Mode.Value</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#modeIs" data-isabs="true">
-      <a id="modeIs(Value):ScoobiConfiguration"></a>
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#modeIs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="modeIs(mode:com.nicta.scoobi.core.Mode.Value):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="modeIs(Mode.Value):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <span name="scala.Enumeration.Value" class="extype">Value</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">modeIs</span><span class="params">(<span name="mode">mode: <a href="Mode$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.nicta.scoobi.core.Mode.Value">Mode.Value</a></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#newEnv" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#newEnv" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="newEnv(wf:com.nicta.scoobi.core.WireReaderWriter):com.nicta.scoobi.core.Environment"></a>
       <a id="newEnv(WireReaderWriter):Environment"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -386,11 +453,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">newEnv</span><span class="params">(<span name="wf">wf: <a name="com.nicta.scoobi.core.WireReaderWriter" class="extype" href="WireReaderWriter.html">WireReaderWriter</a></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.Environment" class="extype" href="Environment.html">Environment</a></span>
+        <span class="name">newEnv</span><span class="params">(<span name="wf">wf: <a href="WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span><span class="result">: <a href="Environment.html" class="extype" name="com.nicta.scoobi.core.Environment">Environment</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#parse" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#parse" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="parse(commandLineArg:String,value:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="parse(String,String):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -398,11 +466,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">parse</span><span class="params">(<span name="commandLineArg">commandLineArg: String</span>, <span name="value">value: String</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">parse</span><span class="params">(<span name="commandLineArg">commandLineArg: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#persist" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#persist" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="persist[A](o:com.nicta.scoobi.core.DObject[A]):A"></a>
       <a id="persist[A](DObject[A]):A"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -410,11 +479,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="o">o: <a name="com.nicta.scoobi.core.DObject" class="extype" href="DObject.html">DObject</a>[A]</span>)</span><span class="result">: A</span>
+        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="o">o: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#persist" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#persist" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="persist[A](list:com.nicta.scoobi.core.DList[A]):com.nicta.scoobi.core.DList[A]"></a>
       <a id="persist[A](DList[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -422,23 +492,25 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.DList" class="extype" href="DList.html">DList</a>[A]</span>
+        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a href="DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span>]</span>)</span><span class="result">: <a href="DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration.persist.A">A</span>]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#persist" data-isabs="true">
-      <a id="persist[A](Seq[com.nicta.scoobi.core.Persistent[_]]):Seq[com.nicta.scoobi.core.Persistent[_]]"></a>
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#persist" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="persist[A](ps:Seq[com.nicta.scoobi.core.Persistent[_]]):Seq[com.nicta.scoobi.core.Persistent[_]]"></a>
+      <a id="persist[A](Seq[Persistent[_]]):Seq[Persistent[_]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ps">ps: Seq[com.nicta.scoobi.core.Persistent[_]]</span>)</span><span class="result">: Seq[com.nicta.scoobi.core.Persistent[_]]</span>
+        <span class="name">persist</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="ps">ps: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[_]]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#scoobiDir" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#scoobiDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="scoobiDir:String"></a>
       <a id="scoobiDir:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -446,11 +518,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">scoobiDir</span><span class="result">: String</span>
+        <span class="name">scoobiDir</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#set" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#set" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="set(key:String,value:Any):Unit"></a>
       <a id="set(String,Any):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -458,11 +531,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">set</span><span class="params">(<span name="key">key: String</span>, <span name="value">value: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">set</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setAsInMemory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setAsInMemory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setAsInMemory:com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="setAsInMemory:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -470,11 +544,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setAsInMemory</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">setAsInMemory</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setAsLocal" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setAsLocal" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setAsLocal:com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="setAsLocal:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -482,11 +557,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setAsLocal</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">setAsLocal</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setBytesPerReducer" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setBytesPerReducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setBytesPerReducer(sizeInBytes:Long):Unit"></a>
       <a id="setBytesPerReducer(Long):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -494,11 +570,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setBytesPerReducer</span><span class="params">(<span name="sizeInBytes">sizeInBytes: <span name="scala.Long" class="extype">Long</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setBytesPerReducer</span><span class="params">(<span name="sizeInBytes">sizeInBytes: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setDirectories" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setDirectories" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setDirectories:com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="setDirectories:ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -506,11 +583,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setDirectories</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">setDirectories</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setMaxReducers" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setMaxReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setMaxReducers(maxReducers:Int):Unit"></a>
       <a id="setMaxReducers(Int):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -518,11 +596,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setMaxReducers</span><span class="params">(<span name="maxReducers">maxReducers: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setMaxReducers</span><span class="params">(<span name="maxReducers">maxReducers: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setMinReducers" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setMinReducers" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setMinReducers(minReducers:Int):Unit"></a>
       <a id="setMinReducers(Int):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -530,11 +609,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setMinReducers</span><span class="params">(<span name="minReducers">minReducers: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setMinReducers</span><span class="params">(<span name="minReducers">minReducers: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setScoobiDir" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setScoobiDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setScoobiDir(dir:String):com.nicta.scoobi.core.ScoobiConfiguration"></a>
       <a id="setScoobiDir(String):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -542,11 +622,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setScoobiDir</span><span class="params">(<span name="dir">dir: String</span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">setScoobiDir</span><span class="params">(<span name="dir">dir: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#setUploadedLibJars" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#setUploadedLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="setUploadedLibJars(uploaded:Boolean):Unit"></a>
       <a id="setUploadedLibJars(Boolean):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -554,11 +635,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setUploadedLibJars</span><span class="params">(<span name="uploaded">uploaded: <span name="scala.Boolean" class="extype">Boolean</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">setUploadedLibJars</span><span class="params">(<span name="uploaded">uploaded: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#temporaryJarFile" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#temporaryJarFile" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="temporaryJarFile:java.io.File"></a>
       <a id="temporaryJarFile:File"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -566,11 +648,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">temporaryJarFile</span><span class="result">: <span name="java.io.File" class="extype">File</span></span>
+        <span class="name">temporaryJarFile</span><span class="result">: <span class="extype" name="java.io.File">File</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#temporaryOutputDirectory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#temporaryOutputDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="temporaryOutputDirectory(job:org.apache.hadoop.mapreduce.Job):org.apache.hadoop.fs.Path"></a>
       <a id="temporaryOutputDirectory(Job):Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -578,11 +661,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">temporaryOutputDirectory</span><span class="params">(<span name="job">job: <span name="org.apache.hadoop.mapreduce.Job" class="extype">Job</span></span>)</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="name">temporaryOutputDirectory</span><span class="params">(<span name="job">job: <span class="extype" name="org.apache.hadoop.mapreduce.Job">Job</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#uploadedLibJars" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#uploadedLibJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="uploadedLibJars:Boolean"></a>
       <a id="uploadedLibJars:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -590,11 +674,25 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uploadedLibJars</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">uploadedLibJars</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#userDirs" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#userClasses" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="userClasses:Map[String,Array[Byte]]"></a>
+      <a id="userClasses:Map[String,Array[Byte]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">userClasses</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#userDirs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="userDirs:Set[String]"></a>
       <a id="userDirs:Set[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -602,11 +700,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">userDirs</span><span class="result">: Set[String]</span>
+        <span class="name">userDirs</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#userJars" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#userJars" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="userJars:Set[String]"></a>
       <a id="userJars:Set[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -614,23 +713,25 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">userJars</span><span class="result">: Set[String]</span>
+        <span class="name">userJars</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#withHadoopArgs" data-isabs="true">
-      <a id="withHadoopArgs(Array[String])((Array[String]) ⇒ Unit):ScoobiConfiguration"></a>
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#withHadoopArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="withHadoopArgs(args:Array[String])(f:Array[String]=&gt;Unit):com.nicta.scoobi.core.ScoobiConfiguration"></a>
+      <a id="withHadoopArgs(Array[String])((Array[String])⇒Unit):ScoobiConfiguration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withHadoopArgs</span><span class="params">(<span name="args">args: <span name="scala.Array" class="extype">Array</span>[String]</span>)</span><span class="params">(<span name="f">f: (<span name="scala.Array" class="extype">Array</span>[String]) ⇒ <span name="scala.Unit" class="extype">Unit</span></span>)</span><span class="result">: <a name="com.nicta.scoobi.core.ScoobiConfiguration" class="extype" href="">ScoobiConfiguration</a></span>
+        <span class="name">withHadoopArgs</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#workingDir" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#workingDir" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="workingDir:String"></a>
       <a id="workingDir:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -638,11 +739,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">workingDir</span><span class="result">: String</span>
+        <span class="name">workingDir</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#workingDirectory" data-isabs="true">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#workingDirectory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="workingDirectory:org.apache.hadoop.fs.Path"></a>
       <a id="workingDirectory:Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -650,16 +752,17 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">workingDirectory</span><span class="result">: <span name="org.apache.hadoop.fs.Path" class="extype">Path</span></span>
+        <span class="name">workingDirectory</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
       </h4>
       
     </li></ol>
             </div>
 
-        <div class="values members" id="values">
+        <div id="values" class="values members">
               <h3>Concrete Value Members</h3>
-              <ol><li visbl="pub" name="scala.AnyRef#!=" data-isabs="false">
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -667,11 +770,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name" title="gt4s: $bang$eq">!=</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.Any#!=" data-isabs="false">
+    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -679,11 +783,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name" title="gt4s: $bang$eq">!=</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef###" data-isabs="false">
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
       <a id="##():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -691,11 +796,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name" title="gt4s: $hash$hash">##</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#==" data-isabs="false">
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:AnyRef):Boolean"></a>
       <a id="==(AnyRef):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -703,11 +809,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name" title="gt4s: $eq$eq">==</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.Any#==" data-isabs="false">
+    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -715,11 +822,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name" title="gt4s: $eq$eq">==</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.Any#asInstanceOf" data-isabs="false">
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -727,11 +835,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: T0</span>
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="prt" name="scala.AnyRef#clone" data-isabs="false">
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -739,14 +848,15 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: AnyRef</span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#eq" data-isabs="false">
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -754,11 +864,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#equals" data-isabs="false">
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -766,11 +877,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span name="scala.Any" class="extype">Any</span></span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="prt" name="scala.AnyRef#finalize" data-isabs="false">
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -778,26 +890,28 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a name="java.lang" class="extype" href="../../../../java/lang/package.html">lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#getClass" data-isabs="false">
-      <a id="getClass():java.lang.Class[_]"></a>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getClass</span><span class="params">()</span><span class="result">: java.lang.Class[_]</span>
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#hashCode" data-isabs="false">
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -805,11 +919,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.Any#isInstanceOf" data-isabs="false">
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -817,11 +932,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#ne" data-isabs="false">
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -829,11 +945,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: AnyRef</span>)</span><span class="result">: <span name="scala.Boolean" class="extype">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#notify" data-isabs="false">
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -841,11 +958,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#notifyAll" data-isabs="false">
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
       <a id="notifyAll():Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -853,23 +971,25 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#synchronized" data-isabs="false">
-      <a id="synchronized[T0](⇒ T0):T0"></a>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ T0</span>)</span><span class="result">: T0</span>
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#toString" data-isabs="false">
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -877,11 +997,12 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span name="java.lang.String" class="extype">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -889,14 +1010,15 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
       <a id="wait(Long,Int):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -904,14 +1026,15 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span name="scala.Long" class="extype">Long</span></span>, <span name="arg1">arg1: <span name="scala.Int" class="extype">Int</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li visbl="pub" name="scala.AnyRef#wait" data-isabs="false">
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
       <a id="wait(Long):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -919,7 +1042,7 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span name="scala.Long" class="extype">Long</span></span>)</span><span class="result">: <span name="scala.Unit" class="extype">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -929,9 +1052,12 @@ added to the classpath.
     </li></ol>
             </div>
 
-        <div class="values members" id="values">
+        
+
+        <div id="values" class="values members">
               <h3>Deprecated Value Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#conf" data-isabs="false">
+              <ol><li name="com.nicta.scoobi.core.ScoobiConfiguration#conf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="conf:org.apache.hadoop.conf.Configuration"></a>
       <a id="conf:Configuration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -939,14 +1065,15 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use 'configuration' instead">conf</span><span class="result">: <span name="org.apache.hadoop.conf.Configuration" class="extype">Configuration</span></span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use 'configuration' instead">conf</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7.0)</i> use 'configuration' instead</p></dd></dl></div>
-    </li><li visbl="pub" name="com.nicta.scoobi.core.ScoobiConfiguration#fs" data-isabs="false">
+    </li><li name="com.nicta.scoobi.core.ScoobiConfiguration#fs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fs:org.apache.hadoop.fs.FileSystem"></a>
       <a id="fs:FileSystem"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -954,7 +1081,7 @@ added to the classpath.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use 'fileSystem' instead">fs</span><span class="result">: <span name="org.apache.hadoop.fs.FileSystem" class="extype">FileSystem</span></span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.7.0) use 'fileSystem' instead">fs</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.FileSystem">FileSystem</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
@@ -966,10 +1093,18 @@ added to the classpath.
         </div>
 
         <div id="inheritedMembers">
-        <div name="scala.AnyRef" class="parent">
-              <h3>Inherited from AnyRef</h3>
-            </div><div name="scala.Any" class="parent">
-              <h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3>
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
             </div>
         </div>
 

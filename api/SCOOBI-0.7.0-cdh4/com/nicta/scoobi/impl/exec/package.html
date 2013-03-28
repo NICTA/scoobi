@@ -2,24 +2,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>com.nicta.scoobi.impl.exec</title>
+          <title>exec - com.nicta.scoobi.impl.exec</title>
+          <meta name="description" content="exec - com.nicta.scoobi.impl.exec" />
+          <meta name="keywords" content="exec com.nicta.scoobi.impl.exec" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link type="text/css" media="screen" rel="stylesheet" href="../../../../../lib/template.css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js"></script>
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
       <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
       <script type="text/javascript" src="../../../../../lib/template.js"></script>
       <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.exec.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
     
         </head>
-        <body onload="sh_highlightDocument('../lib/', '.min.js');" class="value">
+        <body class="value">
       <div id="definition">
         <img src="../../../../../lib/package_big.png" />
-        <p id="owner"><a name="com" class="extype" href="../../../../package.html">com</a>.<a name="com.nicta" class="extype" href="../../../package.html">nicta</a>.<a name="com.nicta.scoobi" class="extype" href="../../package.html">scoobi</a>.<a name="com.nicta.scoobi.impl" class="extype" href="../package.html">impl</a></p>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a></p>
         <h1>exec</h1>
       </div>
 
-      <h4 class="signature" id="signature">
+      <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">package</span>
@@ -29,11 +44,11 @@
       </span>
       </h4>
       
-      <div class="fullcommenttop" id="comment"></div>
-    
+          <div id="comment" class="fullcommenttop"></div>
+        
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input accesskey="/" type="text" /></span><span class="post"></span></div>
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
         
         
         <div id="visbl">
@@ -46,9 +61,10 @@
         <div id="allMembers">
         
 
-        <div class="types members" id="types">
+        <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li visbl="pub" name="com.nicta.scoobi.impl.exec.ExecutionMode" data-isabs="true">
+              <ol><li name="com.nicta.scoobi.impl.exec.ExecutionMode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ExecutionModeextendsShowNodewithOptimiser"></a>
       <a id="ExecutionMode:ExecutionMode"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -56,11 +72,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ExecutionMode.html"><span class="name">ExecutionMode</span></a><span class="result"> extends CompNodes</span>
+        <a href="ExecutionMode.html"><span class="name">ExecutionMode</span></a><span class="result"> extends <a href="../plan/comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a> with <a href="../plan/comp/Optimiser.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.InMemoryMode" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.exec.InMemoryMode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InMemoryModeextendsExecutionModewithProductwithSerializable"></a>
       <a id="InMemoryMode:InMemoryMode"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -68,11 +85,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InMemoryMode.html"><span class="name">InMemoryMode</span></a><span class="params">()</span><span class="result"> extends ShowNode with ExecutionMode with Product with Serializable</span>
+        <a href="InMemoryMode.html"><span class="name">InMemoryMode</span></a><span class="params">()</span><span class="result"> extends <a href="ExecutionMode.html" class="extype" name="com.nicta.scoobi.impl.exec.ExecutionMode">ExecutionMode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A fast local mode for execution of Scoobi applications.</p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.JobExecException" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.exec.JobExecException" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JobExecExceptionextendsRuntimeException"></a>
       <a id="JobExecException:JobExecException"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -80,11 +98,12 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="JobExecException.html"><span class="name">JobExecException</span></a><span class="result"> extends RuntimeException</span>
+        <a href="JobExecException.html"><span class="name">JobExecException</span></a><span class="result"> extends <span class="extype" name="java.lang.RuntimeException">RuntimeException</span></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.MapReduceJob" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.exec.MapReduceJob" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MapReduceJobextendsProductwithSerializable"></a>
       <a id="MapReduceJob:MapReduceJob"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,12 +111,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="MapReduceJob.html"><span class="name">MapReduceJob</span></a><span class="params">(<span name="mscr">mscr: Mscr</span>, <span name="layerId">layerId: Int</span>, <span name="configuration">configuration: ScoobiConfiguration</span>)</span><span class="result"> extends Product with Serializable</span>
+        <a href="MapReduceJob.html"><span class="name">MapReduceJob</span></a><span class="params">(<span name="mscr">mscr: <a href="../plan/mscr/Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a></span>, <span name="layerId">layerId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
 </p>
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.Progress" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.exec.Progress" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ProgressextendsObject"></a>
       <a id="Progress:Progress"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -105,11 +125,12 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="Progress.html"><span class="name">Progress</span></a><span class="result"> extends AnyRef</span>
+        <a href="Progress.html"><span class="name">Progress</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-    </li><li visbl="pub" name="com.nicta.scoobi.impl.exec.TaskDetailsLogger" data-isabs="false">
+    </li><li name="com.nicta.scoobi.impl.exec.TaskDetailsLogger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TaskDetailsLoggerextendsObject"></a>
       <a id="TaskDetailsLogger:TaskDetailsLogger"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -117,7 +138,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="TaskDetailsLogger.html"><span class="name">TaskDetailsLogger</span></a><span class="result"> extends AnyRef</span>
+        <a href="TaskDetailsLogger.html"><span class="name">TaskDetailsLogger</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
@@ -129,10 +150,20 @@
         
 
         
+
+        
         </div>
 
         <div id="inheritedMembers">
         
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
         </div>
 
       </div>

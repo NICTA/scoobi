@@ -1,0 +1,445 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <style type="text/css" media="all">
+        @import url('./../css/maven-base.css');
+        @import url('./../css/maven-theme.css');
+      </style>
+      <link href="./../css/prettify.css" type="text/css" rel="stylesheet" />
+      <script type="text/javascript" src="./../css/prettify.js"></script>
+      <link rel="stylesheet" href="./../css/print.css" type="text/css" media="print" />
+      <link href="./../css/tooltip.css" rel="stylesheet" type="text/css" />
+      <link href="./../css/specs2-user.css" type="text/css" rel="stylesheet" />
+
+      <script type="text/javascript" src="./../css/jquery.js"></script>
+      <script type="text/javascript" src="./../css/jquery.cookie.js"></script>
+      <script type="text/javascript" src="./../css/jquery.hotkeys.js"></script>
+      <script type="text/javascript" src="./../css/jquery.jstree.js"></script>
+      <script type="text/javascript" src="./../css/tooltip.js"></script>
+      <script language="javascript">
+      function init() {  prettyPrint(); };
+      /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
+      String.prototype.endsWith = function(str) { return (this.match(str+'$') == str) };
+      function changeWidth(id,width) {  document.getElementById(id).style.width = width; };
+      function changeMarginLeft(id, margin) { document.getElementById(id).style.marginLeft = margin; };
+      function toggleImage(image) {
+        if (image.src.endsWith('images/expanded.gif')) 
+          image.src = image.src.replace('expanded', 'collapsed');
+        else 
+          image.src = image.src.replace('collapsed', 'expanded');
+      };
+      function showHide(id) {
+        element = document.getElementById(id);
+        element.style.display = (element.style.display == 'block')? 'none' : 'block';
+      };
+      function showHideByClass(name) {
+		    var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+        }
+      };
+      function showByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'block';
+        }
+      };
+      function hideByClass(name) {
+        var elements = document.getElementsByClassName(name);
+        for (i = 0; i < elements.length; i++) {
+          elements[i].style.display = 'none';
+        }
+      };
+      function showById(id) {
+        document.getElementById(id).style.display = ''
+      };
+      function hideById(id) {
+        document.getElementById(id).style.display = 'none'
+      };
+    </script>
+      <script language="javascript">window.onload=init;</script>
+      <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
+           tabber code, then the init code -->
+      <script type="text/javascript" src="./../css/tabber.js"></script>
+      <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
+      <title>Load and persist data</title>
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html">LoadAndPersist</a></div><div class="colmask threecol">
+                   <div class="colmid">
+                     <div class="colleft">
+                       <div class="col1"><div id="central"><title>Load and persist data</title><a name="Load+and+persist+data"><h2 specId="1958704282">Load and persist data</h2></a><status class="ok"><div class="level0" style="display: show"><p><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the <a href="Application.html">WordCount example</a> we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally <em>loaded</em> from files and the results <em>persisted</em> to files. Let's see how to specify this.</p><a name="Loading"><h3>Loading</h3></a><p>Most of the time when we create <code class="prettyprint">DList</code> objects, it is the result of calling a method on another <code class="prettyprint">DList</code> object (e.g. <code class="prettyprint">map</code>). <em>Loading</em>, on the other hand, is the only way to create a <code class="prettyprint">DList</code> object that is not based on any others. It is the means by which we associate a <code class="prettyprint">DList</code> object with some data files on HDFS. Scoobi provides functions to create <code class="prettyprint">DList</code> objects associated with text files on HDFS, which are implemented in the object <a href="http://nicta.github.com/scoobi/api/SCOOBI-0.7.0-cdh4/index.html#com.nicta.scoobi.io.text.TextInput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextInput</code></a>.</p><p>The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes a path (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed collection refers to one of the lines of text from the files.</p><p>Often we are interested in loading delimited text files, for example, comma separated value (CSV) files. In this case, we can use <code class="prettyprint">fromTextFile</code> followed by a <code class="prettyprint">map</code> to pull out fields of interest:</p>
+<pre><code class="prettyprint">// load CSV with schema &quot;id,first_name,second_name,age&quot;
+val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/CVS/files/*&quot;)
+
+// pull out id and second_name
+val names: DList[(Int, String)] = lines map { line =&gt;
+  val fields = line.split(&quot;,&quot;)
+  (fields(0).toInt, fields(2))
+}
+</code></pre><p>This works fine, but because it's such a common task, <code class="prettyprint">TextInput</code> also provides the function <code class="prettyprint">fromDelimitedTextFile</code> specifically for these types of field extractions:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CVS/files/*&quot;, &quot;,&quot;) {
+  case id :: first_name :: second_name :: age :: _ =&gt; (id.toInt, second_name)
+}
+</code></pre><p>When using <code class="prettyprint">fromDelimitedTextFile</code>, the first argument specifies the delimiter and the second is the path. However, there is also a second <em>parameter list</em> which is used to specify what to do with fields once they are separated out. This is specified by supplying a <em>partial function</em> that takes a list of separated <code class="prettyprint">String</code> fields as its input and returns a value whose type will set the type of the resulting <code class="prettyprint">DList</code> - i.e. a <code class="prettyprint">PartialFunction[List[String], A]</code> will create a <code class="prettyprint">DList[A]</code> (where <code class="prettyprint">A</code> is <code class="prettyprint">(Int, String)</code> above). In this example, we use Scala's <a href="http://www.scala-lang.org/node/120">pattern matching</a> feature to <em>pull out</em> the four fields<br />and return the first and third.</p><p>One of the advantages of this approach is that we have at our disposal all of the Scala pattern matching features, and because we are providing a partial function, any fields that don't match against the supplied pattern will not be present in the returned <code class="prettyprint">DList</code>.This allows us implement simple filtering inline with the extraction:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name if first_name is &quot;Harry&quot;
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case id :: &quot;Harry&quot; :: second_name :: age :: _ =&gt; (id.toInt, second_name)
+}
+</code></pre><p>We can of course supply multiple patterns:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name if first_name is &quot;Harry&quot; or &quot;Lucy&quot;
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case id :: &quot;Harry&quot; :: second_name :: age :: _ =&gt; (id.toInt, second_name)
+  case id :: &quot;Lucy&quot;  :: second_name :: age :: _ =&gt; (id.toInt, second_name)
+}
+</code></pre><p>And, a more interesting example is when the value of one field influences the semantics of another. For example:</p>
+<pre><code class="prettyprint">val thisYear: Int = ...
+
+// load CSV with schema &quot;event,year,year_designation&quot; and pull out event and how many years ago it occurred
+val yearsAgo: DList[(String, Int)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case event :: year :: &quot;BC&quot; :: _ =&gt; (event, thisYear + year.toInt - 1) // No 0 AD
+  case event :: year :: &quot;AD&quot; :: _ =&gt; (event, thisYear - year.toInt)
+}
+</code></pre><p>These are nice features. However, one of the problems with these examples is their conversion of a <code class="prettyprint">String</code> fields into an <code class="prettyprint">Int</code>. If the field is not supplied (e.g. empty string) or the files are simply erroneous, a run-time exception will occur when <code class="prettyprint">toInt</code> is called. This exception will be caught by Hadoop and likely cause the MapReduce job to fail. As a solution to this problem, <code class="prettyprint">TextInput</code> provides Scala <a href="http://www.scala-lang.org/node/112">extractors</a> for <code class="prettyprint">Int</code>s, <code class="prettyprint">Long</code>s and <code class="prettyprint">Double</code>s. Using the <code class="prettyprint">Int</code> extractor we can rewrite one of the above examples:</p>
+<pre><code class="prettyprint">// load CSV and pull out id and second_name
+val names: DList[(Int, String)] = fromDelimitedTextFile(&quot;hdfs://path/to/CSV/files/*&quot;, &quot;,&quot;) {
+  case Int(id) :: first_name :: second_name :: Int(age) :: _ =&gt; (id, second_name)
+}
+</code></pre><p>Here, the pattern will only match if the <code class="prettyprint">id</code> (and <code class="prettyprint">age</code>) field(s) can be converted successfully from a <code class="prettyprint">String</code> to an <code class="prettyprint">Int</code>. If not, the pattern will not match and that line will not be extracted into the resulting <code class="prettyprint">DList</code>.</p><a name="Persisting"><h3>Persisting</h3></a><p><em>Persisting</em> is the mechanism Scoobi uses for specifying that the result of executing the computational graph associated with a <code class="prettyprint">DList</code> object is to be associated with a particular data file on HDFS. There are two parts to persisting:</p>
+<ol>
+  <li>Specifying how a <code class="prettyprint">DList</code> object is to be persisted by using the numerous <code class="prettyprint">toXXX</code> methods available (<code class="prettyprint">toTextFile</code>, <code class="prettyprint">toAvroFile</code>,...)</li>
+  <li>Persisting the <code class="prettyprint">DList</code>(s) by calling <code class="prettyprint">persist</code></li>
+</ol><p>This is an example of persisting a single <code class="prettyprint">DList</code>:</p>
+<pre><code class="prettyprint">val rankings: DList[(String, Int)] = ...
+
+persist(rankings.toTextFile(&quot;hdfs://path/to/output&quot;))
+</code></pre><p>And now with several <code class="prettyprint">DLists</code>:</p>
+<pre><code class="prettyprint">val rankings: DList[(String, Int)] = ...
+val rankings_reverse: DList[(Int, String)] = rankings map { swap }
+val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) =&gt; (ranking, items.head) }
+
+persist(rankings.        toTextFile(&quot;hdfs://path/to/output&quot;),
+        rankings_reverse.toTextFile(&quot;hdfs://path/to/output-reverse&quot;),
+        rankings_example.toTextFile(&quot;hdfs://path/to/output-example&quot;))
+</code></pre><p>As mentioned previously, <code class="prettyprint">persist</code> is the trigger for executing the computational graph associated with its <code class="prettyprint">DList</code> objects. By bundling <code class="prettyprint">DList</code> objects together, <code class="prettyprint">persist</code> is able to determine computations that are shared by those outputs and ensure that they are only performed once.</p><a name="DObjects"><h4>DObjects</h4></a><p><code class="prettyprint">DObjects</code> are results of distributed computations and can be accessed in memory with the <code class="prettyprint">run</code> method:</p>
+<pre><code class="prettyprint">val list: DList[Int]  = DList(1, 2, 3)
+
+// the sum of all values
+val sum: DObject[Int] = list.sum
+
+// execute the computation graph and collect the result
+println(sum.run)
+</code></pre><p>The call to <code class="prettyprint">run</code> above is equivalent to calling <code class="prettyprint">persist</code> on the <code class="prettyprint">DObject</code> to execute the computation, then collecting the result. If you call:</p>
+<pre><code class="prettyprint">persist(sum)
+sum.run
+</code></pre><p>then the first <code class="prettyprint">persist</code> executes the computation and <code class="prettyprint">run</code> merely retrieves the result.</p><p>Similarly, if you want to access the value of a <code class="prettyprint">DList</code> after computation, you can call <code class="prettyprint">run</code> on that list:</p>
+<pre><code class="prettyprint"> val list: DList[Int]  = DList(1, 2, 3)
+
+ // returns Seq(1, 2, 3)
+ list.run
+</code></pre><p>The code above is merely a shorthand for:</p>
+<pre><code class="prettyprint">  val list: DList[Int]  = DList(1, 2, 3)
+
+  val materialisedList = list.materialise
+  // returns Seq(1, 2, 3)
+  materialisedList.run
+</code></pre><p>Finally, when you have several <code class="prettyprint">DObjects</code> and <code class="prettyprint">DLists</code> which are part of the same computation graph, you can persist them all at once:</p>
+<pre><code class="prettyprint"> val list: DList[Int]    = DList(1, 2, 3)
+ val plusOne: DList[Int] = list.map(_ + 1)
+
+ // the sum of all values
+ val sum: DObject[Int] = list.sum
+ // the max of all values
+ val max: DObject[Int] = list.max
+
+// execute the computation graph for the 2 DObjects and one DList
+persist(sum, max, plusOne)
+
+// collect results
+// (6, 3, Seq(2, 3, 4))
+(sum.run, max.run, plusOne.run)
+</code></pre><a name="Iterations"><h4>Iterations</h4></a><p>Many distributed algorithms (such as PageRank) require to iterate over DList computations. You evaluate the results of a DList computation, and based on that, you decide if you should go on with more computations.</p><p>For example, let's say we want to remove 1 to a list of positive elements (and nothing if the element is already 0) until the maximum is 10.</p><p>There are several ways to write this, which we are going to evaluate:</p>
+<pre><code class="prettyprint"> val ints = DList(12, 5, 8, 13, 11)
+
+ def iterate1(list: DList[Int]): DList[Int] = {
+   if (list.max.run &gt; 10) iterate(list.map(i =&gt; if (i &lt;= 0) i else i - 1))
+   else                   list
+ }
+
+ def iterate2(list: DList[Int]): DList[Int] = {
+   persist(list)
+   if (list.max.run &gt; 10) iterate(list.map(i =&gt; if (i &lt;= 0) i else i - 1))
+   else                   list
+ }
+
+ def iterate3(list: DList[Int]): DList[Int] = {
+   persist(list, list.max)
+   if (list.max.run &gt; 10) iterate(list.map(i =&gt; if (i &lt;= 0) i else i - 1))
+   else                   list
+ }
+
+ def iterate4(list: DList[Int]): DList[Int] = {
+   val maximum = list.max
+   persist(list, maximum)
+   if (maximum.run &gt; 10) iterate(list.map(i =&gt; if (i &lt;= 0) i else i - 1))
+   else                  list
+ }
+
+ persist(iterate1(ints).toTextFile(&quot;path&quot;))
+ persist(iterate2(ints).toTextFile(&quot;path&quot;))
+ persist(iterate3(ints).toTextFile(&quot;path&quot;))
+ persist(iterate4(ints).toTextFile(&quot;path&quot;))
+</code></pre>
+<ol>
+  <li>no intermediary call to <code class="prettyprint">persist</code></li>
+</ol><p>In that case we get the least amount of generated MapReduce jobs, 5 jobs only: 4 jobs for the 4 main iterations, to do mapping + maximum, plus one job to write out the data to a text file</p><p>The big disadvantage of this method is that the <code class="prettyprint">DList</code> being computed is getting bigger and bigger all being re-computed all over for each new iteration.</p>
+<ol>
+  <li>one call to persist the intermediate <code class="prettyprint">DList</code></li>
+</ol><p>Here, before trying to evaluate the maximum value of the list, we save the mapped list first because later on we know we want to resume the computations from that stage, then we compute the maximum.<br />This generates 8 MapReduce jobs: 4 jobs to map the list each time we enter the loop + 4 jobs to compute the maximum. However, if we compare with 1. the computations are reduced to a mimimum for each job because we reuse previously saved data.</p>
+<ol>
+  <li>one call to persist the intermediate <code class="prettyprint">DList</code> and the maximum</li>
+</ol><p>This variation creates 12 MapReduce jobs: 4 to map the list on each iteration, 4 to compute the maximum on each iteration (because even if the list and its maximum are persisted at the same time, one depends on the other) and 4 to recompute the maximum and bring it to memory! The issue here is that we call <code class="prettyprint">list.max</code> twice, hereby effectively creating 2 similar but duplicate <code class="prettyprint">DObject</code>s.</p>
+<ol>
+  <li>one call to persist the intermediate <code class="prettyprint">DList</code> and the maximum as a variable</li>
+</ol><p>In this case we get a handle on the <code class="prettyprint">maximum</code> <code class="prettyprint">DObject</code> and accessing his value with <code class="prettyprint">run</code> is just a matter of reading the persisted information hence the number of MapReduce jobs is 8, as in case 2.</p><a name="Interim+files"><h5>Interim files</h5></a><p>It might be useful, for debugging reasons, to save the output of each intermediary step. Here is how to do it:</p>
+<pre><code class="prettyprint"> val ints = DList(12, 5, 8, 13, 11)
+
+ def iterate5(list: DList[Int]): DList[Int] = {
+   persist(list)
+   if (list.max.run &gt; 10) iterate(list.map(i =&gt; if (i &lt;= 0) i else i - 1).toAvroFile(&quot;out&quot;, overwrite = true))
+   else                   list
+ }
+ // no need to persist to a Text file since there is already an Avro file storing the results
+ persist(iterate5(ints))
+</code></pre><p>With the code above the intermediary results will be written to the same output directory. You can also create one output directory per iteration:</p>
+<pre><code class="prettyprint"> def iterate6(list: DList[Int], n: Int = 0): DList[Int] = {
+   persist(list)
+   if (list.max.run &gt; 10) iterate(list.map(i =&gt; if (i &lt;= 0) i else i - 1).toAvroFile(&quot;out&quot;+n, overwrite = true), n+1)
+   else                   list
+ }
+ persist(iterate6(ints))
+</code></pre><a name="Checkpoints"><h4>Checkpoints</h4></a><p>When you have a big pipeline of consecutive computations it can be very time-consuming to start the process all over again if you've just changed some function down the track.</p><p>In order to avoid this you can create <em>checkpoints</em>, that is sinks which will persist data in between executions:</p>
+<pre><code class="prettyprint"> // before
+ val list = DList(1, 2, 3).map(_ + 1).
+                           filter(isEven)
+
+ // after
+ val list = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = true).checkpoint.
+                           filter(isEven)
+</code></pre><p>If you run the <code class="prettyprint">after</code> program twice, the second time the program is run, only the <code class="prettyprint">filter</code> operation will be executed taking its input data from the saved Avro file.</p><p><em>Important limitation</em>: you can't use a <code class="prettyprint">Text</code> sink as a checkpoint because Text file sinks can't not be used as source files.</p></p></div></status></div></div>
+                       <div class="col2"><div id="leftcolumn"><div id="tree">
+      <ul><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="443322591"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Write+your+code">Write your code</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Parallel+operations">Parallel operations</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Combining">Combining</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Reduction+operations">Reduction operations</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Working+with+Distributed+Objects">Working with Distributed Objects</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Example">Example</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Text+files">Text files</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+input">Text file input</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+output">Text file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+files">Sequence files</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+file+input">Sequence file input</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+file+output">Sequence file output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+file+input">Avro file input</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+file+output">Avro file output</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#With+a+predefined+avro+schema">With a predefined avro schema</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Custom+sources+and+sinks">Custom sources and sinks</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Custom+input+sources">Custom input sources</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Custom+output+sources">Custom output sources</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#For+case+classes">For case classes</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Default+WireFormat">Default WireFormat</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Persisting">Persisting</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DObjects">DObjects</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Iterations">Iterations</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Interim+files">Interim files</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Checkpoints">Checkpoints</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Joins">Joins</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Cogroup">Cogroup</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#DMatrix">DMatrix</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#DVector">DVector</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Scoobi+Configuration+Arguments">Scoobi Configuration Arguments</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Dependencies">Dependencies</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#%22Fat%22+jar">&quot;Fat&quot; jar</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Dependencies+uploading">Dependencies uploading</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#LibJars+usage">LibJars usage</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Configuration">Configuration</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Local+execution">Local execution</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#With+specs2">With specs2</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Base+specification">Base specification</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Fine+tuning">Fine tuning</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Implicit+configuration">Implicit configuration</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Cluster+properties">Cluster properties</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Logging">Logging</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Type+alias">Type alias</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Simple+jobs">Simple jobs</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#With+your+own+library">With your own library</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Quick+Hack">Quick Hack</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Ugly+Hack">Ugly Hack</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Maven+assembly">Maven assembly</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Running">Running</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
+            
+          </li></ul>
+          </li><li id="881412427"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
+            
+          </li></ul>
+          </li><li id="1273056199"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#User+Guide+%2F+Docs">User Guide / Docs</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Contributions">Contributions</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Eclipse">Eclipse</a>
+            
+          </li></ul>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['881412427','1958704282'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+    </div></div></div>
+                       <div class="col3"><div id="rightcolumn"></div></div>
+                     </div>
+                   </div>
+                 </div></body></html>
