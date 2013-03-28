@@ -4,11 +4,11 @@
         @import url('./css/maven-base.css');
         @import url('./css/maven-theme.css');
       </style>
-      <link type="text/css" rel="stylesheet" href="./css/prettify.css" />
+      <link href="./css/prettify.css" type="text/css" rel="stylesheet" />
       <script type="text/javascript" src="./css/prettify.js"></script>
-      <link type="text/css" media="print" rel="stylesheet" href="./css/print.css" />
-      <link type="text/css" rel="stylesheet" href="./css/tooltip.css" />
-      <link type="text/css" rel="stylesheet" href="./css/specs2-user.css" />
+      <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+      <link href="./css/tooltip.css" rel="stylesheet" type="text/css" />
+      <link href="./css/specs2-user.css" type="text/css" rel="stylesheet" />
 
       <script type="text/javascript" src="./css/jquery.js"></script>
       <script type="text/javascript" src="./css/jquery.cookie.js"></script>
@@ -60,11 +60,12 @@
       <!-- the tabber.js file must be loaded after the onload function has been set, in order to run the
            tabber code, then the init code -->
       <script type="text/javascript" src="./css/tabber.js"></script>
-      <link type="text/css" media="screen" rel="stylesheet" href="./css/tabber.css" />
+      <link rel="stylesheet" href="./css/tabber.css" type="text/css" media="screen" />
+      <title>Index</title>
     </head><body><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Scoobi</title><a name="Scoobi"><h2 specId="1462043760">Scoobi</h2></a><status class="ok"><div class="level0" style="display: show">Welcome!</div></status><status class="ok"><div class="level0" style="display: show"><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
+                       <div class="col1"><div id="central"><title>Index</title><a name="Index"><h2 specId="1030969756">Index</h2></a><status class="ok"><div class="level0" style="display: show">Welcome!</div></status><status class="ok"><div class="level0" style="display: show"><p><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
 <pre><code class="prettyprint">val lines = fromTextFile(&quot;hdfs://in/...&quot;)
 
 val counts = lines.flatMap(_.split(&quot; &quot;))
@@ -73,25 +74,25 @@ val counts = lines.flatMap(_.split(&quot; &quot;))
                 .combine(_+_)
 
 persist(counts.toTextFile(&quot;hdfs://out/...&quot;, overwrite=true))
-</code></pre><p>This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write <strong>what</strong> you want rather than <strong>how</strong> to do it.</p><p>Scoobi is a library that leverages the Scala programming language to provide a programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid development of analytics and machine-learning algorithms.</p><a name="Install"><h3>Install</h3></a><p>See the <a href="guide/Quick%20Start.html#Installing+Scoobi">install instructions</a> in the QuickStart section of the <a href="guide/User%20Guide.html">User Guide</a>.</p><a name="Features"><h3>Features</h3></a>
+</code></pre><p>This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write <strong>what</strong> you want rather than <strong>how</strong> to do it.</p><p>Scoobi is a library that leverages the Scala programming language to provide a programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid development of analytics and machine-learning algorithms.</p><a name="Install"><h3>Install</h3></a><p>See the <a href="http://nicta.github.com/scoobi/guide/Quick%20Start.html#Installing+Scoobi">install instructions</a> in the QuickStart section of the <a href="http://nicta.github.com/scoobi/guide/User%20Guide.html">User Guide</a>.</p><a name="Features"><h3>Features</h3></a>
 <ul>
   <li><p>Familiar APIs - the <code class="prettyprint">DList</code> API is very similar to the standard Scala <code class="prettyprint">List</code> API</p></li>
   <li><p>Strong typing - the APIs are strongly typed so as to catch more errors at compile time, a<br /> major improvement over standard Hadoop MapReduce where type-based run-time errors often occur</p></li>
-  <li><p>Ability to parameterise with rich <a href="guide/Data%20Types.html">data types</a> - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the <code class="prettyprint">Writable</code> interface, Scoobi allows <code class="prettyprint">DList</code> objects to be parameterised by normal Scala types including value types (e.g. <code class="prettyprint">Int</code>, <code class="prettyprint">String</code>, <code class="prettyprint">Double</code>), tuple types (with arbitrary nesting) as well as <strong>case classes</strong></p></li>
-  <li><p>Support for multiple types of I/O - currently built-in support for <a href="guide/Input%20and%20Output.html#Text+files">text</a>, <a href="guide/Input%20and%20Output.html#Sequence+files">Sequence</a> and <a href="guide/Input%20and%20Output.html#Avro+files">Avro</a> files with the ability to implement support for <a href="guide/Input%20and%20Output.html#Custom+sources+and+sinks">custom sources/sinks</a></p></li>
+  <li><p>Ability to parameterise with rich <a href="http://nicta.github.com/scoobi/guide/Data%20Types.html">data types</a> - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the <code class="prettyprint">Writable</code> interface, Scoobi allows <code class="prettyprint">DList</code> objects to be parameterised by normal Scala types including value types (e.g. <code class="prettyprint">Int</code>, <code class="prettyprint">String</code>, <code class="prettyprint">Double</code>), tuple types (with arbitrary nesting) as well as <strong>case classes</strong></p></li>
+  <li><p>Support for multiple types of I/O - currently built-in support for <a href="http://nicta.github.com/scoobi/guide/Input%20and%20Output.html#Text+files">text</a>, <a href="http://nicta.github.com/scoobi/guide/Input%20and%20Output.html#Sequence+files">Sequence</a> and <a href="http://nicta.github.com/scoobi/guide/Input%20and%20Output.html#Avro+files">Avro</a> files with the ability to implement support for <a href="http://nicta.github.com/scoobi/guide/Input%20and%20Output.html#Custom+sources+and+sinks">custom sources/sinks</a></p></li>
   <li><p>Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity</p></li>
   <li><p>It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and consise syntax that makes developing Hadoop applications very productive</p></li>
   <li><p>Apache V2 licence - just like the rest of Hadoop</p></li>
-</ul><a name="Getting+Started"><h3>Getting Started</h3></a><p>To get started, read the <a href="guide/Quick%20Start.html">getting started steps</a> and the section on <a href="guide/Distributed%20Lists.html">distributed lists</a>. The remaining sections in the <a href="guide/User%20Guide.html">User Guide</a> provide further detail on various aspects of Scoobi's functionality.</p><p>The user mailing list is at <a href="http://groups.google.com/group/scoobi-users">http://groups.google.com/group/scoobi-users</a>. Please use it for questions and comments!</p><a name="Community"><h3>Community</h3></a>
+</ul><a name="Getting+Started"><h3>Getting Started</h3></a><p>To get started, read the <a href="http://nicta.github.com/scoobi/guide/Quick%20Start.html">getting started steps</a> and the section on <a href="http://nicta.github.com/scoobi/guide/Distributed%20Lists.html">distributed lists</a>. The remaining sections in the <a href="http://nicta.github.com/scoobi/guide/User%20Guide.html">User Guide</a> provide further detail on various aspects of Scoobi's functionality.</p><p>The user mailing list is at <a href="http://groups.google.com/group/scoobi-users">http://groups.google.com/group/scoobi-users</a>. Please use it for questions and comments!</p><a name="Community"><h3>Community</h3></a>
 <ul>
   <li><a href="https://github.com/NICTA/scoobi/issues">Issues</a></li>
   <li><a href="http://notes.implicit.ly/tagged/scoobi">Change history</a></li>
   <li><a href="https://github.com/NICTA/scoobi">Source code (github)</a></li>
-  <li><a href="http://nicta.github.com/scoobi/api/SCOOBI-0.6.0-cdh4/index.html">API Documentation</a></li>
-  <li><a href="https://github.com/NICTA/scoobi/tree/SCOOBI-0.6.0-cdh4/examples">Examples</a></li>
-  <li>User Guide for the <a href="guide-SNAPSHOT/guide/User%20Guide.html">SNAPSHOT</a> version (<a href="http://nicta.github.com/scoobi/api/master/scala/index.html">latest api</a>)</li>
+  <li><a href="http://nicta.github.com/scoobi/api/SCOOBI-0.7.0-cdh4/index.html">API Documentation</a></li>
+  <li><a href="https://github.com/NICTA/scoobi/tree/SCOOBI-0.7.0-cdh4/examples">Examples</a></li>
+  <li>User Guide for the <a href="http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/User%20Guide.html">SNAPSHOT</a> version (<a href="http://nicta.github.com/scoobi/api/master/scala/index.html">latest api</a>)</li>
   <li>Mailing Lists: <a href="http://groups.google.com/group/scoobi-users">scoobi-users</a>, <a href="http://groups.google.com/group/scoobi-dev">scoobi-dev</a></li>
-</ul></div></status><subtoc specId="2083503570"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./images/icon_success_sml.gif" /> <a tooltip="" href="guide-SNAPSHOT/guide/User Guide.html">UserGuide</a></div></status></div></div>
+</ul></p></div></status><subtoc specId="1193187314"></subtoc><status class="ok"><div class="level0" style="display: none"><img src="./images/icon_success_sml.gif" /> <a href="guide/com.nicta.scoobi.guide.UserGuide.html" tooltip="">UserGuide</a></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
