@@ -4,11 +4,11 @@ name := "Scoobi Avro Example"
 
 version := "1.0"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.1"
 
-scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
+scalacOptions ++= Seq("-deprecation")
 
-resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
+resolvers ++= Seq("nicta" at "http://nicta.github.com/scoobi/releases",
                   "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "Radlab Repository" at "http://scads.knowsql.org/nexus/content/groups/public/")

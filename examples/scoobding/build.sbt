@@ -2,7 +2,7 @@ name := "scoobding"
 
 version := "1.0"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.1"
 
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 

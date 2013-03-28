@@ -48,12 +48,11 @@ assemblySettings
 Ben Wing's suggestion provides a quick and easy solution by using a merge strategy, by putting this at the bottom of your `build.sbt`:
 
 ```
-mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
-  {
-    case x => {
-      val oldstrat = old(x)
-      if (oldstrat == MergeStrategy.deduplicate) MergeStrategy.first
-      else oldstrat
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { mergeStrategy => {
+    case entry => {
+      val strategy = mergeStrategy(entry)
+      if (strategy == MergeStrategy.deduplicate) MergeStrategy.first
+      else strategy
     }
   }
 }
