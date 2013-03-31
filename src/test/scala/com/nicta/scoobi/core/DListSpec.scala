@@ -102,5 +102,18 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     uniqueIndexes === len
     maxIndex      === (len - 1)
   }
-
+  
+  "DList isEqual works" >> { implicit sc: SC =>
+    
+    val as = (1 to 100).map(scala.util.Random.nextInt(_).toString) // lots of dupes
+    val bs = scala.util.Random.shuffle(as)
+    
+    val a = as.toDList
+    val b = bs.toDList
+    val a1 = a.filter(_ != bs.head)
+    
+    run((a isEqual a, a isEqual b, b isEqual a, a1 isEqual a)) must_== (true, true, true, false)
+    
+    
+  }
 }
