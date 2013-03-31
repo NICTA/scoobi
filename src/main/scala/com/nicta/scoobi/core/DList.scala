@@ -139,33 +139,39 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /** Build a new distributed list from this list without any duplicate elements. */
   def distinct: DList[A] = {
-    import scala.collection.mutable.{Set => MSet}
+    import scala.collection.mutable.{ Set => MSet }
 
-    /* Cache input values that have not been seen before. And, if a value has been
-     * seen (i.e. is cached), simply drop it.
-     * TODO - make it an actual cache that has a fixed size and has a replacement
-     * policy once it is full otherwise there is the risk of running out of memory. */
-    val dropCached = new BasicDoFn[A, (A, Int)] {
-      val cache: MSet[A] = MSet.empty
+    parallelDo(new BasicDoFn[A, (Int, A)] {
 
-      def process(input: A, emitter: Emitter[(A, Int)]) {
+      var cache: MSet[A] = _
+
+      override def setup() {
+        cache = MSet.empty
+      }
+
+      override def process(input: A, emitter: Emitter[(Int, A)]) {
         if (!cache.contains(input)) {
-          emitter.emit((input, 0))
+          emitter.emit((input.hashCode, input))
           cache += input
         }
       }
-    }
+    }).groupByKey.parallelDo(new BasicDoFn[(Int, Iterable[A]), A] {
 
-    /**
-      * A Grouping type where sorting is implemented by taking the difference between hash
-      * codes of the two values. In this case, not concerned with ordering, just that the
-      * same values are grouped together. This Grouping instance will provide that
-      */
-    implicit val grouping = new Grouping[A] {
-      def groupCompare(x: A, y: A) = scalaz.Ordering.fromInt(x.hashCode.compare(y.hashCode))
-    }
+      var cache: MSet[A] = _
 
-    parallelDo(dropCached).groupByKey.map(_._1)
+      override def setup() {
+        cache = MSet.empty
+      }
+
+      override def process(input: (Int, Iterable[A]), emitter: Emitter[A]) {
+        input._2.foreach { value =>
+          if (!cache.contains(value)) {
+            emitter.emit(value)
+            cache += value
+          }
+        }
+      }
+    })
   }
 
   /**

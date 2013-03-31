@@ -102,5 +102,12 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     uniqueIndexes === len
     maxIndex      === (len - 1)
   }
+  
+  "DList distinct works" >> { implicit sc: SC =>
+    
+    val words = (1 to 100000).map { x => scala.util.Random.nextString(5) }
+    
+    words.toDList.distinct.run.sorted must_== words.distinct.sorted
+  }
 
 }
