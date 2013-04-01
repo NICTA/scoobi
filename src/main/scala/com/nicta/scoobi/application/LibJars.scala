@@ -40,7 +40,7 @@ trait LibJars {
   /**
    * @return the path of the directory to use when loading jars to the filesystem.
    */
-  def libjarsDirectory = fss.dirPath(sysProps.get("scoobi.libjarsdir").getOrElse("libjars"))
+  def libjarsDirectory(implicit configuration: ScoobiConfiguration) = fss.dirPath(configuration.get("scoobi.libjarsdir","libjars"))
 
   /** this variable controls if the upload must be done at all */
   def upload: Boolean = true
