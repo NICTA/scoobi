@@ -38,11 +38,14 @@ trait LibJars {
 
   protected[scoobi] lazy val fss: FileSystems = FileSystems
   protected[scoobi] lazy val sysProps: SystemProperties = SystemProperties
+  private val LIBJARS_DIR_PARAM = "scoobi.libjarsdir"
+  private val LIBJARS_DIR_NAME = "libjars"
 
   /**
    * @return the path of the directory to use when loading jars to the filesystem.
    */
-  def libjarsDirectory = fss.dirPath(sysProps.get("scoobi.libjarsdir").getOrElse("libjars"))
+  def libjarsDirectory(implicit configuration: ScoobiConfiguration) = fss.dirPath(sysProps.get(LIBJARS_DIR_PARAM).
+    getOrElse(configuration.get(LIBJARS_DIR_PARAM, LIBJARS_DIR_NAME)))
 
   /** this variable controls if the upload must be done at all */
   def upload: Boolean = true
