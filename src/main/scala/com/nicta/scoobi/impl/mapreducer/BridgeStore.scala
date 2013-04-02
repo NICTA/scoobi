@@ -120,7 +120,7 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
   def init {
     if (!initialised)  {
       readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(fs, stat.getPath, sc.configuration)
+        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
       }
       remainingReaders = readers.toList
       empty = readers.isEmpty || !readNext()
