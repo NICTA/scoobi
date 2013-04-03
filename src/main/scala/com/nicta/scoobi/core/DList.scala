@@ -157,7 +157,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
         cmp.partition(key.merge, num)
       
       import scalaz.Ordering.EQ
-        
+
+      // If they're equal, lefts before rights
       override def sortCompare(x: Either[A, A], y: Either[A, A]) =
         (cmp.sortCompare(x.merge, y.merge), x, y) match {
           case (EQ, Left(_), Right(_)) => scalaz.Ordering.LT
@@ -166,8 +167,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
           case (n, _, _) => n
         }
 
-      override def groupCompare(x: Either[A, A], y: Either[A, A]) =
-        cmp.sortCompare(x.merge, x.merge) // That is correct, using sortCompare for groupCompare
+      // We're going to funnel everything through the one mapper, one key
+      override def groupCompare(x: Either[A, A], y: Either[A, A]) = EQ
 
     }).map { input =>
       val it = input._2.iterator
@@ -182,20 +183,15 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
           case (None, Some(Right(_))) => false // premature right
           case (None, Some(Left(x))) => traverse(Some(x, 1)) // new left, restarting pattern
           case (Some(_), None) => false // missing closing rights
-          case (Some((s, i)), Some(Left(n))) => if (cmp.isSortEqual(s, n))
-            traverse(Some(n, i + 1)) // we can just expect 1 more right now
-            else
-              false
-          case (Some((s, i)), Some(Right(n))) => if (cmp.isSortEqual(s, n)) {
+          case (Some((s, i)), Some(Left(n))) if (cmp.isSortEqual(s, n)) => traverse(Some(n, i + 1)) // we can just expect 1 more right now
+          case (Some((s, i)), Some(Right(n))) if (cmp.isSortEqual(s, n)) =>
             if (i == 1)
               traverse(None) // nice restart
             else if (i > 1)
               traverse(Some(n, i - 1)) // one right to expect
             else
               false // too many rights
-          } else false
-
-          case (_, _) => true
+          case _ => false // keys aren't equal
         }
       }
 
