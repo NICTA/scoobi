@@ -16,8 +16,6 @@
 package com.nicta.scoobi
 package core
 
-import scala.annotation.tailrec
-
 /**
  * A list that is distributed across multiple machines.
  *
@@ -148,55 +146,26 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    */
 
   def isEqual(to: DList[A])(implicit cmp: Grouping[A]): DObject[Boolean] = {
-    val left = this.map(Left(_): Either[A, A])
-    val right = to.map(Right(_): Either[A, A])
+    val left = map((_, false))
+    val right = to.map((_, true))
 
-    (left ++ right).by(x => x).groupByKeyWith(new Grouping[Either[A, A]] {
-
-      override def partition(key: Either[A, A], num: Int): Int =
-        cmp.partition(key.merge, num)
-      
-      import scalaz.Ordering.EQ
-
-      // If they're equal, lefts before rights
-      override def sortCompare(x: Either[A, A], y: Either[A, A]) =
-        (cmp.sortCompare(x.merge, y.merge), x, y) match {
-          case (EQ, Left(_), Right(_)) => scalaz.Ordering.LT
-          case (EQ, Right(_), Left(_)) => scalaz.Ordering.GT
-          case (EQ, _, _) => EQ
-          case (n, _, _) => n
+    (left ++ right).groupByKey.parallelDo(
+      new DoFn[(A, Iterable[Boolean]), Boolean] {
+        var cntr: Long = _
+        override def setup() {
+          cntr = 0
         }
-
-      // We're going to funnel everything through the one mapper, one key
-      override def groupCompare(x: Either[A, A], y: Either[A, A]) = EQ
-
-    }).map { input =>
-      val it = input._2.iterator
-
-      @tailrec
-      def traverse(state: Option[(A, Int)]): Boolean = {
-
-        val ho = if (it.hasNext) Some(it.next) else None
-        
-        (state, ho) match {
-          case (None, None) => true // terminated cleanly
-          case (None, Some(Right(_))) => false // premature right
-          case (None, Some(Left(x))) => traverse(Some(x, 1)) // new left, restarting pattern
-          case (Some(_), None) => false // missing closing rights
-          case (Some((s, i)), Some(Left(n))) if (cmp.isSortEqual(s, n)) => traverse(Some(n, i + 1)) // we can just expect 1 more right now
-          case (Some((s, i)), Some(Right(n))) if (cmp.isSortEqual(s, n)) =>
-            if (i == 1)
-              traverse(None) // nice restart
-            else if (i > 1)
-              traverse(Some(n, i - 1)) // one right to expect
-            else
-              false // too many rights
-          case _ => false // keys aren't equal
+        override def process(in: (A, Iterable[Boolean]), e: Emitter[Boolean]) {
+          if (cntr == 0) {
+            for (b <- in._2) {
+              cntr = cntr + (if (b) 1 else -1)
+            }
+          }
         }
-      }
-
-      traverse(None)
-    }.materialise.map(_.forall(identity))
+        override def cleanup(e: Emitter[Boolean]) {
+          e.emit(cntr == 0)
+        }
+      }).materialise.map(_.forall(identity))
   }
 
   /** Build a new distributed list from this list without any duplicate elements. */
