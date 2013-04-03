@@ -28,10 +28,12 @@ import org.apache.commons.logging.LogFactory
 import core.ScoobiConfiguration
 import reflect.Classes._
 import ScoobiConfigurationImpl._
+import mapreducer.BridgeStore
+import monitor.Loggable._
 
 /** Class to manage the creation of a new JAR file. */
 class JarBuilder(implicit configuration: ScoobiConfiguration) {
-  private lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
 
   private val jos = new JarOutputStream(new FileOutputStream(configuration.temporaryJarFile.getAbsolutePath))
   private val entries: MSet[String] = MSet.empty
@@ -81,6 +83,8 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   /** Write-out the JAR file. Once this method is called, the JAR cannot be
     * modified further. */
   def close(implicit configuration: ScoobiConfiguration) {
+    BridgeStore.allRtClasses.foreach(addRuntimeClass)
+    logger.debug("added all rt classes to the job jar: "+BridgeStore.allRtClasses.mkString(", "))
     jos.close()
   }
 

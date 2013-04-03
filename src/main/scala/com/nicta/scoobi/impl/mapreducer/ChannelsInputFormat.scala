@@ -36,11 +36,12 @@ import core._
 import rtt.JarBuilder
 import Configurations._
 import ChannelsInputFormat._
+import monitor.Loggable._
 
 /** An input format that delegates to multiple input formats, one for each
   * input channel. */
 class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
-  private lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
+  private implicit lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
 
@@ -84,6 +85,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
  * to be specified. Makes use of ChannelsInputFormat
  */
 object ChannelsInputFormat {
+  private implicit lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
 
   private val INPUT_FORMAT_PROPERTY = "scoobi.input.formats"
 
@@ -122,7 +124,10 @@ object ChannelsInputFormat {
 
   private def configureSourceRuntimeClass(jar: JarBuilder, source: Source) = (conf: Configuration) => {
     source match {
-      case bs : BridgeStore[_] => jar.addRuntimeClass(bs.rtClass(ScoobiConfiguration(conf)))
+      case bs : BridgeStore[_] => {
+        val rtClass = bs.rtClass(ScoobiConfiguration(conf)).debug(c => "adding the BridgeStore class "+c.clazz.getName+" from Source "+source.id+" to the configuration")
+        jar.addRuntimeClass(rtClass)
+      }
       case _                   => ()
     }
     conf

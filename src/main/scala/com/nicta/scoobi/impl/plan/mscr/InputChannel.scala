@@ -95,7 +95,7 @@ trait InputChannel {
 trait MscrInputChannel extends InputChannel {
   implicit lazy val logger = LogFactory.getLog("scoobi.InputChannel")
 
-  protected val nodes = new MscrsDefinition {}; import nodes._
+  private val nodes = new MscrsDefinition {}; import nodes._
 
   lazy val id: Int = sourceNode.id
 
@@ -128,7 +128,9 @@ trait MscrInputChannel extends InputChannel {
   def terminalNodes: Seq[CompNode]
 
   private val indent = "\n          "
-  override def toString = getClass.getSimpleName+"("+sourceNode+")"+indent+"mappers"+mappers.mkString(indent, indent, indent)
+  override def toString =
+    getClass.getSimpleName+"("+sourceNode+")"+indent+"mappers"+mappers.mkString(indent, indent, indent)+"\n"+
+      indent+"last mappers"+lastMappers.mkString(indent, indent, indent)
 
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
@@ -186,7 +188,7 @@ trait MscrInputChannel extends InputChannel {
       vectorEmitter.map(environments(mapper), inputValues, mapper)
 
     if (lastMappers.isEmpty)
-      tags.map(t => emitters(t).write(source.fromKeyValueConverter.asValue(context, key, value)))
+      tags.map(t => emitters(t).write(sourceValue))
   }
 
   /** @return the output tag for a given "last" mapper */
@@ -209,7 +211,7 @@ trait MscrInputChannel extends InputChannel {
  * This input channel is a tree of Mappers which are all connected to Gbk nodes
  */
 class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
-  import nodes._
+  private val nodes = new MscrsDefinition {}; import nodes._
 
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
@@ -240,7 +242,7 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
 class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode]) extends MscrInputChannel {
-  import nodes._
+  private val nodes = new MscrsDefinition {}; import nodes._
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags

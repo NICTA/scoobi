@@ -75,8 +75,8 @@ case class ParallelDo(ins:             Seq[CompNode],
                       nodeSinks:       Seq[Sink] = Seq(),
                       bridgeStoreId:   String = randomUUID.toString) extends ProcessNodeImpl {
 
-  lazy val wf = wfb
-  lazy val wfe = env.wf
+  def wf = wfb
+  def wfe = env.wf
   override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "] " +
                           bridgeToString
 
@@ -182,7 +182,7 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
                    nodeSinks:     Seq[Sink] = Seq(),
                    bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
-  lazy val wf = pair(wfk, wfv)
+  def wf = pair(wfk, wfv)
   override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
@@ -212,7 +212,7 @@ object Combine1 {
 case class GroupByKey(in: CompNode, wfk: WireReaderWriter, gpk: KeyGrouping, wfv: WireReaderWriter,
                       nodeSinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
-  lazy val wf = pair(wfk, iterable(wfv))
+  def wf = pair(wfk, iterable(wfv))
   override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
