@@ -51,11 +51,11 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
     showTime(executeOnCluster(t))(displayTime("Cluster execution time"))
 
   /** execute some code, either locally or on the cluster, depending on the local argument being passed on the commandline */
-  def onHadoop[T](t: =>T)(implicit configuration: ScoobiConfiguration) =
+  def onHadoop[T](t: =>T)(implicit configuration: ScoobiConfiguration) = {
     if (isInMemory)   inMemory(t)
     else if (isLocal) onLocal(t)
     else              onCluster(t)
-
+  }
 
   /**
    * execute some code on the cluster, setting the filesystem / jobtracker addresses and setting up the classpath
@@ -70,6 +70,7 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
    */
   def configureForCluster(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     setLogFactory()
+    configureArguments
 
     logger.debug("setting the configuration for cluster execution")
 

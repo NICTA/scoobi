@@ -40,7 +40,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
   /** @return true (default value) if the computation graph must not be displayed */
   protected def showComputationGraph(implicit sc: ScoobiConfiguration) =
-    sc.configuration.getBoolean("scoobi.debug.showComputationGraph", true)
+    sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
 
   protected lazy val checkSourceAndSinks: CachedParamAttribute[ScoobiConfiguration, CompNode, Unit] = paramAttr("checkSourceAndSinks") { sc: ScoobiConfiguration => node: CompNode =>
     node match {
