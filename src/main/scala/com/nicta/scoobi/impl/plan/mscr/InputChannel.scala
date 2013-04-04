@@ -136,7 +136,7 @@ trait MscrInputChannel extends InputChannel {
   def mappersToString(name: String, mps: Seq[ParallelDo]) =
     "\n"+indent+
     (if (mps.isEmpty) s"no $name"
-     else             s"$name ${mappers.mkString(indent, indent, indent)}")
+     else             s"$name ${mappers.mkString(indent, indent, "")}")
 
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()
