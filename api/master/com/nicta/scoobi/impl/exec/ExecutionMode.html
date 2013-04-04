@@ -2168,15 +2168,15 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a nested text representation of the nodes graph</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#prettyGraph" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="prettyGraph:com.nicta.scoobi.core.CompNode=&gt;String"></a>
-      <a id="prettyGraph:(CompNode)⇒String"></a>
+      <a id="prettyGraph(showComputationGraph:Boolean):com.nicta.scoobi.core.CompNode=&gt;String"></a>
+      <a id="prettyGraph(Boolean):(CompNode)⇒String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">prettyGraph</span><span class="result">: (<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">prettyGraph</span><span class="params">(<span name="showComputationGraph">showComputationGraph: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: (<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a nested text representation of the nodes graph + graph if it's not too big</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
@@ -2512,6 +2512,19 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       <p class="shortcomment cmt">Show is not covariant so it is necessary to add this implicit to prove that we can show subclasses of CompNode
 </p><div class="fullcomment"><div class="comment cmt"><p>Show is not covariant so it is necessary to add this implicit to prove that we can show subclasses of CompNode
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ExecutionMode#showComputationGraph" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="showComputationGraph(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Boolean"></a>
+      <a id="showComputationGraph(ScoobiConfiguration):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">showComputationGraph</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true (default value) if the computation graph must not be displayed</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#showGraph" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="showGraph(node:com.nicta.scoobi.core.CompNode):String"></a>
       <a id="showGraph(CompNode):String"></a>
