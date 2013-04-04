@@ -74,7 +74,7 @@ trait ShowNode extends CompNodes {
   }
 
   /** @return a nested text representation of the nodes graph + graph if it's not too big */
-  def prettyGraph = (node : CompNode) => pretty(node) + "\nGraph\n" + showGraph(node)
+  def prettyGraph(showComputationGraph: Boolean = false) = (node : CompNode) => pretty(node) + (if (showComputationGraph) ("\nGraph\n" + showGraph(node)) else "")
 
   /** @return an ASCII representation of the nodes graph */
   def showGraph(node : CompNode) = tryOrElse {

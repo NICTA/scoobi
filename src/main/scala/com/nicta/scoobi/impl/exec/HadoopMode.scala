@@ -54,7 +54,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
    * Prepare the execution of the graph by optimising it
    */
   override protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) =
-    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph)
+    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph(showComputationGraph))
 
   /**
    * execute a computation node
