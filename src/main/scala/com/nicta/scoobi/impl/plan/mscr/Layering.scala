@@ -48,7 +48,11 @@ trait Layering extends ShowNode {
   }
 
   lazy val layers: CompNode => Seq[Layer[T]] = attr("layers") { case n =>
-    val (leaves, nonLeaves) = selectedDescendents(n).partition { d =>
+    val selectedNodes =
+      if (selected(n)) n +: selectedDescendents(n)
+      else             selectedDescendents(n)
+
+    val (leaves, nonLeaves) = selectedNodes.partition { d =>
       selectedDescendents(d).isEmpty
     }
     val leaf = if (leaves.isEmpty && selectNode(n)) Seq(select(n)) else Seq()
