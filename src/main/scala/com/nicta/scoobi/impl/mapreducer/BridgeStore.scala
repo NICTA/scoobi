@@ -136,7 +136,7 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
     }
   }
   private var readers: Seq[SequenceFile.Reader] = _
-  private var remainingReaders: List[SequenceFile.Reader] = _
+  private var remainingReaders: List[SequenceFile.Reader] = List()
   private var empty: Boolean = _
   private val key = NullWritable.get
 
