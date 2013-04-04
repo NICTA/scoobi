@@ -26,9 +26,8 @@ import comp._
 import core._
 import mapreducer._
 
-class OutputChannelSpec extends UnitSpecification with Grouped { def is =
+class OutputChannelSpec extends UnitSpecification with Grouped { def is = s2"""
 
-  """
   An OutputChannel encapsulates processing nodes for the outputs of a Mscr.
   There are 2 types of channels:
 
@@ -38,22 +37,21 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is =
     - a BypassOutputChannel which simply copies the values of a previous InputChannel
       to some sinks
 
-  """                                                                                                                   ^
-                                                                                                                        p^
-    "An output channel defines a tag which is a unique id identifying the node which receives the input key/values"     ! g1.e1^
-    "the output channel tag is used to determine if 2 channels are equal"                                               ! g1.e2^
-                                                                                                                        p^
-    "the sinks of an OutputChannel are"                                                                                 ^
-      "the bridgeStore related to the last node of the channel"                                                         ! g2.e1^
-      "the additional sinks of this last node"                                                                          ! g2.e2^
-                                                                                                                        p^
-    "Processing key / values"                                                                                           ^
-      "gbk only"                                                                                                        ! g3.e1^
-      "gbk + combiner"                                                                                                  ! g3.e2^
-      "gbk + reducer"                                                                                                   ! g3.e3^
-      "gbk + combiner + reducer"                                                                                        ! g3.e4^
-      "bypass"                                                                                                          ! g3.e5^
-                                                                                                                        end
+                                                                                                                        
+    An output channel defines a tag which is a unique id identifying the node which receives the input key/values       ${g1.e1}
+    the output channel tag is used to determine if 2 channels are equal                                                 ${g1.e2}
+
+    the sinks of an OutputChannel are
+      the bridgeStore related to the last node of the channel                                                           ${g2.e1}
+      the additional sinks of this last node                                                                            ${g2.e2}
+
+    Processing key / values
+      gbk only                                                                                                          ${g3.e1}
+      gbk + combiner                                                                                                    ${g3.e2}
+      gbk + reducer                                                                                                     ${g3.e3}
+      gbk + combiner + reducer                                                                                          ${g3.e4}
+      bypass                                                                                                            ${g3.e5}
+                                                                                                                        """
 
   "generalities" - new g1 with factory {
     val (gbk1, gbk2) = (gbk(load), gbk(StringSink()))

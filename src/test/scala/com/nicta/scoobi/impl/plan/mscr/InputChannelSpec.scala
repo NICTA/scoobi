@@ -27,41 +27,41 @@ import org.apache.hadoop.conf.Configuration
 import rtt.{MetadataTaggedValue, MetadataTaggedKey, TaggedValue, TaggedKey}
 import scala.collection.mutable.ListBuffer
 
-class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is = sequential ^
-                                                                                                                        """
+class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectations { def is = sequential ^ s2"""
+
   An InputChannel encapsulates parallelDo nodes which have a common source node.
   There are 2 types of InputChannels:
 
    * Mapper: which connects to Gbks
    * Floating: which connects to other types of Nodes
-                                                                                                                        """^
-                                                                                                                        p^
-  "2 input channels with 2 different source nodes must be different"                                                    ! g1().e1^
-  "the source of the input channel is the Load source if the sourceNode is a Load"                                      ! g1().e2^
-  "the source of the input channel is the BridgeStore source if the sourceNode is a ProcessNode"                        ! g1().e3^
-  "the input nodes of the input channel are: the source node+the environments of all the channel mappers"               ! g1().e4^
-  "an input channel defines tags which are all the gbks ids it relates to"                                              ! g1().e5^
-  "an input channel defines the types of keys emitted by tag"                                                           ^
-    "as the types of the gbks key for a GbkInputChannel"                                                                ! g2().e1^
-    "as Int for a FloatingInputChannel"                                                                                 ! g3().e1^p^
-  "an input channel defines the types of values emitted by tag"                                                         ^
-    "as the types of the gbks values for a GbkInputChannel"                                                             ! g2().e2^
-    "as the types of the last mappers for a FloatingInputChannel"                                                       ! g3().e2^
-                                                                                                                        endp^
-  "An input channel must map key/values based on the mappers connected to its source"                                   ^
-    "if there is only one mapper"                                                                                       ! g4().e1^
-    "if there are 2 independent mappers"                                                                                ! g4().e2^
-    "if there are 2 consecutive mappers"                                                                                ! g4().e3^
-    "if there are 3 mappers as a tree"                                                                                  ! g4().e4^
-                                                                                                                        endp^
-  "A gbk input channel has mappers defined by the parallelDos connected to its source"                                  ^
-    "load -> pd1 -> gbk1 -> pd2 -> gbk2"                                                                                ! g5().e1^
-    "load -> pd1 -> gbk1; pd1 -> gbk2"                                                                                  ! g5().e2^
-    "load -> pd1 -> gbk1 -> pd2 -> gbk2; pd1 -> gbk2"                                                                   ! g5().e3^
-                                                                                                                        endp^
-  "A floating input channel has mappers defined by the parallelDos connected to its source"                             ^
-    "load -> pd1 floating -> pd2 -> mat"                                                                                ! g6().e1^
-                                                                                                                        end
+                                                                                                                        
+
+  2 input channels with 2 different source nodes must be different                                                      ${g1().e1}
+  the source of the input channel is the Load source if the sourceNode is a Load                                        ${g1().e2}
+  the source of the input channel is the BridgeStore source if the sourceNode is a ProcessNode                          ${g1().e3}
+  the input nodes of the input channel are: the source node+the environments of all the channel mappers                 ${g1().e4}
+  an input channel defines tags which are all the gbks ids it relates to                                                ${g1().e5}
+  an input channel defines the types of keys emitted by tag
+    as the types of the gbks key for a GbkInputChannel                                                                  ${g2().e1}
+    as Int for a FloatingInputChannel                                                                                   ${g3().e1}
+  an input channel defines the types of values emitted by tag
+    as the types of the gbks values for a GbkInputChannel                                                               ${g2().e2}
+    as the types of the last mappers for a FloatingInputChannel                                                         ${g3().e2}
+
+  An input channel must map key/values based on the mappers connected to its source
+    if there is only one mapper                                                                                         ${g4().e1}
+    if there are 2 independent mappers                                                                                  ${g4().e2}
+    if there are 2 consecutive mappers                                                                                  ${g4().e3}
+    if there are 3 mappers as a tree                                                                                    ${g4().e4}
+
+  A gbk input channel has mappers defined by the parallelDos connected to its source
+    load -> pd1 -> gbk1 -> pd2 -> gbk2                                                                                  ${g5().e1}
+    load -> pd1 -> gbk1; pd1 -> gbk2                                                                                    ${g5().e2}
+    load -> pd1 -> gbk1 -> pd2 -> gbk2; pd1 -> gbk2                                                                     ${g5().e3}
+
+  A floating input channel has mappers defined by the parallelDos connected to its source
+    load -> pd1 floating -> pd2 -> mat                                                                                  ${g6().e1}
+                                                                                                                        """
 
   "general properties of input channels" - new g1 with factory {
     val (l1, l2) = (load, load)
