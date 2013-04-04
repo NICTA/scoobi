@@ -83,8 +83,6 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   /** Write-out the JAR file. Once this method is called, the JAR cannot be
     * modified further. */
   def close(implicit configuration: ScoobiConfiguration) {
-    BridgeStore.allRtClasses.foreach(addRuntimeClass)
-    logger.debug("added all rt classes to the job jar: "+BridgeStore.allRtClasses.mkString(", "))
     jos.close()
   }
 

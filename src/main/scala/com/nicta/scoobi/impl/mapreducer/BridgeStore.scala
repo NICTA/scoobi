@@ -46,11 +46,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = {
-    val newRtClass = ScoobiWritable(typeName, wf)
-    BridgeStore.allRtClasses = BridgeStore.allRtClasses :+ newRtClass
-    newRtClass
-  }
+  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = ScoobiWritable(typeName, wf)
 
   /** type of the generated class for this Bridge */
   val typeName = "BS" + bridgeStoreId
@@ -115,10 +111,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   override def hashCode = bridgeStoreId.hashCode
 
   override def toSource: Option[Source] = Some(this)
-}
-
-object BridgeStore {
-  var allRtClasses: Seq[RuntimeClass] = Seq()
 }
 
 class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
