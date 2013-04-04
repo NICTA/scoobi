@@ -57,7 +57,7 @@ object build extends Build {
     name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
-    scalaVersion := "2.10.0")
+    scalaVersion := "2.10.1")
 
   lazy val dependenciesSettings: Seq[Settings] = Seq(
     libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
