@@ -107,11 +107,9 @@ object build extends Build {
     testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
     // run each test in its own jvm
     fork in Test := true,
-    javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
-                        "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk",
-                        "-Xms3072m",
-                        "-Xmx3072m",
-                        "-XX:MaxPermSize=768m",
+    javaOptions ++= Seq("-Xms3g",
+                        "-Xmx4g",
+                        "-XX:MaxPermSize=1g",
                         "-XX:ReservedCodeCacheSize=1536m")
   )
 
