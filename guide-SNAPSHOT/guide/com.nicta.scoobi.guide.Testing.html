@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html">Testing</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="1245607833">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Running+locally"><h3>Running locally</h3></a><p>The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine. The way to do that is simply to run your application normally under the JVM. You can do that directly using <code class="prettyprint">java</code>, but specifying the right class path is tricky; as a result, it's often easier to run using <code class="prettyprint">sbt run-main</code>. For example, if your main class is called <code class="prettyprint">mypackage.myapp.RunMyApp</code>, run something like the following command from the top-level directory of your SBT project:</p>
+                       <div class="col1"><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="1260258275">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Running+locally"><h3>Running locally</h3></a><p>The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine. The way to do that is simply to run your application normally under the JVM. You can do that directly using <code class="prettyprint">java</code>, but specifying the right class path is tricky; as a result, it's often easier to run using <code class="prettyprint">sbt run-main</code>. For example, if your main class is called <code class="prettyprint">mypackage.myapp.RunMyApp</code>, run something like the following command from the top-level directory of your SBT project:</p>
 <pre><code class="prettyprint">sbt run-main mypackage.myapp.RunMyApp input-files output
 </code></pre><a name="Running+on+the+cluster"><h3>Running on the cluster</h3></a><p>Only when your application runs and works locally should you try running on a Hadoop cluster. In order to do so you will probably need to build an assembly, i.e. a self-contained JAR file containing all of the libraries needed. This can be done using the <code class="prettyprint">sbt-assembly</code> plugin to SBT. See the <a href="http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Quick%20Start.html">Quick Start</a> page in this User Guide for more information.</p><p>Once you have built the assembly, you can run it by logging into the job tracker and running it using <code class="prettyprint">hadoop</code>, e.g. as follows:</p>
 <pre><code class="prettyprint">hadoop jar ./target/MyApp-assembly-0.1.jar mypackage.myapp.RunMyApp input-files output
@@ -355,7 +355,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1111974043"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1545044507"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -368,7 +368,7 @@ class WordCountSpec extends HadoopSpecification {
             
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1742602365','1245607833'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1742602365','1260258275'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
