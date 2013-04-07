@@ -219,6 +219,21 @@ class ReductionSpec extends NictaSimpleJobs {
     a(11) === (42, "abc11def")
   }
 
+  // Reduction on the Semigroup typeclass
+  "semigroup reduction" >> {
+    // Produce a reduction on a 2 values having a Semigroup
+    val r1: Reduction[String] = semigroup[String]
+
+    // Reduce two String values using the Semigroup for Strings
+    r1("abc", "def") ==== "abcdef"
+
+    // use a reduction provided there is a Semigroup group for the type T
+    // here type T = (Long, Int, (String, String))
+    def combine(r: Reduction[(Long, Int, (String, String))]) = ok
+    combine(semigroup)
+  }
+
+
   // Reduction on the java.lang.Comparable interface.
   // Reduction occurs by looking for the first non-zero (representing inequality) value
   // or if none is found, then resulting in equality.

@@ -566,6 +566,11 @@ trait Reductions {
     })
 
   /**
+   * A reduction on values having a Semigroup instance
+   */
+  def semigroup[A : Semigroup] = Reduction((a1: A, a2: A) => implicitly[Semigroup[A]].append(a1, a2))
+
+  /**
    * A reduction on comparable values by first looking for `0`.
    */
   def comparable[A]: Reduction[Comparable[A]] =
