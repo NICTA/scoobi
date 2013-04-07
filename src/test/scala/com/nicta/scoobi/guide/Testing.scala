@@ -69,7 +69,33 @@ You can change every step in the process above and create your own Specification
 
   * you can change the execution context of the examples by overriding the `context` method and returning `local` or `cluster` instead of `localThenCluster` which is the default [specs2 context](http://etorreborre.github.com/specs2/guide/org.specs2.guide.Structure.html#Contexts). The same thing is achievable on the sbt command line by using the `exclude` argument: `test-only *WordCount* -- exclude cluster` will only run locally.
 
-  * the directory for loading the jars is defined by the `libjarsDirectory` property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the `application.LibJars` trait
+  * the directory for loading the jars is defined by the `libjarsDirectory` method which you can override. More generally you can change the loading and distribution of jars by overriding methods of the `application.LibJars` trait
+
+
+#### Command-line arguments
+
+The [command-line arguments](${SCOOBI_GUIDE_PAGE}com.nicta.scoobi.guide.Application.html#Arguments) which you can use to execute a Scoobi application are also applicable when running specs2 specifications. Here are a few examples:
+
+```
+// enable logging with all the categories
+sbt> test-only *WordCountSpec* -- scoobi verbose.all
+
+// enably logging but filter the categories with a regular expression
+sbt> test-only *WordCountSpec* -- scoobi verbose.all.[scoobi.impl.*]
+
+// only run in memory
+sbt> test-only *WordCountSpec* -- scoobi !local
+
+// only run in memory and on the cluster
+sbt> test-only *WordCountSpec* -- scoobi !local.cluster
+
+// only run one example but not in memory, locally only (with all log categories)
+sbt> test-only *WordCountSpec* -- -ex my first example -- scoobi !inmemory.verbose.all
+
+// only run the examples with the tag 'amazon EC2', on the cluster
+sbt> test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!local.cluster
+```
+
 
 #### Fine tuning
 
@@ -99,7 +125,7 @@ This will be especially useful if you execute your specifications on a build ser
 
 ##### Logging
 
-The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a `ScoobiApp`) but they can be turned on by using the `verbose` arguments. See the [Application](${SCOOBI_GUIDE_PAGE}Application.html#Logging) in this User Guide to learn how to set log levels and log categories.
+The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a `ScoobiApp`) but they can be turned on by using the `verbose` arguments. See the [Application](${SCOOBI_GUIDE_PAGE}com.nicta.scoobi.guide.Application.html#Logging) in this User Guide to learn how to set log levels and log categories.
 
 ##### Type alias
 
