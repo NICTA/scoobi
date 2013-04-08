@@ -21,18 +21,14 @@ object ScoobiRepl extends ScoobiInterpreter
   */
 trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 
-  /** start the program but don't upload jars by default */
-  override def main(args: Array[String]) {
-    parseHadoopArguments(args)
-    onHadoop {
-      try { run }
-      finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
-    }
-  }
+  /** Don't upload jars by default */
+  override lazy val upload = false
 
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
+    setDefaultArgs
+    setConfiguration(configuration.configuration)
     new ScoobiILoop(configuration).process(settings)
   }
 
@@ -48,20 +44,33 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
        |""".stripMargin
 
   /** set the configuration so that the next job is run in memory */
-  def inmemory { configureForInMemory }
+  def inmemory {
+    scoobiArgs = (scoobiArgs :+ "inmemory").mkString(".").replace("local", "inmemory").replace("cluster", "inmemory").replace("!inmemory", "inmemory").distinct
+  }
   /** set the configuration so that the next job is run locally */
-  def local    { configureForLocal }
+  def local {
+    scoobiArgs = (scoobiArgs :+ "local").mkString(".").replace("inmemory", "local").replace("cluster", "local").replace("!local", "local").distinct
+  }
   /** set the configuration so that the next job is run on the cluster - this is the default */
   def cluster  {
-    setConfiguration(configuration.configuration)
-    configureForCluster
+    scoobiArgs = (scoobiArgs :+ "cluster").mkString(".").replace("inmemory", "cluster").replace("local", "cluster").replace("!cluster", "cluster").distinct
+  }
+
+  private def setDefaultArgs {
+    scoobiArgs = "local.!cluster.verbose.all"
   }
 
   def scoobiArgs_=(arguments: String) {
-    scoobiArguments = arguments.split("\\.").map(_.trim)
+    replArgs = arguments.split("\\.").map(_.trim).distinct
+    scoobiArguments = replArgs
+    if (isInMemory)   configureForInMemory
+    else if (isLocal) configureForLocal
+    else              configureForCluster
     setLogFactory()
   }
 
+  private var replArgs: Seq[String] = Seq()
+  override def argumentsValues = replArgs
   override def useHadoopConfDir = true
 
 }
