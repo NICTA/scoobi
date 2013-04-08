@@ -102,5 +102,17 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     uniqueIndexes === len
     maxIndex      === (len - 1)
   }
+  
+  "DList distinct works" >> { implicit sc: SC =>
+    
+    case class PoorHashString(s: String) {
+      override def hashCode() = s.hashCode() & 0xff
+    }
+    implicit def fmt = mkCaseWireFormat(PoorHashString, PoorHashString.unapply _)
+    
+    val words = (1 to 1000).map { x => PoorHashString(util.Random.nextString(1)) }
+    
+    words.toDList.distinct.size.run must_== words.distinct.size
+  }
 
 }
