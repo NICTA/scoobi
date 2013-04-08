@@ -42,11 +42,20 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
   override lazy val id: Int = Data.ids.get
   override lazy val stringId = bridgeStoreId
-
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
+  /** runtime class for this bridgestore, it shouldn't be recreated after it's been created once */
+  private var runtimeClass: Option[RuntimeClass] = None
+
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = ScoobiWritable(typeName, wf)
+  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = runtimeClass.getOrElse(createRuntimeClass)
+
+  /** create and store a runtime class for this bridge store */
+  private def createRuntimeClass(implicit sc: ScoobiConfiguration): RuntimeClass = {
+    val rt = ScoobiWritable(typeName, wf)
+    runtimeClass = Some(rt)
+    rt
+  }
 
   /** type of the generated class for this Bridge */
   val typeName = "BS" + bridgeStoreId
