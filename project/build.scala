@@ -181,6 +181,7 @@ object build extends Build {
    * EXAMPLE PROJECTS
    */
   def project(name: String) = Project(id = name, base = file("examples/"+name))
+  lazy val avro      = project("avro")
   lazy val fatjar    = project("fatjar")
   lazy val pageRank  = project("pageRank")
   lazy val scoobding = project("scoobding")
