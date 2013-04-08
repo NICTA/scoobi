@@ -155,23 +155,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
           cache += input
         }
       }
-    }).groupByKey.parallelDo(new BasicDoFn[(Int, Iterable[A]), A] {
-
-      var cache: MSet[A] = _
-
-      override def setup() {
-        cache = MSet.empty
-      }
-
-      override def process(input: (Int, Iterable[A]), emitter: Emitter[A]) {
-        input._2.foreach { value =>
-          if (!cache.contains(value)) {
-            emitter.emit(value)
-            cache += value
-          }
-        }
-      }
-    })
+    }).groupByKey.mapFlatten( _._2.toSet )
   }
 
   /**
