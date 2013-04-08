@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html">Testing</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="1260258275">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Running+locally"><h3>Running locally</h3></a><p>The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine. The way to do that is simply to run your application normally under the JVM. You can do that directly using <code class="prettyprint">java</code>, but specifying the right class path is tricky; as a result, it's often easier to run using <code class="prettyprint">sbt run-main</code>. For example, if your main class is called <code class="prettyprint">mypackage.myapp.RunMyApp</code>, run something like the following command from the top-level directory of your SBT project:</p>
+                       <div class="col1"><div id="central"><title>Testing guide</title><a name="Testing+guide"><h2 specId="1245607833">Testing guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Running+locally"><h3>Running locally</h3></a><p>The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine. The way to do that is simply to run your application normally under the JVM. You can do that directly using <code class="prettyprint">java</code>, but specifying the right class path is tricky; as a result, it's often easier to run using <code class="prettyprint">sbt run-main</code>. For example, if your main class is called <code class="prettyprint">mypackage.myapp.RunMyApp</code>, run something like the following command from the top-level directory of your SBT project:</p>
 <pre><code class="prettyprint">sbt run-main mypackage.myapp.RunMyApp input-files output
 </code></pre><a name="Running+on+the+cluster"><h3>Running on the cluster</h3></a><p>Only when your application runs and works locally should you try running on a Hadoop cluster. In order to do so you will probably need to build an assembly, i.e. a self-contained JAR file containing all of the libraries needed. This can be done using the <code class="prettyprint">sbt-assembly</code> plugin to SBT. See the <a href="http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Quick%20Start.html">Quick Start</a> page in this User Guide for more information.</p><p>Once you have built the assembly, you can run it by logging into the job tracker and running it using <code class="prettyprint">hadoop</code>, e.g. as follows:</p>
 <pre><code class="prettyprint">hadoop jar ./target/MyApp-assembly-0.1.jar mypackage.myapp.RunMyApp input-files output
@@ -91,8 +91,26 @@ class WordCountSpec extends HadoopSpecification {
 <ul>
   <li><p>the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> properties comes from the <code class="prettyprint">application.Cluster</code> trait and you can override them with hardcoded values so that you don't depend on what's on your build server</p></li>
   <li><p>you can change the execution context of the examples by overriding the <code class="prettyprint">context</code> method and returning <code class="prettyprint">local</code> or <code class="prettyprint">cluster</code> instead of <code class="prettyprint">localThenCluster</code> which is the default <a href="http://etorreborre.github.com/specs2/guide/org.specs2.guide.Structure.html#Contexts">specs2 context</a>. The same thing is achievable on the sbt command line by using the <code class="prettyprint">exclude</code> argument: <code class="prettyprint">test-only *WordCount* -- exclude cluster</code> will only run locally.</p></li>
-  <li><p>the directory for loading the jars is defined by the <code class="prettyprint">libjarsDirectory</code> property which you can override. More generally you can change the loading and distribution of jars by overriding methods of the <code class="prettyprint">application.LibJars</code> trait</p></li>
-</ul><a name="Fine+tuning"><h4>Fine tuning</h4></a><a name="Implicit+configuration"><h5>Implicit configuration</h5></a><p>By default, all the examples of a specification are executed concurrently, which is why each example needs to be passed its own <code class="prettyprint">ScoobiConfiguration</code> instance. If you prefer having a sequential execution (with the <code class="prettyprint">sequential</code> specs2 argument) you can omit the explicit passing of the <code class="prettyprint">ScoobiConfiguration</code> object:</p>
+  <li><p>the directory for loading the jars is defined by the <code class="prettyprint">libjarsDirectory</code> method which you can override. More generally you can change the loading and distribution of jars by overriding methods of the <code class="prettyprint">application.LibJars</code> trait</p></li>
+</ul><a name="Command-line+arguments"><h4>Command-line arguments</h4></a><p>The <a href="http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">command-line arguments</a> which you can use to execute a Scoobi application are also applicable when running specs2 specifications. Here are a few examples:</p>
+<pre><code class="prettyprint">// enable logging with all the categories
+sbt&gt; test-only *WordCountSpec* -- scoobi verbose.all
+
+// enably logging but filter the categories with a regular expression
+sbt&gt; test-only *WordCountSpec* -- scoobi verbose.all.[scoobi.impl.*]
+
+// only run in memory
+sbt&gt; test-only *WordCountSpec* -- scoobi !local
+
+// only run in memory and on the cluster
+sbt&gt; test-only *WordCountSpec* -- scoobi !local.cluster
+
+// only run one example but not in memory, locally only (with all log categories)
+sbt&gt; test-only *WordCountSpec* -- -ex my first example -- scoobi !inmemory.verbose.all
+
+// only run the examples with the tag 'amazon EC2', on the cluster
+sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!local.cluster
+</code></pre><a name="Fine+tuning"><h4>Fine tuning</h4></a><a name="Implicit+configuration"><h5>Implicit configuration</h5></a><p>By default, all the examples of a specification are executed concurrently, which is why each example needs to be passed its own <code class="prettyprint">ScoobiConfiguration</code> instance. If you prefer having a sequential execution (with the <code class="prettyprint">sequential</code> specs2 argument) you can omit the explicit passing of the <code class="prettyprint">ScoobiConfiguration</code> object:</p>
 <pre><code class="prettyprint">class WordCountSpec extends HadoopSpecification {
   sequential
   &quot;Counting words frequencies must return the frequency for each word&quot; &gt;&gt; {
@@ -105,7 +123,7 @@ class WordCountSpec extends HadoopSpecification {
   override def jobTracker = &quot;svm-hadoop1.ssrg.nicta.com.au:8021&quot;
   ...
 }
-</code></pre><p>This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.</p><a name="Logging"><h5>Logging</h5></a><p>The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a <code class="prettyprint">ScoobiApp</code>) but they can be turned on by using the <code class="prettyprint">verbose</code> arguments. See the <a href="http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/Application.html#Logging">Application</a> in this User Guide to learn how to set log levels and log categories.</p><a name="Type+alias"><h5>Type alias</h5></a><p>Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:</p>
+</code></pre><p>This will be especially useful if you execute your specifications on a build server where Hadoop is not installed or configured.</p><a name="Logging"><h5>Logging</h5></a><p>The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a <code class="prettyprint">ScoobiApp</code>) but they can be turned on by using the <code class="prettyprint">verbose</code> arguments. See the <a href="http://nicta.github.com/scoobi/guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Logging">Application</a> in this User Guide to learn how to set log levels and log categories.</p><a name="Type+alias"><h5>Type alias</h5></a><p>Passing the configuration to each example is a bit verbose so you can use a type alias to shorten it:</p>
 <pre><code class="prettyprint">class WordCountSpec extends HadoopSpecification {
   type SC = ScoobiConfiguration
 
@@ -157,8 +175,8 @@ class WordCountSpec extends HadoopSpecification {
 </code></pre></li>
 </ul></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1844357484"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1595229976"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -169,7 +187,7 @@ class WordCountSpec extends HadoopSpecification {
             
           </li></ul>
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -183,7 +201,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -197,7 +215,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+input">Text file input</a>
             
@@ -229,7 +247,7 @@ class WordCountSpec extends HadoopSpecification {
             
           </li></ul>
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -241,7 +259,7 @@ class WordCountSpec extends HadoopSpecification {
             
           </li></ul>
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -249,7 +267,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Persisting">Persisting</a>
@@ -263,7 +281,7 @@ class WordCountSpec extends HadoopSpecification {
             
           </li></ul>
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -279,7 +297,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -303,7 +321,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -312,6 +330,8 @@ class WordCountSpec extends HadoopSpecification {
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Base+specification">Base specification</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Command-line+arguments">Command-line arguments</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Fine+tuning">Fine tuning</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Implicit+configuration">Implicit configuration</a>
@@ -331,7 +351,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -347,7 +367,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1742602365"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1317572826"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -355,7 +375,7 @@ class WordCountSpec extends HadoopSpecification {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1545044507"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1111974043"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -368,7 +388,7 @@ class WordCountSpec extends HadoopSpecification {
             
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1742602365','1260258275'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1317572826','1245607833'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
