@@ -69,8 +69,8 @@ object build extends Build {
       hadoop ++
       Seq(
       "javassist"                %  "javassist"                 % "3.12.1.GA",
-      "org.apache.avro"          %  "avro-mapred"               % "1.7.3.1",
-      "org.apache.avro"          %  "avro"                      % "1.7.3.1",
+      "org.apache.avro"          %  "avro-mapred"               % "1.7.4",
+      "org.apache.avro"          %  "avro"                      % "1.7.4",
       "com.thoughtworks.xstream" %  "xstream"                   % "1.4.4"            intransitive(),
       "com.googlecode.kiama"     %% "kiama"                     % "1.5.0-SNAPSHOT",
       "com.chuusai"              %% "shapeless"                 % "1.2.3",
