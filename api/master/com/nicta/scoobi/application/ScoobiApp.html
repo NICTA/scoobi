@@ -450,15 +450,15 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration with local setup
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#configureJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Any"></a>
-      <a id="configureJars(ScoobiConfiguration):Any"></a>
+      <a id="configureJars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):org.apache.hadoop.conf.Configuration"></a>
+      <a id="configureJars(ScoobiConfiguration):Configuration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+        <span class="name">configureJars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
@@ -795,15 +795,15 @@ method: <code>override def upload = false</code> or by passing the 'nolibjars' a
       </h4>
       <p class="shortcomment cmt">alias for locally</p><div class="fullcomment"><div class="comment cmt"><p>alias for locally</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#jars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="jars:Seq[java.net.URL]"></a>
-      <a id="jars:Seq[URL]"></a>
+      <a id="jars(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Seq[java.net.URL]"></a>
+      <a id="jars(ScoobiConfiguration):Seq[URL]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">jars</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.net.URL">URL</span>]</span>
+        <span class="name">jars</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="java.net.URL">URL</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of library jars to upload

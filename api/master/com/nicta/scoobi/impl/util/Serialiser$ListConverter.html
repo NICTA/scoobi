@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ScoobiWritableOutputConverter - com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter</title>
-          <meta name="description" content="ScoobiWritableOutputConverter - com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter" />
-          <meta name="keywords" content="ScoobiWritableOutputConverter com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter" />
+          <title>ListConverter - com.nicta.scoobi.impl.util.Serialiser.ListConverter</title>
+          <meta name="description" content="ListConverter - com.nicta.scoobi.impl.util.Serialiser.ListConverter" />
+          <meta name="keywords" content="ListConverter com.nicta.scoobi.impl.util.Serialiser.ListConverter" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter';
+            var hash = 'com.nicta.scoobi.impl.util.Serialiser$ListConverter';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -30,8 +30,8 @@
         <body class="type">
       <div id="definition">
         <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.mapreducer">mapreducer</a></p>
-        <h1>ScoobiWritableOutputConverter</h1>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.util">util</a>.<a href="Serialiser.html" class="extype" name="com.nicta.scoobi.impl.util.Serialiser">Serialiser</a></p>
+        <h1>ListConverter</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,14 +40,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiWritableOutputConverter</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>]</span>
+        <span class="name">ListConverter</span><span class="result"> extends <span class="extype" name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter">AbstractCollectionConverter</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
-the Class for 'value' will exist and be known by the ClassLoader.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.ToKeyValueConverter">ToKeyValueConverter</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter">AbstractCollectionConverter</span>, <span class="extype" name="com.thoughtworks.xstream.converters.Converter">Converter</span>, <span class="extype" name="com.thoughtworks.xstream.converters.ConverterMatcher">ConverterMatcher</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -65,7 +64,7 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter"><span>ScoobiWritableOutputConverter</span></li><li class="in" name="com.nicta.scoobi.core.OutputConverter"><span>OutputConverter</span></li><li class="in" name="com.nicta.scoobi.core.ToKeyValueConverter"><span>ToKeyValueConverter</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.util.Serialiser.ListConverter"><span>ListConverter</span></li><li class="in" name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter"><span>AbstractCollectionConverter</span></li><li class="in" name="com.thoughtworks.xstream.converters.Converter"><span>Converter</span></li><li class="in" name="com.thoughtworks.xstream.converters.ConverterMatcher"><span>ConverterMatcher</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -85,16 +84,16 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(typeName:String):com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter[A]"></a>
-      <a id="&lt;init&gt;:ScoobiWritableOutputConverter[A]"></a>
+              <ol><li name="com.nicta.scoobi.impl.util.Serialiser.ListConverter#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(_mapper:com.thoughtworks.xstream.mapper.Mapper):Serialiser.this.ListConverter"></a>
+      <a id="&lt;init&gt;:ListConverter"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiWritableOutputConverter</span><span class="params">(<span name="typeName">typeName: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">ListConverter</span><span class="params">(<span name="_mapper">_mapper: <span class="extype" name="com.thoughtworks.xstream.mapper.Mapper">Mapper</span></span>)</span>
       </span>
       </h4>
       
@@ -185,19 +184,19 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.OutputConverter#asKeyValue" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asKeyValue(x:Any)(implicitconfiguration:org.apache.hadoop.conf.Configuration):(Any,Any)"></a>
-      <a id="asKeyValue(Any)(Configuration):(Any,Any)"></a>
+    </li><li name="com.nicta.scoobi.impl.util.Serialiser.ListConverter#canConvert" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="canConvert(clazz:Class[_]):Boolean"></a>
+      <a id="canConvert(Class[_]):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asKeyValue</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>)</span>
+        <span class="name">canConvert</span><span class="params">(<span name="clazz">clazz: <span class="extype" name="scala.Predef.Class">Class</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a> → ToKeyValueConverter</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.util.Serialiser.ListConverter">ListConverter</a> → AbstractCollectionConverter → ConverterMatcher</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -214,6 +213,19 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#createCollection" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createCollection(x$1:Class[_]):Object"></a>
+      <a id="createCollection(Class[_]):AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createCollection</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.lang.Class">Class</span>[_]</span>)</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../thoughtworks$xstream$converters$collections.html" class="extype" name="com.thoughtworks.xstream.converters.collections">com.thoughtworks.xstream.converters.collections</a>] </dd><dt>Definition Classes</dt><dd>AbstractCollectionConverter</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -256,6 +268,19 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.Serialiser.ListConverter#getAnyClass" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getAnyClass(x:Any):Class[_&lt;:AnyRef]"></a>
+      <a id="getAnyClass(Any):Class[_&lt;:AnyRef]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getAnyClass</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_ &lt;: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -295,6 +320,32 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#mapper" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mapper():com.thoughtworks.xstream.mapper.Mapper"></a>
+      <a id="mapper():Mapper"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapper</span><span class="params">()</span><span class="result">: <span class="extype" name="com.thoughtworks.xstream.mapper.Mapper">Mapper</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../thoughtworks$xstream$converters$collections.html" class="extype" name="com.thoughtworks.xstream.converters.collections">com.thoughtworks.xstream.converters.collections</a>] </dd><dt>Definition Classes</dt><dd>AbstractCollectionConverter</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.Serialiser.ListConverter#marshal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="marshal(value:Any,writer:com.thoughtworks.xstream.io.HierarchicalStreamWriter,context:com.thoughtworks.xstream.converters.MarshallingContext):Unit"></a>
+      <a id="marshal(Any,HierarchicalStreamWriter,MarshallingContext):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">marshal</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Any">Any</span></span>, <span name="writer">writer: <span class="extype" name="com.thoughtworks.xstream.io.HierarchicalStreamWriter">HierarchicalStreamWriter</span></span>, <span name="context">context: <span class="extype" name="com.thoughtworks.xstream.converters.MarshallingContext">MarshallingContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.util.Serialiser.ListConverter">ListConverter</a> → AbstractCollectionConverter → Converter</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -334,6 +385,19 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#readItem" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="readItem(x$1:com.thoughtworks.xstream.io.HierarchicalStreamReader,x$2:com.thoughtworks.xstream.converters.UnmarshallingContext,x$3:Any):Object"></a>
+      <a id="readItem(HierarchicalStreamReader,UnmarshallingContext,Any):AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">readItem</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="com.thoughtworks.xstream.io.HierarchicalStreamReader">HierarchicalStreamReader</span></span>, <span name="arg1">arg1: <span class="extype" name="com.thoughtworks.xstream.converters.UnmarshallingContext">UnmarshallingContext</span></span>, <span name="arg2">arg2: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../thoughtworks$xstream$converters$collections.html" class="extype" name="com.thoughtworks.xstream.converters.collections">com.thoughtworks.xstream.converters.collections</a>] </dd><dt>Definition Classes</dt><dd>AbstractCollectionConverter</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -347,19 +411,6 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter#toKeyValue" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toKeyValue(x:A)(implicitconfiguration:org.apache.hadoop.conf.Configuration):(org.apache.hadoop.io.NullWritable,com.nicta.scoobi.impl.rtt.ScoobiWritable[A])"></a>
-      <a id="toKeyValue(A)(Configuration):(NullWritable,ScoobiWritable[A])"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toKeyValue</span><span class="params">(<span name="x">x: <span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>])</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter">ScoobiWritableOutputConverter</a> → <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -373,6 +424,19 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.util.Serialiser.ListConverter#unmarshal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unmarshal(reader:com.thoughtworks.xstream.io.HierarchicalStreamReader,context:com.thoughtworks.xstream.converters.UnmarshallingContext):List[Any]"></a>
+      <a id="unmarshal(HierarchicalStreamReader,UnmarshallingContext):List[Any]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unmarshal</span><span class="params">(<span name="reader">reader: <span class="extype" name="com.thoughtworks.xstream.io.HierarchicalStreamReader">HierarchicalStreamReader</span></span>, <span name="context">context: <span class="extype" name="com.thoughtworks.xstream.converters.UnmarshallingContext">UnmarshallingContext</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.Any">Any</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.util.Serialiser.ListConverter">ListConverter</a> → AbstractCollectionConverter → Converter</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -421,6 +485,19 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#writeItem" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="writeItem(x$1:Any,x$2:com.thoughtworks.xstream.converters.MarshallingContext,x$3:com.thoughtworks.xstream.io.HierarchicalStreamWriter):Unit"></a>
+      <a id="writeItem(Any,MarshallingContext,HierarchicalStreamWriter):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">writeItem</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>, <span name="arg1">arg1: <span class="extype" name="com.thoughtworks.xstream.converters.MarshallingContext">MarshallingContext</span></span>, <span name="arg2">arg2: <span class="extype" name="com.thoughtworks.xstream.io.HierarchicalStreamWriter">HierarchicalStreamWriter</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../thoughtworks$xstream$converters$collections.html" class="extype" name="com.thoughtworks.xstream.converters.collections">com.thoughtworks.xstream.converters.collections</a>] </dd><dt>Definition Classes</dt><dd>AbstractCollectionConverter</dd></dl></div>
     </li></ol>
             </div>
 
@@ -430,10 +507,12 @@ the Class for 'value' will exist and be known by the ClassLoader.</p></div><div 
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.nicta.scoobi.core.OutputConverter">
-              <h3>Inherited from <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.ScoobiWritableOutputConverter.A">A</span>]</h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.ToKeyValueConverter">
-              <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.ToKeyValueConverter">ToKeyValueConverter</span></h3>
+        <div class="parent" name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter">
+              <h3>Inherited from <span class="extype" name="com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter">AbstractCollectionConverter</span></h3>
+            </div><div class="parent" name="com.thoughtworks.xstream.converters.Converter">
+              <h3>Inherited from <span class="extype" name="com.thoughtworks.xstream.converters.Converter">Converter</span></h3>
+            </div><div class="parent" name="com.thoughtworks.xstream.converters.ConverterMatcher">
+              <h3>Inherited from <span class="extype" name="com.thoughtworks.xstream.converters.ConverterMatcher">ConverterMatcher</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
