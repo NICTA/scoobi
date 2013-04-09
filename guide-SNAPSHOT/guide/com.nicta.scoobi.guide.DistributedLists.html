@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html">DistributedLists</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="970928725">Distributed Lists</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parameterised by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterised by higher-order functions. For example:</p>
+                       <div class="col1"><div id="central"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="1346308976">Distributed Lists</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parameterised by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterised by higher-order functions. For example:</p>
 <pre><code class="prettyprint">// Converting a List[Int] to a List[String] keeping only evens
 val stringList = intList filter { _ % 2 == 0 } map { _.toString }
 
@@ -375,7 +375,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
             
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1317572826','970928725'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1317572826','1346308976'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
