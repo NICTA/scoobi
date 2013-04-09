@@ -23,6 +23,10 @@ import org.apache.hadoop.conf.Configuration
 import java.io._
 import core.ScoobiConfiguration
 import com.thoughtworks.xstream.io.xml.StaxDriver
+import com.thoughtworks.xstream.mapper.Mapper
+import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter
+import com.thoughtworks.xstream.io.{HierarchicalStreamReader, HierarchicalStreamWriter}
+import com.thoughtworks.xstream.converters.{UnmarshallingContext, MarshallingContext}
 
 trait Serialiser {
 
@@ -36,6 +40,8 @@ trait Serialiser {
   xstream.omitField(bridgeStoreIteratorClass,  "sc")
   xstream.omitField(bridgeStoreIteratorClass,  "readers")
   xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
+  xstream.alias("list", classOf[::[_]])
+  xstream.registerConverter(new ListConverter(xstream.getMapper))
 
   def serialise(obj: Any, out: OutputStream) = synchronized {
     try { xstream.toXML(obj, out) }
@@ -55,5 +61,35 @@ trait Serialiser {
   def fromByteArray(in: Array[Byte]) =
     deserialise(new ByteArrayInputStream(in))
 
+
+  class ListConverter(_mapper : Mapper)  extends AbstractCollectionConverter(_mapper) {
+    /** Helper method to use x.getClass
+      *
+      * See: http://scalide.blogspot.com/2009/06/getanyclass-tip.html
+      */
+    def getAnyClass(x: Any) = x.asInstanceOf[AnyRef].getClass
+
+    def canConvert( clazz: Class[_]) = {
+      classOf[::[_]] == clazz
+    }
+
+    def marshal( value: Any, writer: HierarchicalStreamWriter, context: MarshallingContext) {
+      val list = value.asInstanceOf[List[_]]
+      for ( item <- list ) {
+        writeItem(item, context, writer)
+      }
+    }
+
+    def unmarshal( reader: HierarchicalStreamReader, context: UnmarshallingContext ) = {
+      var list : List[_] = Nil
+      while (reader.hasMoreChildren) {
+        reader.moveDown()
+        val item = readItem(reader, context, list)
+        list = list ::: List(item) // be sure to build the list in the same order
+        reader.moveUp()
+      }
+      list
+    }
+  }
 }
 object Serialiser extends Serialiser
