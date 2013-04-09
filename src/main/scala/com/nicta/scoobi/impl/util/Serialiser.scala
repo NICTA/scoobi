@@ -31,17 +31,20 @@ import com.thoughtworks.xstream.converters.{UnmarshallingContext, MarshallingCon
 trait Serialiser {
 
   private val xstream = new XStream(new BinaryStreamDriver)
+  initialiseXStream
 
-  xstream.omitField(classOf[Configuration],           "classLoader")
-  xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
-  xstream.omitField(classOf[ScoobiConfiguration],     "sc")
-  xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
-  val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
-  xstream.omitField(bridgeStoreIteratorClass,  "sc")
-  xstream.omitField(bridgeStoreIteratorClass,  "readers")
-  xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
-  xstream.alias("list", classOf[::[_]])
-  xstream.registerConverter(new ListConverter(xstream.getMapper))
+  private def initialiseXStream {
+    xstream.omitField(classOf[Configuration],           "classLoader")
+    xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
+    xstream.omitField(classOf[ScoobiConfiguration],     "sc")
+    xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
+    val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
+    xstream.omitField(bridgeStoreIteratorClass,  "sc")
+    xstream.omitField(bridgeStoreIteratorClass,  "readers")
+    xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
+//    xstream.alias("list", classOf[::[_]])
+//    xstream.registerConverter(new ListConverter(xstream.getMapper))
+  }
 
   def serialise(obj: Any, out: OutputStream) = synchronized {
     try { xstream.toXML(obj, out) }
@@ -63,21 +66,12 @@ trait Serialiser {
 
 
   class ListConverter(_mapper : Mapper)  extends AbstractCollectionConverter(_mapper) {
-    /** Helper method to use x.getClass
-      *
-      * See: http://scalide.blogspot.com/2009/06/getanyclass-tip.html
-      */
     def getAnyClass(x: Any) = x.asInstanceOf[AnyRef].getClass
 
-    def canConvert( clazz: Class[_]) = {
-      classOf[::[_]] == clazz
-    }
+    def canConvert( clazz: Class[_]) = classOf[::[_]] == clazz
 
     def marshal( value: Any, writer: HierarchicalStreamWriter, context: MarshallingContext) {
-      val list = value.asInstanceOf[List[_]]
-      for ( item <- list ) {
-        writeItem(item, context, writer)
-      }
+      value.asInstanceOf[List[_]].foreach(item =>  writeItem(item, context, writer))
     }
 
     def unmarshal( reader: HierarchicalStreamReader, context: UnmarshallingContext ) = {
