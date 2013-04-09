@@ -252,6 +252,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">shortcut name for command-line arguments, after extraction of the hadoop and scoobi ones</p><div class="fullcomment"><div class="comment cmt"><p>shortcut name for command-line arguments, after extraction of the hadoop and scoobi ones</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.ScoobiInterpreter#argumentsValues" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="argumentsValues:Seq[String]"></a>
+      <a id="argumentsValues:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">argumentsValues</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiInterpreter">ScoobiInterpreter</a> → <a href="ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -933,8 +946,8 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <p class="shortcomment cmt">List a path .</p><div class="fullcomment"><div class="comment cmt"><p>List a path .</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReplFunctions.html" class="extype" name="com.nicta.scoobi.application.ReplFunctions">ReplFunctions</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiInterpreter#main" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="main(args:Array[String]):Unit"></a>
+    </li><li name="com.nicta.scoobi.application.ScoobiApp#main" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="main(arguments:Array[String]):Unit"></a>
       <a id="main(Array[String]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -942,10 +955,11 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">main</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">main</span><span class="params">(<span name="arguments">arguments: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">start the program but don't upload jars by default</p><div class="fullcomment"><div class="comment cmt"><p>start the program but don't upload jars by default</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiInterpreter">ScoobiInterpreter</a> → <a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a></dd></dl></div>
+      <p class="shortcomment cmt">parse the command-line argument and:</p><div class="fullcomment"><div class="comment cmt"><p>parse the command-line argument and:</p><ul><li>upload the dependent jars on the cluster</li><li>execute the user code
+</li></ul></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.ScoobiApp#mainJarContainsDependencies" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="mainJarContainsDependencies:Boolean"></a>
       <a id="mainJarContainsDependencies:Boolean"></a>
@@ -1482,7 +1496,7 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.ScoobiApp#upload" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.application.ScoobiInterpreter#upload" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="upload:Boolean"></a>
       <a id="upload:Boolean"></a>
       <h4 class="signature">
@@ -1494,7 +1508,7 @@ or if &quot;local&quot; is passed on the command line.</p><p>if locally returns 
         <span class="name">upload</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">upload the jars unless 'nolibjars' has been set on the command-line'</p><div class="fullcomment"><div class="comment cmt"><p>upload the jars unless 'nolibjars' has been set on the command-line'</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
+      <p class="shortcomment cmt">Don't upload jars by default</p><div class="fullcomment"><div class="comment cmt"><p>Don't upload jars by default</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.application.ScoobiInterpreter">ScoobiInterpreter</a> → <a href="ScoobiApp.html" class="extype" name="com.nicta.scoobi.application.ScoobiApp">ScoobiApp</a> → <a href="LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#uploadLibJarsFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="uploadLibJarsFiles(deleteLibJarsFirst:Boolean)(implicitconfiguration:com.nicta.scoobi.core.ScoobiConfiguration):Any"></a>
       <a id="uploadLibJarsFiles(Boolean)(ScoobiConfiguration):Any"></a>
