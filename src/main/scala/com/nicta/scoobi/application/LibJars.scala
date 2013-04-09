@@ -26,6 +26,7 @@ import impl.ScoobiConfiguration._
 import impl.ScoobiConfigurationImpl._
 import org.apache.commons.logging.LogFactory
 import impl.control.SystemProperties
+import impl.control.Exceptions._
 import impl.monitor.Loggable._
 /**
  * This trait defines:
@@ -53,15 +54,15 @@ trait LibJars {
   /**
    * @return the list of library jars to upload
    */
-  def jars: Seq[URL] = classLoaderJars ++ hadoopClasspathJars
+  def jars(implicit configuration: ScoobiConfiguration): Seq[URL] = classLoaderJars ++ hadoopClasspathJars
 
   /**
    * @return the list of library jars to upload, provided by the jars loaded by the current classloader
    */
   private[scoobi]
-  lazy val classLoaderJars: Seq[URL] =
-    Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader].getURLs.filter(url => !url.getFile.contains("hadoop-core")).
-      debugNot(_.isEmpty, jars => "jars found with the classloader\n"+jars.mkString("\n"))
+  def classLoaderJars(implicit configuration: ScoobiConfiguration): Seq[URL] = tryOrElse {
+    configuration.scoobiClassLoader.asInstanceOf[URLClassLoader].getURLs.filter(url => !url.getFile.contains("hadoop-core")).toSeq
+  }(Seq()).debugNot(_.isEmpty, jars => "jars found with the classloader\n"+jars.mkString("\n"))
 
 
   /**
@@ -117,13 +118,13 @@ trait LibJars {
   /**
    * @return a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
    */
-  def configureJars(implicit configuration: ScoobiConfiguration) = if (upload) {
+  def configureJars(implicit configuration: ScoobiConfiguration) = {
     logger.debug("adding the jars paths to the distributed cache")
     uploadedJars.foreach(path => DistributedCache.addFileToClassPath(path, configuration))
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
     // add new jars to the classpath and make sure that values are still unique for cache files and classpath entries
-    configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
+    configuration.addValues("mapred.classpath",   jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }
 }
 object LibJars extends LibJars

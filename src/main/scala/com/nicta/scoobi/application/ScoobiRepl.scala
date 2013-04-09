@@ -8,6 +8,7 @@ import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
 import tools.nsc.interpreter.IMain.ReplStrippingWriter
+import tools.nsc.util.ScalaClassLoader.URLClassLoader
 
 /** A REPL for Scoobi.
   *
@@ -20,6 +21,11 @@ object ScoobiRepl extends ScoobiInterpreter
   *
   */
 trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
+  override def main(arguments: Array[String]) {
+    parseHadoopArguments(arguments)
+    try { run }
+    finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
+  }
 
   /** Don't upload jars by default */
   override lazy val upload = false
@@ -27,8 +33,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
-    setDefaultArgs
     setConfiguration(configuration.configuration)
+    setDefaultArgs
     new ScoobiILoop(configuration).process(settings)
   }
 
@@ -45,27 +51,36 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 
   /** set the configuration so that the next job is run in memory */
   def inmemory {
-    scoobiArgs = (scoobiArgs :+ "inmemory").mkString(".").replace("local", "inmemory").replace("cluster", "inmemory").replace("!inmemory", "inmemory").distinct
+    setNewArguments("inmemory" +: removeExecutionMode(replArgs))
   }
   /** set the configuration so that the next job is run locally */
   def local {
-    scoobiArgs = (scoobiArgs :+ "local").mkString(".").replace("inmemory", "local").replace("cluster", "local").replace("!local", "local").distinct
+    setNewArguments("local" +: removeExecutionMode(replArgs))
   }
   /** set the configuration so that the next job is run on the cluster - this is the default */
   def cluster  {
-    scoobiArgs = (scoobiArgs :+ "cluster").mkString(".").replace("inmemory", "cluster").replace("local", "cluster").replace("!cluster", "cluster").distinct
+    setNewArguments("cluster" +: removeExecutionMode(replArgs))
   }
 
+  def removeExecutionMode(arguments: Seq[String]) =
+    arguments.filterNot(Seq("local", "cluster", "inmemory").contains)
+
   private def setDefaultArgs {
-    scoobiArgs = "local.!cluster.verbose.all"
+    replArgs = Seq("cluster", "verbose", "all")
+    setNewArguments(replArgs)
   }
 
   def scoobiArgs_=(arguments: String) {
-    replArgs = arguments.split("\\.").map(_.trim).distinct
+    setNewArguments(arguments.split("\\.").map(_.trim))
+  }
+
+  private def setNewArguments(arguments: Seq[String]) {
+    replArgs = arguments
     scoobiArguments = replArgs
+
     if (isInMemory)   configureForInMemory
     else if (isLocal) configureForLocal
-    else              configureForCluster
+    else              { setConfiguration(configuration.configuration); configureForCluster  }
     setLogFactory()
   }
 

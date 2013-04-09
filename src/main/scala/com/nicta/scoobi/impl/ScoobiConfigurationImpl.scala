@@ -152,8 +152,10 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * attach a classloader which classes must be put on the job classpath
    */
-  def addClassLoader(cl: ScalaClassLoader) = { classLoader = Some(cl); this }
+  def addClassLoader(cl: ScalaClassLoader) = { classLoader = Some(cl); configuration.setClassLoader(cl); this }
 
+  /** @return the class loader to use with Scoobi classes, including generated ones */
+  def scoobiClassLoader = classLoader.getOrElse(Thread.currentThread.getContextClassLoader)
   /**
    * @return true if this configuration is used for a remote job execution
    */

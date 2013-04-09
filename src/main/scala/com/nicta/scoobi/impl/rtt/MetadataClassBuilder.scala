@@ -20,7 +20,6 @@ package rtt
 import java.io._
 import javassist._
 import core._
-import control.Exceptions._
 import org.apache.commons.logging.LogFactory
 
 /**
@@ -61,9 +60,12 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
 
   /** @return the java class */
   def toClass: Class[_] = {
-    try { getClass.getClassLoader.loadClass(className) } catch { case e: Throwable =>
-      logger.debug(s"$className can't be loaded from the current class loader (${e.getMessage}), try creating the runtime class instead if not previously created")
-      ctClass.toClass
+    val classLoader = sc.scoobiClassLoader
+    try { classLoader.loadClass(className) } catch { case e: Throwable =>
+      logger.debug(s"$className can't be loaded from the current class loader ($classLoader): (${e.getMessage}), try creating the runtime class instead if not previously created")
+      val r = ctClass.toClass
+      classLoader.loadClass(className)
+      r
     }
   }
 
@@ -85,7 +87,7 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
 
   private val pool: ClassPool = {
     val pool = new ClassPool
-    pool.appendClassPath(new LoaderClassPath(this.getClass.getClassLoader))
+    pool.appendClassPath(new LoaderClassPath(sc.scoobiClassLoader))
     pool
   }
   /** The class bytecode */

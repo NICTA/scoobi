@@ -45,6 +45,7 @@ trait ScoobiConfiguration {
   def addUserDir(dir: String): ScoobiConfiguration
   def addUserDirs(dirs: Seq[String]): ScoobiConfiguration
   def addClassLoader(classLoader: ScalaClassLoader): ScoobiConfiguration
+  def scoobiClassLoader: ClassLoader
   def isRemote: Boolean
   def isLocal: Boolean
   def isInMemory: Boolean
