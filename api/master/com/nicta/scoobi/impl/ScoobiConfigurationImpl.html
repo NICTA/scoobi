@@ -40,7 +40,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(hadoopConfiguration:org.apache.hadoop.conf.Configuration,userJars:Set[String],userDirs:Set[String],classLoader:Option[scala.tools.nsc.util.ScalaClassLoader]):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="&lt;init&gt;(hadoopConfiguration:org.apache.hadoop.conf.Configuration,userJars:Set[String],userDirs:Set[String],classLoader:Option[scala.tools.nsc.interpreter.AbstractFileClassLoader]):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
       <a id="&lt;init&gt;:ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span>
       </span>
       </h4>
       
@@ -172,15 +172,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#addClassLoader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="addClassLoader(cl:scala.tools.nsc.util.ScalaClassLoader):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
-      <a id="addClassLoader(ScalaClassLoader):ScoobiConfigurationImpl"></a>
+      <a id="addClassLoader(cl:scala.tools.nsc.interpreter.AbstractFileClassLoader):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="addClassLoader(AbstractFileClassLoader):ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addClassLoader</span><span class="params">(<span name="cl">cl: <span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
+        <span class="name">addClassLoader</span><span class="params">(<span name="cl">cl: <span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">attach a classloader which classes must be put on the job classpath
@@ -275,15 +275,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#classLoader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="classLoader:Option[scala.tools.nsc.util.ScalaClassLoader]"></a>
-      <a id="classLoader:Option[ScalaClassLoader]"></a>
+      <a id="classLoader:Option[scala.tools.nsc.interpreter.AbstractFileClassLoader]"></a>
+      <a id="classLoader:Option[AbstractFileClassLoader]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">classLoader</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>]</span>
+        <span class="name">classLoader</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>]</span>
       </span>
       </h4>
       
