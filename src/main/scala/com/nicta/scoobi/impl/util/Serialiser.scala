@@ -42,8 +42,6 @@ trait Serialiser {
     xstream.omitField(bridgeStoreIteratorClass,  "sc")
     xstream.omitField(bridgeStoreIteratorClass,  "readers")
     xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
-//    xstream.alias("list", classOf[::[_]])
-//    xstream.registerConverter(new ListConverter(xstream.getMapper))
   }
 
   def serialise(obj: Any, out: OutputStream) = synchronized {
@@ -63,27 +61,5 @@ trait Serialiser {
 
   def fromByteArray(in: Array[Byte]) =
     deserialise(new ByteArrayInputStream(in))
-
-
-  class ListConverter(_mapper : Mapper)  extends AbstractCollectionConverter(_mapper) {
-    def getAnyClass(x: Any) = x.asInstanceOf[AnyRef].getClass
-
-    def canConvert( clazz: Class[_]) = classOf[::[_]] == clazz
-
-    def marshal( value: Any, writer: HierarchicalStreamWriter, context: MarshallingContext) {
-      value.asInstanceOf[List[_]].foreach(item =>  writeItem(item, context, writer))
-    }
-
-    def unmarshal( reader: HierarchicalStreamReader, context: UnmarshallingContext ) = {
-      var list : List[_] = Nil
-      while (reader.hasMoreChildren) {
-        reader.moveDown()
-        val item = readItem(reader, context, list)
-        list = list ::: List(item) // be sure to build the list in the same order
-        reader.moveUp()
-      }
-      list
-    }
-  }
 }
 object Serialiser extends Serialiser
