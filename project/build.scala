@@ -106,7 +106,7 @@ object build extends Build {
     testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
     // run each test in its own jvm
     fork in Test := true,
-    javaOptions in Test ++= Seq("-Xmx1g")
+    javaOptions in Test ++= Seq("-Xmx1500m")
   )
 
   lazy val siteSettings: Seq[Settings] = ghpages.settings ++ SbtSite.site.settings ++ Seq(
