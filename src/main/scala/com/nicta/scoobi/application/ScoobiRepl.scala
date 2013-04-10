@@ -34,8 +34,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
     val settings = new Settings
     settings.usejavacp.value = true
     setConfiguration(configuration.configuration)
-    setDefaultArgs
-    new ScoobiILoop(configuration).process(settings)
+    new ScoobiILoop(this).process(settings)
   }
 
   def help =
@@ -65,8 +64,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   def removeExecutionMode(arguments: Seq[String]) =
     arguments.filterNot(Seq("local", "cluster", "inmemory").contains)
 
-  private def setDefaultArgs {
-    replArgs = Seq("cluster", "verbose", "all")
+  private[scoobi] def setDefaultArgs {
+    replArgs = Seq("verbose", "all")
     setNewArguments(replArgs)
   }
 
@@ -80,7 +79,7 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 
     if (isInMemory)   configureForInMemory
     else if (isLocal) configureForLocal
-    else              { setConfiguration(configuration.configuration); configureForCluster  }
+    else              configureForCluster
     setLogFactory()
   }
 
@@ -93,7 +92,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 /**
  * definition of the interpreter loop
  */
-class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
+class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
+  val configuration = scoobiInterpreter.configuration
 
   def imports: Seq[String] = Seq(
     "com.nicta.scoobi.Scoobi._",
@@ -133,6 +133,8 @@ class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
       imports.foreach(i => intp.addImports(i))
       configuration.addClassLoader(intp.classLoader)
       configuration.jobNameIs("REPL")
+      scoobiInterpreter.cluster
+      scoobiInterpreter.setDefaultArgs
       woof()
     }
   }
