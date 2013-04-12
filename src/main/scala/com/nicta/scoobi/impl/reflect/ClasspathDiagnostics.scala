@@ -5,6 +5,7 @@ import org.apache.avro.Schema
 import Classes._
 import org.apache.hadoop.io.Writable
 import com.nicta.scoobi.core.ScoobiConfiguration
+import org.kiama.rewriting.Rewriter
 
 /**
  * This object prints out the originating jar for the most important libraries used in Scoobi
@@ -21,8 +22,10 @@ object ClasspathDiagnostics {
   private def logFiles(logFunction: String => Unit) {
     Seq(
       ("Java",   classOf[java.lang.String]),
+      ("Scala",   classOf[scala.Range]),
       ("Hadoop", classOf[Writable]),
       ("Avro",   classOf[Schema]),
+      ("Kiama",   classOf[Rewriter]),
       ("Scoobi", classOf[ScoobiConfiguration])
     ).foreach { case (lib, c) => logDebugClass(lib, c.getName)(logFunction) }
   }
