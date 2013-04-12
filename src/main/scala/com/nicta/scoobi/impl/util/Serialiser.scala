@@ -27,6 +27,7 @@ import com.thoughtworks.xstream.mapper.Mapper
 import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter
 import com.thoughtworks.xstream.io.{HierarchicalStreamReader, HierarchicalStreamWriter}
 import com.thoughtworks.xstream.converters.{UnmarshallingContext, MarshallingContext}
+import plan.comp.Optimiser
 
 trait Serialiser {
 
@@ -42,6 +43,7 @@ trait Serialiser {
     xstream.omitField(bridgeStoreIteratorClass,  "sc")
     xstream.omitField(bridgeStoreIteratorClass,  "readers")
     xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
+    xstream.omitField(classOf[Optimiser],        "dupCache")
   }
 
   def serialise(obj: Any, out: OutputStream) = synchronized {
