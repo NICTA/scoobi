@@ -15,17 +15,20 @@ import com.nicta.scoobi.core.ScoobiConfiguration
  */
 object ClasspathDiagnostics {
 
-  def logDebug(implicit logger: Log) {
+  def logInfo(implicit logger: Log) { logFiles(logger.info _) }
+  def logDebug(implicit logger: Log) { logFiles(logger.debug _) }
+
+  private def logFiles(logFunction: String => Unit) {
     Seq(
       ("Java",   classOf[java.lang.String]),
       ("Hadoop", classOf[Writable]),
       ("Avro",   classOf[Schema]),
       ("Scoobi", classOf[ScoobiConfiguration])
-    ).foreach { case (lib, c) => logDebugClass(lib, c.getName) }
+    ).foreach { case (lib, c) => logDebugClass(lib, c.getName)(logFunction) }
   }
 
-  private def logDebugClass(libName: String, className: String)(implicit logger: Log) {
-    try logger.debug(s"the URL of $libName (evidenced with the $className class) is "+getClass.getClassLoader.getResource(filePath(className)+".class"))
+  private def logDebugClass(libName: String, className: String)(logFunction: String => Unit) {
+    try logFunction(s"the URL of $libName (evidenced with the $className class) is "+getClass.getClassLoader.getResource(filePath(className)))
     catch { case e: Exception => e.printStackTrace  }
   }
 
