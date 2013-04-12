@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>MscrMapper - com.nicta.scoobi.impl.mapreducer.MscrMapper</title>
-          <meta name="description" content="MscrMapper - com.nicta.scoobi.impl.mapreducer.MscrMapper" />
-          <meta name="keywords" content="MscrMapper com.nicta.scoobi.impl.mapreducer.MscrMapper" />
+          <title>ClasspathDiagnostics - com.nicta.scoobi.impl.reflect.ClasspathDiagnostics</title>
+          <meta name="description" content="ClasspathDiagnostics - com.nicta.scoobi.impl.reflect.ClasspathDiagnostics" />
+          <meta name="keywords" content="ClasspathDiagnostics com.nicta.scoobi.impl.reflect.ClasspathDiagnostics" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.mapreducer.MscrMapper';
+            var hash = 'com.nicta.scoobi.impl.reflect.ClasspathDiagnostics$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,28 +27,27 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.mapreducer">mapreducer</a></p>
-        <h1>MscrMapper</h1>
+        <img src="../../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.reflect">reflect</a></p>
+        <h1>ClasspathDiagnostics</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">MscrMapper</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.Mapper">Mapper</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <a href="../rtt/TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>, <a href="../rtt/TaggedValue.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedValue">TaggedValue</a>]</span>
+        <span class="name">ClasspathDiagnostics</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Hadoop Mapper class for an MSCR</p><p>It is composed of several tagged mappers which are taking inputs of a given type on a channel and emitting the result
-for different tagged outputs
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This object prints out the originating jar for the most important libraries used in Scoobi
+so that it's easier to debug classpath errors.</p><p>To use this object you need to have an implicit logger object in scope and call the logDebug method</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.hadoop.mapreduce.Mapper">Mapper</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <a href="../rtt/TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>, <a href="../rtt/TaggedValue.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedValue">TaggedValue</a>], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -66,7 +65,7 @@ for different tagged outputs
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.MscrMapper"><span>MscrMapper</span></li><li class="in" name="org.apache.hadoop.mapreduce.Mapper"><span>Mapper</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.reflect.ClasspathDiagnostics"><span>ClasspathDiagnostics</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -84,62 +83,14 @@ for different tagged outputs
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.impl.mapreducer.MscrMapper#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():com.nicta.scoobi.impl.mapreducer.MscrMapper"></a>
-      <a id="&lt;init&gt;:MscrMapper"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">MscrMapper</span><span class="params">()</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.apache.hadoop.mapreduce.Mapper.Context" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ContextextendsMapContext[KEYIN,VALUEIN,KEYOUT,VALUEOUT]"></a>
-      <a id="Context:Context"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Context</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.MapContext">MapContext</span>[<span class="extype" name="org.apache.hadoop.mapreduce.Mapper.KEYIN">KEYIN</span>, <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.VALUEIN">VALUEIN</span>, <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.KEYOUT">KEYOUT</span>, <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.VALUEOUT">VALUEOUT</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Mapper</dd></dl></div>
-    </li></ol>
-            </div>
+        
+
+        
 
         <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="org.apache.hadoop.mapreduce.Mapper.Context" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="Context"></a>
-      <a id="Context:Context"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Context</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Mapper</dd></dl></div>
-    </li></ol>
-            </div>
-
-        <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -218,19 +169,6 @@ for different tagged outputs
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.mapreducer.MscrMapper#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="cleanup(context:org.apache.hadoop.mapreduce.Mapper[Any,Any,com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]#Context):Unit"></a>
-      <a id="cleanup(Context):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cleanup</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.Context">Context</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.MscrMapper">MscrMapper</a> → Mapper</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -328,32 +266,19 @@ for different tagged outputs
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.mapreducer.MscrMapper#logger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="logger:org.apache.commons.logging.Log"></a>
-      <a id="logger:Log"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.impl.mapreducer.MscrMapper#map" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="map(key:Any,value:Any,context:org.apache.hadoop.mapreduce.Mapper[Any,Any,com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]#Context):Unit"></a>
-      <a id="map(Any,Any,Context):Unit"></a>
+    </li><li name="com.nicta.scoobi.impl.reflect.ClasspathDiagnostics#logDebug" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="logDebug(implicitlogger:org.apache.commons.logging.Log):Unit"></a>
+      <a id="logDebug(Log):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">map</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Any">Any</span></span>, <span name="value">value: <span class="extype" name="scala.Any">Any</span></span>, <span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.Context">Context</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">logDebug</span><span class="params">(<span class="implicit">implicit </span><span name="logger">logger: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.MscrMapper">MscrMapper</a> → Mapper</dd></dl></div>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -393,37 +318,6 @@ for different tagged outputs
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.apache.hadoop.mapreduce.Mapper#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="run(x$1:org.apache.hadoop.mapreduce.Mapper[KEYIN,VALUEIN,KEYOUT,VALUEOUT]#Context):Unit"></a>
-      <a id="run(Context):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">run</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.Context">Context</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Mapper</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
-              
-                <span class="name">@throws</span><span class="args">()</span>
-              
-        </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.mapreducer.MscrMapper#setup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setup(context:org.apache.hadoop.mapreduce.Mapper[Any,Any,com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]#Context):Unit"></a>
-      <a id="setup(Context):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setup</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.Mapper.Context">Context</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.MscrMapper">MscrMapper</a> → Mapper</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -507,9 +401,7 @@ for different tagged outputs
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.apache.hadoop.mapreduce.Mapper">
-              <h3>Inherited from <span class="extype" name="org.apache.hadoop.mapreduce.Mapper">Mapper</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <a href="../rtt/TaggedKey.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedKey">TaggedKey</a>, <a href="../rtt/TaggedValue.html" class="extype" name="com.nicta.scoobi.impl.rtt.TaggedValue">TaggedValue</a>]</h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
