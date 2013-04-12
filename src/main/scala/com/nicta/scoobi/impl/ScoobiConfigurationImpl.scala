@@ -304,7 +304,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /** @return a new environment object */
   def newEnv(wf: WireReaderWriter): Environment = Env(wf)(this)
 
-  private lazy val persister = new Persister(this)
+  private val persister = new Persister(this)
 
   def persist[A](ps: Seq[Persistent[_]]) = persister.persist(ps)
   def persist[A](list: DList[A])         = persister.persist(list)

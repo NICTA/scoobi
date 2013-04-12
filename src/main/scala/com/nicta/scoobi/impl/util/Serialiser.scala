@@ -39,11 +39,12 @@ trait Serialiser {
     xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
     xstream.omitField(classOf[ScoobiConfiguration],     "sc")
     xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
+    xstream.omitField(classOf[ScoobiConfigurationImpl], "persister")
+    
     val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
     xstream.omitField(bridgeStoreIteratorClass,  "sc")
     xstream.omitField(bridgeStoreIteratorClass,  "readers")
     xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
-    xstream.omitField(classOf[Optimiser],        "dupCache")
   }
 
   def serialise(obj: Any, out: OutputStream) = synchronized {

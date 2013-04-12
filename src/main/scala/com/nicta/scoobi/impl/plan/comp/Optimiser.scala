@@ -84,10 +84,10 @@ trait Optimiser extends CompNodes with Rewriter {
    *   this ensures that rewritten shared nodes are not duplicated
    */
   def repeatTraversal(traversal: (=>Strategy) => Strategy, s: =>Strategy) = {
-    lazy val strategy = s
-    lazy val memoised = memo(strategy)
-    lazy val traversedMemoised = traversal(memoised)
-    lazy val result = resetTree(traversedMemoised)
+    val strategy = s
+    val memoised = memo(strategy)
+    val traversedMemoised = traversal(memoised)
+    val result = resetTree(traversedMemoised)
     repeat(result)
   }
 
