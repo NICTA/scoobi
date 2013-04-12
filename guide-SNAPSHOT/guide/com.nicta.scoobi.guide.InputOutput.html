@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html">InputOutput</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="164496148">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
+                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="875305747">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
 <pre><code class="prettyprint">// load a single text file
 val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/file&quot;)
 
@@ -482,7 +482,7 @@ trait OutputConverter[K, V, B] {
 </ul></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
       <ul><li id="535970769"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1337272790"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+            <ul><li id="2127415675"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -681,7 +681,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="190769625"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="72002404"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -694,7 +694,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['535970769','164496148'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['535970769','875305747'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
