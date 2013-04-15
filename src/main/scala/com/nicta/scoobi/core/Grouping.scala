@@ -197,7 +197,7 @@ trait GroupingImplicits extends GroupingImplicits0 {
   }
 
   /** Instances for Shapeless tagged types. */
-  import shapeless.TypeOperators._
+  import impl.types.TypeOperators._
 
   implicit def taggedTypeGrouping[T : Grouping, U]: Grouping[T @@ U] =
     implicitly[Grouping[T]].asInstanceOf[Grouping[T @@ U]]

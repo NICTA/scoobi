@@ -33,10 +33,14 @@ trait ExecutionMode extends ShowNode with Optimiser {
   protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) = {
     reinitAttributable(node)
     reinitUses
-    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph))
-    checkSourceAndSinks(sc)(toExecute.debug("Active nodes", prettyGraph))
+    val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph(showComputationGraph)))
+    checkSourceAndSinks(sc)(toExecute.debug("Active nodes", prettyGraph(showComputationGraph)))
     toExecute
   }
+
+  /** @return true (default value) if the computation graph must not be displayed */
+  protected def showComputationGraph(implicit sc: ScoobiConfiguration) =
+    sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
 
   protected lazy val checkSourceAndSinks: CachedParamAttribute[ScoobiConfiguration, CompNode, Unit] = paramAttr("checkSourceAndSinks") { sc: ScoobiConfiguration => node: CompNode =>
     node match {

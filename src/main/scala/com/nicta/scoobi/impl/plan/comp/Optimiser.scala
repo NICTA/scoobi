@@ -41,7 +41,7 @@ trait Optimiser extends CompNodes with Rewriter {
   /**
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
-  val combineToParDo = traverseSomebu(strategy {
+  lazy val combineToParDo = traverseSomebu(strategy {
     case c @ Combine(GroupByKey1(_),_,_,_,_,_) => None
     case c: Combine                            => Some(c.toParallelDo.debug(p => "combineToParDo "+c.id+" to "+p.id))
   })
@@ -84,10 +84,10 @@ trait Optimiser extends CompNodes with Rewriter {
    *   this ensures that rewritten shared nodes are not duplicated
    */
   def repeatTraversal(traversal: (=>Strategy) => Strategy, s: =>Strategy) = {
-    lazy val strategy = s
-    lazy val memoised = memo(strategy)
-    lazy val traversedMemoised = traversal(memoised)
-    lazy val result = resetTree(traversedMemoised)
+    val strategy = s
+    val memoised = memo(strategy)
+    val traversedMemoised = traversal(memoised)
+    val result = resetTree(traversedMemoised)
     repeat(result)
   }
 
@@ -105,7 +105,8 @@ trait Optimiser extends CompNodes with Rewriter {
   }
 
   /** override the duplication strategy of Product elements so that an existing rewritten node is not rewritten twice */
-  private val dupCache = new mutable.HashMap[Any,Any]
+  private lazy val dupCache = new mutable.HashMap[Any,Any]
+
   override protected def dup[T <: Product](t: T, children: Array[AnyRef]): T = {
     dupCache.getOrElseUpdate(t, super.dup(t, children)).asInstanceOf[T]
   }

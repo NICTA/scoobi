@@ -60,7 +60,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
   /** execute the Hadoop job and collect results */
   def execute = {
-    ("executing mscr "+mscr.id+" on layer "+layerId).debug
+    ("executing MSCR "+mscr.id+" on layer "+layerId).debug
     executeJob
     collectOutputs
   }
@@ -147,7 +147,10 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
    *       a BridgeStore and add to JAR
    *     - add a named output for each output channel */
   private def configureReducers(jar: JarBuilder) {
-    mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass(ScoobiConfiguration(job.getConfiguration))) }
+    mscr.sinks collect { case bs : BridgeStore[_]  =>
+      val rtClass = bs.rtClass(ScoobiConfiguration(job.getConfiguration)).debug(c => "adding the BridgeStore class "+c.clazz.getName+" from Sink "+bs.id+" to the configuration")
+      jar.addRuntimeClass(rtClass)
+    }
 
     mscr.outputChannels.foreach { out =>
       out.sinks.foreach(sink => ChannelOutputFormat.addOutputChannel(job, out.tag, sink))
@@ -213,6 +216,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
 private[scoobi]
 object MapReduceJob {
+  private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
+
   /**
    * Make temporary JAR file for this job. At a minimum need the Scala runtime
    * JAR, the Scoobi JAR, and the user's application code JAR(s)

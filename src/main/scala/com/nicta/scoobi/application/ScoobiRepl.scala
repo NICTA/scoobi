@@ -8,6 +8,7 @@ import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
 import tools.nsc.interpreter.IMain.ReplStrippingWriter
+import tools.nsc.util.ScalaClassLoader.URLClassLoader
 
 /** A REPL for Scoobi.
   *
@@ -20,20 +21,20 @@ object ScoobiRepl extends ScoobiInterpreter
   *
   */
 trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
-
-  /** start the program but don't upload jars by default */
-  override def main(args: Array[String]) {
-    parseHadoopArguments(args)
-    onHadoop {
-      try { run }
-      finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
-    }
+  override def main(arguments: Array[String]) {
+    parseHadoopArguments(arguments)
+    try { run }
+    finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
   }
+
+  /** Don't upload jars by default */
+  override lazy val upload = false
 
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
-    new ScoobiILoop(configuration).process(settings)
+    setConfiguration(configuration.configuration)
+    new ScoobiILoop(this).process(settings)
   }
 
   def help =
@@ -48,20 +49,42 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
        |""".stripMargin
 
   /** set the configuration so that the next job is run in memory */
-  def inmemory { configureForInMemory }
+  def inmemory {
+    setNewArguments("inmemory" +: removeExecutionMode(replArgs))
+  }
   /** set the configuration so that the next job is run locally */
-  def local    { configureForLocal }
+  def local {
+    setNewArguments("local" +: removeExecutionMode(replArgs))
+  }
   /** set the configuration so that the next job is run on the cluster - this is the default */
   def cluster  {
-    setConfiguration(configuration.configuration)
-    configureForCluster
+    setNewArguments("cluster" +: removeExecutionMode(replArgs))
+  }
+
+  def removeExecutionMode(arguments: Seq[String]) =
+    arguments.filterNot(Seq("local", "cluster", "inmemory").contains)
+
+  private[scoobi] def setDefaultArgs {
+    replArgs = Seq("verbose", "all")
+    setNewArguments(replArgs)
   }
 
   def scoobiArgs_=(arguments: String) {
-    scoobiArguments = arguments.split("\\.").map(_.trim)
+    setNewArguments(arguments.split("\\.").map(_.trim))
+  }
+
+  private def setNewArguments(arguments: Seq[String]) {
+    replArgs = arguments
+    scoobiArguments = replArgs
+
+    if (isInMemory)   configureForInMemory
+    else if (isLocal) configureForLocal
+    else              configureForCluster
     setLogFactory()
   }
 
+  private var replArgs: Seq[String] = Seq()
+  override def argumentsValues = replArgs
   override def useHadoopConfDir = true
 
 }
@@ -69,7 +92,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 /**
  * definition of the interpreter loop
  */
-class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
+class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
+  val configuration = scoobiInterpreter.configuration
 
   def imports: Seq[String] = Seq(
     "com.nicta.scoobi.Scoobi._",
@@ -109,6 +133,8 @@ class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
       imports.foreach(i => intp.addImports(i))
       configuration.addClassLoader(intp.classLoader)
       configuration.jobNameIs("REPL")
+      scoobiInterpreter.cluster
+      scoobiInterpreter.setDefaultArgs
       woof()
     }
   }

@@ -19,12 +19,13 @@ package impl
 package mapreducer
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.{Mapper => HMapper, MapContext, TaskInputOutputContext}
+import org.apache.hadoop.mapreduce.{Mapper => HMapper, MapContext}
 
 import core._
 import rtt._
 import util.DistCache
 import plan.mscr.{InputChannels, InputChannel}
+import reflect.ClasspathDiagnostics
 
 /**
  * Hadoop Mapper class for an MSCR
@@ -34,13 +35,14 @@ import plan.mscr.{InputChannels, InputChannel}
  */
 class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
-  lazy val logger = LogFactory.getLog("scoobi.MapTask")
+  lazy implicit val logger = LogFactory.getLog("scoobi.MapTask")
   private var allInputChannels: InputChannels = _
   private var taggedInputChannels: Seq[InputChannel] = _
   private var tk: TaggedKey = _
   private var tv: TaggedValue = _
 
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
+    ClasspathDiagnostics.logInfo
 
     allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]

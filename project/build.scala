@@ -57,7 +57,7 @@ object build extends Build {
     name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
-    scalaVersion := "2.10.0")
+    scalaVersion := "2.10.1")
 
   lazy val dependenciesSettings: Seq[Settings] = Seq(
     libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
@@ -66,14 +66,12 @@ object build extends Build {
         else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1",
           "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1")
 
-      hadoop ++
       Seq(
       "javassist"                %  "javassist"                 % "3.12.1.GA",
-      "org.apache.avro"          %  "avro-mapred"               % "1.7.3.1",
-      "org.apache.avro"          %  "avro"                      % "1.7.3.1",
+      "org.apache.avro"          %  "avro-mapred"               % "1.7.4" classifier "hadoop2",
+      "org.apache.avro"          %  "avro"                      % "1.7.4",
       "com.thoughtworks.xstream" %  "xstream"                   % "1.4.4"            intransitive(),
       "com.googlecode.kiama"     %% "kiama"                     % "1.5.0-SNAPSHOT",
-      "com.chuusai"              %% "shapeless"                 % "1.2.3",
       "com.github.mdr"           %  "ascii-graphs_2.10.0"       % "0.0.2",
       "org.scalaz"               %% "scalaz-core"               % "7.0.0-M9",
       "org.scalaz"               %% "scalaz-concurrent"         % "7.0.0-M9",
@@ -91,8 +89,8 @@ object build extends Build {
       "junit"                    %  "junit"                     % "4.7"              % "test",
       "org.apache.commons"       %  "commons-math"              % "2.2"              % "test",
       "org.apache.commons"       %  "commons-compress"          % "1.0"              % "test"
-    ) },
-    resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
+    ) ++ hadoop },
+    resolvers ++= Seq("nicta" at "http://nicta.github.com/scoobi/releases",
       "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
       "sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
       "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
@@ -107,12 +105,7 @@ object build extends Build {
     testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
     // run each test in its own jvm
     fork in Test := true,
-    javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
-                        "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk",
-                        "-Xms3072m",
-                        "-Xmx3072m",
-                        "-XX:MaxPermSize=768m",
-                        "-XX:ReservedCodeCacheSize=1536m")
+    javaOptions in Test ++= Seq("-Xmx1g")
   )
 
   lazy val siteSettings: Seq[Settings] = ghpages.settings ++ SbtSite.site.settings ++ Seq(
@@ -299,7 +292,7 @@ object build extends Build {
 
   lazy val publishForCDH3 = ReleaseStep { st: State =>
     // this specific commit changes the necessary files for working with CDH3
-    "git cherry-pick -n b118110" !! st.log
+    "git cherry-pick -n 0081a01" !! st.log
 
     try {
       val extracted = Project.extract(st)

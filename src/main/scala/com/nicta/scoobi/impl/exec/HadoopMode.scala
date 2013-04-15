@@ -54,7 +54,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
    * Prepare the execution of the graph by optimising it
    */
   override protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) =
-    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph)
+    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph(showComputationGraph))
 
   /**
    * execute a computation node
@@ -63,7 +63,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   lazy val executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      layers(node).debug("Executing layers", mkStrings).map(executeLayer)
+      layers(node).info("Executing layers", mkStrings).map(executeLayer)
     }
 
     def getValue(node: CompNode): Any = {
@@ -83,7 +83,6 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
   private lazy val executeLayer: Layer[T] => Unit =
     attr("executeLayer") { case layer =>
-      ("executing layer "+layer.id).debug
       Execution(layer).execute
     }
 
@@ -93,11 +92,11 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   private case class Execution(layer: Layer[T]) {
 
     def execute {
-      ("Executing layer\n"+layer).debug
+      ("Executing layer\n"+layer).info
       runMscrs(mscrs(layer))
 
-      layerSinks(layer).debug("Layer sinks: ").foreach(markSinkAsFilled)
-      ("===== END OF LAYER "+layer.id+" ======").debug
+      layerSinks(layer).info("Layer sinks: ").foreach(markSinkAsFilled)
+      ("===== END OF LAYER "+layer.id+" ======").info
     }
 
     /**
@@ -107,7 +106,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
     private def runMscrs(mscrs: Seq[Mscr]) {
-      ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).debug
+      ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).info
 
       val configured = mscrs.toList.map(configureMscr)
       val executed = if (sc.concurrentJobs) { "executing the Mscrs concurrently".debug; configured.map(executeMscr).sequence.get }
@@ -134,7 +133,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     /** report the execution of a Mscr */
     protected def reportMscr = (job: MapReduceJob) => {
       job.report
-      ("===== END OF MSCR "+job.mscr.id+" ======").debug
+      ("===== END OF MSCR "+job.mscr.id+" ======").info
     }
   }
 

@@ -177,11 +177,8 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
    */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     val combinedValues = combiner.map(c => c.combine(values)).getOrElse(values)
-
     reducer.map(_.reduce(environment, key, combinedValues, emitter)).getOrElse {
-      combiner.map(c => emitter.write((key, combinedValues))).getOrElse {
-        emitter.write((key, combinedValues))
-      }
+      emitter.write((key, combinedValues))
     }
   }
 

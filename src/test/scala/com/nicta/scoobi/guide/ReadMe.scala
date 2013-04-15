@@ -25,6 +25,7 @@ import ScoobiVariables._
  */
 class ReadMe extends Specification { def is =
   "Welcome!".title.urlIs("README.md") ^
+  "[![Build Status](https://travis-ci.org/NICTA/scoobi.png?branch=master)](https://travis-ci.org/NICTA/scoobi)"^
   inline(ReadMe)
 }
 

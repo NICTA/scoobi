@@ -54,6 +54,8 @@ trait ProcessNodeImpl extends ProcessNode {
 
   /** display the bridge id */
   def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointName.map(" "+_)).getOrElse("")+")"
+  /** display the sinks if any */
+  def nodeSinksString = if (nodeSinks.nonEmpty) nodeSinks.map(s => s.outputPath(ScoobiConfiguration())).mkString("[sinks: ", ",", "]") else ""
 }
 
 /**
@@ -75,10 +77,10 @@ case class ParallelDo(ins:             Seq[CompNode],
                       nodeSinks:       Seq[Sink] = Seq(),
                       bridgeStoreId:   String = randomUUID.toString) extends ProcessNodeImpl {
 
-  lazy val wf = wfb
-  lazy val wfe = env.wf
+  def wf = wfb
+  def wfe = env.wf
   override val toString = "ParallelDo ("+id+")[" + Seq(wfa, wfb, env.wf).mkString(",") + "] " +
-                          bridgeToString
+                          bridgeToString+" "+nodeSinksString
 
   lazy val source = ins.collect(isALoad).headOption
 
@@ -182,8 +184,8 @@ case class Combine(in: CompNode, f: (Any, Any) => Any,
                    nodeSinks:     Seq[Sink] = Seq(),
                    bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
-  lazy val wf = pair(wfk, wfv)
-  override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString
+  def wf = pair(wfk, wfv)
+  override val toString = "Combine ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString+" "+nodeSinksString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 
@@ -212,8 +214,8 @@ object Combine1 {
 case class GroupByKey(in: CompNode, wfk: WireReaderWriter, gpk: KeyGrouping, wfv: WireReaderWriter,
                       nodeSinks: Seq[Sink] = Seq(), bridgeStoreId: String = randomUUID.toString) extends ProcessNodeImpl {
 
-  lazy val wf = pair(wfk, iterable(wfv))
-  override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString
+  def wf = pair(wfk, iterable(wfv))
+  override val toString = "GroupByKey ("+id+")["+Seq(wfk, wfv).mkString(",")+"] "+bridgeToString+" "+nodeSinksString
 
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(nodeSinks = f(nodeSinks))
 }

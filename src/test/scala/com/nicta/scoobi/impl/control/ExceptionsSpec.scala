@@ -20,52 +20,52 @@ package control
 import sys._
 import testing.UnitSpecification
 
-class ExceptionsSpec extends UnitSpecification with Exceptions {  def is =
-                                                                                                                        """
-The Exceptions trait provides functional ways to catch exceptions and deal with them:
+class ExceptionsSpec extends UnitSpecification with Exceptions {  def is = s2"""
 
-* tryo returns the result in an Option
-* trye returns the result in an Either with the Left value being a function of the exception
-* catchAll is similar to trye but even catches Throwables
-* tryOr returns the result or a value built from the thrown exception
-* catchAllOr is similar to tryOr but even catches Throwables
-* tryOrElse returns the result or a default value
-* tryMap returns different values depending on the success of the expression
-* tryOk returns true iff the expression doesn't throw an Exception
-                                                                                                                        """^
-                                                                                                                        p^
-    "tryo executes an expression and returns an Option"                                                                 ^
-    "Some(result) if the expression doesn't throw an exception"                                                         ! tryo1^
-    "None if the expression failed"                                                                                     ! tryo2^
-                                                                                                                        p^
-    "tryOr executes an expression and returns the result or a default value. It returns"                                ^
-    "the result if the expression doesn't throw an exception"                                                           ! tryOr1^
-    "a default value if the expression throws an exception"                                                             ! tryOr2^
-                                                                                                                        p^
-    "tryOrElse executes an expression and returns the result or another value. It returns"                              ^
-    "the result if the expression doesn't throw an exception"                                                           ! tryOrElse1^
-    "another value if the expression throws an exception"                                                               ! tryOrElse2^
-                                                                                                                        p^
-    "tryMap executes an expression and returns"                                                                         ^
-    "a 'ok' value if the expression doesn't throw an exception"                                                         ! tryMap1^
-    "a 'ko' value if the expression throws an exception"                                                                ! tryMap2^
-                                                                                                                        p^
-    "tryOk executes an expression and returns a Boolean"                                                                ^
-    "true if the expression doesn't throw an exception"                                                                 ! tryOk1^
-    "false if the expression throws an exception"                                                                       ! tryOk2^
-                                                                                                                        p^
-    "trye executes an expression and returns an Either value"                                                           ^
-    "Right(result) if the expression doesn't throw an exception"                                                        ! trye1^
-    "Left(f(e)) if the expression failed, where f is a function of an exception"                                        ! trye2^
-                                                                                                                        p^
-    "catchAll executes an expression and returns an Either value"                                                       ^
-    "Right(result) if the expression doesn't throw a Throwable"                                                         ! catchAll1^
-    "Left(f(e)) if the expression threw anything, even an error"                                                        ! catchAll2^
-                                                                                                                        p^
-    "tryOr executes an expression and returns the result or a default value. It returns"                                ^
-    "the result if the expression doesn't throw an exception"                                                           ! catchAllOr1^
-    "a default value if the expression throws an exception"                                                             ! catchAllOr2^
-                                                                                                                        end
+ The Exceptions trait provides functional ways to catch exceptions and deal with them:
+ 
+ * tryo returns the result in an Option
+ * trye returns the result in an Either with the Left value being a function of the exception
+ * catchAll is similar to trye but even catches Throwables
+ * tryOr returns the result or a value built from the thrown exception
+ * catchAllOr is similar to tryOr but even catches Throwables
+ * tryOrElse returns the result or a default value
+ * tryMap returns different values depending on the success of the expression
+ * tryOk returns true iff the expression doesn't throw an Exception
+                                                                                                                    
+                                                                                                                    
+    tryo executes an expression and returns an Option                                                               
+    Some(result) if the expression doesn't throw an exception                                                           $tryo1
+    None if the expression failed                                                                                       $tryo2
+
+    tryOr executes an expression and returns the result or a default value. It returns
+    the result if the expression doesn't throw an exception                                                             $tryOr1
+    a default value if the expression throws an exception                                                               $tryOr2
+
+    tryOrElse executes an expression and returns the result or another value. It returns
+    the result if the expression doesn't throw an exception                                                             $tryOrElse1
+    another value if the expression throws an exception                                                                 $tryOrElse2
+
+    tryMap executes an expression and returns
+    a 'ok' value if the expression doesn't throw an exception                                                           $tryMap1
+    a 'ko' value if the expression throws an exception                                                                  $tryMap2
+
+    tryOk executes an expression and returns a Boolean
+    true if the expression doesn't throw an exception                                                                   $tryOk1
+    false if the expression throws an exception                                                                         $tryOk2
+
+    trye executes an expression and returns an Either value
+    Right(result) if the expression doesn't throw an exception                                                          $trye1
+    Left(f(e)) if the expression failed, where f is a function of an exception                                          $trye2
+
+    catchAll executes an expression and returns an Either value
+    Right(result) if the expression doesn't throw a Throwable                                                           $catchAll1
+    Left(f(e)) if the expression threw anything, even an error                                                          $catchAll2
+
+    tryOr executes an expression and returns the result or a default value. It returns
+    the result if the expression doesn't throw an exception                                                             $catchAllOr1
+    a default value if the expression throws an exception                                                               $catchAllOr2
+                                                                                                                        """
 
   def boom = { error("boom"); "a" }
 

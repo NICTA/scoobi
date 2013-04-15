@@ -290,19 +290,19 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     /* First, perform in-mapper combining. */
     val imc: DList[A] = parallelDo(new DoFn[A, A] {
       var acc: A = _
-      var first = true
+      var none: Boolean = false
 
-      def setup() {}
+      def setup() {
+        none = true
+      }
 
       def process(input: A, emitter: Emitter[A]) {
-        acc = if (first) input else op(acc, input)
-        first = false
+        acc = if (none) input else op(acc, input)
+        none = false
       }
 
       def cleanup(emitter: Emitter[A]) {
-        if (!first) emitter.emit(acc)
-        acc = null.asInstanceOf[A]
-        first = true
+        if (!none) emitter.emit(acc)
       }
     })
 

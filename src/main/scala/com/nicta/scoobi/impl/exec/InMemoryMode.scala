@@ -73,17 +73,17 @@ case class InMemoryMode() extends ExecutionMode {
         case n: Op                                                 => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
         case n: Materialise                                        => Vector(n.in -> compute(c))
         case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
-        case n: GroupByKey                                          => saveSinks(computeGroupByKey(n), n.sinks)
+        case n: GroupByKey                                         => saveSinks(computeGroupByKey(n), n.sinks)
         case n: Combine                                            => saveSinks(computeCombine(n)   , n.sinks)
         case n: ParallelDo                                         => saveSinks(computeParallelDo(n), n.sinks)
       }
     }
 
   private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
-    loadSource(load.source, load.wf).debug("computeLoad")
+    loadSource(load.source, load.wf).debug(_ => "computeLoad")
 
   private def loadSource(source: Source, wf: WireReaderWriter)(implicit sc: ScoobiConfiguration): Seq[Any] =
-    Source.read(source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(wf)).debug("loadSource")
+    Source.read(source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(wf)).debug(_ => "loadSource")
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
@@ -93,7 +93,7 @@ case class InMemoryMode() extends ExecutionMode {
     dofn.setupFunction(env)
     (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
-    vb.result.debug("computeParallelDo")
+    vb.result.debug(_ => "computeParallelDo")
   }
 
   private def computeGroupByKey(gbk: GroupByKey)(implicit sc: ScoobiConfiguration): Seq[_] = {

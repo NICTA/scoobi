@@ -26,18 +26,18 @@ import Scoobi._
 import mapreducer.BridgeStore
 import TextOutput._
 
-class ProcessNodeSpec extends UnitSpecification with Grouped with ThrownExpectations { def is =
+class ProcessNodeSpec extends UnitSpecification with Grouped with ThrownExpectations { def is = s2"""
 
-  "A ProcessNode node represent the current state of a DList or DObject computation"                 ^
-                                                                                                     p^
-  "Sinks can be added to ParallelDo, GroupByKey and Combine nodes"                                   ^
-    "it is possible to add a Sink to a node"                                                         ! g1.e1^
-    "it is possible to create a BridgeStore for a node"                                              ! g1.e2^
-    "it is possible to update all the sinks to add compression for example"                          ! g1.e3^
-    "if the only available sink is a TextFile then no bridgeStore must be available"                 ! g1.e4^
-    "if there is already a BridgeStore in the available sinks, it must be taken as the BridgeStore"+
-    " for the node"                                                                                  ! g1.e5^
-                                                                                                     end
+  A ProcessNode node represent the current state of a DList or DObject computation                 
+                                                                                                     
+  Sinks can be added to ParallelDo, GroupByKey and Combine nodes                                   
+    it is possible to add a Sink to a node                                                           ${g1.e1}
+    it is possible to create a BridgeStore for a node                                                ${g1.e2}
+    it is possible to update all the sinks to add compression for example                            ${g1.e3}
+    if the only available sink is a TextFile then no bridgeStore must be available                   ${g1.e4}
+    if there is already a BridgeStore in the available sinks, it must be taken as the BridgeStore
+     for the node                                                                                    ${g1.e5}
+                                                                                                     """
 
   "sinks" - new g1 {
     def parallelDo = ParallelDo.create(Return.unit)(wireFormat[String])

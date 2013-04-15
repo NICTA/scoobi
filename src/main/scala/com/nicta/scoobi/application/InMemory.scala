@@ -21,6 +21,7 @@ import core._
 import Mode._
 import HadoopLogFactory._
 import impl.time.SimpleTimer
+import impl.ScoobiConfiguration._
 
 trait InMemoryHadoop extends ScoobiUserArgs {
 
@@ -46,10 +47,16 @@ trait InMemoryHadoop extends ScoobiUserArgs {
    * @return a configuration with memory setup
    */
   def configureForInMemory(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
+    configureArguments
     configuration.modeIs(InMemory)
     configuration.setAsInMemory    
   }
-  
+
+  /** set command-line arguments on the configuration object */
+  protected def configureArguments(implicit configuration: ScoobiConfiguration) {
+    configuration.setBoolean("scoobi.debug.showComputationGraph", showComputationGraph)
+  }
+
   /** @return a function to display execution times. The default uses log messages */
   def displayTime(prefix: String) = (timer: SimpleTimer) => {
     LogFactory.getFactory.getInstance(SCOOBI_TIMES).info(prefix+": "+timer.time)

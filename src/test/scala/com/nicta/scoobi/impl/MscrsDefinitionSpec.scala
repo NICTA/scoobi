@@ -27,28 +27,35 @@ import comp._
 import core._
 import mscr._
 
-class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations { def is =
+class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpectations { def is = s2"""
 
-  "The gbks of a graph can be sorted in layers according to their dependencies"                                         ^
-    "all the nodes in a layer cannot be parent of each other"                                                           ! g1().e1^
-    "2 different layers have at least 2 nodes parent of each other"                                                     ! g1().e2^
-                                                                                                                        endp^
-  "For each layer in the topological sort, we can create Mscrs"                                                         ^
-    "Output channels"                                                                                                   ^ section("outputs")^
-      "each gbk belongs to a GbkOutputChannel"                                                                          ! g2().e1^
-      "aggregating the combine node if there is one after the gbk"                                                      ! g2().e2^
-      "aggregating the pd node if there is one after the gbk"                                                           ! g2().e3^
-      "aggregating the combine and pd nodes if they are after the gbk"                                                  ! g2().e4^
-                                                                                                                        p^ section("outputs")^
-    "Input channels"                                                                                                    ^
-      "all mappers sharing the same input go to the same MscrInputChannel"                                              ! g3().e1^
-                                                                                                                        p^
-    "Mscr creation"                                                                                                     ^ section("creation")^
-      "there must be one mscr per set of related tags"                                                                  ! g4().e1^
-                                                                                                                        end
+  The outputs of a graph can be sorted in layers according to their dependencies
+
+    all the nodes in a layer cannot be parent of each other                                                             ${g1().e1}
+    2 different layers have at least 2 nodes parent of each other                                                       ${g1().e2}
+    The following nodes must be selected to create layers
+      the last ParallelDo of a graph                                                                                    ${g2().e1}
+      the last ParallelDo of a graph when it is a flatten node                                                          ${g2().e2}
+      the last GroupByKey of a graph                                                                                    ${g2().e3}
+      the last Combine of a graph                                                                                       ${g2().e4}
+      the Root node                                                                                                     ${g2().e5}
+
+  For each layer in the topological sort, we can create Mscrs                                                         
+    Output channels                                                                                                     ${section("outputs")}
+      each gbk belongs to a GbkOutputChannel                                                                            ${g3().e1}
+      aggregating the combine node if there is one after the gbk                                                        ${g3().e2}
+      aggregating the pd node if there is one after the gbk                                                             ${g3().e3}
+      aggregating the combine and pd nodes if they are after the gbk                                                    ${g3().e4}
+                                                                                                                        ${ section("outputs")}
+    Input channels
+      all mappers sharing the same input go to the same MscrInputChannel                                                ${g4().e1}
+
+    Mscr creation                                                                                                       ${section("creation")}
+      there must be one mscr per set of related tags                                                                    ${g5().e1}
+                                                                                                                        """
 
 
-  "layering of Gbk layers" - new g1 with definition {
+  "layering of layers according to their outputs" - new g1 with definition {
     import scalaz.Scalaz._
 
     e1 := prop { layer: Layer[CompNode] =>
@@ -67,7 +74,32 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
 
   }
 
-  "Output channels" - new g2 with definition {
+  "selected nodes" - new g2 with definition {
+    e1 := {
+      val pd1 = pd(load)
+      layers(pd1).last.nodes must contain(pd1)
+    }
+    e2 := {
+      val pd1 = pd(pd(load), pd(load))
+      val ls = layers(pd1)
+      ls must have size(1)
+      ls.head.nodes must contain(pd1)
+    }
+    e3 := {
+      val gbk1 = gbk(load)
+      layers(gbk1).last.nodes must contain(gbk1)
+    }
+    e4 := {
+      val cb1 = cb(load)
+      layers(cb1).last.nodes must contain(cb1)
+    }
+    e5 := {
+      val root1 = aRoot(pd(load))
+      layers(root1).last.nodes must contain(root1)
+    }
+  }
+
+  "Output channels" - new g3 with definition {
 
     e1 := {
       val gbk1 = gbk(load)
@@ -91,7 +123,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
   }
 
-  "Input channels" - new g3 with definition {
+  "Input channels" - new g4 with definition {
     e1 := {
       val l1 = load
       val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(l1))
@@ -102,7 +134,7 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
   }
 
-  "Mscr creation" - new g4 with definition {
+  "Mscr creation" - new g5 with definition {
 
     e1 := {
       /**
