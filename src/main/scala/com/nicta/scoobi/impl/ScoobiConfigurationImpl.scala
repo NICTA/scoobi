@@ -38,11 +38,12 @@ import monitor.Loggable._
 import org.apache.hadoop.mapreduce.Job
 import scala.Some
 import tools.nsc.util.ScalaClassLoader
+import tools.nsc.interpreter.AbstractFileClassLoader
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
                                    var userDirs: Set[String] = Set(),
-                                   var classLoader: Option[ScalaClassLoader] = None) extends ScoobiConfiguration {
+                                   var classLoader: Option[AbstractFileClassLoader] = None) extends ScoobiConfiguration {
 
   /**
    * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
@@ -152,8 +153,10 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * attach a classloader which classes must be put on the job classpath
    */
-  def addClassLoader(cl: ScalaClassLoader) = { classLoader = Some(cl); this }
+  def addClassLoader(cl: AbstractFileClassLoader) = { classLoader = Some(cl); configuration.setClassLoader(cl); this }
 
+  /** @return the class loader to use with Scoobi classes, including generated ones */
+  def scoobiClassLoader = classLoader.getOrElse(Thread.currentThread.getContextClassLoader)
   /**
    * @return true if this configuration is used for a remote job execution
    */
@@ -255,7 +258,6 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   private def setDefaultForInMemoryAndLocal = {
-    jobNameIs(getClass.getSimpleName)
     set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
     set("mapred.job.tracker", "local")
     setDirectories
@@ -302,7 +304,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /** @return a new environment object */
   def newEnv(wf: WireReaderWriter): Environment = Env(wf)(this)
 
-  private lazy val persister = new Persister(this)
+  private val persister = new Persister(this)
 
   def persist[A](ps: Seq[Persistent[_]]) = persister.persist(ps)
   def persist[A](list: DList[A])         = persister.persist(list)

@@ -174,7 +174,7 @@ object ChannelsInputFormat {
     val Entry = """(.*);(.*)""".r
 
     conf.get(INPUT_FORMAT_PROPERTY).split(",").toList.map {
-      case Entry(ch, infmt) => (ch.toInt, ReflectionUtils.newInstance(Class.forName(infmt), conf).
+      case Entry(ch, infmt) => (ch.toInt, ReflectionUtils.newInstance(conf.getClassLoader.loadClass(infmt), conf).
         asInstanceOf[InputFormat[_,_]])
     }.toMap
   }

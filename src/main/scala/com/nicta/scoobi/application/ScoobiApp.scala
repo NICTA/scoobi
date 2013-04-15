@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package application
 
 import impl.io.FileSystems
-import impl.reflect.Classes
+import impl.reflect.{ClasspathDiagnostics, Classes}
 import org.apache.commons.logging.LogFactory
 import impl.monitor.Loggable._
 /**
@@ -70,8 +70,11 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
    *  - execute the user code
    */
   def main(arguments: Array[String]) {
+
     parseHadoopArguments(arguments)
     onHadoop {
+      // print out the urls of the most important jars for Java, Hadoop, Avro, Scoobi
+      ClasspathDiagnostics.logInfo
       // uploading the jars must only be done when the configuration is fully setup with "onHadoop"
       if (!locally) uploadLibJarsFiles(deleteLibJarsFirst = deleteLibJars)
       try { run }
@@ -84,6 +87,8 @@ trait ScoobiApp extends ScoobiCommandLineArgs with ScoobiAppConfiguration with H
     // so that we know if configuration files must be read or not
     set(arguments)
     HadoopLogFactory.setLogFactory(classOf[HadoopLogFactory].getName, quiet, showTimes, level, categories)
+    configuration.set("mapred.map.child.log.level", level)
+    configuration.set("mapred.reduce.child.log.level", level)
 
     logger.debug("parsing the hadoop arguments "+ arguments.mkString(", "))
     configuration.withHadoopArgs(arguments) { remainingArgs =>

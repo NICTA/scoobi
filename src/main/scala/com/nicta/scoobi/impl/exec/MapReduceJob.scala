@@ -216,6 +216,8 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
 private[scoobi]
 object MapReduceJob {
+  private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
+
   /**
    * Make temporary JAR file for this job. At a minimum need the Scala runtime
    * JAR, the Scoobi JAR, and the user's application code JAR(s)

@@ -46,7 +46,8 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = ScoobiWritable(typeName, wf)
+  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass =
+    BridgeStore.runtimeClasses.getOrElseUpdate(typeName, ScoobiWritable(typeName, wf))
 
   /** type of the generated class for this Bridge */
   val typeName = "BS" + bridgeStoreId
@@ -113,6 +114,11 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   override def toSource: Option[Source] = Some(this)
 }
 
+object BridgeStore {
+  /** runtime class for bridgestores, they shouldn't be recreated after it's been created once */
+  val runtimeClasses: scala.collection.mutable.Map[String, RuntimeClass] = new scala.collection.mutable.HashMap()
+}
+
 class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
   def fs = FileSystem.get(path.toUri, sc)
 
@@ -163,8 +169,11 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
   * the Class for 'value' will exist and be known by the ClassLoader. */
 class ScoobiWritableOutputConverter[A](typeName: String) extends OutputConverter[NullWritable, ScoobiWritable[A], A] {
-  lazy val value: ScoobiWritable[A] = Class.forName(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
+  private var value: ScoobiWritable[A] = _
   def toKeyValue(x: A)(implicit configuration: Configuration): (NullWritable, ScoobiWritable[A]) = {
+    if (value == null) {
+      value = configuration.getClassLoader.loadClass(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
+    }
     value.configuration = configuration
     value.set(x)
     (NullWritable.get, value)

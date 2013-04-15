@@ -161,6 +161,14 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     loadedTestData.run must_== Seq((50, "some test str", true, 3.7))
   }
 
+  "It must be possible to output a data type using a List" >> { implicit sc: SC =>
+    val filePath = TempFiles.createTempFilePath("test")
+    val list = DList[(String, Seq[Int])](("a", Seq(1, 2)), ("b", Seq(2, 3))).groupByKey.
+      map { case (k, vs) => (k, vs.head) }.filter(_ => true).groupByKey.
+      map { case (k, vs) => (k, vs.head) }
+    list.toAvroFile(TestFiles.path(filePath)).persist
+    ok
+  }
   /**
    * Helper methods and classes
    */

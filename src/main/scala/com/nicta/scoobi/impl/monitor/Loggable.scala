@@ -50,6 +50,7 @@ trait Loggable {
     def debug(pre: String, post: String = ""): T = debug(v => pre+" "+v+" "+post)
     def debug                                : T = debug(_.toString)
 
+    def info(pre: String, d: T => String)    : T = info((t: T) => pre+"\n"+d(t))
     def info (display: T => String)          : T = { logger.info(display(evaluated)); evaluated }
     def info (pre: String, post: String = ""): T = info(v => pre+" "+v+" "+post)
     def info                                 : T = info(_.toString)

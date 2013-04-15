@@ -53,6 +53,7 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   /** Add a class that has been loaded and is contained in some existing JAR. */
   def addClass(clazz: Class[_]) {
     findContainingJar(clazz).foreach(addJarEntries(_, (filePath(clazz) == _.getName)))
+    findContainingDirectory(clazz).foreach(addJarEntries(_, (filePath(clazz) == _.getName)))
   }
 
   /** Add the class files found in a given directory */

@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory
 
 import control.Exceptions._
 import tools.nsc.util.ScalaClassLoader
+import scala.reflect.io.{AbstractFile, VirtualDirectory}
+import tools.nsc.interpreter.AbstractFileClassLoader
 
 /**
  * Utility methods for accessing classes and methods
@@ -117,11 +119,15 @@ trait Classes {
     className.replaceAll("\\.", "/") + ".class"
 
   /** @return the classes contained in a class loader, by class name */
-  def loadedClasses(classLoader: ScalaClassLoader) = {
-    val classesField = classOf[ClassLoader].getDeclaredField("classes")
-    classesField.setAccessible(true)
-    val classes = asScalaBuffer(classesField.get(classLoader).asInstanceOf[java.util.List[Class[_]]])
-    Map(classes.map(klass => (klass.getName, classLoader.classBytes(klass.getName))):_*)
+  def loadedClasses(classLoader: AbstractFileClassLoader) = {
+    def virtualClasses(file: AbstractFile): Seq[AbstractFile] = {
+      if (file.isDirectory) (file.flatMap(child => virtualClasses(child)).toSeq ++ file.filter(_.name.endsWith(".class")))
+      else Seq(file).filter(_.name.endsWith(".class"))
+    }
+
+    Map { virtualClasses(classLoader.root).map { file =>
+      (file.path.replace("(memory)/", "").replace("/", ".").replace(".class", ""), file.toByteArray)
+    }: _*}
   }
 
   /** @return the file path corresponding to a full URL */

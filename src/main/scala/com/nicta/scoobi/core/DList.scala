@@ -137,6 +137,37 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       emitter.emit(_)
     })
 
+  /**
+   * Returns if the other DList has the same elements. A DList is unordered
+   * so order isn't considered. The Grouping required isn't very special and
+   * almost any will work (including grouping designed for secondary sorting)
+   * but for completeness, it is required to send two equal As to the
+   * same partition, and sortCompare provide total ordering
+   */
+
+  def isEqual(to: DList[A])(implicit cmp: Grouping[A]): DObject[Boolean] = {
+    val left = map((_, false))
+    val right = to.map((_, true))
+
+    (left ++ right).groupByKey.parallelDo(
+      new DoFn[(A, Iterable[Boolean]), Boolean] {
+        var cntr: Long = _
+        override def setup() {
+          cntr = 0
+        }
+        override def process(in: (A, Iterable[Boolean]), e: Emitter[Boolean]) {
+          if (cntr == 0) {
+            for (b <- in._2) {
+              cntr = cntr + (if (b) 1 else -1)
+            }
+          }
+        }
+        override def cleanup(e: Emitter[Boolean]) {
+          e.emit(cntr == 0)
+        }
+      }).materialise.map(_.forall(identity))
+  }
+
   /** Build a new distributed list from this list without any duplicate elements. */
   def distinct: DList[A] = {
     import scala.collection.mutable.{ Set => MSet }

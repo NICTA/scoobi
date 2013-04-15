@@ -41,9 +41,9 @@ class TaggedInputSplit(private var conf: Configuration,
   def readFields(in: DataInput) {
     channel = in.readInt
     val inputSplitClassName = Text.readString(in)
-    inputSplit = ReflectionUtils.newInstance(Class.forName(inputSplitClassName), conf).asInstanceOf[InputSplit]
+    inputSplit = ReflectionUtils.newInstance(conf.getClassLoader.loadClass(inputSplitClassName), conf).asInstanceOf[InputSplit]
     val inputFormatClassName = Text.readString(in)
-    inputFormatClass = Class.forName(inputFormatClassName).asInstanceOf[Class[_ <: InputFormat[_,_]]]
+    inputFormatClass = conf.getClassLoader.loadClass(inputFormatClassName).asInstanceOf[Class[_ <: InputFormat[_,_]]]
 
     val factory: SerializationFactory = new SerializationFactory(conf)
     val deserializer: Deserializer[InputSplit] = factory.getDeserializer(inputSplit.getClass.asInstanceOf[Class[InputSplit]])
