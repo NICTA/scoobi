@@ -20,6 +20,7 @@ package core
  *  A wrapper around an object that is part of the graph of a distributed computation
  */
 trait DObject[A] extends Persistent[A] {
+  type T = DObject[A]
   type C <: ValueNode
 
   implicit def wf: WireFormat[A] = getComp.wf.asInstanceOf[WireFormat[A]]

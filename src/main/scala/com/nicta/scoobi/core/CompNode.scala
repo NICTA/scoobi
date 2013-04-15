@@ -27,6 +27,7 @@ import scalaz.Equal
  * CompNodes are Attributable so that they can be used in attribute grammars
  */
 trait CompNode extends Attributable {
+  type C <: CompNode
   /** unique identifier for this computation node */
   def id: Int
 
@@ -38,6 +39,10 @@ trait CompNode extends Attributable {
     case other       => false
   }
   override def hashCode = id.hashCode
+
+  def sinks: Seq[Sink]
+  def updateSinks(f: Seq[Sink] => Seq[Sink]): C
+  def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
 }
 
 /**
@@ -50,15 +55,14 @@ object CompNode {
 }
 
 trait ProcessNode extends CompNode {
-  def sinks: Seq[Sink]
+  type C = ProcessNode
   def isCheckpoint = sinks.exists(_.isCheckpoint)
   def bridgeStore: Option[Bridge]
   def createBridgeStore: Bridge
   def nodeSinks : Seq[Sink]
-  def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
-  def updateSinks(f: Seq[Sink] => Seq[Sink]): ProcessNode
 }
 trait ValueNode extends CompNode {
+  type C = ValueNode
   def environment(sc: ScoobiConfiguration): Environment
   def pushEnv(result: Any)(implicit sc: ScoobiConfiguration)
 }

@@ -33,6 +33,7 @@ import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import scalaz.Scalaz._
+import org.apache.hadoop.mapreduce.RecordWriter
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -56,6 +57,12 @@ case class InMemoryMode() extends ExecutionMode {
     result
   }
 
+  /** optimisation: we only consider sinks which are related to expected results nodes */
+  override lazy val allSinks: CompNode => Seq[Sink] = attr("all sinks") {
+    case n if isExpectedResult(n) => n.sinks ++ children(n).flatMap(allSinks)
+    case n                        => children(n).flatMap(allSinks)
+  }
+
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
     paramAttr("computeValue") { sc: ScoobiConfiguration => node: CompNode =>
@@ -64,20 +71,31 @@ case class InMemoryMode() extends ExecutionMode {
 
   private
   lazy val compute: ScoobiConfiguration => CompNode => Seq[_] =
-    paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
+    paramAttr("compute") { sc: ScoobiConfiguration => node: CompNode =>
       implicit val c = sc
-      n match {
+      val result = node match {
         case n: Load                                               => computeLoad(n)
         case n: Root                                               => Vector(n.ins.map(_ -> computeValue(c)):_*)
         case n: Return                                             => Vector(n.in)
         case n: Op                                                 => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
         case n: Materialise                                        => Vector(n.in -> compute(c))
         case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
-        case n: GroupByKey                                         => saveSinks(computeGroupByKey(n), n.sinks)
-        case n: Combine                                            => saveSinks(computeCombine(n)   , n.sinks)
-        case n: ParallelDo                                         => saveSinks(computeParallelDo(n), n.sinks)
+        case n: GroupByKey                                         => computeGroupByKey(n)
+        case n: Combine                                            => computeCombine(n)
+        case n: ParallelDo                                         => computeParallelDo(n)
       }
+
+      if (isExpectedResult(node))
+        node match {
+          case Materialise1(_) | Op1(_) | GroupByKey1(_) | ParallelDo1(_) | Combine1(_) => saveSinks(result, node)
+          case _                                                                        => ()
+        }
+      result
     }
+
+  /** @return true if the result must be returned to the client user of this evaluation mode */
+  private def isExpectedResult = (node: CompNode) =>
+    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false)
 
   private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
     loadSource(load.source, load.wf).debug(_ => "computeLoad")
@@ -152,7 +170,8 @@ case class InMemoryMode() extends ExecutionMode {
       (k, combine.combine(vs))
     }.debug("computeCombine")
 
-  private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
+  private def saveSinks(values: Seq[Any], node: CompNode)(implicit sc: ScoobiConfiguration) {
+    val sinks = node.sinks
     sinks.foreach(_.outputSetup(sc.configuration))
     sinks.foreach { sink =>
       val job = new Job(new Configuration(sc))
@@ -175,13 +194,12 @@ case class InMemoryMode() extends ExecutionMode {
       oc.setupJob(job)
       oc.setupTask(taskContext)
 
-      sink.write(result, rw)(job.getConfiguration)
+      sink.write(values, rw)(job.getConfiguration)
 
       rw.close(taskContext)
       oc.commitTask(taskContext)
       oc.commitJob(job)
     }
-    result
   }
 
 }

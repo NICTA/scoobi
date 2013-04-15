@@ -44,8 +44,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
 
   /** collect all the sinks in the computation graph */
   lazy val allSinks: CompNode => Seq[Sink] = attr("all sinks") {
-    case process: ProcessNode => process.sinks ++ children(process).flatMap(allSinks)
-    case other                => children(other).flatMap(allSinks)
+    case n => n.sinks ++ children(n).flatMap(allSinks)
   }
 
   /** mark a sink as filled so it doesn't have to be recomputed */

@@ -140,7 +140,7 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   def optimise(outputs: Seq[CompNode]): Seq[CompNode] =
     rewrite(allStrategies)(Root(outputs)) match {
-      case Root(ins) => ins
+      case Root1(ins) => ins
     }
 
   /** duplicate the whole graph by copying all nodes */
@@ -158,7 +158,7 @@ trait Optimiser extends CompNodes with Rewriter {
   private[scoobi]
   def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
     rewrite(strategy)(Root(nodes)) match {
-      case Root(ins) => ins.toList
+      case Root1(ins) => ins.toList
     }
   }
 
@@ -200,5 +200,6 @@ trait Optimiser extends CompNodes with Rewriter {
       case other                => false
     }
   }
+
 }
 object Optimiser extends Optimiser

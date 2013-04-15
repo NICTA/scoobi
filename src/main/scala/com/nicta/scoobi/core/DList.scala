@@ -340,7 +340,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
 }
 
-trait Persistent[T] {
+trait Persistent[T] extends DataSinks {
   type C <: CompNode
 
   private[scoobi]

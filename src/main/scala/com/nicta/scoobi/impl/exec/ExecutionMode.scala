@@ -43,10 +43,10 @@ trait ExecutionMode extends ShowNode with Optimiser {
     sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)
 
   protected lazy val checkSourceAndSinks: CachedParamAttribute[ScoobiConfiguration, CompNode, Unit] = paramAttr("checkSourceAndSinks") { sc: ScoobiConfiguration => node: CompNode =>
+    node.sinks.filterNot { case b: Bridge => hasBeenFilled(b); case _ => true }.foreach(_.outputCheck(sc))
     node match {
-      case process: ProcessNode => process.sinks.filterNot { case b: Bridge => hasBeenFilled(b); case _ => true }.foreach(_.outputCheck(sc))
-      case load: Load           => load.source.inputCheck(sc)
-      case _                    => ()
+      case load: Load => load.source.inputCheck(sc)
+      case _          => ()
     }
     children(node).foreach(n => checkSourceAndSinks(sc)(n))
   }

@@ -39,9 +39,11 @@ trait InputsOutputs {
   (path: String, sep: String = "\t")
   (extractFn: PartialFunction[List[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
 
-  implicit def listToTextFile[A](list: core.DList[A]): ListToTextFile[A] = new ListToTextFile[A](list)
-  case class ListToTextFile[A](list: core.DList[A]) {
+  implicit class ListToTextFile[A](val list: core.DList[A]) {
     def toTextFile(path: String, overwrite: Boolean = false) = list.addSink(TextOutput.textFileSink(path, overwrite))
+  }
+  implicit class ObjectToTextFile[A](val o: core.DObject[A]) {
+    def toTextFile(path: String, overwrite: Boolean = false) = o.addSink(TextOutput.textFileSink(path, overwrite))
   }
   def toTextFile[A : Manifest](dl: core.DList[A], path: String, overwrite: Boolean = false) = TextOutput.toTextFile(dl, path, overwrite)
   def toDelimitedTextFile[A <: Product : Manifest](dl: core.DList[A], path: String, sep: String = "\t", overwrite: Boolean = false) = TextOutput.toDelimitedTextFile(dl, path, sep, overwrite)

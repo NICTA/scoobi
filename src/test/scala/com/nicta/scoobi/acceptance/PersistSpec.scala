@@ -29,9 +29,10 @@ import org.apache.hadoop.mapreduce.RecordReader
 import core.{InputConverter, InputOutputContext}
 import impl.plan.DListImpl
 import org.apache.hadoop.io.{Text, LongWritable}
+import scala.io.Source
 
 class PersistSpec extends NictaSimpleJobs with ResultFiles {
-  
+
   "There are many ways to execute computations with DLists or DObjects".txt
 
   "1. a single DList, simply add a sink, like a TextFile and persist the list" >> { implicit sc: SC =>
@@ -90,7 +91,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
         (l2.run.normalise, l3.run.normalise) === ("Vector(11, 21, 31)", "Vector(12, 22, 32)")
       }
     }
-    
+
     "5.3 when we iterate with several computations" >> { implicit sc: SC =>
       var list: DList[(Int, Int)] = DList((1, 1))
 
@@ -217,6 +218,14 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
   "18. issue 216" >> { implicit sc: SC =>
     val input = (1 to 2).toDList
     (input.materialise join input).run.normalise === "Vector((Vector(1, 2),1), (Vector(1, 2),2))"
+  }
+
+  "19. issue 175: it is possible to store a DObject" >> { implicit sc: SC =>
+    val list = DList(1, 2)
+    val dir = TempFiles.createTempDir("test")
+    val o1: DObject[Int] = list.sum.toTextFile(path(dir.getPath))
+    persist(o1)
+    dirResults(sc)(dir) === Seq("3")
   }
 
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {

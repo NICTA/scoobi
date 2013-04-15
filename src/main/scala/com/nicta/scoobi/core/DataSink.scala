@@ -79,12 +79,11 @@ trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
 
   private [scoobi]
   def write(values: Seq[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) {
-    values foreach { value: Any =>
+    values foreach { value =>
       val (k, v) = outputConverter.toKeyValue(value.asInstanceOf[B])
       recordWriter.asInstanceOf[RecordWriter[K, V]].write(k, v)
     }
   }
-
 }
 
 /**
@@ -159,6 +158,7 @@ trait Bridge extends Source with Sink with Checkpoint {
   def bridgeStoreId: String
   def stringId = bridgeStoreId
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
+  def readAsValue(implicit sc: ScoobiConfiguration) = readAsIterable.iterator.next
 }
 
 object Bridge {
@@ -186,6 +186,7 @@ object Bridge {
     def configureCompression(configuration: Configuration) = sink.configureCompression(configuration)
     private[scoobi] def isCompressed = sink.isCompressed
     private [scoobi] def write(values: Seq[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) { sink.write(values, recordWriter) }
+
     override def toSource: Option[Source] = Some(source)
 
     override def isCheckpoint                                                = sink.isCheckpoint
@@ -193,7 +194,7 @@ object Bridge {
     override def checkpointExists(implicit sc: ScoobiConfiguration): Boolean = sink.checkpointExists
 
     def readAsIterable(implicit sc: ScoobiConfiguration) =
-      new Iterable[Any] { def iterator = Source.read(source, (a: Any) => a).iterator }
+      new Iterable[Any] { def iterator = Source.read(source).iterator }
   }
 }
 

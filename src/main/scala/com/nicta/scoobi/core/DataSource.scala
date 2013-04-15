@@ -77,7 +77,7 @@ trait Source {
 
 private[scoobi]
 object Source {
-  def read(source: Source, read: Any => Any)(implicit sc: ScoobiConfiguration): Seq[Any] = {
+  def read(source: Source, read: Any => Any = identity)(implicit sc: ScoobiConfiguration): Seq[Any] = {
     val vb = new VectorBuilder[Any]()
     val job = new Job(new Configuration(sc.configuration))
     val inputFormat = source.inputFormat.newInstance

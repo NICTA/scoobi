@@ -227,16 +227,18 @@ object GroupByKey1 {
  * The Load node type specifies the creation of a CompNode from some source other than another CompNode.
  * A DataSource object specifies how the loading is performed
  */
-case class Load(source: Source, wf: WireReaderWriter) extends ValueNodeImpl {
+case class Load(source: Source, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
   override val toString = "Load ("+id+")["+wf+"] ("+source+")"
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Load1 {
   def unapply(load: Load): Option[Source] = Some(load.source)
 }
 
 /** The Return node type specifies the building of a Exp CompNode from an "ordinary" value. */
-case class Return(in: Any, wf: WireReaderWriter) extends ValueNodeImpl {
+case class Return(in: Any, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
   override val toString = "Return ("+id+")["+wf+"]"
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Return1 {
   def unapply(rt: Return): Option[Any] = Some(rt.in)
@@ -245,8 +247,9 @@ object Return {
   def unit = Return((), wireFormat[Unit])
 }
 
-case class Materialise(in: ProcessNode, wf: WireReaderWriter) extends ValueNodeImpl {
+case class Materialise(in: ProcessNode, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
   override val toString = "Materialise ("+id+")["+wf+"]"
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Materialise1 {
   def unapply(mt: Materialise): Option[ProcessNode] = Some(mt.in)
@@ -256,18 +259,23 @@ object Materialise1 {
  * The Op node type specifies the building of Exp CompNode by applying a function to the values
  * of two other CompNode nodes
  */
-case class Op(in1: CompNode, in2: CompNode, f: (Any, Any) => Any, wf: WireReaderWriter) extends ValueNodeImpl {
+case class Op(in1: CompNode, in2: CompNode, f: (Any, Any) => Any, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
   override val toString = "Op ("+id+")["+wf+"]"
   def execute(a: Any, b: Any): Any = f(a, b)
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Op1 {
   def unapply(op: Op): Option[(CompNode, CompNode)] = Some((op.in1, op.in2))
 }
 
-case class Root(ins: Seq[CompNode]) extends ValueNodeImpl {
+case class Root(ins: Seq[CompNode], sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
   lazy val wf: WireReaderWriter = wireFormat[Unit]
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 
+object Root1 {
+  def unapply(root: Root): Option[Seq[CompNode]] = Some(root.ins)
+}
 /**
  * Value nodes have environments which are determined by the job configuration
  * because they are effectively files which are distributed via the distributed cache
