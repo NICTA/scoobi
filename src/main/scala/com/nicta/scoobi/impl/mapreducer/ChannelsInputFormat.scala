@@ -24,6 +24,7 @@ import org.apache.hadoop.mapreduce.InputFormat
 import org.apache.hadoop.mapreduce.InputSplit
 import org.apache.hadoop.mapreduce.RecordReader
 import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
@@ -71,7 +72,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
     val taggedInputSplit = split.asInstanceOf[TaggedInputSplit]
     new ChannelRecordReader(
       taggedInputSplit,
-      new TaskAttemptContext(
+      new TaskAttemptContextImpl(
         extractChannelConfiguration(context, taggedInputSplit.channel),
         context.getTaskAttemptID))
   }
