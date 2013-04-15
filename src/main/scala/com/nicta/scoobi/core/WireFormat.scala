@@ -414,10 +414,9 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     override def toString = "Date"
   }
 
-  /*
-   * Shapeless tagged types.
-   */
-  import shapeless.TypeOperators._
+  /**  Shapeless tagged types */
+  import impl.types.TypeOperators._
+
   implicit def taggedTypeWireFormat[T : WireFormat, U]: WireFormat[T @@ U] =
     implicitly[WireFormat[T]].asInstanceOf[WireFormat[T @@ U]]
 }

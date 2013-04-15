@@ -22,12 +22,6 @@ import com.thoughtworks.xstream.io.binary.BinaryStreamDriver
 import org.apache.hadoop.conf.Configuration
 import java.io._
 import core.ScoobiConfiguration
-import com.thoughtworks.xstream.io.xml.StaxDriver
-import com.thoughtworks.xstream.mapper.Mapper
-import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter
-import com.thoughtworks.xstream.io.{HierarchicalStreamReader, HierarchicalStreamWriter}
-import com.thoughtworks.xstream.converters.{UnmarshallingContext, MarshallingContext}
-import plan.comp.Optimiser
 
 trait Serialiser {
 
