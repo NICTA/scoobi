@@ -19,7 +19,7 @@ package guide
 import application.ScoobiApp
 
 class DataTypes extends ScoobiPage { def is = "Data Types".title^
-  """
+  s2"""
 ### Standard types
 
 We've seen in many of the examples that it's possible for `DList` objects to be parameterised by normal Scala primitive (*value*) types. Not surprisingly, Scoobi supports `DList` objects that are parameterised by any of the Scala primitive types:
@@ -60,13 +60,13 @@ Notice that in all these cases, the `DList` object is parameterised by a *standa
 
 #### WireFormat
 
-Scoobi requires that the type parameterizing a `DList` object has an implementation of the [`WireFormat`](${SCOOBI_API_PAGE}#com.nicta.scoobi.WireFormat) type class (Scala [context bound](http://stackoverflow.com/questions/2982276/what-is-a-context-bound-in-scala)). Thus, the `DList` class is actually specified as:
+Scoobi requires that the type parameterizing a `DList` object has an implementation of the [`WireFormat`]($API_PAGE#com.nicta.scoobi.WireFormat) type class (Scala [context bound](http://stackoverflow.com/questions/2982276/what-is-a-context-bound-in-scala)). Thus, the `DList` class is actually specified as:
 
     class DList[A : WireFormat] { ... }
 
 If the compiler cannot find a `WireFormat` implementation for the type parameterizing a specific `DList` object, that code will not compile.  Implementations of `WireFormat` specify serialization and deserialization in their `toWire` and `fromWire` methods, which end up finding their way into `Writable`'s `write` and `readFields` methods.
 
-To make life easy, the [`WireFormat`](${SCOOBI_API_PAGE}#com.nicta.scoobi.WireFormat$) object includes `WireFormat` implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with `DList` objects and that set can include types that already exist, maybe even in some other compilation unit.  So long as a type has a `WireFormat` implementation, it can parameterise a `DList`. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with `DList[Tick]` objects. We can do that if we write a `WireFormat` implementation for `Tick`:
+To make life easy, the [`WireFormat`]($API_PAGE#com.nicta.scoobi.WireFormat$$) object includes `WireFormat` implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with `DList` objects and that set can include types that already exist, maybe even in some other compilation unit.  So long as a type has a `WireFormat` implementation, it can parameterise a `DList`. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with `DList[Tick]` objects. We can do that if we write a `WireFormat` implementation for `Tick`:
 
     case class Tick(val date: Int, val symbol: String, val price: Double)
 

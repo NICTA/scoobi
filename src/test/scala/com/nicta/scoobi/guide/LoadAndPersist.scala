@@ -21,12 +21,12 @@ import Scoobi._
 import com.nicta.scoobi.impl.plan.comp.CompNodeData._
 
 class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title^
-  """
+  s2"""
 `DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the [WordCount example](Application.html) we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally *loaded* from files and the results *persisted* to files. Let's see how to specify this.
 
 ### Loading
 
-Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$).
+Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`com.nicta.scoobi.io.text.TextInput`]($API_PAGE#com.nicta.scoobi.io.text.TextInput$$).
 
 The simplest, which we have seen already, is `fromTextFile`. It takes a path (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a `DList[String]` object, where each element of the distributed collection refers to one of the lines of text from the files.
 

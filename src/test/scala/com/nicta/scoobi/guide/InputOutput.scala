@@ -17,10 +17,10 @@ package com.nicta.scoobi
 package guide
 
 class InputOutput extends ScoobiPage { def is = "Input and Output".title ^
-  """
+  s2"""
 ### Text files
 
-Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which `DList`s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text [input](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$) and [output](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$).
+Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which `DList`s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text [input]($API_PAGE#com.nicta.scoobi.io.text.TextInput$$) and [output]($API_PAGE#com.nicta.scoobi.io.text.TextOutput$$).
 
 #### Text file input
 
@@ -148,7 +148,7 @@ The second option is for cases when the desired output is a delimited text file,
 
 ### Sequence files
 
-Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqInput$) and [output](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqOutput$).
+Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input]($API_PAGE#com.nicta.scoobi.io.sequence.SeqInput$$) and [output]($API_PAGE#com.nicta.scoobi.io.sequence.SeqOutput$$).
 
 #### Sequence file input
 
@@ -255,7 +255,7 @@ Avro *schemas* describe the structure of data and are the key to creating or loa
 
 #### Avro schemas
 
-The mechanism for mapping between Avro schemas and Scala types is the [`AvroSchema`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroSchema) type class. Instances are provided for all Scala types that have sensbile mappings to Avro schema elements:
+The mechanism for mapping between Avro schemas and Scala types is the [`AvroSchema`]($API_PAGE#com.nicta.scoobi.io.avro.AvroSchema) type class. Instances are provided for all Scala types that have sensbile mappings to Avro schema elements:
 
  Scala type                | Avro Schema
  ----------                | -----------
@@ -324,7 +324,7 @@ would map to the Avro schema:
 
 #### Avro file input
 
-The method [`fromAvroFile`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroInput$) is used to load an Avro file as a `DList`:
+The method [`fromAvroFile`]($API_PAGE#com.nicta.scoobi.io.avro.AvroInput$$) is used to load an Avro file as a `DList`:
 
     val xs = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])]("hdfs://path/to/file")
 
@@ -351,7 +351,7 @@ And naturally, `fromAvroFile` supports loading from multiple files:
 
 #### Avro file output
 
-To persist a `DList` to an Avro file, Scoobi provides the method [`toAvroFile`](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroOutput$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented:
+To persist a `DList` to an Avro file, Scoobi provides the method [`toAvroFile`]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented:
 
     val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = ...
     persist(xs.toAvroFile("hdfs://path/to/file")
@@ -443,10 +443,10 @@ is called prior to running the specific MapReduce job this `DataSoure` provides 
 
 The following Scala objects provided great working examples of `DataSource` implementations in Scoobi:
 
- * [TextInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextInput$)
- * [SeqInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqInput$)
- * [AvroInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroInput$)
- * [FunctionInput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.func.FunctionInput$)
+ * [TextInput]($API_PAGE#com.nicta.scoobi.io.text.TextInput$$)
+ * [SeqInput]($API_PAGE#com.nicta.scoobi.io.sequence.SeqInput$$)
+ * [AvroInput]($API_PAGE#com.nicta.scoobi.io.avro.AvroInput$$)
+ * [FunctionInput]($API_PAGE#com.nicta.scoobi.io.func.FunctionInput$$)
 
 #### Custom output sources
 
@@ -484,9 +484,9 @@ Again, we can follow the types through to get a sense of how it works:
 
 The following Scala objects provided great working examples of `DataSink` implementations in Scoobi:
 
- * [TextOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.text.TextOutput$)
- * [SeqOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.sequence.SeqOutput$)
- * [AvroOutput](${SCOOBI_API_PAGE}#com.nicta.scoobi.io.avro.AvroOutput$)
+ * [TextOutput]($API_PAGE#com.nicta.scoobi.io.text.TextOutput$$)
+ * [SeqOutput]($API_PAGE#com.nicta.scoobi.io.sequence.SeqOutput$$)
+ * [AvroOutput]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$)
 
   """
 

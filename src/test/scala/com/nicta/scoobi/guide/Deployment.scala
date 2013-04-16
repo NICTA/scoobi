@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package guide
 
 class Deployment extends ScoobiPage { def is = "Deployment".title^
-  """
+  s2"""
 ### Introduction
 
 If using `sbt run` to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:
@@ -69,10 +69,10 @@ We can also fake the `libraryDependencies` to build a proper jar. Please note, t
 First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:
 
 ```
-"com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" intransitive()
+"com.nicta" %% "scoobi" % "${VERSION}" intransitive()
 ```
 
-However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's [build.sbt](https://github.com/NICTA/scoobi/blob/${SCOOBI_BRANCH}/build.sbt) (and the correct branch/revision) for the canonical list, but for example it might be:
+However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's [build.sbt](https://github.com/NICTA/scoobi/blob/$BRANCH/build.sbt) (and the correct branch/revision) for the canonical list, but for example it might be:
 
 ```
 "javassist" % "javassist" % "3.12.1.GA"
@@ -103,13 +103,13 @@ scalaVersion := "2.10.1"
 scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
 
 libraryDependencies ++= Seq(
-   "com.nicta" %% "scoobi" % "${SCOOBI_VERSION}" intransitive(),
+   "com.nicta" %% "scoobi" % "$VERSION" intransitive(),
    "javassist" % "javassist" % "3.12.1.GA",
-   "org.apache.avro" % "avro-mapred" % "1.7.3-SNAPSHOT", // Note: add ' % "provided"'  if you don't need it 
-   "org.apache.avro" % "avro" % "1.7.3-SNAPSHOT",        // Note: add ' % "provided"'  if you don't need it 
+   "org.apache.avro" % "avro-mapred" % "1.7.4" classifier "hadoop2", // Note: add ' % "provided"'  if you don't need it
+   "org.apache.avro" % "avro" % "1.7.4",                             // Note: add ' % "provided"'  if you don't need it
    "org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" % "provided",
    "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1" % "provided",
-   "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
+   "org.scalaz" %% "scalaz-core" % "7.0.0-RC2",
    "com.thoughtworks.xstream" % "xstream" % "1.4.3" intransitive()
    )
 
@@ -127,21 +127,21 @@ Building Maven jars for Hadoop is documented in several blog posts. [This one](h
 Running the jar:
 
 ```
-$ hadoop jar target/appname-assembly-version.jar scoobi
+$$ hadoop jar target/appname-assembly-version.jar scoobi
 ```
 
 Note that there appears to be an OSX and Java 6 specific [issue](https://github.com/NICTA/scoobi/issues/1) associated with calling `hadoop` in this manner requiring the jar to be added to `HADOOP_CLASSPATH` and then `hadoop` being given the correct object to run. e.g.:
 
 ```
-$ export HADOOP_CLASSPATH=$PWD/target/appname-assembly-version.jar
-$ hadoop WordCount <args>
+$$ export HADOOP_CLASSPATH=$$PWD/target/appname-assembly-version.jar
+$$ hadoop WordCount <args>
 ```
 
 ### Troubleshooting
 
 You might get some `ClassNotFoundException` on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi "job jar" that is distributed to the cluster node by turning off the dependency uploading mechanism (see the [Application](Application.html) page):
 
-`$ hadoop WordCount <args> scoobi nolibjars`
+`$$ hadoop WordCount <args> scoobi nolibjars`
 
   """
 }

@@ -17,8 +17,7 @@ package com.nicta.scoobi
 package guide
 
 import org.specs2.Specification
-import org.specs2.specification.{SpecStart, Text, Fragments}
-import ScoobiVariables._
+import org.specs2.specification._
 
 /**
  * base class for creating Scoobi user guide pages.
@@ -26,12 +25,11 @@ import ScoobiVariables._
  * If the text contains "${SCOOBI_VERSION}", each occurrence will be replaced by the current Scoobi version as defined in the build.sbt file
  * If the text contains "${SCOOBI_BRANCH}", each occurrence will be replaced by either the official tag or master if the version is a SNAPSHOT one
  */
-trait ScoobiPage extends Specification {
+trait ScoobiPage extends Specification with ScoobiVariables {
   override def map(fs: =>Fragments) =
     noindent ^ fs.map {
       case start @ SpecStart(_,_,_) if isIndex(start) => start.urlIs("index.html")
-      case start @ SpecStart(_,_,_)                   => start.baseDirIs("./${SCOOBI_GUIDE}".replaceVariables)
-      case Text(t)                                    => Text(t.replaceVariables)
+      case start @ SpecStart(_,_,_)                   => start.baseDirIs(s"./$GUIDE_DIR")
       case other                                      => other
     }
 

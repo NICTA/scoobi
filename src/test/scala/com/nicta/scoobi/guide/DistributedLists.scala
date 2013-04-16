@@ -17,11 +17,11 @@ package com.nicta.scoobi
 package guide
 
 class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
-  """
+  s2"""
 
 ### Introduction
 
-Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterised by a type and they provide methods that can be used to produce new `DList` objects, often parameterised by higher-order functions. For example:
+Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`]($API_PAGE#com.nicta.scoobi.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterised by a type and they provide methods that can be used to produce new `DList` objects, often parameterised by higher-order functions. For example:
 
 ```scala
 // Converting a List[Int] to a List[String] keeping only evens
@@ -83,7 +83,7 @@ Until `persist` is called, our application will only be running on the local cli
 * The transformation associated with `groupByKey` will be occur as a consequence of the *sort-and-shuffle* phase;
 * The functionality of the `combine` will become part of both a *combiner* and *reducer* task.
 
-The word count example is one of a number of examples included with Scoobi. The top level directory [examples](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/examples) contains a number of self-contained tutorial-like examples, as well as a [guide](https://github.com/NICTA/scoobi/blob/${SCOOBI_BRANCH}/examples/README.md) to building and deploying them. This is an additional starting point for learning and using scoobi.
+The word count example is one of a number of examples included with Scoobi. The top level directory [examples](https://github.com/NICTA/scoobi/tree/$BRANCH/examples) contains a number of self-contained tutorial-like examples, as well as a [guide](https://github.com/NICTA/scoobi/blob/$BRANCH/examples/README.md) to building and deploying them. This is an additional starting point for learning and using scoobi.
 
 ### Parallel operations
 
@@ -99,7 +99,7 @@ We have already seen a number of `DList` methods - `map`, `flatMap`. These metho
  * `distinct`
  * `++`
 
-All of these methods are built upon the primitive parallel operation `parallelDo`.  Unlike the other `DList` methods, `parallelDo` provides a less *functional* interface and requires the user to implement a [`DoFn`](${SCOOBI_API_PAGE}#com.nicta.scoobi.DoFn) object:
+All of these methods are built upon the primitive parallel operation `parallelDo`.  Unlike the other `DList` methods, `parallelDo` provides a less *functional* interface and requires the user to implement a [`DoFn`]($API_PAGE#com.nicta.scoobi.DoFn) object:
 
 ```scala
 def parallelDo[B](dofn: DoFn[A, B]): DList[B]
