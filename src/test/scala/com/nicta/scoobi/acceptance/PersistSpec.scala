@@ -233,7 +233,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     val dir = TempFiles.createTempDir("test")
     val o1: DObject[Iterable[Int]] = list.materialise.toTextFile(path(dir.getPath))
     persist(o1)
-    dirResults(sc)(dir).normalise === Vector("1", "2")
+    dirResults(sc)(dir).normalise === "Vector(1, 2)"
   }
 
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {
