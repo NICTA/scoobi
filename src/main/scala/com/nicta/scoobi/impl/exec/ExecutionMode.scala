@@ -60,8 +60,15 @@ trait ExecutionMode extends ShowNode with Optimiser {
     resetMemo()
   }
 
+  /**
+   * @return the list of sinks to save for the node depending on the mode:
+   *         In HadoopMode, bridges are already saved as part of the map reduce job
+   *         In InMemoryMode all sinks need to be saved
+   */
+  protected def sinksToSave(node: CompNode): Seq[Sink] = node.sinks
+
   protected def saveSinks(values: Seq[Any], node: CompNode)(implicit sc: ScoobiConfiguration) {
-    val sinks = node.sinks
+    val sinks = sinksToSave(node)
     val valuesToSave = if (node.wf.isInstanceOf[WireFormat.TraversableWireFormat[_,_]]) values.head.asInstanceOf[Traversable[Any]] else values
 
     sinks.foreach(_.outputSetup(sc.configuration))
