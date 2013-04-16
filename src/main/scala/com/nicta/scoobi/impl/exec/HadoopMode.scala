@@ -77,7 +77,9 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     // execute value nodes recursively, other nodes start a "layer" execution
     attr("executeNode") { node =>
       executeLayers(node)
-      getValue(node)
+      val result = getValue(node)
+      saveSinks(Seq(result), node)(sc)
+      result
     }
   }
 

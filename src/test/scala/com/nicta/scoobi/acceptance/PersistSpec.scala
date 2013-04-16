@@ -220,12 +220,20 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     (input.materialise join input).run.normalise === "Vector((Vector(1, 2),1), (Vector(1, 2),2))"
   }
 
-  "19. issue 175: it is possible to store a DObject" >> { implicit sc: SC =>
+  "19. issue 175: it is possible to store a DObject[A]" >> { implicit sc: SC =>
     val list = DList(1, 2)
     val dir = TempFiles.createTempDir("test")
     val o1: DObject[Int] = list.sum.toTextFile(path(dir.getPath))
     persist(o1)
     dirResults(sc)(dir) === Seq("3")
+  }
+
+  "20. issue 175: it is possible to store a DObject[Iterable[A]]" >> { implicit sc: SC =>
+    val list = DList(1, 2)
+    val dir = TempFiles.createTempDir("test")
+    val o1: DObject[Iterable[Int]] = list.materialise.toTextFile(path(dir.getPath))
+    persist(o1)
+    dirResults(sc)(dir).normalise === Vector("1", "2")
   }
 
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {

@@ -21,6 +21,11 @@ import core._
 import plan.comp._
 import org.apache.commons.logging.Log
 import monitor.Loggable._
+import org.apache.hadoop.mapreduce.{TaskAttemptID, Job}
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+import ScoobiConfigurationImpl._
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit def modeLogger: Log
@@ -53,5 +58,39 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
   def reset {
     resetMemo()
+  }
+
+  protected def saveSinks(values: Seq[Any], node: CompNode)(implicit sc: ScoobiConfiguration) {
+    val sinks = node.sinks
+    val valuesToSave = if (node.wf.isInstanceOf[WireFormat.TraversableWireFormat[_,_]]) values.head.asInstanceOf[Traversable[Any]] else values
+
+    sinks.foreach(_.outputSetup(sc.configuration))
+    sinks.foreach { sink =>
+      val job = new Job(new Configuration(sc.configuration))
+
+      val outputFormat = sink.outputFormat.newInstance
+
+      sink.outputPath.foreach(FileOutputFormat.setOutputPath(job, _))
+      job.setOutputFormatClass(sink.outputFormat)
+      job.setOutputKeyClass(sink.outputKeyClass)
+      job.setOutputValueClass(sink.outputValueClass)
+      job.getConfiguration.set("mapreduce.output.basename", "ch0out0")  // Attempting to be consistent
+      sink.configureCompression(job.getConfiguration)
+      sink.outputConfigure(job)(sc)
+
+      val tid = new TaskAttemptID()
+      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val rw = outputFormat.getRecordWriter(taskContext)
+      val oc = outputFormat.getOutputCommitter(taskContext)
+
+      oc.setupJob(job)
+      oc.setupTask(taskContext)
+
+      sink.write(valuesToSave, rw)(job.getConfiguration)
+
+      rw.close(taskContext)
+      oc.commitTask(taskContext)
+      oc.commitJob(job)
+    }
   }
 }

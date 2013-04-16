@@ -29,11 +29,9 @@ import core._
 import monitor.Loggable._
 import impl.plan._
 import comp._
-import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import scalaz.Scalaz._
-import org.apache.hadoop.mapreduce.RecordWriter
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -170,37 +168,6 @@ case class InMemoryMode() extends ExecutionMode {
       (k, combine.combine(vs))
     }.debug("computeCombine")
 
-  private def saveSinks(values: Seq[Any], node: CompNode)(implicit sc: ScoobiConfiguration) {
-    val sinks = node.sinks
-    sinks.foreach(_.outputSetup(sc.configuration))
-    sinks.foreach { sink =>
-      val job = new Job(new Configuration(sc))
-
-      val outputFormat = sink.outputFormat.newInstance
-
-      sink.outputPath.foreach(FileOutputFormat.setOutputPath(job, _))
-      job.setOutputFormatClass(sink.outputFormat)
-      job.setOutputKeyClass(sink.outputKeyClass)
-      job.setOutputValueClass(sink.outputValueClass)
-      job.getConfiguration.set("mapreduce.output.basename", "ch0out0")  // Attempting to be consistent
-      sink.configureCompression(job.getConfiguration)
-      sink.outputConfigure(job)(sc)
-
-      val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
-      val rw = outputFormat.getRecordWriter(taskContext)
-      val oc = outputFormat.getOutputCommitter(taskContext)
-
-      oc.setupJob(job)
-      oc.setupTask(taskContext)
-
-      sink.write(values, rw)(job.getConfiguration)
-
-      rw.close(taskContext)
-      oc.commitTask(taskContext)
-      oc.commitJob(job)
-    }
-  }
 
 }
 
