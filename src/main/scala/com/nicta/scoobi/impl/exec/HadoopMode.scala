@@ -63,7 +63,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   lazy val executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      layers(node).info("Executing layers", showLayers).map(executeLayer)
+      layers(node).info("Executing layers", mkStrings).map(executeLayer)
     }
 
     def getValue(node: CompNode): Any = {
@@ -81,8 +81,6 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  private lazy val showLayers = (ls: Seq[Layer[T]]) => mkStrings(ls.flatMap(l => l +: mscrs(l)))
-
   private lazy val executeLayer: Layer[T] => Unit =
     attr("executeLayer") { case layer =>
       Execution(layer).execute
@@ -94,11 +92,11 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   private case class Execution(layer: Layer[T]) {
 
     def execute {
-      ("Executing layer\n"+layer).info
+      (s"Executing layer ${layer.id}\n"+layer).info
       runMscrs(mscrs(layer))
 
       layerSinks(layer).info("Layer sinks: ").foreach(markSinkAsFilled)
-      ("===== END OF LAYER "+layer.id+" ======").info
+      ("===== END OF LAYER "+layer.id+" ======\n").info
     }
 
     /**
@@ -135,7 +133,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     /** report the execution of a Mscr */
     protected def reportMscr = (job: MapReduceJob) => {
       job.report
-      ("===== END OF MSCR "+job.mscr.id+" ======").info
+      ("===== END OF MSCR "+job.mscr.id+" ======\n").info
     }
   }
 

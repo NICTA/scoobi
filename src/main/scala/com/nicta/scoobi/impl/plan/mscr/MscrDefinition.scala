@@ -170,9 +170,10 @@ trait MscrsDefinition extends Layering {
     (sources ++ nonSources.filter(isParallelDo).flatMap(sourceNodes)).distinct
   }
   lazy val isSourceNode: CompNode => Boolean = attr("isSource") {
-    case pd: ProcessNode => nodeHasBeenFilled(pd)
-    case other           => true
+    case node if node.sinks.nonEmpty => nodeHasBeenFilled(node)
+    case _                           => true
   }
+
   lazy val layerSinks: Layer[T] => Seq[Sink] =
     attr("layer sinks") { case layer => mscrs(layer).flatMap(_.sinks).distinct }
 
