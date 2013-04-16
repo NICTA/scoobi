@@ -91,9 +91,16 @@ case class InMemoryMode() extends ExecutionMode {
       result
     }
 
+  protected def sinksToSave(node: CompNode): Seq[Sink] = {
+    node match {
+      case Materialise1(in) if node.sinks.isEmpty => in.sinks
+      case _                                      => node.sinks
+    }
+  }
+
   /** @return true if the result must be returned to the client user of this evaluation mode */
   private def isExpectedResult = (node: CompNode) =>
-    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false)
+    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false) || node.sinks.exists(_.isCheckpoint)
 
   private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
     loadSource(load.source, load.wf).debug(_ => "computeLoad")

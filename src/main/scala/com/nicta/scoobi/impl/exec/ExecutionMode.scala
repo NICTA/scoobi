@@ -65,7 +65,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
    *         In HadoopMode, bridges are already saved as part of the map reduce job
    *         In InMemoryMode all sinks need to be saved
    */
-  protected def sinksToSave(node: CompNode): Seq[Sink] = node.sinks
+  protected def sinksToSave(node: CompNode): Seq[Sink]
 
   protected def saveSinks(values: Seq[Any], node: CompNode)(implicit sc: ScoobiConfiguration) {
     val sinks = sinksToSave(node)

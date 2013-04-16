@@ -139,7 +139,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  override protected def sinksToSave(node: CompNode): Seq[Sink] =
+  protected def sinksToSave(node: CompNode): Seq[Sink] =
     node.sinks.filter { case b: Bridge => false; case _ => true }
 
   /** @return the content of a Bridge as an Iterable */
