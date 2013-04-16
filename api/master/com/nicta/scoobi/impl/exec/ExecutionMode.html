@@ -250,6 +250,22 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.impl.exec.ExecutionMode#sinksToSave" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="sinksToSave(node:com.nicta.scoobi.core.CompNode):Seq[com.nicta.scoobi.core.Sink]"></a>
+      <a id="sinksToSave(CompNode):Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sinksToSave</span><span class="params">(<span name="node">node: <a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>)</span><span class="result">: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the list of sinks to save for the node depending on the mode:
+        In HadoopMode, bridges are already saved as part of the map reduce job
+        In InMemoryMode all sinks need to be saved
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li></ol>
             </div>
 
@@ -363,7 +379,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#allSinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#allSinks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="allSinks:com.nicta.scoobi.core.CompNode=&gt;Seq[com.nicta.scoobi.core.Sink]"></a>
       <a id="allSinks:(CompNode)⇒Seq[Sink]"></a>
       <h4 class="signature">
@@ -375,7 +391,7 @@
         <span class="name">allSinks</span><span class="result">: (<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></dd></dl></div>
+      <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../plan/comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Optimiser#allStrategies" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="allStrategies:Optimiser.this.Strategy"></a>
       <a id="allStrategies:Strategy"></a>
@@ -2482,6 +2498,19 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Rewriter</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.exec.ExecutionMode#saveSinks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="saveSinks(values:Seq[Any],node:com.nicta.scoobi.core.CompNode)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="saveSinks(Seq[Any],CompNode)(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">saveSinks</span><span class="params">(<span name="values">values: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Any">Any</span>]</span>, <span name="node">node: <a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode#showCompNode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="showCompNode:scalaz.Show[com.nicta.scoobi.core.CompNode]"></a>
       <a id="showCompNode:Show[CompNode]"></a>

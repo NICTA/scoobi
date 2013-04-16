@@ -971,15 +971,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.InputsOutputs.ListToTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ListToTextFile[A]extendsProductwithSerializable"></a>
+      <a id="ListToTextFile[A]extendsAnyRef"></a>
       <a id="ListToTextFile[A]:ListToTextFile[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="modifier">implicit </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="application/InputsOutputs$ListToTextFile.html"><span class="name">ListToTextFile</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a href="core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ListToTextFile.A">A</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="application/InputsOutputs$ListToTextFile.html"><span class="name">ListToTextFile</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
@@ -996,6 +996,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="core/WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.application.InputsOutputs.ObjectToTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ObjectToTextFile[A]extendsAnyRef"></a>
+      <a id="ObjectToTextFile[A]:ObjectToTextFile[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="application/InputsOutputs$ObjectToTextFile.html"><span class="name">ObjectToTextFile</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits.ObjectWireFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ObjectWireFormat[T]extendsWireFormat[T]"></a>
       <a id="ObjectWireFormat[T]:ObjectWireFormat[T]"></a>
@@ -3180,19 +3193,6 @@ type class instance. Partitioning and grouping use the default implementation.</
       </span>
       <span class="symbol">
         <span class="name">listToSequenceFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="list">list: <a href="core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">core.DList</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.listToSequenceFile.T">T</span>]</span>)</span><span class="result">: <a href="#ListToSequenceFile[T]extendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.ListToSequenceFile">ListToSequenceFile</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.listToSequenceFile.T">T</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs#listToTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="listToTextFile[A](list:com.nicta.scoobi.core.DList[A]):InputsOutputs.this.ListToTextFile[A]"></a>
-      <a id="listToTextFile[A](core.DList[A]):ListToTextFile[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">listToTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="list">list: <a href="core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">core.DList</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.listToTextFile.A">A</span>]</span>)</span><span class="result">: <a href="#ListToTextFile[A]extendsProductwithSerializable" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.ListToTextFile">ListToTextFile</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.listToTextFile.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></dd></dl></div>

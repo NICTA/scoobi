@@ -40,7 +40,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Materialise</span><span class="params">(<span name="in">in: <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Materialise</span><span class="params">(<span name="in">in: <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.plan.comp.Materialise#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(in:com.nicta.scoobi.core.ProcessNode,wf:com.nicta.scoobi.core.WireReaderWriter):com.nicta.scoobi.impl.plan.comp.Materialise"></a>
+      <a id="&lt;init&gt;(in:com.nicta.scoobi.core.ProcessNode,wf:com.nicta.scoobi.core.WireReaderWriter,sinks:Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Materialise"></a>
       <a id="&lt;init&gt;:Materialise"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,14 +93,30 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Materialise</span><span class="params">(<span name="in">in: <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span>
+        <span class="name">Materialise</span><span class="params">(<span name="in">in: <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span>
       </span>
       </h4>
       
     </li></ol>
             </div>
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.core.ValueNode.C" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="C=com.nicta.scoobi.core.ValueNode"></a>
+      <a id="C:C"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">C</span><span class="result"> = <a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
+    </li></ol>
+            </div>
 
         
 
@@ -203,6 +219,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.CompNode#addSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addSink(sink:com.nicta.scoobi.core.Sink):CompNode.this.C"></a>
+      <a id="addSink(Sink):C"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addSink</span><span class="params">(<span name="sink">sink: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>)</span><span class="result">: <a href="#C=com.nicta.scoobi.core.ValueNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.Materialise.C">C</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -596,6 +625,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">push a value for this environment.</p><div class="fullcomment"><div class="comment cmt"><p>push a value for this environment. This serialises the value and distribute it in the file cache</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WithEnvironment.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.WithEnvironment">WithEnvironment</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Materialise#sinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
+      <a id="sinks:Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sinks</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Materialise">Materialise</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -622,6 +664,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Materialise">Materialise</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Materialise#updateSinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="updateSinks(f:Seq[com.nicta.scoobi.core.Sink]=&gt;Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Materialise"></a>
+      <a id="updateSinks((Seq[Sink])⇒Seq[Sink]):Materialise"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateSinks</span><span class="params">(<span name="f">f: (<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]) ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Materialise">Materialise</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Materialise">Materialise</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

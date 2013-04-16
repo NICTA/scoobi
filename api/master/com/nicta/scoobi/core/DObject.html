@@ -47,7 +47,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p> A wrapper around an object that is part of the graph of a distributed computation
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.core.DObject.A">A</span>], <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.core.DObject.A">A</span>], <a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -65,7 +65,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.core.DObject"><span>DObject</span></li><li class="in" name="com.nicta.scoobi.core.Persistent"><span>Persistent</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.DObject"><span>DObject</span></li><li class="in" name="com.nicta.scoobi.core.Persistent"><span>Persistent</span></li><li class="in" name="com.nicta.scoobi.core.DataSinks"><span>DataSinks</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -100,12 +100,51 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a> → <a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DObject.T" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="T=com.nicta.scoobi.core.DObject[A]"></a>
+      <a id="T:T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">T</span><span class="result"> = <a href="" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.core.DObject.A">A</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a> → <a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
     </li></ol>
             </div>
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.nicta.scoobi.core.DObject#join" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.core.DataSinks#addSink" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="addSink(sink:com.nicta.scoobi.core.Sink):DataSinks.this.T"></a>
+      <a id="addSink(Sink):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addSink</span><span class="params">(<span name="sink">sink: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>)</span><span class="result">: <a href="#T=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.core.DObject.T">T</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DataSinks#compressWith" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):DataSinks.this.T"></a>
+      <a id="compressWith(CompressionCodec,CompressionType):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <a href="#T=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.core.DObject.T">T</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DObject#join" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="join[B](list:com.nicta.scoobi.core.DList[B])(implicitevidence$2:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DList[(A,B)]"></a>
       <a id="join[B](DList[B])(WireFormat[B]):DList[(A,B)]"></a>
       <h4 class="signature">
@@ -146,6 +185,19 @@ to every element within the provided distributed list
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.core.DataSinks#updateSinks" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="updateSinks(f:Seq[com.nicta.scoobi.core.Sink]=&gt;Seq[com.nicta.scoobi.core.Sink]):DataSinks.this.T"></a>
+      <a id="updateSinks((Seq[Sink])⇒Seq[Sink]):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateSinks</span><span class="params">(<span name="f">f: (<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]) ⇒ <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>)</span><span class="result">: <a href="#T=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.core.DObject.T">T</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DObject#zip" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="zip[B](o:com.nicta.scoobi.core.DObject[B])(implicitevidence$3:com.nicta.scoobi.core.WireFormat[B]):com.nicta.scoobi.core.DObject[(A,B)]"></a>
       <a id="zip[B](DObject[B])(WireFormat[B]):DObject[(A,B)]"></a>
@@ -258,6 +310,19 @@ to every element within the provided distributed list
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DataSinks#compress" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compress:DataSinks.this.T"></a>
+      <a id="compress:T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compress</span><span class="result">: <a href="#T=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.core.DObject.T">T</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -489,6 +554,8 @@ to every element within the provided distributed list
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.core.Persistent">
               <h3>Inherited from <a href="Persistent.html" class="extype" name="com.nicta.scoobi.core.Persistent">Persistent</a>[<span class="extype" name="com.nicta.scoobi.core.DObject.A">A</span>]</h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.DataSinks">
+              <h3>Inherited from <a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
