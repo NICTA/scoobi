@@ -62,13 +62,14 @@ object build extends Build {
   lazy val dependenciesSettings: Seq[Settings] = Seq(
     libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
       val hadoop =
-        if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1")
+        if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1",
+                                          "org.apache.avro"   %  "avro-mapred" % "1.7.4")
         else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1",
-          "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1")
+                                          "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1",
+                                          "org.apache.avro"   %  "avro-mapred" % "1.7.4" classifier "hadoop2")
 
       Seq(
       "javassist"                %  "javassist"                 % "3.12.1.GA",
-      "org.apache.avro"          %  "avro-mapred"               % "1.7.4" classifier "hadoop2",
       "org.apache.avro"          %  "avro"                      % "1.7.4",
       "com.thoughtworks.xstream" %  "xstream"                   % "1.4.4"            intransitive(),
       "com.googlecode.kiama"     %% "kiama"                     % "1.5.0-SNAPSHOT",
