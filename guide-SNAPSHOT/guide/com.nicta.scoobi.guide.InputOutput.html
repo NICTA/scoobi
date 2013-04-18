@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html">InputOutput</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="744590088">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
+                       <div class="col1"><div id="central"><title>Input and Output</title><a name="Input+and+Output"><h2 specId="1049742394">Input and Output</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Text+files"><h3>Text files</h3></a><p>Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which <code class="prettyprint">DList</code>s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextInput$">input</a> and <a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.text.TextOutput$">output</a>.</p><a name="Text+file+input"><h4>Text file input</h4></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest, which we have seen already, is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files:</p>
 <pre><code class="prettyprint">// load a single text file
 val lines: DList[String] = fromTextFile(&quot;hdfs://path/to/file&quot;)
 
@@ -481,8 +481,8 @@ trait OutputConverter[K, V, B] {
   <li><a href="http://nicta.github.com/scoobi/api/master/index.html#com.nicta.scoobi.io.avro.AvroOutput$">AvroOutput</a></li>
 </ul></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1177797034"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="174240671"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -493,7 +493,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -507,7 +507,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -521,7 +521,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+files">Text files</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+input">Text file input</a>
             
@@ -553,7 +553,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -565,7 +565,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -573,7 +573,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Persisting">Persisting</a>
@@ -587,7 +587,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -603,7 +603,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -627,7 +627,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -657,7 +657,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -673,7 +673,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1218979546"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="988943951"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -681,7 +681,7 @@ trait OutputConverter[K, V, B] {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="200025170"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="389641827"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -694,7 +694,7 @@ trait OutputConverter[K, V, B] {
             
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1218979546','744590088'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['988943951','1049742394'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>

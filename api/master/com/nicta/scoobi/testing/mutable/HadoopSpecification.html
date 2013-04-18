@@ -5405,6 +5405,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FormattingFragments</dd></dl></div>
+    </li><li name="org.specs2.specification.SpecificationStringContext#fragmentsFragmentIsSpecPart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fragmentsFragmentIsSpecPart(fs:&lt;?&gt;):org.specs2.specification.SpecPart"></a>
+      <a id="fragmentsFragmentIsSpecPart(FragmentsFragment):SpecPart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fragmentsFragmentIsSpecPart</span><span class="params">(<span name="fs">fs: <span class="extype" name="org.specs2.specification.FragmentsFragment">FragmentsFragment</span></span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.SpecPart">SpecPart</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SpecificationStringContext</dd></dl></div>
     </li><li name="org.specs2.specification.FragmentsBuilder#fragmentsFragmentToFragments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fragmentsFragmentToFragments(fs:&lt;?&gt;):org.specs2.specification.Fragments"></a>
       <a id="fragmentsFragmentToFragments(FragmentsFragment):Fragments"></a>
@@ -7214,6 +7227,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Expectations</dd></dl></div>
+    </li><li name="org.specs2.specification.SpecificationStringContext#markdownLinkIsSpecPart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="markdownLinkIsSpecPart(link:&lt;?&gt;):org.specs2.specification.SpecPart"></a>
+      <a id="markdownLinkIsSpecPart(MarkdownLink):SpecPart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">markdownLinkIsSpecPart</span><span class="params">(<span name="link">link: <span class="extype" name="org.specs2.html.MarkdownLink">MarkdownLink</span></span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.SpecPart">SpecPart</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SpecificationStringContext</dd></dl></div>
     </li><li name="org.specs2.mutable.AutoExamples#matchExample" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="matchExample(expression:=&gt;org.specs2.matcher.MatchResult[_]):org.specs2.specification.Example"></a>
       <a id="matchExample(⇒MatchResult[_]):Example"></a>
@@ -8037,15 +8063,15 @@
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the result of the local run
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../application/LocalHadoop.html" class="extype" name="com.nicta.scoobi.application.LocalHadoop">LocalHadoop</a></dd></dl></div>
     </li><li name="org.specs2.specification.SpecificationStringContext#s2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="s2(texts:&lt;?&gt;,variables:&lt;?&gt;,expressions:&lt;?&gt;):org.specs2.specification.Fragments"></a>
-      <a id="s2(Seq[String],Seq[SpecPart],Seq[String]):Fragments"></a>
+      <a id="s2(content:&lt;?&gt;,Yrangepos:&lt;?&gt;,texts:&lt;?&gt;,variables:&lt;?&gt;,rangeExpressions:&lt;?&gt;):org.specs2.specification.Fragments"></a>
+      <a id="s2(String,Boolean,Seq[String],Seq[SpecPart],Seq[String]):Fragments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">s2</span><span class="params">(<span name="texts">texts: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="variables">variables: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.specs2.specification.SpecPart">SpecPart</span>]</span>, <span name="expressions">expressions: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.Fragments">Fragments</span></span>
+        <span class="name">s2</span><span class="params">(<span name="content">content: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="Yrangepos">Yrangepos: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="texts">texts: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="variables">variables: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.specs2.specification.SpecPart">SpecPart</span>]</span>, <span name="rangeExpressions">rangeExpressions: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.Fragments">Fragments</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SpecificationStringContext</dd></dl></div>
@@ -8560,6 +8586,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FragmentsBuilder</dd></dl></div>
+    </li><li name="org.specs2.specification.SpecificationStringContext#specStructureIsSpecPart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="specStructureIsSpecPart(s:&lt;?&gt;):org.specs2.specification.SpecPart"></a>
+      <a id="specStructureIsSpecPart(SpecificationStructure):SpecPart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">specStructureIsSpecPart</span><span class="params">(<span name="s">s: <span class="extype" name="org.specs2.specification.SpecificationStructure">SpecificationStructure</span></span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.SpecPart">SpecPart</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SpecificationStringContext</dd></dl></div>
     </li><li name="org.specs2.specification.FragmentsBuilder#specificationStructureToFragments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="specificationStructureToFragments(s:&lt;?&gt;):FragmentsBuilder.this.AsFragments"></a>
       <a id="specificationStructureToFragments(SpecificationStructure):AsFragments"></a>
