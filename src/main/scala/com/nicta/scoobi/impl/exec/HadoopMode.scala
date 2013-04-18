@@ -140,7 +140,10 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   }
 
   protected def sinksToSave(node: CompNode): Seq[Sink] =
-    node.sinks.filter { case b: Bridge => false; case _ => true }
+    node match {
+      case n: ValueNode => node.sinks
+      case _            => Seq[Sink]()
+    }
 
   /** @return the content of a Bridge as an Iterable */
   private def read(bs: Bridge): Any = {

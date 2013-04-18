@@ -81,7 +81,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
       job.setOutputFormatClass(sink.outputFormat)
       job.setOutputKeyClass(sink.outputKeyClass)
       job.setOutputValueClass(sink.outputValueClass)
-      job.getConfiguration.set("mapreduce.output.basename", "ch0out0")  // Attempting to be consistent
+      job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
