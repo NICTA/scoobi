@@ -217,6 +217,7 @@ object build extends Build {
       publishForCDH3),
     commands += releaseSnapshotCommand
   ) ++
+  Seq(publishUserGuideTask <<= pushSite.dependsOn(makeSite).dependsOn(generateUserGuideTask)) ++
   documentationSettings
 
   lazy val releaseSnapshotProcess = SettingKey[Seq[ReleaseStep]]("release-snapshot-process")
@@ -270,6 +271,8 @@ object build extends Build {
 
   lazy val generateIndexTask = TaskKey[Tests.Output]("generate-index", "generate the index page, the User Guide and check the User Guide urls")
   lazy val generateIndex     = executeStepTask(generateIndexTask, "Generating the index, the User Guide and checking the urls of the User Guide", Test)
+
+  lazy val publishUserGuideTask = TaskKey[Unit]("publish-user-guide", "publish the user guide")
 
   lazy val publishSite = ReleaseStep { st: State =>
     val st2 = executeStepTask(makeSite, "Making the site")(st)

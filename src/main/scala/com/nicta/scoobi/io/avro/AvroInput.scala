@@ -48,7 +48,7 @@ object AvroInput extends AvroParsingImplicits {
   /** Create a new DList from the contents of one or more Avro files. The type of the DList must conform to
     * the schema types allowed by Avro, as constrained by the 'AvroSchema' type class. In the case of a directory
     * being specified, the input forms all the files in that directory. */
-  def fromAvroFile[A : WireFormat : AvroSchema](paths: String*): DList[A] = fromAvroFile(List(paths: _*))
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: String*): DList[A] = fromAvroFile(paths)
 
 
   /** Create a new DList from the contents of a list of one or more Avro files. The type of the

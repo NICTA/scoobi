@@ -298,8 +298,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
     /* Group all elements together (so they go to the same reducer task) and then
      * combine them. */
-    val x: DObject[Iterable[A]] = imc.groupBy(_ => 0).combine(op).map(_._2).materialise
-    x map (_.headOption)
+    imc.groupBy(_ => 0).combine(op).map(_._2).headOption
   }
 
   /**Multiply up the elements of this distribute list. */
@@ -334,6 +333,12 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Find the smallest element in the distributed list. */
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
     reduce(Reduction.minimumS(cmp on f))
+
+  /** @return the head of the DList as a DObject. This is an unsafe operation */
+  def head: DObject[A] = materialise.map(_.head)
+
+  /** @return the head of the DList as a DObject containing an Option */
+  def headOption: DObject[Option[A]] = materialise.map(_.headOption)
 
   private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] =
     parallelDo(BasicDoFn(proc))

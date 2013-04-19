@@ -18,6 +18,10 @@ package guide
 
 import Scoobi._
 import org.apache.hadoop.io.{Text, IntWritable, Writable}
+import util.Random
+import org.apache.avro.Schema
+import core.{Source, DataSource}
+import org.apache.hadoop.mapreduce.{InputFormat, MapContext, Job}
 
 class InputOutput extends ScoobiPage { def is = "Input and Output".title ^ s2"""
 
@@ -58,7 +62,7 @@ Given that these types of field extractions from delimited text files are such a
       case AnInt(id) :: first_name :: second_name :: age :: _ => (id, second_name)
     }
 
-As this example illustrates, the call to `fromDelimitedTextFile` takes a number of arguements. The first argument specifies the path and the second is the delimiter, in this case a comma. Following is a second *parameter list* that is used to specify how to extract fields once they are separated out. This is specified by supplying a *partial function* that takes a list of separated `String` fields as its input and returns a value whose type will set the type of the resulting `DList` - i.e. a `PartialFunction[List[String], A]` will create a `DList[A]` (where `A` is `(Int, String)` above). In this example, we use Scala's [pattern matching](http://www.scala-lang.org/node/120) feature to *pull out* the four fields and return the first and third.
+As this example illustrates, the call to `fromDelimitedTextFile` takes a number of arguments. The first argument specifies the path and the second is the delimiter, in this case a comma. Following is a second *parameter list* that is used to specify how to extract fields once they are separated out. This is specified by supplying a *partial function* that takes a list of separated `String` fields as its input and returns a value whose type will set the type of the resulting `DList` - i.e. a `PartialFunction[List[String], A]` will create a `DList[A]` (where `A` is `(Int, String)` above). In this example, we use Scala's [pattern matching](http://www.scala-lang.org/node/120) feature to *pull out* the four fields and return the first and third.
 
 In addition Scoobi also provides a number of [extractors](http://www.scala-lang.org/node/112) for automatically checking and converting of fields to an expected type. In the above example, the `AnInt` extractor is used to specify that the `id` field must be an integer in order for the `case` statement to match. In the case of a match, it also has the effect of typing `id` as an `Int`. Field extractors are provided for `Int`, `Long`, `Double` and `Float` (called `AnInt`, `ALong`, `ADouble`, `AFloat`).
 
@@ -125,11 +129,6 @@ formatted.toTextFile("hdfs://path/to/output").persist
 }}
 
 The second option is for cases when the desired output is a delimited text file, for example, a CSV or TSV. In this case, if the `DList` is parameterised on a `Tuple`, *case class*, or any `Product` type, `toDelimitedTextFile` can be used: ${snippet{
-  // 8<--
-  case class Person(name: String, age: Int)
-  implicit def wf: WireFormat[Person] = mkCaseWireFormat(Person.apply _, Person.unapply _)
-  // 8<--
-
 /** output text file of the form:
  *    foo, 6
  *    bob, 23
@@ -327,106 +326,120 @@ would map to the Avro schema:
 
 #### Avro file input
 
-The method [`fromAvroFile`]($API_PAGE#com.nicta.scoobi.io.avro.AvroInput$$) is used to load an Avro file as a `DList`:
+The method [`${termName(fromAvroFile[I](""))}`]($API_PAGE#com.nicta.scoobi.io.avro.AvroInput$$) is used to load an Avro file as a `DList`: ${snippet{
 
-    val xs = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])]("hdfs://path/to/file")
+val xs = fromAvroFile[(Int, Seq[(Float, String)], Map[String, Int])]("hdfs://path/to/file")
 
-As with `fromSequenceFile`, the compiler needs to know the type of avroFile you are loading. If the file doesn't match this schema, a runtime error will occur. `fromAvroFile` has a default argument `checkSchemas` that tries to fail-fast by verifying the schema matches. 
+}}
 
-Note that for compilation to succeed, there must be an `AvroSchema` instance for the particular type you are using. For example, the following will fail unless an `AvroSchema` type class instance for `Person` is implemented and in scope:
+As with `${termName(fromSequenceFile[I, I](""))}`, the compiler needs to know the type of avroFile you are loading. If the file doesn't match this schema, a runtime error will occur. `${termName(fromAvroFile[I](""))}` has a default argument `checkSchemas` that tries to fail-fast by verifying the schema matches.
 
-    case class Person(name: String, age: Int)
+Note that for compilation to succeed, there must be an `AvroSchema` instance for the particular type you are using. For example, the following will fail unless an `AvroSchema` type class instance for `Person` is implemented and in scope: ${snippet{
 
-    // will not compile, unless you provide an AvroSchema
-    val people = fromAvroFile[Person]("hdfs://path/to/file")
+// assuming case class Person(name: String, age: Int)
+// will not compile, unless you provide an AvroSchema
+val people = fromAvroFile[Person]("hdfs://path/to/file")
+
+}}
 
 However, there is is a scala-avro plugin to make this pretty painless (See: examples/avro for an example)
 
+And naturally, `fromAvroFile` supports loading from multiple files: ${snippet{
 
-And naturally, `fromAvroFile` supports loading from multiple files:
+// load multiple Avro files
+val xs1: DList[(Int, String, Float)] = fromAvroFile("hdfs://path/to/file1", "hdfs://path/to/file2")
 
-    // load multiple Avro files
-    val xs: DList[(Int, String, Float)] = fromAvroFile("hdfs://path/to/file1", "hdfs://path/to/file2")
+// load from a list of Avro file
+val files = Seq("hdfs://path/to/file1", "hdfs://path/to/file2")
+val xs2: DList[(Int, String, Float)] = fromAvroFile(files)
 
-    // load from a list of Avro file
-    val files = List("hdfs://path/to/file1", "hdfs://path/to/file2")
-    val xs: DList[(Int, String, Float)] = fromAvroFile(files)
+}}
 
 #### Avro file output
 
-To persist a `DList` to an Avro file, Scoobi provides the method [`toAvroFile`]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented:
+To persist a `DList` to an Avro file, Scoobi provides the method [`${termName(toAvroFile(???, ""))}`]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented: ${snippet{
 
-    val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = ...
-    persist(xs.toAvroFile("hdfs://path/to/file")
+val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = DList(???)
+xs.toAvroFile("hdfs://path/to/file").persist
+
+}}
 
 #### With a predefined avro schema
 
-Any type that extends org.apache.avro.generic.GenericContainer scoobi knows how to generate a WireFormat for. This means that scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given avro record/protocol. See `examples/avro` for an example of this plugin in action
+Any type that extends `org.apache.avro.generic.GenericContainer` Scoobi knows how to generate a WireFormat for. This means that Scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given Avro record/protocol. See `examples/avro` for an example of this plugin in action
 
 ### Without files
 
 Because Scoobi is a library for constructing Hadoop applications, *data* input and ouput is typically synonymous with *file* input and output. Whilst Scoobi provides numerous mechanism for creating new `DList` objects from files (and multiple file types), it also has some simple ways for constructing a `DList` without files.
 
-The simplest way of creating a new `DList` object is to use the `DList` companion object's `apply` method. This behaves just like the Scala `List` version:
+The simplest way of creating a new `DList` object is to use the `DList` companion object's `apply` method. This behaves just like the Scala `List` version: ${snippet{
 
-    // create a DList[Int] object
-    val ints = DList(1, 2, 3, 4)
+// create a DList[Int] object
+val ints = DList(1, 2, 3, 4)
 
-    // create a DList[String] object
-    val strings = DList("bob", "mary", "jane", "fred")
+// create a DList[String] object
+val strings = DList("bob", "mary", "jane", "fred")
 
-    // create a DList[(String, Int)] object
-    val ages = DList(("bob", 12), ("mary", 33), ("jane", 61), ("fred", 24))
+// create a DList[(String, Int)] object
+val ages = DList(("bob", 12), ("mary", 33), ("jane", 61), ("fred", 24))
 
-As a convenience, the `apply` method is also overloaded to handle the special case of integer ranges. This allows a `DList` of `Int` values to be constructed than can span a range:
+}}
 
-    // all integers from 0 to 1023
-    val manyInts: DList[Int] = DList(0 to 1023)
+As a convenience, the `apply` method is also overloaded to handle the special case of integer ranges. This allows a `DList` of `Int` values to be constructed than can span a range: ${snippet{
 
-Whilst using `apply` is simple, this is typically not all that useful in practice. The purpose of a `DList` is to abstract large volumes of data. Using the `apply` method in this way, only memory-bound data sizes can be handled. As an alternative, the `tabulate` method can be used to create much larger `DList` objects where an element *value* can be specified by a function applied to an element *index*. This is particularly useful for creating randomized `DList` objects:
+// all integers from 0 to 1023
+val manyInts: DList[Int] = DList(0 to 1023)
+}}
 
-    // random integer values
-    val randomInts = DList.tabulate(1000 * 1000)(_ => Random.nextInt())
+Whilst using `apply` is simple, this is typically not all that useful in practice. The purpose of a `DList` is to abstract large volumes of data. Using the `apply` method in this way, only memory-bound data sizes can be handled. As an alternative, the `tabulate` method can be used to create much larger `DList` objects where an element *value* can be specified by a function applied to an element *index*. This is particularly useful for creating randomized `DList` objects: ${snippet{
 
-    // words pairs taken randomly from a bag of words
-    val words: Set[String] = ...
-    def hash(i: Int) = (i * 314 + 56) % words.size
-    val randomWords: DList[(String, String)] = DList.tabulate(1000 * 1000)(ix => (hash(ix), hash(ix + 1)))
+// random integer values
+val randomInts = DList.tabulate(1000 * 1000)(_ => Random.nextInt)
 
-Finally, for pure convenience, with Scoobi all Scala `Traversable` collections can be converted to `DList` objects via *pimping* and `toDList`:
+// words pairs taken randomly from a bag of words
+val words: Seq[String] = Seq(???)
+def hash(i: Int) = (i * 314 + 56) % words.size
+val randomWords: DList[(String, String)] = DList.tabulate(1000 * 1000)(ix => (words(hash(ix)), words(hash(ix + 1))))
 
-    val wordList = List("hello", "big", "data", "world")
-    val wordDList: DList[String] = wordList.toDList
+}}
 
-    val numbersMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
-    val numbersDList: DList[(String, Int)] = numbersMap.toDList
+Finally, for pure convenience, with Scoobi all Scala `Traversable` collections can be converted to `DList` objects `toDList` method: ${snippet{
+
+val wordList = List("hello", "big", "data", "world")
+val wordDList: DList[String] = wordList.toDList
+
+val numbersMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
+val numbersDList: DList[(String, Int)] = numbersMap.toDList
+
+}}
 
 ### Custom sources and sinks
 
-Scoobi is not locked to loading and persisting the data sources and sinks that have been described. Instead,
-the Scoobi API is designed in a way to make it relatively simple to implement support for custom data sources
-and sinks.
+Scoobi is not locked to loading and persisting the data sources and sinks that have been described. Instead, the Scoobi API is designed in a way to make it relatively simple to implement support for custom data sources and sinks.
 
 #### Custom input sources
 
-We have seen that Scoobi provides many *factory* methods for creaing `DList` objects, for example, `fromTextFile` and `fromAvroFile`. At their heart, all of these methods are built upon a single primitive mechanism: `DList` companion object's `fromSource` factory method:
+We have seen that Scoobi provides many *factory* methods for creaing `DList` objects, for example, `fromTextFile` and `fromAvroFile`. At their heart, all of these methods are built upon a single primitive mechanism: `DList` companion object's `fromSource` factory method: ${snippet{
 
-    def fromSource[K, V, A : WireFormat](source: DataSource[K, V, A]): DList[A]
+def fromSource[K, V, A : WireFormat](source: DataSource[K, V, A]): DList[A] = ???
 
-`fromSource` takes as input an object implementing the `DataSource` trait. Implementing the `DataSource` trait is all that is required to create a `DList` from a custom data source. If we look at the `DataSource` trait, we can see that it is tightly coupled with the Hadoop `InputFormat` interface:
+}}
 
-    trait DataSource[K, V, A] extends Source {
-      def inputFormat: Class[_ <: InputFormat[K, V]]
-      def inputConverter: InputConverter[K, V, A]
-      def inputCheck()
-      def inputConfigure(job: Job): Unit
-      def inputSize(): Long
-    }
+`fromSource` takes as input an object implementing the `DataSource` trait. Implementing the `DataSource` trait is all that is required to create a `DList` from a custom data source. If we look at the `DataSource` trait, we can see that it is tightly coupled with the Hadoop `InputFormat` interface: ${snippet{
 
-    trait InputConverter[K, V, A] {
+  trait DataSource[K, V, A] extends Source {
+    def inputFormat: Class[_ <: InputFormat[K, V]]
+    def inputConverter: InputConverter[K, V, A]
+    def inputCheck(implicit sc: ScoobiConfiguration)
+    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
+    def inputSize(implicit sc: ScoobiConfiguration): Long
+  }
+
+  trait InputConverter[K, V, A] {
       type InputContext = MapContext[K, V, _, _]
       def fromKeyValue(context: InputContext, key: K, value: V): A
     }
+}}
 
 The core role of a `DataSource` is to provide a mechanism for taking the key-value records produced by an `InputFormat` and converting them into the values contained within a `DList`. Following the type parameters is a good way to understand this:
 
@@ -497,5 +510,15 @@ The following Scala objects provided great working examples of `DataSink` implem
   trait TimestampWritable extends Writable
   trait TransactionWritable extends Writable
   type IW = IntWritable
+  type I = Int
+
+  case class Person(name: String, age: Int)
+  implicit def wf: WireFormat[Person] = mkCaseWireFormat(Person.apply _, Person.unapply _)
+  implicit def avroSchemaForPerson: AvroSchema[Person] = new AvroSchema[Person] {
+    type AvroType = Person
+    def schema: Schema = ???
+    def fromAvro(x: AvroType) = x
+    def toAvro(x: Person): AvroType = x
+  }
 
 }

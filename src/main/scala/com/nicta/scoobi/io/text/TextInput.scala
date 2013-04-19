@@ -35,7 +35,7 @@ import impl.io.Helper
 import WireFormat._
 
 /** Smart functions for materialising distributed lists by loading text files. */
-object TextInput {
+trait TextInput {
   lazy val logger = LogFactory.getLog("scoobi.TextInput")
 
   /** Create a distributed list from one or more files or directories (in the case of a directory,
@@ -146,3 +146,4 @@ object TextInput {
     lazy val inputConverter = converter
   }
 }
+object TextInput extends TextInput

@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import core.{ScoobiConfiguration, WireFormat}
+import core.{ScoobiConfiguration, WireFormat, DList, DObject}
 import WireFormat._
 import impl.collection._
 import Seqs._
@@ -35,10 +35,14 @@ trait InputsOutputs {
   val AFloat = TextInput.AFloat
 
   def fromTextFile(paths: String*) = TextInput.fromTextFile(paths: _*)
+  def objectFromTextFile(paths: String*) = fromTextFile(paths:_*).head
 
-  def fromDelimitedTextFile[A : WireFormat]
-  (path: String, sep: String = "\t")
-  (extractFn: PartialFunction[Seq[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
+  def fromDelimitedTextFile[A : WireFormat](path: String, sep: String = "\t")
+                                           (extractFn: PartialFunction[Seq[String], A]) = TextInput.fromDelimitedTextFile(path, sep)(extractFn)
+
+  def objectFromDelimitedTextFile[A : WireFormat](path: String, sep: String = "\t")
+                                                 (extractFn: PartialFunction[Seq[String], A]) =
+    fromDelimitedTextFile[A](path, sep)(extractFn).head
 
   implicit class ListToTextFile[A](val list: core.DList[A]) {
     def toTextFile(path: String, overwrite: Boolean = false) = list.addSink(TextOutput.textFileSink(path, overwrite))
@@ -66,25 +70,25 @@ trait InputsOutputs {
 
   import org.apache.hadoop.io.Writable
   def keyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): core.DList[K] = SequenceInput.keyFromSequenceFile(paths: _*)
-  def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): core.DObject[K] = keyFromSequenceFile[K](paths:_*).materialise.map(_.head)
+  def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): core.DObject[K] = keyFromSequenceFile[K](paths:_*).head
 
   def keyFromSequenceFile[K : WireFormat : SeqSchema](paths: Seq[String], checkKeyType: Boolean = true): core.DList[K] = SequenceInput.keyFromSequenceFile(paths, checkKeyType)
-  def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: Seq[String], checkKeyType: Boolean = true): core.DObject[K] = keyFromSequenceFile[K](paths, checkKeyType).materialise.map(_.head)
+  def objectKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: Seq[String], checkKeyType: Boolean = true): core.DObject[K] = keyFromSequenceFile[K](paths, checkKeyType).head
 
   def valueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DList[V] = SequenceInput.valueFromSequenceFile(paths: _*)
-  def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DObject[V] = valueFromSequenceFile[V](paths:_*).materialise.map(_.head)
+  def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): core.DObject[V] = valueFromSequenceFile[V](paths:_*).head
 
   def valueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): core.DList[V] = SequenceInput.valueFromSequenceFile(paths, checkValueType)
-  def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): core.DObject[V] = keyFromSequenceFile[V](paths, checkValueType).materialise.map(_.head)
+  def objectValueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): core.DObject[V] = keyFromSequenceFile[V](paths, checkValueType).head
 
   def fromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DList[(K, V)] = SequenceInput.fromSequenceFile[K, V](paths)
-  def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DObject[(K, V)] = fromSequenceFile[K, V](paths:_*).materialise.map(_.head)
+  def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: String*): core.DObject[(K, V)] = fromSequenceFile[K, V](paths:_*).head
 
   def fromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: Seq[String], checkKeyValueTypes: Boolean = true): core.DList[(K, V)] =
     SequenceInput.fromSequenceFile[K, V](paths, checkKeyValueTypes)
 
   def objectFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: Seq[String], checkKeyValueTypes: Boolean = true): core.DObject[(K, V)] =
-    fromSequenceFile[K, V](paths, checkKeyValueTypes).materialise.map(_.head)
+    fromSequenceFile[K, V](paths, checkKeyValueTypes).head
 
   /** @deprecated(message="use list.keyToSequenceFile(...) instead", since="0.7.0") */
   def keyToSequenceFile[K : SeqSchema](dl: core.DList[K], path: String, overwrite: Boolean = false) = SequenceOutput.keyToSequenceFile(dl, path, overwrite)
@@ -136,10 +140,10 @@ trait InputsOutputs {
   type AvroFixed[A] = com.nicta.scoobi.io.avro.AvroFixed[A]
 
   def fromAvroFile[A : WireFormat : AvroSchema](paths: String*) = AvroInput.fromAvroFile(paths: _*)(wireFormat[A], implicitly[AvroSchema[A]])
-  def objectFromAvroFile[A : WireFormat : AvroSchema](paths: String*) = fromAvroFile[A](paths: _*).materialise.map(_.head)
+  def objectFromAvroFile[A : WireFormat : AvroSchema](paths: String*) = fromAvroFile[A](paths: _*).head
 
   def fromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = AvroInput.fromAvroFile(paths, checkSchemas)(wireFormat[A], implicitly[AvroSchema[A]])
-  def objectFromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = fromAvroFile[A](paths, checkSchemas).materialise.map(_.head)
+  def objectFromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = fromAvroFile[A](paths, checkSchemas).head
 
   implicit class ListToAvroFile[A](val list: core.DList[A]) {
     def toAvroFile(path: String, overwrite: Boolean = false)(implicit as: AvroSchema[A]) = list.addSink(AvroOutput.avroSink(path, overwrite))
@@ -155,5 +159,6 @@ trait InputsOutputs {
   implicit class SetCheckpoint[T](val list: core.DList[T]) {
     def checkpoint(implicit sc: ScoobiConfiguration) = list.updateSinks(_.updateLast(_.checkpoint))
   }
+
 }
 object InputsOutputs extends InputsOutputs
