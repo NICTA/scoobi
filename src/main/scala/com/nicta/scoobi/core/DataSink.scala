@@ -19,13 +19,9 @@ package core
 import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.io.compress.{GzipCodec, CompressionCodec}
 import org.apache.hadoop.io.SequenceFile.CompressionType
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.Configuration
 import Data._
-import io.text.TextInput
-import impl.ScoobiConfigurationImpl
-import impl.rtt.ScoobiWritable
 
 /**
  * An output store from a MapReduce job
@@ -130,6 +126,7 @@ trait Sink extends Checkpoint { outer =>
 
   /** implement this function if this sink can be turned into a Source */
   def toSource: Option[Source] = None
+
 }
 
 object Data {
@@ -165,7 +162,6 @@ object Bridge {
   def create(source: Source, sink: Sink, bridgeId: String): Bridge = new Bridge {
     def bridgeStoreId = bridgeId
     override def id = sink.id
-    override def toString = "Bridge "+bridgeId+sink.outputPath(new ScoobiConfigurationImpl).map(path => " ("+path+")").getOrElse("")
 
     def inputFormat = source.inputFormat
     def inputCheck(implicit sc: ScoobiConfiguration) { source.inputCheck }

@@ -32,6 +32,8 @@ import impl.io.Helper
 import avro.AvroInput
 import sequence.SequenceInput.SeqSource
 import org.apache.hadoop.conf.Configuration
+import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
+import core.ScoobiConfiguration
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 object SequenceOutput {
@@ -39,7 +41,7 @@ object SequenceOutput {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "key" component in a Sequence File. */
-  def convertKeyToSequenceFile[K](dl: DList[K], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) =
+  def keyToSequenceFile[K](dl: DList[K], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) =
     dl.addSink(keySchemaSequenceFile(path, overwrite))
 
   def keySchemaSequenceFile[K](path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) = {
@@ -55,7 +57,7 @@ object SequenceOutput {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "value" component in a Sequence File. */
-  def convertValueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) =
+  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) =
     dl.addSink(valueSchemaSequenceFile(path, overwrite))
 
   def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) = {
@@ -68,7 +70,7 @@ object SequenceOutput {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as "key-values" in a Sequence File. */
-  def convertToSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V]) =
+  def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V]) =
     dl.addSink(schemaSequenceSink(path, overwrite)(convK, convV))
 
   def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V])= {
@@ -81,10 +83,6 @@ object SequenceOutput {
     }
     new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite)
   }
-
-  /** Specify a distributed list to be persistent by storing it to disk as a Sequence File. */
-  def toSequenceFile[K <: Writable : Manifest, V <: Writable : Manifest](dl: DList[(K, V)], path: String, overwrite: Boolean = false) =
-    dl.addSink(sequenceSink[K, V](path, overwrite))
 
   def sequenceSink[K <: Writable : Manifest, V <: Writable : Manifest](path: String, overwrite: Boolean = false) = {
     val keyClass = implicitly[Manifest[K]].runtimeClass.asInstanceOf[Class[K]]
@@ -136,5 +134,6 @@ object SequenceOutput {
     lazy val outputConverter = converter
 
     override def toSource: Option[Source] = Some(SequenceInput.source(Seq(path)))
+    override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
   }
 }

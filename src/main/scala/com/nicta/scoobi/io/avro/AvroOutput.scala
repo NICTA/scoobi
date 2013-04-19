@@ -29,6 +29,7 @@ import org.apache.avro.mapreduce.AvroKeyOutputFormat
 import core._
 import impl.io.Helper
 import org.apache.hadoop.conf.Configuration
+import impl.ScoobiConfigurationImpl
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -77,6 +78,7 @@ object AvroOutput {
       lazy val outputConverter = converter
 
       override def toSource: Option[Source] = Some(AvroInput.source(Seq(path), checkSchemas = false)(implicitly[AvroSchema[B]]))
+      override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
     }
 
   }

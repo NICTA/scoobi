@@ -111,6 +111,8 @@ object WireFormat extends WireFormatImplicits {
   def grouping[A](implicit gp: Grouping[A]): Grouping[A] = gp
   def wireFormat[A](implicit wf: WireFormat[A]): WireFormat[A] = wf
 
+  def isTraversable[A : WireFormat] = implicitly[WireFormat[A]]
+  def isTraversable(wf: WireReaderWriter) = wf.isInstanceOf[WireFormat.TraversableWireFormat[_,_]]
 }
 
 /** Implicit definitions of WireFormat instances for common types. */

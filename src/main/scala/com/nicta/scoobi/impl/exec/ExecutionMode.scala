@@ -69,7 +69,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
 
   protected def saveSinks(values: Seq[Any], node: CompNode)(implicit sc: ScoobiConfiguration) {
     val sinks = sinksToSave(node)
-    val valuesToSave = if (node.wf.isInstanceOf[WireFormat.TraversableWireFormat[_,_]]) values.head.asInstanceOf[Traversable[Any]] else values
+    val valuesToSave = if (WireFormat.isTraversable(node.wf)) values.head.asInstanceOf[Traversable[Any]] else values
 
     sinks.foreach(_.outputSetup(sc.configuration))
     sinks.foreach { sink =>

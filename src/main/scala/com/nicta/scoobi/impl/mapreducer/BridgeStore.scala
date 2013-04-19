@@ -99,7 +99,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
     def iterator = new BridgeStoreIterator[A](value, path, sc)
   }
 
-
   override def toString = typeName+"("+id+")"
 
   override def equals(other: Any) = {

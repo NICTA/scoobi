@@ -33,7 +33,15 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     val tmpSeqFile = createTempSeqFile(DList(("a", "b"), ("c", "d"), ("e", "f")))
 
     // load test data from the sequence file
-    fromSequenceFile[Text, Text](tmpSeqFile).run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"), ("e", "f"))
+    fromSequenceFile[String, String](tmpSeqFile).run.sorted must_== Vector(("a", "b"), ("c", "d"), ("e", "f"))
+  }
+
+  "Reading from a text sequence file - as a Writable" >> { implicit sc: SC =>
+  // store test data in a sequence file
+    val tmpSeqFile = createTempSeqFile(DList(("a", "b"), ("c", "d"), ("e", "f")))
+
+    // load test data from the sequence file
+    keyFromSequenceFile[Text](tmpSeqFile).run.sorted must_== Vector("a", "c", "e").map(new Text(_))
   }
 
   "Writing to a text sequence file" >> { implicit sc: SC =>
@@ -42,7 +50,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     DList(("a", "b"), ("c", "d")).map(kv => (new Text(kv._1), new Text(kv._2))).toSequenceFile(filePath).run
 
     // load test data from the sequence file
-    fromSequenceFile[Text, Text](filePath).run.sorted must_== Seq[(Text, Text)](("a", "b"), ("c", "d"))
+    fromSequenceFile[String, String](filePath).run.sorted must_== Vector(("a", "b"), ("c", "d"))
   }
 
   "Reading Text -> IntWritable, Writing BytesWritable -> DoubleWritable" >> { implicit sc: SC =>
@@ -90,7 +98,7 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
    */
   def createTempSeqFile[K, V](input: DList[(K, V)])(implicit sc: SC, ks: SeqSchema[K], vs: SeqSchema[V]): String = {
     val dir = createTempDir("test").getPath
-    persist(input.convertToSequenceFile(dir, overwrite = true))
+    persist(input.toSequenceFile(dir, overwrite = true))
     dir
   }
 

@@ -29,6 +29,7 @@ import core._
 import impl.io.Helper
 import avro.AvroInput
 import org.apache.hadoop.conf.Configuration
+import impl.ScoobiConfigurationImpl
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
@@ -39,13 +40,22 @@ object TextOutput {
   def textFileSink[A : Manifest](path: String, overwrite: Boolean = false) =
     new TextFileSink(path, overwrite)
 
-  /** Persist a distributed lists of 'Products' (e.g. Tuples) as a deliminated text file. */
-  def toDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false) = {
+  /** Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file. */
+  def listToDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false) = {
     def anyToString(any: Any, sep: String): String = any match {
       case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
       case _             => any.toString
     }
-    toTextFile(dl map { anyToString(_, sep) }, path, overwrite)
+    (dl map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite))
+  }
+
+  /** Persist a distributed object of 'Products' (e.g. Tuples) as a delimited text file. */
+  def objectToDelimitedTextFile[A <: Product : Manifest](o: DObject[A], path: String, sep: String = "\t", overwrite: Boolean = false) = {
+    def anyToString(any: Any, sep: String): String = any match {
+      case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
+      case _             => any.toString
+    }
+    (o map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite))
   }
 }
 
@@ -93,4 +103,5 @@ class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false) exten
    * strings into objects of type A because we don't know at this stage how to go from String => A
    */
   override def toSource: Option[Source] = None
+  override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
 }

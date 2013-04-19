@@ -63,6 +63,9 @@ trait ProcessNodeImpl extends ProcessNode {
  */
 trait ValueNodeImpl extends ValueNode with WithEnvironment {
   lazy val id: Int = UniqueId.get
+
+  /** display the sinks if any */
+  def sinksString = if (sinks.nonEmpty) sinks.mkString("[sinks: ", ",", "]") else ""
 }
 
 /**
@@ -228,7 +231,7 @@ object GroupByKey1 {
  * A DataSource object specifies how the loading is performed
  */
 case class Load(source: Source, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
-  override val toString = "Load ("+id+")["+wf+"] ("+source+")"
+  override val toString = "Load ("+id+")["+wf+"] ("+source+") "+sinksString
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Load1 {
@@ -237,7 +240,7 @@ object Load1 {
 
 /** The Return node type specifies the building of a Exp CompNode from an "ordinary" value. */
 case class Return(in: Any, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
-  override val toString = "Return ("+id+")["+wf+"]"
+  override val toString = "Return ("+id+")["+wf+"] "+sinksString
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Return1 {
@@ -248,7 +251,7 @@ object Return {
 }
 
 case class Materialise(in: ProcessNode, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
-  override val toString = "Materialise ("+id+")["+wf+"]"
+  override val toString = "Materialise ("+id+")["+wf+"] "+sinksString
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
 object Materialise1 {
@@ -260,7 +263,7 @@ object Materialise1 {
  * of two other CompNode nodes
  */
 case class Op(in1: CompNode, in2: CompNode, f: (Any, Any) => Any, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
-  override val toString = "Op ("+id+")["+wf+"]"
+  override val toString = "Op ("+id+")["+wf+"] "+sinksString
   def execute(a: Any, b: Any): Any = f(a, b)
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }

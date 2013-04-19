@@ -41,6 +41,12 @@ trait SeqSchema[A] {
 
 /* Implicits instances for SeqSchema type class. */
 object SeqSchema {
+  implicit def WritableSeqSchema[T <: Writable : Manifest] = new SeqSchema[T] {
+    type SeqType = T
+    def toWritable(x: T): T = x
+    def fromWritable(x: T): T = x
+    val mf: Manifest[T] = implicitly[Manifest[T]]
+  }
   implicit object BoolSchema extends SeqSchema[Boolean] {
     type SeqType = BooleanWritable
     def toWritable(x: Boolean) = new BooleanWritable(x)

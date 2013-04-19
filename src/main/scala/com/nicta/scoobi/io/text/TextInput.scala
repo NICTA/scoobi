@@ -40,12 +40,8 @@ object TextInput {
 
   /** Create a distributed list from one or more files or directories (in the case of a directory,
     * the input forms all files in that directory). */
-  def fromTextFile(paths: String*): DList[String] = fromTextFile(List(paths:_*))
+  def fromTextFile(paths: String*): DList[String] = DListImpl(source(paths))
 
-
-  /** Create a distributed list from a list of one or more files or directories (in the case of
-    * a directory, the input forms all files in that directory). */
-  def fromTextFile(paths: List[String]): DList[String] = DListImpl(source(paths))
 
   /** create a text source */
   def source(paths: Seq[String]) = {
@@ -59,14 +55,14 @@ object TextInput {
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPath(paths: String*): DList[(String, String)] = fromTextFileWithPath(List(paths:_*))
+  def fromTextFileWithPath(path: String): DList[(String, String)] = fromTextFileWithPaths(Seq(path))
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPath(paths: List[String]): DList[(String, String)] = {
+  def fromTextFileWithPaths(paths: Seq[String]): DList[(String, String)] = {
     val converter = new InputConverter[LongWritable, Text, (String, String)] {
       def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = {
         val taggedSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
@@ -85,7 +81,7 @@ object TextInput {
     * create the distributed list. */
   def fromDelimitedTextFile[A : WireFormat]
       (path: String, sep: String = "\t")
-      (extractFn: PartialFunction[List[String], A])
+      (extractFn: PartialFunction[Seq[String], A])
     : DList[A] = {
 
     val lines = fromTextFile(path)

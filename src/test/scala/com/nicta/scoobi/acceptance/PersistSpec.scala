@@ -30,8 +30,9 @@ import core.{InputConverter, InputOutputContext}
 import impl.plan.DListImpl
 import org.apache.hadoop.io.{Text, LongWritable}
 import scala.io.Source
+import org.specs2.mutable.Tags
 
-class PersistSpec extends NictaSimpleJobs with ResultFiles {
+class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags {
 
   "There are many ways to execute computations with DLists or DObjects".txt
 
@@ -141,7 +142,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
 
   "9. A user-specified sink can be used as a source when a second persist is done" >> {
     "9.1 with a sequence file" >> { implicit sc: SC =>
-      persistTwice((list, sink) => list.convertValueToSequenceFile(sink, overwrite = true))
+      persistTwice((list, sink) => list.valueToSequenceFile(sink, overwrite = true))
     }
     "9.2 with an Avro file" >> { implicit sc: SC =>
       persistTwice((list, sink) => list.toAvroFile(sink, overwrite = true))
@@ -228,13 +229,54 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles {
     dirResults(sc)(dir) === Seq("3")
   }
 
-  "20. issue 175: it is possible to store a DObject[Iterable[A]]" >> { implicit sc: SC =>
-    val list = DList(1, 2)
-    val dir = TempFiles.createTempDir("test")
-    val o1: DObject[Iterable[Int]] = list.materialise.toTextFile(path(dir.getPath))
-    persist(o1)
-    dirResults(sc)(dir).normalise === "Vector(1, 2)"
+  section("issue 175")
+  "20. issue 175: storing and loading DObjects" >> {
+
+    "it is possible to store a DObject[Iterable[A]] with a Text file" >> { implicit sc: SC =>
+      val list = DList(1, 2)
+      val dir = TempFiles.createTempDir("test")
+      val o1: DObject[Iterable[Int]] = list.materialise.toTextFile(path(dir.getPath))
+      persist(o1)
+      dirResults(sc)(dir).normalise === "Vector(1, 2)"
+    }
+
+    "it is possible to store a DObject[A] with a Sequence file" >> { implicit sc: SC =>
+      val list = DList(1, 2)
+      val dir1 = TempFiles.createTempDir("seq")
+      val o1 = list.sum.keyToSequenceFile(path(dir1.getPath))
+      persist(o1)
+
+      objectKeyFromSequenceFile[Int](path(dir1.getPath)).run === 3
+    }
+
+    "it is possible to store a DObject[A] with an Avro file" >> { implicit sc: SC =>
+      val list = DList(1, 2)
+      val dir1 = TempFiles.createTempDir("avro")
+      val o1 =  list.sum.toAvroFile(path(dir1.getPath))
+      persist(o1)
+
+      objectFromAvroFile[Int](path(dir1.getPath)).run        === 3
+    }
+
+    "it is possible to read a DObject[A] from an Avro file" >> { implicit sc: SC =>
+      val list = DList(1, 2)
+      val (dir1, dir2) = (TempFiles.createTempDir("avro-in"), TempFiles.createTempDir("avro-out"))
+      list.sum.toAvroFile(path(dir1.getPath)).run
+      val data = objectFromAvroFile[Int](dir1.getPath).map(_ + 1)
+      persist(data.toTextFile(dir2.getPath))
+      data.run === 4
+    }
+
+    "it is possible to read a DObject[Iterable[A]] from an Avro file" >> { implicit sc: SC =>
+      val list = DList(1, 2)
+      val (dir1, dir2) = (TempFiles.createTempDir("avro-in"), TempFiles.createTempDir("avro-out"))
+      list.toAvroFile(path(dir1.getPath)).run
+      val data = fromAvroFile[Int](dir1.getPath).map(_ + 1)
+      persist(data.toTextFile(dir2.getPath))
+      data.run.normalise === "Vector(2, 3)"
+    }
   }
+  section("issue 175")
 
   def persistTwice(withFile: (DList[Int], String) => DList[Int])(implicit sc: SC) = {
     val sink = TempFiles.createTempFilePath("user")

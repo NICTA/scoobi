@@ -38,13 +38,13 @@ object SequenceInput {
   /** Create a new DList from the "key" contents of one or more Sequence Files. Note that the type parameter K
     * is the "converted" Scala type for the Writable key type that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): DList[K] =
-    convertKeyFromSequenceFile(List(paths: _*))
+  def keyFromSequenceFile[K : WireFormat : SeqSchema](paths: String*): DList[K] =
+    keyFromSequenceFile(List(paths: _*))
 
   /** Create a new DList from the "key" contents of a list of one or more Sequence Files. Note that the type parameter
     * K is the "converted" Scala type for the Writable key type that must be contained in the the
     * Sequence Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertKeyFromSequenceFile[K : WireFormat : SeqSchema](paths: List[String], checkKeyType: Boolean = true): DList[K] = {
+  def keyFromSequenceFile[K : WireFormat : SeqSchema](paths: Seq[String], checkKeyType: Boolean = true): DList[K] = {
     val convK = implicitly[SeqSchema[K]]
 
     val converter = new InputConverter[convK.SeqType, Writable, K] {
@@ -58,14 +58,14 @@ object SequenceInput {
   /** Create a new DList from the "value" contents of one or more Sequence Files. Note that the type parameter V
     * is the "converted" Scala type for the Writable value type that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertValueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): DList[V] =
-    convertValueFromSequenceFile(List(paths: _*))
+  def valueFromSequenceFile[V : WireFormat : SeqSchema](paths: String*): DList[V] =
+    valueFromSequenceFile(List(paths: _*))
 
 
   /** Create a new DList from the "value" contents of a list of one or more Sequence Files. Note that the type parameter
     * V is the "converted" Scala type for the Writable value type that must be contained in the the
     * Sequence Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertValueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): DList[V] = {
+  def valueFromSequenceFile[V : WireFormat : SeqSchema](paths: Seq[String], checkValueType: Boolean = true): DList[V] = {
     val convV = implicitly[SeqSchema[V]]
 
     val converter = new InputConverter[Writable, convV.SeqType, V] {
@@ -75,18 +75,10 @@ object SequenceInput {
     DListImpl(new CheckedSeqSource[Writable, convV.SeqType, V](paths, converter, checkValueType)(implicitly[Manifest[Writable]], convV.mf))
   }
 
-
-  /** Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
-    * are the "converted" Scala types for the Writable key-value types that must be contained in the the Sequence
-    * Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertFromSequenceFile[K, V](paths: String*)(implicit wfk: WireFormat[K], sk: SeqSchema[K], wfv: WireFormat[V], sv: SeqSchema[V]): DList[(K, V)] =
-    convertFromSequenceFile(List(paths: _*))(wfk, sk, wfv, sv)
-
-
   /** Create a new DList from the contents of a list of one or more Sequence Files. Note that the type parameters
     * K and V are the "converted" Scala types for the Writable key-value types that must be contained in the the
     * Sequence Files. In the case of a directory being specified, the input forms all the files in that directory. */
-  def convertFromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: List[String], checkFileTypes: Boolean = true): DList[(K, V)] = {
+  def fromSequenceFile[K : WireFormat : SeqSchema, V : WireFormat : SeqSchema](paths: Seq[String], checkFileTypes: Boolean = true): DList[(K, V)] = {
 
     val convK = implicitly[SeqSchema[K]]
     val convV = implicitly[SeqSchema[V]]
@@ -97,21 +89,6 @@ object SequenceInput {
 
     DListImpl(new CheckedSeqSource[convK.SeqType, convV.SeqType, (K, V)](paths, converter, checkFileTypes)(convK.mf, convV.mf))
   }
-
-
-  /** Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
-    * must match the type key-value type of the Sequence Files. In the case of a directory being specified,
-    * the input forms all the files in that directory. */
-  def fromSequenceFile[K <: Writable : WireFormat : Manifest, V <: Writable : WireFormat : Manifest](paths: String*): DList[(K, V)] =
-    fromSequenceFile(Seq(paths: _*))
-
-
-  /** Create a new DList from the contents of a list of one or more Sequence Files. Note
-    * that the type parameters K and V must match the type key-value type of the Sequence
-    * Files. In the case of a directory being specified, the input forms all the files in
-    * that directory. */
-  def fromSequenceFile[K <: Writable : WireFormat : Manifest, V <: Writable : WireFormat : Manifest](paths: Seq[String], checkFileTypes: Boolean = true): DList[(K, V)] =
-    DListImpl(checkedSource(paths, checkFileTypes)(manifest[K], manifest[V]))
 
   def checkedSource[K : Manifest, V : Manifest](paths: Seq[String], checkFileTypes: Boolean = true) = {
     val converter = new InputConverter[K, V, (K, V)] {

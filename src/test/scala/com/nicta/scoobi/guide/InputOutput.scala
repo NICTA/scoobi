@@ -16,135 +16,143 @@
 package com.nicta.scoobi
 package guide
 
-class InputOutput extends ScoobiPage { def is = "Input and Output".title ^
-  s2"""
+import Scoobi._
+import org.apache.hadoop.io.{Text, IntWritable, Writable}
+
+class InputOutput extends ScoobiPage { def is = "Input and Output".title ^ s2"""
+
 ### Text files
 
 Text files are one of the simplest forms of input/output provided by Scoobi. The following sections describe the various ways in which `DList`s can be loaded from text files as well as persisted to text files. For more detail refer to the API docs for both text [input]($API_PAGE#com.nicta.scoobi.io.text.TextInput$$) and [output]($API_PAGE#com.nicta.scoobi.io.text.TextOutput$$).
 
 #### Text file input
 
-There are a number of ways in which to construct a `DList` object from a text file. The simplest, which we have seen already, is `fromTextFile`. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a `DList[String]` object, where each element of the distributed list refers to one of the lines of text from the files:
+There are a number of ways in which to construct a `DList` object from a text file. The simplest, which we have seen already, is `${termName(fromTextFile(""))}`. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a `DList[String]` object, where each element of the distributed list refers to one of the lines of text from the files: ${snippet{
 
-    // load a single text file
-    val lines: DList[String] = fromTextFile("hdfs://path/to/file")
+// load a single text file
+val lines1: DList[String] = fromTextFile("hdfs://path/to/file")
 
-    // load multiple text files
-    val lines: DList[String] = fromTextFile("hdfs://path/to/file1", "hdfs://path/to/file2")
+// load multiple text files
+val lines2: DList[String] = fromTextFile("hdfs://path/to/file1", "hdfs://path/to/file2")
 
-    // load from a list of text files
-    val textFiles = List("hdfs://path/to/file1", "hdfs://path/to/file2")
-    val lines: DList[String] = fromTextFile(textFiles)
+// load from a list of text files
+val lines3: DList[String] = fromTextFile(Seq("hdfs://path/to/file1", "hdfs://path/to/file2"):_*)
+}}
 
-In the case where mulitple paths are specified, in out `DList` we may also want to know which file a particular line of text orginated from. This can be achieved with `fromTextFileWithPath`:
+Whilst some problems involve working with entire lines of text, often it's the case that we are interested in loading delimited text files, for example, comma separated value (CSV) or tab separated value (TSV) files and want to extract values from *fields*.  In this case, we could use `${termName(fromTextFile(""))}` followed by a `map` that pulls out fields of interest: ${snippet{
 
-    // load a list of text files
-    val textFiles = List("hdfs://path/to/file1", "hdfs://path/to/file2")
-    val lines: DList[(String, String)] = fromTextFileWithPath(textFiles)
+// load CSV with schema "id,first_name,second_name,age"
+val lines: DList[String] = fromTextFile("hdfs://path/to/CVS/files/*")
 
-The resultant `DList` in this example is of type `(String, String)`. Here the second part of the pair is a line of text, just as you would have if `fromTextFile` was used. The first part of the pair is the path of the file the text file originated from.
-
-Whilst some problems involve working with entire lines of text, often it's the case that we are interested in loading delimited text files, for example, comma separated value (CSV) or tab separated value (TSV) files and want to extract values from *fields*.  In this case, we could use `fromTextFile` followed by a `map` that pulls out fields of interest:
-
-    // load CSV with schema "id,first_name,second_name,age"
-    val lines: DList[String] = fromTextFile("hdfs://path/to/CVS/files/*")
-
-    // pull out id and second_name
-    val names: DList[(Int, String)] = lines map { line =>
-      val fields = line.split(",")
-      (fields(0).toInt, fields(2))
-    }
+// pull out id and second_name
+val names: DList[(Int, String)] = lines map { line =>
+  val fields = line.split(",")
+  (fields(0).toInt, fields(2))
+}
+}}
 
 Given that these types of field extractions from delimited text files are such a common task, Scoobi provides a more convenient mechanism for achieving this:
 
     // load CSV and pull out id and second_name
     val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CVS/files/*", ",") {
-      case Int(id) :: first_name :: second_name :: age :: _ => (id, second_name)
+      case AnInt(id) :: first_name :: second_name :: age :: _ => (id, second_name)
     }
 
 As this example illustrates, the call to `fromDelimitedTextFile` takes a number of arguements. The first argument specifies the path and the second is the delimiter, in this case a comma. Following is a second *parameter list* that is used to specify how to extract fields once they are separated out. This is specified by supplying a *partial function* that takes a list of separated `String` fields as its input and returns a value whose type will set the type of the resulting `DList` - i.e. a `PartialFunction[List[String], A]` will create a `DList[A]` (where `A` is `(Int, String)` above). In this example, we use Scala's [pattern matching](http://www.scala-lang.org/node/120) feature to *pull out* the four fields and return the first and third.
 
-In addition Scoobi also provides a number of [extractors](http://www.scala-lang.org/node/112) for automatically checking and converting of fields to an expected type. In the above example, the `Int` extractor is used to specify that the `id` field must be an integer in order for the `case` statement to match. In the case of a match, it also has the effect of typing `id` as an `Int`. Field extractors are provided for `Int`, `Long`, `Double` and `Float`.
+In addition Scoobi also provides a number of [extractors](http://www.scala-lang.org/node/112) for automatically checking and converting of fields to an expected type. In the above example, the `AnInt` extractor is used to specify that the `id` field must be an integer in order for the `case` statement to match. In the case of a match, it also has the effect of typing `id` as an `Int`. Field extractors are provided for `Int`, `Long`, `Double` and `Float` (called `AnInt`, `ALong`, `ADouble`, `AFloat`).
 
 One of the advantages of using `fromDelimitedTextFile` is that we have at our disposal all of the Scala pattern matching features, and because we are providing a partial function, any fields that don't match against the supplied pattern will not be present in the returned `DList`. This allows us to implement simple filtering inline with the extraction:
 
     // load CSV and pull out id and second_name if first_name is "Harry"
-    val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
-      case Int(id) :: "Harry" :: second_name :: age :: _ => (id, second_name)
+    val names = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
+      case AnyInt(id) :: "Harry" :: second_name :: age :: _ => (id, second_name)
     }
 
 We can of course supply multiple patterns:
 
     // load CSV and pull out id and second_name if first_name is "Harry" or "Lucy"
     val names: DList[(Int, String)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
-      case Int(id) :: "Harry" :: second_name :: age :: _ => (id, second_name)
-      case Int(id) :: "Lucy"  :: second_name :: age :: _ => (id, second_name)
+      case AnInt(id) :: "Harry" :: second_name :: age :: _ => (id, second_name)
+      case AnInt(id) :: "Lucy"  :: second_name :: age :: _ => (id, second_name)
     }
 
 And, a more interesting example is when the value of one field influences the semantics of another. For example:
 
-    val thisYear: Int = ...
+    val thisYear: Int = 2013
 
     // load CSV with schema "event,year,year_designation" and pull out event and how many years ago it occurred
     val yearsAgo: DList[(String, Int)] = fromDelimitedTextFile("hdfs://path/to/CSV/files/*", ",") {
-      case event :: Int(year) :: "BC" :: _ => (event, thisYear + year - 1) // No 0 AD
-      case event :: Int(year) :: "AD" :: _ => (event, thisYear - year)
+      case event :: AnInt(year) :: "BC" :: _ => (event, thisYear + year - 1) // No 0 AD
+      case event :: AnInt(year) :: "AD" :: _ => (event, thisYear - year)
     }
 
 #### Text file output
 
-The simplest mechanism for persisting a `DList` of any type is to store it as a text file using `toTextFile`. This will simply invoke the `toString` method of the type that the `DList` is parameterised on:
+The simplest mechanism for persisting a `DList` of any type is to store it as a text file using `toTextFile`. This will simply invoke the `toString` method of the type that the `DList` is parameterised on: ${snippet{
 
-    // output text file of the form:
-    //    34
-    //    3984
-    //    732
-    val ints: DList[Int] = ...
-    persist(ints.toTextFile("hdfs://path/to/output"))
+/** output text file of the form:
+ *   34
+ *   3984
+ *   732
+ */
+ val ints: DList[Int] = DList(34, 3984, 732)
+ints.toTextFile("hdfs://path/to/output").persist
 
-    // output text file of the form:
-    //    (foo, 6)
-    //    (bob, 23)
-    //    (joe, 91)
-    val stringsAndInts: DList[(String, Int)] = ...
-    persist(stringsAndInts.toTextFile("hdfs://path/to/output"))
+/** output text file of the form:
+ *    (foo, 6)
+ *    (bob, 23)
+ *    (joe, 91)
+ */
+val stringsAndInts: DList[(String, Int)] = DList(("foo", 6), ("bar", 23), ("joe", 91))
+stringsAndInts.toTextFile("hdfs://path/to/output").persist
 
-    // output text file of the form:
-    //    (foo, List(6, 3, 2))
-    //    (bob, List(23, 82, 1))
-    //    (joe, List(91, 388, 3))
-    val stringsAndListOfInts: DList[(String, List[Int])] = ...
-    persist(stringsAndListOfInts.toTextFile("hdfs://path/to/output"))
+}}
 
 In the same way that `toString` is used primarily for debugging purposes, `toTextFile` is best used for the same purpose. The reason is that the string representation for any reasonably complex type is generally
 not convenient for input parsing. For cases where text file output is still important, and the output must be easily parsed, there are two options.
 
-The first is to simply `map` the `DList` elements to formatted strings that are easily parsed. For example:
+The first is to simply `map` the `DList` elements to formatted strings that are easily parsed. For example: ${snippet{
 
-    // output text file of the form:
-    //    foo,6
-    //    bob,23
-    //    joe,91
-    val stringsAndInts: DList[(String, Int)] = ...
-    val formatted: DList[String] = stringAndInts map { case (s, i) => s + "," + i }
-    persist(stringsAndInts.toTextFile("hdfs://path/to/output"))
+/** output text file of the form:
+ *    foo, 6
+ *    bob, 23
+ *    joe, 91
+ */
+val stringsAndInts: DList[(String, Int)] = DList(("foo", 6), ("bar", 23), ("joe", 91))
+val formatted: DList[String]             = stringsAndInts map { case (s, i) => s + "," + i }
+formatted.toTextFile("hdfs://path/to/output").persist
+}}
 
-The second option is for cases when the desired output is a delimited text file, for example, a CSV or TSV. In this case, if the `DList` is parameterised on a `Tuple`, *case class*, or any `Product` type, `toDelimitedTextFile` can be used:
+The second option is for cases when the desired output is a delimited text file, for example, a CSV or TSV. In this case, if the `DList` is parameterised on a `Tuple`, *case class*, or any `Product` type, `toDelimitedTextFile` can be used: ${snippet{
+  // 8<--
+  case class Person(name: String, age: Int)
+  implicit def wf: WireFormat[Person] = mkCaseWireFormat(Person.apply _, Person.unapply _)
+  // 8<--
 
-    // output text file of the form:
-    //    foo,6
-    //    bob,23
-    //    joe,91
-    val stringsAndInts: DList[(String, Int)] = ...
-    persist(stringsAndInts.toDelimitedTextFile("hdfs://path/to/output", ","))
+/** output text file of the form:
+ *    foo, 6
+ *    bob, 23
+ *    joe, 91
+ */
+val stringsAndInts: DList[(String, Int)] = DList(("foo", 6), ("bar", 23), ("joe", 91))
+stringsAndInts.toDelimitedTextFile("hdfs://path/to/output", ",").persist
 
-    // output text file of the form:
-    //    foo,6
-    //    bob,23
-    //    joe,91
-    case class PeopleAges(name: String, age: Int)
-    val peopleAndAges: DList[PeopleAges] = ...
-    persist(peopleAndAges.toDelimitedTextFile("hdfs://path/to/output", ","))
+/** the default separator is a tab (\\t), so in this case the output text file is of the form:
+ *   foo 6
+ *   bob 23
+ *   joe 91
+ */
+stringsAndInts.toDelimitedTextFile("hdfs://path/to/output").persist
+
+/** output text file of the form:
+ *    foo, 6
+ *    bob, 23
+ *    joe, 91
+ */
+val peopleAndAges: DList[Person] = DList(Person("foo", 6), Person("bar", 23), Person("joe", 91))
+peopleAndAges.toDelimitedTextFile("hdfs://path/to/output", ",").persist
+}}
 
 ### Sequence files
 
@@ -152,42 +160,44 @@ Sequence files are the built-in binary file format used in Hadoop. Scoobi provid
 
 #### Sequence file input
 
-A Sequence file is a binary file of key-value pairs where the types of the key and value must be `Writable` (i.e. are classes that implement the `Writable` interface). Given a Sequence file of `Writable` key-value pairs, a `DList` can be constructed:
+A Sequence file is a binary file of key-value pairs where the types of the key and value must be `Writable` (i.e. are classes that implement the `Writable` interface). Given a Sequence file of `Writable` key-value pairs, a `DList` can be constructed: ${snippet{
 
-    // load a sequence file
-    val events: DList[(TimestampWritable, TransactionWritable)] = fromSequenceFile("hdfs://path/to/transactions")
+// load a sequence file
+val events1: DList[(TimestampWritable, TransactionWritable)] = fromSequenceFile("hdfs://path/to/transactions")
 
-    // alternatively
-    val events = fromSequenceFile[(TimestampWritable, TransactionWritable)]("hdfs://path/to/transactions")
+// alternatively, you can specify the key and value types
+val events2 = fromSequenceFile[TimestampWritable, TransactionWritable]("hdfs://path/to/transactions")
+}}
 
-In this example, a Sequence file is being loaded where the key is of type `TimestampWritable` and the value is of type `TransactionWritable`. The result is a `DList` paramterised by the same key-value types. Note that whilst the classes associated with the key and value are specified within the header of a Sequence file, when using `fromSequenceFile` they must also be specified. The signature of `fromSequenceFile` will enforce that the key and value types do implement the `Writable` interface, however, there are no static checks to ensure that the specified types actually match the contents of a Sequence file. It is the responsibility of the user to ensure there is a match else a run-time error will result.
+In this example, a Sequence file is being loaded where the key is of type `TimestampWritable` and the value is of type `TransactionWritable`. The result is a `DList` paramterised by the same key-value types. Note that whilst the classes associated with the key and value are specified within the header of a Sequence file, when using `${termName(fromSequenceFile[IW,IW]())}` they must also be specified. The signature of `fromSequenceFile` will enforce that the key and value types do implement the `Writable` interface, however, there are no static checks to ensure that the specified types actually match the contents of a Sequence file. It is the responsibility of the user to ensure there is a match else a run-time error will result.
 
-Like `fromTextFile`, `fromSequenceFile` can also be passed multiple input paths as long as all files contain keys and values of the same type:
+Like `fromTextFile`, `fromSequenceFile` can also be passed multiple input paths as long as all files contain keys and values of the same type: ${snippet{
 
-    // load multiple sequence file
-    val events: DList[(TimestampWritable, TransactionWritable)] =
-      fromSequenceFile("hdfs://path/to/transactions1", "hdfs://path/to/transaction2")
+// load multiple sequence file
+val events1: DList[(TimestampWritable, TransactionWritable)] =
+  fromSequenceFile("hdfs://path/to/transactions1", "hdfs://path/to/transaction2")
 
-    // load from a list of sequence file
-    val transactionFiles = List("hdfs://path/to/transactions1", "hdfs://path/to/transaction2")
-    val events: DList[(TimestampWritable, TransactionWritable)] = fromSequenceFile(transactionFiles)
+// load from a list of sequence files
+val transactionFiles = List("hdfs://path/to/transactions1", "hdfs://path/to/transaction2")
+val events2: DList[(TimestampWritable, TransactionWritable)] = fromSequenceFile(transactionFiles)
+}}
 
-In some situations only the key or value needs to be loaded. To make this use case more convient, Scoobi provides two additional methods: `keyFromSequenceFile` and `valueFromSequnceFile`. When using `keyFromSequenceFile` or
-`valueFromSequnceFile`, Scoobi ignores the value or key, respectively, assuming it is just some `Writable` type:
+In some situations only the key or value needs to be loaded. To make this use case more convient, Scoobi provides two additional methods: `${termName(keyFromSequenceFile[Int]())}` and `${termName(valueFromSequenceFile[Int]())}`. When using `${termName(keyFromSequenceFile[Int]())}` or `${termName(valueFromSequenceFile[Int]())}`, Scoobi ignores the value or key, respectively, assuming it is just some `Writable` type: ${snippet{
 
-    // load keys only from an IntWritable-Text Sequence file
-    val ints: DList[IntWritable] = keyFromSequenceFile("hdfs://path/to/file")
+// load keys only from an IntWritable-Text Sequence file
+val ints: DList[IntWritable] = keyFromSequenceFile("hdfs://path/to/file")
 
-    // load values only from an IntWritable-Text Sequence file
-    val strings: DList[Text] = valueFromSequenceFile("hdfs://path/to/file")
+// load values only from an IntWritable-Text Sequence file
+val strings: DList[Text] = valueFromSequenceFile("hdfs://path/to/file")
+}}
 
-Hadoop's Sequence files provide a convenient mechanism for persisting data of custom types (so long as they implement `Writable`) in a binary file format. Hadoop also includes a number of a number of common `Writable` types, such as `IntWritable` and `Text` that can be used within an application. For Sequence files containing keys and/or values of these common types, Scoobi provides additional convenience methods for constructing a `DList` and
-automatically converting values to common Scala types:
+Hadoop's Sequence files provide a convenient mechanism for persisting data of custom types (so long as they implement `Writable`) in a binary file format. Hadoop also includes a number of common `Writable` types, such as `IntWritable` and `Text` that can be used within an application. For Sequence files containing keys and/or values of these common types, Scoobi provides additional convenience methods for constructing a `DList` and automatically converting values to common Scala types: ${snippet{
 
-    // load a IntWritable-Text sequence file
-    val data: DList[(Int, String)] = convertFromSequenceFile("hdfs://path/to/file")
+// load a IntWritable-Text sequence file
+val data: DList[(Int, String)] = fromSequenceFile("hdfs://path/to/file")
+}}
 
-In the above code, a Sequence file of `IntWritable`-`Text` pairs is being loaded as a `DList` of `Int`-`String` pairs. Just as with `fromSequenceFile`, type annotations are necessary, but in this case, the `(Int, String)` annotation is signalling that the Sequence file is contains `IntWritable`-`Text` pairs, not `Int`-`String` pairs. The table below lists the `Writable` conversions supported by `convertFromSequenceFile`:
+In the above code, a Sequence file of `IntWritable`-`Text` pairs is being loaded as a `DList` of `Int`-`String` pairs. Just as with `fromSequenceFile`, type annotations are necessary, but in this case, the `(Int, String)` annotation is signalling that the Sequence file is contains `IntWritable`-`Text` pairs, not `Int`-`String` pairs. The table below lists the `Writable` conversions supported by `fromSequenceFile`:
 
  Writable type          | Scala type
  ---------------------- | ----------
@@ -200,52 +210,45 @@ In the above code, a Sequence file of `IntWritable`-`Text` pairs is being loaded
  `ByteWritable`         | `Byte`
  `BytesWritable`        | `Traversable[Byte]`
 
-Conversion support for `BytesWritable` is interesting as the type of Scala collection it converts to is not fixed and can be controlled by the user. For example, it is possible to specify conversion to `List[Byte]` or `Seq[Byte]`:
+Conversion support for `BytesWritable` is interesting as the type of Scala collection it converts to is not fixed and can be controlled by the user. For example, it is possible to specify conversion to `List[Byte]` or `Seq[Byte]`: ${snippet{
 
-    // load a DoubleWritable-BytesWritable sequence file
-    val data: DList[(Double, List[Byte])] = convertFromSequenceFile("hdfs://path/to/file")
+// load a DoubleWritable-BytesWritable sequence file
+val data1: DList[(Double, List[Byte])] = fromSequenceFile("hdfs://path/to/file")
 
-    // also ok
-    val data: DList[(Double, Seq[Byte])] = convertFromSequenceFile("hdfs://path/to/file")
-
-Finally, two additional conversion methods are provided for loading only the key or value component, `convertKeyFromSequenceFile` and `convertValueToSequenceFile`:
-
-    // load keys only from an IntWritable-Text Sequence file
-    val ints: DList[Int] = convertKeyFromSequenceFile("hdfs://path/to/file")
-
-    // load values only from an IntWritable-Text Sequence file
-    val strings: DList[String] = convertValueFromSequenceFile("hdfs://path/to/file")
+// also ok
+val data2: DList[(Double, Seq[Byte])] = fromSequenceFile("hdfs://path/to/file")
+}}
 
 #### Sequence file output
 
-The available mechanism for persisting a `DList` to a Sequence file mirror those for persisting. The `toSequenceFile` method can be used to persist a `DList` of a `Writable` pair:
+The available mechanism for persisting a `DList` to a Sequence file mirror those for persisting. The `toSequenceFile` method can be used to persist a `DList` of a `Writable` pair: ${snippet{
 
-    val intText: DList[(IntWritable, Text)] = ...
-    persist(intText.toSequenceFile("hdfs://path/to/output"))
+val intText: DList[(IntWritable, Text)] = DList[(IntWritable, Text)](???)
+intText.toSequenceFile("hdfs://path/to/output").persist
+}}
 
-In cases where we want to persist a `DList` to a Sequence file but its type parameter is not a `Writable` pair,  single `Writable` can be stored as the key or the value, the other being `NullWritable`:
+In cases where we want to persist a `DList` to a Sequence file but its type parameter is not a `Writable` pair,  single `Writable` can be stored as the key or the value, the other being `NullWritable`: ${snippet{
 
-    // persist as IntWritable-NullWritable Sequence file
-    val ints: DList[IntWritable] = ...
-    persist(ints.keyToSequenceFile("hdfs://path/to/output"))
+// persist as IntWritable-NullWritable Sequence file
+val ints: DList[IntWritable] = DList[IntWritable](???)
+ints.keyToSequenceFile("hdfs://path/to/output").persist
 
-    // persist as NullWritable-IntWritable Sequence file
-    val ints: DList[IntWritable] = ...
-    persist(ints.valueToSequenceFile("hdfs://path/to/output"))
+// persist as NullWritable-IntWritable Sequence file
+ints.valueToSequenceFile("hdfs://path/to/output").persist
+}}
 
-Like loading, `DList`s of simple Scala types can be automatically converted to `Writable` types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only veesions are also provided:
+Like loading, `DList`s of simple Scala types can be automatically converted to `Writable` types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only veesions are also provided: ${snippet{
 
-    // persist as Int-String Sequence fille
-    val intString: DList[(Int, String)] = ...
-    persist(intString.convertToSequenceFile("hdfs://path/to/output"))
+// persist as Int-String Sequence file
+val intString: DList[(Int, String)] = DList[(Int, String)](???)
+intString.toSequenceFile("hdfs://path/to/output").persist
 
-    // persist as Int-NullWritable Sequence fille
-    val intString: DList[(Int, String)] = ...
-    persist(intString.convetKeyToSequenceFile("hdfs://path/to/output"))
+// persist as Int-NullWritable Sequence file
+intString.keyToSequenceFile("hdfs://path/to/output").persist
 
-    // persist as NullWritable-Int Sequence fille
-    val intString: DList[(Int, String)] = ...
-    persist(intString.convertValueFromSequenceFile("hdfs://path/to/output"))
+// persist as NullWritable-Int Sequence file
+intString.valueToSequenceFile("hdfs://path/to/output").persist
+}}
 
 ### Avro files
 
@@ -490,5 +493,9 @@ The following Scala objects provided great working examples of `DataSink` implem
 
   """
 
+  implicit lazy val configuration: ScoobiConfiguration = ScoobiConfiguration()
+  trait TimestampWritable extends Writable
+  trait TransactionWritable extends Writable
+  type IW = IntWritable
 
 }
