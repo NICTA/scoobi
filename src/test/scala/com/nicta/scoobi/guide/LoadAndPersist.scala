@@ -322,7 +322,7 @@ It is also possible to load and persist DObjects. A DObject, when persisted, is 
 In the second case you can use methods which are very similar to `DList` methods, having `object` appended in front of them: ${snippet{
 
 val average1: DObject[String] = objectFromTextFile("hdfs://path/to/text/average")
-val average2: DObject[Int]    = objectFromSequenceFile[Int]("hdfs://path/to/seq/average")
+val average2: DObject[Int]    = objectKeyFromSequenceFile[Int]("hdfs://path/to/seq/average")
 val average3: DObject[Int]    = objectFromAvroFile[Int]("hdfs://path/to/avro/average")
 
 }}
