@@ -59,6 +59,7 @@ trait FileSystems {
     }
 
     uploaded foreach onRemoteFiles
+    logger.debug("the files contained in "+dest+" are\n"+listPaths(dest).mkString("\n"))
     sourceFiles
   }
 
