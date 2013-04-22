@@ -16,11 +16,13 @@
 package com.nicta.scoobi
 package guide
 
-import Scoobi._
-import io.text._
+import util.Random
+import org.apache.hadoop.mapreduce.{OutputFormat, MapContext, Job, InputFormat}
 import org.apache.hadoop.io.{Writable, Text, IntWritable}
 import org.apache.avro.Schema
-import util.Random
+import Scoobi._
+import io.text._
+import core.{Source, Sink, DataSource, DataSink, OutputConverter}
 
 class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title^ s2"""
 
@@ -32,7 +34,7 @@ class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title
 
 Most of the time when we create `DList` objects, it is the result of calling a method on another `DList` object (e.g. `map`). *Loading*, on the other hand, is the only way to create a `DList` object that is not based on any others. It is the means by which we associate a `DList` object with some data files on HDFS. Scoobi provides functions to create `DList` objects associated with text files on HDFS, which are implemented in the object [`${fullName[TextInput]}`]($API_PAGE#com.nicta.scoobi.io.text.TextInput$$).
 
-#### Text files
+##### Text files
 
 There are a number of ways in which to construct a `DList` object from a text file. The simplest is `${termName(fromTextFile(""))}`. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a `DList[String]` object, where each element of the distributed list refers to one of the lines of text from the files: ${snippet{
 
@@ -94,11 +96,9 @@ And, a more interesting example is when the value of one field influences the se
       case event :: AnInt(year) :: "AD" :: _ => (event, thisYear - year)
     }
 
-#### Sequence files
+##### Sequence files
 
 Sequence files are the built-in binary file format used in Hadoop. Scoobi provides a number of ways to load existing Sequence files as `DList`s as well as for persisting `DList`s as Sequence files.  For more detail refer to the API docs for both Sequence file [input]($API_PAGE#com.nicta.scoobi.io.sequence.SeqInput$$) and [output]($API_PAGE#com.nicta.scoobi.io.sequence.SeqOutput$$).
-
-##### Reading files
 
 In a Sequence file there are key-value pairs where the types of the key and value must be `Writable` (i.e. are classes that implement the `Writable` interface). Given a Sequence file of `Writable` key-value pairs, a `DList` can be constructed: ${snippet{
 
@@ -160,13 +160,13 @@ val data1: DList[(Double, List[Byte])] = fromSequenceFile("hdfs://path/to/file")
 val data2: DList[(Double, Seq[Byte])] = fromSequenceFile("hdfs://path/to/file")
 }}
 
-#### Avro files
+##### Avro files
 
 [Avro](http://avro.apache.org/) is a language-agnostic specification for data serialization. From a Hadoop perspective it has a lot of the attributes of Sequence files with the addition of features such as evolvable schemas.
 
 Avro *schemas* describe the structure of data and are the key to creating or loading an Avro file. Scoobi provides a mechansim for mapping between Avro schemas and Scala types such that an Avro file can be easily loaded as a `DList` with the correct type parameterization, and a `DList` can be easily persisted as an Avro file with the correct schema.
 
-##### Avro schemas
+###### Avro schemas
 
 The mechanism for mapping between Avro schemas and Scala types is the [`AvroSchema`]($API_PAGE#com.nicta.scoobi.io.avro.AvroSchema) type class. Instances are provided for all Scala types that have sensbile mappings to Avro schema elements:
 
@@ -235,7 +235,7 @@ would map to the Avro schema:
       ]
     }
 
-##### Reading files
+###### Reading files
 
 The method [`${termName(fromAvroFile[I](""))}`]($API_PAGE#com.nicta.scoobi.io.avro.AvroInput$$) is used to load an Avro file as a `DList`: ${snippet{
 
@@ -266,7 +266,11 @@ val xs2: DList[(Int, String, Float)] = fromAvroFile(files)
 
 }}
 
-#### Without files
+###### With a predefined avro schema
+
+Any type that extends `org.apache.avro.generic.GenericContainer` Scoobi knows how to generate a WireFormat for. This means that Scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given Avro record/protocol. See `examples/avro` for an example of this plugin in action
+
+##### Without files
 
 Because Scoobi is a library for constructing Hadoop applications, *data* input and ouput is typically synonymous with *file* input and output. Whilst Scoobi provides numerous mechanism for creating new `DList` objects from files (and multiple file types), it also has some simple ways for constructing a `DList` without files.
 
@@ -312,14 +316,64 @@ val numbersDList: DList[(String, Int)] = numbersMap.toDList
 
 }}
 
+##### Custom input
+
+Scoobi is not locked to loading and persisting the data sources and sinks that have been described. Instead, the Scoobi API is designed in a way to make it relatively simple to implement support for custom data sources and sinks.
+
+We have seen that Scoobi provides many *factory* methods for creating `DList` objects, for example, `fromTextFile` and `fromAvroFile`. At their heart, all of these methods are built upon a single primitive mechanism: `DList` companion object's `fromSource` factory method: ${snippet{
+
+def fromSource[K, V, A : WireFormat](source: DataSource[K, V, A]): DList[A] = ???
+
+}}
+
+`fromSource` takes as input an object implementing the `DataSource` trait. Implementing the `DataSource` trait is all that is required to create a `DList` from a custom data source. If we look at the `DataSource` trait, we can see that it is tightly coupled with the Hadoop `InputFormat` interface: ${snippet{
+
+trait DataSource[K, V, A] extends Source {
+  def inputFormat: Class[_ <: InputFormat[K, V]]
+  def inputConverter: InputConverter[K, V, A]
+  def inputCheck(implicit sc: ScoobiConfiguration)
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
+  def inputSize(implicit sc: ScoobiConfiguration): Long
+}
+
+trait InputConverter[K, V, A] {
+  type InputContext = MapContext[K, V, _, _]
+  def fromKeyValue(context: InputContext, key: K, value: V): A
+}
+}}
+
+The core role of a `DataSource` is to provide a mechanism for taking the key-value records produced by an `InputFormat` and converting them into the values contained within a `DList`. Following the type parameters is a good way to understand this:
+
+ * `inputFormat` specifies an `InputFormat` class
+ * The `InputFormat` class will produce key-value records of type `K`-`V`
+ * `inputConverter` specifies an `InputConverter` object
+ * The `InputConverter` object implments `fromKeyValue` which converts a key of type `K` and a value of type `V` (as produced by the `InputFormat`) to a value of type `A`
+ * Calling `fromSource` with this `DataSource` object will produce a `DList` parameterised on type `A`
+
+The other methods that must be implemented in the `DataSource` trait provide hooks for configuration and giving Scoobi some visibility of the data source:
+
+ * `inputCheck`: This method is called before any MapReduce jobs are run. It is provided as a hook to check the valiidity of data source input. For example, it could check that the input exists and if not
+throw an exception.
+ * `inputConfigure`: This method is provided as a hook to configure the `DataSource`. Typically it is used to configure the `InputFormat` by adding or modifying properties in the job's `Configuration`. It
+is called prior to running the specific MapReduce job this `DataSoure` provides input data to.
+ * `inputSize`: This method should returns an estimate of the size in bytes of the input data source. It does not need to be exact. Scoobi will use this value as one metric in determining how to configure the execution of MapReduce jobs.
+
+The following Scala objects provided great working examples of `DataSource` implementations in Scoobi:
+
+ * [TextInput]($API_PAGE#com.nicta.scoobi.io.text.TextInput$$)
+ * [SeqInput]($API_PAGE#com.nicta.scoobi.io.sequence.SeqInput$$)
+ * [AvroInput]($API_PAGE#com.nicta.scoobi.io.avro.AvroInput$$)
+ * [FunctionInput]($API_PAGE#com.nicta.scoobi.io.func.FunctionInput$$)
+
+
 #### DObjects
 
-It is also possible to load and persist DObjects. A DObject, when persisted, is either stored like a `DList[A]` if it is a `DObject[Iterable[A]]` or a `DList[A]` containing just one element if it is a `DObject[A]`. In the first case, you can load the `DObject` by loading the file as a `DList[T]` and materialising it:  ${snippet{
+It is also possible to load and persist DObjects. A `DObject`, when persisted, is either stored as a `DList[A]` if it is a `DObject[Iterable[A]]` or as a `DList[A]` containing just one element if it is a `DObject[A]`. In the first case, you can load the `DObject` by loading the file as a `DList[T]` and materialising it:  ${snippet{
 
   val sums: DObject[Iterable[Int]] = fromAvroFile[Int]("hdfs://path/to/average").materialise
 }}
 
-In the second case you can use methods which are very similar to `DList` methods, having `object` appended in front of them: ${snippet{
+In the second case you can use methods which are very similar to `DList` methods, having `object` prepended to them: ${snippet{
 
 val average1: DObject[String] = objectFromTextFile("hdfs://path/to/text/average")
 val average2: DObject[Int]    = objectKeyFromSequenceFile[Int]("hdfs://path/to/seq/average")
@@ -327,7 +381,7 @@ val average3: DObject[Int]    = objectFromAvroFile[Int]("hdfs://path/to/avro/ave
 
 }}
 
-Note however that those methods are unsafe. They are merely a shortcut to access the first element of a persisted `DList`. Another possibility is to load a `DList` and use `headOption` to create a `DObject`: ${snippet{
+Note however that those methods are unsafe. They are merely a shortcut to access the first element of a persisted `DList`. A safer possibility is to load a `DList` and use the `headOption` method to create a `DObject`: ${snippet{
 
 val average: DObject[Option[Int]] = fromAvroFile[Int]("hdfs://path/to/avro/average").headOption
 
@@ -337,77 +391,245 @@ val average: DObject[Option[Int]] = fromAvroFile[Int]("hdfs://path/to/avro/avera
 
 *Persisting* is the mechanism Scoobi uses for specifying that the result of executing the computational graph associated with a `DList` object is to be associated with a particular data file on HDFS. There are two parts to persisting:
 
-1. Specifying how a `DList` object is to be persisted by using the numerous `toXXX` methods available (`toTextFile`, `toAvroFile`,...)
+1. Specifying how a `DList` is to be persisted by using the numerous `toXXX` methods available (`toTextFile`, `toAvroFile`,...)
 2. Persisting the `DList`(s) by calling `persist`
 
-This is an example of persisting a single `DList`:
+This is an example of persisting a single `DList`: ${snippet{
 
-    val rankings: DList[(String, Int)] = ...
+val rankings: DList[(String, Int)] = DList(???)
+rankings.toTextFile("hdfs://path/to/output").persist
+}}
 
-    persist(rankings.toTextFile("hdfs://path/to/output"))
+And now with several `DLists`: ${snippet{
 
-And now with several `DLists`:
+val rankings: DList[(String, Int)] = DList(???)
+val rankingsReverse: DList[(Int, String)] = rankings map (_.swap)
+val rankingsExample: DList[(Int, String)] = rankingsReverse.groupByKey.map { case (ranking, items) => (ranking, items.head) }
 
-    val rankings: DList[(String, Int)] = ...
-    val rankings_reverse: DList[(Int, String)] = rankings map { swap }
-    val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ case (ranking, items) => (ranking, items.head) }
-
-    persist(rankings.        toTextFile("hdfs://path/to/output"),
-            rankings_reverse.toTextFile("hdfs://path/to/output-reverse"),
-            rankings_example.toTextFile("hdfs://path/to/output-example"))
+persist(rankings.       toTextFile("hdfs://path/to/output"),
+        rankingsReverse.toTextFile("hdfs://path/to/output-reverse"),
+        rankingsExample.toTextFile("hdfs://path/to/output-example"))
+}}
 
 As mentioned previously, `persist` is the trigger for executing the computational graph associated with its `DList` objects. By bundling `DList` objects together, `persist` is able to determine computations that are shared by those outputs and ensure that they are only performed once.
 
+#### DLists
+
+##### Text file
+
+The simplest mechanism for persisting a `DList` of any type is to store it as a text file using `toTextFile`. This will simply invoke the `toString` method of the type that the `DList` is parameterised on: ${snippet{
+
+/** output text file of the form:
+ *   34
+ *   3984
+ *   732
+ */
+val ints: DList[Int] = DList(34, 3984, 732)
+ints.toTextFile("hdfs://path/to/output").persist
+
+/** output text file of the form:
+ *    (foo, 6)
+ *    (bob, 23)
+ *    (joe, 91)
+ */
+val stringsAndInts: DList[(String, Int)] = DList(("foo", 6), ("bar", 23), ("joe", 91))
+stringsAndInts.toTextFile("hdfs://path/to/output").persist
+
+}}
+
+In the same way that `toString` is used primarily for debugging purposes, `toTextFile` is best used for the same purpose. The reason is that the string representation for any reasonably complex type is generally
+not convenient for input parsing. For cases where text file output is still important, and the output must be easily parsed, there are two options.
+
+The first is to simply `map` the `DList` elements to formatted strings that are easily parsed. For example: ${snippet{
+
+/** output text file of the form:
+ *    foo, 6
+ *    bob, 23
+ *    joe, 91
+ */
+val stringsAndInts: DList[(String, Int)] = DList(("foo", 6), ("bar", 23), ("joe", 91))
+val formatted: DList[String]             = stringsAndInts map { case (s, i) => s + "," + i }
+formatted.toTextFile("hdfs://path/to/output").persist
+}}
+
+The second option is for cases when the desired output is a delimited text file, for example, a CSV or TSV. In this case, if the `DList` is parameterised on a `Tuple`, *case class*, or any `Product` type, `toDelimitedTextFile` can be used: ${snippet{
+/** output text file of the form:
+ *    foo, 6
+ *    bob, 23
+ *    joe, 91
+ */
+val stringsAndInts: DList[(String, Int)] = DList(("foo", 6), ("bar", 23), ("joe", 91))
+stringsAndInts.toDelimitedTextFile("hdfs://path/to/output", ",").persist
+
+/** the default separator is a tab (\\t), so in this case the output text file is of the form:
+ *   foo 6
+ *   bob 23
+ *   joe 91
+ */
+stringsAndInts.toDelimitedTextFile("hdfs://path/to/output").persist
+
+/** output text file of the form:
+ *    foo, 6
+ *    bob, 23
+ *    joe, 91
+ */
+val peopleAndAges: DList[Person] = DList(Person("foo", 6), Person("bar", 23), Person("joe", 91))
+peopleAndAges.toDelimitedTextFile("hdfs://path/to/output", ",").persist
+}}
+
+##### Sequence file
+
+The available mechanism for persisting a `DList` to a Sequence file mirror those for persisting. The `toSequenceFile` method can be used to persist a `DList` of a `Writable` pair: ${snippet{
+
+val intText: DList[(IntWritable, Text)] = DList[(IntWritable, Text)](???)
+intText.toSequenceFile("hdfs://path/to/output").persist
+}}
+
+In cases where we want to persist a `DList` to a Sequence file but its type parameter is not a `Writable` pair,  single `Writable` can be stored as the key or the value, the other being `NullWritable`: ${snippet{
+
+// persist as IntWritable-NullWritable Sequence file
+val ints: DList[IntWritable] = DList[IntWritable](???)
+ints.keyToSequenceFile("hdfs://path/to/output").persist
+
+// persist as NullWritable-IntWritable Sequence file
+ints.valueToSequenceFile("hdfs://path/to/output").persist
+}}
+
+Like loading, `DList`s of simple Scala types can be automatically converted to `Writable` types and persisted as Sequence files. The extent of these automatic conversions is limited to the types listed in the table above. Value- and key-only veesions are also provided: ${snippet{
+
+// persist as Int-String Sequence file
+val intString: DList[(Int, String)] = DList[(Int, String)](???)
+intString.toSequenceFile("hdfs://path/to/output").persist
+
+// persist as Int-NullWritable Sequence file
+intString.keyToSequenceFile("hdfs://path/to/output").persist
+
+// persist as NullWritable-Int Sequence file
+intString.valueToSequenceFile("hdfs://path/to/output").persist
+}}
+
+##### Avro file
+
+To persist a `DList` to an Avro file, Scoobi provides the method [`${termName(toAvroFile(???, ""))}`]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$). Again, in order for compilation to succeed, the `DList` must be paramterised on a type that has an `AvroSchema` type class instance implemented: ${snippet{
+
+val xs: DList[(Int, Seq[(Float, String)], Map[String, Int])] = DList(???)
+xs.toAvroFile("hdfs://path/to/file").persist
+
+}}
+
+##### Custom output
+
+We have seen that to persist a `DList` object we use the `persist` method: ${snippet{
+val (dogs, names) = (DList("Labrador retriever", "Poodle", "Boxer"), DList("Max", "Molly", "Toby"))
+persist(dogs.toTextFile("hdfs://path/to/dogs"), names.toAvroFile("hdfs://path/to/names"))
+}}
+
+But what exactly does `toTextFile`, `toAvroFile` and the other output methods? Those methods simply add *Sinks* to the `DList`. Those sinks implement the `DataSink` trait. The `DataSink` trait is, not surpringly, the reverse of the `DataSource` trait. It is tightly coupled with the Hadoop `OutputFormat` interface and requires the specification of an `OutputConverter` that converts values contained within the `DList` to key-value records to be persisted by the `OutputFormat`: ${snippet{
+
+trait DataSink[K, V, B] extends Sink {
+  def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[K, V]]
+  def outputKeyClass(implicit sc: ScoobiConfiguration): Class[K]
+  def outputValueClass(implicit sc: ScoobiConfiguration): Class[V]
+  def outputConverter: OutputConverter[K, V, B]
+  def outputCheck(implicit sc: ScoobiConfiguration)
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
+}
+}}
+${snippet {
+trait OutputConverter[K, V, B] {
+  def toKeyValue(x: B): (K, V)
+}
+}}
+
+Again, we can follow the types through to get a sense of how it works:
+
+ * `persist` is called with a `DList` object that specifies `Sinks` implementing the trait `DataSink[K, V, B]`
+ * The `DataSink` object specifies the class of an `OutputFormat` that can persist or write key-values of type `K`-`V`, which are specified by `outputKeyClass` and `outputValueClass`, respectively
+ * An object implementing the `OutputConverter[K, V, B]` trait is specified by `outputConverter`, which converts values of type `B` to `(K, V)`
+
+ Like `DataSource`, some additional methods are included in the `DataSink` trait that provide configuration hooks:
+
+ * `outputCheck`: This method is called before any MapReduce jobs are run. It is provided as a hook to check the validity of the target data output. For example, it could check if the output already exists and if so throw an exception
+ * `outputConfigure`: This method is provided as a hook for configuring the `DataSink`. Typically it is used to configure the `OutputFormat` by adding or modifying properties in the job's `Configuration`. It is called prior to running the specific MapReduce job this `DataSink` consumes output data from
+ * there is also an `outputSetup` method which is called right before output data is created (doing nothing by default). This allows to do some last-minute cleanup before outputing the data.
+
+The following Scala objects provided great working examples of `DataSink` implementations in Scoobi:
+
+ * [TextOutput]($API_PAGE#com.nicta.scoobi.io.text.TextOutput$$)
+ * [SeqOutput]($API_PAGE#com.nicta.scoobi.io.sequence.SeqOutput$$)
+ * [AvroOutput]($API_PAGE#com.nicta.scoobi.io.avro.AvroOutput$$)
+
 #### DObjects
 
-`DObjects` are results of distributed computations and can be accessed in memory with the `run` method:
+`DObjects` are results of distributed computations and can be accessed in memory with the `run` method: ${snippet{
 
-    val list: DList[Int]  = DList(1, 2, 3)
+val list: DList[Int]  = DList(1, 2, 3)
 
-    // the sum of all values
-    val sum: DObject[Int] = list.sum
+// the sum of all values
+val sum: DObject[Int] = list.sum
 
-    // execute the computation graph and collect the result
-    println(sum.run)
+// execute the computation graph and collect the result
+println(sum.run)
+}}
 
-The call to `run` above is equivalent to calling `persist` on the `DObject` to execute the computation, then collecting the result. If you call:
-
-    persist(sum)
-    sum.run
+The call to `run` above is equivalent to calling `persist` on the `DObject` to execute the computation, then collecting the result. If you call: ${snippet{
+val sum = DList(1, 2, 3).sum
+persist(sum)
+sum.run
+}}
 
 then the first `persist` executes the computation and `run` merely retrieves the result.
 
-Similarly, if you want to access the value of a `DList` after computation, you can call `run` on that list:
+Similarly, if you want to access the value of a `DList` after computation, you can call `run` on that list: ${snippet{
 
-     val list: DList[Int]  = DList(1, 2, 3)
+val list: DList[Int]  = DList(1, 2, 3)
 
-     // returns Seq(1, 2, 3)
-     list.run
+// returns Seq(1, 2, 3)
+list.run
+}}
 
-The code above is merely a shorthand for:
+The code above is merely a shorthand for: ${snippet{
 
-      val list: DList[Int]  = DList(1, 2, 3)
+val list: DList[Int]  = DList(1, 2, 3)
+val materialisedList = list.materialise
+// returns Seq(1, 2, 3)
+materialisedList.run
+}}
 
-      val materialisedList = list.materialise
-      // returns Seq(1, 2, 3)
-      materialisedList.run
+Finally, when you have several `DObjects` and `DLists` which are part of the same computation graph, you can persist them all at once: ${snippet{
 
-Finally, when you have several `DObjects` and `DLists` which are part of the same computation graph, you can persist them all at once:
+val list: DList[Int]    = DList(1, 2, 3)
+val plusOne: DList[Int] = list.map(_ + 1)
 
-     val list: DList[Int]    = DList(1, 2, 3)
-     val plusOne: DList[Int] = list.map(_ + 1)
+// the sum of all values
+val sum: DObject[Int] = list.sum
+// the max of all values
+val max: DObject[Int] = list.max
 
-     // the sum of all values
-     val sum: DObject[Int] = list.sum
-     // the max of all values
-     val max: DObject[Int] = list.max
+// execute the computation graph for the 2 DObjects and one DList
+persist(sum, max, plusOne)
 
-    // execute the computation graph for the 2 DObjects and one DList
-    persist(sum, max, plusOne)
+// collect results
+// (6, 3, Seq(2, 3, 4))
+(sum.run, max.run, plusOne.run)
+}}
 
-    // collect results
-    // (6, 3, Seq(2, 3, 4))
-    (sum.run, max.run, plusOne.run)
+##### To files
+
+`DObjects` can also be persisted to files by specifying sinks so that they can be re-loaded later. If the `DObject` represents a single value, like a sum, you can write ${snippet{
+val sum = DList(1, 2, 3).sum
+sum.toAvroFile("hdfs://path/to/avro").persist
+
+val reloaded: DObject[Int] = objectFromAvroFile[Int]("hdfs://path/to/avro")
+}}
+
+And if the `DObject` stores an `Iterable` you can either load it as a `DList` or a `DObject`: ${snippet{
+val even: DObject[Iterable[Int]] = DList(0, 2, 4, 6, 8).materialise
+even.toAvroFile("hdfs://path/to/even").persist
+  
+val evenAsDList: DList[Int]               = fromAvroFile[Int]("hdfs://path/to/even")
+val evenAsDObject: DObject[Iterable[Int]] = fromAvroFile[Int]("hdfs://path/to/even").materialise
+}}
 
 #### Iterations
 
@@ -415,38 +637,39 @@ Many distributed algorithms (such as PageRank) require to iterate over DList com
 
 For example, let's say we want to remove 1 to a list of positive elements (and nothing if the element is already 0) until the maximum is 10.
 
-There are several ways to write this, which we are going to evaluate:
+There are several ways to write this, which we are going to evaluate: ${snippet{
 
-     val ints = DList(12, 5, 8, 13, 11)
+val ints = DList(12, 5, 8, 13, 11)
 
-     def iterate1(list: DList[Int]): DList[Int] = {
-       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
-       else                   list
-     }
+def iterate1(list: DList[Int]): DList[Int] = {
+  if (list.max.run > 10) iterate1(list.map(i => if (i <= 0) i else i - 1))
+  else                   list
+}
 
-     def iterate2(list: DList[Int]): DList[Int] = {
-       persist(list)
-       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
-       else                   list
-     }
+def iterate2(list: DList[Int]): DList[Int] = {
+  persist(list)
+  if (list.max.run > 10) iterate2(list.map(i => if (i <= 0) i else i - 1))
+  else                   list
+}
 
-     def iterate3(list: DList[Int]): DList[Int] = {
-       persist(list, list.max)
-       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
-       else                   list
-     }
+def iterate3(list: DList[Int]): DList[Int] = {
+  persist(list, list.max)
+  if (list.max.run > 10) iterate3(list.map(i => if (i <= 0) i else i - 1))
+  else                   list
+}
 
-     def iterate4(list: DList[Int]): DList[Int] = {
-       val maximum = list.max
-       persist(list, maximum)
-       if (maximum.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1))
-       else                  list
-     }
+def iterate4(list: DList[Int]): DList[Int] = {
+  val maximum = list.max
+  persist(list, maximum)
+  if (maximum.run > 10) iterate4(list.map(i => if (i <= 0) i else i - 1))
+  else                  list
+}
 
-     persist(iterate1(ints).toTextFile("path"))
-     persist(iterate2(ints).toTextFile("path"))
-     persist(iterate3(ints).toTextFile("path"))
-     persist(iterate4(ints).toTextFile("path"))
+iterate1(ints).toTextFile("path").persist
+iterate2(ints).toTextFile("path").persist
+iterate3(ints).toTextFile("path").persist
+iterate4(ints).toTextFile("path").persist
+}}
 
  1. no intermediary call to `persist`
 
@@ -469,45 +692,53 @@ In this case we get a handle on the `maximum` `DObject` and accessing his value 
 
 ##### Interim files
 
-It might be useful, for debugging reasons, to save the output of each intermediary step. Here is how to do it:
+It might be useful, for debugging reasons, to save the output of each intermediary step. Here is how to do it: ${snippet{
+// 8<--
+val ints = DList(12, 5, 8, 13, 11)
+// 8<--
+def iterate5(list: DList[Int]): DList[Int] = {
+  list.persist
+  if (list.max.run > 10) iterate5(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out", overwrite = true))
+  else                   list
+}
+// no need to persist to a Text file since there is already an Avro file storing the results
+iterate5(ints).persist
+}}
 
-     val ints = DList(12, 5, 8, 13, 11)
-
-     def iterate5(list: DList[Int]): DList[Int] = {
-       persist(list)
-       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out", overwrite = true))
-       else                   list
-     }
-     // no need to persist to a Text file since there is already an Avro file storing the results
-     persist(iterate5(ints))
-
-With the code above the intermediary results will be written to the same output directory. You can also create one output directory per iteration:
-
-     def iterate6(list: DList[Int], n: Int = 0): DList[Int] = {
-       persist(list)
-       if (list.max.run > 10) iterate(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out"+n, overwrite = true), n+1)
-       else                   list
-     }
-     persist(iterate6(ints))
+With the code above the intermediary results will be written to the same output directory. You can also create one output directory per iteration: ${snippet{
+// 8<--
+val ints = DList(12, 5, 8, 13, 11)
+// 8<--
+def iterate6(list: DList[Int], n: Int = 0): DList[Int] = {
+  list.persist
+  if (list.max.run > 10) iterate6(list.map(i => if (i <= 0) i else i - 1).toAvroFile("out"+n, overwrite = true), n+1)
+  else                   list
+}
+iterate6(ints).persist
+}}
 
 #### Checkpoints
 
 When you have a big pipeline of consecutive computations it can be very time-consuming to start the process all over again if you've just changed some function down the track.
 
-In order to avoid this you can create *checkpoints*, that is sinks which will persist data in between executions:
+In order to avoid this you can create *checkpoints*, that is sinks which will persist data in between executions:  ${snippet{
+// 8<--
+val isEven = (i: Int) => i % 2 == 0
+// 8<--
+// before
+val list1 = DList(1, 2, 3).map(_ + 1).
+                           filter(isEven)
 
-     // before
-     val list = DList(1, 2, 3).map(_ + 1).
-                               filter(isEven)
-
-     // after
-     val list = DList(1, 2, 3).map(_ + 1).toAvroFile("path", overwrite = true).checkpoint.
-                               filter(isEven)
+// after
+val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile("path", overwrite = true).checkpoint.
+                           filter(isEven)
+}}
 
 If you run the `after` program twice, the second time the program is run, only the `filter` operation will be executed taking its input data from the saved Avro file.
 
 *Important limitation*: you can't use a `Text` sink as a checkpoint because Text file sinks can't not be used as source files.
 
+------
   """
 
   implicit lazy val configuration: ScoobiConfiguration = ScoobiConfiguration()
