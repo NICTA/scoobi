@@ -124,7 +124,7 @@ trait LibJars {
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
     // add new jars to the classpath and make sure that values are still unique for cache files and classpath entries
-    configuration.addValues("mapred.classpath",   jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
+    configuration.addValues("mapred.classpath",   jars.map(j => new File(libjarsDirectory).getPath+"/"+ (new File(j.getFile).getName)), ":")
   }
 }
 object LibJars extends LibJars
