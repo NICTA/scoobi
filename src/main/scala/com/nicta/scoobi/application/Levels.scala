@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import impl.types.TypeOperators._
+import scalaz._
 
 object Levels {
 
