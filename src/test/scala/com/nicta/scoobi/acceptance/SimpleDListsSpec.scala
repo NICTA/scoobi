@@ -20,8 +20,11 @@ import testing.mutable.NictaSimpleJobs
 import com.nicta.scoobi.Scoobi._
 import impl.plan.DListImpl
 import com.nicta.scoobi.impl.plan.comp.factory._
-import impl.plan.comp.CompNodeData
+import impl.plan.comp.{Return, ParallelDo, Load, CompNodeData}
 import CompNodeData._
+import io.ConstantStringDataSource
+import core.WireFormat._
+import core.{EmitterWriter, DoFunction, EmitterDoFunction}
 
 class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 
@@ -127,9 +130,9 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
     normalise(l4.run) === "Vector((strt,a), (strt,aa))"
   }
   "23. (pd + pd) + gbk + reducer" >> { implicit sc: SC =>
-    def list = new DListImpl[String](pd(load, load))
-    val l3 = list.filter(_ => true).filter(_ => true)
-    normalise(l3.run) === "Vector(start, start)"
+    def list = (DList((1, "start")) ++ DList((1, "start")))
+    val l3 = list.groupByKey.filter(_ => true).filter(_ => true)
+    normalise(l3.run) === "Vector((1,Vector(start, start)))"
   }
   "24. join on a gbk" >> { implicit sc: SC =>
     val l1 = DList("hello").materialise
@@ -179,4 +182,5 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData {
 
     result.run.toSet === Set((1,1), (2,2), (1,1), (2,2))
   }
+
 }

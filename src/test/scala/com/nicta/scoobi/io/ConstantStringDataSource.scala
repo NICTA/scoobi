@@ -41,11 +41,6 @@ class ConstantStringDataSource(val value: String) extends DataSource[String, Str
   case class ConstantStringInputConverter(value: String) extends InputConverter[String, String, String] {
     def fromKeyValue(context: this.type#InputContext, key: String, v: String) = value
   }
-
-  override def equals(a: Any) = a match {
-    case other: ConstantStringDataSource => value == other.value
-    case _                               => false
-  }
 }
 case class ConstantStringInputSplit(var value: String) extends InputSplit with Writable {
   def this() = this("")
@@ -54,8 +49,6 @@ case class ConstantStringInputSplit(var value: String) extends InputSplit with W
 
   def write(out: DataOutput) { out.writeChars(value) }
   def getLocations = Array("localhost")
-
-
 }
 
 
@@ -68,25 +61,25 @@ class FailingDataSource extends ConstantStringDataSource("") {
 object FailingDataSource {
   def apply() = new FailingDataSource
 }
-case class ConstantStringRecordReader(value: String) extends RecordReader[String, String] {
+class ConstantStringRecordReader(value: String) extends RecordReader[String, String] {
   private var read = false
   def this() = this("value")
   def initialize(split: InputSplit, context: TaskAttemptContext) { read = false }
-  def nextKeyValue() = { if (read) false else { read = true; true } }
+  def nextKeyValue() = !read
   def getCurrentKey = value
-  def getCurrentValue = value
+  def getCurrentValue = { read = true; value }
   def getProgress = 0.0f
   def close() { read = false }
 }
 
-class ConstantStringInputFormat(value: String) extends InputFormat[String, String] {
+case class ConstantStringInputFormat(value: String) extends InputFormat[String, String] {
   def this() = this("value")
   def getSplits(context: JobContext) = asList(ConstantStringInputSplit(value))
-  def createRecordReader(split: InputSplit, context: TaskAttemptContext) = ConstantStringRecordReader(value)
+  def createRecordReader(split: InputSplit, context: TaskAttemptContext) = new ConstantStringRecordReader(value)
 }
 
 class FailingInputFormat extends InputFormat[String, String] {
   def getSplits(context: JobContext) = { throw new InvalidInputException(asList()); asList() }
-  def createRecordReader(split: InputSplit, context: TaskAttemptContext) = ConstantStringRecordReader("")
+  def createRecordReader(split: InputSplit, context: TaskAttemptContext) = new ConstantStringRecordReader("")
 }
 
