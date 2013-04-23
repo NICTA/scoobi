@@ -56,20 +56,20 @@ case class InMemoryMode() extends ExecutionMode {
   }
 
   /** optimisation: we only consider sinks which are related to expected results nodes */
-  override protected lazy val allSinks: CompNode => Seq[Sink] = attr("all sinks") {
+  override protected lazy val allSinks: CompNode => Seq[Sink] = attr {
     case n if isExpectedResult(n) => n.sinks ++ children(n).flatMap(allSinks)
     case n                        => children(n).flatMap(allSinks)
   }
 
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
-    paramAttr("computeValue") { sc: ScoobiConfiguration => node: CompNode =>
+    paramAttr { sc: ScoobiConfiguration => node: CompNode =>
       (node -> compute(sc)).head
     }
 
   private
   lazy val compute: ScoobiConfiguration => CompNode => Seq[_] =
-    paramAttr("compute") { sc: ScoobiConfiguration => node: CompNode =>
+    paramAttr { sc: ScoobiConfiguration => node: CompNode =>
       implicit val c = sc
       val result = node match {
         case n: Load                                               => computeLoad(n)

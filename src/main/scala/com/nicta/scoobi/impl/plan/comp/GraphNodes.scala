@@ -20,27 +20,27 @@ package comp
 
 import scalaz.Scalaz._
 import scalaz.std.vector.vectorSyntax._
-import org.kiama.attribution.{Attributable, Attribution}
+import org.kiama.attribution.{Attributable, AttributionCore}
 import control.Exceptions._
 
 /**
  * generic functions for a nodes graph
  */
-trait GraphNodes extends Attribution {
+trait GraphNodes extends AttributionCore {
 
   type T <: Attributable
 
   /** compute the parent of a node */
   lazy val parent : CachedAttribute[T, Option[T]] =
-    attr("parent") { case node => Option(node.parent.asInstanceOf[T]) }
+    attr { case node => Option(node.parent.asInstanceOf[T]) }
 
   /** compute the children of a node */
   lazy val children : CachedAttribute[T, Seq[T]] =
-    attr("children") { case node => Vector(node.children.toSeq.map(_.asInstanceOf[T]):_*) }
+    attr { case node => Vector(node.children.toSeq.map(_.asInstanceOf[T]):_*) }
 
   /** the root of the graph, computed from a given node */
   lazy val root : CachedAttribute[T, T] =
-    attr("root") { case node =>
+    attr { case node =>
       parent(node).map(root).getOrElse(node)
     }
   
@@ -48,16 +48,16 @@ trait GraphNodes extends Attribution {
    * compute all the descendents of a node
    * They are all the recursive children reachable from this node
    */
-  lazy val descendents : CachedAttribute[T, Seq[T]] = attr("descendents") { case node =>
+  lazy val descendents : CachedAttribute[T, Seq[T]] = attr { case node =>
     (children(node) ++ children(node).flatMap(descendents)).distinct
   }
 
-  lazy val descendentsUntil: CachedParamAttribute[(T => Boolean), T, Seq[T]] = paramAttr("descendentsUntil") { (predicate: (T => Boolean)) => (node: T) =>
+  lazy val descendentsUntil: CachedParamAttribute[(T => Boolean), T, Seq[T]] = paramAttr { (predicate: (T => Boolean)) => (node: T) =>
     children(node).filterNot(predicate) ++ children(node).filterNot(predicate).flatMap(descendentsUntil(predicate)).distinct
   }
 
   /** compute the parents of a node, that is all the chain of parents from this node up to the root of the graph */
-  lazy val parents : CachedAttribute[T, Seq[T]] = attr("parents") { case node =>
+  lazy val parents : CachedAttribute[T, Seq[T]] = attr { case node =>
     val p = parent(node).toSeq
     p ++ p.flatMap(parents)
   }
@@ -67,21 +67,21 @@ trait GraphNodes extends Attribution {
    *
    * for efficiency, this uses a table of all the nodes using a given one, computed from the root
    */
-  lazy val uses : CachedAttribute[T, Set[T]] = attr("uses") { case node =>
+  lazy val uses : CachedAttribute[T, Set[T]] = attr { case node =>
     usesTable(node -> root).getOrElse(node, Set())
   }
 
   /** true if a node is used at most once */
   lazy val isUsedAtMostOnce : CachedAttribute[T, Boolean] =
-    attr("isUsedAtMostOnce") { case node => uses(node).size <= 1 }
+    attr { case node => uses(node).size <= 1 }
 
   /** a Map of all the nodes which are using a given node */
-  private lazy val usesTable : CachedAttribute[T, Map[T, Set[T]]] = attr("usesTable") { case node =>
+  private lazy val usesTable : CachedAttribute[T, Map[T, Set[T]]] = attr { case node =>
     Vector(children(node):_*).foldMap((child: T) => usesTable(child) |+| Map(child -> Set(node)))
   }
 
   /** compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent */
-  lazy val transitiveUses : CachedAttribute[T, Set[T]] = attr("transitiveUses") { case node =>
+  lazy val transitiveUses : CachedAttribute[T, Set[T]] = attr { case node =>
     (uses(node) ++ uses(node).flatMap(_ -> transitiveUses)).toSet
   }
 
@@ -99,25 +99,25 @@ trait GraphNodes extends Attribution {
 
   /** @return true if 1 node is parent of the other, or if they are the same node */
   private[impl]
-  lazy val isParentOf: CachedParamAttribute[T, T, Boolean] = paramAttr("isParentOf") { (other: T) => node: T =>
+  lazy val isParentOf: CachedParamAttribute[T, T, Boolean] = paramAttr { (other: T) => node: T =>
     (node -> isStrictParentOf(other)) || (node == other)
   }
 
   /** @return true if 1 node is parent of the other, or but not  the same node */
   private[impl]
-  lazy val isStrictParentOf: CachedParamAttribute[T, T, Boolean] = paramAttr("isStrictParentOf") { (other: T) => node: T =>
+  lazy val isStrictParentOf: CachedParamAttribute[T, T, Boolean] = paramAttr { (other: T) => node: T =>
     (node -> descendents).contains(other) || (other -> descendents).contains(node)
   }
 
   /** compute the vertices starting from a node */
   private[impl]
-  lazy val vertices: CachedAttribute[T, Seq[T]] = attr("vertices") { case node =>
+  lazy val vertices: CachedAttribute[T, Seq[T]] = attr { case node =>
     ((node +: children(node).flatMap(n => n -> vertices).toSeq) ++ children(node)).distinct // make the vertices unique
   }
 
   /** compute all the edges which compose this graph */
   private[impl]
-  lazy val edges: CachedAttribute[T, Seq[(T, T)]] = attr("edges") { case node =>
+  lazy val edges: CachedAttribute[T, Seq[(T, T)]] = attr { case node =>
     (children(node).map(n => node -> n) ++ children(node).flatMap(n => n -> edges)).distinct // make the edges unique
   }
 

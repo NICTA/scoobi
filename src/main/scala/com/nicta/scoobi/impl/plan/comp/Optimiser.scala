@@ -21,7 +21,7 @@ package comp
 import org.apache.commons.logging.LogFactory
 import core._
 import monitor.Loggable._
-import org.kiama.rewriting.Rewriter
+import org.kiama.rewriting._
 import collection.+:
 import control.Functions._
 import scala.collection.mutable
@@ -83,16 +83,16 @@ trait Optimiser extends CompNodes with Rewriter {
    * - the strategy to execute is memoised, i.e. if a node has already been processed its result must be reused
    *   this ensures that rewritten shared nodes are not duplicated
    */
-  def repeatTraversal(traversal: (=>Strategy) => Strategy, s: =>Strategy) = {
+  def repeatTraversal(traversal: (String, Strategy) => Strategy, s: =>Strategy) = {
     val strategy = s
     val memoised = memo(strategy)
-    val traversedMemoised = traversal(memoised)
+    val traversedMemoised = traversal(s.name, memoised)
     val result = resetTree(traversedMemoised)
     repeat(result)
   }
 
-  private def resetTree(s: =>Strategy): Strategy =  new Strategy {
-    def apply (t1 : Term) : Option[Term] = {
+  private def resetTree(s: =>Strategy): Strategy =  new Strategy("resetTree") {
+    val body = (t1 : Any) => {
       dupCache.clear
       t1 match {
         case c: CompNode => reinitAttributable(c)
@@ -174,9 +174,9 @@ trait Optimiser extends CompNodes with Rewriter {
   }
 
   /** remove nodes from the tree based on a predicate */
-  def truncate(node: CompNode)(condition: Term => Boolean) = {
+  def truncate(node: CompNode)(condition: Any => Boolean) = {
     def isParentMaterialise(n: CompNode) = parent(n).exists(isMaterialise)
-    def truncateNode(n: Term): Term =
+    def truncateNode(n: Any): Any =
       n match {
         case p: ParallelDo if isParentMaterialise(p) => p.copy(ins = Seq(Return.unit))
         case g: GroupByKey if isParentMaterialise(g) => g.copy(in = Return.unit)
@@ -185,7 +185,7 @@ trait Optimiser extends CompNodes with Rewriter {
         case other                                   => other
       }
 
-    val truncateRule = rule { case n: Term =>
+    val truncateRule = rule { case n: Any =>
       if (condition(n)) truncateNode(n)
       else              n
     }

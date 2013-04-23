@@ -164,11 +164,11 @@ trait MscrInputChannel extends InputChannel {
   protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
 
   /** memoise the mappers tree to improve performance */
-  private lazy val nextMappers: CompNode => Seq[ParallelDo] = attr("next mappers") {
+  private lazy val nextMappers: CompNode => Seq[ParallelDo] = attr {
     case node => uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
   }
   /** memoise the final mappers tree to improve performance */
-  private lazy val isFinal: CompNode => Boolean = attr("next mappers") {
+  private lazy val isFinal: CompNode => Boolean = attr {
     case node => lastMappers.contains(node)
   }
   /** map a given key/value and emit it */

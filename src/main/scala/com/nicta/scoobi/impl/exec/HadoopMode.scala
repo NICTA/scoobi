@@ -75,7 +75,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       }
     }
     // execute value nodes recursively, other nodes start a "layer" execution
-    attr("executeNode") { node =>
+    attr { node =>
       executeLayers(node)
       val result = getValue(node)
       saveSinks(Seq(result), node)(sc)
@@ -84,7 +84,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   }
 
   private lazy val executeLayer: Layer[T] => Unit =
-    attr("executeLayer") { case layer =>
+    attr { case layer =>
       Execution(layer).execute
     }
 

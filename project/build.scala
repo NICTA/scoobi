@@ -69,27 +69,29 @@ object build extends Build {
                                           "org.apache.avro"   %  "avro-mapred" % "1.7.4" classifier "hadoop2")
 
       Seq(
-      "javassist"                %  "javassist"                 % "3.12.1.GA",
-      "org.apache.avro"          %  "avro"                      % "1.7.4",
-      "com.thoughtworks.xstream" %  "xstream"                   % "1.4.4"            intransitive(),
-      "com.googlecode.kiama"     %% "kiama"                     % "1.5.0-SNAPSHOT",
-      "com.github.mdr"           %  "ascii-graphs_2.10.0"       % "0.0.2",
-      "org.scalaz"               %% "scalaz-core"               % "7.0.0",
-      "org.scalaz"               %% "scalaz-concurrent"         % "7.0.0",
-      "org.scalaz"               %% "scalaz-scalacheck-binding" % "7.0.0"            intransitive(),
-      "org.scalaz"               %% "scalaz-typelevel"          % "7.0.0"            intransitive(),
-      "org.scalaz"               %% "scalaz-xml"                % "7.0.0"            intransitive(),
-      "org.scala-lang"           %  "scala-compiler"            % scalaVersion,
-      "org.scalacheck"           %% "scalacheck"                % "1.10.0"           % "optional",
-      "org.specs2"               %% "specs2"                    % "1.15-SNAPSHOT"    % "optional",
-      "org.mockito"              %  "mockito-all"               % "1.9.0"            % "optional",
-      "org.specs2"               %  "classycle"                 % "1.4.1"            % "test",
-      "org.scala-tools.testing"  %  "test-interface"            % "0.5"              % "test",
-      "org.hamcrest"             %  "hamcrest-all"              % "1.1"              % "test",
-      "org.pegdown"              %  "pegdown"                   % "1.0.2"            % "test",
-      "junit"                    %  "junit"                     % "4.7"              % "test",
-      "org.apache.commons"       %  "commons-math"              % "2.2"              % "test",
-      "org.apache.commons"       %  "commons-compress"          % "1.0"              % "test"
+      "javassist"                         %  "javassist"                 % "3.12.1.GA",
+      "org.apache.avro"                   %  "avro"                      % "1.7.4",
+      "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
+      "com.googlecode.kiama"              %% "kiama"                     % "1.5.0-SNAPSHOT",
+      "org.bitbucket.inkytonik.dsinfo"    %% "dsinfo"                    % "0.1.0",
+      "org.bitbucket.inkytonik.dsprofile" %% "dsprofile"                 % "0.2.0",
+      "com.github.mdr"                    %  "ascii-graphs_2.10.0"       % "0.0.2",
+      "org.scalaz"                        %% "scalaz-core"               % "7.0.0",
+      "org.scalaz"                        %% "scalaz-concurrent"         % "7.0.0",
+      "org.scalaz"                        %% "scalaz-scalacheck-binding" % "7.0.0"            intransitive(),
+      "org.scalaz"                        %% "scalaz-typelevel"          % "7.0.0"            intransitive(),
+      "org.scalaz"                        %% "scalaz-xml"                % "7.0.0"            intransitive(),
+      "org.scala-lang"                    %  "scala-compiler"            % scalaVersion,
+      "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
+      "org.specs2"                        %% "specs2"                    % "1.15-SNAPSHOT"    % "optional",
+      "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
+      "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
+      "org.scala-tools.testing"           %  "test-interface"            % "0.5"              % "test",
+      "org.hamcrest"                      %  "hamcrest-all"              % "1.1"              % "test",
+      "org.pegdown"                       %  "pegdown"                   % "1.0.2"            % "test",
+      "junit"                             %  "junit"                     % "4.7"              % "test",
+      "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
+      "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test"
     ) ++ hadoop },
     resolvers ++= Seq("nicta" at "http://nicta.github.com/scoobi/releases",
       "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
@@ -99,8 +101,7 @@ object build extends Build {
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
-    scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions,reflectiveCalls,postfixOps,higherKinds,existentials"),
-    scalacOptions in Test ++= Seq("-Yrangepos", "-feature", "-language:implicitConversions,reflectiveCalls,postfixOps,higherKinds,existentials")
+    scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions,reflectiveCalls,postfixOps,higherKinds,existentials")
   )
 
   lazy val testingSettings: Seq[Settings] = Seq(
