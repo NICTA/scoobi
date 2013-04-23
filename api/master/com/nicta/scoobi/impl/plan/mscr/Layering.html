@@ -47,7 +47,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Simple layering algorithm using the Longest path method to assign nodes to layers.</p><p>See here for a good overview: http://www.cs.brown.edu/~rt/gdhandbook/chapters/hierarchical.pdf</p><p>In our case the layers have minimum height and possibly big width which is actually good if we run things in parallel
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a>, <a href="../comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a>, <a href="../comp/CollectFunctions.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions">CollectFunctions</a>, <a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a>, <span class="extype" name="org.kiama.attribution.Attribution">Attribution</span>, <span class="extype" name="org.kiama.attribution.AttributionBase">AttributionBase</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a>, <a href="../comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a>, <a href="../comp/CollectFunctions.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions">CollectFunctions</a>, <a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a>, <span class="extype" name="org.kiama.attribution.AttributionCore">AttributionCore</span>, <span class="extype" name="org.kiama.util.Memoiser">Memoiser</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon">AttributionCommon</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="MscrsDefinition.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition">MscrsDefinition</a></div>
@@ -68,7 +68,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.plan.mscr.Layering"><span>Layering</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.ShowNode"><span>ShowNode</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.CompNodes"><span>CompNodes</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions"><span>CollectFunctions</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.GraphNodes"><span>GraphNodes</span></li><li class="in" name="org.kiama.attribution.Attribution"><span>Attribution</span></li><li class="in" name="org.kiama.attribution.AttributionBase"><span>AttributionBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.plan.mscr.Layering"><span>Layering</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.ShowNode"><span>ShowNode</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.CompNodes"><span>CompNodes</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions"><span>CollectFunctions</span></li><li class="in" name="com.nicta.scoobi.impl.plan.comp.GraphNodes"><span>GraphNodes</span></li><li class="in" name="org.kiama.attribution.AttributionCore"><span>AttributionCore</span></li><li class="in" name="org.kiama.util.Memoiser"><span>Memoiser</span></li><li class="in" name="org.kiama.attribution.AttributionCommon"><span>AttributionCommon</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -90,84 +90,71 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="org.kiama.attribution.AttributionBase.Attribute" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="Attribute[T&lt;:AnyRef,U]extendsT=&gt;U"></a>
-      <a id="Attribute[T&lt;:AnyRef,U]:Attribute[T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Attribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends (<span class="extype" name="org.kiama.attribution.AttributionBase.Attribute.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.Attribute.U">U</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution.CachedAttribute" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]"></a>
+              <ol><li name="org.kiama.attribution.AttributionCore.CachedAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]"></a>
       <a id="CachedAttribute[T&lt;:AnyRef,U]:CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
+        <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CachedAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.AttributionBase.Attribute">org.kiama.attribution.Attribution.Attribute</span>[<span class="extype" name="org.kiama.attribution.Attribution.CachedAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.CachedAttribute.U">U</span>]</span>
+        <span class="name">CachedAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.U">U</span>] with <span class="extype" name="org.kiama.util.Memoiser.IdMemoised">org.kiama.attribution.AttributionCore.IdMemoised</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.T">T</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute.U">U</span>]]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution.CachedDynamicAttribute" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttribution.this.CachedAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore.CachedDynamicAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttributionCore.this.CachedAttribute[T,U]"></a>
       <a id="CachedDynamicAttribute[T&lt;:AnyRef,U]:CachedDynamicAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
+        <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CachedDynamicAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.Attribution.CachedAttribute">CachedAttribute</span>[<span class="extype" name="org.kiama.attribution.Attribution.CachedDynamicAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.CachedDynamicAttribute.U">U</span>]</span>
+        <span class="name">CachedDynamicAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.AttributionCore.CachedAttribute">CachedAttribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedDynamicAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CachedDynamicAttribute.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution.CachedParamAttribute" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;Attribution.this.Attribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore.CachedParamAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]"></a>
       <a id="CachedParamAttribute[A,T&lt;:AnyRef,U]:CachedParamAttribute[A,T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
+        <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CachedParamAttribute</span><span class="tparams">[<span name="A">A</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends (<span class="extype" name="org.kiama.attribution.Attribution.CachedParamAttribute.A">A</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.Attribute">org.kiama.attribution.Attribution.Attribute</span>[<span class="extype" name="org.kiama.attribution.Attribution.CachedParamAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.CachedParamAttribute.U">U</span>]</span>
+        <span class="name">CachedParamAttribute</span><span class="tparams">[<span name="A">A</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends (<span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.A">A</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.U">U</span>] with <span class="extype" name="org.kiama.util.Memoiser.Memoised">org.kiama.attribution.AttributionCore.Memoised</span>[<span class="extype" name="org.kiama.attribution.ParamAttributeKey">ParamAttributeKey</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CachedParamAttribute.U">U</span>]]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase.CircularAttribute" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="CircularAttribute[T&lt;:AnyRef,U]extendsAttributionBase.this.Attribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore.CircularAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CircularAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,U]"></a>
       <a id="CircularAttribute[T&lt;:AnyRef,U]:CircularAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
+        <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CircularAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.AttributionBase.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionBase.CircularAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionBase.CircularAttribute.U">U</span>]</span>
+        <span class="name">CircularAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.U">U</span>] with <span class="extype" name="org.kiama.util.Memoiser.IdMemoised">org.kiama.attribution.AttributionCore.IdMemoised</span>[<span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.CircularAttribute.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase.ConstantAttribute" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ConstantAttribute[T&lt;:AnyRef,U]extendsAttributionBase.this.Attribute[T,U]"></a>
-      <a id="ConstantAttribute[T&lt;:AnyRef,U]:ConstantAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.util.Memoiser.IdMemoised" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="IdMemoised[T,U]extendsMemoiser.this.MemoisedCore[T,U]"></a>
+      <a id="IdMemoised[T,U]:IdMemoised[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ConstantAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.attribution.AttributionBase.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionBase.ConstantAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionBase.ConstantAttribute.U">U</span>]</span>
+        <span class="name">IdMemoised</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.util.Memoiser.MemoisedCore">MemoisedCore</span>[<span class="extype" name="org.kiama.util.Memoiser.IdMemoised.T">T</span>, <span class="extype" name="org.kiama.util.Memoiser.IdMemoised.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Layer[T&lt;:com.nicta.scoobi.core.CompNode]extendsProductwithSerializable"></a>
       <a id="Layer[T&lt;:CompNode]:Layer[T]"></a>
@@ -181,19 +168,32 @@
       </span>
       </h4>
       <p class="comment cmt">A layer contains group by keys and floating nodes defining mscrs so that none of them have dependencies relationship</p>
-    </li><li name="org.kiama.attribution.AttributionBase.ParamAttributeKey" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ParamAttributeKeyextendsObject"></a>
-      <a id="ParamAttributeKey:ParamAttributeKey"></a>
+    </li><li name="org.kiama.util.Memoiser.Memoised" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Memoised[T,U]extendsMemoiser.this.MemoisedCore[T,U]"></a>
+      <a id="Memoised[T,U]:Memoised[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ParamAttributeKey</span><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">Memoised</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <span class="extype" name="org.kiama.util.Memoiser.MemoisedCore">MemoisedCore</span>[<span class="extype" name="org.kiama.util.Memoiser.Memoised.T">T</span>, <span class="extype" name="org.kiama.util.Memoiser.Memoised.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
+    </li><li name="org.kiama.util.Memoiser.MemoisedCore" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="MemoisedCore[T,U]extendsAnyRef"></a>
+      <a id="MemoisedCore[T,U]:MemoisedCore[T,U]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MemoisedCore</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes.T" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="T=com.nicta.scoobi.core.CompNode"></a>
       <a id="T:T"></a>
@@ -334,21 +334,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="attr[T&lt;:AnyRef,U](name:String)(f:T=&gt;U):Attribution.this.CachedAttribute[T,U]"></a>
-      <a id="attr[T&lt;:AnyRef,U](String)((T)⇒U):CachedAttribute[T,U]"></a>
+    </li><li name="org.kiama.attribution.AttributionCore#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="attr[T&lt;:AnyRef,U](name:String,f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="attr[T&lt;:AnyRef,U](String,(T)⇒U):CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">attr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.attr.U">U</span>]</span>
+        <span class="name">attr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="attr[T&lt;:AnyRef,U](f:T=&gt;U):Attribution.this.CachedAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="attr[T&lt;:AnyRef,U](f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
       <a id="attr[T&lt;:AnyRef,U]((T)⇒U):CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -356,38 +356,28 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">attr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.attr.U">U</span>]</span>
+        <span class="name">attr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.attr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#attr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="attr[T&lt;:AnyRef,U](optNameDef:Option[String])(f:T=&gt;U):Attribution.this.CachedAttribute[T,U]"></a>
-      <a id="attr[T&lt;:AnyRef,U](Option[String])((T)⇒U):CachedAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](name:String,f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="childAttr[T&lt;:Attributable,U](String,(T)⇒(Attributable)⇒U):CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">attr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="optNameDef">optNameDef: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.attr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.attr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.attr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.attr.U">U</span>]</span>
+        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](name:String)(f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):Attribution.this.CachedAttribute[T,U]"></a>
-      <a id="childAttr[T&lt;:Attributable,U](String)((T)⇒(Attributable)⇒U):CachedAttribute[T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.childAttr.U">U</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):Attribution.this.CachedAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):AttributionCore.this.CachedAttribute[T,U]"></a>
       <a id="childAttr[T&lt;:Attributable,U]((T)⇒(Attributable)⇒U):CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -395,23 +385,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.childAttr.U">U</span>]</span>
+        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.childAttr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#childAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="childAttr[T&lt;:org.kiama.attribution.Attributable,U](optName:Option[String])(f:T=&gt;(org.kiama.attribution.Attributable=&gt;U)):Attribution.this.CachedAttribute[T,U]"></a>
-      <a id="childAttr[T&lt;:Attributable,U](Option[String])((T)⇒(Attributable)⇒U):CachedAttribute[T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">childAttr</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U</span>]</span><span class="params">(<span name="optName">optName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.childAttr.T">T</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attributable">Attributable</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.childAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.childAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.childAttr.U">U</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#children" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="children:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
       <a id="children:CachedAttribute[T,Seq[T]]"></a>
@@ -421,24 +401,24 @@
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">children</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">children</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute the children of a node</p><div class="fullcomment"><div class="comment cmt"><p>compute the children of a node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="circular[T&lt;:AnyRef,U](name:String)(init:U)(f:T=&gt;U):T=&gt;U"></a>
-      <a id="circular[T&lt;:AnyRef,U](String)(U)((T)⇒U):(T)⇒U"></a>
+    </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="circular[T&lt;:AnyRef,U](name:String,init:U)(f:T=&gt;U):T=&gt;U"></a>
+      <a id="circular[T&lt;:AnyRef,U](String,U)((T)⇒U):(T)⇒U"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionBase.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionBase.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>
+        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="circular[T&lt;:AnyRef,U](init:U)(f:T=&gt;U):T=&gt;U"></a>
       <a id="circular[T&lt;:AnyRef,U](U)((T)⇒U):(T)⇒U"></a>
       <h4 class="signature">
@@ -447,23 +427,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionBase.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionBase.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>
+        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionCore.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.circular.U">U</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="circular[T&lt;:AnyRef,U](optNameDef:Option[String])(init:U)(f:T=&gt;U):T=&gt;U"></a>
-      <a id="circular[T&lt;:AnyRef,U](Option[String])(U)((T)⇒U):(T)⇒U"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">circular</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="optNameDef">optNameDef: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="init">init: <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionBase.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>)</span><span class="result">: (<span class="extype" name="org.kiama.attribution.AttributionBase.circular.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.circular.U">U</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -480,21 +450,21 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="constant[T&lt;:AnyRef,U](name:String)(u:=&gt;U):AttributionBase.this.Attribute[T,U]"></a>
-      <a id="constant[T&lt;:AnyRef,U](String)(⇒U):Attribute[T,U]"></a>
+    </li><li name="org.kiama.attribution.AttributionCommon#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="constant[T&lt;:AnyRef,U](name:String,u:=&gt;U):org.kiama.attribution.Attribute[T,U]"></a>
+      <a id="constant[T&lt;:AnyRef,U](String,⇒U):Attribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">constant</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.constant.U">U</span></span>)</span><span class="result">: <a href="#Attribute[T&lt;:AnyRef,U]extendsT=&gt;U" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.Attribute">Attribute</a>[<span class="extype" name="org.kiama.attribution.AttributionBase.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionBase.constant.U">U</span>]</span>
+        <span class="name">constant</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span></span>)</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCommon.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="constant[T&lt;:AnyRef,U](u:=&gt;U):AttributionBase.this.Attribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCommon#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="constant[T&lt;:AnyRef,U](u:=&gt;U):org.kiama.attribution.Attribute[T,U]"></a>
       <a id="constant[T&lt;:AnyRef,U](⇒U):Attribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -502,23 +472,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">constant</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.constant.U">U</span></span>)</span><span class="result">: <a href="#Attribute[T&lt;:AnyRef,U]extendsT=&gt;U" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.Attribute">Attribute</a>[<span class="extype" name="org.kiama.attribution.AttributionBase.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionBase.constant.U">U</span>]</span>
+        <span class="name">constant</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span></span>)</span><span class="result">: <span class="extype" name="org.kiama.attribution.Attribute">Attribute</span>[<span class="extype" name="org.kiama.attribution.AttributionCommon.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCommon.constant.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#constant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="constant[T&lt;:AnyRef,U](optNameDef:Option[String])(u:=&gt;U):AttributionBase.this.Attribute[T,U]"></a>
-      <a id="constant[T&lt;:AnyRef,U](Option[String])(⇒U):Attribute[T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">constant</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="optNameDef">optNameDef: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="u">u: ⇒ <span class="extype" name="org.kiama.attribution.AttributionBase.constant.U">U</span></span>)</span><span class="result">: <a href="#Attribute[T&lt;:AnyRef,U]extendsT=&gt;U" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.Attribute">Attribute</a>[<span class="extype" name="org.kiama.attribution.AttributionBase.constant.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionBase.constant.U">U</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#descendents" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="descendents:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
       <a id="descendents:CachedAttribute[T,Seq[T]]"></a>
@@ -528,7 +488,7 @@
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">descendents</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">descendents</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute all the descendents of a node
@@ -545,25 +505,25 @@ They are all the recursive children reachable from this node
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">descendentsUntil</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;Attribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[(<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>, <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">descendentsUntil</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[(<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>, <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="dynAttr[T&lt;:AnyRef,U](name:String)(f:T=&gt;U):Attribution.this.CachedDynamicAttribute[T,U]"></a>
-      <a id="dynAttr[T&lt;:AnyRef,U](String)((T)⇒U):CachedDynamicAttribute[T,U]"></a>
+    </li><li name="org.kiama.attribution.AttributionCore#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dynAttr[T&lt;:AnyRef,U](name:String,f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]"></a>
+      <a id="dynAttr[T&lt;:AnyRef,U](String,(T)⇒U):CachedDynamicAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttribution.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.dynAttr.U">U</span>]</span>
+        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttributionCore.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="dynAttr[T&lt;:AnyRef,U](f:T=&gt;U):Attribution.this.CachedDynamicAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dynAttr[T&lt;:AnyRef,U](f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]"></a>
       <a id="dynAttr[T&lt;:AnyRef,U]((T)⇒U):CachedDynamicAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -571,23 +531,13 @@ They are all the recursive children reachable from this node
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttribution.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.dynAttr.U">U</span>]</span>
+        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttributionCore.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.dynAttr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#dynAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="dynAttr[T&lt;:AnyRef,U](optNameDef:Option[String])(f:T=&gt;U):Attribution.this.CachedDynamicAttribute[T,U]"></a>
-      <a id="dynAttr[T&lt;:AnyRef,U](Option[String])((T)⇒U):CachedDynamicAttribute[T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">dynAttr</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="optNameDef">optNameDef: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.dynAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.dynAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttribution.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.dynAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.dynAttr.U">U</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -623,7 +573,7 @@ They are all the recursive children reachable from this node
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">filledSink</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">filledSink</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">this attribute stores the fact that a Sink has received data</p><div class="fullcomment"><div class="comment cmt"><p>this attribute stores the fact that a Sink has received data</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></dd></dl></div>
@@ -695,7 +645,7 @@ They are all the recursive children reachable from this node
       </span>
       </h4>
       <p class="shortcomment cmt">initialise the Kiama attributes but only if they haven't been set before</p><div class="fullcomment"><div class="comment cmt"><p>initialise the Kiama attributes but only if they haven't been set before</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
-    </li><li name="org.kiama.attribution.AttributionBase#initTree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.kiama.attribution.AttributionCommon#initTree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initTree[T&lt;:org.kiama.attribution.Attributable](t:T):Unit"></a>
       <a id="initTree[T&lt;:Attributable](T):Unit"></a>
       <h4 class="signature">
@@ -704,10 +654,10 @@ They are all the recursive children reachable from this node
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">initTree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="t">t: <span class="extype" name="org.kiama.attribution.AttributionBase.initTree.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">initTree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="t">t: <span class="extype" name="org.kiama.attribution.AttributionCommon.initTree.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionBase</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCommon</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#inputs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="inputs:com.nicta.scoobi.core.CompNode=&gt;Seq[com.nicta.scoobi.core.CompNode]"></a>
       <a id="inputs:(CompNode)⇒Seq[CompNode]"></a>
@@ -725,8 +675,8 @@ For a ParallelDo node this does not consider its environment
 </p><div class="fullcomment"><div class="comment cmt"><p>compute the inputs of a given node
 For a ParallelDo node this does not consider its environment
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#internalToDynamicAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="internalToDynamicAttribute[T&lt;:AnyRef,U](f:T=&gt;U):Attribution.this.CachedDynamicAttribute[T,U]"></a>
+    </li><li name="org.kiama.attribution.AttributionCore#internalToDynamicAttribute" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="internalToDynamicAttribute[T&lt;:AnyRef,U](f:T=&gt;U):AttributionCore.this.CachedDynamicAttribute[T,U]"></a>
       <a id="internalToDynamicAttribute[T&lt;:AnyRef,U]((T)⇒U):CachedDynamicAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -734,10 +684,10 @@ For a ParallelDo node this does not consider its environment
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">internalToDynamicAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.internalToDynamicAttribute.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.internalToDynamicAttribute.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttribution.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.internalToDynamicAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.internalToDynamicAttribute.U">U</span>]</span>
+        <span class="name">internalToDynamicAttribute</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.U">U</span></span>)</span><span class="result">: <a href="#CachedDynamicAttribute[T&lt;:AnyRef,U]extendsAttributionCore.this.CachedAttribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedDynamicAttribute">CachedDynamicAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.internalToDynamicAttribute.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.CollectFunctions#isACombine" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isACombine:PartialFunction[Any,com.nicta.scoobi.impl.plan.comp.Combine]"></a>
       <a id="isACombine:PartialFunction[Any,Combine]"></a>
@@ -851,7 +801,7 @@ For a ParallelDo node this does not consider its environment
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">isCyclic</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">isCyclic</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">return true if a CompNode has a cycle in its graph,
@@ -985,7 +935,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">isUsedAtMostOnce</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">isUsedAtMostOnce</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">true if a node is used at most once</p><div class="fullcomment"><div class="comment cmt"><p>true if a node is used at most once</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
@@ -1132,45 +1082,35 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="paramAttr[A,T&lt;:AnyRef,U](name:String)(f:A=&gt;(T=&gt;U)):Attribution.this.CachedParamAttribute[A,T,U]"></a>
-      <a id="paramAttr[A,T&lt;:AnyRef,U](String)((A)⇒(T)⇒U):CachedParamAttribute[A,T,U]"></a>
+    </li><li name="org.kiama.attribution.AttributionCore#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="paramAttr[V,T&lt;:AnyRef,U](name:String,f:V=&gt;(T=&gt;U)):AttributionCore.this.CachedParamAttribute[V,T,U]"></a>
+      <a id="paramAttr[V,T&lt;:AnyRef,U](String,(V)⇒(T)⇒U):CachedParamAttribute[V,T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">paramAttr</span><span class="tparams">[<span name="A">A</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.A">A</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;Attribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.A">A</span>, <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.U">U</span>]</span>
+        <span class="name">paramAttr</span><span class="tparams">[<span name="V">V</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>) ⇒ (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="paramAttr[A,T&lt;:AnyRef,U](f:A=&gt;(T=&gt;U)):Attribution.this.CachedParamAttribute[A,T,U]"></a>
-      <a id="paramAttr[A,T&lt;:AnyRef,U]((A)⇒(T)⇒U):CachedParamAttribute[A,T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="paramAttr[V,T&lt;:AnyRef,U](f:V=&gt;(T=&gt;U)):AttributionCore.this.CachedParamAttribute[V,T,U]"></a>
+      <a id="paramAttr[V,T&lt;:AnyRef,U]((V)⇒(T)⇒U):CachedParamAttribute[V,T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">paramAttr</span><span class="tparams">[<span name="A">A</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.A">A</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;Attribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.A">A</span>, <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.U">U</span>]</span>
+        <span class="name">paramAttr</span><span class="tparams">[<span name="V">V</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>) ⇒ (<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;org.kiama.attribution.Attribute[T,U]withAttributionCore.this.Memoised[org.kiama.attribution.ParamAttributeKey,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.V">V</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.paramAttr.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#paramAttr" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="paramAttr[A,T&lt;:AnyRef,U](optNameDef:Option[String])(f:A=&gt;(T=&gt;U)):Attribution.this.CachedParamAttribute[A,T,U]"></a>
-      <a id="paramAttr[A,T&lt;:AnyRef,U](Option[String])((A)⇒(T)⇒U):CachedParamAttribute[A,T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">paramAttr</span><span class="tparams">[<span name="A">A</span>, <span name="T">T &lt;: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>, <span name="U">U</span>]</span><span class="params">(<span name="optNameDef">optNameDef: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.A">A</span>) ⇒ (<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.U">U</span></span>)</span><span class="result">: <a href="#CachedParamAttribute[A,T&lt;:AnyRef,U]extendsA=&gt;Attribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedParamAttribute">CachedParamAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.paramAttr.A">A</span>, <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.paramAttr.U">U</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#parent" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parent:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Option[GraphNodes.this.T]]"></a>
       <a id="parent:CachedAttribute[T,Option[T]]"></a>
@@ -1180,7 +1120,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">parent</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Option">Option</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">parent</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Option">Option</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute the parent of a node</p><div class="fullcomment"><div class="comment cmt"><p>compute the parent of a node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
@@ -1193,7 +1133,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">parents</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">parents</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p><div class="fullcomment"><div class="comment cmt"><p>compute the parents of a node, that is all the chain of parents from this node up to the root of the graph</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
@@ -1275,7 +1215,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <p class="shortcomment cmt">reinit usages</p><div class="fullcomment"><div class="comment cmt"><p>reinit usages</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#resetMemo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.kiama.util.Memoiser#resetMemo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="resetMemo():Unit"></a>
       <a id="resetMemo():Unit"></a>
       <h4 class="signature">
@@ -1287,7 +1227,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="name">resetMemo</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#root" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="root:GraphNodes.this.CachedAttribute[GraphNodes.this.T,GraphNodes.this.T]"></a>
       <a id="root:CachedAttribute[T,T]"></a>
@@ -1297,7 +1237,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">root</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]</span>
+        <span class="name">root</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">the root of the graph, computed from a given node</p><div class="fullcomment"><div class="comment cmt"><p>the root of the graph, computed from a given node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
@@ -1444,25 +1384,25 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">transitiveUses</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Predef.Set">Set</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">transitiveUses</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Predef.Set">Set</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p><div class="fullcomment"><div class="comment cmt"><p>compute all the indirect uses of a given node, that is all the nodes which have this node as a descendent</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](name:String)(f:T=&gt;U):Attribution.this.CachedAttribute[T,U]"></a>
-      <a id="tree[T&lt;:Attributable,U&lt;:Attributable](String)((T)⇒U):CachedAttribute[T,U]"></a>
+    </li><li name="org.kiama.attribution.AttributionCore#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](name:String,f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
+      <a id="tree[T&lt;:Attributable,U&lt;:Attributable](String,(T)⇒U):CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.tree.U">U</span>]</span>
+        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](f:T=&gt;U):Attribution.this.CachedAttribute[T,U]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd></dl></div>
+    </li><li name="org.kiama.attribution.AttributionCore#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](f:T=&gt;U):AttributionCore.this.CachedAttribute[T,U]"></a>
       <a id="tree[T&lt;:Attributable,U&lt;:Attributable]((T)⇒U):CachedAttribute[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1470,23 +1410,13 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.tree.U">U</span>]</span>
+        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.AttributionCore.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.AttributionCore.tree.U">U</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
-    </li><li name="org.kiama.attribution.Attribution#tree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tree[T&lt;:org.kiama.attribution.Attributable,U&lt;:org.kiama.attribution.Attributable](optName:Option[String])(f:T=&gt;U):Attribution.this.CachedAttribute[T,U]"></a>
-      <a id="tree[T&lt;:Attributable,U&lt;:Attributable](Option[String])((T)⇒U):CachedAttribute[T,U]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tree</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>, <span name="U">U &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="optName">optName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="org.kiama.attribution.Attribution.tree.T">T</span>) ⇒ <span class="extype" name="org.kiama.attribution.Attribution.tree.U">U</span></span>)</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<span class="extype" name="org.kiama.attribution.Attribution.tree.T">T</span>, <span class="extype" name="org.kiama.attribution.Attribution.tree.U">U</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attribution</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AttributionCore</dd><dt>Annotations</dt><dd>
+                <span class="name">@macroImpl</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#uses" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="uses:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Set[GraphNodes.this.T]]"></a>
       <a id="uses:CachedAttribute[T,Set[T]]"></a>
@@ -1496,7 +1426,7 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">uses</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribution.this.Attribute[T,U]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Predef.Set">Set</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
+        <span class="name">uses</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>, <span class="extype" name="scala.Predef.Set">Set</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.plan.mscr.Layering.T">T</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">the nodes which have this node as a direct child</p><div class="fullcomment"><div class="comment cmt"><p>the nodes which have this node as a direct child</p><p>for efficiency, this uses a table of all the nodes using a given one, computed from the root
@@ -1579,10 +1509,12 @@ this will be detected by Kiama throwing an exception when fetching the descenden
               <h3>Inherited from <a href="../comp/CollectFunctions.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions">CollectFunctions</a></h3>
             </div><div class="parent" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">
               <h3>Inherited from <a href="../comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></h3>
-            </div><div class="parent" name="org.kiama.attribution.Attribution">
-              <h3>Inherited from <span class="extype" name="org.kiama.attribution.Attribution">Attribution</span></h3>
-            </div><div class="parent" name="org.kiama.attribution.AttributionBase">
-              <h3>Inherited from <span class="extype" name="org.kiama.attribution.AttributionBase">AttributionBase</span></h3>
+            </div><div class="parent" name="org.kiama.attribution.AttributionCore">
+              <h3>Inherited from <span class="extype" name="org.kiama.attribution.AttributionCore">AttributionCore</span></h3>
+            </div><div class="parent" name="org.kiama.util.Memoiser">
+              <h3>Inherited from <span class="extype" name="org.kiama.util.Memoiser">Memoiser</span></h3>
+            </div><div class="parent" name="org.kiama.attribution.AttributionCommon">
+              <h3>Inherited from <span class="extype" name="org.kiama.attribution.AttributionCommon">AttributionCommon</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
