@@ -99,6 +99,13 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     list.map(_._2).run.normalise === "Vector(2)"
   }
 
+  "It is possible to derive an implict Sequence Schema for a type having a WireFormat" >> { implicit sc: SC =>
+    case class Foo(val value: Int)
+    implicit val FooFmt = mkCaseWireFormat(Foo, Foo unapply _)
+    val list = DList(Foo(1), Foo(2)).valueToSequenceFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true).checkpoint
+    list.map(e => Foo(e.value + 1)).run.normalise === "Vector(Foo(2), Foo(3))"
+  }
+
   /**
    * Helper methods and classes
    */
