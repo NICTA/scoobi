@@ -236,9 +236,9 @@ object MapReduceJob {
   }
 
   def cleanConfiguration(job: Job)(implicit configuration: ScoobiConfiguration) {
-    job.getConfiguration.distinctValues("mapred.cache.files",         separator = ",")
-    job.getConfiguration.distinctValues("mapred.classpath",           separator = ":")
-    job.getConfiguration.distinctValues("mapred.job.classpath.files", separator = ":")
+//    job.getConfiguration.distinctValues("mapred.cache.files",         separator = ",")
+//    job.getConfiguration.distinctValues("mapred.classpath",           separator = ":")
+//    job.getConfiguration.distinctValues("mapred.job.classpath.files", separator = ":")
   }
 }
 
