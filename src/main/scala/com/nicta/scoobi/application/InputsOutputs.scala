@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import core.{ScoobiConfiguration, WireFormat, DList, DObject}
+import core.{ScoobiConfiguration, WireFormat}
 import WireFormat._
 import impl.collection._
 import Seqs._

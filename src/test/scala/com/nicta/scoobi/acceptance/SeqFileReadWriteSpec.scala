@@ -25,6 +25,7 @@ import testing._
 import TempFiles._
 import application.Orderings._
 import impl.control.Exceptions._
+import impl.plan.comp.CompNodeData._
 
 class SeqFileReadWriteSpec extends NictaSimpleJobs {
 
@@ -91,6 +92,11 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
         map(d => trye(d._1.charAt(0))(_.getClass.getSimpleName)).run.toSeq ===
         Seq(Left("ClassCastException"), Left("ClassCastException"))
     }
+  }
+
+  "Converters must be used for sinks when they are also used as sources" >> { implicit sc: SC =>
+    val list = DList((1L, 2L)).toSequenceFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true).checkpoint
+    list.map(_._2).run.normalise === "Vector(2)"
   }
 
   /**

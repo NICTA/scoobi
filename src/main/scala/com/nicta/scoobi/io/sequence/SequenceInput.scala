@@ -54,7 +54,6 @@ object SequenceInput {
     DListImpl(new CheckedSeqSource[convK.SeqType, Writable, K](paths, converter, checkKeyType)(convK.mf, implicitly[Manifest[Writable]]))
   }
 
-
   /** Create a new DList from the "value" contents of one or more Sequence Files. Note that the type parameter V
     * is the "converted" Scala type for the Writable value type that must be contained in the the Sequence
     * Files. In the case of a directory being specified, the input forms all the files in that directory. */

@@ -49,7 +49,8 @@ object SequenceOutput {
     val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
     val valueClass = classOf[NullWritable]
 
-    val converter = new OutputConverter[convK.SeqType, NullWritable, K] {
+    val converter = new InputOutputConverter[convK.SeqType, NullWritable, K] {
+      def fromKeyValue(context: InputContext, k: convK.SeqType, v: NullWritable) = convK.fromWritable(k)
       def toKeyValue(k: K)(implicit configuration: Configuration) = (convK.toWritable(k), NullWritable.get)
     }
     new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite)
@@ -61,11 +62,14 @@ object SequenceOutput {
     dl.addSink(valueSchemaSequenceFile(path, overwrite))
 
   def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) = {
+    val keyClass = classOf[NullWritable]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
-    val converter = new OutputConverter[NullWritable, convV.SeqType, V] {
+
+    val converter = new InputOutputConverter[NullWritable, convV.SeqType, V] {
+      def fromKeyValue(context: InputContext, k: NullWritable, v: convV.SeqType) = convV.fromWritable(v)
       def toKeyValue(v: V)(implicit configuration: Configuration) = (NullWritable.get, convV.toWritable(v))
     }
-    new ValueSeqSink[convV.SeqType, V](path, valueClass, converter, overwrite)(convV)
+    new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite)
   }
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
@@ -78,7 +82,8 @@ object SequenceOutput {
     val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
 
-    val converter = new OutputConverter[convK.SeqType, convV.SeqType, (K, V)] {
+    val converter = new InputOutputConverter[convK.SeqType, convV.SeqType, (K, V)] {
+      def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
     new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite)
@@ -88,24 +93,19 @@ object SequenceOutput {
     val keyClass = implicitly[Manifest[K]].runtimeClass.asInstanceOf[Class[K]]
     val valueClass = implicitly[Manifest[V]].runtimeClass.asInstanceOf[Class[V]]
 
-    val converter = new OutputConverter[K, V, (K, V)] {
+    val converter = new InputOutputConverter[K, V, (K, V)] {
+      def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (kv._1, kv._2)
     }
     new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite)
   }
 
-  class ValueSeqSink[V, B : SeqSchema](path: String, valueClass: Class[V], converter: OutputConverter[NullWritable, V, B], overwrite: Boolean) extends
-    SeqSink[NullWritable, V, B](path, classOf[NullWritable], valueClass, converter, overwrite) {
-
-    override def toSource = Some(SequenceInput.valueSource(Seq(path))(implicitly[SeqSchema[B]]))
-  }
-
-    /* Class that abstracts all the common functionality of persisting to sequence files. */
+  /* Class that abstracts all the common functionality of persisting to sequence files. */
   class SeqSink[K, V, B](
       path: String,
       keyClass: Class[K],
       valueClass: Class[V],
-      converter: OutputConverter[K, V, B],
+      converter: InputOutputConverter[K, V, B],
       overwrite: Boolean)
     extends DataSink[K, V, B] {
 
@@ -133,7 +133,7 @@ object SequenceOutput {
 
     lazy val outputConverter = converter
 
-    override def toSource: Option[Source] = Some(SequenceInput.source(Seq(path)))
+    override def toSource: Option[Source] = Some(new SeqSource(Seq(path), converter))
     override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
   }
 }

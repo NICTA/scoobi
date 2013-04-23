@@ -26,6 +26,7 @@ import testing.mutable.NictaSimpleJobs
 import testing.{TempFiles, TestFiles}
 import impl.exec.JobExecException
 import impl.ScoobiConfiguration._
+import impl.plan.comp.CompNodeData._
 
 class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
@@ -169,6 +170,12 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     list.toAvroFile(TestFiles.path(filePath)).persist
     ok
   }
+
+  "Converters must be used for sinks when they are also used as sources" >> { implicit sc: SC =>
+    val list = DList((1L, 2L)).toAvroFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true).checkpoint
+    list.map(_._2).run.normalise === "Vector(2)"
+  }
+
   /**
    * Helper methods and classes
    */

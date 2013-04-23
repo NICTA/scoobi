@@ -44,14 +44,6 @@ trait DataSource[K, V, A] extends Source {
     }
   }
 }
-/**
- * Convert an InputFormat's key-value types to the type produced by a source
- */
-trait InputConverter[K, V, A] extends FromKeyValueConverter {
-  type InputContext = MapContext[K, V, _, _]
-  def asValue(context: InputOutputContext, key: Any, value: Any): Any = fromKeyValue(context.context.asInstanceOf[InputContext], key.asInstanceOf[K], value.asInstanceOf[V])
-  def fromKeyValue(context: InputContext, key: K, value: V): A
-}
 
 /**
  * Internal untyped version of a DataSource
