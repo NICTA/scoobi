@@ -2,22 +2,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>SeqSchema - com.nicta.scoobi.io.sequence.SeqSchema</title>
-          <meta name="description" content="SeqSchema - com.nicta.scoobi.io.sequence.SeqSchema" />
-          <meta name="keywords" content="SeqSchema com.nicta.scoobi.io.sequence.SeqSchema" />
+          <title>InputOutputConverter - com.nicta.scoobi.core.InputOutputConverter</title>
+          <meta name="description" content="InputOutputConverter - com.nicta.scoobi.core.InputOutputConverter" />
+          <meta name="keywords" content="InputOutputConverter com.nicta.scoobi.core.InputOutputConverter" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
       
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.io.sequence.SeqSchema$';
+            var url = '../../../../index.html';
+            var hash = 'com.nicta.scoobi.core.InputOutputConverter';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,26 +27,26 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="SeqSchema.html" title="Go to companion"><img src="../../../../../lib/object_to_trait_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.sequence">sequence</a></p>
-        <h1><a href="SeqSchema.html" title="Go to companion">SeqSchema</a></h1>
+        <img src="../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
+        <h1>InputOutputConverter</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqSchema</span>
+        <span class="name">InputOutputConverter</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span>] with <a href="InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span>]</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>fusion of both trait when bi-directional conversion is possible</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span>], <span class="extype" name="com.nicta.scoobi.core.FromKeyValueConverter">FromKeyValueConverter</span>, <a href="OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span>], <span class="extype" name="com.nicta.scoobi.core.ToKeyValueConverter">ToKeyValueConverter</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.io.sequence.SeqSchema"><span>SeqSchema</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.InputOutputConverter"><span>InputOutputConverter</span></li><li class="in" name="com.nicta.scoobi.core.InputConverter"><span>InputConverter</span></li><li class="in" name="com.nicta.scoobi.core.FromKeyValueConverter"><span>FromKeyValueConverter</span></li><li class="in" name="com.nicta.scoobi.core.OutputConverter"><span>OutputConverter</span></li><li class="in" name="com.nicta.scoobi.core.ToKeyValueConverter"><span>ToKeyValueConverter</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -84,12 +84,57 @@
         <div id="allMembers">
         
 
-        
-
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.core.InputConverter.InputContext" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="InputContext=org.apache.hadoop.mapreduce.MapContext[K,V,_,_]"></a>
+      <a id="InputContext:InputContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">InputContext</span><span class="result"> = <span class="extype" name="org.apache.hadoop.mapreduce.MapContext">MapContext</span>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, _, _]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.nicta.scoobi.core.InputConverter#fromKeyValue" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="fromKeyValue(context:InputConverter.this.InputContext,key:K,value:V):A"></a>
+      <a id="fromKeyValue(InputContext,K,V):B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromKeyValue</span><span class="params">(<span name="context">context: <a href="#InputContext=org.apache.hadoop.mapreduce.MapContext[K,V,_,_]" class="extmbr" name="com.nicta.scoobi.core.InputOutputConverter.InputContext">InputContext</a></span>, <span name="key">key: <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span></span>, <span name="value">value: <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.OutputConverter#toKeyValue" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="toKeyValue(x:B)(implicitconfiguration:org.apache.hadoop.conf.Configuration):(K,V)"></a>
+      <a id="toKeyValue(B)(Configuration):(K,V)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toKeyValue</span><span class="params">(<span name="x">x: <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>)</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -99,7 +144,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -138,7 +183,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -155,123 +200,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.BoolSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BoolSchema"></a>
-      <a id="BoolSchema:BoolSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$BoolSchema$.html"><span class="name">BoolSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.ByteSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ByteSchema"></a>
-      <a id="ByteSchema:ByteSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$ByteSchema$.html"><span class="name">ByteSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema#BytesConv" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BytesConv[CC[X]&lt;:Traversable[X]](implicitbf:scala.collection.generic.CanBuildFrom[_,Byte,CC[Byte]]):com.nicta.scoobi.io.sequence.SeqSchema[CC[Byte]]{typeSeqType=org.apache.hadoop.io.BytesWritable;valb:scala.collection.mutable.Builder[Byte,CC[Byte]]}"></a>
-      <a id="BytesConv[CC[X]&lt;:Traversable[X]](CanBuildFrom[_,Byte,CC[Byte]]):SeqSchema[CC[Byte]]{.../*2definitionsintyperefinement*/}"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">BytesConv</span><span class="tparams">[<span name="CC">CC<span class="tparams">[<span name="X">X</span>]</span> &lt;: <a href="../../../../../scala/package.html#Traversable[+A]=Traversable[A]" class="extmbr" name="scala.Traversable">Traversable</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.BytesConv.CC.X">X</span>]</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="bf">bf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[_, <span class="extype" name="scala.Byte">Byte</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.BytesConv.CC">CC</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result">: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.BytesConv.CC">CC</span>[<span class="extype" name="scala.Byte">Byte</span>]] { ... /* 2 definitions in type refinement */ }</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.DoubleSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DoubleSchema"></a>
-      <a id="DoubleSchema:DoubleSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$DoubleSchema$.html"><span class="name">DoubleSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Double">Double</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.FloatSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="FloatSchema"></a>
-      <a id="FloatSchema:FloatSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$FloatSchema$.html"><span class="name">FloatSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Float">Float</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.IntSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="IntSchema"></a>
-      <a id="IntSchema:IntSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$IntSchema$.html"><span class="name">IntSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Int">Int</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.LongSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LongSchema"></a>
-      <a id="LongSchema:LongSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$LongSchema$.html"><span class="name">LongSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema.StringSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="StringSchema"></a>
-      <a id="StringSchema:StringSchema"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SeqSchema$$StringSchema$.html"><span class="name">StringSchema</span></a><span class="result"> extends <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema#WritableSeqSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WritableSeqSchema[T&lt;:org.apache.hadoop.io.Writable](implicitevidence$1:Manifest[T]):com.nicta.scoobi.io.sequence.SeqSchema[T]{typeSeqType=T}"></a>
-      <a id="WritableSeqSchema[T&lt;:Writable](Manifest[T]):SeqSchema[T]{typeSeqType=T}"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WritableSeqSchema</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.WritableSeqSchema.T">T</span>]</span>)</span><span class="result">: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.WritableSeqSchema.T">T</span>] { type SeqType = T }</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -285,6 +213,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.OutputConverter#asKeyValue" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asKeyValue(x:Any)(implicitconfiguration:org.apache.hadoop.conf.Configuration):(Any,Any)"></a>
+      <a id="asKeyValue(Any)(Configuration):(Any,Any)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asKeyValue</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>)</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.nicta.scoobi">com.nicta.scoobi</a>] </dd><dt>Definition Classes</dt><dd><a href="OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a> → ToKeyValueConverter</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputConverter#asValue" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asValue(context:com.nicta.scoobi.core.InputOutputContext,key:Any,value:Any):Any"></a>
+      <a id="asValue(InputOutputContext,Any,Any):Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asValue</span><span class="params">(<span name="context">context: <a href="InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>, <span name="key">key: <span class="extype" name="scala.Any">Any</span></span>, <span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a> → FromKeyValueConverter</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -294,10 +248,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
@@ -310,7 +264,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -339,7 +293,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
@@ -391,7 +345,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -495,20 +449,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSchema#wireformatSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="wireformatSchema[A](implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.io.sequence.SeqSchema[A]"></a>
-      <a id="wireformatSchema[A](WireFormat[A]):SeqSchema[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">wireformatSchema</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.wireformatSchema.A">A</span>]</span>)</span><span class="result">: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.wireformatSchema.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Sequence Schema for any type having a WireFormat
-</p>
     </li></ol>
             </div>
 
@@ -518,8 +458,16 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+        <div class="parent" name="com.nicta.scoobi.core.InputConverter">
+              <h3>Inherited from <a href="InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span>]</h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.FromKeyValueConverter">
+              <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.FromKeyValueConverter">FromKeyValueConverter</span></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.OutputConverter">
+              <h3>Inherited from <a href="OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.InputOutputConverter.B">B</span>]</h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.ToKeyValueConverter">
+              <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.ToKeyValueConverter">ToKeyValueConverter</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

@@ -47,9 +47,6 @@
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.B">B</span>], <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="SequenceOutput$$ValueSeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.ValueSeqSink">ValueSeqSink</a></div>
         </div></div>
         
 
@@ -88,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(path:String,keyClass:Class[K],valueClass:Class[V],converter:com.nicta.scoobi.core.OutputConverter[K,V,B],overwrite:Boolean):com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink[K,V,B]"></a>
+      <a id="&lt;init&gt;(path:String,keyClass:Class[K],valueClass:Class[V],converter:com.nicta.scoobi.core.InputOutputConverter[K,V,B],overwrite:Boolean):com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink[K,V,B]"></a>
       <a id="&lt;init&gt;:SeqSink[K,V,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -96,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqSink</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keyClass">keyClass: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>]</span>, <span name="valueClass">valueClass: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>]</span>, <span name="converter">converter: <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.B">B</span>]</span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">SeqSink</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keyClass">keyClass: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>]</span>, <span name="valueClass">valueClass: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>]</span>, <span name="converter">converter: <a href="../../core/InputOutputConverter.html" class="extype" name="com.nicta.scoobi.core.InputOutputConverter">InputOutputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.B">B</span>]</span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
       
@@ -493,15 +490,15 @@
       </h4>
       <p class="shortcomment cmt">Configure the DataSink.</p><div class="fullcomment"><div class="comment cmt"><p>Configure the DataSink.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink#outputConverter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputConverter:com.nicta.scoobi.core.OutputConverter[K,V,B]"></a>
-      <a id="outputConverter:OutputConverter[K,V,B]"></a>
+      <a id="outputConverter:com.nicta.scoobi.core.InputOutputConverter[K,V,B]"></a>
+      <a id="outputConverter:InputOutputConverter[K,V,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">outputConverter</span><span class="result">: <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.B">B</span>]</span>
+        <span class="name">outputConverter</span><span class="result">: <a href="../../core/InputOutputConverter.html" class="extype" name="com.nicta.scoobi.core.InputOutputConverter">InputOutputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
