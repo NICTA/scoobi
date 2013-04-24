@@ -58,7 +58,7 @@ object DistCache {
   def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
     /* Get distributed cache file. */
     val path = mkPath(configuration, tag)
-    val cacheFiles = DistributedCache.getLocalCacheFiles(configuration)
+    val cacheFiles = DistributedCache.getCacheFiles(configuration)
     cacheFiles.find(_.toString == path.toString).flatMap { uri =>
       deserialise(configuration)(new Path(uri.toString))
     }
