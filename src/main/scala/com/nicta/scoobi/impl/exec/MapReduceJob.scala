@@ -34,7 +34,7 @@ import io._
 import mapreducer._
 import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
-import MapReduceJob.{configureJar,cleanConfiguration}
+import MapReduceJob.configureJar
 import control.Exceptions._
 import monitor.Loggable
 import Loggable._
@@ -86,7 +86,6 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     configureCombiners(jar)
     configureReducers(jar)
     configureJar(jar)
-    cleanConfiguration(job)
     jar.close(configuration)
 
     FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
@@ -235,11 +234,6 @@ object MapReduceJob {
     configuration.userClasses.map { case (name, bytecode) => jar.addClassFromBytecode(name, bytecode) }
   }
 
-  def cleanConfiguration(job: Job)(implicit configuration: ScoobiConfiguration) {
-//    job.getConfiguration.distinctValues("mapred.cache.files",         separator = ",")
-//    job.getConfiguration.distinctValues("mapred.classpath",           separator = ":")
-//    job.getConfiguration.distinctValues("mapred.job.classpath.files", separator = ":")
-  }
 }
 
 /* Helper class to track progress of Map or Reduce tasks and whether or not
