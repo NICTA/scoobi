@@ -35,7 +35,7 @@ import org.kiama.attribution.Attributable
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
-trait Optimiser extends CompNodes with Rewriter {
+trait Optimiser extends CompNodes with MemoRewriter {
   implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**
@@ -72,9 +72,9 @@ trait Optimiser extends CompNodes with Rewriter {
   def mustBeRead(pd: ParallelDo): Boolean =
     pd.bridgeStore.map(bs => hasBeenFilled(bs) || bs.isCheckpoint).getOrElse(false) || !pd.nodeSinks.isEmpty
 
-  def traverseOncebu(s: =>Strategy) = repeatTraversal(oncebu, s)
-  def traverseSomebu(s: =>Strategy) = repeatTraversal(somebu, s)
-  def traverseSometd(s: =>Strategy) = repeatTraversal(sometd, s)
+  def traverseOncebu(s: Strategy) = repeatTraversal(oncebu, s)
+  def traverseSomebu(s: Strategy) = repeatTraversal(somebu, s)
+  def traverseSometd(s: Strategy) = repeatTraversal(sometd, s)
 
   /**
    * apply a traversal strategy but make sure that:
@@ -83,33 +83,20 @@ trait Optimiser extends CompNodes with Rewriter {
    * - the strategy to execute is memoised, i.e. if a node has already been processed its result must be reused
    *   this ensures that rewritten shared nodes are not duplicated
    */
-  def repeatTraversal(traversal: (String, Strategy) => Strategy, s: =>Strategy) = {
-    val strategy = s
-    val memoised = memo(strategy)
-    val traversedMemoised = traversal(s.name, memoised)
-    val result = resetTree(traversedMemoised)
-    repeat(result)
+  def repeatTraversal(traversal: (String, Strategy) => Strategy, s: Strategy) = {
+    repeat(resetTree(traversal(s.name, s)))
   }
 
   private def resetTree(s: =>Strategy): Strategy =  new Strategy("resetTree") {
     val body = (t1 : Any) => {
-      dupCache.clear
       t1 match {
         case c: CompNode => reinitAttributable(c)
         case _           => ()
       }
-      val result = s(t1)
-      dupCache.clear
-      result
+      s(t1)
     }
   }
 
-  /** override the duplication strategy of Product elements so that an existing rewritten node is not rewritten twice */
-  private lazy val dupCache = new mutable.HashMap[Any,Any]
-
-  override protected def dup[T <: Product](t: T, children: Array[AnyRef]): T = {
-    dupCache.getOrElseUpdate(t, super.dup(t, children)).asInstanceOf[T]
-  }
   /**
    * add a bridgeStore if it is necessary to materialise a value and no bridge is available
    */

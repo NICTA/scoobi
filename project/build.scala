@@ -73,8 +73,6 @@ object build extends Build {
       "org.apache.avro"                   %  "avro"                      % "1.7.4",
       "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
       "com.googlecode.kiama"              %% "kiama"                     % "1.5.0-SNAPSHOT",
-      "org.bitbucket.inkytonik.dsinfo"    %% "dsinfo"                    % "0.1.0",
-      "org.bitbucket.inkytonik.dsprofile" %% "dsprofile"                 % "0.2.0",
       "com.github.mdr"                    %  "ascii-graphs_2.10.0"       % "0.0.2",
       "org.scalaz"                        %% "scalaz-core"               % "7.0.0",
       "org.scalaz"                        %% "scalaz-concurrent"         % "7.0.0",
