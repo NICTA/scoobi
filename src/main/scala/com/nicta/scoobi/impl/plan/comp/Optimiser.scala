@@ -117,8 +117,8 @@ trait Optimiser extends CompNodes with MemoRewriter {
    * all the strategies to apply, in sequence
    */
   def allStrategies =
-    attempt(combineToParDo)                 <*
-    attempt(parDoFuse     )                 <*
+    combineToParDo                          <*
+    parDoFuse                               <*
     attempt(addBridgeStore)                 <*
     attempt(addParallelDoForNonFilledSinks)
 
