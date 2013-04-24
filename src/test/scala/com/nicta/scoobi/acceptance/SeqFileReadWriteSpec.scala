@@ -54,6 +54,20 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
     fromSequenceFile[String, String](filePath).run.sorted must_== Vector(("a", "b"), ("c", "d"))
   }
 
+  "Writing to a sequence file - keys only" >> { implicit sc: SC =>
+    val filePath = createTempFilePath("sequence-file")
+
+    DList(("a", "b"), ("c", "d")).keyToSequenceFile(filePath).run
+    keyFromSequenceFile[String](filePath).run.sorted must_== Vector("a", "c")
+  }
+
+  "Writing to a sequence file - values only" >> { implicit sc: SC =>
+    val filePath = createTempFilePath("sequence-file")
+
+    DList(("a", "b"), ("c", "d")).valueToSequenceFile(filePath).run
+    valueFromSequenceFile[String](filePath).run.sorted must_== Vector("b", "d")
+  }
+
   "Reading Text -> IntWritable, Writing BytesWritable -> DoubleWritable" >> { implicit sc: SC =>
     // store test data in a sequence file
     val tmpSeqFile = createTempSeqFile(DList(("a", 1), ("b", 2)))
