@@ -53,6 +53,7 @@ object SequenceOutput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: NullWritable) = convK.fromWritable(k)
       def toKeyValue(kv: K)(implicit configuration: Configuration) = kv match {
         case (k1, _) => (convK.toWritable(k1.asInstanceOf[K]), NullWritable.get)
+        case k1      => (convK.toWritable(k1.asInstanceOf[K]), NullWritable.get)
       }
     }
     new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite)
@@ -71,6 +72,7 @@ object SequenceOutput {
       def fromKeyValue(context: InputContext, k: NullWritable, v: convV.SeqType) = convV.fromWritable(v)
       def toKeyValue(kv: V)(implicit configuration: Configuration) = kv match {
         case (_,v) => (NullWritable.get, convV.toWritable(v.asInstanceOf[V]))
+        case v     => (NullWritable.get, convV.toWritable(v.asInstanceOf[V]))
       }
     }
     new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite)
