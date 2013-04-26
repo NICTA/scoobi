@@ -26,6 +26,7 @@ import testing.mutable.{UnitSpecification => UnitSpec}
 import application._
 import core._
 import HadoopLogFactory._
+import org.specs2.specification.Context
 
 class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 

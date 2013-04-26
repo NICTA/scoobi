@@ -74,8 +74,8 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
     def outside = ScoobiConfiguration()
-    override def apply[R : AsResult](a: ScoobiConfiguration => R) = {
-      changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(a) })
+    def around[R : AsResult](r: =>R) = {
+      changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(r) })
     }
   }
   /** execute an example body on the cluster */
@@ -91,53 +91,50 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for showing that an execution is skipped
    */
   class SkippedHadoopContext(name: String) extends HadoopContext {
-    def outside = configureForLocal(ScoobiConfiguration())
+    lazy val outside = configureForLocal(ScoobiConfiguration())
 
-    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
+    def around[R : AsResult](r: =>R) =
       Skipped("excluded", "No "+name+" execution"+time_?)
   }
   /**
    * Context for running examples in memory
    */
   class InMemoryHadoopContext extends HadoopContext {
-    def outside = configureForInMemory(ScoobiConfiguration())
+    lazy val outside = configureForInMemory(ScoobiConfiguration())
 
-    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
-      inMemory(cleanup(a).apply(outside))
+    def around[R : AsResult](r: =>R) =
+      try     inMemory[R](r)
+      finally cleanup(outside)
   }
   /**
    * Context for running examples locally
    */
   class LocalHadoopContext extends HadoopContext {
-    def outside = configureForLocal(ScoobiConfiguration())
+    lazy val outside = configureForLocal(ScoobiConfiguration())
 
-    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
-      locally(cleanup(a).apply(outside))
+    def around[R : AsResult](r: =>R) =
+      try     locally(r)
+      finally cleanup(outside)
   }
 
   /**
    * Context for running examples on the cluster
    */
   class ClusterHadoopContext extends HadoopContext {
-    def outside = configureForCluster(ScoobiConfiguration())
+    lazy val outside = configureForCluster(ScoobiConfiguration())
 
-    override def apply[R : AsResult](a: ScoobiConfiguration => R) =
-      remotely(cleanup(a).apply(outside))
+    def around[R : AsResult](r: =>R) =
+      try     remotely(r)
+      finally cleanup(outside)
 
     override def isRemote = true
-  }
-
-  /** @return a composed function cleaning up after the job execution */
-  def cleanup[R : AsResult](a: ScoobiConfiguration => R): ScoobiConfiguration => R = {
-    if (!keepFiles) (c: ScoobiConfiguration) => try { a(c) } finally { cleanup(c) }
-    else            a
   }
 
   /** cleanup temporary files after job execution */
   def cleanup(c: ScoobiConfiguration) {
     // the 2 actions are isolated. In case the first one fails, the second one has a chance to succeed.
-    try { c.deleteWorkingDirectory }
-    finally { TestFiles.deleteFiles(c) }
+    try     c.deleteWorkingDirectory
+    finally TestFiles.deleteFiles(c)
   }
 
   /** change the separator of a Result */
@@ -148,7 +145,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * the isLocalOnly method provides a hint to speed-up the execution (because there's no need to upload jars if a run
    * is local)
    */
-  trait HadoopContext extends Outside[ScoobiConfiguration] {
+  trait HadoopContext extends AroundOutside[ScoobiConfiguration] {
     def isRemote = false
     def time_? = if (outer.showTimes) " time" else ""
 
