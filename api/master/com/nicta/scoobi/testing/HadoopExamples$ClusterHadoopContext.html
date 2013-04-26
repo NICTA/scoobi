@@ -47,7 +47,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Context for running examples on the cluster
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>, <span class="extype" name="org.specs2.specification.Outside">Outside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>], <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>, <span class="extype" name="org.specs2.specification.AroundOutside">AroundOutside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>], <span class="extype" name="org.specs2.specification.Outside">Outside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>], <span class="extype" name="org.specs2.specification.Around">Around</span>, <span class="extype" name="org.specs2.specification.Context">Context</span>, <span class="extype" name="org.specs2.specification.Scope">Scope</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -65,7 +65,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext"><span>ClusterHadoopContext</span></li><li class="in" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext"><span>HadoopContext</span></li><li class="in" name="org.specs2.specification.Outside"><span>Outside</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext"><span>ClusterHadoopContext</span></li><li class="in" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext"><span>HadoopContext</span></li><li class="in" name="org.specs2.specification.AroundOutside"><span>AroundOutside</span></li><li class="in" name="org.specs2.specification.Outside"><span>Outside</span></li><li class="in" name="org.specs2.specification.Around"><span>Around</span></li><li class="in" name="org.specs2.specification.Context"><span>Context</span></li><li class="in" name="org.specs2.specification.Scope"><span>Scope</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -172,8 +172,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[R](a:com.nicta.scoobi.core.ScoobiConfiguration=&gt;R)(implicitevidence$8:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
+    </li><li name="org.specs2.specification.Around#andThen" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="andThen(a:org.specs2.specification.Around):org.specs2.specification.Around"></a>
+      <a id="andThen(Around):Around"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">andThen</span><span class="params">(<span name="a">a: <span class="extype" name="org.specs2.specification.Around">Around</span></span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.Around">Around</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Around</dd></dl></div>
+    </li><li name="org.specs2.specification.AroundOutside#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[R](a:T=&gt;R)(implicitevidence$4:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
       <a id="apply[R]((ScoobiConfiguration)⇒R)(AsResult[R]):Result"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -181,10 +194,49 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: (<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext.apply.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext.apply.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
+        <span class="name">apply</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: (<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="org.specs2.specification.AroundOutside.apply.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="org.specs2.specification.AroundOutside.apply.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext">ClusterHadoopContext</a> → Outside</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AroundOutside → Outside</dd></dl></div>
+    </li><li name="org.specs2.specification.Around#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[T](a:=&gt;T)(implicitevidence$2:org.specs2.execute.AsResult[T]):org.specs2.execute.Result"></a>
+      <a id="apply[T](⇒T)(AsResult[T]):Result"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="a">a: ⇒ <span class="extype" name="org.specs2.specification.Around.apply.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="org.specs2.specification.Around.apply.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Around → Context</dd></dl></div>
+    </li><li name="org.specs2.specification.Outside#applyOutside" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="applyOutside[R](a:T=&gt;R)(implicitevidence$2:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
+      <a id="applyOutside[R]((ScoobiConfiguration)⇒R)(AsResult[R]):Result"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">applyOutside</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: (<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="org.specs2.specification.Outside.applyOutside.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="org.specs2.specification.Outside.applyOutside.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Outside</dd></dl></div>
+    </li><li name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext#around" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="around[R](r:=&gt;R)(implicitevidence$8:org.specs2.execute.AsResult[R]):org.specs2.execute.Result"></a>
+      <a id="around[R](⇒R)(AsResult[R]):Result"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">around</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="r">r: ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext.around.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext.around.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.specs2.execute.Result">Result</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.ClusterHadoopContext">ClusterHadoopContext</a> → AroundOutside → Around</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -214,6 +266,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="org.specs2.specification.Around#compose" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compose(a:org.specs2.specification.Around):org.specs2.specification.Around"></a>
+      <a id="compose(Around):Around"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compose</span><span class="params">(<span name="a">a: <span class="extype" name="org.specs2.specification.Around">Around</span></span>)</span><span class="result">: <span class="extype" name="org.specs2.specification.Around">Around</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Around</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -353,7 +418,7 @@
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
         <span class="name">outside</span><span class="result">: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>
@@ -458,8 +523,16 @@
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">
               <h3>Inherited from <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></h3>
+            </div><div class="parent" name="org.specs2.specification.AroundOutside">
+              <h3>Inherited from <span class="extype" name="org.specs2.specification.AroundOutside">AroundOutside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</h3>
             </div><div class="parent" name="org.specs2.specification.Outside">
               <h3>Inherited from <span class="extype" name="org.specs2.specification.Outside">Outside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</h3>
+            </div><div class="parent" name="org.specs2.specification.Around">
+              <h3>Inherited from <span class="extype" name="org.specs2.specification.Around">Around</span></h3>
+            </div><div class="parent" name="org.specs2.specification.Context">
+              <h3>Inherited from <span class="extype" name="org.specs2.specification.Context">Context</span></h3>
+            </div><div class="parent" name="org.specs2.specification.Scope">
+              <h3>Inherited from <span class="extype" name="org.specs2.specification.Scope">Scope</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

@@ -107,7 +107,7 @@
       <p class="comment cmt">Context for running examples on the cluster
 </p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
+      <a id="HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
       <a id="HadoopContext:HadoopContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -115,7 +115,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopExamples$HadoopContext.html"><span class="name">HadoopContext</span></a><span class="result"> extends <span class="extype" name="org.specs2.specification.Outside">Outside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
+        <a href="HadoopExamples$HadoopContext.html"><span class="name">HadoopContext</span></a><span class="result"> extends <span class="extype" name="org.specs2.specification.AroundOutside">AroundOutside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
       </span>
       </h4>
       <p class="comment cmt">trait for creating contexts having ScoobiConfigurations</p>
@@ -297,7 +297,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">aroundContext</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">aroundContext</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p><div class="fullcomment"><div class="comment cmt"><p>make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -336,7 +336,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">chain</span><span class="params">(<span name="contexts">contexts: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>)</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a> { def outside: com.nicta.scoobi.impl.ScoobiConfigurationImpl }</span>
+        <span class="name">chain</span><span class="params">(<span name="contexts">contexts: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>)</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a> { def outside: com.nicta.scoobi.impl.ScoobiConfigurationImpl }</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a context chaining a sequence of contexts</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -366,19 +366,6 @@
       </span>
       </h4>
       <p class="shortcomment cmt">cleanup temporary files after job execution</p><div class="fullcomment"><div class="comment cmt"><p>cleanup temporary files after job execution</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.testing.HadoopExamples#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="cleanup[R](a:com.nicta.scoobi.core.ScoobiConfiguration=&gt;R)(implicitevidence$9:org.specs2.execute.AsResult[R]):com.nicta.scoobi.core.ScoobiConfiguration=&gt;R"></a>
-      <a id="cleanup[R]((ScoobiConfiguration)⇒R)(AsResult[R]):(ScoobiConfiguration)⇒R"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cleanup</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="a">a: (<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.cleanup.R">R</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.specs2.execute.AsResult">AsResult</span>[<span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.cleanup.R">R</span>]</span>)</span><span class="result">: (<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="com.nicta.scoobi.testing.HadoopExamples.cleanup.R">R</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a composed function cleaning up after the job execution</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -404,7 +391,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">cluster</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">cluster</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">context for cluster execution</p><div class="fullcomment"><div class="comment cmt"><p>context for cluster execution</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -486,7 +473,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">context</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">context</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">define the context to use: local, cluster, localThenCluster</p><div class="fullcomment"><div class="comment cmt"><p>define the context to use: local, cluster, localThenCluster</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -499,7 +486,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">contexts</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>
+        <span class="name">contexts</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">all contexts to run</p><div class="fullcomment"><div class="comment cmt"><p>all contexts to run</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -739,7 +726,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inMemory</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">inMemory</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">context for in memory execution</p><div class="fullcomment"><div class="comment cmt"><p>context for in memory execution</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -910,7 +897,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">local</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">local</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">context for local execution</p><div class="fullcomment"><div class="comment cmt"><p>context for local execution</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -1203,7 +1190,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">skippedContext</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#HadoopContextextendsOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">skippedContext</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">context for showing a skipped execution</p><div class="fullcomment"><div class="comment cmt"><p>context for showing a skipped execution</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
