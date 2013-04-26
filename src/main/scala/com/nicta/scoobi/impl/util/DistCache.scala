@@ -21,6 +21,8 @@ import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._
 import org.apache.hadoop.conf.Configuration
 import Configurations._
+import ScoobiConfiguration._
+import java.net.URI
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialise objects to XML strings and then send out via Hadoop's
@@ -56,10 +58,15 @@ object DistCache {
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
   def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
-    /* Get distributed cache file. */
     val path = mkPath(configuration, tag)
-    val cacheFiles = DistributedCache.getCacheFiles(configuration)
-    cacheFiles.find(_.toString == path.toString).flatMap { uri =>
+
+    val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration)).getOrElse(Array[URI]())
+    val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
+    val cacheFiles =
+      if (configuration.isLocal) remoteCacheFiles.zip(remoteCacheFiles)
+    else                         remoteCacheFiles.zip(localCacheFiles)
+
+    cacheFiles.find(_._1.toString == path.toString).flatMap { case (_, uri) =>
       deserialise(configuration)(new Path(uri.toString))
     }
   }
