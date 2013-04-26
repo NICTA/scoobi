@@ -262,8 +262,8 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags {
       val list = DList(1, 2)
       val (dir1, dir2) = (TempFiles.createTempDir("avro-in"), TempFiles.createTempDir("avro-out"))
       list.sum.toAvroFile(path(dir1.getPath)).run
-      val data = objectFromAvroFile[Int](dir1.getPath).map(_ + 1)
-      persist(data.toTextFile(dir2.getPath))
+      val data = objectFromAvroFile[Int](path(dir1.getPath)).map(_ + 1)
+      persist(data.toTextFile(path(dir2.getPath)))
       data.run === 4
     }
 
@@ -271,8 +271,8 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags {
       val list = DList(1, 2)
       val (dir1, dir2) = (TempFiles.createTempDir("avro-in"), TempFiles.createTempDir("avro-out"))
       list.toAvroFile(path(dir1.getPath)).run
-      val data = fromAvroFile[Int](dir1.getPath).map(_ + 1)
-      persist(data.toTextFile(dir2.getPath))
+      val data = fromAvroFile[Int](path(dir1.getPath)).map(_ + 1)
+      persist(data.toTextFile(path(dir2.getPath)))
       data.run.normalise === "Vector(2, 3)"
     }
   }
