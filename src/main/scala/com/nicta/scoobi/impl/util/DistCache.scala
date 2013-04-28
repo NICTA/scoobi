@@ -63,8 +63,8 @@ object DistCache {
     val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration)).getOrElse(Array[URI]())
     val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
     val cacheFiles =
-      if (configuration.isLocal) remoteCacheFiles.zip(remoteCacheFiles)
-    else                         remoteCacheFiles.zip(localCacheFiles)
+      if (configuration.isRemote) remoteCacheFiles.zip(localCacheFiles)
+    else                          remoteCacheFiles.zip(remoteCacheFiles)
 
     cacheFiles.find(_._1.toString == path.toString).flatMap { case (_, uri) =>
       deserialise(configuration)(new Path(uri.toString))
