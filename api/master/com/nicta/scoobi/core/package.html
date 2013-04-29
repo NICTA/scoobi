@@ -91,19 +91,19 @@
       <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
 environment with an do-nothing setup and cleanup phases
 </p>
-    </li><li name="com.nicta.scoobi.core.Checkpoint" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="CheckpointextendsAnyRef"></a>
+    </li><li name="com.nicta.scoobi.core.Checkpoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CheckpointextendsProductwithSerializable"></a>
       <a id="Checkpoint:Checkpoint"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Checkpoint.html"><span class="name">Checkpoint</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <a href="Checkpoint.html"><span class="name">Checkpoint</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
-      <p class="comment cmt">Marks a Sink as a possible checkpoint in the computations</p>
+      <p class="comment cmt">store the output path of a Sink as a checkpoint</p>
     </li><li name="com.nicta.scoobi.core.CompNode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="CompNodeextendsAttributable"></a>
       <a id="CompNode:CompNode"></a>
@@ -117,6 +117,19 @@ environment with an do-nothing setup and cleanup phases
       </span>
       </h4>
       <p class="comment cmt">Base trait for &quot;computation nodes&quot; with no generic type information for easier rewriting</p>
+    </li><li name="com.nicta.scoobi.core.Compression" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CompressionextendsProductwithSerializable"></a>
+      <a id="Compression:Compression"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Compression.html"><span class="name">Compression</span></a><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="defval" name="org.apache.hadoop.io.SequenceFile.CompressionType.BLOCK">...</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">store the compression parameters for sinks</p>
     </li><li name="com.nicta.scoobi.core.DList" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="DList[A]extendsDataSinkswithPersistent[Seq[A]]"></a>
       <a id="DList[A]:DList[A]"></a>
@@ -145,7 +158,7 @@ environment with an do-nothing setup and cleanup phases
       <p class="comment cmt"> A wrapper around an object that is part of the graph of a distributed computation
 </p>
     </li><li name="com.nicta.scoobi.core.DataSink" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="DataSink[K,V,B]extendsSinkwithCheckpoint"></a>
+      <a id="DataSink[K,V,B]extendsSink"></a>
       <a id="DataSink[K,V,B]:DataSink[K,V,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -153,7 +166,7 @@ environment with an do-nothing setup and cleanup phases
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DataSink.html"><span class="name">DataSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span> with <a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></span>
+        <a href="DataSink.html"><span class="name">DataSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
       <p class="comment cmt">An output store from a MapReduce job
@@ -450,6 +463,20 @@ environment
       </h4>
       <p class="comment cmt">This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
 added to the classpath.</p>
+    </li><li name="com.nicta.scoobi.core.SinkSource" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SinkSourceextendsSink"></a>
+      <a id="SinkSource:SinkSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SinkSource.html"><span class="name">SinkSource</span></a><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">This is a Sink which can also be used as a Source
+</p>
     </li><li name="com.nicta.scoobi.core.UniqueInt" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="UniqueIntextendsAnyRef"></a>
       <a id="UniqueInt:UniqueInt"></a>
@@ -558,6 +585,19 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="Bridge$.html"><span class="name">Bridge</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.Checkpoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Checkpoint"></a>
+      <a id="Checkpoint:Checkpoint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Checkpoint$.html"><span class="name">Checkpoint</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       

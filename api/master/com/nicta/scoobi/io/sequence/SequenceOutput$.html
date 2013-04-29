@@ -84,23 +84,7 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SeqSink[K,V,B]extendsDataSink[K,V,B]"></a>
-      <a id="SeqSink[K,V,B]:SeqSink[K,V,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="SequenceOutput$$SeqSink.html"><span class="name">SeqSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink.B">B</span>]</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -282,7 +266,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#keySchemaSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="keySchemaSequenceFile[K](path:String,overwrite:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K]):com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink[convK.SeqType,org.apache.hadoop.io.NullWritable,K]"></a>
+      <a id="keySchemaSequenceFile[K](path:String,overwrite:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K]):com.nicta.scoobi.io.sequence.SeqSink[convK.SeqType,org.apache.hadoop.io.NullWritable,K]"></a>
       <a id="keySchemaSequenceFile[K](String,Boolean)(SeqSchema[K]):SeqSink[SeqType,NullWritable,K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -290,7 +274,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">keySchemaSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.keySchemaSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="SequenceOutput$$SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a>[<a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.keySchemaSequenceFile.K">K</span>]</span>
+        <span class="name">keySchemaSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.keySchemaSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSink">SeqSink</a>[<a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.keySchemaSequenceFile.K">K</span>]</span>
       </span>
       </h4>
       
@@ -308,19 +292,6 @@
       </h4>
       <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
 to disk as the &quot;key&quot; component in a Sequence File.</p>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#logger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="logger:org.apache.commons.logging.Log"></a>
-      <a id="logger:Log"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -361,28 +332,28 @@ to disk as the &quot;key&quot; component in a Sequence File.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#schemaSequenceSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="schemaSequenceSink[K,V](path:String,overwrite:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink[convK.SeqType,convV.SeqType,(K,V)]"></a>
-      <a id="schemaSequenceSink[K,V](String,Boolean)(SeqSchema[K],SeqSchema[V]):SeqSink[SeqType,SeqType,(K,V)]"></a>
+      <a id="schemaSequenceSink[K,V](path:String,overwrite:Boolean,checkpoint:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.io.sequence.SeqSink[convK.SeqType,convV.SeqType,(K,V)]withcom.nicta.scoobi.core.SinkSource{deftoSource:com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[convK.SeqType,convV.SeqType,(K,V)]}"></a>
+      <a id="schemaSequenceSink[K,V](String,Boolean,Boolean)(SeqSchema[K],SeqSchema[V],ScoobiConfiguration):SeqSink[SeqType,SeqType,(K,V)]withSinkSource{deftoSource:com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[convK.SeqType,convV.SeqType,(K,V)]}"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">schemaSequenceSink</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.K">K</span>]</span>, <span name="convV">convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.V">V</span>]</span>)</span><span class="result">: <a href="SequenceOutput$$SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a>[<a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, <a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.V">V</span>)]</span>
+        <span class="name">schemaSequenceSink</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.K">K</span>]</span>, <span name="convV">convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.V">V</span>]</span>, <span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSink">SeqSink</a>[<a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, <a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.schemaSequenceSink.V">V</span>)] with <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a> { def toSource: com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[convK.SeqType,convV.SeqType,(K, V)] }</span>
       </span>
       </h4>
       
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#sequenceSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sequenceSink[K&lt;:org.apache.hadoop.io.Writable,V&lt;:org.apache.hadoop.io.Writable](path:String,overwrite:Boolean)(implicitevidence$1:Manifest[K],implicitevidence$2:Manifest[V]):com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink[K,V,(K,V)]"></a>
-      <a id="sequenceSink[K&lt;:Writable,V&lt;:Writable](String,Boolean)(Manifest[K],Manifest[V]):SeqSink[K,V,(K,V)]"></a>
+      <a id="sequenceSink[K&lt;:org.apache.hadoop.io.Writable,V&lt;:org.apache.hadoop.io.Writable](path:String,overwrite:Boolean,checkpoint:Boolean)(implicitmk:Manifest[K],implicitmv:Manifest[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.io.sequence.SeqSink[K,V,(K,V)]withcom.nicta.scoobi.core.SinkSource{deftoSource:com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[K,V,(K,V)]}"></a>
+      <a id="sequenceSink[K&lt;:Writable,V&lt;:Writable](String,Boolean,Boolean)(Manifest[K],Manifest[V],ScoobiConfiguration):SeqSink[K,V,(K,V)]withSinkSource{deftoSource:com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[K,V,(K,V)]}"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sequenceSink</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>, <span name="V">V &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.V">V</span>]</span>)</span><span class="result">: <a href="SequenceOutput$$SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.V">V</span>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.V">V</span>)]</span>
+        <span class="name">sequenceSink</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>, <span name="V">V &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="mk">mk: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.K">K</span>]</span>, <span name="mv">mv: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.V">V</span>]</span>, <span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSink">SeqSink</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.V">V</span>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.sequenceSink.V">V</span>)] with <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a> { def toSource: com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[K,V,(K, V)] }</span>
       </span>
       </h4>
       
@@ -400,15 +371,15 @@ to disk as the &quot;key&quot; component in a Sequence File.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#toSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toSequenceFile[K,V](dl:com.nicta.scoobi.core.DList[(K,V)],path:String,overwrite:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V]):dl.T"></a>
-      <a id="toSequenceFile[K,V](DList[(K,V)],String,Boolean)(SeqSchema[K],SeqSchema[V]):T"></a>
+      <a id="toSequenceFile[K,V](dl:com.nicta.scoobi.core.DList[(K,V)],path:String,overwrite:Boolean,checkpoint:Boolean)(implicitconvK:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):dl.T"></a>
+      <a id="toSequenceFile[K,V](DList[(K,V)],String,Boolean,Boolean)(SeqSchema[K],SeqSchema[V],ScoobiConfiguration):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="dl">dl: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.V">V</span>)]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.K">K</span>]</span>, <span name="convV">convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
+        <span class="name">toSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="dl">dl: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.V">V</span>)]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convK">convK: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.K">K</span>]</span>, <span name="convV">convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.toSequenceFile.V">V</span>]</span>, <span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Specify a distributed list to be persistent by converting its elements to Writables and storing it
@@ -427,7 +398,7 @@ to disk as &quot;key-values&quot; in a Sequence File.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceOutput#valueSchemaSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="valueSchemaSequenceFile[V](path:String,overwrite:Boolean)(implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink[org.apache.hadoop.io.NullWritable,convV.SeqType,V]"></a>
+      <a id="valueSchemaSequenceFile[V](path:String,overwrite:Boolean)(implicitconvV:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.io.sequence.SeqSink[org.apache.hadoop.io.NullWritable,convV.SeqType,V]"></a>
       <a id="valueSchemaSequenceFile[V](String,Boolean)(SeqSchema[V]):SeqSink[NullWritable,SeqType,V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -435,7 +406,7 @@ to disk as &quot;key-values&quot; in a Sequence File.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">valueSchemaSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convV">convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.valueSchemaSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="SequenceOutput$$SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.valueSchemaSequenceFile.V">V</span>]</span>
+        <span class="name">valueSchemaSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convV">convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.valueSchemaSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSink">SeqSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="SeqSchema.html#SeqType&lt;:org.apache.hadoop.io.Writable" class="extmbr" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SeqType</a>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.valueSchemaSequenceFile.V">V</span>]</span>
       </span>
       </h4>
       

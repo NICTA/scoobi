@@ -590,7 +590,7 @@ val list1 = DList(1, 2, 3).map(_ + 1).
                            filter(isEven)
 
 // after
-val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = true)point.
+val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = true, checkpoint = true).
                            filter(isEven)
 </code></pre><p>If you run the <code class="prettyprint">after</code> program twice, the second time the program is run, only the <code class="prettyprint">filter</code> operation will be executed taking its input data from the saved Avro file.</p><p><em>Important limitation</em>: you can't use a <code class="prettyprint">Text</code> sink as a checkpoint because Text file sinks can't not be used as source files.</p>
 <hr /></p></div></status></div></div>
