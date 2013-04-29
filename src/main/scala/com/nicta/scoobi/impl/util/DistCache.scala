@@ -23,6 +23,7 @@ import org.apache.hadoop.conf.Configuration
 import Configurations._
 import ScoobiConfiguration._
 import java.net.URI
+import DistributedCache._
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialise objects to XML strings and then send out via Hadoop's
@@ -60,14 +61,16 @@ object DistCache {
   def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
     val path = mkPath(configuration, tag)
 
-    val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration)).getOrElse(Array[URI]())
-    val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
-    val cacheFiles =
-      if (configuration.isRemote) remoteCacheFiles.zip(localCacheFiles)
-    else                          remoteCacheFiles.zip(remoteCacheFiles)
+    lazy val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration))getOrElse(Array[URI]())
+    lazy val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
 
-    cacheFiles.find(_._1.toString == path.toString).flatMap { case (_, uri) =>
-      deserialise(configuration)(new Path(uri.toString))
+    // use the local cached files on the cluster when the local files can be found
+    val cacheFiles =
+      if (localCacheFiles.nonEmpty) localCacheFiles
+      else                          remoteCacheFiles
+
+    cacheFiles.find(uri => uri.toString.endsWith(path.toString)).flatMap { case uri =>
+      deserialise(configuration)(path)
     }
   }
 
