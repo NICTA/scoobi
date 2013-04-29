@@ -73,7 +73,12 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
-    def outside = ScoobiConfiguration()
+    // when contexts are chained the "outside" context is built from this object.
+    // since the SkippedHadoopContext do not evaluate their code at all, we don't need to use their context
+    // otherwise, for the "active" contexts, we pass them, one by one using an iterator
+    private lazy val outsides = contexts.filter { case c: SkippedHadoopContext => false; case _ => true}.map(_.outside).iterator
+    def outside = outsides.next
+
     def around[R : AsResult](r: =>R) = {
       changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(r) })
     }
@@ -91,7 +96,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for showing that an execution is skipped
    */
   class SkippedHadoopContext(name: String) extends HadoopContext {
-    lazy val outside = configureForLocal(ScoobiConfiguration())
+    lazy val outside = configureForInMemory(ScoobiConfiguration())
 
     def around[R : AsResult](r: =>R) =
       Skipped("excluded", "No "+name+" execution"+time_?)
@@ -126,8 +131,6 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     def around[R : AsResult](r: =>R) =
       try     remotely(r)
       finally cleanup(outside)
-
-    override def isRemote = true
   }
 
   /** cleanup temporary files after job execution */
@@ -146,7 +149,6 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * is local)
    */
   trait HadoopContext extends AroundOutside[ScoobiConfiguration] {
-    def isRemote = false
     def time_? = if (outer.showTimes) " time" else ""
 
     override def equals(a: Any) = {
