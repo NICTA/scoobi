@@ -28,7 +28,7 @@ import impl.exec.JobExecException
 import impl.ScoobiConfiguration._
 import impl.plan.comp.CompNodeData._
 
-class AvroFileReadWriteSpec extends NictaSimpleJobs {
+class AvroFileSpec extends NictaSimpleJobs {
 
   "Reading (Int, Seq[(Float, String)], Map[String, Int], ThousandBytes) Avro file" >> { implicit sc: SC =>
 
@@ -67,7 +67,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).persist
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean, String)], Array[Long])] = fromAvroFile(filePath)
@@ -83,7 +83,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).persist
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(filePath)
@@ -99,7 +99,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).persist
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(List(filePath), false)
@@ -172,7 +172,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Converters must be used for sinks when they are also used as sources" >> { implicit sc: SC =>
-    val list = DList((1L, 2L)).toAvroFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true).checkpoint
+    val list = DList((1L, 2L)).toAvroFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true, checkpoint = true)
     list.map(_._2).run.normalise === "Vector(2)"
   }
 

@@ -77,7 +77,7 @@ case class InMemoryMode() extends ExecutionMode {
         case n: Return                                             => Vector(n.in)
         case n: Op                                                 => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
         case n: Materialise                                        => Vector(n.in -> compute(c))
-        case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
+        case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.map(b => loadSource(b.toSource, n.wf)).getOrElse(Seq())
         case n: GroupByKey                                         => computeGroupByKey(n)
         case n: Combine                                            => computeCombine(n)
         case n: ParallelDo                                         => computeParallelDo(n)
@@ -100,7 +100,7 @@ case class InMemoryMode() extends ExecutionMode {
 
   /** @return true if the result must be returned to the client user of this evaluation mode */
   private def isExpectedResult = (node: CompNode) =>
-    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false) || node.sinks.exists(_.isCheckpoint)
+    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false) || node.hasCheckpoint
 
   private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
     loadSource(load.source, load.wf).debug(_ => "computeLoad")

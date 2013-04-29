@@ -26,7 +26,7 @@ import Data._
 /**
  * An output store from a MapReduce job
  */
-trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
+trait DataSink[K, V, B] extends Sink { outer =>
   lazy val id = ids.get
   lazy val stringId = id.toString
 
@@ -37,39 +37,19 @@ trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
   def outputCheck(implicit sc: ScoobiConfiguration)
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
 
-  def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = new DataSink[K, V, B] {
-    def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[K, V]] = outer.outputFormat
-    def outputKeyClass(implicit sc: ScoobiConfiguration): Class[K]                     = outer.outputKeyClass
-    def outputValueClass(implicit sc: ScoobiConfiguration): Class[V]                   = outer.outputValueClass
-    def outputConverter: OutputConverter[K, V, B]                                      = outer.outputConverter
-    def outputPath(implicit sc: ScoobiConfiguration): Option[Path]                     = outer.outputPath(sc)
-    def outputCheck(implicit sc: ScoobiConfiguration)                                  { outer.outputCheck(sc) }
-    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)                    { outer.outputConfigure(job) }
-    override def outputSetup(implicit configuration: Configuration)                    { outer.outputSetup }
-
-    /** configure the job so that the output is compressed */
-    override def configureCompression(configuration: Configuration) = {
+  /** @return a compression object if this sink is compressed */
+  def compression: Option[Compression]
+  /** configure the compression for a given job */
+  def configureCompression(configuration: Configuration) = {
+    compression foreach  { case Compression(codec, compressionType) =>
       configuration.set("mapred.output.compress", "true")
       configuration.set("mapred.output.compression.type", compressionType.toString)
       configuration.setClass("mapred.output.compression.codec", codec.getClass, classOf[CompressionCodec])
-      this
     }
-
-    override def toSource: Option[Source] = outer.toSource
-
-    override def isCheckpoint                                       = outer.isCheckpoint
-    override def checkpointName                                     = outer.checkpointName
-    override def checkpointExists(implicit sc: ScoobiConfiguration) = outer.checkpointExists
+    this
   }
 
-  /** configure the compression for a given job */
-  def configureCompression(configuration: Configuration) = this
-
-  def isCompressed = {
-    val configuration = new Configuration
-    configureCompression(configuration)
-    configuration.getBoolean("mapred.output.compress", false)
-  }
+  def isCompressed = compression.isDefined
 
   def outputSetup(implicit configuration: Configuration) {}
 
@@ -82,11 +62,14 @@ trait DataSink[K, V, B] extends Sink with Checkpoint { outer =>
   }
 }
 
+/** store the compression parameters for sinks */
+case class Compression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK)
+
 /**
  * Internal untyped definition of a Sink to store result data
  */
 private[scoobi]
-trait Sink extends Checkpoint { outer =>
+trait Sink { outer =>
   /** unique id for this Sink */
   def id: Int
   /** unique id for this Sink, as a string. Can be used to create a file path */
@@ -108,13 +91,13 @@ trait Sink extends Checkpoint { outer =>
   /** This method is called just before writing data to the sink */
   def outputSetup(implicit configuration: Configuration)
 
-  /** Set the compression configuration */
-  def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): Sink
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration): Sink
 
+  /** @return a new sink with Gzip compression enabled */
   def compress = compressWith(new GzipCodec)
-  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = outputCompression(codec)
+  /** @return a new sink with compression enabled */
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK): Sink
 
   /** @return true if this Sink is compressed */
   private[scoobi]
@@ -124,9 +107,26 @@ trait Sink extends Checkpoint { outer =>
   private [scoobi]
   def write(values: Traversable[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration)
 
-  /** implement this function if this sink can be turned into a Source */
-  def toSource: Option[Source] = None
+}
 
+/**
+ * This is a Sink which can also be used as a Source
+ */
+trait SinkSource extends Sink {
+  def toSource: Source
+
+  /** @return the checkpoint parameters if this sink is a Checkpoint */
+  def checkpoint: Option[Checkpoint]
+
+  /** @return true if this sink is a checkpoint */
+  def isCheckpoint: Boolean = checkpoint.isDefined
+
+  /** @return true if this Sink is a checkpoint and has been filled with data */
+  def checkpointExists(implicit sc: ScoobiConfiguration): Boolean =
+    isCheckpoint && outputPath.exists(p => sc.fileSystem.exists(p) && Option(sc.fileSystem.listStatus(p)).map(_.nonEmpty).getOrElse(false))
+
+  /** @return the name of the checkpoint */
+  def checkpointName: Option[String] = checkpoint.map(_.name)
 }
 
 object Data {
@@ -151,7 +151,7 @@ trait DataSinks {
  * The content of the Bridge can be read as an Iterable to retrieve materialised values
  */
 private[scoobi]
-trait Bridge extends Source with Sink with Checkpoint {
+trait Bridge extends Source with Sink with SinkSource {
   def bridgeStoreId: String
   def stringId = bridgeStoreId
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
@@ -159,10 +159,11 @@ trait Bridge extends Source with Sink with Checkpoint {
 }
 
 object Bridge {
-  def create(source: Source, sink: Sink, bridgeId: String): Bridge = new Bridge {
+  def create(source: Source, sink: SinkSource, bridgeId: String): Bridge = new Bridge with SinkSource {
     def bridgeStoreId = bridgeId
     override def id = sink.id
 
+    def checkpoint = sink.checkpoint
     def inputFormat = source.inputFormat
     def inputCheck(implicit sc: ScoobiConfiguration) { source.inputCheck }
     def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { source.inputConfigure(job) }
@@ -178,16 +179,12 @@ object Bridge {
     def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { sink.outputConfigure(job) }
     def outputSetup(implicit configuration: Configuration) { sink.outputSetup }
     def outputPath(implicit sc: ScoobiConfiguration) = sink.outputPath
-    def outputCompression(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = sink.outputCompression(codec, compressionType)
+    def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = sink.compressWith(codec, compressionType)
     def configureCompression(configuration: Configuration) = sink.configureCompression(configuration)
     private[scoobi] def isCompressed = sink.isCompressed
     private [scoobi] def write(values: Traversable[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) { sink.write(values, recordWriter) }
 
-    override def toSource: Option[Source] = Some(source)
-
-    override def isCheckpoint                                                = sink.isCheckpoint
-    override def checkpointName                                              = sink.checkpointName
-    override def checkpointExists(implicit sc: ScoobiConfiguration): Boolean = sink.checkpointExists
+    def toSource: Source = source
 
     def readAsIterable(implicit sc: ScoobiConfiguration) =
       new Iterable[Any] { def iterator = Source.read(source).iterator }

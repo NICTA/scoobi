@@ -45,7 +45,7 @@ trait ProcessNodeImpl extends ProcessNode {
   /** transform one sink into a Bridge if possible */
   private lazy val oneSinkAsBridge: Option[Bridge] =
     nodeSinks.collect { case bs: BridgeStore[_] => bs }.headOption.
-      orElse(nodeSinks.find(_.toSource.isDefined).flatMap(sink => sink.toSource.map(source => Bridge.create(source, sink, bridgeStoreId))))
+      orElse(nodeSinks.collect { case s: Sink with SinkSource => s }.headOption.map(s => Bridge.create(s.toSource, s, bridgeStoreId)))
 
   /** @return all the additional sinks + the bridgeStore */
   lazy val sinks = oneSinkAsBridge.cata(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)

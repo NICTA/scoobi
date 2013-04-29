@@ -41,6 +41,8 @@ trait CompNode extends Attributable {
   override def hashCode = id.hashCode
 
   def sinks: Seq[Sink]
+  def hasCheckpoint = sinks.exists { case s: SinkSource => s.isCheckpoint; case _ => false }
+
   def updateSinks(f: Seq[Sink] => Seq[Sink]): C
   def addSink(sink: Sink) = updateSinks(sinks => sinks :+ sink)
 }
@@ -56,7 +58,6 @@ object CompNode {
 
 trait ProcessNode extends CompNode {
   type C = ProcessNode
-  def isCheckpoint = sinks.exists(_.isCheckpoint)
   def bridgeStore: Option[Bridge]
   def createBridgeStore: Bridge
   def nodeSinks : Seq[Sink]

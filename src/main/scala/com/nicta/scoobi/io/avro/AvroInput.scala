@@ -86,7 +86,7 @@ object AvroInput extends AvroParsingImplicits {
           if (checkSchemas) {
             // for efficiency, only check one file per dir
             Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
-              val avroFile = new FsInput(filePath, sc);
+              val avroFile = new FsInput(filePath, sc)
               try {
                 val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[sch.AvroType]()).getSchema
                 val readerSchema = sch.schema

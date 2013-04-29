@@ -730,7 +730,7 @@ val list1 = DList(1, 2, 3).map(_ + 1).
                            filter(isEven)
 
 // after
-val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile("path", overwrite = true).checkpoint.
+val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile("path", overwrite = true, checkpoint = true).
                            filter(isEven)
 }}
 

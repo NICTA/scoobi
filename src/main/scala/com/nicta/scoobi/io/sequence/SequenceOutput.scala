@@ -34,10 +34,11 @@ import sequence.SequenceInput.SeqSource
 import org.apache.hadoop.conf.Configuration
 import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
 import core.ScoobiConfiguration
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
 object SequenceOutput {
-  lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as the "key" component in a Sequence File. */
@@ -80,10 +81,10 @@ object SequenceOutput {
 
   /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
     * to disk as "key-values" in a Sequence File. */
-  def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V]) =
-    dl.addSink(schemaSequenceSink(path, overwrite)(convK, convV))
+  def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration) =
+    dl.addSink(schemaSequenceSink(path, overwrite, checkpoint)(convK, convV, sc))
 
-  def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V])= {
+  def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration)= {
 
     val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
@@ -92,54 +93,61 @@ object SequenceOutput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
-    new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite)
+    new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
+      def toSource = new SeqSource(Seq(path), converter)
+    }
   }
 
-  def sequenceSink[K <: Writable : Manifest, V <: Writable : Manifest](path: String, overwrite: Boolean = false) = {
-    val keyClass = implicitly[Manifest[K]].runtimeClass.asInstanceOf[Class[K]]
-    val valueClass = implicitly[Manifest[V]].runtimeClass.asInstanceOf[Class[V]]
+  def sequenceSink[K <: Writable, V <: Writable](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(
+      implicit mk: Manifest[K], mv: Manifest[V], sc: ScoobiConfiguration) = {
+    val keyClass = mk.runtimeClass.asInstanceOf[Class[K]]
+    val valueClass = mv.runtimeClass.asInstanceOf[Class[V]]
 
     val converter = new InputOutputConverter[K, V, (K, V)] {
       def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (kv._1, kv._2)
     }
-    new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite)
+    new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
+      def toSource = new SeqSource(Seq(path), converter)
+    }
   }
 
-  /* Class that abstracts all the common functionality of persisting to sequence files. */
-  class SeqSink[K, V, B](
-      path: String,
-      keyClass: Class[K],
-      valueClass: Class[V],
-      converter: InputOutputConverter[K, V, B],
-      overwrite: Boolean)
-    extends DataSink[K, V, B] {
+}
 
-    protected val output = new Path(path)
+/** class that abstracts all the common functionality of persisting to sequence files. */
+case class SeqSink[K, V, B](path: String,
+                            keyClass: Class[K],
+                            valueClass: Class[V],
+                            outputConverter: InputOutputConverter[K, V, B],
+                            overwrite: Boolean,
+                            checkpoint: Option[Checkpoint] = None,
+                            compression: Option[Compression] = None) extends DataSink[K, V, B] {
 
-    def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[K, V]]
-    def outputKeyClass(implicit sc: ScoobiConfiguration) = keyClass
-    def outputValueClass(implicit sc: ScoobiConfiguration) = valueClass
+  private lazy val logger = LogFactory.getLog("scoobi.SequenceOutput")
 
-    def outputCheck(implicit sc: ScoobiConfiguration) {
-      if (Helper.pathExists(output)(sc) && !overwrite) {
-          throw new FileAlreadyExistsException("Output path already exists: " + output)
-      } else logger.info("Output path: " + output.toUri.toASCIIString)
-    }
-    def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
+  protected val output = new Path(path)
 
-    def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
+  def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[K, V]]
+  def outputKeyClass(implicit sc: ScoobiConfiguration) = keyClass
+  def outputValueClass(implicit sc: ScoobiConfiguration) = valueClass
 
-    override def outputSetup(implicit configuration: Configuration) {
-      if (Helper.pathExists(output)(configuration) && overwrite) {
-        logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
-        Helper.deletePath(output)(configuration)
-      }
-    }
-
-    lazy val outputConverter = converter
-
-    override def toSource: Option[Source] = Some(new SeqSource(Seq(path), converter))
-    override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
+  def outputCheck(implicit sc: ScoobiConfiguration) {
+    if (Helper.pathExists(output)(sc) && !overwrite) {
+      throw new FileAlreadyExistsException("Output path already exists: " + output)
+    } else logger.info("Output path: " + output.toUri.toASCIIString)
   }
+  def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
+
+  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
+
+  override def outputSetup(implicit configuration: Configuration) {
+    if (Helper.pathExists(output)(configuration) && overwrite) {
+      logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
+      Helper.deletePath(output)(configuration)
+    }
+  }
+
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
+
+  override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
 }

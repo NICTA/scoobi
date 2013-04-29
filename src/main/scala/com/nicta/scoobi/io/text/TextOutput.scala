@@ -30,6 +30,8 @@ import impl.io.Helper
 import avro.AvroInput
 import org.apache.hadoop.conf.Configuration
 import impl.ScoobiConfigurationImpl
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
 object TextOutput {
@@ -59,7 +61,7 @@ object TextOutput {
   }
 }
 
-class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false) extends DataSink[NullWritable, A, A] {
+case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, compression: Option[Compression] = None) extends DataSink[NullWritable, A, A] {
   private lazy val logger = LogFactory.getLog("scoobi.TextOutput")
 
   private val output = new Path(path)
@@ -98,10 +100,7 @@ class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false) exten
     def toKeyValue(x: A)(implicit configuration: Configuration) = (NullWritable.get, x)
   }
 
-  /**
-   * it is not possible to transform a Text sink, storing objects of type A to strings, to a Text source that could load
-   * strings into objects of type A because we don't know at this stage how to go from String => A
-   */
-  override def toSource: Option[Source] = None
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
+
   override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
 }

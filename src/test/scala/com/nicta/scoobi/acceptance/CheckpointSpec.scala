@@ -21,7 +21,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 
   "3. A checkpoint must work after a group by key" >> { implicit sc: SC =>
     val sink = TempFiles.createTempDir("test")
-    val list = DList(1, 2, 3).map(i => (i.toString, i + 1)).toAvroFile(path(sink)(configuration), overwrite = true).checkpoint
+    val list = DList(1, 2, 3).map(i => (i.toString, i + 1)).toAvroFile(path(sink)(configuration), overwrite = true, checkpoint = true)
     list.groupByKey.combine(Sum.int).run.normalise === "Vector((1,2), (2,3), (3,4))"
   }
 
@@ -49,7 +49,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
     val list = DList(1, 2, 3).map { i =>
       if (i == 1) { evaluationsNb1 += 1 }
       "i"+i
-    }.toAvroFile(path(sink)(configuration), overwrite = true).checkpoint
+    }.toAvroFile(path(sink)(configuration), overwrite = true, checkpoint = true)
 
     val list2 = list.map(_ + "1")
     list2.run(configuration)

@@ -181,7 +181,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
   }
 
   def truncateAlreadyExecutedNodes(node: CompNode)(implicit sc: ScoobiConfiguration) = {
-    allSinks(node).filter(_.checkpointExists).foreach(markSinkAsFilled)
+    allSinks(node).collect { case ss: SinkSource if ss.checkpointExists => ss }.foreach(markSinkAsFilled)
     truncate(node) {
       case process: ProcessNode => nodeHasBeenFilled(process)
       case other                => false

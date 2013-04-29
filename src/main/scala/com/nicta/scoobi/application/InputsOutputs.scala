@@ -95,7 +95,9 @@ trait InputsOutputs {
   /** @deprecated(message="use list.valueToSequenceFile(...) instead", since="0.7.0") */
   def valueToSequenceFile[V : SeqSchema](dl: core.DList[V], path: String, overwrite: Boolean = false) = SequenceOutput.valueToSequenceFile(dl, path, overwrite)
   /** @deprecated(message="use list.toSequenceFile(...) instead", since="0.7.0") */
-  def toSequenceFile[K : SeqSchema, V : SeqSchema](dl: core.DList[(K, V)], path: String, overwrite: Boolean = false) = SequenceOutput.toSequenceFile(dl, path, overwrite)
+  def toSequenceFile[K, V](dl: core.DList[(K, V)], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)
+                          (implicit ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration) =
+    SequenceOutput.toSequenceFile(dl, path, overwrite, checkpoint)(ks, vs, sc)
 
   implicit class ConvertKeyListToSequenceFile[K](val list: core.DList[K]) {
     def keyToSequenceFile(path: String, overwrite: Boolean = false)(implicit ks: SeqSchema[K]) =
@@ -122,14 +124,14 @@ trait InputsOutputs {
       o.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
   }
   implicit class ConvertListToSequenceFile[T](val list: core.DList[T]) {
-    def toSequenceFile[K, V](path: String, overwrite: Boolean = false)
-      (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V])
-        = list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(implicitly[SeqSchema[K]], implicitly[SeqSchema[V]]))
+    def toSequenceFile[K, V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)
+      (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration)
+        = list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite, checkpoint)(ks, vs, sc))
   }
   implicit class ConvertObjectToSequenceFile[T](val o: core.DObject[T]) {
-    def toSequenceFile[K, V](path: String, overwrite: Boolean = false)
-                                   (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V])
-    = o.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(implicitly[SeqSchema[K]], implicitly[SeqSchema[V]]))
+    def toSequenceFile[K, V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)
+                                   (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration)
+    = o.addSink(SequenceOutput.schemaSequenceSink(path, overwrite)(ks, vs, sc))
   }
 
   /** Avro I/O */
@@ -146,19 +148,17 @@ trait InputsOutputs {
   def objectFromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = fromAvroFile[A](paths, checkSchemas).head
 
   implicit class ListToAvroFile[A](val list: core.DList[A]) {
-    def toAvroFile(path: String, overwrite: Boolean = false)(implicit as: AvroSchema[A]) = list.addSink(AvroOutput.avroSink(path, overwrite))
+    def toAvroFile(path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
+      list.addSink(AvroOutput.avroSink(path, overwrite, checkpoint))
   }
   implicit class ObjectToAvroFile[A](val o: core.DObject[A]) {
-    def toAvroFile(path: String, overwrite: Boolean = false)(implicit as: AvroSchema[A]) = o.addSink(AvroOutput.avroSink(path, overwrite))
+    def toAvroFile(path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
+      o.addSink(AvroOutput.avroSink(path, overwrite, checkpoint))
   }
 
   /** @deprecated(message="use list.toAvroFile(...) instead", since="0.7.0") */
-  def toAvroFile[B : AvroSchema](dl: core.DList[B], path: String, overwrite: Boolean = false) = AvroOutput.toAvroFile(dl, path, overwrite)
-
-  /** implicit definition to add a checkpoint method to a DList */
-  implicit class SetCheckpoint[T](val list: core.DList[T]) {
-    def checkpoint(implicit sc: ScoobiConfiguration) = list.updateSinks(_.updateLast(_.checkpoint))
-  }
+  def toAvroFile[B](dl: core.DList[B], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
+    AvroOutput.toAvroFile(dl, path, overwrite, checkpoint)
 
 }
 object InputsOutputs extends InputsOutputs

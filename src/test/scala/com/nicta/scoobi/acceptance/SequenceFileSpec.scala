@@ -27,7 +27,7 @@ import application.Orderings._
 import impl.control.Exceptions._
 import impl.plan.comp.CompNodeData._
 
-class SeqFileReadWriteSpec extends NictaSimpleJobs {
+class SequenceFileSpec extends NictaSimpleJobs {
 
   "Reading from a text sequence file" >> { implicit sc: SC =>
     // store test data in a sequence file
@@ -109,14 +109,14 @@ class SeqFileReadWriteSpec extends NictaSimpleJobs {
   }
 
   "Converters must be used for sinks when they are also used as sources" >> { implicit sc: SC =>
-    val list = DList((1L, 2L)).toSequenceFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true).checkpoint
+    val list = DList((1L, 2L)).toSequenceFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true, checkpoint = true)
     list.map(_._2).run.normalise === "Vector(2)"
   }
 
-  "It is possible to derive an implict Sequence Schema for a type having a WireFormat" >> { implicit sc: SC =>
-    case class Foo(val value: Int)
+  "It is possible to derive an implicit Sequence Schema for a type having a WireFormat" >> { implicit sc: SC =>
+    case class Foo(value: Int)
     implicit val FooFmt = mkCaseWireFormat(Foo, Foo unapply _)
-    val list = DList(Foo(1), Foo(2)).valueToSequenceFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true).checkpoint
+    val list = DList(Foo(1), Foo(2)).valueToSequenceFile(TempFiles.createTempFilePath("values"), overwrite = true)
     list.map(e => Foo(e.value + 1)).run.normalise === "Vector(Foo(2), Foo(3))"
   }
 

@@ -33,12 +33,15 @@ import rtt._
 import io.Helper
 import ScoobiConfiguration._
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
-  extends DataSource[NullWritable, ScoobiWritable[A], A]
-  with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
+case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoint: Option[Checkpoint] = None, compression: Option[Compression] = None) extends
+   DataSource[NullWritable, ScoobiWritable[A], A] with
+   DataSink[NullWritable, ScoobiWritable[A], A]   with
+   Bridge {
 
   override lazy val id: Int = Data.ids.get
   override lazy val stringId = bridgeStoreId
@@ -85,7 +88,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
     fs.delete(path, true)
   }
 
-
   /**
    * Read the contents of this bridge store sequence files as an Iterable collection. The
    * underlying Iterator has a lazy implementation and will only bring one element into memory
@@ -110,7 +112,9 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
   override def hashCode = bridgeStoreId.hashCode
 
-  override def toSource: Option[Source] = Some(this)
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
+
+  def toSource: Source = this
 }
 
 object BridgeStore {

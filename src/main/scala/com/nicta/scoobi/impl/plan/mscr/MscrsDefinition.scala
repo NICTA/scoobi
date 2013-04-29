@@ -48,7 +48,7 @@ trait MscrsDefinition extends Layering {
   }
 
   def isCheckpoint: CompNode => Boolean = attr {
-    case p: ProcessNode => p.isCheckpoint
+    case p: ProcessNode => p.hasCheckpoint
     case other          => false
   }
 
