@@ -104,7 +104,7 @@
       <p class="comment cmt">Context for running examples on the cluster
 </p>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="HadoopContextextendsAroundOutside[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
+      <a id="HadoopContextextendsFixture[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
       <a id="HadoopContext:HadoopContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -112,7 +112,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopExamples$HadoopContext.html"><span class="name">HadoopContext</span></a><span class="result"> extends <span class="extype" name="org.specs2.specification.AroundOutside">AroundOutside</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
+        <a href="HadoopExamples$HadoopContext.html"><span class="name">HadoopContext</span></a><span class="result"> extends <span class="extype" name="org.specs2.specification.Fixture">Fixture</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
       </span>
       </h4>
       <p class="comment cmt">trait for creating contexts having ScoobiConfigurations</p>
@@ -312,15 +312,15 @@
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the categories to show when logging, as a regular expression</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/ScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiUserArgs">ScoobiUserArgs</a> → <a href="../application/ScoobiArgs.html" class="extype" name="com.nicta.scoobi.application.ScoobiArgs">ScoobiArgs</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#chain" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="chain(contexts:Seq[HadoopExamples.this.HadoopContext]):HadoopExamples.this.HadoopContext"></a>
-      <a id="chain(Seq[HadoopContext]):HadoopContext"></a>
+      <a id="chain(contexts:Seq[HadoopExamples.this.HadoopContext]):HadoopExamples.this.HadoopContext{valconfiguration:com.nicta.scoobi.core.ScoobiConfiguration}"></a>
+      <a id="chain(Seq[HadoopContext]):HadoopContext{valconfiguration:com.nicta.scoobi.core.ScoobiConfiguration}"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">chain</span><span class="params">(<span name="contexts">contexts: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>)</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">chain</span><span class="params">(<span name="contexts">contexts: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a>]</span>)</span><span class="result">: <a href="HadoopExamples$HadoopContext.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a> { val configuration: com.nicta.scoobi.core.ScoobiConfiguration }</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a context chaining a sequence of contexts</p></dd></dl></div>
