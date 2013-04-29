@@ -74,7 +74,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
 
-    private var outsideContext: ScoobiConfiguration = _
+    private var outsideContext: ScoobiConfiguration = ScoobiConfiguration()
 
     def outside = outsideContext
 
