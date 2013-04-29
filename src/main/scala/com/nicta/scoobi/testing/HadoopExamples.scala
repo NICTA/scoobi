@@ -73,14 +73,19 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
 
   /** @return a context chaining a sequence of contexts */
   def chain(contexts: Seq[HadoopContext]) = new HadoopContext {
-    // when contexts are chained the "outside" context is built from this object.
-    // since the SkippedHadoopContext do not evaluate their code at all, we don't need to use their context
-    // otherwise, for the "active" contexts, we pass them, one by one using an iterator
-    private lazy val outsides = contexts.filter { case c: SkippedHadoopContext => false; case _ => true}.map(_.outside).iterator
-    def outside = outsides.next
+
+    private var outsideContext: ScoobiConfiguration = _
+
+    def outside = outsideContext
 
     def around[R : AsResult](r: =>R) = {
-      changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) => result and context(r) })
+      changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) =>
+        lazy val current = {
+          outsideContext = context.outside
+          context(r)
+        }
+        result and current
+      })
     }
   }
   /** execute an example body on the cluster */

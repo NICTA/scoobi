@@ -57,8 +57,9 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
         runMustBeLocalThenCluster
       }
       "with timing" >> {
+        val executed = context.withTiming.example1.execute.expected
         forall(Seq("Local execution time: ", "Cluster execution time: ")) { s =>
-          context.withTiming.example1.execute.expected.split("\n").toSeq must containMatch(s)
+          executed.split("\n").toSeq must containMatch(s)
         }
       }
     }
@@ -119,7 +120,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   // various Hadoop Examples traits
   def localExamples                                  = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples(command: String = "")          = new HadoopExamplesForTesting { override def context = cluster; override lazy val arguments = Arguments(command) }
-  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = chain(contexts.filterNot(_ == inMemory)); override lazy val arguments = Arguments(command) }
+  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = chain(Seq(local, cluster)); override lazy val arguments = Arguments(command) }
 
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)
