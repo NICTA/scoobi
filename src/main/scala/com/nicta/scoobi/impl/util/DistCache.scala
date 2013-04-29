@@ -60,8 +60,13 @@ object DistCache {
   def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
     val path = mkPath(configuration, tag)
 
-    val cacheFiles = DistributedCache.getCacheFiles(configuration)
-    cacheFiles.find(_.toString == path.toString).flatMap { uri =>
+    val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration)).getOrElse(Array[URI]())
+    val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
+    val cacheFiles =
+      if (configuration.isRemote) remoteCacheFiles.zip(localCacheFiles)
+    else                          remoteCacheFiles.zip(remoteCacheFiles)
+
+    cacheFiles.find(_._1.toString == path.toString).flatMap { case (_, uri) =>
       deserialise(configuration)(new Path(uri.toString))
     }
   }
