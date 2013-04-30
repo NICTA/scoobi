@@ -28,6 +28,7 @@ import impl.exec.JobExecException
 import impl.ScoobiConfiguration._
 import impl.plan.comp.CompNodeData._
 import org.apache.avro.generic.GenericData.Record
+import TestFiles._
 
 class AvroFileSpec extends NictaSimpleJobs {
 
@@ -185,9 +186,9 @@ class AvroFileSpec extends NictaSimpleJobs {
     }
 
     val avroFile = TempFiles.createTempFilePath("avro")
-    list.toAvroFile(avroFile, overwrite = true).run.toString === """Vector({"v0": 1})"""
+    list.toAvroFile(path(avroFile), overwrite = true).run.toString === """Vector({"v0": 1})"""
 
-    fromAvroFile[GenericRecord](avroFile).map(record => record.get(0).asInstanceOf[Int]).run === Vector(1)
+    fromAvroFile[GenericRecord](path(avroFile)).map(record => record.get(0).asInstanceOf[Int]).run === Vector(1)
   }
 
 

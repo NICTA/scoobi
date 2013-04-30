@@ -21,7 +21,7 @@ import java.io.{File, IOException}
 
 import org.apache.commons.logging.LogFactory
 
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapreduce.lib.input.{FileSplit, FileInputFormat}
 import org.apache.hadoop.mapreduce.{RecordReader, TaskAttemptContext, InputSplit, Job}
@@ -131,7 +131,7 @@ class GenericAvroKeyInputFormat[T] extends AvroKeyInputFormat[T] {
       private var delegate: AvroKeyRecordReader[T] = _
 
       def initialize(split: InputSplit, context: TaskAttemptContext) {
-        val schema = DataFileReader.openReader(new File(split.asInstanceOf[FileSplit].getPath.toUri), new GenericDatumReader[T]()).getSchema
+        val schema = DataFileReader.openReader(new FsInput(split.asInstanceOf[FileSplit].getPath, context.getConfiguration), new GenericDatumReader[T]()).getSchema
         delegate = new AvroKeyRecordReader[T](schema)
         delegate.initialize(split, context)
       }
