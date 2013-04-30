@@ -17,22 +17,22 @@ package com.nicta.scoobi
 package io
 package avro
 
-import java.io.IOException
+import java.io.{File, IOException}
 
 import org.apache.commons.logging.LogFactory
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
-import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.lib.input.{FileSplit, FileInputFormat}
+import org.apache.hadoop.mapreduce.{RecordReader, TaskAttemptContext, InputSplit, Job}
 
-import org.apache.avro.AvroTypeException
-import org.apache.avro.generic.GenericDatumReader
+import org.apache.avro.{Schema, AvroTypeException}
+import org.apache.avro.generic.{GenericRecord, GenericDatumReader}
 import org.apache.avro.mapred.{AvroKey, FsInput}
-import org.apache.avro.mapreduce.AvroKeyInputFormat
-import org.apache.avro.io.ResolvingDecoder
+import org.apache.avro.mapreduce.{AvroKeyRecordReader, AvroKeyInputFormat}
+import org.apache.avro.io.{DatumReader, ResolvingDecoder}
 import org.apache.avro.io.parsing.Symbol
-import org.apache.avro.file.DataFileReader
+import org.apache.avro.file.{SeekableInput, DataFileReader}
 
 import core._
 import impl.plan.DListImpl
@@ -68,7 +68,9 @@ object AvroInput extends AvroParsingImplicits {
       private val inputPaths = paths.map(p => new Path(p))
       override def toString = "Avro("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
-      val inputFormat = classOf[AvroKeyInputFormat[sch.AvroType]]
+      val inputFormat =
+        if (sch.schema.getType == Schema.Type.NULL) classOf[GenericAvroKeyInputFormat[sch.AvroType]]
+        else                                        classOf[AvroKeyInputFormat[sch.AvroType]]
 
       /** Check if the input paths exist and optionally that the reader schema is compatible with the written schema.
         * For efficiency, the schema checking will only check one file per dir. */
@@ -83,7 +85,7 @@ object AvroInput extends AvroParsingImplicits {
             throw new IOException("Input path " + p + " does not exist.")
           }
 
-          if (checkSchemas) {
+          if (checkSchemas && sch.schema.getType != Schema.Type.NULL) {
             // for efficiency, only check one file per dir
             Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
               val avroFile = new FsInput(filePath, sc)
@@ -120,7 +122,27 @@ object AvroInput extends AvroParsingImplicits {
 
       lazy val inputConverter = converter
     }
-
-
   }
+}
+
+class GenericAvroKeyInputFormat[T] extends AvroKeyInputFormat[T] {
+  override def createRecordReader(split: InputSplit, context: TaskAttemptContext) = {
+    new RecordReader[AvroKey[T], NullWritable] {
+      private var delegate: AvroKeyRecordReader[T] = _
+
+      def initialize(split: InputSplit, context: TaskAttemptContext) {
+        val schema = DataFileReader.openReader(new File(split.asInstanceOf[FileSplit].getPath.toUri), new GenericDatumReader[T]()).getSchema
+        delegate = new AvroKeyRecordReader[T](schema)
+        delegate.initialize(split, context)
+      }
+
+      def nextKeyValue = delegate.nextKeyValue
+      def getCurrentKey = delegate.getCurrentKey
+      def getCurrentValue = delegate.getCurrentValue
+      def getProgress = delegate.getProgress
+      def close = delegate.close
+
+    }
+  }
+
 }

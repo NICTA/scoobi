@@ -238,7 +238,8 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       val bytes : Array[Byte] = new Array[Byte](size)
       in.readFully(bytes)
       val decoder = DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(bytes), null)
-      val reader = new GenericDatumReader[T]()
+      // this uses a dummy schema, the real one is read by the GenericAvroKeyInputReader
+      val reader = new GenericDatumReader[T](AvroSchema.mkRecordSchema(Seq(implicitly[AvroSchema[Int]])))
       reader.read(null.asInstanceOf[T], decoder)
     }
     override def toString = "GenericAvro"
