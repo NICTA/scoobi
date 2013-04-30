@@ -9,6 +9,8 @@ import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
 import tools.nsc.interpreter.IMain.ReplStrippingWriter
 import tools.nsc.util.ScalaClassLoader.URLClassLoader
+import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
+import core.ScoobiConfiguration
 
 /** A REPL for Scoobi.
   *
@@ -21,14 +23,12 @@ object ScoobiRepl extends ScoobiInterpreter
   *
   */
 trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
+
   override def main(arguments: Array[String]) {
     parseHadoopArguments(arguments)
     try { run }
     finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
   }
-
-  /** Don't upload jars by default */
-  override lazy val upload = false
 
   def run() {
     val settings = new Settings
@@ -77,10 +77,17 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
     replArgs = arguments
     scoobiArguments = replArgs
 
+    // reset previous classpath settings and cached files
+    configuration.configuration.set("mapred.job.classpath.files", "")
+    configuration.configuration.set("mapred.classpath", "")
+    configuration.configuration.set("mapred.cache.files", "")
+
     if (isInMemory)   configureForInMemory
     else if (isLocal) configureForLocal
     else              configureForCluster
     setLogFactory()
+
+    configuration.jobNameIs("REPL")
   }
 
   private var replArgs: Seq[String] = Seq()
@@ -132,7 +139,6 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
     intp.beQuietDuring {
       imports.foreach(i => intp.addImports(i))
       configuration.addClassLoader(intp.classLoader)
-      configuration.jobNameIs("REPL")
       scoobiInterpreter.cluster
       scoobiInterpreter.setDefaultArgs
       woof()

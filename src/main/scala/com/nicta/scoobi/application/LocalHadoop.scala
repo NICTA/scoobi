@@ -46,6 +46,7 @@ trait LocalHadoop extends InMemoryHadoop {
   def configureForLocal(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     configureArguments
     configuration.modeIs(Local)
+    if (!configuration.jobName.isDefined) configuration.jobNameIs(getClass.getSimpleName)
     configuration.setAsLocal
   }
 }
