@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>AvroInput - com.nicta.scoobi.io.avro.AvroInput</title>
-          <meta name="description" content="AvroInput - com.nicta.scoobi.io.avro.AvroInput" />
-          <meta name="keywords" content="AvroInput com.nicta.scoobi.io.avro.AvroInput" />
+          <title>GenericAvroKeyInputFormat - com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat</title>
+          <meta name="description" content="GenericAvroKeyInputFormat - com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat" />
+          <meta name="keywords" content="GenericAvroKeyInputFormat com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.io.avro.AvroInput$';
+            var hash = 'com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,26 +27,26 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
+        <img src="../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.avro">avro</a></p>
-        <h1>AvroInput</h1>
+        <h1>GenericAvroKeyInputFormat</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">AvroInput</span><span class="result"> extends <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></span>
+        <span class="name">GenericAvroKeyInputFormat</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="org.apache.avro.mapreduce.AvroKeyInputFormat">AvroKeyInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>]</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Smart functions for materialising distributed lists by loading Avro files.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.avro.mapreduce.AvroKeyInputFormat">AvroKeyInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>], <span class="extype" name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat">FileInputFormat</span>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>], <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.io.avro.AvroInput"><span>AvroInput</span></li><li class="in" name="com.nicta.scoobi.io.avro.AvroParsingImplicits"><span>AvroParsingImplicits</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat"><span>GenericAvroKeyInputFormat</span></li><li class="in" name="org.apache.avro.mapreduce.AvroKeyInputFormat"><span>AvroKeyInputFormat</span></li><li class="in" name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat"><span>FileInputFormat</span></li><li class="in" name="org.apache.hadoop.mapreduce.InputFormat"><span>InputFormat</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,7 +82,23 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat[T]"></a>
+      <a id="&lt;init&gt;:GenericAvroKeyInputFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">GenericAvroKeyInputFormat</span><span class="params">()</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -184,6 +200,32 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat#computeSplitSize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computeSplitSize(x$1:Long,x$2:Long,x$3:Long):Long"></a>
+      <a id="computeSplitSize(Long,Long,Long):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">computeSplitSize</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg2">arg2: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../org$apache$hadoop$mapreduce$lib$input.html" class="extype" name="org.apache.hadoop.mapreduce.lib.input">org.apache.hadoop.mapreduce.lib.input</a>] </dd><dt>Definition Classes</dt><dd>FileInputFormat</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat#createRecordReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createRecordReader(split:org.apache.hadoop.mapreduce.InputSplit,context:org.apache.hadoop.mapreduce.TaskAttemptContext):org.apache.hadoop.mapreduce.RecordReader[org.apache.avro.mapred.AvroKey[T],org.apache.hadoop.io.NullWritable]"></a>
+      <a id="createRecordReader(InputSplit,TaskAttemptContext):RecordReader[AvroKey[T],NullWritable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createRecordReader</span><span class="params">(<span name="split">split: <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span></span>, <span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskAttemptContext">TaskAttemptContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat">GenericAvroKeyInputFormat</a> → AvroKeyInputFormat → InputFormat</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -226,37 +268,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroInput#fromAvroFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromAvroFile[A](paths:Seq[String],checkSchemas:Boolean)(implicitevidence$3:com.nicta.scoobi.core.WireFormat[A],implicitevidence$4:com.nicta.scoobi.io.avro.AvroSchema[A]):com.nicta.scoobi.core.DList[A]"></a>
-      <a id="fromAvroFile[A](Seq[String],Boolean)(WireFormat[A],AvroSchema[A]):DList[A]"></a>
+    </li><li name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat#getBlockIndex" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getBlockIndex(x$1:Array[org.apache.hadoop.fs.BlockLocation],x$2:Long):Int"></a>
+      <a id="getBlockIndex(Array[BlockLocation],Long):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.fromAvroFile.A">A</span>]</span>, <span name="arg1">arg1: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.fromAvroFile.A">A</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.fromAvroFile.A">A</span>]</span>
+        <span class="name">getBlockIndex</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.apache.hadoop.fs.BlockLocation">BlockLocation</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Avro files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Avro files. The type of the
-DList must conform to the schema types allowed by Avro, as constrained by the 'AvroSchema' type
-class. In the case of a directory being specified, the input forms all the files in
-that directory.</p></div></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroInput#fromAvroFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromAvroFile[A](paths:String*)(implicitevidence$1:com.nicta.scoobi.core.WireFormat[A],implicitevidence$2:com.nicta.scoobi.io.avro.AvroSchema[A]):com.nicta.scoobi.core.DList[A]"></a>
-      <a id="fromAvroFile[A](String*)(WireFormat[A],AvroSchema[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromAvroFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.fromAvroFile.A">A</span>]</span>, <span name="arg1">arg1: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.fromAvroFile.A">A</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.fromAvroFile.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new DList from the contents of one or more Avro files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of one or more Avro files. The type of the DList must conform to
-the schema types allowed by Avro, as constrained by the 'AvroSchema' type class. In the case of a directory
-being specified, the input forms all the files in that directory.</p></div></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../org$apache$hadoop$mapreduce$lib$input.html" class="extype" name="org.apache.hadoop.mapreduce.lib.input">org.apache.hadoop.mapreduce.lib.input</a>] </dd><dt>Definition Classes</dt><dd>FileInputFormat</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -270,6 +294,35 @@ being specified, the input forms all the files in that directory.</p></div></div
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat#getFormatMinSplitSize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getFormatMinSplitSize():Long"></a>
+      <a id="getFormatMinSplitSize():Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getFormatMinSplitSize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../org$apache$hadoop$mapreduce$lib$input.html" class="extype" name="org.apache.hadoop.mapreduce.lib.input">org.apache.hadoop.mapreduce.lib.input</a>] </dd><dt>Definition Classes</dt><dd>FileInputFormat</dd></dl></div>
+    </li><li name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat#getSplits" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getSplits(x$1:org.apache.hadoop.mapreduce.JobContext):java.util.List[org.apache.hadoop.mapreduce.InputSplit]"></a>
+      <a id="getSplits(JobContext):List[InputSplit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getSplits</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>)</span><span class="result">: <span class="extype" name="java.util.List">List</span>[<span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>FileInputFormat → InputFormat</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -296,19 +349,35 @@ being specified, the input forms all the files in that directory.</p></div></div
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroInput#logger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="logger:org.apache.commons.logging.Log"></a>
-      <a id="logger:Log"></a>
+    </li><li name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat#isSplitable" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isSplitable(x$1:org.apache.hadoop.mapreduce.JobContext,x$2:org.apache.hadoop.fs.Path):Boolean"></a>
+      <a id="isSplitable(JobContext,Path):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>
+        <span class="name">isSplitable</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>, <span name="arg1">arg1: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../org$apache$hadoop$mapreduce$lib$input.html" class="extype" name="org.apache.hadoop.mapreduce.lib.input">org.apache.hadoop.mapreduce.lib.input</a>] </dd><dt>Definition Classes</dt><dd>FileInputFormat</dd></dl></div>
+    </li><li name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat#listStatus" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="listStatus(x$1:org.apache.hadoop.mapreduce.JobContext):java.util.List[org.apache.hadoop.fs.FileStatus]"></a>
+      <a id="listStatus(JobContext):List[FileStatus]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">listStatus</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>)</span><span class="result">: <span class="extype" name="java.util.List">List</span>[<span class="extype" name="org.apache.hadoop.fs.FileStatus">FileStatus</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../org$apache$hadoop$mapreduce$lib$input.html" class="extype" name="org.apache.hadoop.mapreduce.lib.input">org.apache.hadoop.mapreduce.lib.input</a>] </dd><dt>Definition Classes</dt><dd>FileInputFormat</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -348,32 +417,6 @@ being specified, the input forms all the files in that directory.</p></div></div
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits#pimpSymbol" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pimpSymbol(sym:org.apache.avro.io.parsing.Symbol):com.nicta.scoobi.io.avro.EnhancedSymbol"></a>
-      <a id="pimpSymbol(Symbol):EnhancedSymbol"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pimpSymbol</span><span class="params">(<span name="sym">sym: <span class="extype" name="org.apache.avro.io.parsing.Symbol">Symbol</span></span>)</span><span class="result">: <a href="EnhancedSymbol.html" class="extype" name="com.nicta.scoobi.io.avro.EnhancedSymbol">EnhancedSymbol</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroInput#source" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="source[A](paths:Seq[String],checkSchemas:Boolean)(implicitevidence$5:com.nicta.scoobi.io.avro.AvroSchema[A]):$anonforSome{type$anon&lt;:com.nicta.scoobi.core.DataSource[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,A]{valinputFormat:Class[_&gt;:com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat[sch.AvroType]&lt;:org.apache.avro.mapreduce.AvroKeyInputFormat[sch.AvroType]];lazyvalinputConverter:com.nicta.scoobi.core.InputConverter[org.apache.avro.mapred.AvroKey[sch.AvroType],org.apache.hadoop.io.NullWritable,A]};valsch:com.nicta.scoobi.io.avro.AvroSchema[A]}"></a>
-      <a id="source[A](Seq[String],Boolean)(AvroSchema[A]):$anonforSome{type$anon&lt;:DataSource[AvroKey[AvroInput.source.sch.type.AvroType],NullWritable,A]{.../*2definitionsintyperefinement*/},valsch:AvroSchema[A]}"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">source</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.source.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.source.$anon">$anon</span> forSome {type $anon &lt;: <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.AvroType">AvroInput.source.sch.type.AvroType</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.source.A">A</span>] { ... /* 2 definitions in type refinement */ }, val sch: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroInput.source.A">A</span>]}</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -457,8 +500,12 @@ being specified, the input forms all the files in that directory.</p></div></div
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">
-              <h3>Inherited from <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></h3>
+        <div class="parent" name="org.apache.avro.mapreduce.AvroKeyInputFormat">
+              <h3>Inherited from <span class="extype" name="org.apache.avro.mapreduce.AvroKeyInputFormat">AvroKeyInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>]</h3>
+            </div><div class="parent" name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.mapreduce.lib.input.FileInputFormat">FileInputFormat</span>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>]</h3>
+            </div><div class="parent" name="org.apache.hadoop.mapreduce.InputFormat">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
