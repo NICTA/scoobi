@@ -116,7 +116,7 @@ class ScoobiAppSpec extends UnitSpecification with Tables {
         def run {}
         override def mainJarContainsDependencies = fatjar
       }
-      app.main(Array("example.MyApp", "--", "scoobi", if (nolibjars) "nolibjars" else ""))
+      app.main(Array("example.MyApp", "--", "scoobi", "cluster"+(if (nolibjars) ".nolibjars" else "cluster")))
       app.upload must be_==(upload)
     }
   }
