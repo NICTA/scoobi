@@ -22,6 +22,7 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.Configuration
 import Data._
+import org.apache.avro.mapreduce.AvroKeyRecordWriter
 
 /**
  * An output store from a MapReduce job

@@ -27,6 +27,7 @@ import testing.{TempFiles, TestFiles}
 import impl.exec.JobExecException
 import impl.ScoobiConfiguration._
 import impl.plan.comp.CompNodeData._
+import org.apache.avro.generic.GenericData.Record
 
 class AvroFileSpec extends NictaSimpleJobs {
 
@@ -175,6 +176,20 @@ class AvroFileSpec extends NictaSimpleJobs {
     val list = DList((1L, 2L)).toAvroFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true, checkpoint = true)
     list.map(_._2).run.normalise === "Vector(2)"
   }
+
+  "Generic data records can be persisted files and loaded again" >> { implicit sc: SC =>
+    val list: DList[GenericRecord] = DList(1).map { t =>
+      val r = new Record(AvroSchema.mkRecordSchema(Seq(implicitly[AvroSchema[Int]])))
+      r.put("v0", 1)
+      r
+    }
+
+    val avroFile = TempFiles.createTempFilePath("avro")
+    list.toAvroFile(avroFile, overwrite = true).run.toString === """Vector({"v0": 1})"""
+
+    fromAvroFile[GenericRecord](avroFile).map(record => record.get(0).asInstanceOf[Int]).run === Vector(1)
+  }
+
 
   /**
    * Helper methods and classes

@@ -19,19 +19,24 @@ package avro
 
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.mapred.FileAlreadyExistsException
+import org.apache.hadoop.mapreduce.{TaskAttemptContext, RecordWriter, Job}
+import org.apache.hadoop.mapred.{FileAlreadyExistsException}
 import org.apache.hadoop.io.NullWritable
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
-import org.apache.hadoop.mapreduce.Job
+
 import org.apache.avro.mapred.AvroKey
-import org.apache.avro.mapreduce.AvroKeyOutputFormat
+import org.apache.avro.mapreduce.{AvroKeyOutputFormat}
 
 import core._
 import impl.io.Helper
 import org.apache.hadoop.conf.Configuration
 import impl.ScoobiConfigurationImpl
-import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.compress._
 import org.apache.hadoop.io.SequenceFile.CompressionType
+import org.apache.avro.generic.GenericRecord
+import org.apache.avro.mapreduce.AvroKeyOutputFormat.RecordWriterFactory
+import org.apache.avro.Schema
+import org.apache.avro.file.{CodecFactory}
+import java.util.zip.Deflater
 
 /** Smart functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
@@ -60,7 +65,10 @@ case class AvroSink[K, B](schema: AvroSchema[B],
 
   lazy val output = new Path(path)
 
-  def outputFormat(implicit sc: ScoobiConfiguration)     = classOf[AvroKeyOutputFormat[K]]
+  def outputFormat(implicit sc: ScoobiConfiguration)     =
+    if (schema.schema.getType == Schema.Type.NULL) classOf[GenericAvroKeyOutputFormat[K]]
+    else classOf[AvroKeyOutputFormat[K]]
+
   def outputKeyClass(implicit sc: ScoobiConfiguration)   = classOf[AvroKey[K]]
   def outputValueClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
 
@@ -89,4 +97,42 @@ case class AvroSink[K, B](schema: AvroSchema[B],
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
 
   override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
+}
+
+/**
+ * This AvroKeyOutputFormat is used when writing out Generic Record.
+ *
+ * It uses the schema that is attached to the first key to be written to file
+ */
+class GenericAvroKeyOutputFormat[T] extends AvroKeyOutputFormat[T] {
+  private val parent = this
+
+  private def getCodecFactory(context: TaskAttemptContext) = {
+    if (context.getConfiguration.getBoolean("mapred.output.compress", false)) {
+      val codecClassName = context.getConfiguration.get("mapred.output.compression.codec")
+
+      if (codecClassName == classOf[BZip2Codec].getName) CodecFactory.bzip2Codec()
+      else if (codecClassName == classOf[DeflateCodec].getName) CodecFactory.deflateCodec(context.getConfiguration.getInt("avro.mapred.deflate.level", Deflater.DEFAULT_COMPRESSION))
+      else if (codecClassName == classOf[SnappyCodec].getName) CodecFactory.snappyCodec()
+      else CodecFactory.nullCodec()
+    } else CodecFactory.nullCodec()
+  }
+  private def createRecordWriterFactory(schema: Schema, context: TaskAttemptContext) = new RecordWriterFactory[T] {
+    def createWriter = super.create(schema, getCodecFactory(context), parent.getAvroFileOutputStream(context))
+  }
+
+  override def getRecordWriter(context: TaskAttemptContext) = new RecordWriter[AvroKey[T], NullWritable] {
+    private var delegate: RecordWriter[AvroKey[T], NullWritable] = _
+
+    def write(key: AvroKey[T], value: NullWritable) {
+      if (delegate == null) {
+        key.datum match {
+          case g: GenericRecord => delegate = parent.createRecordWriterFactory(g.getSchema, context).createWriter
+          case other            => delegate = parent.getRecordWriter(context)
+        }
+      }
+      delegate.write(key, value)
+    }
+    def close(context: TaskAttemptContext) { if (delegate != null) delegate.close(context) }
+  }
 }

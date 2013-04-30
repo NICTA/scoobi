@@ -27,6 +27,7 @@ import org.apache.avro.hadoop.io.AvroSerialization
 import org.apache.hadoop.io.serializer.{Serializer, Deserializer}
 import org.apache.avro.reflect.ReflectDatumWriter
 import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
+import org.apache.avro.generic._
 import org.apache.avro.io.DecoderFactory
 import collection.mutable.ArrayBuffer
 import scalaz._, Scalaz._
@@ -219,6 +220,28 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
       reader.read(null.asInstanceOf[T], decoder)
     }
     override def toString = "Avro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
+  }
+
+  implicit def GenericAvroFmt[T <: GenericRecord] = new GenericAvroWireFormat[T]
+  class GenericAvroWireFormat[T <: GenericRecord] extends WireFormat[T] {
+    def toWire(x : T, out : DataOutput) {
+      val bytestream = new ByteArrayOutputStream()
+      val encoder = EncoderFactory.get.directBinaryEncoder(bytestream, null)
+      val writer = new GenericDatumWriter[T](x.getSchema)
+      writer.write(x, encoder)
+      val outbytes = bytestream.toByteArray()
+      out.writeInt(outbytes.size)
+      out.write(outbytes)
+    }
+    def fromWire(in : DataInput) : T = {
+      val size = in.readInt
+      val bytes : Array[Byte] = new Array[Byte](size)
+      in.readFully(bytes)
+      val decoder = DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(bytes), null)
+      val reader = new GenericDatumReader[T]()
+      reader.read(null.asInstanceOf[T], decoder)
+    }
+    override def toString = "GenericAvro"
   }
 
 

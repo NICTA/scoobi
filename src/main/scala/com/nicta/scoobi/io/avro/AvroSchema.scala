@@ -27,6 +27,9 @@ import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
 import core.UniqueInt
+import impl.control.Exceptions._
+import java.util
+import org.apache.avro.Schema.Field
 
 /** Defines the Avro schema for a given Scala type. */
 trait AvroSchema[A] {
@@ -373,19 +376,18 @@ object AvroSchema {
   /* Actual Avro Generic/SpecificRecord support */
   implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
     val sclass = r.runtimeClass.asInstanceOf[Class[T]]
-    def schema: Schema = try { sclass.newInstance().getSchema }
-    catch {
-      case _: Throwable => sys.error("Could not construct a: " + r + " does it have a no-argument constructor?")
-    }
+    def schema: Schema =
+      tryOrElse(sclass.newInstance().getSchema)(Schema.create(Schema.Type.NULL))
+
     type AvroType = T
     def fromAvro(x: T): T = x
     def toAvro(x: T): T = x
   }
 
   /* Helper methods. */
-  private def mkRecordSchema(ss: List[AvroSchema[_]]): Schema = {
+  private[scoobi] def mkRecordSchema(ss: Seq[AvroSchema[_]]): Schema = {
     val fields: List[Schema.Field] =
-      ss.zipWithIndex map { case (s, ix) => new Schema.Field("v" + ix, s.schema, "", null) }
+      ss.toList.zipWithIndex map { case (s, ix) => new Schema.Field("v" + ix, s.schema, "", null) }
     val record =
       Schema.createRecord("tup" + UUID.randomUUID().toString.replace('-', 'x'), "", "scoobi", false)
     record.setFields(fields)
