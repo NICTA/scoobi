@@ -1239,8 +1239,7 @@ import it when you need it.
         <span class="name">AvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="#AvroWireFormat[T&lt;:org.apache.avro.specific.SpecificRecordBase]extendsWireFormat[T]" class="extmbr" name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat">AvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Avro types
-</p><div class="fullcomment"><div class="comment cmt"><p>Avro types
+      <p class="shortcomment cmt">WireFormat instance for Avro Specific Records</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro Specific Records</p><p>This requires an implicit AvroSchema instance
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#BooleanFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="BooleanFmt:WireFormatImplicits.this.BooleanWireFormat"></a>
@@ -1347,7 +1346,10 @@ import it when you need it.
         <span class="name">GenericAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result">: <a href="#GenericAvroWireFormat[T&lt;:org.apache.avro.generic.GenericRecord]extendsWireFormat[T]" class="extmbr" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat">GenericAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroFmt.T">T</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
+      <p class="shortcomment cmt">WireFormat instance for Avro Generic Records</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro Generic Records</p><p>No implicit AvroSchema instance is required. A dummy schema is used to start the reading of the file
+and then the GenericAvroKeyRecordWriter/GenericAvroKeyRecordReader will inspect the schema that is defined by the
+first generic record that is written / read to instance an appropriate AvroKeyRecordWriter/AvroKeyRecordReader
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WireFormatImplicits.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits">WireFormatImplicits</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#IntFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="IntFmt:WireFormatImplicits.this.IntWireFormat"></a>
       <a id="IntFmt:IntWireFormat"></a>

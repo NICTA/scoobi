@@ -44,7 +44,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Smart functions for persisting distributed lists by storing them as Avro files.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Functions for persisting distributed lists by storing them as Avro files.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -331,7 +331,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.io.avro.AvroOutput#toAvroFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toAvroFile[B](dl:com.nicta.scoobi.core.DList[B],path:String,overwrite:Boolean,checkpoint:Boolean)(implicitschema:com.nicta.scoobi.io.avro.AvroSchema[B],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):dl.T"></a>
+      <a id="toAvroFile[B](list:com.nicta.scoobi.core.DList[B],path:String,overwrite:Boolean,checkpoint:Boolean)(implicitschema:com.nicta.scoobi.io.avro.AvroSchema[B],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):list.T"></a>
       <a id="toAvroFile[B](DList[B],String,Boolean,Boolean)(AvroSchema[B],ScoobiConfiguration):T"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -339,7 +339,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toAvroFile</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="dl">dl: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroOutput.toAvroFile.B">B</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroOutput.toAvroFile.B">B</span>]</span>, <span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
+        <span class="name">toAvroFile</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="list">list: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroOutput.toAvroFile.B">B</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroOutput.toAvroFile.B">B</span>]</span>, <span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Specify a distributed list to be persistent by storing it to disk as an Avro File.</p>
