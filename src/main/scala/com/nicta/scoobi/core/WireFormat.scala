@@ -196,7 +196,9 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   }
   
   /**
-   * Avro types
+   * WireFormat instance for Avro Specific Records
+   *
+   * This requires an implicit AvroSchema instance
    */
   implicit def AvroFmt[T <: SpecificRecordBase : Manifest : AvroSchema] = new AvroWireFormat[T]
   class AvroWireFormat[T <: SpecificRecordBase : Manifest : AvroSchema] extends WireFormat[T] {
@@ -222,6 +224,13 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
     override def toString = "Avro["+implicitly[Manifest[T]].runtimeClass.getSimpleName+"]"
   }
 
+  /**
+   * WireFormat instance for Avro Generic Records
+   *
+   * No implicit AvroSchema instance is required. A dummy schema is used to start the reading of the file
+   * and then the GenericAvroKeyRecordWriter/GenericAvroKeyRecordReader will inspect the schema that is defined by the
+   * first generic record that is written / read to instance an appropriate AvroKeyRecordWriter/AvroKeyRecordReader
+   */
   implicit def GenericAvroFmt[T <: GenericRecord] = new GenericAvroWireFormat[T]
   class GenericAvroWireFormat[T <: GenericRecord] extends WireFormat[T] {
     def toWire(x : T, out : DataOutput) {

@@ -23,6 +23,7 @@ import org.apache.avro.Schema
 import Scoobi._
 import io.text._
 import core.{Source, Sink, DataSource, DataSink, OutputConverter}
+import org.apache.avro.generic.GenericRecord
 
 class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title^ s2"""
 
@@ -269,6 +270,16 @@ val xs2: DList[(Int, String, Float)] = fromAvroFile(files)
 ###### With a predefined avro schema
 
 Any type that extends `org.apache.avro.generic.GenericContainer` Scoobi knows how to generate a WireFormat for. This means that Scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given Avro record/protocol. See `examples/avro` for an example of this plugin in action
+
+It is also possible to load and persist `GenericRecord`s even if you don't know the schema. You can indeed access the schema and all the fields at run-time like this: ${snippet {
+  // load generic records
+  fromAvroFile[GenericRecord]("path").map { record =>
+    // you can get the schema and do the mapping based on its structure
+    if (record.getSchema.getFields.size == 1) record.get(0).asInstanceOf[Int]
+    else                                      1 // default value
+  }
+
+}}
 
 ##### Without files
 

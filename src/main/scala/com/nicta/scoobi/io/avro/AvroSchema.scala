@@ -37,6 +37,9 @@ trait AvroSchema[A] {
   def schema: Schema
   def fromAvro(x: AvroType): A
   def toAvro(x: A): AvroType
+
+  override def toString = schema.toString
+  def getType = schema.getType
 }
 
 /** Provide an implicit of this, if your type is a fixed. Then a FixedSchema can kick-in */
@@ -373,11 +376,16 @@ object AvroSchema {
     }
   }
 
-  /* Actual Avro Generic/SpecificRecord support */
+  /**
+   *  Actual Avro Generic/SpecificRecord support
+   *
+   *  When T is a GenericRecord, we use the NULL schema type.
+   *
+   *  @see AvroInput/AvroOutput how the NULL schema type is used to create the appropriate AvroKeyRecordReader/AvroKeyRecordWriter instance
+   */
   implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
     val sclass = r.runtimeClass.asInstanceOf[Class[T]]
-    def schema: Schema =
-      tryOrElse(sclass.newInstance().getSchema)(Schema.create(Schema.Type.NULL))
+    def schema: Schema = tryOrElse(sclass.newInstance().getSchema)(Schema.create(Schema.Type.NULL))
 
     type AvroType = T
     def fromAvro(x: T): T = x
@@ -396,24 +404,23 @@ object AvroSchema {
 }
 
 trait AvroParsingImplicits {
-  implicit def pimpSymbol(sym: Symbol): EnhancedSymbol = new EnhancedSymbol(sym)
-}
+  implicit class EnhancedSymbol(symbol: Symbol) {
 
-class EnhancedSymbol(sym: Symbol) extends AvroParsingImplicits {
-
-  /**
-   * Pull out any ErrorAction Symbols.
-   *
-   * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
-   *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
-   *       in union branches that may never be followed because the data isn't in that format.
-   */
-  def getErrors: List[Symbol.ErrorAction] = {
-    sym match {
-      case errSym: Symbol.ErrorAction => List(errSym)
-      case otherSym: Symbol => Option(sym.production).map {
-        _.filterNot(_ == sym).toList.flatMap(_.getErrors)
-      }.getOrElse(Nil)
+    /**
+     * Pull out any ErrorAction Symbols.
+     *
+     * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
+     *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
+     *       in union branches that may never be followed because the data isn't in that format.
+     */
+    def getErrors: List[Symbol.ErrorAction] = {
+      symbol match {
+        case errSym: Symbol.ErrorAction => List(errSym)
+        case otherSym: Symbol => Option(symbol.production).map {
+          _.filterNot(_ == symbol).toList.flatMap(_.getErrors)
+        }.getOrElse(Nil)
+      }
     }
   }
 }
+object AvroParsingImplicits extends AvroParsingImplicits

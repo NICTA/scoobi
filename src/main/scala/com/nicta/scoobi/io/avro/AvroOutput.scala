@@ -20,11 +20,11 @@ package avro
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.mapreduce.{TaskAttemptContext, RecordWriter, Job}
-import org.apache.hadoop.mapred.{FileAlreadyExistsException}
+import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.hadoop.io.NullWritable
 
 import org.apache.avro.mapred.AvroKey
-import org.apache.avro.mapreduce.{AvroKeyOutputFormat}
+import org.apache.avro.mapreduce.AvroKeyOutputFormat
 
 import core._
 import impl.io.Helper
@@ -35,15 +35,15 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.mapreduce.AvroKeyOutputFormat.RecordWriterFactory
 import org.apache.avro.Schema
-import org.apache.avro.file.{CodecFactory}
+import org.apache.avro.file.CodecFactory
 import java.util.zip.Deflater
 
-/** Smart functions for persisting distributed lists by storing them as Avro files. */
+/** Functions for persisting distributed lists by storing them as Avro files. */
 object AvroOutput {
 
   /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
-  def toAvroFile[B](dl: DList[B], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
-    dl.addSink(avroSink(path, overwrite, checkpoint))
+  def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
+    list.addSink(avroSink(path, overwrite, checkpoint))
 
   def avroSink[B](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit sc: ScoobiConfiguration, schema: AvroSchema[B]) = {
     val converter = new OutputConverter[AvroKey[schema.AvroType], NullWritable, B] {
@@ -61,29 +61,29 @@ case class AvroSink[K, B](schema: AvroSchema[B],
                           checkpoint: Option[Checkpoint] = None,
                           compression: Option[Compression] = None) extends DataSink[AvroKey[K], NullWritable, B] with SinkSource {
 
-  private lazy val logger = LogFactory.getLog("scoobi.AvroOutput")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.AvroOutput")
 
   lazy val output = new Path(path)
 
-  def outputFormat(implicit sc: ScoobiConfiguration)     =
-    if (schema.schema.getType == Schema.Type.NULL) classOf[GenericAvroKeyOutputFormat[K]]
-    else classOf[AvroKeyOutputFormat[K]]
+  def outputFormat(implicit sc: ScoobiConfiguration) =
+    if (schema.getType == Schema.Type.NULL) classOf[GenericAvroKeyOutputFormat[K]]
+    else                                    classOf[AvroKeyOutputFormat[K]]
 
   def outputKeyClass(implicit sc: ScoobiConfiguration)   = classOf[AvroKey[K]]
   def outputValueClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
 
   def outputCheck(implicit sc: ScoobiConfiguration) {
-    if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
-      throw new FileAlreadyExistsException("Output path already exists: " + output)
-    } else {
-      logger.info("Output path: " + output.toUri.toASCIIString)
-      logger.debug("Output Schema: " + schema.schema)
+    if (Helper.pathExists(output)(sc.configuration) && !overwrite)
+      throw new FileAlreadyExistsException(s"Output path already exists: $output")
+    else {
+      logger.info(s"Output path: ${output.toUri.toASCIIString}")
+      logger.debug(s"Output Schema: $schema")
     }
   }
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-    job.getConfiguration.set("avro.schema.output.key", schema.schema.toString)
+    job.getConfiguration.set("avro.schema.output.key", schema.toString)
   }
 
   override def outputSetup(implicit configuration: Configuration) {
@@ -96,7 +96,7 @@ case class AvroSink[K, B](schema: AvroSchema[B],
   def toSource: Source = AvroInput.source(Seq(path), checkSchemas = false)(schema)
   def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
 
-  override def toString = getClass.getSimpleName+": "+outputPath(new ScoobiConfigurationImpl).getOrElse("none")
+  override def toString = s"${getClass.getSimpleName}: ${outputPath(new ScoobiConfigurationImpl).getOrElse("none")}"
 }
 
 /**

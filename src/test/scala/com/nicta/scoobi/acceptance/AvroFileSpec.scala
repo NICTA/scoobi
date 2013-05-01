@@ -178,16 +178,19 @@ class AvroFileSpec extends NictaSimpleJobs {
     list.map(_._2).run.normalise === "Vector(2)"
   }
 
-  "Generic data records can be persisted files and loaded again" >> { implicit sc: SC =>
+  "Generic data records can be persisted and loaded again" >> { implicit sc: SC =>
+    // create a list of generic records
     val list: DList[GenericRecord] = DList(1).map { t =>
-      val r = new Record(AvroSchema.mkRecordSchema(Seq(implicitly[AvroSchema[Int]])))
-      r.put("v0", 1)
-      r
+      val record = new Record(AvroSchema.mkRecordSchema(Seq(implicitly[AvroSchema[Int]])))
+      record.put("v0", 1)
+      record
     }
 
+    // save generic records
     val avroFile = TempFiles.createTempFilePath("avro")
     list.toAvroFile(path(avroFile), overwrite = true).run.toString === """Vector({"v0": 1})"""
 
+    // load generic records
     fromAvroFile[GenericRecord](path(avroFile)).map(record => record.get(0).asInstanceOf[Int]).run === Vector(1)
   }
 
@@ -195,7 +198,6 @@ class AvroFileSpec extends NictaSimpleJobs {
   /**
    * Helper methods and classes
    */
-
   def createTempAvroFile[T](input: DList[T])(implicit sc: SC, as: AvroSchema[T]): String = {
     val dir = TempFiles.createTempDir("test").getPath
     persist(input.toAvroFile(dir, overwrite = true))
