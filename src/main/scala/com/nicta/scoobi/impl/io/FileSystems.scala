@@ -145,7 +145,7 @@ trait FileSystems {
 
   /** @return a function copying a Path to a given directory */
   def copyTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) =>
-    FileUtil.copy(fileSystem, f, fileSystem, dir, false, sc)
+    FileUtil.copy(fileSystem, f, FileSystem.get(dir.toUri, sc.configuration), dir, false, sc)
 
   /** @return the path with a trailing slash */
   def dirPath(s: String) = if (s endsWith "/") s else s+"/"
