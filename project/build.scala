@@ -73,7 +73,7 @@ object build extends Build {
       "org.apache.avro"                   %  "avro"                      % "1.7.4",
       "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
       "com.googlecode.kiama"              %% "kiama"                     % "1.5.0-SNAPSHOT",
-      "com.github.mdr"                    %  "ascii-graphs_2.10.0"       % "0.0.2",
+      "com.github.mdr"                    %%  "ascii-graphs"             % "0.0.3",
       "org.scalaz"                        %% "scalaz-core"               % "7.0.0",
       "org.scalaz"                        %% "scalaz-concurrent"         % "7.0.0",
       "org.scalaz"                        %% "scalaz-scalacheck-binding" % "7.0.0"            intransitive(),
