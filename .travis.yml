@@ -6,4 +6,4 @@ scala:
 jdk:
   - oraclejdk7
 
-script: sbt 'test-only *Persist* -- -include hadoop -exclude unstable -- scoobi verbose.all'
+script: sbt 'test-only -- -include hadoop -exclude unstable '
