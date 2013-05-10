@@ -64,7 +64,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
       }
     }
     "only locally if there is a failure" >> {
-      "normal execution" >> {
+      "x normal execution" >> {
         context.example2.execute
         there was one(context.mocked).runOnLocal(any[Result])
         there was no(context.mocked).runOnCluster(any[Result])
