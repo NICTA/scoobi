@@ -76,9 +76,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
     val configuration = configureForInMemory(ScoobiConfiguration())
 
     def apply[R : AsResult](r: ScoobiConfiguration => R) =
-      changeSeparator(contexts.toList.foldLeft(success: Result) { (result, context) =>
-        result and context(r)
-      })
+      changeSeparator(contexts.view.map(_(r)).reduceLeftOption[Result](_ and _).getOrElse(success))
   }
   /** execute an example body on the cluster */
   def remotely[R : AsResult](r: =>R) = showResultTime("Cluster execution time", runOnCluster(r))
