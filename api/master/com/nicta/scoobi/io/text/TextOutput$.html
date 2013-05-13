@@ -29,9 +29,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
+        <a href="TextOutput.html" title="Go to companion"><img src="../../../../../lib/object_to_trait_big.png" /></a>
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.text">text</a></p>
-        <h1>TextOutput</h1>
+        <h1><a href="TextOutput.html" title="Go to companion">TextOutput</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,13 +40,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">TextOutput</span>
+        <span class="name">TextOutput</span><span class="result"> extends <a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Smart functions for persisting distributed lists by storing them as text files.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.io.text.TextOutput"><span>TextOutput</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.io.text.TextOutput"><span>TextOutput</span></li><li class="in" name="com.nicta.scoobi.io.text.TextOutput"><span>TextOutput</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -277,7 +277,7 @@
         <span class="name">listToDelimitedTextFile</span><span class="tparams">[<span name="A">A &lt;: <span class="extype" name="scala.Product">Product</span></span>]</span><span class="params">(<span name="dl">dl: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.listToDelimitedTextFile.A">A</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;\t&quot;</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.listToDelimitedTextFile.A">A</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="java.lang.String">String</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Persist a distributed lists of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file.</p></div></div>
+      <p class="shortcomment cmt">Persist a distributed lists of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -329,7 +329,7 @@
         <span class="name">objectToDelimitedTextFile</span><span class="tparams">[<span name="A">A &lt;: <span class="extype" name="scala.Product">Product</span></span>]</span><span class="params">(<span name="o">o: <a href="../../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.objectToDelimitedTextFile.A">A</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;\t&quot;</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.objectToDelimitedTextFile.A">A</span>]</span>)</span><span class="result">: <a href="../../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="java.lang.String">String</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Persist a distributed object of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed object of 'Products' (e.g. Tuples) as a delimited text file.</p></div></div>
+      <p class="shortcomment cmt">Persist a distributed object of 'Products' (e.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed object of 'Products' (e.g. Tuples) as a delimited text file.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -343,7 +343,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextOutput#textFileSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.io.text.TextOutput#textFileSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="textFileSink[A](path:String,overwrite:Boolean)(implicitevidence$2:Manifest[A]):com.nicta.scoobi.io.text.TextFileSink[A]"></a>
       <a id="textFileSink[A](String,Boolean)(Manifest[A]):TextFileSink[A]"></a>
       <h4 class="signature">
@@ -355,7 +355,7 @@
         <span class="name">textFileSink</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFileSink.A">A</span>]</span>)</span><span class="result">: <a href="TextFileSink.html" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.textFileSink.A">A</span>]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -369,7 +369,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextOutput#toTextFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.io.text.TextOutput#toTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toTextFile[A](dl:com.nicta.scoobi.core.DList[A],path:String,overwrite:Boolean)(implicitevidence$1:Manifest[A]):dl.T"></a>
       <a id="toTextFile[A](DList[A],String,Boolean)(Manifest[A]):T"></a>
       <h4 class="signature">
@@ -381,7 +381,7 @@
         <span class="name">toTextFile</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dl">dl: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.toTextFile.A">A</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextOutput.toTextFile.A">A</span>]</span>)</span><span class="result">: <a href="../../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Persist a distributed list as a text file.</p>
+      <p class="shortcomment cmt">Persist a distributed list as a text file.</p><div class="fullcomment"><div class="comment cmt"><p>Persist a distributed list as a text file.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -439,7 +439,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="com.nicta.scoobi.io.text.TextOutput">
+              <h3>Inherited from <a href="TextOutput.html" class="extype" name="com.nicta.scoobi.io.text.TextOutput">TextOutput</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

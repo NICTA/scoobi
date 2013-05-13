@@ -49,7 +49,7 @@
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="TextInput$.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></div>
+          <div class="subClasses hiddenContent"><a href="../../application/InputsOutputs$.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a>, <a href="../../application/InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a>, <a href="../../Scoobi$.html" class="extype" name="com.nicta.scoobi.Scoobi">Scoobi</a>, <a href="TextInput$.html" class="extype" name="com.nicta.scoobi.io.text.TextInput">TextInput</a></div>
         </div></div>
         
 
@@ -87,23 +87,7 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.io.text.TextInput.TextSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TextSource[A]extendsDataSource[org.apache.hadoop.io.LongWritable,org.apache.hadoop.io.Text,A]"></a>
-      <a id="TextSource[A]:TextSource[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="TextInput$TextSource.html"><span class="name">TextSource</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.LongWritable">LongWritable</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="com.nicta.scoobi.io.text.TextInput.TextSource.A">A</span>]</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -255,6 +239,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#defaultTextConverter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="defaultTextConverter:com.nicta.scoobi.core.InputConverter[org.apache.hadoop.io.LongWritable,org.apache.hadoop.io.Text,String]"></a>
+      <a id="defaultTextConverter:InputConverter[LongWritable,Text,String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultTextConverter</span><span class="result">: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.hadoop.io.LongWritable">LongWritable</span>, <span class="extype" name="org.apache.hadoop.io.Text">Text</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -298,7 +295,7 @@
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.io.text.TextInput#fromDelimitedTextFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromDelimitedTextFile[A](path:String,sep:String)(extractFn:PartialFunction[Seq[String],A])(implicitevidence$1:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="fromDelimitedTextFile[A](path:String,sep:String)(extractFn:PartialFunction[Seq[String],A])(implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
       <a id="fromDelimitedTextFile[A](String,String)(PartialFunction[Seq[String],A])(WireFormat[A]):DList[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -361,6 +358,19 @@ a directory, the input forms all files in that directory).</p><div class="fullco
 a directory, the input forms all files in that directory). The distributed list is a tuple
 where the first part is the path of the originating file and the second part is a line of
 text.</p></div></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#fromTextSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromTextSource[A](source:com.nicta.scoobi.io.text.TextSource[A])(implicitevidence$1:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.impl.plan.DListImpl[A]"></a>
+      <a id="fromTextSource[A](TextSource[A])(WireFormat[A]):DListImpl[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromTextSource</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="source">source: <a href="TextSource.html" class="extype" name="com.nicta.scoobi.io.text.TextSource">TextSource</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextInput.fromTextSource.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.text.TextInput.fromTextSource.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.DListImpl">DListImpl</span>[<span class="extype" name="com.nicta.scoobi.io.text.TextInput.fromTextSource.A">A</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -400,19 +410,6 @@ text.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextInput#logger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="logger:org.apache.commons.logging.Log"></a>
-      <a id="logger:Log"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -452,19 +449,6 @@ text.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.text.TextInput#source" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="source(paths:Seq[String]):TextInput.this.TextSource[String]"></a>
-      <a id="source(Seq[String]):TextSource[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">source</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="TextInput$TextSource.html" class="extype" name="com.nicta.scoobi.io.text.TextInput.TextSource">TextSource</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">create a text source</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -478,6 +462,19 @@ text.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.text.TextInput#textSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="textSource(paths:Seq[String]):com.nicta.scoobi.io.text.TextSource[String]"></a>
+      <a id="textSource(Seq[String]):TextSource[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">textSource</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="TextSource.html" class="extype" name="com.nicta.scoobi.io.text.TextSource">TextSource</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">create a text source</p>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
