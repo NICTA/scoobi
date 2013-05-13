@@ -31,6 +31,8 @@ import core.InputOutputContext
 import org.apache.commons.logging.LogFactory
 import monitor.Loggable
 import Loggable._
+import org.apache.hadoop.mapreduce.task.{MapContextImpl, TaskInputOutputContextImpl}
+import org.apache.hadoop.mapreduce.MapContext
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
@@ -142,7 +144,7 @@ trait MscrInputChannel extends InputChannel {
   protected var tvs: Map[Int, TaggedValue] = Map()
   protected var emitters: Map[Int, EmitterWriter] = Map()
   protected var environments: Map[ParallelDo, Any] = Map()
-  protected var vectorEmitter: VectorEmitterWriter = _
+  protected var vectorEmitter: VectorEmitterWriter = VectorEmitterWriter(null)
   protected implicit var configuration: Configuration = _
   protected implicit var scoobiConfiguration: ScoobiConfiguration = _
 
