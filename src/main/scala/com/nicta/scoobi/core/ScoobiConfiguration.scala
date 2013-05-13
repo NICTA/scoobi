@@ -24,6 +24,7 @@ import org.apache.hadoop.mapreduce.Job
 import impl.ScoobiConfigurationImpl
 import tools.nsc.util.ScalaClassLoader
 import tools.nsc.interpreter.AbstractFileClassLoader
+import org.apache.hadoop.mapreduce.{Counters => HadoopCounters}
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -65,6 +66,8 @@ trait ScoobiConfiguration {
   def jobName: Option[String]
   def jobId: String
   def jobStep(mscrId: Int): String
+  def updateCounters(counters: HadoopCounters): ScoobiConfiguration
+  def counters: HadoopCounters
   def setAsInMemory: ScoobiConfiguration
   def setAsLocal: ScoobiConfiguration
   def setDirectories: ScoobiConfiguration

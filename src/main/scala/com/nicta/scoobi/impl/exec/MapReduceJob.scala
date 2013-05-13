@@ -49,7 +49,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
-  private implicit lazy val job = new Job(configuration, configuration.jobStep(mscr.id))
+  implicit lazy val job = new Job(configuration, configuration.jobStep(mscr.id))
   
   /** Take this MapReduce job and run it on Hadoop. */
   def run = {
@@ -209,6 +209,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     /* Move named file-based sinks to their correct output paths. */
     mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
     configuration.deleteTemporaryOutputDirectory(job)
+    configuration.updateCounters(job.getCounters)
     this
   }
 }

@@ -85,8 +85,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
-      val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, new TaskAttemptID())
       val rw = outputFormat.getRecordWriter(taskContext)
       val oc = outputFormat.getOutputCommitter(taskContext)
 

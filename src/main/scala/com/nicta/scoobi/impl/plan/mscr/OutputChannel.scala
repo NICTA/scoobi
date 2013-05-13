@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory
 import mapreducer._
 import ChannelOutputFormat._
 import monitor.Loggable._
+import org.apache.hadoop.mapreduce.TaskInputOutputContext
 
 /**
  * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
@@ -112,13 +113,14 @@ trait MscrOutputChannel extends OutputChannel { outer =>
    * create an emitter to output values on the current tag for each sink. Values are converted to (key, values) using
    * the sink output converter. This emitter is used by both the GbkOutputChannel and the BypassOutputChannel
    */
-  protected def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter {
+  protected def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter with InputOutputContextCounters {
     def write(x: Any)  {
       sinks foreach { sink =>
         sink.configureCompression(configuration)
         channelOutput.write(tag, sink.id, convert(sink, x))
       }
     }
+    def context = InputOutputContext(channelOutput.context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]])
   }
 
   /** use the output converter of a sink to convert a value to a key/value */

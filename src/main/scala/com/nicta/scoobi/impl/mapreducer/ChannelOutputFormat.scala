@@ -37,7 +37,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
  * A class that simplifies writing output to different paths and with different types
  * depending on the output channel and required outputs per channel
  */
-class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
+class ChannelOutputFormat(val context: TaskInputOutputContext[_, _, _, _]) {
 
   private val taskContexts: MMap[(Int, Int), TaskAttemptContext] = MMap.empty
   private val recordWriters: MMap[(Int, Int), RecordWriter[_,_]] = MMap.empty

@@ -18,6 +18,7 @@ package core
 
 import collection.immutable.VectorBuilder
 import impl.plan.comp.ParallelDo
+import org.apache.hadoop.mapreduce.TaskInputOutputContext
 
 /**
  * Interface for specifying parallel operation over DLists. The semantics
@@ -32,7 +33,10 @@ import impl.plan.comp.ParallelDo
  * will not be referenced after these steps
  */
 trait EnvDoFn[A, B, E] extends DoFunction { outer =>
-  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] { def emit(x: B) { emitter.write(x) } }
+  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] with DelegatedCounters {
+    def emit(x: B) { emitter.write(x) }
+    def counters = emitter
+  }
   private[scoobi] def setupFunction(env: Any) { setup(env.asInstanceOf[E]) }
   private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { process(env.asInstanceOf[E], input.asInstanceOf[A], typedEmitter(emitter)) }
   private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) { cleanup(env.asInstanceOf[E], typedEmitter(emitter)) }
@@ -120,8 +124,38 @@ object EmitterDoFunction extends DoFunction {
  * Untyped emitter
  */
 private[scoobi]
-trait EmitterWriter {
+trait EmitterWriter extends Counters {
   private[scoobi]
   def write(value: Any)
+}
+
+private[scoobi]
+trait Counters {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1)
+  def getCounter(groupName: String, name: String): Long
+  def heartbeat
+}
+
+trait NoCounters extends Counters {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) {}
+  def getCounter(groupName: String, name: String) = -1
+  def heartbeat {}
+}
+trait DelegatedCounters extends Counters {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) { counters.incrementCounter(groupName, name, increment) }
+  def getCounter(groupName: String, name: String) = counters.getCounter(groupName, name)
+  def heartbeat { counters.heartbeat }
+  def counters: Counters
+}
+trait InputOutputContextCounters extends Counters {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) {
+    context.incrementCounter(groupName, name, increment)
+  }
+  def getCounter(groupName: String, name: String) = {
+    context.getCounter(groupName, name)
+  }
+  def heartbeat { context.heartbeat }
+
+  def context: InputOutputContext
 }
 

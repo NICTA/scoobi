@@ -135,12 +135,18 @@ object ParallelDo {
       /** fusion of the process functions */
       def processFunction(env: Any, input: Any, emitter: EmitterWriter) {
         val (env1, env2) = env match { case (e1, e2) => (e1, e2); case e => (e, e) }
-        f.processFunction(env1, input, new EmitterWriter { def write(value: Any) { g.processFunction(env2, value, emitter) } } )
+        f.processFunction(env1, input, new EmitterWriter with DelegatedCounters {
+          def write(value: Any) { g.processFunction(env2, value, emitter) }
+          def counters = emitter
+        })
       }
       /** fusion of the cleanup functions */
       def cleanupFunction(env: Any, emitter: EmitterWriter) {
         val (env1, env2) = env match { case (e1, e2) => (e1, e2); case e => (e, e) }
-        f.cleanupFunction(env1, new EmitterWriter { def write(value: Any) { g.processFunction(env2, value, emitter) } })
+        f.cleanupFunction(env1, new EmitterWriter with DelegatedCounters {
+          def write(value: Any) { g.processFunction(env2, value, emitter) }
+          def counters = emitter
+        })
         g.cleanupFunction(env2, emitter)
       }
     }

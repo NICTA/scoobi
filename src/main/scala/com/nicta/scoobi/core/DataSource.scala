@@ -100,7 +100,14 @@ trait FromKeyValueConverter {
   def asValue(context: InputOutputContext, key: Any, value: Any): Any
 }
 
-case class InputOutputContext(context: MapContext[Any,Any,Any,Any]) {
+case class InputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any]) {
   def configuration = context.getConfiguration
   def write(key: Any, value: Any) { context.write(key, value) }
+  def incrementCounter(groupName: String, name: String, increment: Long = 1L) {
+    Option(context.getCounter(groupName, name)).foreach(_.increment(increment))
+  }
+  def getCounter(groupName: String, name: String) = {
+    Option(context.getCounter(groupName, name).getValue).getOrElse(-1L)
+  }
+  def heartbeat { context.progress() }
 }

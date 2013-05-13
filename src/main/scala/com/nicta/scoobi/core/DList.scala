@@ -16,6 +16,8 @@
 package com.nicta.scoobi
 package core
 
+import impl.control.ImplicitParam
+
 /**
  * A list that is distributed across multiple machines.
  *
@@ -73,6 +75,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   // Derived functionality (return DLists).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B]
+  def parallelDo[B : WireFormat](fn: (A, Emitter[B]) => Unit): DList[B] = basicParallelDo(fn)
+  def parallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParam): DList[B] = basicParallelDo(fn)(wf, p)
 
   /**
    * Group the values of a distributed list with key-value elements by key. And explicitly
@@ -278,27 +282,25 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    */
   def reduceOption(op: Reduction[A]): DObject[Option[A]] = {
     /* First, perform in-mapper combining. */
-    val imc: DList[A] = parallelDo(new DoFn[A, A] {
-      var acc: A = _
-      var none: Boolean = false
-
-      def setup() {
-        none = true
-      }
-
-      def process(input: A, emitter: Emitter[A]) {
-        acc = if (none) input else op(acc, input)
-        none = false
-      }
-
-      def cleanup(emitter: Emitter[A]) {
-        if (!none) emitter.emit(acc)
-      }
-    })
+    val imc: DList[A] = parallelDo(accumulateFunction[A](op))
 
     /* Group all elements together (so they go to the same reducer task) and then
      * combine them. */
     imc.groupBy(_ => 0).combine(op).map(_._2).headOption
+  }
+
+  private def accumulateFunction[S](op: Reduction[S]) = new DoFn[S, S] {
+    private var acc: S = _
+    private var none: Boolean = false
+
+    def setup() { none = true }
+
+    def process(input: S, emitter: Emitter[S]) {
+      acc = if (none) input else op(acc, input)
+      none = false
+    }
+
+    def cleanup(emitter: Emitter[S]) { if (!none) emitter.emit(acc) }
   }
 
   /**Multiply up the elements of this distribute list. */
@@ -342,6 +344,11 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] =
     parallelDo(BasicDoFn(proc))
+
+  private def basicParallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParam): DList[B] =
+    basicParallelDo { (a: A, emitter: Emitter[B]) =>
+      emitter.write(fn(a, emitter))
+    }
 
 }
 

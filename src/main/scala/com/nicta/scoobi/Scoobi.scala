@@ -17,6 +17,7 @@ package com.nicta.scoobi
 
 import application._
 import core.Reductions
+import impl.control.ImplicitParameters
 import impl.ScoobiConfigurations
 import lib._
 
@@ -29,7 +30,8 @@ object Scoobi extends core.WireFormatImplicits
    with Library
    with DObjects
    with Reductions
-   with ScoobiConfigurations {
+   with ScoobiConfigurations
+   with ImplicitParameters {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]

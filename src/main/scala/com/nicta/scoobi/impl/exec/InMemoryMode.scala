@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.TaskAttemptID
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+import org.apache.hadoop.mapreduce.task.{TaskInputOutputContextImpl, TaskAttemptContextImpl}
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 
@@ -110,7 +110,7 @@ case class InMemoryMode() extends ExecutionMode {
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
-    val emitter = new EmitterWriter { def write(v: Any) { vb += v } }
+    val emitter = new EmitterWriter with NoCounters { def write(v: Any) { vb += v } }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
     dofn.setupFunction(env)

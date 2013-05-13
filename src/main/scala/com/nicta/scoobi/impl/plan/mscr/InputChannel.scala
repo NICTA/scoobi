@@ -142,7 +142,7 @@ trait MscrInputChannel extends InputChannel {
   protected var tvs: Map[Int, TaggedValue] = Map()
   protected var emitters: Map[Int, EmitterWriter] = Map()
   protected var environments: Map[ParallelDo, Any] = Map()
-  protected val vectorEmitter = VectorEmitterWriter()
+  protected var vectorEmitter: VectorEmitterWriter = _
   protected implicit var configuration: Configuration = _
   protected implicit var scoobiConfiguration: ScoobiConfiguration = _
 
@@ -156,6 +156,7 @@ trait MscrInputChannel extends InputChannel {
     tvs.map { case (t, v) => v.configuration = configuration }
 
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
+    vectorEmitter = VectorEmitterWriter(context)
     environments = Map(mappers.map(mapper => (mapper, mapper.environment(scoobiConfiguration))):_*)
 
     mappers.foreach(m => m.setup(environments(m)))
@@ -230,16 +231,17 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
     if (mappers.size <= 1) mappers
     else                   mappers.filter(m => uses(m).exists(terminalNodes.contains))
 
-  protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
+  protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextCounters {
     val (key, value) = (tks(tag), tvs(tag))
     def write(x: Any) {
       x match {
         case (x1, x2) =>
           key.set(x1)
           value.set(x2)
-          context.write(key, value)
+          ioContext.write(key, value)
       }
     }
+    def context = ioContext
   }
   protected def outputTags(mapper: ParallelDo): Seq[Int] = uses(mapper).collect(isAGroupByKey).map(_.id).toSeq
 }
@@ -260,14 +262,15 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
     if (mappers.size <= 1) mappers
     else                   mappers.filter(terminalNodes.contains)
 
-  protected def createEmitter(tag: Int, context: InputOutputContext) = new EmitterWriter {
+  protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextCounters {
     val (key, value) = (tks(tag), tvs(tag))
 
     def write(x: Any) {
       key.set(rollingInt.get)
       value.set(x)
-      context.write(key, value)
+      ioContext.write(key, value)
     }
+    def context = ioContext
   }
   protected def outputTags(mapper: ParallelDo): Seq[Int] = Seq(mapper.id)
 }

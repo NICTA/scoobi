@@ -25,7 +25,7 @@ import plan.comp.ParallelDo
 /**
  * In memory emitter writer saving the values to a Vector
  */
-case class VectorEmitterWriter() extends EmitterWriter {
+case class VectorEmitterWriter(context: InputOutputContext) extends EmitterWriter with InputOutputContextCounters {
   private val vb = new VectorBuilder[Any]
   def write(v: Any) { vb += v }
   def result = vb.result
@@ -38,3 +38,12 @@ case class VectorEmitterWriter() extends EmitterWriter {
   }
 }
 
+// used for testing only
+object VectorEmitterWriter {
+  def create = new VectorEmitterWriter(null) {
+    override def incrementCounter(groupName: String, name: String, increment: Long = 1) {}
+    override def getCounter(groupName: String, name: String) = -1
+    override def heartbeat {}
+
+  }
+}

@@ -20,6 +20,7 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import java.net.URL
 import java.io.File
+import scala.collection.JavaConversions._
 import mapreducer.Env
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.util.GenericOptionsParser
@@ -27,6 +28,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.fs.FileSystem._
 import org.apache.commons.logging.LogFactory._
+import org.apache.hadoop.mapreduce.{Counters => HadoopCounters, Counter, Job}
 
 import core._
 import reflect.Classes
@@ -35,15 +37,13 @@ import io.FileSystems
 import Configurations._
 import FileSystems._
 import monitor.Loggable._
-import org.apache.hadoop.mapreduce.Job
-import scala.Some
-import tools.nsc.util.ScalaClassLoader
 import tools.nsc.interpreter.AbstractFileClassLoader
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
                                    var userDirs: Set[String] = Set(),
-                                   var classLoader: Option[AbstractFileClassLoader] = None) extends ScoobiConfiguration {
+                                   var classLoader: Option[AbstractFileClassLoader] = None,
+                                   counters: HadoopCounters = new HadoopCounters) extends ScoobiConfiguration {
 
   /**
    * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
@@ -86,6 +86,16 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
     configuration.get(JOB_STEP).debug("the job step is")
   }
+
+  /** update the current counters from the result of a job that has just been run */
+  def updateCounters(hadoopCounters: HadoopCounters) = {
+    hadoopCounters.getGroupNames.map { groupName: String =>
+      val group = hadoopCounters.getGroup(groupName)
+      group.iterator.foreach((c: Counter) => counters.findCounter(groupName, c.getName).increment(c.getValue))
+    }
+    this
+  }
+
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
 
