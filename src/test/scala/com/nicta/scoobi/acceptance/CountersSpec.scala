@@ -4,6 +4,7 @@ package acceptance
 import testing.mutable.script.NictaSimpleJobs
 import Scoobi._
 import core.Counters
+import impl.plan.comp.CompNodeData._
 
 class CountersSpec extends NictaSimpleJobs { s2"""
 
@@ -21,7 +22,7 @@ class CountersSpec extends NictaSimpleJobs { s2"""
         counters.incrementCounter("group1", "counter1", 1)
         input + 1
       })
-      list.run === Vector(3, 4, 5)
+      list.run.normalise === "Vector(3, 4, 5)"
       sc.counters.getGroup("group1").findCounter("counter1").getValue must be_==(3).when(sc.isLocal)
     }
 
