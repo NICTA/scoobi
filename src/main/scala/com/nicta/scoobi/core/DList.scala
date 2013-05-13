@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package core
 
-import impl.control.ImplicitParam
+import impl.control.{ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
 
 /**
  * A list that is distributed across multiple machines.
@@ -76,7 +76,9 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B]
   def parallelDo[B : WireFormat](fn: (A, Emitter[B]) => Unit): DList[B] = basicParallelDo(fn)
-  def parallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParam): DList[B] = basicParallelDo(fn)(wf, p)
+  def parallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParameter): DList[B] = basicParallelDo(fn)(wf, p)
+  def parallelDo[B](fn: (A, Heartbeat) => B)(implicit wf: WireFormat[B], p: ImplicitParameter1): DList[B] = basicParallelDo(fn)(wf, p)
+  def parallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] = basicParallelDo(fn)(wf, p)
 
   /**
    * Group the values of a distributed list with key-value elements by key. And explicitly
@@ -345,10 +347,14 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] =
     parallelDo(BasicDoFn(proc))
 
-  private def basicParallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParam): DList[B] =
-    basicParallelDo { (a: A, emitter: Emitter[B]) =>
-      emitter.write(fn(a, emitter))
-    }
+  private def basicParallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParameter): DList[B] =
+    basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
+
+  private def basicParallelDo[B](fn: (A, Heartbeat) => B)(implicit wf: WireFormat[B], p: ImplicitParameter1): DList[B] =
+    basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
+
+  private def basicParallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] =
+    basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
 
 }
 

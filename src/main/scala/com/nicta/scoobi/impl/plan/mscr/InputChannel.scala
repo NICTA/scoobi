@@ -231,7 +231,7 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
     if (mappers.size <= 1) mappers
     else                   mappers.filter(m => uses(m).exists(terminalNodes.contains))
 
-  protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextCounters {
+  protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
     def write(x: Any) {
       x match {
@@ -262,7 +262,7 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
     if (mappers.size <= 1) mappers
     else                   mappers.filter(terminalNodes.contains)
 
-  protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextCounters {
+  protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
 
     def write(x: Any) {

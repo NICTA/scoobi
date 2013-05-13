@@ -110,7 +110,7 @@ case class InMemoryMode() extends ExecutionMode {
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
-    val emitter = new EmitterWriter with NoCounters { def write(v: Any) { vb += v } }
+    val emitter = new EmitterWriter with NoScoobiJobContext { def write(v: Any) { vb += v } }
 
     val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
     dofn.setupFunction(env)

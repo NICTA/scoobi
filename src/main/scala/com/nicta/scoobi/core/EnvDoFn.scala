@@ -33,9 +33,9 @@ import org.apache.hadoop.mapreduce.TaskInputOutputContext
  * will not be referenced after these steps
  */
 trait EnvDoFn[A, B, E] extends DoFunction { outer =>
-  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] with DelegatedCounters {
+  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] with DelegatedScoobiJobContext {
     def emit(x: B) { emitter.write(x) }
-    def counters = emitter
+    def delegate = emitter
   }
   private[scoobi] def setupFunction(env: Any) { setup(env.asInstanceOf[E]) }
   private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { process(env.asInstanceOf[E], input.asInstanceOf[A], typedEmitter(emitter)) }
@@ -124,30 +124,38 @@ object EmitterDoFunction extends DoFunction {
  * Untyped emitter
  */
 private[scoobi]
-trait EmitterWriter extends Counters {
+trait EmitterWriter extends ScoobiJobContext {
   private[scoobi]
   def write(value: Any)
 }
 
-private[scoobi]
+trait ScoobiJobContext extends Counters with Heartbeat
+
 trait Counters {
   def incrementCounter(groupName: String, name: String, increment: Long = 1)
   def getCounter(groupName: String, name: String): Long
-  def heartbeat
 }
 
+trait Heartbeat {
+  def heartbeat
+}
+trait NoScoobiJobContext extends NoCounters with NoHeartbeat
 trait NoCounters extends Counters {
   def incrementCounter(groupName: String, name: String, increment: Long = 1) {}
   def getCounter(groupName: String, name: String) = -1
+}
+trait NoHeartbeat extends Heartbeat {
   def heartbeat {}
 }
-trait DelegatedCounters extends Counters {
-  def incrementCounter(groupName: String, name: String, increment: Long = 1) { counters.incrementCounter(groupName, name, increment) }
-  def getCounter(groupName: String, name: String) = counters.getCounter(groupName, name)
-  def heartbeat { counters.heartbeat }
-  def counters: Counters
+
+trait DelegatedScoobiJobContext extends ScoobiJobContext { outer =>
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) { delegate.incrementCounter(groupName, name, increment) }
+  def getCounter(groupName: String, name: String) = delegate.getCounter(groupName, name)
+  def heartbeat { delegate.heartbeat }
+  def delegate: ScoobiJobContext
 }
-trait InputOutputContextCounters extends Counters {
+
+trait InputOutputContextScoobiJobContext extends ScoobiJobContext {
   def incrementCounter(groupName: String, name: String, increment: Long = 1) {
     context.incrementCounter(groupName, name, increment)
   }

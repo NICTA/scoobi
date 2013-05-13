@@ -113,7 +113,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
    * create an emitter to output values on the current tag for each sink. Values are converted to (key, values) using
    * the sink output converter. This emitter is used by both the GbkOutputChannel and the BypassOutputChannel
    */
-  protected def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter with InputOutputContextCounters {
+  protected def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter with InputOutputContextScoobiJobContext {
     def write(x: Any)  {
       sinks foreach { sink =>
         sink.configureCompression(configuration)

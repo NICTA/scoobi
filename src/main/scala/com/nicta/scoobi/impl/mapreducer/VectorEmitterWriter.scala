@@ -25,7 +25,7 @@ import plan.comp.ParallelDo
 /**
  * In memory emitter writer saving the values to a Vector
  */
-case class VectorEmitterWriter(context: InputOutputContext) extends EmitterWriter with InputOutputContextCounters {
+case class VectorEmitterWriter(context: InputOutputContext) extends EmitterWriter with InputOutputContextScoobiJobContext {
   private val vb = new VectorBuilder[Any]
   def write(v: Any) { vb += v }
   def result = vb.result
