@@ -168,7 +168,7 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
   def ls(path: String) {
     configuration.fileSystem.listStatus(new Path(path)) foreach { fstat =>
       Console.printf("%s%s  %-15s  %-12s  %s\n",
-        if (fstat.isFile) "-" else "d",
+        if (fstat.isDir) "d" else "-",
         fstat.getPermission,
         fstat.getOwner,
         fstat.getBlockSize,
