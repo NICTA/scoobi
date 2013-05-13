@@ -18,9 +18,10 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.{Job, TaskAttemptID}
+import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.TaskAttemptID
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.TaskAttemptContext
+import org.apache.hadoop.mapreduce.task.{TaskInputOutputContextImpl, TaskAttemptContextImpl}
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 
@@ -174,4 +175,7 @@ case class InMemoryMode() extends ExecutionMode {
       (k, combine.combine(vs))
     }.debug("computeCombine")
 
+
 }
+
+
