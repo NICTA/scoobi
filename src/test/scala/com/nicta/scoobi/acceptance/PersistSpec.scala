@@ -22,9 +22,8 @@ import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
-import SequenceOutput._
 import core.Reduction.Sum
-import io.text.TextInput.TextSource
+import io.text.TextSource
 import org.apache.hadoop.mapreduce.RecordReader
 import core.{InputConverter, InputOutputContext}
 import impl.plan.DListImpl

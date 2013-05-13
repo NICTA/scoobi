@@ -39,9 +39,12 @@ import org.apache.avro.file.CodecFactory
 import java.util.zip.Deflater
 
 /** Functions for persisting distributed lists by storing them as Avro files. */
-object AvroOutput {
+trait AvroOutput {
 
-  /** Specify a distributed list to be persistent by storing it to disk as an Avro File. */
+  /**
+   * Specify a distributed list to be persistent by storing it to disk as an Avro File
+   * @deprecated(message="use list.toAvroFile(...) instead", since="0.7.0")
+   */
   def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
     list.addSink(avroSink(path, overwrite, checkpoint))
 
@@ -53,6 +56,7 @@ object AvroOutput {
   }
 
 }
+object AvroOutput extends AvroOutput
 
 case class AvroSink[K, B](schema: AvroSchema[B],
                           path: String,

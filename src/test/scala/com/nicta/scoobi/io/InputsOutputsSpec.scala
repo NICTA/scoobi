@@ -6,7 +6,7 @@ import testing.TestFiles._
 import testing.{TestFiles, InputStringTestFile, TempFiles}
 import core.InputConverter
 import org.apache.hadoop.io.{Text, LongWritable}
-import text.TextInput.TextSource
+import text.TextSource
 import com.nicta.scoobi.Scoobi._
 import org.apache.hadoop.mapreduce.RecordReader
 import impl.plan.DListImpl
@@ -33,7 +33,7 @@ class InputsOutputsSpec extends NictaSimpleJobs {
       val converter = new InputConverter[LongWritable, Text, String] {
         def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
       }
-      val source = new TextSource[String](Seq(file.getPath), converter) {
+      val source = new TextSource[String](Seq(file.getPath), inputConverter = converter) {
         override def inputCheck(implicit sc: ScoobiConfiguration) {
           checks = checks + 1
           super.inputCheck(sc)

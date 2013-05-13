@@ -24,7 +24,6 @@ import org.specs2.matcher.ThrownExpectations
 import core.WireFormat._
 import Scoobi._
 import mapreducer.BridgeStore
-import TextOutput._
 
 class ProcessNodeSpec extends UnitSpecification with Grouped with ThrownExpectations { def is = s2"""
 

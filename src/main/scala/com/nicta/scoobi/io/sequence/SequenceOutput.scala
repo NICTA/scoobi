@@ -23,25 +23,25 @@ import org.apache.hadoop.io.Writable
 import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.apache.hadoop.mapreduce.Job
 
 import core._
 import impl.ScoobiConfiguration._
 import impl.io.Helper
-import avro.AvroInput
-import sequence.SequenceInput.SeqSource
 import org.apache.hadoop.conf.Configuration
-import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
+import impl.ScoobiConfigurationImpl
 import core.ScoobiConfiguration
 import org.apache.hadoop.io.compress.CompressionCodec
 import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** Smart functions for persisting distributed lists by storing them as Sequence files. */
-object SequenceOutput {
+trait SequenceOutput {
 
-  /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
-    * to disk as the "key" component in a Sequence File. */
+  /**
+   * Specify a distributed list to be persistent by converting its elements to Writables and storing it
+   * to disk as the "key" component in a Sequence File.
+   *  @deprecated(message="use list.keyToSequenceFile(...) instead", since="0.7.0")
+   */
   def keyToSequenceFile[K](dl: DList[K], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) =
     dl.addSink(keySchemaSequenceFile(path, overwrite))
 
@@ -60,8 +60,11 @@ object SequenceOutput {
     new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite)
   }
 
-  /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
-    * to disk as the "value" component in a Sequence File. */
+  /**
+   * Specify a distributed list to be persistent by converting its elements to Writables and storing it
+   * to disk as the "value" component in a Sequence File.
+   *  @deprecated(message="use list.valueToSequenceFile(...) instead", since="0.7.0")
+   */
   def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) =
     dl.addSink(valueSchemaSequenceFile(path, overwrite))
 
@@ -79,8 +82,11 @@ object SequenceOutput {
     new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite)
   }
 
-  /** Specify a distributed list to be persistent by converting its elements to Writables and storing it
-    * to disk as "key-values" in a Sequence File. */
+  /**
+   * Specify a distributed list to be persistent by converting its elements to Writables and storing it
+   * to disk as "key-values" in a Sequence File
+   * @deprecated(message="use list.toSequenceFile(...) instead", since="0.7.0")
+   */
   def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration) =
     dl.addSink(schemaSequenceSink(path, overwrite, checkpoint)(convK, convV, sc))
 
@@ -94,7 +100,7 @@ object SequenceOutput {
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
     new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
-      def toSource = new SeqSource(Seq(path), converter)
+      def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, converter)
     }
   }
 
@@ -108,11 +114,13 @@ object SequenceOutput {
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (kv._1, kv._2)
     }
     new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
-      def toSource = new SeqSource(Seq(path), converter)
+      def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, converter)
     }
   }
 
 }
+
+object SequenceOutput extends SequenceOutput
 
 /** class that abstracts all the common functionality of persisting to sequence files. */
 case class SeqSink[K, V, B](path: String,

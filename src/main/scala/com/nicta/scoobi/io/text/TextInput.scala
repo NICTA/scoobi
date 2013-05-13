@@ -36,20 +36,18 @@ import WireFormat._
 
 /** Smart functions for materialising distributed lists by loading text files. */
 trait TextInput {
-  lazy val logger = LogFactory.getLog("scoobi.TextInput")
-
   /** Create a distributed list from one or more files or directories (in the case of a directory,
     * the input forms all files in that directory). */
-  def fromTextFile(paths: String*): DList[String] = DListImpl(source(paths))
+  def fromTextFile(paths: String*): DList[String] = fromTextSource[String](textSource(paths))
 
+  def fromTextSource[A : WireFormat](source: TextSource[A]) = DListImpl(source)
+
+  def defaultTextConverter = new InputConverter[LongWritable, Text, String] {
+    def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
+  }
 
   /** create a text source */
-  def source(paths: Seq[String]) = {
-    val converter = new InputConverter[LongWritable, Text, String] {
-      def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = v.toString
-    }
-    new TextSource(paths, converter)
-  }
+  def textSource(paths: Seq[String]) = new TextSource[String](paths, inputConverter = defaultTextConverter)
 
   /** Create a distributed list from one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
@@ -71,8 +69,7 @@ trait TextInput {
         (path, v.toString)
       }
     }
-
-    DListImpl(new TextSource(paths, converter))
+    fromTextSource[(String, String)](new TextSource(paths, inputConverter = converter))
   }
 
 
@@ -118,32 +115,31 @@ trait TextInput {
       try { Some(s.toFloat ) } catch { case _: NFE => None }
   }
 
-
-  /* Class that abstracts all the common functionality of reading from text files. */
-  class TextSource[A : WireFormat](paths: Seq[String], converter: InputConverter[LongWritable, Text, A])
-    extends DataSource[LongWritable, Text, A] {
-
-    private val inputPaths = paths.map(p => new Path(p))
-    override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
-
-    val inputFormat = classOf[TextInputFormat]
-
-    def inputCheck(implicit sc: ScoobiConfiguration) {
-      inputPaths foreach { p =>
-        if (Helper.pathExists(p)(sc))
-          logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
-        else
-          throw new IOException("Input path " + p + " does not exist.")
-      }
-    }
-
-    def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
-      inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
-    }
-
-    def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
-
-    lazy val inputConverter = converter
-  }
 }
 object TextInput extends TextInput
+
+/** Class that abstracts all the common functionality of reading from text files. */
+case class TextSource[A : WireFormat](paths: Seq[String],
+                                      inputFormat: Class[TextInputFormat] = classOf[TextInputFormat],
+                                      inputConverter: InputConverter[LongWritable, Text, A] = TextInput.defaultTextConverter)
+  extends DataSource[LongWritable, Text, A] {
+  private lazy val logger = LogFactory.getLog("scoobi.TextInput")
+
+  private val inputPaths = paths.map(p => new Path(p))
+  override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
+
+  def inputCheck(implicit sc: ScoobiConfiguration) {
+    inputPaths foreach { p =>
+      if (Helper.pathExists(p)(sc))
+        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
+      else
+        throw new IOException("Input path " + p + " does not exist.")
+    }
+  }
+
+  def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+    inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
+  }
+
+  def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
+}

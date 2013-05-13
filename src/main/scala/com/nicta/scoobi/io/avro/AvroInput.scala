@@ -41,7 +41,7 @@ import AvroParsingImplicits._
 /**
  * Functions for materialising distributed lists by loading Avro files
  */
-object AvroInput {
+trait AvroInput {
 
   /** Create a new DList from the contents of one or more Avro files. The type of the DList must conform to
     * the schema types allowed by Avro, as constrained by the 'AvroSchema' type class. In the case of a directory
@@ -64,6 +64,7 @@ object AvroInput {
     new AvroDataSource[schema.AvroType, A](paths.map(p => new Path(p)), converter, schema, checkSchemas)
   }
 }
+object AvroInput extends AvroInput
 
 case class AvroDataSource[K, A](paths: Seq[Path], inputConverter: InputConverter[AvroKey[K], NullWritable, A], schema: AvroSchema[A], checkSchemas: Boolean = true) extends DataSource[AvroKey[K], NullWritable, A] {
   private implicit lazy val logger = LogFactory.getLog("scoobi.AvroInput")

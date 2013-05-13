@@ -34,8 +34,11 @@ import org.apache.hadoop.io.compress.CompressionCodec
 import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** Smart functions for persisting distributed lists by storing them as text files. */
-object TextOutput {
-  /** Persist a distributed list as a text file. */
+trait TextOutput {
+  /**
+   * Persist a distributed list as a text file.
+   * @deprecated(message="use list.toTextFile(...) instead", since="0.7.0")
+   */
   def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false) =
     dl.addSink(textFileSink(path, overwrite))
 
@@ -60,6 +63,7 @@ object TextOutput {
     (o map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite))
   }
 }
+object TextOutput extends TextOutput
 
 case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, compression: Option[Compression] = None) extends DataSink[NullWritable, A, A] {
   private lazy val logger = LogFactory.getLog("scoobi.TextOutput")
