@@ -29,9 +29,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
+        <a href="VectorEmitterWriter$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.mapreducer">mapreducer</a></p>
-        <h1>VectorEmitterWriter</h1>
+        <h1><a href="VectorEmitterWriter$.html" title="Go to companion">VectorEmitterWriter</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,14 +40,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">VectorEmitterWriter</span><span class="params">()</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">VectorEmitterWriter</span><span class="params">(<span name="context">context: <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>In memory emitter writer saving the values to a Vector
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a>, <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span>, <a href="../../core/ScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.ScoobiJobContext">ScoobiJobContext</a>, <a href="../../core/Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a>, <a href="../../core/Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -65,7 +65,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter"><span>VectorEmitterWriter</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.nicta.scoobi.core.EmitterWriter"><span>EmitterWriter</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter"><span>VectorEmitterWriter</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext"><span>InputOutputContextScoobiJobContext</span></li><li class="in" name="com.nicta.scoobi.core.EmitterWriter"><span>EmitterWriter</span></li><li class="in" name="com.nicta.scoobi.core.ScoobiJobContext"><span>ScoobiJobContext</span></li><li class="in" name="com.nicta.scoobi.core.Heartbeat"><span>Heartbeat</span></li><li class="in" name="com.nicta.scoobi.core.Counters"><span>Counters</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -86,7 +86,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter"></a>
+      <a id="&lt;init&gt;(context:com.nicta.scoobi.core.InputOutputContext):com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter"></a>
       <a id="&lt;init&gt;:VectorEmitterWriter"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -94,7 +94,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">VectorEmitterWriter</span><span class="params">()</span>
+        <span class="name">VectorEmitterWriter</span><span class="params">(<span name="context">context: <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span>
       </span>
       </h4>
       
@@ -201,6 +201,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter#context" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="context:com.nicta.scoobi.core.InputOutputContext"></a>
+      <a id="context:InputOutputContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">context</span><span class="result">: <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter">VectorEmitterWriter</a> → <a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -243,6 +256,45 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext#getCounter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getCounter(groupName:String,name:String):Long"></a>
+      <a id="getCounter(String,String):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a> → <a href="../../core/Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext#heartbeat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="heartbeat:Unit"></a>
+      <a id="heartbeat:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">heartbeat</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a> → <a href="../../core/Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext#incrementCounter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="incrementCounter(groupName:String,name:String,increment:Long):Unit"></a>
+      <a id="incrementCounter(String,String,Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">incrementCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="increment">increment: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a> → <a href="../../core/Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -412,8 +464,16 @@
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">
+              <h3>Inherited from <a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a></h3>
             </div><div class="parent" name="com.nicta.scoobi.core.EmitterWriter">
               <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.ScoobiJobContext">
+              <h3>Inherited from <a href="../../core/ScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.ScoobiJobContext">ScoobiJobContext</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.Heartbeat">
+              <h3>Inherited from <a href="../../core/Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.Counters">
+              <h3>Inherited from <a href="../../core/Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

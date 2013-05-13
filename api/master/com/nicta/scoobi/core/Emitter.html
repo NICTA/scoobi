@@ -46,7 +46,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Interface for writing outputs from a DoFn</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span>, <a href="ScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.ScoobiJobContext">ScoobiJobContext</a>, <a href="Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a>, <a href="Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.core.Emitter"><span>Emitter</span></li><li class="in" name="com.nicta.scoobi.core.EmitterWriter"><span>EmitterWriter</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.Emitter"><span>Emitter</span></li><li class="in" name="com.nicta.scoobi.core.EmitterWriter"><span>EmitterWriter</span></li><li class="in" name="com.nicta.scoobi.core.ScoobiJobContext"><span>ScoobiJobContext</span></li><li class="in" name="com.nicta.scoobi.core.Heartbeat"><span>Heartbeat</span></li><li class="in" name="com.nicta.scoobi.core.Counters"><span>Counters</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -101,6 +101,45 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.core.Counters#getCounter" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="getCounter(groupName:String,name:String):Long"></a>
+      <a id="getCounter(String,String):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Heartbeat#heartbeat" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="heartbeat:Unit"></a>
+      <a id="heartbeat:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">heartbeat</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Counters#incrementCounter" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="incrementCounter(groupName:String,name:String,increment:Long):Unit"></a>
+      <a id="incrementCounter(String,String,Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">incrementCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="increment">increment: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -405,6 +444,12 @@
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.core.EmitterWriter">
               <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.ScoobiJobContext">
+              <h3>Inherited from <a href="ScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.ScoobiJobContext">ScoobiJobContext</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.Heartbeat">
+              <h3>Inherited from <a href="Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.Counters">
+              <h3>Inherited from <a href="Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

@@ -40,7 +40,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">InputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.MapContext">MapContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">InputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.core.InputOutputContext#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(context:org.apache.hadoop.mapreduce.MapContext[Any,Any,Any,Any]):com.nicta.scoobi.core.InputOutputContext"></a>
+      <a id="&lt;init&gt;(context:org.apache.hadoop.mapreduce.TaskInputOutputContext[Any,Any,Any,Any]):com.nicta.scoobi.core.InputOutputContext"></a>
       <a id="&lt;init&gt;:InputOutputContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.MapContext">MapContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span>
+        <span class="name">InputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span>
       </span>
       </h4>
       
@@ -214,15 +214,15 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.core.InputOutputContext#context" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="context:org.apache.hadoop.mapreduce.MapContext[Any,Any,Any,Any]"></a>
-      <a id="context:MapContext[Any,Any,Any,Any]"></a>
+      <a id="context:org.apache.hadoop.mapreduce.TaskInputOutputContext[Any,Any,Any,Any]"></a>
+      <a id="context:TaskInputOutputContext[Any,Any,Any,Any]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">context</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.MapContext">MapContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>
+        <span class="name">context</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>
       </span>
       </h4>
       
@@ -268,6 +268,45 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#getCounter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getCounter(groupName:String,name:String):Long"></a>
+      <a id="getCounter(String,String):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#heartbeat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="heartbeat:Unit"></a>
+      <a id="heartbeat:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">heartbeat</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#incrementCounter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="incrementCounter(groupName:String,name:String,increment:Long):Unit"></a>
+      <a id="incrementCounter(String,String,Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">incrementCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="increment">increment: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1L</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>

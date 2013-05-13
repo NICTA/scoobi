@@ -225,7 +225,7 @@ in which a computation is performed within.</p>
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="VectorEmitterWriterextendsEmitterWriterwithProductwithSerializable"></a>
+      <a id="VectorEmitterWriterextendsEmitterWriterwithInputOutputContextScoobiJobContextwithProductwithSerializable"></a>
       <a id="VectorEmitterWriter:VectorEmitterWriter"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -233,7 +233,7 @@ in which a computation is performed within.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="VectorEmitterWriter.html"><span class="name">VectorEmitterWriter</span></a><span class="params">()</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="VectorEmitterWriter.html"><span class="name">VectorEmitterWriter</span></a><span class="params">(<span name="context">context: <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">In memory emitter writer saving the values to a Vector
@@ -309,6 +309,19 @@ to be specified.</p>
       </span>
       <span class="symbol">
         <a href="Env$.html"><span class="name">Env</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VectorEmitterWriter"></a>
+      <a id="VectorEmitterWriter:VectorEmitterWriter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VectorEmitterWriter$.html"><span class="name">VectorEmitterWriter</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       

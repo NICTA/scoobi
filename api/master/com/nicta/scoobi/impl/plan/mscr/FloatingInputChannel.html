@@ -228,15 +228,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel#createEmitter" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createEmitter(tag:Int,context:com.nicta.scoobi.core.InputOutputContext):com.nicta.scoobi.core.EmitterWriter"></a>
-      <a id="createEmitter(Int,InputOutputContext):EmitterWriter"></a>
+      <a id="createEmitter(tag:Int,ioContext:com.nicta.scoobi.core.InputOutputContext):com.nicta.scoobi.core.EmitterWriterwithcom.nicta.scoobi.core.InputOutputContextScoobiJobContext"></a>
+      <a id="createEmitter(Int,InputOutputContext):EmitterWriterwithInputOutputContextScoobiJobContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">createEmitter</span><span class="params">(<span name="tag">tag: <span class="extype" name="scala.Int">Int</span></span>, <span name="context">context: <a href="../../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></span>
+        <span class="name">createEmitter</span><span class="params">(<span name="tag">tag: <span class="extype" name="scala.Int">Int</span></span>, <span name="ioContext">ioContext: <a href="../../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">create an emitter for a given output tag, which will either emit values with auto-generated keys for a FloatingInputChannel,
@@ -669,7 +669,7 @@ or key/values for a GbkInputChannel
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
         <span class="name">vectorEmitter</span><span class="result">: <a href="../../mapreducer/VectorEmitterWriter.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter">VectorEmitterWriter</a></span>

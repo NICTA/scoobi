@@ -40,7 +40,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>, <span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span> = <span class="defval" name="new org.apache.hadoop.mapreduce.Counters()">...</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(hadoopConfiguration:org.apache.hadoop.conf.Configuration,userJars:Set[String],userDirs:Set[String],classLoader:Option[scala.tools.nsc.interpreter.AbstractFileClassLoader]):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="&lt;init&gt;(hadoopConfiguration:org.apache.hadoop.conf.Configuration,userJars:Set[String],userDirs:Set[String],classLoader:Option[scala.tools.nsc.interpreter.AbstractFileClassLoader],counters:org.apache.hadoop.mapreduce.Counters):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
       <a id="&lt;init&gt;:ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>, <span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span> = <span class="defval" name="new org.apache.hadoop.mapreduce.Counters()">...</span></span>)</span>
       </span>
       </h4>
       
@@ -329,6 +329,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Scoobi's configuration, initialised with a job id</p><div class="fullcomment"><div class="comment cmt"><p>Scoobi's configuration, initialised with a job id</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#counters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="counters:org.apache.hadoop.mapreduce.Counters"></a>
+      <a id="counters:Counters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">counters</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#defaultScoobiDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="defaultScoobiDir:String"></a>
       <a id="defaultScoobiDir:String"></a>
@@ -993,6 +1006,19 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#updateCounters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="updateCounters(hadoopCounters:org.apache.hadoop.mapreduce.Counters):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="updateCounters(Counters):ScoobiConfigurationImpl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateCounters</span><span class="params">(<span name="hadoopCounters">hadoopCounters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">update the current counters from the result of a job that has just been run</p><div class="fullcomment"><div class="comment cmt"><p>update the current counters from the result of a job that has just been run</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#uploadedLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="uploadedLibJars:Boolean"></a>
       <a id="uploadedLibJars:Boolean"></a>
