@@ -29,6 +29,7 @@ object Scoobi extends core.WireFormatImplicits
    with Library
    with DObjects
    with Reductions
+   with Environment
    with ScoobiConfigurations {
 
   /* Primary types */
@@ -51,6 +52,4 @@ object Scoobi extends core.WireFormatImplicits
 
   val ScoobiConfiguration = impl.ScoobiConfiguration
 }
-
-
 

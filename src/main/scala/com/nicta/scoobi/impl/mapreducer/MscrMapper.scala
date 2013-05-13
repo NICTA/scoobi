@@ -26,6 +26,7 @@ import rtt._
 import util.DistCache
 import plan.mscr.{InputChannels, InputChannel}
 import reflect.ClasspathDiagnostics
+import application.ScoobiEnvironment
 
 /**
  * Hadoop Mapper class for an MSCR
@@ -43,6 +44,8 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
 
   override def setup(context: HMapper[Any, Any, TaggedKey, TaggedValue]#Context) {
     ClasspathDiagnostics.logInfo
+
+    ScoobiEnvironment.setTaskContext(context)
 
     allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
     tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]

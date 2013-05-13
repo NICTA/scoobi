@@ -34,6 +34,7 @@ import io._
 import mapreducer._
 import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
+import application.ScoobiEnvironment
 import MapReduceJob.configureJar
 import control.Exceptions._
 import monitor.Loggable
@@ -206,6 +207,34 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
   }
 
   private[scoobi] def collectOutputs = {
+    // List of system counter groups, so they can be filtered out.
+    // This isn't perfect, since potentially these could be moved around.
+    // The display names ("Map-Reduce Framework", "Job Counters") haven't
+    // changed between 0.20 (aka 1.0) and 0.21 (aka 2.0), but using them
+    // is no good because they may be localized and show up in some foreign
+    // language.
+    lazy val systemCounterGroups = List(
+      "FileSystemCounters",
+      "org.apache.hadoop.mapred.Task$Counter",
+      "org.apache.hadoop.mapred.JobInProgress$Counter",
+      "org.apache.hadoop.mapreduce.TaskCounter",
+      "org.apache.hadoop.mapreduce.JobCounter"
+    )
+
+    // Log the counters, if the user asked for it
+    if (ScoobiEnvironment.logCounters) {
+      val counters = job.getCounters
+      logger.info("Counters: " + counters.countCounters())
+      for (group <- scala.collection.JavaConversions.asScalaIterator(counters.iterator) if (
+             ScoobiEnvironment.logSystemCounters ||
+             !(systemCounterGroups contains group.getName))) {
+        logger.info("Counter Group: " + group.getDisplayName + " (" + group.getName + ")")
+        logger.info("  number of counters in this group: " + group.size)
+        for (counter <- scala.collection.JavaConversions.asScalaIterator(group.iterator))
+          logger.info("  - " + counter.getDisplayName + ": " + counter.getValue)
+      }
+    }
+
     /* Move named file-based sinks to their correct output paths. */
     mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
     configuration.deleteTemporaryOutputDirectory(job)

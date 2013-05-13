@@ -25,6 +25,7 @@ import core._
 import rtt._
 import util.DistCache
 import plan.mscr.OutputChannels
+import application.ScoobiEnvironment
 
 /** Hadoop Reducer class for an MSCR. */
 class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
@@ -35,6 +36,8 @@ class MscrReducer extends HReducer[TaggedKey, TaggedValue, Any, Any] {
   private var channelOutput: ChannelOutputFormat = _
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, Any, Any]#Context) {
+    ScoobiEnvironment.setTaskContext(context)
+
     outputChannels = DistCache.pullObject[OutputChannels](context.getConfiguration, "scoobi.reducers").getOrElse(OutputChannels(Seq()))
     channelOutput = new ChannelOutputFormat(context)
 
