@@ -21,11 +21,13 @@ import org.apache.hadoop.io.Text
 import testing.mutable.NictaSimpleJobs
 import Scoobi._
 import org.specs2.matcher.TerminationMatchers
+import org.specs2.ScalaCheck
+import org.scalacheck.Prop
 import impl.plan.comp.CompNodeData._
 import impl.plan.comp.Optimiser
 import impl.plan.DListImpl
 
-class DListSpec extends NictaSimpleJobs with TerminationMatchers {
+class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
@@ -125,7 +127,13 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers {
     val a1 = a.filter(_ != bs.head)
     
     run((a isEqual a, a isEqual b, b isEqual a, a1 isEqual a)) must_== (true, true, true, false)
-    
-    
+  }
+
+  "A shuffled DList doesn't contain any more or less elements" >> { implicit sc: SC =>
+    val shuffleProp = (list: List[Int]) => {
+      val orig = list.toDList
+      run(orig.shuffle isEqual orig) must_== true
+    }
+    Prop.forAll(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
   }
 }
