@@ -79,16 +79,16 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
       o.addSink(SequenceOutput.keySchemaSequenceFile(path, overwrite))
   }
   implicit class ConvertValueListToSequenceFile[V](val list: core.DList[V]) {
-    def valueToSequenceFile(path: String, overwrite: Boolean = false)(implicit vs: SeqSchema[V]) =
-      list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
+    def valueToSequenceFile(path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
+      list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, checkpoint))
   }
   implicit class ConvertValueListToSequenceFile1[K, V](val list: core.DList[(K, V)]) {
-    def valueToSequenceFile(path: String, overwrite: Boolean = false)(implicit vs: SeqSchema[V]) =
+    def valueToSequenceFile(path: String, overwrite: Boolean = false)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
       list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
   }
   implicit class ConvertValueObjectToSequenceFile[V](val o: core.DObject[V]) {
-    def valueToSequenceFile(path: String, overwrite: Boolean = false)(implicit vs: SeqSchema[V]) =
-      o.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite))
+    def valueToSequenceFile(path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
+      o.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, checkpoint))
   }
   implicit class ConvertListToSequenceFile[T](val list: core.DList[T]) {
     def toSequenceFile[K, V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)

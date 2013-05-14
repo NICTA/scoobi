@@ -65,10 +65,10 @@ trait SequenceOutput {
    * to disk as the "value" component in a Sequence File.
    *  @deprecated(message="use list.valueToSequenceFile(...) instead", since="0.7.0")
    */
-  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) =
-    dl.addSink(valueSchemaSequenceFile(path, overwrite))
+  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) =
+    dl.addSink(valueSchemaSequenceFile(path, overwrite, checkpoint))
 
-  def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false)(implicit convV: SeqSchema[V]) = {
+  def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) = {
     val keyClass = classOf[NullWritable]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
 
@@ -79,7 +79,7 @@ trait SequenceOutput {
         case v     => (NullWritable.get, convV.toWritable(v.asInstanceOf[V]))
       }
     }
-    new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite)
+    new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint))
   }
 
   /**
