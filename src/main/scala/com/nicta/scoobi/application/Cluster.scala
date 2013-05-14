@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import org.apache.hadoop.fs.CommonConfigurationKeys._
+import org.apache.hadoop.fs.FileSystem._
 import impl.ScoobiConfiguration
 import ScoobiConfiguration._
 /**
@@ -38,7 +38,7 @@ trait ClusterConfiguration extends Cluster {
 
   def configuration: com.nicta.scoobi.core.ScoobiConfiguration
 
-  def fs         = configuration.get(FS_DEFAULT_NAME_KEY, FS_DEFAULT_NAME_DEFAULT)
+  def fs         = configuration.get(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
   def jobTracker = configuration.get("mapred.job.tracker", "local")
 }
 
