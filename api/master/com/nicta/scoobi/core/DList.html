@@ -603,10 +603,10 @@ and some grouping function.</p>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns if the other DList has the same elements.</p><div class="fullcomment"><div class="comment cmt"><p>Returns if the other DList has the same elements. A DList is unordered
-so order isn't considered. The Grouping required isn't very special and
-almost any will work (including grouping designed for secondary sorting)
-but for completeness, it is required to send two equal As to the
-same partition, and sortCompare provide total ordering
+ so order isn't considered. The Grouping required isn't very special and
+ almost any will work (including grouping designed for secondary sorting)
+ but for completeness, it is required to send two equal As to the
+ same partition, and sortCompare provide total ordering
 </p></div></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -884,6 +884,19 @@ order in which the elements are reduced is unspecified and may be non-determinis
 the list is empty.</p><div class="fullcomment"><div class="comment cmt"><p>Reduce the elements of this distributed list using the specified associative binary operator and a default value if
 the list is empty. The order in which the elements are reduced is unspecified and may be non-deterministic
 </p></div></div>
+    </li><li name="com.nicta.scoobi.core.DList#shuffle" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="shuffle:com.nicta.scoobi.core.DList[A]"></a>
+      <a id="shuffle:DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shuffle</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Randomly suffle a DList.</p>
     </li><li name="com.nicta.scoobi.core.DList#size" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="size:com.nicta.scoobi.core.DObject[Int]"></a>
       <a id="size:DObject[Int]"></a>
@@ -1035,8 +1048,7 @@ the list is empty. The order in which the elements are reduced is unspecified an
         <span class="name">zipWithIndex</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>, <span class="extype" name="scala.Long">Long</span>)]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Add an index (Long) to the DList where the index is between 0 and .</p><div class="fullcomment"><div class="comment cmt"><p>Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList
-</p></div></div>
+      <p class="shortcomment cmt">Add an index (Long) to the DList where the index is between 0 and .</p><div class="fullcomment"><div class="comment cmt"><p>Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList</p></div></div>
     </li></ol>
             </div>
 
