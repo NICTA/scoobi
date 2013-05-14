@@ -143,14 +143,12 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       emitter.emit(_)
     })
 
-  /**
-   * Returns if the other DList has the same elements. A DList is unordered
-   * so order isn't considered. The Grouping required isn't very special and
-   * almost any will work (including grouping designed for secondary sorting)
-   * but for completeness, it is required to send two equal As to the
-   * same partition, and sortCompare provide total ordering
+  /** Returns if the other DList has the same elements. A DList is unordered
+   *  so order isn't considered. The Grouping required isn't very special and
+   *  almost any will work (including grouping designed for secondary sorting)
+   *  but for completeness, it is required to send two equal As to the
+   *  same partition, and sortCompare provide total ordering
    */
-
   def isEqual(to: DList[A])(implicit cmp: Grouping[A]): DObject[Boolean] = {
     val left = map((_, false))
     val right = to.map((_, true))
@@ -195,14 +193,12 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     }).groupByKey.mapFlatten( _._2.toSet )
   }
 
-  /**
-   * Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList
-   */
+  /** Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList */
   def zipWithIndex: DList[(A, Long)] = {
 
-    // First we give every element in the DList a 'mapperId'
-    // it doesn't affect the logic if there is collisions,
-    // but it's preferable for there not to be
+    /* First we give every element in the DList a 'mapperId'
+     * it doesn't affect the logic if there is collisions,
+     * but it's preferable for there not to be. */
     val byMapper: DList[(Int, A)] = parallelDo(new DoFn[A, (Int, A)] {
       var mapperId: Int = _
 
@@ -211,10 +207,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       def cleanup(emitter: Emitter[(Int, A)])           {}
     })
 
-    // Now we can count how many elements each mapper saw
+    /* Now we can count how many elements each mapper saw */
     val taskCount = byMapper.map(_._1 -> 1).groupByKey.combine(Reduction.Sum.int).materialise
 
-    // ..and then convert it to a series of offsets
+    /* ..and then convert it to a series of offsets */
     val taskMap = taskCount.map { x =>
       x.foldLeft(Map[Int, Long]() -> 0l) { (state, next) =>
         val newMap = state._1 + (next._1 -> state._2)
@@ -223,8 +219,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
       }._1
     }
 
-    // now simply send the data to the same (logical) mapper
-    // using our map to find the proper offset
+    /* Now simply send the data to the same (logical) mapper using our map to find the proper offset */
     (taskMap join byMapper.groupByKey).mapFlatten {
       case (env, (task, vals)) =>
 
@@ -236,6 +231,9 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
         vals.zip(index)
     }
   }
+
+  /** Randomly suffle a DList. */
+  def shuffle: DList[A] = groupBy(_ => scala.util.Random.nextDouble()).mapFlatten(kvs => kvs._2)
 
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
@@ -355,7 +353,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   private def basicParallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] =
     basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
-
 }
 
 trait Persistent[T] extends DataSinks {
