@@ -42,11 +42,11 @@ import core.ScoobiConfiguration
  */
 trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster { outer =>
 
-  /** make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
-  implicit protected def aroundContext: HadoopContext = context
+  /** make the context available implicitly as an Fixture[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
+  implicit protected def fixtureContext: Fixture[ScoobiConfiguration] = context
 
   /** define the context to use: local, cluster, localThenCluster */
-  def context: HadoopContext = chain(contexts)
+  def context: Fixture[ScoobiConfiguration] = chain(contexts)
 
   /**
    * the execution time will not be displayed with this function, but by adding more information to the execution Result
