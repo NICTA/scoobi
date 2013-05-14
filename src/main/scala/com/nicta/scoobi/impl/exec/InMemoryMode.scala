@@ -47,23 +47,9 @@ case class InMemoryMode() extends ExecutionMode {
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     val toExecute = prepare(node)
-    configureSources(toExecute)
     val result = toExecute -> computeValue(sc)
     allSinks(toExecute).debug("sinks: ").foreach(markSinkAsFilled)
     result
-  }
-
-  protected def configureSources(node: CompNode)(implicit sc: ScoobiConfiguration) {
-    val job = new Job(sc.configuration)
-    def configureWithJob(n: CompNode) {
-      n match {
-        case load: Load => load.source.inputConfigure(new Job(sc.configuration))
-        case _          => ()
-      }
-      children(n).foreach(configureWithJob)
-    }
-    configureWithJob(node)
-    sc.configuration.overrideWith(job.getConfiguration)
   }
 
   /** optimisation: we only consider sinks which are related to expected results nodes */

@@ -89,7 +89,7 @@ trait Configurations {
      * @return the modified configuration object
      */
     def overrideWith(map: scala.collection.Map[String, String]): Configuration = {
-      map foreach { case (k, v) => conf.set(k, v) }
+      map foreach { case (k, v) => Option(conf.get(k)).map(existingValue => if (existingValue != v) conf.set(k, v)).getOrElse(conf.set(k, v)) }
       conf
     }
     /**
