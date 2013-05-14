@@ -233,7 +233,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   }
 
   /** Randomly suffle a DList. */
-  def shuffle: DList[A] = groupBy(_ => scala.util.Random.nextDouble()).mapFlatten(kvs => kvs._2)
+  def shuffle: DList[A] = groupBy(_ => util.Random.nextInt()).mapFlatten(_._2)
 
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
