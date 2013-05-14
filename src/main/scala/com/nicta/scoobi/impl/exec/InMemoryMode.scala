@@ -28,6 +28,7 @@ import comp._
 import ScoobiConfiguration._
 import scalaz.Scalaz._
 import org.apache.hadoop.mapreduce.Job
+import Configurations._
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -53,11 +54,16 @@ case class InMemoryMode() extends ExecutionMode {
   }
 
   protected def configureSources(node: CompNode)(implicit sc: ScoobiConfiguration) {
-    node match {
-      case load: Load => load.source.inputConfigure(new Job(sc.configuration))
-      case _          => ()
+    val job = new Job(sc.configuration)
+    def configureWithJob(n: CompNode) {
+      n match {
+        case load: Load => load.source.inputConfigure(new Job(sc.configuration))
+        case _          => ()
+      }
+      children(n).foreach(configureWithJob)
     }
-    children(node).foreach(configureSources)
+    configureWithJob(node)
+    sc.configuration.overrideWith(job.getConfiguration)
   }
 
   /** optimisation: we only consider sinks which are related to expected results nodes */

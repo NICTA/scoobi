@@ -92,6 +92,11 @@ trait Configurations {
       map foreach { case (k, v) => conf.set(k, v) }
       conf
     }
+    /**
+     * add all the keys found in the other Configuration to this configuration
+     * @return the modified configuration object
+     */
+    def overrideWith(other: Configuration): Configuration = updateWith(other) { case (k, v) => (k, v) }
 
     /**
      * update the value of a given key, using a default value if missing
