@@ -286,19 +286,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CommandLineArguments</dd></dl></div>
-    </li><li name="com.nicta.scoobi.testing.HadoopExamples#aroundContext" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="aroundContext:HadoopExamples.this.HadoopContext"></a>
-      <a id="aroundContext:HadoopContext"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">aroundContext</span><span class="result">: <a href="#HadoopContextextendsFixture[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p><div class="fullcomment"><div class="comment cmt"><p>make the context available implicitly as an Outside[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -463,15 +450,15 @@
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a configuration where the appropriate properties are set-up for uploaded jars: distributed files + classpath
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../application/LibJars.html" class="extype" name="com.nicta.scoobi.application.LibJars">LibJars</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.HadoopExamples#context" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="context:HadoopExamples.this.HadoopContext"></a>
-      <a id="context:HadoopContext"></a>
+      <a id="context:org.specs2.specification.Fixture[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
+      <a id="context:Fixture[ScoobiConfiguration]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">context</span><span class="result">: <a href="#HadoopContextextendsFixture[com.nicta.scoobi.core.ScoobiConfiguration]" class="extmbr" name="com.nicta.scoobi.testing.HadoopExamples.HadoopContext">HadoopContext</a></span>
+        <span class="name">context</span><span class="result">: <span class="extype" name="org.specs2.specification.Fixture">Fixture</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">define the context to use: local, cluster, localThenCluster</p><div class="fullcomment"><div class="comment cmt"><p>define the context to use: local, cluster, localThenCluster</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
@@ -624,6 +611,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.testing.HadoopExamples#fixtureContext" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fixtureContext:org.specs2.specification.Fixture[com.nicta.scoobi.core.ScoobiConfiguration]"></a>
+      <a id="fixtureContext:Fixture[ScoobiConfiguration]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fixtureContext</span><span class="result">: <span class="extype" name="org.specs2.specification.Fixture">Fixture</span>[<a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">make the context available implicitly as an Fixture[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p><div class="fullcomment"><div class="comment cmt"><p>make the context available implicitly as an Fixture[ScoobiConfiguration] so that examples taking that context as a parameter can be declared</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="HadoopExamples.html" class="extype" name="com.nicta.scoobi.testing.HadoopExamples">HadoopExamples</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.application.LibJars#fss" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fss:com.nicta.scoobi.impl.io.FileSystems"></a>
       <a id="fss:FileSystems"></a>
