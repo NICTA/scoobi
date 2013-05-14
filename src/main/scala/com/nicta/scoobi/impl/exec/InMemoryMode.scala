@@ -18,10 +18,6 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.TaskAttemptID
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.task.{TaskInputOutputContextImpl, TaskAttemptContextImpl}
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 
@@ -30,8 +26,8 @@ import monitor.Loggable._
 import impl.plan._
 import comp._
 import ScoobiConfiguration._
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import scalaz.Scalaz._
+import org.apache.hadoop.mapreduce.Job
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -50,9 +46,18 @@ case class InMemoryMode() extends ExecutionMode {
 
   def execute(node: CompNode)(implicit sc: ScoobiConfiguration): Any = {
     val toExecute = prepare(node)
+    configureSources(toExecute)
     val result = toExecute -> computeValue(sc)
     allSinks(toExecute).debug("sinks: ").foreach(markSinkAsFilled)
     result
+  }
+
+  protected def configureSources(node: CompNode)(implicit sc: ScoobiConfiguration) {
+    node match {
+      case load: Load => load.source.inputConfigure(new Job(sc.configuration))
+      case _          => ()
+    }
+    children(node).foreach(configureSources)
   }
 
   /** optimisation: we only consider sinks which are related to expected results nodes */
