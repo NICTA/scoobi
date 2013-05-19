@@ -33,7 +33,7 @@ trait ScoobiVariables {
 
   lazy val BRANCH = if (IS_SNAPSHOT) "master" else PREVIOUS_VERSION_IF_SNAPSHOT
 
-  lazy val LANDING_PAGE = "http://nicta.github.com/scoobi/"
+  lazy val LANDING_PAGE = "http://nicta.github.io/scoobi/"
 
   lazy val API_DIR            = LANDING_PAGE+"api/"
   lazy val API_OFFICIAL_PAGE  = API_DIR+PREVIOUS_VERSION_IF_SNAPSHOT+"/index.html"
