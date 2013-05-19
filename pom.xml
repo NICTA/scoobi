@@ -147,7 +147,7 @@
         <repository>
             <id>nictasavro</id>
             <name>nictasavro</name>
-            <url>http://nicta.github.com/scoobi/releases/</url>
+            <url>http://nicta.github.io/scoobi/releases/</url>
             <layout>default</layout>
         </repository>
         <repository>

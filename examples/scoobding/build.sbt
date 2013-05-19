@@ -14,6 +14,6 @@ libraryDependencies ++=
       "cc.co.scala-reactive" %% "reactive-core" % "0.3.0") 
 
 
-resolvers ++= Seq("nicta" at "http://nicta.github.com/scoobi/releases",
+resolvers ++= Seq("nicta" at "http://nicta.github.io/scoobi/releases",
                   "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases")
