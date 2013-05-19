@@ -149,7 +149,7 @@
     <repository>
       <id>odiago-maven</id>
       <name>odiago-maven-releases</name>
-      <url>http://http://nicta.github.com/scoobi/releases</url>
+      <url>http://http://nicta.github.io/scoobi/releases</url>
     </repository>
   </distributionManagement>
   
