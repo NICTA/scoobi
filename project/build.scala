@@ -91,7 +91,7 @@ object build extends Build {
       "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
       "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test"
     ) ++ hadoop },
-    resolvers ++= Seq("nicta" at "http://nicta.github.com/scoobi/releases",
+    resolvers ++= Seq("nicta" at "http://nicta.github.io/scoobi/releases",
       "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
       "sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
       "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
@@ -141,7 +141,7 @@ object build extends Build {
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
     pomExtra := (
-      <url>http://nicta.github.com/scoobi</url>
+      <url>http://nicta.github.io/scoobi</url>
       <licenses>
         <license>
           <name>Apache 2.0</name>
