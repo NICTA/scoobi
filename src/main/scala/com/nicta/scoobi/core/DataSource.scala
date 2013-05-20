@@ -109,5 +109,5 @@ case class InputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any]) 
   def getCounter(groupName: String, name: String) = {
     Option(context.getCounter(groupName, name).getValue).getOrElse(-1L)
   }
-  def heartbeat { context.progress() }
+  def tick { context.progress() }
 }

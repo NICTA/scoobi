@@ -149,7 +149,7 @@ trait Counters {
 }
 
 trait Heartbeat {
-  def heartbeat
+  def tick
 }
 trait NoScoobiJobContext extends NoCounters with NoHeartbeat
 trait NoCounters extends Counters {
@@ -157,13 +157,13 @@ trait NoCounters extends Counters {
   def getCounter(groupName: String, name: String) = -1
 }
 trait NoHeartbeat extends Heartbeat {
-  def heartbeat {}
+  def tick {}
 }
 
 trait DelegatedScoobiJobContext extends ScoobiJobContext { outer =>
   def incrementCounter(groupName: String, name: String, increment: Long = 1) { delegate.incrementCounter(groupName, name, increment) }
   def getCounter(groupName: String, name: String) = delegate.getCounter(groupName, name)
-  def heartbeat { delegate.heartbeat }
+  def tick { delegate.tick }
   def delegate: ScoobiJobContext
 }
 
@@ -174,7 +174,7 @@ trait InputOutputContextScoobiJobContext extends ScoobiJobContext {
   def getCounter(groupName: String, name: String) = {
     context.getCounter(groupName, name)
   }
-  def heartbeat { context.heartbeat }
+  def tick { context.tick }
 
   def context: InputOutputContext
 }

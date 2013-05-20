@@ -43,7 +43,7 @@ object VectorEmitterWriter {
   def create = new VectorEmitterWriter(null) {
     override def incrementCounter(groupName: String, name: String, increment: Long = 1) {}
     override def getCounter(groupName: String, name: String) = -1
-    override def heartbeat {}
+    override def tick {}
 
   }
 }

@@ -54,6 +54,10 @@ object Scoobi extends core.WireFormatImplicits
   type Emitter[A] = com.nicta.scoobi.core.Emitter[A]
 
   val ScoobiConfiguration = impl.ScoobiConfiguration
+
+  type Counters = com.nicta.scoobi.core.Counters
+  type Heartbeat = com.nicta.scoobi.core.Heartbeat
+
 }
 
 
