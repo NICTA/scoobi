@@ -229,8 +229,21 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     }
   }
 
-  /** Randomly suffle a DList. */
-  def shuffle: DList[A] = groupBy(_ => util.Random.nextInt()).mapFlatten(_._2)
+  /** Randomly shuffle a DList. */
+  def shuffle: DList[A] = {
+    val sgp = new Grouping[Int] {
+      // regardless of the key, we will send it to a random partition
+      override def partition(key: Int, num: Int) = util.Random.nextInt(num)
+      override def sortCompare(a: Int, b: Int) =
+        if (a < b) scalaz.Ordering.LT
+        else if (a > b) scalaz.Ordering.GT
+        // Oh, no. We have a key collision, so let's try randomize as much as we can
+        else if (util.Random.nextBoolean()) scalaz.Ordering.LT
+        else scalaz.Ordering.GT
+      override def groupCompare(a: Int, b: Int) = implicitly[scalaz.Order[Int]].order(a,b)
+    }
+    groupWith(_ => util.Random.nextInt())(sgp).mapFlatten(_._2)
+  }
 
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
