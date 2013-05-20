@@ -75,10 +75,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   // Derived functionality (return DLists).
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   def parallelDo[B : WireFormat](dofn: DoFn[A, B]): DList[B]
-  def parallelDo[B : WireFormat](fn: (A, Emitter[B]) => Unit): DList[B] = basicParallelDo(fn)
-  def parallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParameter): DList[B] = basicParallelDo(fn)(wf, p)
-  def parallelDo[B](fn: (A, Heartbeat) => B)(implicit wf: WireFormat[B], p: ImplicitParameter1): DList[B] = basicParallelDo(fn)(wf, p)
-  def parallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] = basicParallelDo(fn)(wf, p)
+  def parallelDo[B : WireFormat](fn: (A, Emitter[B]) => Unit): DList[B] = parallelDo(DoFn(fn))
+  def parallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParameter): DList[B] = parallelDo(DoFn.fromFunctionWithCounters(fn))
+  def parallelDo[B](fn: (A, Heartbeat) => B)(implicit wf: WireFormat[B], p: ImplicitParameter1): DList[B] = parallelDo(DoFn.fromFunctionWithHeartbeat(fn))
+  def parallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] = parallelDo(DoFn.fromFunctionWithScoobiJobContext(fn))
 
   /**
    * Group the values of a distributed list with key-value elements by key. And explicitly
@@ -95,9 +95,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * new distributed list
    */
   def mapFlatten[B : WireFormat](f: A => Iterable[B]): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => f(input).foreach {
-      emitter.emit(_)
-    })
+    parallelDo((input: A, emitter: Emitter[B]) => f(input).foreach { emitter.emit(_) })
 
   @deprecated(message = "use mapFlatten instead because DList is not a subclass of Iterator and a well-behaved flatMap operation accepts an argument: A => DList[B]", since = "0.7.0")
   def flatMap[B : WireFormat](f: A => Iterable[B]): DList[B] = mapFlatten(f)
@@ -108,13 +106,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * distributed list
    */
   def map[B : WireFormat](f: A => B): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => emitter.emit(f(input)))
+    parallelDo((input: A, emitter: Emitter[B]) => emitter.emit(f(input)))
 
   /** Keep elements from the distributed list that pass a specified predicate function */
-  def filter(p: A => Boolean): DList[A] =
-    basicParallelDo((input: A, emitter: Emitter[A]) => if (p(input)) {
-      emitter.emit(input)
-    })
+  def filter(p: A => Boolean): DList[A] = parallelDo((input: A, emitter: Emitter[A]) => if (p(input)) { emitter.emit(input) })
 
   /** the withFilter method */
   def withFilter(p: A => Boolean): DList[A] = filter(p)
@@ -126,10 +121,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    * Build a new DList by applying a partial function to all elements of this DList on
    * which the function is defined
    */
-  def collect[B : WireFormat](pf: PartialFunction[A, B]): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) {
-      emitter.emit(pf(input))
-    })
+  def collect[B : WireFormat](pf: PartialFunction[A, B]): DList[B] = parallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) emitter.emit(pf(input)))
 
   /**Partitions this distributed list into a pair of distributed lists according to some
    * predicate. The first distributed list consists of elements that satisfy the predicate
@@ -139,9 +131,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Converts a distributed list of iterable values into to a distributed list in which
    * all the values are concatenated. */
   def flatten[B](implicit ev: A <:< Iterable[B], mB: Manifest[B], wtB: WireFormat[B]): DList[B] =
-    basicParallelDo((input: A, emitter: Emitter[B]) => input.foreach {
-      emitter.emit(_)
-    })
+    parallelDo((input: A, emitter: Emitter[B]) => input.foreach { emitter.emit(_) })
 
   /** Returns if the other DList has the same elements. A DList is unordered
    *  so order isn't considered. The Grouping required isn't very special and
@@ -178,6 +168,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
     parallelDo(new DoFn[A, (Int, A)] {
 
+      /* Cache input values that have not been seen before. And, if a value has been
+       * seen (i.e. is cached), simply drop it.
+       * TODO - make it an actual cache that has a fixed size and has a replacement
+       * policy once it is full otherwise there is the risk of running out of memory. */
       var cache: MSet[A] = MSet.empty
 
       def setup() { cache = MSet.empty }
@@ -345,17 +339,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /** @return the head of the DList as a DObject containing an Option */
   def headOption: DObject[Option[A]] = materialise.map(_.headOption)
 
-  private def basicParallelDo[B : WireFormat](proc: (A, Emitter[B]) => Unit): DList[B] =
-    parallelDo(BasicDoFn(proc))
-
-  private def basicParallelDo[B](fn: (A, Counters) => B)(implicit wf: WireFormat[B], p: ImplicitParameter): DList[B] =
-    basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
-
-  private def basicParallelDo[B](fn: (A, Heartbeat) => B)(implicit wf: WireFormat[B], p: ImplicitParameter1): DList[B] =
-    basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
-
-  private def basicParallelDo[B](fn: (A, ScoobiJobContext) => B)(implicit wf: WireFormat[B], p: ImplicitParameter2): DList[B] =
-    basicParallelDo { (a: A, emitter: Emitter[B]) => emitter.write(fn(a, emitter))  }
 }
 
 trait Persistent[T] extends DataSinks {

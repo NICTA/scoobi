@@ -60,6 +60,33 @@ trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   final def cleanup(env: Unit, emitter: Emitter[B]) { cleanup(emitter) }
 }
 
+object DoFn {
+  def apply[A, B](proc: (A, Emitter[B]) => Unit) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { proc(input, emitter) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+  def fromFunctionWithCounters[A, B](fn: (A, Counters) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+  def fromFunctionWithHeartbeat[A, B](fn: (A, Heartbeat) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+  def fromFunctionWithScoobiJobContext[A, B](fn: (A, ScoobiJobContext) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+}
+
 /** Interface for writing outputs from a DoFn */
 trait Emitter[A] extends EmitterWriter {
   private[scoobi]
@@ -67,23 +94,8 @@ trait Emitter[A] extends EmitterWriter {
   def emit(value: A)
 }
 
-/**
- * Interface for specifying parallel operation over DLists in the absence of an
- * environment with an do-nothing setup and cleanup phases
- */
-trait BasicDoFn[A, B] extends DoFn[A, B] {
-  def setup() {}
-  def cleanup(emitter: Emitter[B]) {}
-}
-
-object BasicDoFn {
-  def apply[A, B](q: (A, Emitter[B]) => Unit): BasicDoFn[A, B] =
-    new BasicDoFn[A, B] {
-      def process(input: A, emitter: Emitter[B]) {
-        q(input, emitter)
-      }
-    }
-}
+@deprecated(message = "use DoFn instead or use a function (A, Emitter[B]) => Unit", since = "0.7")
+trait BasicDoFn[A, B] extends DoFn[A, B]
 
 /**
  * Internal version of a EnvDoFn functions without type information
