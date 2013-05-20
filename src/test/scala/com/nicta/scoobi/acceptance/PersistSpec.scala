@@ -31,7 +31,7 @@ import org.apache.hadoop.io.{Text, LongWritable}
 import scala.io.Source
 import org.specs2.mutable.Tags
 
-class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags {
+class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags { sequential
 
   "There are many ways to execute computations with DLists or DObjects".txt
 

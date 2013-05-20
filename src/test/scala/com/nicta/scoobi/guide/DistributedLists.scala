@@ -119,7 +119,7 @@ Because the `DoFn` object has an interface that is closely aligned to the Hadoop
 val ints: DList[Int] = ???
 
 val top10ints: DList[Int] = ints.parallelDo(new DoFn[Int, Int] {
-  val top = scala.collection.mutable.Set[Int].empty
+  val top = scala.collection.mutable.Set.empty[Int]
   def setup() {}
   def process(input: Int, emitter: Emitter[Int]) {
     if (top.size < 10) {
