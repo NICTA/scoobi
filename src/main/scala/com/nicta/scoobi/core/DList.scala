@@ -176,21 +176,24 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def distinct: DList[A] = {
     import scala.collection.mutable.{ Set => MSet }
 
-    parallelDo(new BasicDoFn[A, (Int, A)] {
+    parallelDo(new DoFn[A, (Int, A)] {
 
-      var cache: MSet[A] = _
+      var cache: MSet[A] = MSet.empty
 
-      override def setup() {
-        cache = MSet.empty
-      }
+      def setup() { cache = MSet.empty }
 
-      override def process(input: A, emitter: Emitter[(Int, A)]) {
+      def process(input: A, emitter: Emitter[(Int, A)]) {
         if (!cache.contains(input)) {
           emitter.emit((input.hashCode, input))
           cache += input
         }
       }
+
+      def cleanup(emitter: Emitter[(Int, A)]) { cache = MSet.empty }
+
     }).groupByKey.mapFlatten( _._2.toSet )
+
+
   }
 
   /** Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList */

@@ -165,32 +165,28 @@ object Relational {
     }
   }
 
-  private def innerJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (A, B))] {
-    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) {
-      var alist = new ArrayBuffer[A]
+  private def innerJoin[T, A, B] = (input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (A, B))]) => {
+    var alist = new ArrayBuffer[A]
 
-      for (v <- input._2) {
-        v match {
-          case Left(a) => alist += a
-          case Right(b) => for (a <- alist) emitter.emit((input._1._1, (a, b)))
-        }
+    for (v <- input._2) {
+      v match {
+        case Left(a) => alist += a
+        case Right(b) => for (a <- alist) emitter.emit((input._1._1, (a, b)))
       }
     }
   }
 
-  private def rightOuterJoin[T, A, B] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, (Option[A], B))] {
-    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (Option[A], B))]) {
-      var alist = new ArrayBuffer[A]
+  private def rightOuterJoin[T, A, B] = (input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, (Option[A], B))]) => {
+    var alist = new ArrayBuffer[A]
 
-      for (v <- input._2) {
-        v match {
-          case Left(a) => alist += a
-          case Right(b) => {
-            if (alist.isEmpty)
-              emitter.emit((input._1._1, (None, b)))
-            else
-              for (a <- alist) emitter.emit((input._1._1, (Some(a), b)))
-          }
+    for (v <- input._2) {
+      v match {
+        case Left(a) => alist += a
+        case Right(b) => {
+          if (alist.isEmpty)
+            emitter.emit((input._1._1, (None, b)))
+          else
+            for (a <- alist) emitter.emit((input._1._1, (Some(a), b)))
         }
       }
     }
@@ -199,41 +195,38 @@ object Relational {
   private def fullOuterJoin[T, A, B, V](
     hasLeft: (T, A) => V,
     hasRight: (T, B) => V,
-    hasBoth: (T, A, B) => V): BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] = new BasicDoFn[((T, Boolean), Iterable[Either[A, B]]), (T, V)] {
-    def process(input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, V)]) {
-      val alist = new ArrayBuffer[A]
-      var bseen = false
-      val key = input._1._1
+    hasBoth: (T, A, B) => V) = (input: ((T, Boolean), Iterable[Either[A, B]]), emitter: Emitter[(T, V)]) => {
+    val alist = new ArrayBuffer[A]
+    var bseen = false
+    val key = input._1._1
 
-      for (v <- input._2) {
-        v match {
-          case Left(a) => alist += a
-          case Right(b) => {
-            bseen = true
-            if (alist.isEmpty)
-              emitter.emit((key, hasRight(key, b)))
-            else
-              for (a <- alist) {
-                emitter.emit((key, hasBoth(key, a, b)))
-              }
-          }
+    for (v <- input._2) {
+      v match {
+        case Left(a) => alist += a
+        case Right(b) => {
+          bseen = true
+          if (alist.isEmpty)
+            emitter.emit((key, hasRight(key, b)))
+          else
+            for (a <- alist) {
+              emitter.emit((key, hasBoth(key, a, b)))
+            }
         }
       }
-
-      if (!bseen)
-        for (a <- alist) {
-          emitter.emit((key, hasLeft(key, a)))
-        }
     }
+
+    if (!bseen)
+      for (a <- alist) {
+        emitter.emit((key, hasLeft(key, a)))
+      }
   }
 
   /** Perform a join of two distributed lists using a specified join-predicate, and a type. */
   private def joinWith[K : WireFormat : Grouping,
                        A : WireFormat,
                        B : WireFormat,
-                       V : WireFormat](
-    d1: DList[(K, A)],
-    d2: DList[(K, B)])(dofn: BasicDoFn[((K, Boolean), Iterable[Either[A, B]]), (K, V)]): DList[(K, V)] = {
+                       V : WireFormat](d1: DList[(K, A)], d2: DList[(K, B)])
+                                      (fn: (((K, Boolean), Iterable[Either[A, B]]), Emitter[(K, V)]) => Unit): DList[(K, V)] = {
 
     /* Map left and right DLists to be of the same type. Label the left as 'true' and the
      * right as 'false'. Note the hack cause DList doesn't yet have the co/contravariance. */
@@ -261,7 +254,7 @@ object Relational {
       }
     }
 
-    (left ++ right).groupByKeyWith(grouping).parallelDo(dofn)
+    (left ++ right).groupByKeyWith(grouping).parallelDo(fn)
   }
 
 

@@ -77,13 +77,12 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags {
 
       var processedNumber = 0
 
-      val doFn = new BasicDoFn[Int, Int] {
-        def process(input: Int, emitter: Emitter[Int]) {
-          processedNumber += 1
-          if (processedNumber > 3) failure("too many computations")
-          emitter.emit(input + 2)
-        }
+      val doFn = (input: Int, emitter: Emitter[Int]) => {
+        processedNumber += 1
+        if (processedNumber > 3) failure("too many computations")
+        emitter.emit(input + 2)
       }
+
       val l3 = l1.parallelDo(doFn)
 
       "the list l1 has been computed only once" ==> {

@@ -247,9 +247,7 @@ object LinearAlgebra {
     {
       val left = matrix.by(_._1._2)
 
-      left.groupByKey.parallelDo(
-        new BasicDoFn[(Elem, Iterable[((Elem, Elem), Value)]), ((Elem, Elem), Q)] {
-          def process(input: (Elem, Iterable[((Elem, Elem), Value)]), emitter: Emitter[((Elem, Elem), Q)]) = {
+      left.groupByKey.parallelDo((input: (Elem, Iterable[((Elem, Elem), Value)]), emitter: Emitter[((Elem, Elem), Q)]) => {
             val bs = generateRow()
 
             for (a <- input._2) {
@@ -257,8 +255,7 @@ object LinearAlgebra {
                 b => emitter.emit(((a._1._1, b._1), mult(a._2, b._2)))
               }
             }
-          }
-        }).groupByKey.combine(add)
+          }).groupByKey.combine(add)
     }
 
   def matrixByDenseFunc[V: WireFormat, Value: WireFormat, Q: WireFormat](
@@ -269,9 +266,7 @@ object LinearAlgebra {
     {
       val left = matrix.map(a => (a._1._2, (a._1._1,a._2)))
 
-      left.groupByKey.parallelDo(
-        new BasicDoFn[(Int, Iterable[(Int, Value)]), ((Int, Int), Q)] {
-          def process(input: (Int, Iterable[(Int, Value)]), emitter: Emitter[((Int, Int), Q)]) = {
+      left.groupByKey.parallelDo((input: (Int, Iterable[(Int, Value)]), emitter: Emitter[((Int, Int), Q)]) => {
             val bs = generateRow()
 
             for (a <- input._2) {
@@ -279,8 +274,7 @@ object LinearAlgebra {
                 b => emitter.emit(((a._1, b._2), mult(a._2, b._1)))
               }
             }
-          }
-        }).groupByKey.combine(add)
+          }).groupByKey.combine(add)
     }
 
   def matrixByMatrix[Elem: WireFormat: Ordering, V: WireFormat, Value: WireFormat, Q: WireFormat](
@@ -292,9 +286,7 @@ object LinearAlgebra {
     val left = l.by(_._1._2).map(x => (x._1, Left(x._2): Either[((Elem, Elem), Value), ((Elem, Elem), V)]))
       val right = r.by(_._1._1).map(x => (x._1, Right(x._2): Either[((Elem, Elem), Value), ((Elem, Elem), V)]))
 
-      (left ++ right).groupByKey.parallelDo(
-        new BasicDoFn[(Elem, Iterable[Either[((Elem, Elem), Value), ((Elem, Elem), V)]]), ((Elem, Elem), Q)] {
-          def process(input: (Elem, Iterable[Either[((Elem, Elem), Value), ((Elem, Elem), V)]]), emitter: Emitter[((Elem, Elem), Q)]) = {
+      (left ++ right).groupByKey.parallelDo((input: (Elem, Iterable[Either[((Elem, Elem), Value), ((Elem, Elem), V)]]), emitter: Emitter[((Elem, Elem), Q)]) => {
             val as: ArrayBuffer[((Elem, Elem), Value)] = new ArrayBuffer[((Elem, Elem), Value)]()
             val bs: ArrayBuffer[((Elem, Elem), V)] = new ArrayBuffer[((Elem, Elem), V)]()
 
@@ -312,8 +304,7 @@ object LinearAlgebra {
                 }
               }
             }
-          }
-        }).groupByKey.combine(add)
+          }).groupByKey.combine(add)
     }
 
   def matrixByVector[Elem: WireFormat: Ordering, V: WireFormat, Value: WireFormat, Q: WireFormat: Ordering](
