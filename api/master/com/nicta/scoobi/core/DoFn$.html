@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>BasicDoFn - com.nicta.scoobi.core.BasicDoFn</title>
-          <meta name="description" content="BasicDoFn - com.nicta.scoobi.core.BasicDoFn" />
-          <meta name="keywords" content="BasicDoFn com.nicta.scoobi.core.BasicDoFn" />
+          <title>DoFn - com.nicta.scoobi.core.DoFn</title>
+          <meta name="description" content="DoFn - com.nicta.scoobi.core.DoFn" />
+          <meta name="keywords" content="DoFn com.nicta.scoobi.core.DoFn" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.nicta.scoobi.core.BasicDoFn';
+            var hash = 'com.nicta.scoobi.core.DoFn$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,29 +27,26 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <img src="../../../../lib/trait_big.png" />
+        <a href="DoFn.html" title="Go to companion"><img src="../../../../lib/object_to_trait_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
-        <h1>BasicDoFn</h1>
+        <h1><a href="DoFn.html" title="Go to companion">DoFn</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 0.7) use DoFn instead or use a function (A, Emitter[B]) =&gt; Unit">BasicDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>
+        <span class="name">DoFn</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7)</i> use DoFn instead or use a function (A, Emitter[B]) =&gt; Unit</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>], <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>, <span class="extype" name="scala.Unit">Unit</span>], <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -67,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.core.BasicDoFn"><span>BasicDoFn</span></li><li class="in" name="com.nicta.scoobi.core.DoFn"><span>DoFn</span></li><li class="in" name="com.nicta.scoobi.core.EnvDoFn"><span>EnvDoFn</span></li><li class="in" name="com.nicta.scoobi.core.DoFunction"><span>DoFunction</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.DoFn"><span>DoFn</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -89,52 +86,10 @@
 
         
 
-        <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="com.nicta.scoobi.core.DoFn#cleanup" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="cleanup(emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
-      <a id="cleanup(Emitter[B]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cleanup</span><span class="params">(<span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DoFn#process" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="process(input:A,emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
-      <a id="process(A,Emitter[B]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">process</span><span class="params">(<span name="input">input: <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span></span>, <span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DoFn#setup" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="setup():Unit"></a>
-      <a id="setup():Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setup</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -200,6 +155,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DoFn#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply[A,B](proc:(A,com.nicta.scoobi.core.Emitter[B])=&gt;Unit):com.nicta.scoobi.core.DoFn[A,B]"></a>
+      <a id="apply[A,B]((A,Emitter[B])⇒Unit):DoFn[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="proc">proc: (<span class="extype" name="com.nicta.scoobi.core.DoFn.apply.A">A</span>, <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.DoFn.apply.B">B</span>]) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.DoFn.apply.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.DoFn.apply.B">B</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -213,19 +181,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DoFn#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="cleanup(env:Unit,emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
-      <a id="cleanup(Unit,Emitter[B]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cleanup</span><span class="params">(<span name="env">env: <span class="extype" name="scala.Unit">Unit</span></span>, <span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a> → <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -284,6 +239,45 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DoFn#fromFunctionWithCounters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromFunctionWithCounters[A,B](fn:(A,com.nicta.scoobi.core.Counters)=&gt;B):com.nicta.scoobi.core.DoFn[A,B]"></a>
+      <a id="fromFunctionWithCounters[A,B]((A,Counters)⇒B):DoFn[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromFunctionWithCounters</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithCounters.A">A</span>, <a href="Counters.html" class="extype" name="com.nicta.scoobi.core.Counters">Counters</a>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithCounters.B">B</span></span>)</span><span class="result">: <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithCounters.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithCounters.B">B</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.DoFn#fromFunctionWithHeartbeat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromFunctionWithHeartbeat[A,B](fn:(A,com.nicta.scoobi.core.Heartbeat)=&gt;B):com.nicta.scoobi.core.DoFn[A,B]"></a>
+      <a id="fromFunctionWithHeartbeat[A,B]((A,Heartbeat)⇒B):DoFn[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromFunctionWithHeartbeat</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithHeartbeat.A">A</span>, <a href="Heartbeat.html" class="extype" name="com.nicta.scoobi.core.Heartbeat">Heartbeat</a>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithHeartbeat.B">B</span></span>)</span><span class="result">: <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithHeartbeat.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithHeartbeat.B">B</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.DoFn#fromFunctionWithScoobiJobContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromFunctionWithScoobiJobContext[A,B](fn:(A,com.nicta.scoobi.core.ScoobiJobContext)=&gt;B):com.nicta.scoobi.core.DoFn[A,B]"></a>
+      <a id="fromFunctionWithScoobiJobContext[A,B]((A,ScoobiJobContext)⇒B):DoFn[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromFunctionWithScoobiJobContext</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithScoobiJobContext.A">A</span>, <a href="ScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.ScoobiJobContext">ScoobiJobContext</a>) ⇒ <span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithScoobiJobContext.B">B</span></span>)</span><span class="result">: <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithScoobiJobContext.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.DoFn.fromFunctionWithScoobiJobContext.B">B</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -362,32 +356,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DoFn#process" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="process(env:Unit,input:A,emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
-      <a id="process(Unit,A,Emitter[B]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">process</span><span class="params">(<span name="env">env: <span class="extype" name="scala.Unit">Unit</span></span>, <span name="input">input: <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span></span>, <span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a> → <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DoFn#setup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setup(env:Unit):Unit"></a>
-      <a id="setup(Unit):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setup</span><span class="params">(<span name="env">env: <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a> → <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -471,13 +439,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.nicta.scoobi.core.DoFn">
-              <h3>Inherited from <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.EnvDoFn">
-              <h3>Inherited from <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>, <span class="extype" name="scala.Unit">Unit</span>]</h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.DoFunction">
-              <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

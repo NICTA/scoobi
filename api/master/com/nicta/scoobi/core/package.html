@@ -76,21 +76,6 @@
       </span>
       </h4>
       <p class="comment cmt">An association of a key to 1 or many values.</p>
-    </li><li name="com.nicta.scoobi.core.BasicDoFn" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="BasicDoFn[A,B]extendsDoFn[A,B]"></a>
-      <a id="BasicDoFn[A,B]:BasicDoFn[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="BasicDoFn.html"><span class="name">BasicDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Interface for specifying parallel operation over DLists in the absence of an
-environment with an do-nothing setup and cleanup phases
-</p>
     </li><li name="com.nicta.scoobi.core.Checkpoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="CheckpointextendsProductwithSerializable"></a>
       <a id="Checkpoint:Checkpoint"></a>
@@ -646,6 +631,22 @@ added to the classpath.</p>
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.core.BasicDoFn" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="BasicDoFn[A,B]extendsDoFn[A,B]"></a>
+      <a id="BasicDoFn[A,B]:BasicDoFn[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="BasicDoFn.html"><span class="name deprecated" title="Deprecated: (Since version 0.7) use DoFn instead or use a function (A, Emitter[B]) =&gt; Unit">BasicDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7)</i> use DoFn instead or use a function (A, Emitter[B]) =&gt; Unit</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -663,19 +664,6 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="Association1$.html"><span class="name">Association1</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.core.BasicDoFn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BasicDoFn"></a>
-      <a id="BasicDoFn:BasicDoFn"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="BasicDoFn$.html"><span class="name">BasicDoFn</span></a>
       </span>
       </h4>
       
@@ -729,6 +717,19 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="Data$.html"><span class="name">Data</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.DoFn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DoFn"></a>
+      <a id="DoFn:DoFn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DoFn$.html"><span class="name">DoFn</span></a>
       </span>
       </h4>
       
