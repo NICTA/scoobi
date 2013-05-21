@@ -13,8 +13,7 @@ scalacOptions ++= Seq("-deprecation")
 
 libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT")
 
-resolvers ++= Seq("nicta" at "http://nicta.github.io/scoobi/releases",
-                  "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
+resolvers ++= Seq("sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
                   "apache"   at "https://repository.apache.org/content/repositories/releases")
 
