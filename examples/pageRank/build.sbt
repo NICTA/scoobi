@@ -9,6 +9,5 @@ libraryDependencies ++=
 
 scalacOptions ++= Seq("-deprecation")
 
-resolvers ++= Seq("nicta" at "http://nicta.github.io/scoobi/releases",
-                  "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
+resolvers ++= Seq("sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases")
