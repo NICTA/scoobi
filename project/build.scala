@@ -91,7 +91,7 @@ object build extends Build {
       "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
       "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test"
     ) ++ hadoop },
-    resolvers ++= Seq("nicta" at "http://nicta.github.io/scoobi/releases",
+    resolvers ++= Seq(
       "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
       "sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
       "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
