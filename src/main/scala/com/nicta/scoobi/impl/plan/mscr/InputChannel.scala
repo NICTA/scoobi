@@ -31,9 +31,6 @@ import core.InputOutputContext
 import org.apache.commons.logging.LogFactory
 import monitor.Loggable
 import Loggable._
-import org.apache.hadoop.mapreduce.task.{MapContextImpl, TaskInputOutputContextImpl}
-import org.apache.hadoop.mapreduce.MapContext
-import org.kiama.attribution.AttributionCore
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
