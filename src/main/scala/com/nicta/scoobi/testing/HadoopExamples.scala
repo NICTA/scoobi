@@ -40,7 +40,7 @@ import core.ScoobiConfiguration
  * They also need to implement the Cluster trait to specify the location of the remote nodes
  *
  */
-trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster { outer =>
+trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster with HadoopLogFactoryInitialisation { outer =>
 
   /** make the context available implicitly as an Fixture[ScoobiConfiguration] so that examples taking that context as a parameter can be declared */
   implicit protected def fixtureContext: Fixture[ScoobiConfiguration] = context

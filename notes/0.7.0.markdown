@@ -1,0 +1,25 @@
+### New Features
+
+ * added a full outer join to the relational library
+ * refactored the ScoobiApp trait with several [command-line options](http://nicta.github.com/scoobi/guide/Application.html#Application)
+ * added a `keepfiles` argument for testing to be able to inspect temporary files
+ * [issue 85](https://github.com/NICTA/scoobi/issues/85) set the minimum and maximum number of reducers
+ * now a Scoobi job fails when an intermediate Hadoop job fails
+ * added more logging and a url to the job on the job tracker when there is a failure
+ * added type/schema checking in Sequence and Avro datasources
+ * a `DList` can now be created with `Text` elements (or any `Writable`)
+ * [issue 129](https://github.com/NICTA/scoobi/issues/129): added the ability to set the input size threshold per reducer
+
+### Changes
+
+ * `Grouping` definitions must now return `scalaz.Ordering` values instead of just `ints`
+ * `combine` operations now take in a `Reduction` object instead of a function. See the `Reduction` object for a list of combinators to create `Reductions`
+ * 
+
+### Fixes
+
+ * fixed the computation of splits when creating a ChannelInputFormat
+* [issue 211](https://github.com/NICTA/scoobi/issues/211): better display of file sizes
+ 
+ 
+------ 

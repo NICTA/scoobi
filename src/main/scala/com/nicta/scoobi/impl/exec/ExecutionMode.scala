@@ -36,8 +36,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
     * - checking the sources and sinks
     */
   protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) = {
-    reinitAttributable(node)
-    reinitUses
+    reinit(node)
     val toExecute = truncateAlreadyExecutedNodes(node.debug("Raw nodes", prettyGraph(showComputationGraph)))
     checkSourceAndSinks(sc)(toExecute.debug("Active nodes", prettyGraph(showComputationGraph)))
     toExecute
@@ -57,7 +56,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
   }
 
   def reset {
-    resetMemo()
+    resetUses
   }
 
   /**

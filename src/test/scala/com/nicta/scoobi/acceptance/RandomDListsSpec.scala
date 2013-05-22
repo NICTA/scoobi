@@ -28,19 +28,13 @@ class RandomDListsSpecification extends NictaSimpleJobs with CompNodeData {
   }.set(minTestsOk = 20)
 
   def compareExecutions(l1: DList[String]) = {
-    val locally  = duplicate(l1).run(configureForLocal(ScoobiConfiguration()))
-    val inMemory = duplicate(l1).run(configureForInMemory(ScoobiConfiguration()))
+    val locally  = l1.run(configureForLocal(ScoobiConfiguration()))
+    val inMemory = l1.run(configureForInMemory(ScoobiConfiguration()))
 
     locally aka "the local hadoop results" must haveTheSameElementsAs(inMemory)
 
     "====== EXAMPLE OK ======\n".pp; ok
   }
-
-  // this duplicate is to avoid some yet unexplained undue failures when running the tests
-  def duplicate(list: DList[String]) = {
-    new DListImpl[String](Optimiser.reinitAttributable(Optimiser.duplicate(list.getComp).asInstanceOf[ProcessNode]))
-  }
-
 }
 
 

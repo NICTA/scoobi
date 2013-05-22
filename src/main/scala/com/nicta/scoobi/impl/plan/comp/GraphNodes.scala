@@ -22,6 +22,7 @@ import scalaz.Scalaz._
 import scalaz.std.vector.vectorSyntax._
 import org.kiama.attribution.{Attributable, AttributionCore}
 import control.Exceptions._
+import scala.collection.GenTraversable
 
 /**
  * generic functions for a nodes graph
@@ -30,13 +31,43 @@ trait GraphNodes extends AttributionCore {
 
   type T <: Attributable
 
-  /** compute the parent of a node */
+  /**
+   * compute the parent of a node. This relationship is actually maintained while getting the children of a node
+   * if the parent node has not been set while recursing for children, then it is None
+   */
   lazy val parent : CachedAttribute[T, Option[T]] =
-    attr { case node => Option(node.parent.asInstanceOf[T]) }
+    attr { case node => None }
 
-  /** compute the children of a node */
+  /**
+   * compute the children of a node.
+   *
+   * This is similar to calling the initTree method on the node but this stores the information as an attribute instead of storing it
+   * as a tree. This is a way to avoid conflicts if we have 2 processes trying to initialise the same graph
+   */
   lazy val children : CachedAttribute[T, Seq[T]] =
-    attr { case node => Vector(node.children.toSeq.map(_.asInstanceOf[T]):_*) }
+    attr {
+      case node => {
+        val childNodes =
+        node.productIterator.flatMap { child =>
+          child match {
+            case Some (o)              => setParent(Seq(o)         , node)
+            case Left (l)              => setParent(Seq(l)         , node)
+            case Right (r)             => setParent(Seq(r)         , node)
+            case (a, b)                => setParent(Seq(a, b)      , node)
+            case (a, b, c)             => setParent(Seq(a, b, c)   , node)
+            case (a, b, c, d)          => setParent(Seq(a, b, c, d), node)
+            case s : GenTraversable[_] => setParent(s.seq.toSeq    , node)
+            case a: Attributable       => setParent(Seq(a)         , node)
+            case other                 => Seq()
+          }
+        }.map(_.asInstanceOf[T])
+        childNodes.foldLeft(Vector[T]()) { _ :+ _ }
+      }
+    }
+
+  /** while setting the children of a node, also set its parent */
+  private def setParent(children: Seq[_], p: Any): Seq[_] =
+    children.collect { case child: Attributable => parent.memo.put(child.asInstanceOf[T], Some(Some(p.asInstanceOf[T]))); child }
 
   /** the root of the graph, computed from a given node */
   lazy val root : CachedAttribute[T, T] =
@@ -86,8 +117,8 @@ trait GraphNodes extends AttributionCore {
   }
 
   /** reinit usages */
-  protected def reinitUses {
-    Seq[CachedAttribute[_,_]](root, parent, parents, children, descendents, usesTable, uses, transitiveUses, isUsedAtMostOnce, isCyclic, vertices, edges).foreach(_.reset)
+  protected def resetUses {
+    Seq[CachedAttribute[_,_]](root, parents, descendents, usesTable, uses, transitiveUses, isUsedAtMostOnce, isCyclic, vertices, edges).foreach(_.reset)
     Seq[CachedParamAttribute[_,_,_]](isParentOf, isStrictParentOf, descendentsUntil).foreach(_.reset)
   }
 
@@ -121,12 +152,24 @@ trait GraphNodes extends AttributionCore {
     (children(node).map(n => node -> n) ++ children(node).flatMap(n => n -> edges)).distinct // make the edges unique
   }
 
-  /** initialise the Kiama attributes but only if they haven't been set before */
-  def initAttributable[A <: Attributable](a: A): A  = {
-    if (a.children == null || !a.children.hasNext) reinitAttributable(a)
-    else                                           a
+  /** initialise the parent/child relationship recursively from node s */
+  def initAttributable[S <: T](s: S): S  = s.synchronized {
+    // recursive call for each child node
+    children(s).foreach(initAttributable)
+    s
   }
-  def reinitAttributable[A <: Attributable](a: A): A  = { initTree(a); a }
+
+  /**
+   * reinitialise all the attributes related to a node, starting from all the parent/children relationships
+   *
+   * reset the attributes, then recreate the parent/children relationships recursively
+   */
+  def reinit[S <: T](s: S): S  = s.synchronized {
+    children.reset
+    parent.reset
+    resetUses
+    initAttributable(s)
+  }
 
 }
 

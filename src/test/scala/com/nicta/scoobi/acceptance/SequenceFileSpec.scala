@@ -114,7 +114,6 @@ class SequenceFileSpec extends NictaSimpleJobs {
   }
 
   "It is possible to derive an implicit Sequence Schema for a type having a WireFormat" >> { implicit sc: SC =>
-    case class Foo(value: Int)
     implicit val FooFmt = mkCaseWireFormat(Foo, Foo unapply _)
     val list = DList(Foo(1), Foo(2)).valueToSequenceFile(TempFiles.createTempFilePath("values"), overwrite = true)
     list.map(e => Foo(e.value + 1)).run.normalise === "Vector(Foo(2), Foo(3))"
@@ -131,3 +130,4 @@ class SequenceFileSpec extends NictaSimpleJobs {
 
   def createTempFile(prefix: String = "iotest")(implicit sc: SC): String = TestFiles.path(TestFiles.createTempFile(prefix))
 }
+case class Foo(value: Int)

@@ -31,7 +31,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
-    val list = DList((new Text("key1"), new Text("value1")), (new Text("key2"), new Text("value2")))
+    val list = DList(("key1", "value1"), ("key2", "value2")).map { case (k, v) => (new Text(k), new Text(v)) }
     run(list).map(_.toString).sorted must_== Seq("(key1,value1)", "(key2,value2)")
   }
 
@@ -106,10 +106,6 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   }
   
   "DList distinct works" >> { implicit sc: SC =>
-    
-    case class PoorHashString(s: String) {
-      override def hashCode() = s.hashCode() & 0xff
-    }
     implicit def fmt = mkCaseWireFormat(PoorHashString, PoorHashString.unapply _)
     
     val words = (1 to 1000).map { x => PoorHashString(util.Random.nextString(1)) }
@@ -137,3 +133,8 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     Prop.forAll(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
   }
 }
+
+case class PoorHashString(s: String) {
+  override def hashCode() = s.hashCode() & 0xff
+}
+

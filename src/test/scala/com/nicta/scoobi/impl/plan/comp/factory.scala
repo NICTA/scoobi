@@ -42,7 +42,7 @@ trait nodesFactory extends CompNodeFactory with CompNodes with ShowNode {
    else                                   "no optimisation"
 
   /** initialise the Kiama attributes of a CompNode */
-  def init[T <: CompNode](t: T): T  = initAttributable(t)
+  def init[S <: T](s: S): S  = reinit(s)
 
   val rewriter = new Rewriter {}
 

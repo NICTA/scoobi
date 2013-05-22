@@ -33,6 +33,7 @@ import monitor.Loggable
 import Loggable._
 import org.apache.hadoop.mapreduce.task.{MapContextImpl, TaskInputOutputContextImpl}
 import org.apache.hadoop.mapreduce.MapContext
+import org.kiama.attribution.AttributionCore
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
@@ -97,7 +98,8 @@ trait InputChannel {
 trait MscrInputChannel extends InputChannel {
   implicit lazy val logger = LogFactory.getLog("scoobi.InputChannel")
 
-  private val nodes = new MscrsDefinition {}; import nodes._
+  def nodes: Layering
+  lazy val graphNodes = nodes
 
   lazy val id: Int = sourceNode.id
 
@@ -106,6 +108,7 @@ trait MscrInputChannel extends InputChannel {
     case n: Load        => n.source
     case n: ProcessNode => n.bridgeStore.getOrElse(n.createBridgeStore)
   }
+
 
   /** sourceNode + environments for the parallelDo nodes */
   lazy val inputNodes = sourceNode +: mappers.map(_.env)
@@ -118,12 +121,12 @@ trait MscrInputChannel extends InputChannel {
 
   /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
   lazy val mappers =
-    terminalNodes.flatMap(terminal => pathsToNode(sourceNode)(terminal)).
+    terminalNodes.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal)).
       // drop the source node from the path
       map(path => path.filterNot(_ == sourceNode)).
       // retain only the paths which contain parallelDos or a terminal node
-      filter(_.forall(isParallelDo || terminalNodes.contains)).
-      flatten.collect(isAParallelDo).distinct
+      filter(_.forall(nodes.isParallelDo || terminalNodes.contains)).
+      flatten.collect(nodes.isAParallelDo).distinct
 
 
   /** nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel */
@@ -166,12 +169,14 @@ trait MscrInputChannel extends InputChannel {
 
   protected def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl(configuration)
 
+  private def attribute[T <: AnyRef,U](name: String)(f : T => U) = new graphNodes.CachedAttribute(name, f)
+
   /** memoise the mappers tree to improve performance */
-  private lazy val nextMappers: CompNode => Seq[ParallelDo] = attr {
-    case node => uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
+  private lazy val nextMappers: CompNode => Seq[ParallelDo] = attribute("nextMappers") {
+    case node => nodes.uses(node).collect(nodes.isAParallelDo).toSeq.filter(mappers.contains)
   }
   /** memoise the final mappers tree to improve performance */
-  private lazy val isFinal: CompNode => Boolean = attr {
+  private lazy val isFinal: CompNode => Boolean = attribute("isFinal") {
     case node => lastMappers.contains(node)
   }
   /** map a given key/value and emit it */
@@ -219,8 +224,8 @@ trait MscrInputChannel extends InputChannel {
 /**
  * This input channel is a tree of Mappers which are all connected to Gbk nodes
  */
-class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) extends MscrInputChannel {
-  private val nodes = new MscrsDefinition {}; import nodes._
+class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey], val nodes: Layering) extends MscrInputChannel {
+  import nodes._
 
   /** collect all the tags accessible from this source node */
   lazy val tags = keyTypes.tags
@@ -251,8 +256,7 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey]) ex
 /**
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
-class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode]) extends MscrInputChannel {
-  private val nodes = new MscrsDefinition {}; import nodes._
+class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode], val nodes: Layering) extends MscrInputChannel {
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags

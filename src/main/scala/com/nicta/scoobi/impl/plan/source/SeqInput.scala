@@ -40,7 +40,7 @@ import impl._
 import Configurations._
 import impl.collection.Seqs._
 import plan.DListImpl
-import util.{DistCache}
+import com.nicta.scoobi.impl.util.{Serialiser, DistCache}
 import SeqInput._
 import WireFormat._
 
@@ -56,36 +56,26 @@ trait SeqInput {
   /** Create a distributed list of a specified length whose elements are coming from a scala collection */
   def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] = {
 
-    val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
+    val source = new DataSource[NullWritable, A, A] {
 
-      val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
+      val inputFormat = classOf[SeqInputFormat[A]]
       override def toString = "SeqInput("+id+")"
 
       def inputCheck(implicit sc: ScoobiConfiguration) {}
 
       def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         job.getConfiguration.setInt(LengthProperty, seq.size)
-        /* Because SeqInputFormat is shared between multiple instances of the Seq
-         * DataSource, each must have a unique id to distinguish their serialised
-         * elements that are pushed out by the distributed cache.
-         * Note that the previous seq Id might have been set on a key such as "scoobi.input0:scoobi.seq.id"
-         * This is why we need to look for keys by regular expression in order to find the maximum value to increment
-         */
-        val id = job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)
-        DistCache.pushObject(job.getConfiguration, seq.map(toByteArray(_, implicitly[WireFormat[A]].toWire(_: A, _: DataOutput))), seqProperty(id))
+        job.getConfiguration.set(IdProperty, id.toString)
+        DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
       }
 
       def inputSize(implicit sc: ScoobiConfiguration): Long = seq.size.toLong
 
-      lazy val inputConverter = new InputConverter[NullWritable, Array[Byte], Array[Byte]] {
-        def fromKeyValue(context: InputContext, k: NullWritable, v: Array[Byte]) = v
+      lazy val inputConverter = new InputConverter[NullWritable, A, A] {
+        def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
       }
     }
-    DListImpl(source).map(a => fromByteArray[A](a))
-  }
-
-  private def fromByteArray[A](barr: Array[Byte])(implicit wf: WireFormat[A]): A = {
-    wf.fromWire(new ObjectInputStream(new ByteArrayInputStream(barr)))
+    DListImpl(source)
   }
 }
 

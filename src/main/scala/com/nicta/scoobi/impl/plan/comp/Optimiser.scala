@@ -90,7 +90,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
   private def resetTree(s: =>Strategy): Strategy =  new Strategy("resetTree") {
     val body = (t1 : Any) => {
       t1 match {
-        case c: CompNode => reinitAttributable(c)
+        case c: CompNode => reinit(c)
         case _           => ()
       }
       s(t1)
@@ -154,10 +154,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
    */
   private[scoobi]
   def optimise(node: CompNode): CompNode = {
-    reinitUses
-    val result = reinitAttributable(optimise(Seq(reinitAttributable(node))).headOption.getOrElse(node))
-    reinitUses
-    result
+    reinit(optimise(Seq(reinit(node))).headOption.getOrElse(node))
   }
 
   /** remove nodes from the tree based on a predicate */
@@ -176,8 +173,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
       if (condition(n)) truncateNode(n)
       else              n
     }
-    reinitUses
-    reinitAttributable(rewrite(topdown(truncateRule))(node))
+    reinit(rewrite(topdown(truncateRule))(node))
   }
 
   def truncateAlreadyExecutedNodes(node: CompNode)(implicit sc: ScoobiConfiguration) = {

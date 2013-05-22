@@ -20,7 +20,7 @@ package mscr
 
 import testing.UnitSpecification
 import org.specs2.specification.Groups
-import comp.{ParallelDo, GroupByKey, factory}
+import comp.{Root, ParallelDo, GroupByKey, factory}
 import org.specs2.matcher.{Matcher, ThrownExpectations}
 import core.{EmitterWriter, MapFunction, InputOutputContext, CompNode}
 import org.apache.hadoop.conf.Configuration
@@ -221,13 +221,20 @@ class InputChannelSpec extends UnitSpecification with Groups with ThrownExpectat
 
     override def scoobiConfiguration(configuration: Configuration) = ScoobiConfigurationImpl.unitEnv(configuration)
   }
-  def floatingInputChannel(terminalNodes: Seq[CompNode], sourceNode: CompNode): FloatingInputChannel with MockInputChannel =
-    new FloatingInputChannel(sourceNode, terminalNodes) with MockInputChannel
+  def floatingInputChannel(terminalNodes: Seq[CompNode], sourceNode: CompNode): FloatingInputChannel with MockInputChannel = {
+    val graph = new MscrsDefinition {}
+    graph.reinit(Root(terminalNodes))
+    new FloatingInputChannel(sourceNode, terminalNodes, graph) with MockInputChannel
+  }
 
   def floatingInputChannel(terminalNode: CompNode, sourceNode: CompNode): FloatingInputChannel with MockInputChannel =
     floatingInputChannel(Seq(terminalNode), sourceNode)
 
-  def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = new GbkInputChannel(sourceNode, groupByKeys) with MockInputChannel
+  def gbkInputChannel(sourceNode: CompNode, groupByKeys: Seq[GroupByKey] = Seq()) = {
+    val graph = new MscrsDefinition {}
+    graph.reinit(Root(groupByKeys))
+    new GbkInputChannel(sourceNode, groupByKeys, graph) with MockInputChannel
+  }
 
   def beDistinct[T]: Matcher[Seq[T]] = (seq: Seq[T]) => (seq.distinct.size == seq.size, "The sequence contains duplicated elements:\n"+seq)
 }

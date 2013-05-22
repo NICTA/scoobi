@@ -47,7 +47,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
     arguments.commandLine.int("workers").                       getOrElse(1))
 
   import Gen._
-  implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinitAttributable))
+  implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinit))
 
   implicit lazy val arbitraryDList:    Arbitrary[DList[String]]   = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalise))))
   implicit lazy val arbitraryDObject:  Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))

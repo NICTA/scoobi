@@ -96,7 +96,7 @@ trait MscrsDefinition extends Layering {
   /** Mscrs for parallel do nodes which are not part of a Gbk mscr */
   lazy val pdMscrs: Layer[T] => Seq[Mscr] = attr { case layer =>
     val inputChannels = floatingParallelDos(layer).flatMap { pd =>
-      pd.ins.map(source => new FloatingInputChannel(source, layer.nodes.filterNot(isGroupByKey)))
+      pd.ins.map(source => new FloatingInputChannel(source, layer.nodes.filterNot(isGroupByKey), this))
     }
     val outputChannels = inputChannels.flatMap(_.lastMappers.map(BypassOutputChannel(_)))
     makeMscrs(inputChannels, outputChannels)
@@ -147,7 +147,7 @@ trait MscrsDefinition extends Layering {
   lazy val gbkInputChannels: Layer[T] => Seq[MscrInputChannel] = attr { case layer =>
     layerGbkSourceNodes(layer).map { sourceNode =>
       val groupByKeyUses = transitiveUses(sourceNode).collect(isAGroupByKey).filter(layerGbks(layer).contains).toSeq
-      new GbkInputChannel(sourceNode, groupByKeyUses)
+      new GbkInputChannel(sourceNode, groupByKeyUses, this)
     }
   }
 
