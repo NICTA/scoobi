@@ -52,10 +52,4 @@ class Persister(sc: core.ScoobiConfiguration) {
       case Local | Cluster => hadoopMode  .execute(o).asInstanceOf[A]
     }
   }
-
-  // reset all previous memoisation
-  def reset = {
-    inMemoryMode.reset
-    hadoopMode.reset
-  }
 }

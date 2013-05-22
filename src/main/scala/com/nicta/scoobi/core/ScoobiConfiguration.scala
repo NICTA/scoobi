@@ -92,7 +92,6 @@ trait ScoobiConfiguration {
   def persist[A](ps: Seq[Persistent[_]]): Seq[Persistent[_]]
   def persist[A](list: DList[A]): DList[A]
   def persist[A](o: DObject[A]): A
-  private[scoobi] def reset: ScoobiConfiguration
   def duplicate: ScoobiConfiguration
 }
 

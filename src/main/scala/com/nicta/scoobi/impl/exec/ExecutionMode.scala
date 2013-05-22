@@ -55,10 +55,6 @@ trait ExecutionMode extends ShowNode with Optimiser {
     children(node).foreach(n => checkSourceAndSinks(sc)(n))
   }
 
-  def reset {
-    resetUses
-  }
-
   /**
    * @return the list of sinks to save for the node depending on the mode:
    *         In HadoopMode, bridges are already saved as part of the map reduce job

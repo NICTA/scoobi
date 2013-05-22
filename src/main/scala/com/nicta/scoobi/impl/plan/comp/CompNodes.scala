@@ -31,19 +31,19 @@ trait CompNodes extends GraphNodes with CollectFunctions {
    * compute the inputs of a given node
    * For a ParallelDo node this does not consider its environment
    */
-  lazy val inputs : CompNode => Seq[CompNode] = attr {
+  lazy val inputs : CachedAttribute[CompNode, Seq[CompNode]] = attr {
     // for a parallel do node just consider the input node, not the environment
     case pd: ParallelDo => pd.ins
     case n              => children(n)
   }
 
   /** compute all the nodes which use a given node as an environment */
-  def usesAsEnvironment : CompNode => Seq[ParallelDo] = attr { case node =>
+  def usesAsEnvironment : CachedAttribute[CompNode, Seq[ParallelDo]] = attr { case node =>
     uses(node).collect { case pd: ParallelDo if pd.env == node => pd }.toSeq
   }
 
   /** collect all the sinks in the computation graph */
-  protected lazy val allSinks: CompNode => Seq[Sink] = attr {
+  protected lazy val allSinks: CachedAttribute[CompNode, Seq[Sink]] = attr {
     case n => n.sinks ++ children(n).flatMap(allSinks)
   }
 
@@ -68,6 +68,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
       case _              => false
     })
   }
+
 }
 object CompNodes extends CompNodes
 

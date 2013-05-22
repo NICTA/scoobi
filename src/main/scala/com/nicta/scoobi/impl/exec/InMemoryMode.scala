@@ -53,7 +53,7 @@ case class InMemoryMode() extends ExecutionMode {
   }
 
   /** optimisation: we only consider sinks which are related to expected results nodes */
-  override protected lazy val allSinks: CompNode => Seq[Sink] = attr {
+  override protected lazy val allSinks: CachedAttribute[CompNode, Seq[Sink]] = attr {
     case n if isExpectedResult(n) => n.sinks ++ children(n).flatMap(allSinks)
     case n                        => children(n).flatMap(allSinks)
   }

@@ -44,7 +44,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 
   def compute(sink: File, restart: Boolean = false)(implicit sc: ScoobiConfiguration) = {
     // restart the configuration if necessary
-    val configuration = if (restart) sc.reset else sc
+    val configuration = if (restart) sc.duplicate else sc
 
     val list = DList(1, 2, 3).map { i =>
       if (i == 1) { evaluationsNb1 += 1 }

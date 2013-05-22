@@ -319,7 +319,6 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def persist[A](ps: Seq[Persistent[_]]) = persister.persist(ps)
   def persist[A](list: DList[A])         = persister.persist(list)
   def persist[A](o: DObject[A]): A       = persister.persist(o)
-  private[scoobi] def reset = { persister.reset; this }
 
   def duplicate = {
     val c = new Configuration(configuration)
