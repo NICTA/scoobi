@@ -422,15 +422,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RewriterCore</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#allSinks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="allSinks:com.nicta.scoobi.core.CompNode=&gt;Seq[com.nicta.scoobi.core.Sink]"></a>
-      <a id="allSinks:(CompNode)⇒Seq[Sink]"></a>
+      <a id="allSinks:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.core.Sink]]"></a>
+      <a id="allSinks:CachedAttribute[CompNode,Seq[Sink]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">allSinks</span><span class="result">: (<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
+        <span class="name">allSinks</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CachedAttribute">CachedAttribute</a>[<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">collect all the sinks in the computation graph</p><div class="fullcomment"><div class="comment cmt"><p>collect all the sinks in the computation graph</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../plan/comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></dd></dl></div>
@@ -903,7 +903,9 @@
         <span class="name">children</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.T">T</a>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.T">T</a>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">compute the children of a node</p><div class="fullcomment"><div class="comment cmt"><p>compute the children of a node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+      <p class="shortcomment cmt">compute the children of a node.</p><div class="fullcomment"><div class="comment cmt"><p>compute the children of a node.</p><p>This is similar to calling the initTree method on the node but this stores the information as an attribute instead of storing it
+as a tree. This is a way to avoid conflicts if we have 2 processes trying to initialise the same graph
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="org.kiama.attribution.AttributionCore#circular" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="circular[T&lt;:AnyRef,U](name:String,init:U)(f:T=&gt;U):T=&gt;U"></a>
       <a id="circular[T&lt;:AnyRef,U](String,U)((T)⇒U):(T)⇒U"></a>
@@ -1619,18 +1621,18 @@ They are all the recursive children reachable from this node
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>RewriterCore</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#initAttributable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="initAttributable[A&lt;:org.kiama.attribution.Attributable](a:A):A"></a>
-      <a id="initAttributable[A&lt;:Attributable](A):A"></a>
+      <a id="initAttributable[S&lt;:GraphNodes.this.T](s:S):S"></a>
+      <a id="initAttributable[S&lt;:T](S):S"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">initAttributable</span><span class="tparams">[<span name="A">A &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="a">a: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.initAttributable.A">A</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.initAttributable.A">A</span></span>
+        <span class="name">initAttributable</span><span class="tparams">[<span name="S">S &lt;: <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.T">T</a></span>]</span><span class="params">(<span name="s">s: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.initAttributable.S">S</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.initAttributable.S">S</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">initialise the Kiama attributes but only if they haven't been set before</p><div class="fullcomment"><div class="comment cmt"><p>initialise the Kiama attributes but only if they haven't been set before</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+      <p class="shortcomment cmt">initialise the parent/child relationship recursively from node s</p><div class="fullcomment"><div class="comment cmt"><p>initialise the parent/child relationship recursively from node s</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="org.kiama.attribution.AttributionCommon#initTree" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initTree[T&lt;:org.kiama.attribution.Attributable](t:T):Unit"></a>
       <a id="initTree[T&lt;:Attributable](T):Unit"></a>
@@ -1703,15 +1705,15 @@ They are all the recursive children reachable from this node
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#inputs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="inputs:com.nicta.scoobi.core.CompNode=&gt;Seq[com.nicta.scoobi.core.CompNode]"></a>
-      <a id="inputs:(CompNode)⇒Seq[CompNode]"></a>
+      <a id="inputs:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.core.CompNode]]"></a>
+      <a id="inputs:CachedAttribute[CompNode,Seq[CompNode]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">inputs</span><span class="result">: (<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>
+        <span class="name">inputs</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CachedAttribute">CachedAttribute</a>[<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute the inputs of a given node
@@ -2938,7 +2940,9 @@ this will be detected by Kiama throwing an exception when fetching the descenden
         <span class="name">parent</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CachedAttribute">CachedAttribute</a>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.T">T</a>, <span class="extype" name="scala.Option">Option</span>[<a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.T">T</a>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">compute the parent of a node</p><div class="fullcomment"><div class="comment cmt"><p>compute the parent of a node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+      <p class="shortcomment cmt">compute the parent of a node.</p><div class="fullcomment"><div class="comment cmt"><p>compute the parent of a node. This relationship is actually maintained while getting the children of a node
+if the parent node has not been set while recursing for children, then it is None
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#parents" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parents:GraphNodes.this.CachedAttribute[GraphNodes.this.T,Seq[GraphNodes.this.T]]"></a>
       <a id="parents:CachedAttribute[T,Seq[T]]"></a>
@@ -3099,32 +3103,20 @@ this will be detected by Kiama throwing an exception when fetching the descenden
                 <span class="name">@macroImpl</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#reinitAttributable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="reinitAttributable[A&lt;:org.kiama.attribution.Attributable](a:A):A"></a>
-      <a id="reinitAttributable[A&lt;:Attributable](A):A"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#reinit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reinit[S&lt;:GraphNodes.this.T](s:S):S"></a>
+      <a id="reinit[S&lt;:T](S):S"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reinitAttributable</span><span class="tparams">[<span name="A">A &lt;: <span class="extype" name="org.kiama.attribution.Attributable">Attributable</span></span>]</span><span class="params">(<span name="a">a: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.reinitAttributable.A">A</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.reinitAttributable.A">A</span></span>
+        <span class="name">reinit</span><span class="tparams">[<span name="S">S &lt;: <a href="#T=com.nicta.scoobi.core.CompNode" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.T">T</a></span>]</span><span class="params">(<span name="s">s: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.reinit.S">S</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes.reinit.S">S</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#reinitUses" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="reinitUses:Unit"></a>
-      <a id="reinitUses:Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">reinitUses</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">reinit usages</p><div class="fullcomment"><div class="comment cmt"><p>reinit usages</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
+      <p class="shortcomment cmt">reinitialise all the attributes related to a node, starting from all the parent/children relationships</p><div class="fullcomment"><div class="comment cmt"><p>reinitialise all the attributes related to a node, starting from all the parent/children relationships</p><p>reset the attributes, then recreate the parent/children relationships recursively
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="org.kiama.rewriting.Rewriter#repeat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="repeat(name:String,s:org.kiama.rewriting.Strategy,n:Int):org.kiama.rewriting.Strategy"></a>
       <a id="repeat(String,Strategy,Int):Strategy"></a>
@@ -3315,19 +3307,6 @@ this will be detected by Kiama throwing an exception when fetching the descenden
                 <span class="name">@macroImpl</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.exec.ExecutionMode#reset" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="reset:Unit"></a>
-      <a id="reset:Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">reset</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.kiama.util.Memoiser#resetMemo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="resetMemo():Unit"></a>
       <a id="resetMemo():Unit"></a>
@@ -3341,6 +3320,19 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Memoiser</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes#resetUses" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="resetUses:Unit"></a>
+      <a id="resetUses:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">resetUses</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">reinit usages</p><div class="fullcomment"><div class="comment cmt"><p>reinit usages</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="org.kiama.rewriting.Rewriter#restore" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="restore(name:String,s:org.kiama.rewriting.Strategy,rest:org.kiama.rewriting.Strategy):org.kiama.rewriting.Strategy"></a>
       <a id="restore(String,Strategy,Strategy):Strategy"></a>
@@ -4097,15 +4089,15 @@ this will be detected by Kiama throwing an exception when fetching the descenden
       <p class="shortcomment cmt">the nodes which have this node as a direct child</p><div class="fullcomment"><div class="comment cmt"><p>the nodes which have this node as a direct child</p><p>for efficiency, this uses a table of all the nodes using a given one, computed from the root
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes#usesAsEnvironment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="usesAsEnvironment:com.nicta.scoobi.core.CompNode=&gt;Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]"></a>
-      <a id="usesAsEnvironment:(CompNode)⇒Seq[ParallelDo]"></a>
+      <a id="usesAsEnvironment:CompNodes.this.CachedAttribute[com.nicta.scoobi.core.CompNode,Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]]"></a>
+      <a id="usesAsEnvironment:CachedAttribute[CompNode,Seq[ParallelDo]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">usesAsEnvironment</span><span class="result">: (<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>) ⇒ <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../plan/comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>]</span>
+        <span class="name">usesAsEnvironment</span><span class="result">: <a href="#CachedAttribute[T&lt;:AnyRef,U]extendsAttribute[T,U]withAttributionCore.this.IdMemoised[T,Option[U]]" class="extmbr" name="com.nicta.scoobi.impl.exec.ExecutionMode.CachedAttribute">CachedAttribute</a>[<a href="../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../plan/comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">compute all the nodes which use a given node as an environment</p><div class="fullcomment"><div class="comment cmt"><p>compute all the nodes which use a given node as an environment</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../plan/comp/CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></dd></dl></div>

@@ -86,7 +86,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(sourceNode:com.nicta.scoobi.core.CompNode,terminalNodes:Seq[com.nicta.scoobi.core.CompNode]):com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel"></a>
+      <a id="&lt;init&gt;(sourceNode:com.nicta.scoobi.core.CompNode,terminalNodes:Seq[com.nicta.scoobi.core.CompNode],nodes:com.nicta.scoobi.impl.plan.mscr.Layering):com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel"></a>
       <a id="&lt;init&gt;:FloatingInputChannel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -94,7 +94,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">FloatingInputChannel</span><span class="params">(<span name="sourceNode">sourceNode: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="terminalNodes">terminalNodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>)</span>
+        <span class="name">FloatingInputChannel</span><span class="params">(<span name="sourceNode">sourceNode: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="terminalNodes">terminalNodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="nodes">nodes: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>)</span>
       </span>
       </h4>
       
@@ -325,6 +325,19 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#graphNodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="graphNodes:com.nicta.scoobi.impl.plan.mscr.Layering"></a>
+      <a id="graphNodes:Layering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">graphNodes</span><span class="result">: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -468,6 +481,19 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel#nodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nodes:com.nicta.scoobi.impl.plan.mscr.Layering"></a>
+      <a id="nodes:Layering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodes</span><span class="result">: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a> → <a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
