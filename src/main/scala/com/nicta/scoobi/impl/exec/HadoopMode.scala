@@ -60,7 +60,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
    * execute a computation node
    */
   private
-  lazy val executeNode: CompNode => Any = {
+  def executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
       layers(node).info("Executing layers", mkStrings).map(executeLayer)
@@ -83,7 +83,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  private lazy val executeLayer: Layer[T] => Unit =
+  private def executeLayer: Layer[T] => Unit =
     attr { case layer =>
       Execution(layer).execute
     }
