@@ -28,7 +28,7 @@ import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import ScoobiConfigurationImpl._
 
 trait ExecutionMode extends ShowNode with Optimiser {
-  implicit def modeLogger: Log
+  implicit protected def modeLogger: Log
 
   /** prepare the execution graph by:
     * - initialising the nodes
@@ -41,6 +41,8 @@ trait ExecutionMode extends ShowNode with Optimiser {
     checkSourceAndSinks(sc)(toExecute.debug("Active nodes", prettyGraph(showComputationGraph)))
     toExecute
   }
+
+
 
   /** @return true (default value) if the computation graph must not be displayed */
   protected def showComputationGraph(implicit sc: ScoobiConfiguration) =

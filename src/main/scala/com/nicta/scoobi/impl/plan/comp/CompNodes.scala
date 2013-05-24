@@ -43,6 +43,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   }
 
   /** collect all the sinks in the computation graph */
+  @transient
   protected lazy val allSinks: CachedAttribute[CompNode, Seq[Sink]] = attr {
     case n => n.sinks ++ children(n).flatMap(allSinks)
   }
@@ -54,6 +55,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   }
 
   /** this attribute stores the fact that a Sink has received data */
+  @transient
   protected lazy val filledSink: CachedAttribute[String, String] = attr(identity)
 
   /** @return true if a process node has been filled */
