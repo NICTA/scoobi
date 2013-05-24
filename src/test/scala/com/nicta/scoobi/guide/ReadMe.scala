@@ -50,7 +50,7 @@ Scoobi is a library that leverages the Scala programming language to provide a p
 
 ### Install
 
-See the [install instructions](${GUIDE_OFFICIAL_PAGE}Quick%20Start.html#Installing+Scoobi) in the QuickStart section of the [User Guide](${GUIDE_OFFICIAL_PAGE}User%20Guide.html).
+See the [install instructions](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.QuickStart.html#Installing+Scoobi) in the QuickStart section of the [User Guide](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.UserGuide.html).
 
 ### Features
 
@@ -59,9 +59,9 @@ See the [install instructions](${GUIDE_OFFICIAL_PAGE}Quick%20Start.html#Installi
  * Strong typing - the APIs are strongly typed so as to catch more errors at compile time, a
  major improvement over standard Hadoop MapReduce where type-based run-time errors often occur
 
- * Ability to parameterise with rich [data types](${GUIDE_OFFICIAL_PAGE}Data%20Types.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterised by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
+ * Ability to parameterise with rich [data types](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.DataTypes.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterised by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
- * Support for multiple types of I/O - currently built-in support for [text](${GUIDE_OFFICIAL_PAGE}Input%20and%20Output.html#Text+files), [Sequence](${GUIDE_OFFICIAL_PAGE}Input%20and%20Output.html#Sequence+files) and [Avro](${GUIDE_OFFICIAL_PAGE}Input%20and%20Output.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${GUIDE_OFFICIAL_PAGE}Input%20and%20Output.html#Custom+sources+and+sinks)
+ * Support for multiple types of I/O - currently built-in support for [text](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Text+files), [Sequence](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Sequence+files) and [Avro](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Custom+sources+and+sinks)
 
  * Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 
@@ -71,7 +71,7 @@ See the [install instructions](${GUIDE_OFFICIAL_PAGE}Quick%20Start.html#Installi
 
 ### Getting Started
 
-To get started, read the [getting started steps](${GUIDE_OFFICIAL_PAGE}Quick%20Start.html) and the section on [distributed lists](${GUIDE_OFFICIAL_PAGE}Distributed%20Lists.html). The remaining sections in the [User Guide](${GUIDE_OFFICIAL_PAGE}User%20Guide.html) provide further detail on various aspects of Scoobi's functionality.
+To get started, read the [getting started steps](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.QuickStart.html) and the section on [distributed lists](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.DistributedLists.html). The remaining sections in the [User Guide](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.UserGuide.html) provide further detail on various aspects of Scoobi's functionality.
 
 The user mailing list is at <http://groups.google.com/group/scoobi-users>. Please use it for questions and comments!
 

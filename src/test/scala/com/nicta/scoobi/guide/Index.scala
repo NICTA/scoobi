@@ -20,7 +20,7 @@ package guide
  * This class generates the index.html page used for landing users on http://NICTA.github.com/scoobi
  */
 class Index extends ScoobiPage { def is =
-  "Scoobi".title ^
+  "Scoobi".title.urlIs("index.html") ^
   "Welcome!"     ^
   ReadMe.is      ^
   include((new UserGuide).hide)
