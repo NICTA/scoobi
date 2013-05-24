@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.org/NICTA/scoobi.png?branch=master)](https://travis-ci.org/NICTA/scoobi)
-## ReadMe
 
+                   
+                     
+                       ## Welcome!
+[![Build Status](https://travis-ci.org/NICTA/scoobi.png?branch=master)](https://travis-ci.org/NICTA/scoobi)
 [Hadoop MapReduce](http://hadoop.apache.org/) is awesome, but it seems a little bit crazy when you have to write [this](http://wiki.apache.org/hadoop/WordCount) to count words. Wouldn't it be nicer if you could simply write what you want to do:
 
 ```scala
@@ -50,9 +52,9 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
  * [Issues](https://github.com/NICTA/scoobi/issues)
  * [Change history](http://notes.implicit.ly/tagged/scoobi)
  * [Source code (github)](https://github.com/NICTA/scoobi)
- * [API Documentation](http://nicta.github.io/scoobi/api/SCOOBI-0.6.0-cdh4/index.html)
- * [Examples](https://github.com/NICTA/scoobi/tree/SCOOBI-0.6.0-cdh4/examples)
- * User Guide for the [SNAPSHOT](http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/User%20Guide.html) version ([latest api](http://nicta.github.io/scoobi/api/master/scala/index.html))
+ * [API Documentation](http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC1-cdh4/index.html)
+ * [Examples](https://github.com/NICTA/scoobi/tree/SCOOBI-0.7.0-RC1-cdh4/examples)
+ * User Guide for the [SNAPSHOT](http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/User%20Guide.html) version ([latest api](http://nicta.github.io/scoobi/api/master/index.html))
  * Mailing Lists: [scoobi-users](http://groups.google.com/group/scoobi-users), [scoobi-dev](http://groups.google.com/group/scoobi-dev)
   
                        
