@@ -120,7 +120,7 @@ object TextInput extends TextInput
 
 /** Class that abstracts all the common functionality of reading from text files. */
 case class TextSource[A : WireFormat](paths: Seq[String],
-                                      inputFormat: Class[TextInputFormat] = classOf[TextInputFormat],
+                                      inputFormat: Class[_ <: FileInputFormat[LongWritable, Text]] = classOf[TextInputFormat],
                                       inputConverter: InputConverter[LongWritable, Text, A] = TextInput.defaultTextConverter)
   extends DataSource[LongWritable, Text, A] {
   private lazy val logger = LogFactory.getLog("scoobi.TextInput")
