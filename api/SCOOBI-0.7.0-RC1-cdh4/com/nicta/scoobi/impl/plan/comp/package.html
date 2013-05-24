@@ -1,0 +1,506 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>comp - com.nicta.scoobi.impl.plan.comp</title>
+          <meta name="description" content="comp - com.nicta.scoobi.impl.plan.comp" />
+          <meta name="keywords" content="comp com.nicta.scoobi.impl.plan.comp" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.nicta.scoobi.impl.plan.comp.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a></p>
+        <h1>comp</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">comp</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CollectFunctionsextendsAnyRef"></a>
+      <a id="CollectFunctions:CollectFunctions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CollectFunctions.html"><span class="name">CollectFunctions</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">This functions can be used to filter or collect specific nodes in collections
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Combine" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CombineextendsProcessNodeImplwithProductwithSerializable"></a>
+      <a id="Combine:Combine"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Combine.html"><span class="name">Combine</span></a><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The Combine node type specifies the building of a CompNode as a result of applying an associative
+function to the values of an existing key-values CompNode
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CompNodesextendsGraphNodeswithCollectFunctions"></a>
+      <a id="CompNodes:CompNodes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CompNodes.html"><span class="name">CompNodes</span></a><span class="result"> extends <a href="GraphNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GraphNodes">GraphNodes</a> with <a href="CollectFunctions.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions">CollectFunctions</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">General methods for navigating a graph of CompNodes
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GraphNodes" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GraphNodesextendsAttributionCore"></a>
+      <a id="GraphNodes:GraphNodes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GraphNodes.html"><span class="name">GraphNodes</span></a><span class="result"> extends <span class="extype" name="org.kiama.attribution.AttributionCore">AttributionCore</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">generic functions for a nodes graph
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GroupByKey" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GroupByKeyextendsProcessNodeImplwithProductwithSerializable"></a>
+      <a id="GroupByKey:GroupByKey"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GroupByKey.html"><span class="name">GroupByKey</span></a><span class="params">(<span name="in">in: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="wfk">wfk: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="gpk">gpk: <span class="extype" name="com.nicta.scoobi.core.KeyGrouping">KeyGrouping</span></span>, <span name="wfv">wfv: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The GroupByKey node type specifies the building of a CompNode as a result of partitioning an exiting
+key-value CompNode by key
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Load" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LoadextendsValueNodeImplwithProductwithSerializable"></a>
+      <a id="Load:Load"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Load.html"><span class="name">Load</span></a><span class="params">(<span name="source">source: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The Load node type specifies the creation of a CompNode from some source other than another CompNode.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Materialise" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MaterialiseextendsValueNodeImplwithProductwithSerializable"></a>
+      <a id="Materialise:Materialise"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Materialise.html"><span class="name">Materialise</span></a><span class="params">(<span name="in">in: <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Op" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OpextendsValueNodeImplwithProductwithSerializable"></a>
+      <a id="Op:Op"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Op.html"><span class="name">Op</span></a><span class="params">(<span name="in1">in1: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="in2">in2: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="f">f: (<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>) ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The Op node type specifies the building of Exp CompNode by applying a function to the values
+of two other CompNode nodes
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Optimiser" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="OptimiserextendsCompNodeswithMemoRewriter"></a>
+      <a id="Optimiser:Optimiser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Optimiser.html"><span class="name">Optimiser</span></a><span class="result"> extends <a href="CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a> with <span class="extype" name="org.kiama.rewriting.MemoRewriter">MemoRewriter</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Optimiser for the CompNode graph</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ParallelDo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParallelDoextendsProcessNodeImplwithProductwithSerializable"></a>
+      <a id="ParallelDo:ParallelDo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParallelDo.html"><span class="name">ParallelDo</span></a><span class="params">(<span name="ins">ins: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="env">env: <a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a></span>, <span name="dofn">dofn: <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span></span>, <span name="wfa">wfa: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="wfb">wfb: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="nodeSinks">nodeSinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span> = <span class="defval" name="java.util.UUID.randomUUID().toString()">...</span></span>)</span><span class="result"> extends <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The ParallelDo node type specifies the building of a CompNode as a result of applying a function to
+all elements of an existing CompNode and concatenating the results
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ProcessNodeImplextendsProcessNode"></a>
+      <a id="ProcessNodeImpl:ProcessNodeImpl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ProcessNodeImpl.html"><span class="name">ProcessNodeImpl</span></a><span class="result"> extends <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Processing node in the computation graph.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Return" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReturnextendsValueNodeImplwithProductwithSerializable"></a>
+      <a id="Return:Return"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Return.html"><span class="name">Return</span></a><span class="params">(<span name="in">in: <span class="extype" name="scala.Any">Any</span></span>, <span name="wf">wf: <a href="../../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The Return node type specifies the building of a Exp CompNode from an &quot;ordinary&quot; value.</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Root" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RootextendsValueNodeImplwithProductwithSerializable"></a>
+      <a id="Root:Root"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Root.html"><span class="name">Root</span></a><span class="params">(<span name="ins">ins: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ShowNodeextendsCompNodes"></a>
+      <a id="ShowNode:ShowNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ShowNode.html"><span class="name">ShowNode</span></a><span class="result"> extends <a href="CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">This trait contains some display functions for computation graphs
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ValueNodeImplextendsValueNodewithWithEnvironment"></a>
+      <a id="ValueNodeImpl:ValueNodeImpl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ValueNodeImpl.html"><span class="name">ValueNodeImpl</span></a><span class="result"> extends <a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a> with <a href="WithEnvironment.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.WithEnvironment">WithEnvironment</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Value node to either load or materialise a value
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.WithEnvironment" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="WithEnvironmentextendsAnyRef"></a>
+      <a id="WithEnvironment:WithEnvironment"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="WithEnvironment.html"><span class="name">WithEnvironment</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Value nodes have environments which are determined by the job configuration
+because they are effectively files which are distributed via the distributed cache
+</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.plan.comp.CollectFunctions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CollectFunctions"></a>
+      <a id="CollectFunctions:CollectFunctions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CollectFunctions$.html"><span class="name">CollectFunctions</span></a><span class="result"> extends <a href="CollectFunctions.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CollectFunctions">CollectFunctions</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Combine1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Combine1"></a>
+      <a id="Combine1:Combine1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Combine1$.html"><span class="name">Combine1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.CompNodes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CompNodes"></a>
+      <a id="CompNodes:CompNodes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CompNodes$.html"><span class="name">CompNodes</span></a><span class="result"> extends <a href="CompNodes.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.CompNodes">CompNodes</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.GroupByKey1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GroupByKey1"></a>
+      <a id="GroupByKey1:GroupByKey1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="GroupByKey1$.html"><span class="name">GroupByKey1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Load1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Load1"></a>
+      <a id="Load1:Load1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Load1$.html"><span class="name">Load1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Materialise1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Materialise1"></a>
+      <a id="Materialise1:Materialise1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Materialise1$.html"><span class="name">Materialise1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Op1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Op1"></a>
+      <a id="Op1:Op1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Op1$.html"><span class="name">Op1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Optimiser" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Optimiser"></a>
+      <a id="Optimiser:Optimiser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Optimiser$.html"><span class="name">Optimiser</span></a><span class="result"> extends <a href="Optimiser.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ParallelDo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParallelDo"></a>
+      <a id="ParallelDo:ParallelDo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ParallelDo$.html"><span class="name">ParallelDo</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ParallelDo1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParallelDo1"></a>
+      <a id="ParallelDo1:ParallelDo1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ParallelDo1$.html"><span class="name">ParallelDo1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Return" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Return"></a>
+      <a id="Return:Return"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Return$.html"><span class="name">Return</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Return1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Return1"></a>
+      <a id="Return1:Return1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Return1$.html"><span class="name">Return1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Root1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Root1"></a>
+      <a id="Root1:Root1"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Root1$.html"><span class="name">Root1</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ShowNode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ShowNode"></a>
+      <a id="ShowNode:ShowNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ShowNode$.html"><span class="name">ShowNode</span></a><span class="result"> extends <a href="ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

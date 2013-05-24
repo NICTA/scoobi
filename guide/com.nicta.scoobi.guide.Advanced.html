@@ -62,10 +62,10 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Advanced Notes</title>
-    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Advanced.html">Advanced</a></div><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../com.nicta.scoobi.guide.Index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Advanced.html">Advanced</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Advanced Notes</title><a name="Advanced+Notes"><h2 specId="245207229">Advanced Notes</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Configuration+Options"><h3>Configuration Options</h3></a><p>Scoobi allows you to configure a few useful runtime settings:</p>
+                       <div class="col1"><div id="central"><title>Advanced Notes</title><a name="Advanced+Notes"><h2 specId="497102133">Advanced Notes</h2></a><status class="ok"><div class="level0" style="display: show"><p><a name="Configuration+Options"><h3>Configuration Options</h3></a><p>Scoobi allows you to configure a few useful runtime settings:</p>
 <ul>
   <li>Use a non-standard working directory by passing <code class="prettyprint">-Dscoobi.workdir</code> to a <code class="prettyprint">ScoobiApp</code></li>
   <li>Set an upper-bound on the amount of reducers scoobi will use with <code class="prettyprint">ScoobiConfiguration.setMaxReducers</code></li>
@@ -73,8 +73,8 @@
   <li>Set the amount of reducers scoobi picks, with <code class="prettyprint">ScoobiConfiguration.setBytesPerReducer</code> (Note: this is based on the input to a MapReduce job, not the input to the reducer. Default is 1GiB)</li>
 </ul><p>Look in <code class="prettyprint">ScoobiConfiguration</code> for other useful runtime configuration options</p><a name="Static+References"><h3>Static References</h3></a><p>Values or objects that are behind a final static variable or reference won't get serialised properly. They get serialised in their initial state, not their current state. Very often this initial state might be null (for references) and 0 for Ints etc. So our recommendation is to not use them at all. And to avoid hitting the problem, don't use DelayedInit (it internally works with them) and always prefer a <code class="prettyprint">val</code> to a <code class="prettyprint">var</code> (especially considering variables are not shared between map-reduce jobs)</p><a name="DList+Covariance"><h3>DList Covariance</h3></a><p>At the moment DList is not covariant (that is, a <code class="prettyprint">DList[Apple]</code> is not a <code class="prettyprint">DList[Fruit]</code>). This is something we're slowly working on, but is quite a large issue because of its flow-on effects</p></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="382148183"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="692244774"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="686451453"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -84,118 +84,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Parallel+operations">Parallel operations</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Grouping">Grouping</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Combining">Combining</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
-            
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Reduction+operations">Reduction operations</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Working+with+Distributed+Objects">Working with Distributed Objects</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Example">Example</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
-            
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Input+and+Output">Input and Output</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Text+files">Text files</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+input">Text file input</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Text+file+output">Text file output</a>
-            
-          </li></ul>
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+files">Sequence files</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+file+input">Sequence file input</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Sequence+file+output">Sequence file output</a>
-            
-          </li></ul>
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+files">Avro files</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+schemas">Avro schemas</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+file+input">Avro file input</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Avro+file+output">Avro file output</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#With+a+predefined+avro+schema">With a predefined avro schema</a>
-            
-          </li></ul>
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Without+files">Without files</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Custom+sources+and+sinks">Custom sources and sinks</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Custom+input+sources">Custom input sources</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.InputOutput.html#Custom+output+sources">Custom output sources</a>
-            
-          </li></ul>
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#WireFormat">WireFormat</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#For+case+classes">For case classes</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Default+WireFormat">Default WireFormat</a>
-            
-          </li></ul>
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
-            
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Persisting">Persisting</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DObjects">DObjects</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Iterations">Iterations</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Interim+files">Interim files</a>
-            
-          </li></ul>
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Checkpoints">Checkpoints</a>
-            
-          </li></ul>
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
-            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Joins">Joins</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Cogroup">Cogroup</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#DMatrix">DMatrix</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#DVector">DVector</a>
-            
-          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
-            
-          </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1025409371"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -219,7 +108,119 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="499031222"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Parallel+operations">Parallel operations</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Counters+and+Heartbeat">Counters and Heartbeat</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Combining">Combining</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
+            
+          </li></ul>
+          </li><li id="1294106619"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Reduction+operations">Reduction operations</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Working+with+Distributed+Objects">Working with Distributed Objects</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Example">Example</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
+            
+          </li></ul>
+          </li><li id="335568717"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files">Sequence files</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files">Avro files</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Avro+schemas">Avro schemas</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Reading+files">Reading files</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#With+a+predefined+avro+schema">With a predefined avro schema</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Without+files">Without files</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input">Custom input</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DObjects">DObjects</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Persisting">Persisting</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists_1">DLists</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+file">Text file</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+file">Sequence file</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Avro+file">Avro file</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Custom+output">Custom output</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DObjects_1">DObjects</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#To+files">To files</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Iterations">Iterations</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Interim+files">Interim files</a>
+            
+          </li></ul>
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Checkpoints">Checkpoints</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="611369597"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#WireFormat">WireFormat</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#For+case+classes">For case classes</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Default+WireFormat">Default WireFormat</a>
+            
+          </li></ul>
+          </li></ul>
+          </li><li id="1727049531"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
+            
+          </li></ul>
+          </li><li id="1132494665"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Joins">Joins</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Cogroup">Cogroup</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#DMatrix">DMatrix</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#DVector">DVector</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
+            
+          </li></ul>
+          </li><li id="690271294"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -228,6 +229,8 @@
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Base+specification">Base specification</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Tailoring">Tailoring</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Command-line+arguments">Command-line arguments</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Fine+tuning">Fine tuning</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Implicit+configuration">Implicit configuration</a>
@@ -247,7 +250,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="682977164"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -263,7 +266,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1193187314"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="497102133"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -271,7 +274,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="485997639"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1084162501"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -284,7 +287,8 @@
             
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1193187314','245207229'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+          </li></ul>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['692244774','497102133'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
