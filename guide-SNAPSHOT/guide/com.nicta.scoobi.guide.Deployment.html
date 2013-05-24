@@ -85,7 +85,7 @@ assemblySettings
   }
 }
 </code></pre><p>The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, xmlpull etc.).</p><p>The big advantage to this approach, is that <code class="prettyprint">sbt run</code> still works</p><a name="Ugly+Hack"><h4>Ugly Hack</h4></a><p>We can also fake the <code class="prettyprint">libraryDependencies</code> to build a proper jar. Please note, the way we change this, will make it incompatible with a normal <code class="prettyprint">sbt run</code>. So you might want to have two versions of your <code class="prettyprint">build.sbt</code></p><p>First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:</p>
-<pre><code class="prettyprint">&quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.0-cdh4-SNAPSHOT&quot; intransitive()
+<pre><code class="prettyprint">&quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.0-RC2-cdh4-SNAPSHOT&quot; intransitive()
 </code></pre><p>However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's <a href="https://github.com/NICTA/scoobi/blob/master/build.sbt">build.sbt</a> (and the correct branch/revision) for the canonical list, but for example it might be:</p>
 <pre><code class="prettyprint">&quot;javassist&quot; % &quot;javassist&quot; % &quot;3.12.1.GA&quot;
 &quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.3-SNAPSHOT&quot; // Note: you only need this if you use it
@@ -106,7 +106,7 @@ scalaVersion := &quot;2.10.1&quot;
 scalacOptions ++= Seq(&quot;-Ydependent-method-types&quot;, &quot;-deprecation&quot;)
 
 libraryDependencies ++= Seq(
-   &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.0-cdh4-SNAPSHOT&quot; intransitive(),
+   &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.0-RC2-cdh4-SNAPSHOT&quot; intransitive(),
    &quot;javassist&quot; % &quot;javassist&quot; % &quot;3.12.1.GA&quot;,
    &quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.4&quot; classifier &quot;hadoop2&quot;, // Note: add ' % &quot;provided&quot;'  if you don't need it
    &quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.4&quot;,                             // Note: add ' % &quot;provided&quot;'  if you don't need it
