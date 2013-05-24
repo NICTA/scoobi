@@ -81,7 +81,7 @@ object build extends Build {
       "org.scalaz"                        %% "scalaz-xml"                % "7.0.0"            intransitive(),
       "org.scala-lang"                    %  "scala-compiler"            % scalaVersion,
       "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
-      "org.specs2"                        %% "specs2"                    % "2.0-RC1-SNAPSHOT" % "optional",
+      "org.specs2"                        %% "specs2"                    % "2.0-RC1"          % "optional",
       "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
       "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
       "org.scala-tools.testing"           %  "test-interface"            % "0.5"              % "test",
