@@ -65,11 +65,14 @@ class HadoopLogFactory() extends LogFactory {
   def setAttribute(name: String, value: AnyRef) { impl.setAttribute(name, value) }
 
   def getInstance(name: String): Log      = {
-    if (name == SCOOBI_TIMES)                                if (showTimes) simple(name) else noOps
-    else if (quietFor(name))                                 noOps
-    else if (name == "org.apache.hadoop.conf.Configuration") noWarnings(name)
-    else                                                     simple(name)
+    if (name == SCOOBI_TIMES)                                 if (showTimes) simple(name) else noOps
+    else if (quietFor(name))                                  noOps
+    else if (hadoopClassesWithAbusiveWarnings.contains(name)) noWarnings(name)
+    else                                                      simple(name)
   }
+
+  def hadoopClassesWithAbusiveWarnings = Seq("org.apache.hadoop.conf.Configuration", "mapreduce.Counters")
+
   def getInstance(klass: Class[_]): Log = getInstance(klass.getName)
 
   /** @return true if quiet or if the category 'name' doesn't match the regular expression for accepted categories */
