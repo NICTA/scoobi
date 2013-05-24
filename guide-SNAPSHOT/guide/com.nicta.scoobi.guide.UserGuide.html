@@ -62,10 +62,10 @@
       <script type="text/javascript" src="./../../css/tabber.js"></script>
       <link rel="stylesheet" href="./../../css/tabber.css" type="text/css" media="screen" />
       <title>User Guide</title>
-    </head><body><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../../index.html">Index</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>User Guide</title><a name="User+Guide"><h2 specId="721886738">User Guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><p><notoc><a name="Scoobi+-+Bringing+the+productivity+of+Scala+to+Hadoop"><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></a></notoc></p><p><a href="http://hadoop.apache.org">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do: </p>
+                       <div class="col1"><div id="central"><title>User Guide</title><a name="User+Guide"><h2 specId="370202284">User Guide</h2></a><status class="ok"><div class="level0" style="display: show"><p><p><notoc><a name="Scoobi+-+Bringing+the+productivity+of+Scala+to+Hadoop"><h4>Scoobi - Bringing the productivity of Scala to Hadoop</h4></a></notoc></p><p><a href="http://hadoop.apache.org">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do: </p>
 <pre><code class="prettyprint">val lines = fromTextFile(&quot;hdfs://in/...&quot;)
 
 val counts = lines.mapFlatten(_.split(&quot; &quot;)).
@@ -76,21 +76,21 @@ val counts = lines.mapFlatten(_.split(&quot; &quot;)).
 counts.toTextFile(&quot;hdfs://out/...&quot;).persist
 </code></pre><p>This is what Scoobi is all about. Scoobi is a Scala library that focuses on making you more productive at building Hadoop applications. It stands on the functional programming shoulders of Scala and allows you to just write <strong>what</strong> you want rather than <strong>how</strong> to do it.</p><p>Scoobi is a library that leverages the Scala programming language to provide a programmer friendly abstraction around Hadoop's MapReduce to facilitate rapid development of analytics and machine-learning algorithms.</p><p>In this user guide, you will find:</p>
 <ul>
-  <li>a <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html">Quick Start</a> guide</li>
-  <li>an overview of Scoobi's DLists: <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html">Distributed Lists</a> and <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html">Distributed Objects</a></li>
-  <li>how to <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html">Load and persist data</a></li>
-  <li>how to support your own <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html">Data Types</a></li>
-  <li>how to use <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html">Grouping</a></li>
-  <li><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html">extensions</a> for db-like programming</li>
-  <li>how to create <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html">Scoobi applications</a></li>
-  <li>a <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html">testing guide</a></li>
-  <li><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html">Deployment</a> instructions</li>
-  <li>some <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html">Advanced Notes</a></li>
-  <li>how to get involved in <a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html">Scoobi Development</a></li>
-</ul></p></div></status><status class="ok"><div class="level0" style="display: show"></div></status><subtoc specId="929500358"></subtoc><subtoc specId="364215755"></subtoc><subtoc specId="1045800335"></subtoc><subtoc specId="1760063297"></subtoc><subtoc specId="1944078901"></subtoc><subtoc specId="170400002"></subtoc><subtoc specId="1317132163"></subtoc><subtoc specId="778830265"></subtoc><subtoc specId="887435390"></subtoc><subtoc specId="852671315"></subtoc><subtoc specId="688414774"></subtoc><subtoc specId="1692700229"></subtoc></div></div>
+  <li>a <a href="com.nicta.scoobi.guide.QuickStart.html">Quick Start</a> guide</li>
+  <li>an overview of Scoobi's DLists: <a href="com.nicta.scoobi.guide.DistributedLists.html">Distributed Lists</a> and <a href="com.nicta.scoobi.guide.DistributedObjects.html">Distributed Objects</a></li>
+  <li>how to <a href="com.nicta.scoobi.guide.LoadAndPersist.html">Load and persist data</a></li>
+  <li>how to support your own <a href="com.nicta.scoobi.guide.DataTypes.html">Data Types</a></li>
+  <li>how to use <a href="com.nicta.scoobi.guide.Grouping.html">Grouping</a></li>
+  <li><a href="com.nicta.scoobi.guide.Extensions.html">extensions</a> for db-like programming</li>
+  <li>how to create <a href="com.nicta.scoobi.guide.Application.html">Scoobi applications</a></li>
+  <li>a <a href="com.nicta.scoobi.guide.Testing.html">testing guide</a></li>
+  <li><a href="com.nicta.scoobi.guide.Deployment.html">Deployment</a> instructions</li>
+  <li>some <a href="com.nicta.scoobi.guide.Advanced.html">Advanced Notes</a></li>
+  <li>how to get involved in <a href="com.nicta.scoobi.guide.ScoobiDevelopment.html">Scoobi Development</a></li>
+</ul></p></div></status><subtoc specId="1749605249"></subtoc><subtoc specId="575116176"></subtoc><subtoc specId="153674885"></subtoc><subtoc specId="1538448501"></subtoc><subtoc specId="1000846427"></subtoc><subtoc specId="2133975285"></subtoc><subtoc specId="598226448"></subtoc><subtoc specId="2020959929"></subtoc><subtoc specId="1672165751"></subtoc><subtoc specId="2118772415"></subtoc><subtoc specId="634144351"></subtoc><subtoc specId="102767196"></subtoc></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="721886738"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="929500358"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="370202284"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1749605249"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -100,7 +100,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="364215755"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="575116176"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -124,28 +124,26 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="1045800335"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="153674885"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Parallel+operations">Parallel operations</a>
+            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Counters+and+Heartbeat">Counters and Heartbeat</a>
             
           </li></ul>
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#com.nicta.scoobi.DoFn%29+object%3A">com.nicta.scoobi.DoFn) object:</a>
-            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Grouping">Grouping</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Grouping">Grouping</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Combining">Combining</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1760063297"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1538448501"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
-          </li></ul>
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#com.nicta.scoobi.DObject%29+trait.">com.nicta.scoobi.DObject) trait.</a>
-            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Reduction+operations">Reduction operations</a>
             
@@ -156,7 +154,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1944078901"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1000846427"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -202,31 +200,27 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
             
           </li></ul>
           </li></ul>
-          </li><li id="170400002"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="2133975285"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#WireFormat">WireFormat</a>
             
-          </li></ul>
-          </li></ul>
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#com.nicta.scoobi.WireFormat%24%29+object+includes+WireFormat+implementations+for+the+types+listed+above+%28that+is+why+they+work+out+of+the+box%29.+However%2C+the+real+advantage+of+using+type+classes+is+they+allow+you+to+extend+the+set+of+types+that+can+be+used+with+DList+objects+and+that+set+can+include+types+that+already+exist%2C+maybe+even+in+some+other+compilation+unit.+So+long+as+a+type+has+a+WireFormat+implementation%2C+it+can+parameterise+a+DList.+This+is+extremely+useful+because+while%2C+say%2C+you+can+represent+a+lot+with+nested+tuples%2C+much+can+be+gained+in+terms+of+type+safety%2C+readability+and+maintenance+by+using+custom+types.+For+example%2C+say+we+were+building+an+application+to+analyze+stock+ticker-data.+In+that+situation+it+would+be+nice+to+work+with+DList%5BTick%5D+objects.+We+can+do+that+if+we+write+a+WireFormat+implementation+for+Tick%3A">com.nicta.scoobi.WireFormat$) object includes WireFormat implementations for the types listed above (that is why they work out of the box). However, the real advantage of using type classes is they allow you to extend the set of types that can be used with DList objects and that set can include types that already exist, maybe even in some other compilation unit. So long as a type has a WireFormat implementation, it can parameterise a DList. This is extremely useful because while, say, you can represent a lot with nested tuples, much can be gained in terms of type safety, readability and maintenance by using custom types. For example, say we were building an application to analyze stock ticker-data. In that situation it would be nice to work with DList[Tick] objects. We can do that if we write a WireFormat implementation for Tick:</a>
-            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#For+case+classes">For case classes</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#For+case+classes">For case classes</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Default+WireFormat">Default WireFormat</a>
             
           </li></ul>
-          </li><li id="1317132163"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li></ul>
+          </li><li id="598226448"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
-          </li></ul>
-          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#com.nicta.scoobi.Grouping%29.">com.nicta.scoobi.Grouping).</a>
-            <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
+          </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="778830265"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="2020959929"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -242,7 +236,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="887435390"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="1672165751"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -272,7 +266,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="852671315"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="2118772415"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -288,7 +282,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="688414774"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="634144351"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -296,7 +290,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1692700229"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="102767196"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -310,7 +304,7 @@ counts.toTextFile(&quot;hdfs://out/...&quot;).persist
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['721886738','721886738'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['370202284','370202284'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>

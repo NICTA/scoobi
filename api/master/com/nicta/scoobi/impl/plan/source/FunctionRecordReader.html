@@ -46,7 +46,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>RecordReader for producing values based on a function.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader.A">A</span>], <span class="extype" name="java.io.Closeable">Closeable</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader.A">A</span>], <span class="extype" name="java.io.Closeable">Closeable</span>, <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader"><span>FunctionRecordReader</span></li><li class="in" name="org.apache.hadoop.mapreduce.RecordReader"><span>RecordReader</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader"><span>FunctionRecordReader</span></li><li class="in" name="org.apache.hadoop.mapreduce.RecordReader"><span>RecordReader</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="java.lang.AutoCloseable"><span>AutoCloseable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -212,7 +212,7 @@
         <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader">FunctionRecordReader</a> → RecordReader → Closeable</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader">FunctionRecordReader</a> → RecordReader → Closeable → AutoCloseable</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -485,6 +485,8 @@
               <h3>Inherited from <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.FunctionRecordReader.A">A</span>]</h3>
             </div><div class="parent" name="java.io.Closeable">
               <h3>Inherited from <span class="extype" name="java.io.Closeable">Closeable</span></h3>
+            </div><div class="parent" name="java.lang.AutoCloseable">
+              <h3>Inherited from <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
