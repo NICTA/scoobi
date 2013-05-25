@@ -61,7 +61,7 @@ See the [install instructions](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.Quic
 
  * Ability to parameterise with rich [data types](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.DataTypes.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterised by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
- * Support for multiple types of I/O - currently built-in support for [text](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Text+files), [Sequence](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Sequence+files) and [Avro](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Custom+sources+and+sinks)
+ * Support for multiple types of I/O - currently built-in support for [text](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Text+files), [Sequence](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files) and [Avro](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input)
 
  * Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 

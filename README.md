@@ -30,7 +30,7 @@ See the [install instructions](http://nicta.github.io/scoobi/guide/com.nicta.sco
 
  * Ability to parameterise with rich [data types](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.DataTypes.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterised by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
- * Support for multiple types of I/O - currently built-in support for [text](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.InputandOutput.html#Text+files), [Sequence](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.InputandOutput.html#Sequence+files) and [Avro](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.InputandOutput.html#Avro+files) files with the ability to implement support for [custom sources/sinks](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.InputandOutput.html#Custom+sources+and+sinks)
+ * Support for multiple types of I/O - currently built-in support for [text](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.InputandOutput.html#Text+files), [Sequence](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files) and [Avro](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files) files with the ability to implement support for [custom sources/sinks](http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input)
 
  * Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 
@@ -49,8 +49,8 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
  * [Issues](https://github.com/NICTA/scoobi/issues)
  * [Change history](http://notes.implicit.ly/tagged/scoobi)
  * [Source code (github)](https://github.com/NICTA/scoobi)
- * [API Documentation](http://nicta.github.io/scoobi/api/SCOOBI-0.6.0-RC2-cdh4/index.html)
- * [Examples](https://github.com/NICTA/scoobi/tree/SCOOBI-0.6.0-RC2-cdh4/examples)
+ * [API Documentation](http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC1-cdh4/index.html)
+ * [Examples](https://github.com/NICTA/scoobi/tree/SCOOBI-0.7.0-RC1-cdh4/examples)
  * User Guide for the [SNAPSHOT](http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/User%20Guide.html) version ([latest api](http://nicta.github.io/scoobi/api/master/index.html))
  * Mailing Lists: [scoobi-users](http://groups.google.com/group/scoobi-users), [scoobi-dev](http://groups.google.com/group/scoobi-dev)
   
