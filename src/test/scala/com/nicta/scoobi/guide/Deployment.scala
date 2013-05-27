@@ -100,8 +100,6 @@ version := "1.0"
 
 scalaVersion := "2.10.1"
 
-scalacOptions ++= Seq("-Ydependent-method-types", "-deprecation")
-
 libraryDependencies ++= Seq(
    "com.nicta" %% "scoobi" % "$VERSION" intransitive(),
    "javassist" % "javassist" % "3.12.1.GA",
