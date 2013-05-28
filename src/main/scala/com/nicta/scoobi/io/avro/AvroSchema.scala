@@ -22,21 +22,28 @@ import java.util.{ Map => JMap }
 import org.apache.avro.Schema
 import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.generic.{ GenericContainer, GenericData }
-import org.apache.avro.specific.{ SpecificRecord, SpecificData }
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
 import core.UniqueInt
 import impl.control.Exceptions._
-import java.util
-import org.apache.avro.Schema.Field
 
 /** Defines the Avro schema for a given Scala type. */
-trait AvroSchema[A] {
+trait AvroSchema[A] { outer =>
   type AvroType
   def schema: Schema
   def fromAvro(x: AvroType): A
   def toAvro(x: A): AvroType
+
+  /**
+   * Map a pair of functions on this exponential functor to produce a new Avro schema.
+   */
+  def xmap[B](f: A => B, g: B => A): AvroSchema[B] = new AvroSchema[B] {
+    type AvroType = outer.AvroType
+    def schema = outer.schema
+    def fromAvro(x: AvroType): B = f(outer.fromAvro(x))
+    def toAvro(x: B): AvroType = outer.toAvro(g(x))
+  }
 
   override def toString = schema.toString
   def getType = schema.getType

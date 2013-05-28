@@ -25,12 +25,30 @@ import Scoobi._
 import testing.mutable.NictaSimpleJobs
 import testing.{TempFiles, TestFiles}
 import impl.exec.JobExecException
-import impl.ScoobiConfiguration._
 import impl.plan.comp.CompNodeData._
 import org.apache.avro.generic.GenericData.Record
 import TestFiles._
 
 class AvroFileSpec extends NictaSimpleJobs {
+
+  "Can read and write a case class as Avro files using 'xmap'" >> { implicit sc: SC =>
+    case class Point(x: Int, y: Int)
+
+    val fromPoint = (p: Point) => (p.x, p.y)
+    val toPoint = (t: (Int, Int)) => Point(t._1, t._2)
+
+    implicit val pointFmt: WireFormat[Point] =
+      implicitly[WireFormat[(Int, Int)]].xmap(toPoint, fromPoint)
+
+    implicit val pointSchema: AvroSchema[Point] =
+      implicitly[AvroSchema[(Int, Int)]].xmap(toPoint, fromPoint)
+
+    val points = Seq((1, 2), (3, 4), (5, 6))
+    val tmpAvroFile = createTempAvroFile(points.toDList.map(toPoint))
+
+    val loadedTestData = fromAvroFile[Point](tmpAvroFile)
+    loadedTestData.map(fromPoint).run.sorted must_== points
+  }
 
   "Reading (Int, Seq[(Float, String)], Map[String, Int], ThousandBytes) Avro file" >> { implicit sc: SC =>
 
@@ -40,13 +58,13 @@ class AvroFileSpec extends NictaSimpleJobs {
       def toArray(t: ThousandBytes) = t.data
       def fromArray(arr: Array[Byte]) = ThousandBytes(arr)
     }
-   
+
     def newTb() = {
 	    val b = new Array[Byte](1000)
 	    scala.util.Random.nextBytes(b)
 	    ThousandBytes(b)
 	  }
-    
+
     // create test data
     val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int], ThousandBytes)] = Seq(
       (1, Seq((3.4f, "abc")), Map("a" -> 5, "b" -> 6), newTb()),
