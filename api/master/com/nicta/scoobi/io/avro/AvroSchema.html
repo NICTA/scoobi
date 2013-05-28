@@ -44,7 +44,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Defines the Avro schema for a given Scala type.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Defines the Avro schema for a given Scala type.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.A">A</span>]</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -449,6 +449,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.avro.AvroSchema#xmap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="xmap[B](f:A=&gt;B,g:B=&gt;A):com.nicta.scoobi.io.avro.AvroSchema[B]"></a>
+      <a id="xmap[B]((A)⇒B,(B)⇒A):AvroSchema[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">xmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.A">A</span>) ⇒ <span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.xmap.B">B</span></span>, <span name="g">g: (<span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.xmap.B">B</span>) ⇒ <span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.A">A</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroSchema.xmap.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map a pair of functions on this exponential functor to produce a new Avro schema.</p>
     </li></ol>
             </div>
 
