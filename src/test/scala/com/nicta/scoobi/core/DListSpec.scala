@@ -125,12 +125,22 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     run((a isEqual a, a isEqual b, b isEqual a, a1 isEqual a)) must_== (true, true, true, false)
   }
 
-  "A shuffled DList doesn't contain any more or less elements" >> { implicit sc: SC =>
+  "A shuffled DList contains the same elements" >> { implicit sc: SC =>
     val shuffleProp = (list: List[Int]) => {
       val orig = list.toDList
       run(orig.shuffle isEqual orig) must_== true
     }
     Prop.forAll(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
+  }
+
+  "DList diff'ing actually works works" >> { implicit sc: SC =>
+    
+    val eqProp = (first: List[Int], second: List[Int]) => {
+      run(first.toDList diff second.toDList) must_== (first diff second)
+      run(first.toDList distinctDiff second.toDList) must_== (first.toSet diff second.toSet).toList
+    }
+    
+    Prop.forAll(eqProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
   }
 }
 
