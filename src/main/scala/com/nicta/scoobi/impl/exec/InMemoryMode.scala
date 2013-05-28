@@ -103,7 +103,7 @@ case class InMemoryMode() extends ExecutionMode {
     loadSource(load.source, load.wf).debug(_ => "computeLoad")
 
   private def loadSource(source: Source, wf: WireReaderWriter)(implicit sc: ScoobiConfiguration): Seq[Any] =
-    Source.read(source).debug(_ => "loadSource")
+    Source.read(source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(wf)).debug(_ => "loadSource")
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
