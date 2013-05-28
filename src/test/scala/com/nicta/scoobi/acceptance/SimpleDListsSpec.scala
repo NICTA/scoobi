@@ -26,7 +26,7 @@ import io.ConstantStringDataSource
 import core.WireFormat._
 import core.{EmitterWriter, DoFunction, EmitterDoFunction}
 
-class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { tag("unstable")
+class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unstable")
 
   "1. load" >> { implicit sc: SC =>
     DList("hello").run === Seq("hello")
