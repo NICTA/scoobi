@@ -317,6 +317,14 @@ val randomWords: DList[(String, String)] = DList.tabulate(1000 * 1000)(ix => (wo
 
 }}
 
+Otherwise if you want to avoid the sequence of elements to be created as soon as the DList is created but only when MapReduce jobs are executed you can use the `fromLazySeq` method: ${snippet{
+val dontEvaluateNow_! : Seq[Int] = ???
+val list         = fromLazySeq(dontEvaluateNow_!)
+// since we evaluate the sequence only at the latest time, we can not know its size in advance to compute the number of splits
+// so you can specify this number if you know it
+val listWithSize = fromLazySeq(dontEvaluateNow_!, seqSize = 1000000)
+}}
+
 Finally, for pure convenience, with Scoobi all Scala `Traversable` collections can be converted to `DList` objects `toDList` method: ${snippet{
 
 val wordList = List("hello", "big", "data", "world")
@@ -326,6 +334,7 @@ val numbersMap = Map("one" -> 1, "two" -> 2, "three" -> 3)
 val numbersDList: DList[(String, Int)] = numbersMap.toDList
 
 }}
+
 
 ##### Custom input
 
@@ -396,6 +405,11 @@ Note however that those methods are unsafe. They are merely a shortcut to access
 
 val average: DObject[Option[Int]] = fromAvroFile[Int]("hdfs://path/to/avro/average").headOption
 
+}}
+
+DObjects can be loaded from a single value with the `DObject.apply` method or the `Scoobi.lazyObject` method: ${snippet{
+val o1 = DObject("start")
+val o2 = lazyObject("don't evaluate now, but only on the cluster!")
 }}
 
 ### Persisting

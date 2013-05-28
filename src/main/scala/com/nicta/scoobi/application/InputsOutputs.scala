@@ -20,18 +20,27 @@ import core.{ScoobiConfiguration, WireFormat}
 import WireFormat._
 import impl.collection._
 import Seqs._
+import impl.plan.source.SeqInput
 import io.text.TextInput
 import io.text.TextOutput
 import io.avro.AvroInput
 import io.avro.AvroOutput
 import io.sequence.SequenceInput
 import io.sequence.SequenceOutput
+import impl.mapreducer.BridgeStore
+import core.Checkpoint
+import java.util.UUID
 
 /**
  * This trait provides way to create DLists from files
  * and to add sinks to DLists so that the results of computations can be saved to files
  */
 trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOutput with SequenceInput with SequenceOutput {
+
+  /** create a DList from a stream of elements which will only be evaluated on the cluster */
+  def fromLazySeq[A : WireFormat](seq: =>Seq[A], seqSize: Int = 1000): core.DList[A] = SeqInput.fromLazySeq(() => seq, seqSize)
+  /** create a DObject which will only be evaluated on the cluster */
+  def lazyObject[A : WireFormat](o: =>A): core.DObject[A] = fromLazySeq(Seq(o), seqSize = 1).materialise.map(_.head)
   /** Text file I/O */
   def objectFromTextFile(paths: String*) = fromTextFile(paths:_*).head
   def objectFromDelimitedTextFile[A : WireFormat](path: String, sep: String = "\t")
@@ -112,6 +121,10 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   implicit class ListToAvroFile[A](val list: core.DList[A]) {
     def toAvroFile(path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
       list.addSink(AvroOutput.avroSink(path, overwrite, checkpoint))
+  }
+  implicit class ListToCheckpointFile[A](val list: core.DList[A]) {
+    def checkpoint(path: String)(implicit sc: ScoobiConfiguration) =
+      list.addSink(new BridgeStore(UUID.randomUUID.toString, list.wf, Checkpoint.create(Some(path), doIt = true)))
   }
   implicit class ObjectToAvroFile[A](val o: core.DObject[A]) {
     def toAvroFile(path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =

@@ -77,6 +77,34 @@ trait SeqInput {
     }
     DListImpl(source)
   }
+
+  /**
+   * Create a distributed list of a specified length whose elements are coming from a scala collection which will only be evaluated
+   * when the source is read
+   */
+  def fromLazySeq[A : WireFormat](seq: () => Seq[A], seqSize: Int = 1000): DList[A] = {
+
+    val source = new DataSource[NullWritable, A, A] {
+
+      val inputFormat = classOf[LazySeqInputFormat[A]]
+      override def toString = "LazySeqInput("+id+")"
+
+      def inputCheck(implicit sc: ScoobiConfiguration) {}
+
+      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+        job.getConfiguration.set(IdProperty, id.toString)
+        job.getConfiguration.set(SeqSizeProperty, seqSize.toString)
+        DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
+      }
+
+      def inputSize(implicit sc: ScoobiConfiguration): Long = 1
+
+      lazy val inputConverter = new InputConverter[NullWritable, A, A] {
+        def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
+      }
+    }
+    DListImpl(source)
+  }
 }
 
 /** InputFormat for producing values based on a sequence. */
@@ -157,6 +185,7 @@ object SeqInput extends SeqInput {
   val PropertyPrefix = "scoobi.seq"
   val LengthProperty = PropertyPrefix + ".n"
   val IdProperty = PropertyPrefix + ".id"
+  val SeqSizeProperty = PropertyPrefix + ".size"
   def seqProperty(id: Int) = PropertyPrefix + ".seq" + id
 
   /**
@@ -185,5 +214,31 @@ object SeqInput extends SeqInput {
     in.readFully(barr)
     val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
     bIn.readObject.asInstanceOf[A]
+  }
+}
+
+/** InputFormat for producing values based on a lazy sequence. */
+class LazySeqInputFormat[A] extends InputFormat[NullWritable, A] {
+  lazy val logger = LogFactory.getLog("scoobi.LazySeqInput")
+
+  def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[NullWritable, A] =
+    new SeqRecordReader[A](split.asInstanceOf[SeqInputSplit[A]])
+
+  def getSplits(context: JobContext): java.util.List[InputSplit] = {
+    val conf = context.getConfiguration
+    val n = context.getConfiguration.getInt(SeqSizeProperty, 1)
+    val id = context.getConfiguration.getInt(IdProperty, 0)
+
+    val seq = DistCache.pullObject[() => Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); () => Seq()})
+
+    val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
+    val splitSize = n / numSplitsHint
+
+    logger.debug("id=" + id)
+    logger.debug("n=" + n)
+    logger.debug("numSplitsHint=" + numSplitsHint)
+    logger.debug("splitSize=" + splitSize)
+
+    split(seq().toStream, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss))
   }
 }

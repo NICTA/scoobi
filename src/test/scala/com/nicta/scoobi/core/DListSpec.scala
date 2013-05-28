@@ -26,8 +26,9 @@ import org.scalacheck.Prop
 import impl.plan.comp.CompNodeData._
 import impl.plan.comp.Optimiser
 import impl.plan.DListImpl
+import org.specs2.mock.Mockito
 
-class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
+class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck with Mockito {
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
@@ -131,6 +132,17 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
       run(orig.shuffle isEqual orig) must_== true
     }
     Prop.forAll(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
+  }
+
+  tag("issue 256")
+  "A DList can be created from a sequence of elements which will only be evaluated when executed" >> { implicit sc: SC =>
+    val out: StringBuffer = new StringBuffer
+    val list = fromLazySeq(Seq(1,
+    {out.append("evaluating effect once".pp); 2},
+    3))
+    "effect is not evaluated" ==> { out.toString must beEmpty }
+    list.run.normalise === "Vector(1, 2, 3)"
+    "effect is evaluated" ==> { out.toString must not be empty }.unless(sc.isRemote)
   }
 }
 

@@ -44,4 +44,13 @@ class DObjectSpec extends NictaSimpleJobs {
     (input.size zip input.size).run.normalise === "(3,3)"
   }
 
+  tag("issue 256")
+  "A DObject can be created from a sequence of elements which will only be evaluated when executed" >> { implicit sc: SC =>
+    val out = new StringBuffer
+    val o = lazyObject({out.append("evaluated"); 1})
+    "effect must not be evaluated" ==> { out.toString must be empty }
+    o.run === 1
+    "effect must be evaluated" ==> { out must not be empty }.unless(sc.isRemote)
+  }
+
 }
