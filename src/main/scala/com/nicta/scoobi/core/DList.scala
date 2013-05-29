@@ -126,7 +126,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   /**Partitions this distributed list into a pair of distributed lists according to some
    * predicate. The first distributed list consists of elements that satisfy the predicate
    * and the second of all elements that don't. */
-  def partition(p: A => Boolean): (DList[A], DList[A]) = (filter(p), filterNot(p))
+  def partition(p: A => Boolean): (DList[A], DList[A]) = {
+    val t = map(x => (x, p(x)))
+    (t.filter(_._2).map(_._1), t.filterNot(_._2).map(_._1))
+  }
 
   /**Converts a distributed list of iterable values into to a distributed list in which
    * all the values are concatenated. */
