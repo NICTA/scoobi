@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>SeqInput - com.nicta.scoobi.impl.plan.source.SeqInput</title>
-          <meta name="description" content="SeqInput - com.nicta.scoobi.impl.plan.source.SeqInput" />
-          <meta name="keywords" content="SeqInput com.nicta.scoobi.impl.plan.source.SeqInput" />
+          <title>LazySeqInputFormat - com.nicta.scoobi.impl.plan.source.LazySeqInputFormat</title>
+          <meta name="description" content="LazySeqInputFormat - com.nicta.scoobi.impl.plan.source.LazySeqInputFormat" />
+          <meta name="keywords" content="LazySeqInputFormat com.nicta.scoobi.impl.plan.source.LazySeqInputFormat" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.plan.source.SeqInput$';
+            var hash = 'com.nicta.scoobi.impl.plan.source.LazySeqInputFormat';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,26 +27,26 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="SeqInput.html" title="Go to companion"><img src="../../../../../../lib/object_to_trait_big.png" /></a>
+        <img src="../../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.plan.source">source</a></p>
-        <h1><a href="SeqInput.html" title="Go to companion">SeqInput</a></h1>
+        <h1>LazySeqInputFormat</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqInput</span><span class="result"> extends <a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></span>
+        <span class="name">LazySeqInputFormat</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat.A">A</span>]</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>InputFormat for producing values based on a lazy sequence.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat.A">A</span>], <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.plan.source.SeqInput"><span>SeqInput</span></li><li class="in" name="com.nicta.scoobi.impl.plan.source.SeqInput"><span>SeqInput</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat"><span>LazySeqInputFormat</span></li><li class="in" name="org.apache.hadoop.mapreduce.InputFormat"><span>InputFormat</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,7 +82,23 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():com.nicta.scoobi.impl.plan.source.LazySeqInputFormat[A]"></a>
+      <a id="&lt;init&gt;:LazySeqInputFormat[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">LazySeqInputFormat</span><span class="params">()</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -155,58 +171,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#IdProperty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="IdProperty:String"></a>
-      <a id="IdProperty:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">IdProperty</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#LengthProperty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LengthProperty:String"></a>
-      <a id="LengthProperty:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">LengthProperty</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#PropertyPrefix" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PropertyPrefix:String"></a>
-      <a id="PropertyPrefix:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">PropertyPrefix</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Configuration property names.</p>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#SeqSizeProperty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SeqSizeProperty:String"></a>
-      <a id="SeqSizeProperty:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">SeqSizeProperty</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -236,6 +200,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat#createRecordReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createRecordReader(split:org.apache.hadoop.mapreduce.InputSplit,context:org.apache.hadoop.mapreduce.TaskAttemptContext):org.apache.hadoop.mapreduce.RecordReader[org.apache.hadoop.io.NullWritable,A]"></a>
+      <a id="createRecordReader(InputSplit,TaskAttemptContext):RecordReader[NullWritable,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createRecordReader</span><span class="params">(<span name="split">split: <span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span></span>, <span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskAttemptContext">TaskAttemptContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.RecordReader">RecordReader</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat.A">A</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat">LazySeqInputFormat</a> → InputFormat</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -278,36 +255,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#fromLazySeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromLazySeq[A](seq:()=&gt;Seq[A],seqSize:Int)(implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
-      <a id="fromLazySeq[A](()⇒Seq[A],Int)(WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromLazySeq</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="seq">seq: () ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromLazySeq.A">A</span>]</span>, <span name="seqSize">seqSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1000</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromLazySeq.A">A</span>]</span>)</span><span class="result">: <a href="../../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromLazySeq.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a distributed list of a specified length whose elements are coming from a scala collection which will only be evaluated
-when the source is read
-</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list of a specified length whose elements are coming from a scala collection which will only be evaluated
-when the source is read
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#fromSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromSeq[A](seq:Seq[A])(implicitevidence$1:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
-      <a id="fromSeq[A](Seq[A])(WireFormat[A]):DList[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromSeq</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="seq">seq: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromSeq.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromSeq.A">A</span>]</span>)</span><span class="result">: <a href="../../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromSeq.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a distributed list of a specified length whose elements are coming from a scala collection</p><div class="fullcomment"><div class="comment cmt"><p>Create a distributed list of a specified length whose elements are coming from a scala collection</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -321,6 +268,19 @@ when the source is read
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat#getSplits" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getSplits(context:org.apache.hadoop.mapreduce.JobContext):java.util.List[org.apache.hadoop.mapreduce.InputSplit]"></a>
+      <a id="getSplits(JobContext):List[InputSplit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getSplits</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.JobContext">JobContext</span></span>)</span><span class="result">: <span class="extype" name="java.util.List">List</span>[<span class="extype" name="org.apache.hadoop.mapreduce.InputSplit">InputSplit</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat">LazySeqInputFormat</a> → InputFormat</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -347,7 +307,7 @@ when the source is read
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#logger" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat#logger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="logger:org.apache.commons.logging.Log"></a>
       <a id="logger:Log"></a>
       <h4 class="signature">
@@ -359,7 +319,7 @@ when the source is read
         <span class="name">logger</span><span class="result">: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></dd></dl></div>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -399,33 +359,6 @@ when the source is read
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#readObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="readObject[A](in:java.io.DataInput):A"></a>
-      <a id="readObject[A](DataInput):A"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">readObject</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="in">in: <span class="extype" name="java.io.DataInput">DataInput</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.readObject.A">A</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">read an object from a DataInput, using an ObjectInputStream
-</p>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#seqProperty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="seqProperty(id:Int):String"></a>
-      <a id="seqProperty(Int):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">seqProperty</span><span class="params">(<span name="id">id: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -439,19 +372,6 @@ when the source is read
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#toByteArray" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toByteArray[A](a:A,write:(A,java.io.ObjectOutputStream)=&gt;Unit):Array[Byte]"></a>
-      <a id="toByteArray[A](A,(A,ObjectOutputStream)⇒Unit):Array[Byte]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toByteArray</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.toByteArray.A">A</span></span>, <span name="write">write: (<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.toByteArray.A">A</span>, <span class="extype" name="java.io.ObjectOutputStream">ObjectOutputStream</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="defval" name="(x: A, out: ObjectOutputStream) =&gt; out.writeObject(x)">...</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -513,20 +433,6 @@ when the source is read
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#writeObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="writeObject[A](out:java.io.DataOutput,a:A):Unit"></a>
-      <a id="writeObject[A](DataOutput,A):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writeObject</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="out">out: <span class="extype" name="java.io.DataOutput">DataOutput</span></span>, <span name="a">a: <span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.writeObject.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">write an object to a DataOutput, using an ObjectOutputStream
-</p>
     </li></ol>
             </div>
 
@@ -536,8 +442,8 @@ when the source is read
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.nicta.scoobi.impl.plan.source.SeqInput">
-              <h3>Inherited from <a href="SeqInput.html" class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput">SeqInput</a></h3>
+        <div class="parent" name="org.apache.hadoop.mapreduce.InputFormat">
+              <h3>Inherited from <span class="extype" name="org.apache.hadoop.mapreduce.InputFormat">InputFormat</span>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.impl.plan.source.LazySeqInputFormat.A">A</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

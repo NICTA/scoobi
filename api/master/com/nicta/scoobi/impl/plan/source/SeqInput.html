@@ -231,6 +231,21 @@ parameterize InputFormat with values (only classes can be declared in a DataSour
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#fromLazySeq" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromLazySeq[A](seq:()=&gt;Seq[A],seqSize:Int)(implicitevidence$2:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="fromLazySeq[A](()⇒Seq[A],Int)(WireFormat[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromLazySeq</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="seq">seq: () ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromLazySeq.A">A</span>]</span>, <span name="seqSize">seqSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1000</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromLazySeq.A">A</span>]</span>)</span><span class="result">: <a href="../../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.source.SeqInput.fromLazySeq.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a distributed list of a specified length whose elements are coming from a scala collection which will only be evaluated
+when the source is read
+</p>
     </li><li name="com.nicta.scoobi.impl.plan.source.SeqInput#fromSeq" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="fromSeq[A](seq:Seq[A])(implicitevidence$1:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.core.DList[A]"></a>
       <a id="fromSeq[A](Seq[A])(WireFormat[A]):DList[A]"></a>

@@ -387,18 +387,38 @@ which the function is defined
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DataSinks.html" class="extype" name="com.nicta.scoobi.core.DataSinks">DataSinks</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="count(p:A=&gt;Boolean):com.nicta.scoobi.core.DObject[Int]"></a>
-      <a id="count((A)⇒Boolean):DObject[Int]"></a>
+      <a id="count(p:A=&gt;Boolean):com.nicta.scoobi.core.DObject[Long]"></a>
+      <a id="count((A)⇒Boolean):DObject[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Count the number of elements in the list which satisfy a predicate.</p>
+    </li><li name="com.nicta.scoobi.core.DList#diff" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="diff(that:com.nicta.scoobi.core.DList[A])(implicitcmp:com.nicta.scoobi.core.Grouping[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="diff(DList[A])(Grouping[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">diff</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Computes the multiset difference between this DList and that
+This has the same semantics as Scala's List.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the multiset difference between this DList and that
+This has the same semantics as Scala's List.diff
+ This makes code makes the assumption that all A's that group together are exactly
+ equivalent and interchangeable with each other, and all A's that do group together
+ will be brought together in the resultant DList. If this is a problem, shuffle can
+ be used (after)
+</p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#distinct" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="distinct:com.nicta.scoobi.core.DList[A]"></a>
       <a id="distinct:DList[A]"></a>
@@ -412,6 +432,24 @@ which the function is defined
       </span>
       </h4>
       <p class="shortcomment cmt">Build a new distributed list from this list without any duplicate elements.</p>
+    </li><li name="com.nicta.scoobi.core.DList#distinctDiff" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="distinctDiff(that:com.nicta.scoobi.core.DList[A])(implicitcmp:com.nicta.scoobi.core.Grouping[A]):com.nicta.scoobi.core.DList[A]"></a>
+      <a id="distinctDiff(DList[A])(Grouping[A]):DList[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">distinctDiff</span><span class="params">(<span name="that">that: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <a href="Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Computes the set difference between this DList and another
+This has the same semantics as Scala's Set.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the set difference between this DList and another
+This has the same semantics as Scala's Set.diff and is equivalent to calling
+.distinct.diff(that) but is considerably more efficient, as it can be done in a single
+mapReduce.
+</p></div></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -635,15 +673,15 @@ and some grouping function.</p>
       </h4>
       <p class="shortcomment cmt">Create a distributed list containing just the keys of a key-value distributed list.</p>
     </li><li name="com.nicta.scoobi.core.DList#length" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="length:com.nicta.scoobi.core.DObject[Int]"></a>
-      <a id="length:DObject[Int]"></a>
+      <a id="length:com.nicta.scoobi.core.DObject[Long]"></a>
+      <a id="length:DObject[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">length</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">length</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The length of the distributed list.</p>
@@ -898,15 +936,15 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </h4>
       <p class="shortcomment cmt">Randomly shuffle a DList.</p>
     </li><li name="com.nicta.scoobi.core.DList#size" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="size:com.nicta.scoobi.core.DObject[Int]"></a>
-      <a id="size:DObject[Int]"></a>
+      <a id="size:com.nicta.scoobi.core.DObject[Long]"></a>
+      <a id="size:DObject[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">size</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">size</span><span class="result">: <a href="DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The size of the distributed list.</p>
