@@ -40,6 +40,19 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
     list.groupByKey.combine(Sum.int).run.normalise === "Vector((1,2), (2,3), (3,4))"
   }
 
+  "4. A checkpoint can be created with a path, as a BridgeStore" >> { implicit sc: SC =>
+    val sink = TempFiles.createTempDir("test")
+    val list = DList(1, 2, 3).map(i => { if (i == 1) evaluationsNb2 += 1; i + 1 }).checkpoint(path(sink))
+
+    list.run.normalise === "Vector(2, 3, 4)"
+    list.run.normalise === "Vector(2, 3, 4)"
+
+    "the intermediate results must be used instead of recomputing the list" ==> {
+      // this way of testing if the computation has been done only once can only work locally
+      evaluationsNb2 must be_==(1).unless(sc.isRemote)
+    }
+  }
+
   def checkEvaluations(restart: Boolean = false)(implicit sc: SC) = {
     val sink = TempFiles.createTempDir("test")
 
@@ -71,5 +84,8 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
   }
 }
 
-object CheckpointEvaluations1 { var evaluationsNb1: Int = 0 }
+object CheckpointEvaluations1 {
+  var evaluationsNb1: Int = 0
+  var evaluationsNb2: Int = 0
+}
 

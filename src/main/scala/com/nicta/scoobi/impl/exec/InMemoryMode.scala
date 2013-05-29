@@ -97,7 +97,10 @@ case class InMemoryMode() extends ExecutionMode {
 
   /** @return true if the result must be returned to the client user of this evaluation mode */
   private def isExpectedResult = (node: CompNode) =>
-    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false) || node.hasCheckpoint
+    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false) ||
+    // if there is a checkpoint we must take care that it is not going to be saved twice
+    // once for the current node and twice if its parent is a materialise node with no sinks
+    node.hasCheckpoint && !(parent(node).map(isMaterialise).getOrElse(false) && parent(node).map(_.sinks.isEmpty).getOrElse(false))
 
   private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
     loadSource(load.source, load.wf).debug(_ => "computeLoad")

@@ -79,6 +79,8 @@ trait ExecutionMode extends ShowNode with Optimiser {
       job.setOutputKeyClass(sink.outputKeyClass)
       job.setOutputValueClass(sink.outputValueClass)
       job.getConfiguration.set("mapreduce.output.basename", s"ch${node.id}out${sink.id}")
+      job.getConfiguration.set("avro.mo.config.namedOutput", s"ch${node.id}out${sink.id}")
+
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
