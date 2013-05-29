@@ -28,7 +28,11 @@ import org.scalacheck.Arbitrary._
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
 
-  "it must be possible to create an empty DList and persist it" >> { implicit sc: SC =>
+  "it must be possible to create an empty DList from an empty Seq and persist it" >> { implicit sc: SC =>
+    DList[Int]().run must_== Seq()
+  }
+
+  "it must be possible to create an empty DList from a missing file and persist it" >> { implicit sc: SC =>
     val list = fromTextFile(Seq("missing"), check = Source.noInputCheck)
     list.run === Vector()
   }
@@ -166,6 +170,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     }
     Prop.forAllNoShrink(arbitrary[List[Int]])(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100)
   }
+
 }
 
 case class PoorHashString(s: String) {

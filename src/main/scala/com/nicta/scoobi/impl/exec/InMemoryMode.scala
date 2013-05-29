@@ -61,7 +61,7 @@ case class InMemoryMode() extends ExecutionMode {
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
     paramAttr { sc: ScoobiConfiguration => node: CompNode =>
-      (node -> compute(sc)).head
+      (node -> compute(sc)).headOption.getOrElse(Seq())
     }
 
   private
