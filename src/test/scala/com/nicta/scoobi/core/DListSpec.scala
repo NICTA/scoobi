@@ -161,7 +161,8 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   "DList partition works" >> { implicit sc: SC =>
     val shuffleProp = (list: List[Int]) => {
       val (l, r) = list.toDList.partition(_ => util.Random.nextBoolean)
-      (run(l) ++ run(r)).sorted.toList must_== list.sorted
+      persist(l, r)
+      (l.run ++ r.run).sorted.toList must_== list.sorted
     }
     Prop.forAllNoShrink(arbitrary[List[Int]])(shuffleProp).set(minTestsOk = 5, minSize = 0, maxSize = 100)
   }
