@@ -42,8 +42,6 @@ trait ExecutionMode extends ShowNode with Optimiser {
     toExecute
   }
 
-
-
   /** @return true (default value) if the computation graph must not be displayed */
   protected def showComputationGraph(implicit sc: ScoobiConfiguration) =
     sc.configuration.getBoolean("scoobi.debug.showComputationGraph", false)

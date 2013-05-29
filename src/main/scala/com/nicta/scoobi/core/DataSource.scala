@@ -26,6 +26,7 @@ import com.nicta.scoobi.impl.io.Helper
 import java.io.IOException
 import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
+import impl.control.Exceptions._
 
 /**
  * DataSource for a computation graph.
@@ -83,19 +84,18 @@ object Source {
     job.setInputFormatClass(source.inputFormat)
     source.inputConfigure(job)
 
-    try {
-      inputFormat.getSplits(job) foreach { split =>
-        val tid = new TaskAttemptID()
-        val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
-        val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
-        val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
+    val splits = tryOr(inputFormat.getSplits(job)) { case e: Throwable => logger.warn(e.getMessage); Seq() }
+    splits foreach { split =>
+      val tid = new TaskAttemptID()
+      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
+      val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
 
-        rr.initialize(split, taskContext)
+      rr.initialize(split, taskContext)
 
-        source.read(rr, mapContext, (a: Any) => vb += read(a))
-        rr.close()
-      }
-    } catch { case e: Throwable => logger.warn(e.getMessage) }
+      source.read(rr, mapContext, (a: Any) => vb += read(a))
+      rr.close()
+    }
     vb.result
   }
 
