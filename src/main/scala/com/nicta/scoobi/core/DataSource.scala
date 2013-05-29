@@ -20,7 +20,6 @@ import org.apache.hadoop.mapreduce._
 import Data._
 import collection.immutable.VectorBuilder
 import org.apache.hadoop.conf.Configuration
-import task.{MapContextImpl, TaskAttemptContextImpl}
 import scala.collection.JavaConversions._
 import com.nicta.scoobi.impl.io.Helper
 import java.io.IOException
@@ -83,12 +82,11 @@ object Source {
     job.setInputFormatClass(source.inputFormat)
     source.inputConfigure(job)
 
-    try {
-      inputFormat.getSplits(job) foreach { split =>
-        val tid = new TaskAttemptID()
-        val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
-        val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
-        val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
+    inputFormat.getSplits(job) foreach { split =>
+      val tid = new TaskAttemptID()
+      val taskContext = new TaskAttemptContext(job.getConfiguration, tid)
+      val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
+      val mapContext = InputOutputContext(new MapContext(job.getConfiguration, tid, rr, null, null, null, split))
 
         rr.initialize(split, taskContext)
 
