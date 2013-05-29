@@ -26,9 +26,9 @@ import org.scalacheck.Prop
 import impl.plan.comp.CompNodeData._
 import impl.plan.comp.Optimiser
 import impl.plan.DListImpl
-import org.specs2.mock.Mockito
+import org.scalacheck.Arbitrary._
 
-class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck with Mockito {
+class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>
@@ -148,11 +148,11 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   "DList diff'ing actually works works" >> { implicit sc: SC =>
     
     val eqProp = (first: List[Int], second: List[Int]) => {
-      run(first.toDList diff second.toDList) must_== (first diff second)
-      run(first.toDList distinctDiff second.toDList) must_== (first.toSet diff second.toSet).toList
+      run(first.toDList diff second.toDList).sorted must_== (first diff second).sorted
+      run(first.toDList distinctDiff second.toDList).sorted must_== (first.toSet diff second.toSet).toList.sorted
     }
     
-    Prop.forAll(eqProp).set(minTestsOk = 5, minSize = 0, maxSize = 100000)
+    Prop.forAllNoShrink(arbitrary[List[Int]], arbitrary[List[Int]])(eqProp).set(minTestsOk = 5, minSize = 0, maxSize = 10)
   }
 }
 
