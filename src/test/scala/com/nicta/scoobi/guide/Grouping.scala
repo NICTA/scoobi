@@ -25,8 +25,9 @@ The sort and shuffle phase of MapReduce is abstracted by `DList.groupByKey`, it 
 
 The [Grouping]($API_PAGE#com.nicta.scoobi.Grouping) type class is automatically provided for anything with a `scala.math.Ordering`, or that implements Java's `java.lang.Comparable` interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:
 
- * Provide a [scala.math.Ordering](http://www.scala-lang.org/api/milestone/scala/math/Ordering.html) for your type.
- * Make your type extend [java.lang.Comparable](http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html).
+ * Provide an [Ordering](http://www.scala-lang.org/api/current/index.html#scala.math.Ordering) for your type.
+ * Extend [Ordered](http://www.scala-lang.org/api/current/index.html#scala.math.Ordered) with your type
+ * Extend [java.lang.Comparable](http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html) (preferable only for Java code)
  * Directly provide a [scoobi.Grouping]($API_PAGE#com.nicta.scoobi.Grouping).
 
 Since the third option is the only one Scoobi specific, and a little more powerful, we'll focus on that.
