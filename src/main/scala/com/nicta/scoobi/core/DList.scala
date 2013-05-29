@@ -322,13 +322,13 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     reduceOption(Reduction(num.plus)) map (_ getOrElse num.zero)
 
   /**The length of the distributed list. */
-  def length: DObject[Int] = map(_ => 1).sum
+  def length: DObject[Long] = map(_ => 1l).sum
 
   /**The size of the distributed list. */
-  def size: DObject[Int] = length
+  def size: DObject[Long] = length
 
   /**Count the number of elements in the list which satisfy a predicate. */
-  def count(p: A => Boolean): DObject[Int] = filter(p).length
+  def count(p: A => Boolean): DObject[Long] = filter(p).length
 
   /**Find the largest element in the distributed list. */
   def max(implicit cmp: Ordering[A]): DObject[A] =
