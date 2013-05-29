@@ -245,6 +245,39 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     groupWith(_ => util.Random.nextInt())(sgp).mapFlatten(_._2)
   }
 
+  /**
+   * Computes the multiset difference between this DList and that
+   * This has the same semantics as Scala's List.diff
+   *  This makes code makes the assumption that all A's that group together are exactly
+   *  equivalent and interchangeable with each other, and all A's that do group together
+   *  will be brought together in the resultant DList. If this is a problem, shuffle can
+   *  be used (after)
+   */
+  def diff(that: DList[A])(implicit cmp: Grouping[A]): DList[A] = {
+    val left: DList[(A, Byte)] = map((_, 1))
+    val right: DList[(A, Byte)] = that.map((_, -1))
+
+    (left ++ right).groupByKey.mapFlatten { case (k, vs) =>
+        for (_ <- 1 to vs.map(_.toInt).sum)
+          yield k
+    }
+  }
+  
+   /**
+   * Computes the set difference between this DList and another
+   * This has the same semantics as Scala's Set.diff and is equivalent to calling
+   * .distinct.diff(that) but is considerably more efficient, as it can be done in a single
+   * mapReduce.
+   */
+  def distinctDiff(that: DList[A])(implicit cmp: Grouping[A]): DList[A] = {
+    val left = map((_, true))
+    val right = that.map((_, false))
+    (left ++ right).groupByKey.mapFlatten {
+      case (k, vs) =>
+        if (vs.forall(x => x)) Some(k) else None
+    }
+  }
+
   /** Group the values of a distributed list according to some discriminator function. */
   def groupBy[K : WireFormat : Grouping](f: A => K): DList[(K, Iterable[A])] =
     by(f).groupByKey
