@@ -22,7 +22,9 @@ import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.fs._
 import org.apache.hadoop.conf.Configuration
 import Data._
-import org.apache.avro.mapreduce.AvroKeyRecordWriter
+import com.nicta.scoobi.impl.io.Helper
+import org.apache.hadoop.mapred.FileAlreadyExistsException
+import org.apache.commons.logging.LogFactory
 
 /**
  * An output store from a MapReduce job
@@ -107,6 +109,23 @@ trait Sink { outer =>
   /** write values to this sink, using a specific record writer */
   private [scoobi]
   def write(values: Traversable[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration)
+
+}
+
+object Sink {
+  private lazy val logger = LogFactory.getLog("scoobi.Sink")
+
+  /** default check for sink using output files */
+  val defaultOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => {
+
+    if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
+      throw new FileAlreadyExistsException("Output path already exists: " + output)
+    } else logger.info("Output path: " + output.toUri.toASCIIString)
+  }
+
+  val noOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => ()
+
+  type OutputCheck =  (Path, Boolean, ScoobiConfiguration) => Unit
 
 }
 

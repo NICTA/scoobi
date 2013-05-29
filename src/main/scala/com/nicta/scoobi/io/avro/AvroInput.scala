@@ -53,20 +53,25 @@ trait AvroInput {
     * DList must conform to the schema types allowed by Avro, as constrained by the 'AvroSchema' type
     * class. In the case of a directory being specified, the input forms all the files in
     * that directory. */
-  def fromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true): DList[A] =
-    DListImpl(source(paths, checkSchemas)(implicitly[AvroSchema[A]]))
+  def fromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true, check: Source.InputCheck = Source.defaultInputCheck): DList[A] =
+    DListImpl(source(paths, checkSchemas, check)(implicitly[AvroSchema[A]]))
 
-  def source[A : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = {
+  def source[A : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true, check: Source.InputCheck = Source.defaultInputCheck) = {
     val schema = implicitly[AvroSchema[A]]
     val converter = new InputConverter[AvroKey[schema.AvroType], NullWritable, A] {
       def fromKeyValue(context: InputContext, k: AvroKey[schema.AvroType], v: NullWritable) = schema.fromAvro(k.datum)
     }
-    new AvroDataSource[schema.AvroType, A](paths.map(p => new Path(p)), converter, schema, checkSchemas)
+    new AvroDataSource[schema.AvroType, A](paths.map(p => new Path(p)), converter, schema, checkSchemas, check)
   }
 }
 object AvroInput extends AvroInput
 
-case class AvroDataSource[K, A](paths: Seq[Path], inputConverter: InputConverter[AvroKey[K], NullWritable, A], schema: AvroSchema[A], checkSchemas: Boolean = true) extends DataSource[AvroKey[K], NullWritable, A] {
+case class AvroDataSource[K, A](paths: Seq[Path],
+                                inputConverter: InputConverter[AvroKey[K], NullWritable, A],
+                                schema: AvroSchema[A],
+                                checkSchemas: Boolean = true,
+                                check: Source.InputCheck = Source.defaultInputCheck) extends DataSource[AvroKey[K], NullWritable, A] {
+
   private implicit lazy val logger = LogFactory.getLog("scoobi.AvroInput")
 
   override def toString = "Avro("+id+")"+paths.mkString("\n", "\n", "\n")
@@ -80,34 +85,30 @@ case class AvroDataSource[K, A](paths: Seq[Path], inputConverter: InputConverter
    * For efficiency, the schema checking will only check one file per dir
    */
   def inputCheck(implicit sc: ScoobiConfiguration) {
+    check(paths, sc)
+    paths.foreach(checkInputSchema)
+  }
 
-    paths foreach { p =>
+  protected def checkInputSchema(p: Path)(implicit sc: ScoobiConfiguration) {
+    if (checkSchemas && schema.getType != Schema.Type.NULL) {
       val fileStats = Helper.getFileStatus(p)(sc)
+      Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
+        val avroFile = new FsInput(filePath, sc)
+        try {
+          val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[K]()).getSchema
 
-      if (fileStats.size > 0) {
-        logger.info(s"Input path: ${p.toUri.toASCIIString} (${Helper.sizeString(Helper.pathSize(p)(sc))})")
-        logger.debug(s"Input schema: $schema")
-      } else throw new IOException(s"Input path $p does not exist.")
-
-      if (checkSchemas && schema.getType != Schema.Type.NULL) {
-        Helper.getSingleFilePerDir(fileStats)(sc) foreach { filePath =>
-          val avroFile = new FsInput(filePath, sc)
-          try {
-            val writerSchema = DataFileReader.openReader(avroFile, new GenericDatumReader[K]()).getSchema
-
-            // resolve the two schemas and get errors if any
-            ResolvingDecoder.resolve(writerSchema, schema.schema) match {
-              case sym: Symbol if sym.getErrors.nonEmpty => {
-                val errors = sym.getErrors.map(_.msg).mkString("\n")
-                throw new AvroTypeException(s"Incompatible reader and writer schemas. Reader schema '$schema'. Writer schema '$writerSchema'. Errors:\n$errors")
-              }
-              case sym: Symbol => ()
-              case _           => throw new ClassCastException("Avro ResolvingDecoder api has changed. Expecting a Symbol " +
-                                                               "class to be returned from ResolvingDecoder.resolve(writerSchema, readerSchema)")
+          // resolve the two schemas and get errors if any
+          ResolvingDecoder.resolve(writerSchema, schema.schema) match {
+            case sym: Symbol if sym.getErrors.nonEmpty => {
+              val errors = sym.getErrors.map(_.msg).mkString("\n")
+              throw new AvroTypeException(s"Incompatible reader and writer schemas. Reader schema '$schema'. Writer schema '$writerSchema'. Errors:\n$errors")
             }
+            case sym: Symbol => ()
+            case _           => throw new ClassCastException("Avro ResolvingDecoder api has changed. Expecting a Symbol " +
+              "class to be returned from ResolvingDecoder.resolve(writerSchema, readerSchema)")
+          }
 
-          } finally avroFile.close()
-        }
+        } finally avroFile.close()
       }
     }
   }

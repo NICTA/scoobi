@@ -42,10 +42,10 @@ trait SequenceOutput {
    * to disk as the "key" component in a Sequence File.
    *  @deprecated(message="use list.keyToSequenceFile(...) instead", since="0.7.0")
    */
-  def keyToSequenceFile[K](dl: DList[K], path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) =
-    dl.addSink(keySchemaSequenceFile(path, overwrite))
+  def keyToSequenceFile[K](dl: DList[K], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)(implicit convK: SeqSchema[K]) =
+    dl.addSink(keySchemaSequenceFile(path, overwrite, check))
 
-  def keySchemaSequenceFile[K](path: String, overwrite: Boolean = false)(implicit convK: SeqSchema[K]) = {
+  def keySchemaSequenceFile[K](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)(implicit convK: SeqSchema[K]) = {
 
     val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
     val valueClass = classOf[NullWritable]
@@ -57,7 +57,7 @@ trait SequenceOutput {
         case k1      => (convK.toWritable(k1.asInstanceOf[K]), NullWritable.get)
       }
     }
-    new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite)
+    new SeqSink[convK.SeqType, NullWritable, K](path, keyClass, valueClass, converter, overwrite, check)
   }
 
   /**
@@ -65,10 +65,10 @@ trait SequenceOutput {
    * to disk as the "value" component in a Sequence File.
    *  @deprecated(message="use list.valueToSequenceFile(...) instead", since="0.7.0")
    */
-  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) =
-    dl.addSink(valueSchemaSequenceFile(path, overwrite, checkpoint))
+  def valueToSequenceFile[V](dl: DList[V], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) =
+    dl.addSink(valueSchemaSequenceFile(path, overwrite, check, checkpoint))
 
-  def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) = {
+  def valueSchemaSequenceFile[V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convV: SeqSchema[V], sc: ScoobiConfiguration) = {
     val keyClass = classOf[NullWritable]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
 
@@ -79,7 +79,7 @@ trait SequenceOutput {
         case v     => (NullWritable.get, convV.toWritable(v.asInstanceOf[V]))
       }
     }
-    new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint))
+    new SeqSink[NullWritable, convV.SeqType, V](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), checkpoint))
   }
 
   /**
@@ -87,10 +87,10 @@ trait SequenceOutput {
    * to disk as "key-values" in a Sequence File
    * @deprecated(message="use list.toSequenceFile(...) instead", since="0.7.0")
    */
-  def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration) =
-    dl.addSink(schemaSequenceSink(path, overwrite, checkpoint)(convK, convV, sc))
+  def toSequenceFile[K, V](dl: DList[(K, V)], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration) =
+    dl.addSink(schemaSequenceSink(path, overwrite, check, checkpoint)(convK, convV, sc))
 
-  def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration)= {
+  def schemaSequenceSink[K, V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit convK: SeqSchema[K], convV: SeqSchema[V], sc: ScoobiConfiguration)= {
 
     val keyClass = convK.mf.runtimeClass.asInstanceOf[Class[convK.SeqType]]
     val valueClass = convV.mf.runtimeClass.asInstanceOf[Class[convV.SeqType]]
@@ -99,12 +99,12 @@ trait SequenceOutput {
       def fromKeyValue(context: InputContext, k: convK.SeqType, v: convV.SeqType) = (convK.fromWritable(k), convV.fromWritable(v))
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (convK.toWritable(kv._1), convV.toWritable(kv._2))
     }
-    new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
+    new SeqSink[convK.SeqType, convV.SeqType, (K, V)](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
       def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, converter)
     }
   }
 
-  def sequenceSink[K <: Writable, V <: Writable](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(
+  def sequenceSink[K <: Writable, V <: Writable](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(
       implicit mk: Manifest[K], mv: Manifest[V], sc: ScoobiConfiguration) = {
     val keyClass = mk.runtimeClass.asInstanceOf[Class[K]]
     val valueClass = mv.runtimeClass.asInstanceOf[Class[V]]
@@ -113,7 +113,7 @@ trait SequenceOutput {
       def fromKeyValue(context: InputContext, k: K, v: V) = (k, v)
       def toKeyValue(kv: (K, V))(implicit configuration: Configuration) = (kv._1, kv._2)
     }
-    new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
+    new SeqSink[K, V, (K, V)](path, keyClass, valueClass, converter, overwrite, check, Checkpoint.create(Some(path), checkpoint)) with SinkSource {
       def toSource = new SeqSource(Seq(path), SequenceInput.defaultSequenceInputFormat, converter)
     }
   }
@@ -128,6 +128,7 @@ case class SeqSink[K, V, B](path: String,
                             valueClass: Class[V],
                             outputConverter: InputOutputConverter[K, V, B],
                             overwrite: Boolean,
+                            check: Sink.OutputCheck = Sink.defaultOutputCheck,
                             checkpoint: Option[Checkpoint] = None,
                             compression: Option[Compression] = None) extends DataSink[K, V, B] {
 
@@ -140,9 +141,7 @@ case class SeqSink[K, V, B](path: String,
   def outputValueClass(implicit sc: ScoobiConfiguration) = valueClass
 
   def outputCheck(implicit sc: ScoobiConfiguration) {
-    if (Helper.pathExists(output)(sc) && !overwrite) {
-      throw new FileAlreadyExistsException("Output path already exists: " + output)
-    } else logger.info("Output path: " + output.toUri.toASCIIString)
+    check(output, overwrite, sc)
   }
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 

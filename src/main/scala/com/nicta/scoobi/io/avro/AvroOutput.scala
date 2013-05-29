@@ -45,14 +45,14 @@ trait AvroOutput {
    * Specify a distributed list to be persistent by storing it to disk as an Avro File
    * @deprecated(message="use list.toAvroFile(...) instead", since="0.7.0")
    */
-  def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
-    list.addSink(avroSink(path, overwrite, checkpoint))
+  def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
+    list.addSink(avroSink(path, overwrite, check, checkpoint))
 
-  def avroSink[B](path: String, overwrite: Boolean = false, checkpoint: Boolean = false)(implicit sc: ScoobiConfiguration, schema: AvroSchema[B]) = {
+  def avroSink[B](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit sc: ScoobiConfiguration, schema: AvroSchema[B]) = {
     val converter = new OutputConverter[AvroKey[schema.AvroType], NullWritable, B] {
       def toKeyValue(x: B)(implicit configuration: Configuration) = (new AvroKey(schema.toAvro(x)), NullWritable.get)
     }
-    AvroSink[schema.AvroType, B](schema, path, converter, overwrite, Checkpoint.create(Some(path), checkpoint))
+    AvroSink[schema.AvroType, B](schema, path, converter, overwrite, check, Checkpoint.create(Some(path), checkpoint))
   }
 
 }
@@ -62,6 +62,7 @@ case class AvroSink[K, B](schema: AvroSchema[B],
                           path: String,
                           outputConverter: OutputConverter[AvroKey[K], NullWritable, B],
                           overwrite: Boolean = false,
+                          check: Sink.OutputCheck = Sink.defaultOutputCheck,
                           checkpoint: Option[Checkpoint] = None,
                           compression: Option[Compression] = None) extends DataSink[AvroKey[K], NullWritable, B] with SinkSource {
 
@@ -77,12 +78,7 @@ case class AvroSink[K, B](schema: AvroSchema[B],
   def outputValueClass(implicit sc: ScoobiConfiguration) = classOf[NullWritable]
 
   def outputCheck(implicit sc: ScoobiConfiguration) {
-    if (Helper.pathExists(output)(sc.configuration) && !overwrite)
-      throw new FileAlreadyExistsException(s"Output path already exists: $output")
-    else {
-      logger.info(s"Output path: ${output.toUri.toASCIIString}")
-      logger.debug(s"Output Schema: $schema")
-    }
+    check(output, overwrite, sc)
   }
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
 

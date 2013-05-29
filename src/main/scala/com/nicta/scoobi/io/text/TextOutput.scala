@@ -39,33 +39,33 @@ trait TextOutput {
    * Persist a distributed list as a text file.
    * @deprecated(message="use list.toTextFile(...) instead", since="0.7.0")
    */
-  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false) =
-    dl.addSink(textFileSink(path, overwrite))
+  def toTextFile[A : Manifest](dl: DList[A], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
+    dl.addSink(textFileSink(path, overwrite, check))
 
-  def textFileSink[A : Manifest](path: String, overwrite: Boolean = false) =
-    new TextFileSink(path, overwrite)
+  def textFileSink[A : Manifest](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) =
+    new TextFileSink(path, overwrite, check)
 
   /** Persist a distributed lists of 'Products' (e.g. Tuples) as a delimited text file. */
-  def listToDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false) = {
+  def listToDelimitedTextFile[A <: Product : Manifest](dl: DList[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = {
     def anyToString(any: Any, sep: String): String = any match {
       case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
       case _             => any.toString
     }
-    (dl map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite))
+    (dl map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite, check))
   }
 
   /** Persist a distributed object of 'Products' (e.g. Tuples) as a delimited text file. */
-  def objectToDelimitedTextFile[A <: Product : Manifest](o: DObject[A], path: String, sep: String = "\t", overwrite: Boolean = false) = {
+  def objectToDelimitedTextFile[A <: Product : Manifest](o: DObject[A], path: String, sep: String = "\t", overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck) = {
     def anyToString(any: Any, sep: String): String = any match {
       case prod: Product => prod.productIterator.map(anyToString(_, sep)).mkString(sep)
       case _             => any.toString
     }
-    (o map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite))
+    (o map { anyToString(_, sep) }).addSink(textFileSink[A](path, overwrite, check))
   }
 }
 object TextOutput extends TextOutput
 
-case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, compression: Option[Compression] = None) extends DataSink[NullWritable, A, A] {
+case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, compression: Option[Compression] = None) extends DataSink[NullWritable, A, A] {
   private lazy val logger = LogFactory.getLog("scoobi.TextOutput")
 
   private val output = new Path(path)
@@ -85,9 +85,7 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
   }
 
   def outputCheck(implicit sc: ScoobiConfiguration) {
-    if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
-      throw new FileAlreadyExistsException("Output path already exists: " + output)
-    } else logger.info("Output path: " + output.toUri.toASCIIString)
+    check(output, overwrite, sc)
   }
 
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)

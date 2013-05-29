@@ -24,11 +24,14 @@ import org.specs2.matcher.TerminationMatchers
 import org.specs2.ScalaCheck
 import org.scalacheck.Prop
 import impl.plan.comp.CompNodeData._
-import impl.plan.comp.Optimiser
-import impl.plan.DListImpl
 import org.scalacheck.Arbitrary._
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
+
+  "it must be possible to create an empty DList and persist it" >> { implicit sc: SC =>
+    val list = fromTextFile(Seq("missing"), check = Source.noInputCheck)
+    list.run === Vector()
+  }
 
   tag("issue 99")
   "a DList can be created and persisted with some Text" >> { implicit sc: SC =>

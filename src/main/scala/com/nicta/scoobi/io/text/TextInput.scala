@@ -40,6 +40,8 @@ trait TextInput {
     * the input forms all files in that directory). */
   def fromTextFile(paths: String*): DList[String] = fromTextSource[String](textSource(paths))
 
+  def fromTextFile(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[String] = fromTextSource[String](textSource(paths, check))
+
   def fromTextSource[A : WireFormat](source: TextSource[A]) = DListImpl(source)
 
   def defaultTextConverter = new InputConverter[LongWritable, Text, String] {
@@ -47,20 +49,21 @@ trait TextInput {
   }
 
   /** create a text source */
-  def textSource(paths: Seq[String]) = new TextSource[String](paths, inputConverter = defaultTextConverter)
+  def textSource(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck) = new TextSource[String](paths, inputConverter = defaultTextConverter, check = check)
 
   /** Create a distributed list from one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPath(path: String): DList[(String, String)] = fromTextFileWithPaths(Seq(path))
+  def fromTextFileWithPath(path: String, check: Source.InputCheck = Source.defaultInputCheck): DList[(String, String)] =
+    fromTextFileWithPaths(Seq(path), check)
 
 
   /** Create a distributed list from a list of one or more files or directories (in the case of
     * a directory, the input forms all files in that directory). The distributed list is a tuple
     * where the first part is the path of the originating file and the second part is a line of
     * text. */
-  def fromTextFileWithPaths(paths: Seq[String]): DList[(String, String)] = {
+  def fromTextFileWithPaths(paths: Seq[String], check: Source.InputCheck = Source.defaultInputCheck): DList[(String, String)] = {
     val converter = new InputConverter[LongWritable, Text, (String, String)] {
       def fromKeyValue(context: InputContext, k: LongWritable, v: Text) = {
         val taggedSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
@@ -69,7 +72,7 @@ trait TextInput {
         (path, v.toString)
       }
     }
-    fromTextSource[(String, String)](new TextSource(paths, inputConverter = converter))
+    fromTextSource[(String, String)](new TextSource(paths, inputConverter = converter, check = check))
   }
 
 
@@ -77,11 +80,11 @@ trait TextInput {
     * by some separator. Use an extractor function to pull out the required fields to
     * create the distributed list. */
   def fromDelimitedTextFile[A : WireFormat]
-      (path: String, sep: String = "\t")
+      (path: String, sep: String = "\t", check: Source.InputCheck = Source.defaultInputCheck)
       (extractFn: PartialFunction[Seq[String], A])
     : DList[A] = {
 
-    val lines = fromTextFile(path)
+    val lines = fromTextSource(textSource(Seq(path), check))
     lines.mapFlatten { line =>
       val fields = line.split(sep).toList
       if (extractFn.isDefinedAt(fields)) List(extractFn(fields)) else Nil
@@ -121,21 +124,14 @@ object TextInput extends TextInput
 /** Class that abstracts all the common functionality of reading from text files. */
 case class TextSource[A : WireFormat](paths: Seq[String],
                                       inputFormat: Class[_ <: FileInputFormat[LongWritable, Text]] = classOf[TextInputFormat],
-                                      inputConverter: InputConverter[LongWritable, Text, A] = TextInput.defaultTextConverter)
+                                      inputConverter: InputConverter[LongWritable, Text, A] = TextInput.defaultTextConverter,
+                                      check: Source.InputCheck = Source.defaultInputCheck)
   extends DataSource[LongWritable, Text, A] {
-  private lazy val logger = LogFactory.getLog("scoobi.TextInput")
 
   private val inputPaths = paths.map(p => new Path(p))
   override def toString = "TextSource("+id+")"+inputPaths.mkString("\n", "\n", "\n")
 
-  def inputCheck(implicit sc: ScoobiConfiguration) {
-    inputPaths foreach { p =>
-      if (Helper.pathExists(p)(sc))
-        logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc)) + ")")
-      else
-        throw new IOException("Input path " + p + " does not exist.")
-    }
-  }
+  def inputCheck(implicit sc: ScoobiConfiguration) { check(inputPaths, sc) }
 
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
     inputPaths foreach { p => FileInputFormat.addInputPath(job, p) }
@@ -143,3 +139,5 @@ case class TextSource[A : WireFormat](paths: Seq[String],
 
   def inputSize(implicit sc: ScoobiConfiguration): Long = inputPaths.map(p => Helper.pathSize(p)(sc)).sum
 }
+
+

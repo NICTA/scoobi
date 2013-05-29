@@ -22,6 +22,10 @@ import collection.immutable.VectorBuilder
 import org.apache.hadoop.conf.Configuration
 import task.{MapContextImpl, TaskAttemptContextImpl}
 import scala.collection.JavaConversions._
+import com.nicta.scoobi.impl.io.Helper
+import java.io.IOException
+import org.apache.hadoop.fs.Path
+import org.apache.commons.logging.LogFactory
 
 /**
  * DataSource for a computation graph.
@@ -67,8 +71,10 @@ trait Source {
   def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit)
 }
 
-private[scoobi]
 object Source {
+  private lazy val logger = LogFactory.getLog("scoobi.Source")
+
+  private[scoobi]
   def read(source: Source, read: Any => Any = identity)(implicit sc: ScoobiConfiguration): Seq[Any] = {
     val vb = new VectorBuilder[Any]()
     val job = new Job(new Configuration(sc.configuration))
@@ -77,19 +83,32 @@ object Source {
     job.setInputFormatClass(source.inputFormat)
     source.inputConfigure(job)
 
-    inputFormat.getSplits(job) foreach { split =>
-      val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
-      val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
-      val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
+    try {
+      inputFormat.getSplits(job) foreach { split =>
+        val tid = new TaskAttemptID()
+        val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+        val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
+        val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
 
-      rr.initialize(split, taskContext)
+        rr.initialize(split, taskContext)
 
-      source.read(rr, mapContext, (a: Any) => vb += read(a))
-      rr.close()
-    }
+        source.read(rr, mapContext, (a: Any) => vb += read(a))
+        rr.close()
+      }
+    } catch { case e: Throwable => logger.warn(e.getMessage) }
     vb.result
   }
+
+  /** default check for sources using input files */
+  val defaultInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => {
+    inputPaths foreach { p =>
+      if (Helper.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc.configuration)) + ")")
+      else                                        throw new IOException("Input path " + p + " does not exist.")
+    }
+  }
+  val noInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => ()
+
+  type InputCheck =  (Seq[Path], ScoobiConfiguration) => Unit
 }
 
 /**
