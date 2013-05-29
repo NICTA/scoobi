@@ -41,6 +41,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
   }
 
   "4. A checkpoint can be created with a path, as a BridgeStore" >> { implicit sc: SC =>
+    evaluationsNb2 = 0
     val sink = TempFiles.createTempDir("test")
     val list = DList(1, 2, 3).map(i => { if (i == 1) evaluationsNb2 += 1; i + 1 }).checkpoint(path(sink))
 
