@@ -40,7 +40,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">AvroDataSource</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">AvroDataSource</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Source.defaultInputCheck</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.io.avro.AvroDataSource#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(paths:Seq[org.apache.hadoop.fs.Path],inputConverter:com.nicta.scoobi.core.InputConverter[org.apache.avro.mapred.AvroKey[K],org.apache.hadoop.io.NullWritable,A],schema:com.nicta.scoobi.io.avro.AvroSchema[A],checkSchemas:Boolean):com.nicta.scoobi.io.avro.AvroDataSource[K,A]"></a>
+      <a id="&lt;init&gt;(paths:Seq[org.apache.hadoop.fs.Path],inputConverter:com.nicta.scoobi.core.InputConverter[org.apache.avro.mapred.AvroKey[K],org.apache.hadoop.io.NullWritable,A],schema:com.nicta.scoobi.io.avro.AvroSchema[A],checkSchemas:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.io.avro.AvroDataSource[K,A]"></a>
       <a id="&lt;init&gt;:AvroDataSource[K,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">AvroDataSource</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span>
+        <span class="name">AvroDataSource</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Source.defaultInputCheck</span></span>)</span>
       </span>
       </h4>
       
@@ -184,6 +184,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.avro.AvroDataSource#check" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
+      <a id="check:(Seq[Path],ScoobiConfiguration)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">check</span><span class="result">: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.io.avro.AvroDataSource#checkInputSchema" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkInputSchema(p:org.apache.hadoop.fs.Path)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="checkInputSchema(Path)(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkInputSchema</span><span class="params">(<span name="p">p: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.io.avro.AvroDataSource#checkSchemas" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="checkSchemas:Boolean"></a>
       <a id="checkSchemas:Boolean"></a>

@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.io.sequence.CheckedSeqSource#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(paths:Seq[String],inputFormat:Class[org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat[K,V]],inputConverter:com.nicta.scoobi.core.InputConverter[K,V,A],checkFileTypes:Boolean)(implicitevidence$25:Manifest[K],implicitevidence$26:Manifest[V]):com.nicta.scoobi.io.sequence.CheckedSeqSource[K,V,A]"></a>
+      <a id="&lt;init&gt;(paths:Seq[String],inputFormat:Class[org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat[K,V]],inputConverter:com.nicta.scoobi.core.InputConverter[K,V,A],checkFileTypes:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$25:Manifest[K],implicitevidence$26:Manifest[V]):com.nicta.scoobi.io.sequence.CheckedSeqSource[K,V,A]"></a>
       <a id="&lt;init&gt;:CheckedSeqSource[K,V,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CheckedSeqSource</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="inputFormat">inputFormat: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat">SequenceFileInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.V">V</span>]] = <span class="defval" name="SequenceInput.defaultSequenceInputFormat[Nothing, Nothing]">...</span></span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.A">A</span>]</span>, <span name="checkFileTypes">checkFileTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.V">V</span>]</span>)</span>
+        <span class="name">CheckedSeqSource</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="inputFormat">inputFormat: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat">SequenceFileInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.V">V</span>]] = <span class="defval" name="SequenceInput.defaultSequenceInputFormat[Nothing, Nothing]">...</span></span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.A">A</span>]</span>, <span name="checkFileTypes">checkFileTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Source.defaultInputCheck</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource.V">V</span>]</span>)</span>
       </span>
       </h4>
       
@@ -184,6 +184,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.sequence.CheckedSeqSource#check" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
+      <a id="check:(Seq[Path],ScoobiConfiguration)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">check</span><span class="result">: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource">CheckedSeqSource</a> → <a href="SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.CheckedSeqSource#checkInputPathType" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="checkInputPathType(p:org.apache.hadoop.fs.Path)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="checkInputPathType(Path)(ScoobiConfiguration):Unit"></a>

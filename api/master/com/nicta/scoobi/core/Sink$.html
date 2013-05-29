@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ConvertListToSequenceFile - com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile</title>
-          <meta name="description" content="ConvertListToSequenceFile - com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile" />
-          <meta name="keywords" content="ConvertListToSequenceFile com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile" />
+          <title>Sink - com.nicta.scoobi.core.Sink</title>
+          <meta name="description" content="Sink - com.nicta.scoobi.core.Sink" />
+          <meta name="keywords" content="Sink com.nicta.scoobi.core.Sink" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.nicta.scoobi.application.InputsOutputs$ConvertListToSequenceFile';
+            var hash = 'com.nicta.scoobi.core.Sink$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,20 +27,20 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.application">application</a>.<a href="InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></p>
-        <h1>ConvertListToSequenceFile</h1>
+        <img src="../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
+        <h1>Sink</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ConvertListToSequenceFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">Sink</span>
       </span>
       </h4>
       
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile"><span>ConvertListToSequenceFile</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,25 +82,25 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(list:com.nicta.scoobi.core.DList[T]):InputsOutputs.this.ConvertListToSequenceFile[T]"></a>
-      <a id="&lt;init&gt;:ConvertListToSequenceFile[T]"></a>
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.core.Sink.OutputCheck" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OutputCheck=(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
+      <a id="OutputCheck:(Path,Boolean,ScoobiConfiguration)⇒Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">new</span>
+        <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">ConvertListToSequenceFile</span><span class="params">(<span name="list">list: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.T">T</span>]</span>)</span>
+        <span class="name">OutputCheck</span><span class="result"> = (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       
     </li></ol>
             </div>
-
-        
 
         
 
@@ -200,6 +200,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Sink#defaultOutputCheck" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="defaultOutputCheck:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
+      <a id="defaultOutputCheck:(Path,Boolean,ScoobiConfiguration)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultOutputCheck</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">default check for sink using output files</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -281,19 +294,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile#list" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="list:com.nicta.scoobi.core.DList[T]"></a>
-      <a id="list:DList[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">list</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.T">T</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -307,6 +307,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Sink#noOutputCheck" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="noOutputCheck:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
+      <a id="noOutputCheck:(Path,Boolean,ScoobiConfiguration)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">noOutputCheck</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -346,19 +359,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile#toSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toSequenceFile[K,V](path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean)(implicitev:&lt;:&lt;[T,(K,V)],implicitks:InputsOutputs.this.SeqSchema[K],implicitvs:InputsOutputs.this.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):ConvertListToSequenceFile.this.list.T"></a>
-      <a id="toSequenceFile[K,V](String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean)(&lt;:&lt;[T,(K,V)],SeqSchema[K],SeqSchema[V],ScoobiConfiguration):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../../package.html">Sink.defaultOutputCheck</a></span></span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.T">T</span>, (<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.toSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.toSequenceFile.V">V</span>)]</span>, <span name="ks">ks: <a href="InputsOutputs.html#SeqSchema[A]=com.nicta.scoobi.io.sequence.SeqSchema[A]" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.toSequenceFile.K">K</span>]</span>, <span name="vs">vs: <a href="InputsOutputs.html#SeqSchema[A]=com.nicta.scoobi.io.sequence.SeqSchema[A]" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertListToSequenceFile.toSequenceFile.V">V</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DList.html#T=com.nicta.scoobi.core.DList[A]" class="extmbr" name="com.nicta.scoobi.core.DList.T">T</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
