@@ -33,6 +33,7 @@ trait Serialiser {
     xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
     xstream.omitField(classOf[ScoobiConfiguration],     "sc")
     xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
+    xstream.omitField(classOf[ScoobiConfigurationImpl], "counters")
     xstream.omitField(classOf[ScoobiConfigurationImpl], "persister")
     
     val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
