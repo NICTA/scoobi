@@ -17,6 +17,7 @@ package com.nicta.scoobi
 package core
 
 import impl.control.{ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
+import com.nicta.scoobi.impl.collection.WeakHashSet
 
 /**
  * A list that is distributed across multiple machines.
@@ -173,11 +174,10 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
       /* Cache input values that have not been seen before. And, if a value has been
        * seen (i.e. is cached), simply drop it.
-       * TODO - make it an actual cache that has a fixed size and has a replacement
-       * policy once it is full otherwise there is the risk of running out of memory. */
-      var cache: MSet[A] = MSet.empty
+       * This cache is implemented with a WeakHashSet to avoid it growing too big in case of memory pressure */
+      var cache = new WeakHashSet[A]
 
-      def setup() { cache = MSet.empty }
+      def setup() { cache = new WeakHashSet[A] }
 
       def process(input: A, emitter: Emitter[(Int, A)]) {
         if (!cache.contains(input)) {
@@ -186,11 +186,9 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
         }
       }
 
-      def cleanup(emitter: Emitter[(Int, A)]) { cache = MSet.empty }
+      def cleanup(emitter: Emitter[(Int, A)]) { cache = new WeakHashSet[A] }
 
     }).groupByKey.mapFlatten( _._2.toSet )
-
-
   }
 
   /** Add an index (Long) to the DList where the index is between 0 and .size-1 of the DList */
@@ -396,4 +394,6 @@ trait Persistent[T] extends DataSinks {
   private[scoobi]
   def getComp: C
 }
+
+
 
