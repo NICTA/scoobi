@@ -256,9 +256,15 @@ object Return1 {
   def unapply(rt: Return): Option[Any] = Some(rt.in)
 }
 object Return {
-  def apply(a: Any, wf: WireReaderWriter, sinks: Seq[Sink]): Return = new Return(new ReturnedValue(a), wf, sinks)
-  def apply(a: Any, wf: WireReaderWriter): Return                   = new Return(new ReturnedValue(a), wf)
-  def unit = Return(new ReturnedValue(()), wireFormat[Unit])
+  def apply(a: Any, wf: WireReaderWriter, sinks: Seq[Sink]): Return = a match {
+    case rt: ReturnedValue => new Return(rt, wf, sinks)
+    case _                 => new Return(new ReturnedValue(a), wf, sinks)
+  }
+  def apply(a: Any, wf: WireReaderWriter): Return = a match {
+    case rt: ReturnedValue => new Return(rt, wf)
+    case _                 => new Return(new ReturnedValue(a), wf)
+  }
+  def unit = Return((), wireFormat[Unit])
 }
 
 case class Materialise(in: ProcessNode, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
