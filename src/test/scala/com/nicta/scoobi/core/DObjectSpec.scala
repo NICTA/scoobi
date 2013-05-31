@@ -21,8 +21,9 @@ import testing.mutable.NictaSimpleJobs
 import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
+import org.specs2.matcher.TerminationMatchers
 
-class DObjectSpec extends NictaSimpleJobs {
+class DObjectSpec extends NictaSimpleJobs with TerminationMatchers {
 
   tag("issue 113")
   "it must be possible to take the minimum and the maximum of a list" >> { implicit sc: SC =>
@@ -52,5 +53,11 @@ class DObjectSpec extends NictaSimpleJobs {
     o.run === 1
     "effect must be evaluated" ==> { out must not be empty }.unless(sc.isRemote)
   }
+
+  tag("issue 266")
+  "A DObject must not failed to be run when containing a large sequence of elements" >> { implicit sc: ScoobiConfiguration =>
+    DObject((1 to 100000000).toStream.toSeq).run must terminate(sleep = 5.seconds)
+  }
+
 
 }

@@ -245,15 +245,20 @@ object Load1 {
 }
 
 /** The Return node type specifies the building of a Exp CompNode from an "ordinary" value. */
-case class Return(in: Any, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
+case class Return(rt: ReturnedValue, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
+  def in = rt.value
   override val toString = "Return ("+id+")["+wf+"] "+sinksString
   def updateSinks(f: Seq[Sink] => Seq[Sink]) = copy(sinks = f(sinks))
 }
+
+class ReturnedValue(val value: Any)
 object Return1 {
   def unapply(rt: Return): Option[Any] = Some(rt.in)
 }
 object Return {
-  def unit = Return((), wireFormat[Unit])
+  def apply(a: Any, wf: WireReaderWriter, sinks: Seq[Sink]): Return = new Return(new ReturnedValue(a), wf, sinks)
+  def apply(a: Any, wf: WireReaderWriter): Return                   = new Return(new ReturnedValue(a), wf)
+  def unit = Return(new ReturnedValue(()), wireFormat[Unit])
 }
 
 case class Materialise(in: ProcessNode, wf: WireReaderWriter, sinks: Seq[Sink] = Seq()) extends ValueNodeImpl {
