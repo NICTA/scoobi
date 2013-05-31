@@ -454,4 +454,19 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
 
   implicit def taggedTypeWireFormat[T : WireFormat, U]: WireFormat[T @@ U] =
     implicitly[WireFormat[T]].asInstanceOf[WireFormat[T @@ U]]
+
+  import shapeless._
+
+  implicit def hnilHasWireFormat: WireFormat[HNil] = new WireFormat[HNil] {
+    def toWire(x: HNil, out: DataOutput) {}
+    def fromWire(in: DataInput) = HNil
+  }
+
+  implicit def hlistHasWireFormat[T, H1 <: HList](implicit wft: WireFormat[T], wfh1: WireFormat[H1]): WireFormat[T :: H1] = new WireFormat[T :: H1] {
+    def toWire(hlist: T :: H1, out: DataOutput) = hlist match {
+      case head :: rest => wft.toWire(head, out); wfh1.toWire(rest, out)
+    }
+    def fromWire(in: DataInput) = wft.fromWire(in) :: wfh1.fromWire(in)
+  }
+
 }

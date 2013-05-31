@@ -74,6 +74,7 @@ object build extends Build {
       "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
       "com.googlecode.kiama"              %% "kiama"                     % "1.5.0",
       "com.github.mdr"                    %% "ascii-graphs"              % "0.0.3",
+      "com.chuusai"                       %% "shapeless"                 % "1.2.4",
       "org.scalaz"                        %% "scalaz-core"               % "7.0.0",
       "org.scalaz"                        %% "scalaz-concurrent"         % "7.0.0",
       "org.scalaz"                        %% "scalaz-scalacheck-binding" % "7.0.0"            intransitive(),
