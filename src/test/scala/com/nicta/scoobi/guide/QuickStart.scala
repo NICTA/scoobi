@@ -25,7 +25,7 @@ Before starting, you will need:
 * [Cloudera's Hadoop 4.0.1 (CDH4)](http://www.cloudera.com/hadoop/)
 * [Sbt 0.12.3](http://www.scala-sbt.org/)
 
-In addition to Hadoop, scoobi uses [sbt](http://www.scala-sbt.org3) (version 0.12.3) to simplify building and packaging a project for running on Hadoop.
+In addition to Hadoop, scoobi uses [sbt](http://www.scala-sbt.org) (version 0.12.3) to simplify building and packaging a project for running on Hadoop.
   
 ### Directory Structure  
   
