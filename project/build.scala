@@ -297,7 +297,7 @@ object build extends Build {
 
   lazy val publishForCDH3 = ReleaseStep { st: State =>
     // this specific commit changes the necessary files for working with CDH3
-    "git cherry-pick -n d89c5af" !! st.log
+    "git cherry-pick -n 5f16313" !! st.log
 
     try {
       val extracted = Project.extract(st)
