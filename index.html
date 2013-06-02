@@ -65,7 +65,7 @@
     </head><body><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Index</title><a name="Index"><h2 specId="678048085">Index</h2></a><status class="ok"><div class="level0" style="display: show">Welcome!</div></status><status class="ok"><div class="level0" style="display: show"><p><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
+                       <div class="col1"><div id="central"><title>Index</title><a name="Index"><h2 specId="133050443">Index</h2></a><status class="ok"><div class="level0" style="display: show">Welcome!</div></status><status class="ok"><div class="level0" style="display: show"><p><p><a href="http://hadoop.apache.org/">Hadoop MapReduce</a> is awesome, but it seems a little bit crazy when you have to write <a href="http://wiki.apache.org/hadoop/WordCount">this</a> to count words. Wouldn't it be nicer if you could simply write what you want to do:</p>
 <pre><code class="prettyprint">val lines = fromTextFile(&quot;hdfs://in/...&quot;)
 
 val counts = lines.flatMap(_.split(&quot; &quot;))
@@ -79,9 +79,9 @@ persist(counts.toTextFile(&quot;hdfs://out/...&quot;, overwrite=true))
   <li><p>Familiar APIs - the <code class="prettyprint">DList</code> API is very similar to the standard Scala <code class="prettyprint">List</code> API</p></li>
   <li><p>Strong typing - the APIs are strongly typed so as to catch more errors at compile time, a<br /> major improvement over standard Hadoop MapReduce where type-based run-time errors often occur</p></li>
   <li><p>Ability to parameterise with rich <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.DataTypes.html">data types</a> - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the <code class="prettyprint">Writable</code> interface, Scoobi allows <code class="prettyprint">DList</code> objects to be parameterised by normal Scala types including value types (e.g. <code class="prettyprint">Int</code>, <code class="prettyprint">String</code>, <code class="prettyprint">Double</code>), tuple types (with arbitrary nesting) as well as <strong>case classes</strong></p></li>
-  <li><p>Support for multiple types of I/O - currently built-in support for <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.InputandOutput.html#Text+files">text</a>, <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files">Sequence</a> and <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files">Avro</a> files with the ability to implement support for <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input">custom sources/sinks</a></p></li>
+  <li><p>Support for multiple types of I/O - currently built-in support for <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">text</a>, <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files">Sequence</a> and <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files">Avro</a> files with the ability to implement support for <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input">custom sources/sinks</a></p></li>
   <li><p>Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity</p></li>
-  <li><p>It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and consise syntax that makes developing Hadoop applications very productive</p></li>
+  <li><p>It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and concise syntax that makes developing Hadoop applications very productive</p></li>
   <li><p>Apache V2 licence - just like the rest of Hadoop</p></li>
 </ul><a name="Getting+Started"><h3>Getting Started</h3></a><p>To get started, read the <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.QuickStart.html">getting started steps</a> and the section on <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.DistributedLists.html">distributed lists</a>. The remaining sections in the <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.UserGuide.html">User Guide</a> provide further detail on various aspects of Scoobi's functionality.</p><p>The user mailing list is at <a href="http://groups.google.com/group/scoobi-users">http://groups.google.com/group/scoobi-users</a>. Please use it for questions and comments!</p><a name="Community"><h3>Community</h3></a>
 <ul>
@@ -90,9 +90,9 @@ persist(counts.toTextFile(&quot;hdfs://out/...&quot;, overwrite=true))
   <li><a href="https://github.com/NICTA/scoobi">Source code (github)</a></li>
   <li><a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC2-cdh4/index.html">API Documentation</a></li>
   <li><a href="https://github.com/NICTA/scoobi/tree/SCOOBI-0.7.0-RC2-cdh4/examples">Examples</a></li>
-  <li>User Guide for the <a href="http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/User%20Guide.html">SNAPSHOT</a> version (<a href="http://nicta.github.io/scoobi/api/master/index.html">latest api</a>)</li>
+  <li>User Guide for the <a href="http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">SNAPSHOT</a> version (<a href="http://nicta.github.io/scoobi/api/master/index.html">latest api</a>)</li>
   <li>Mailing Lists: <a href="http://groups.google.com/group/scoobi-users">scoobi-users</a>, <a href="http://groups.google.com/group/scoobi-dev">scoobi-dev</a></li>
-</ul></p></div></status><subtoc specId="336806720"></subtoc></div></div>
+</ul></p></div></status><subtoc specId="808008327"></subtoc></div></div>
                        <div class="col2"><div id="leftcolumn"></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
