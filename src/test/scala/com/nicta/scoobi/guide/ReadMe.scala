@@ -61,11 +61,11 @@ See the [install instructions](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.Quic
 
  * Ability to parameterise with rich [data types](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.DataTypes.html) - unlike Hadoop MapReduce, which requires that you go off implementing a myriad of classes that implement the `Writable` interface, Scoobi allows `DList` objects to be parameterised by normal Scala types including value types (e.g. `Int`, `String`, `Double`), tuple types (with arbitrary nesting) as well as **case classes**
 
- * Support for multiple types of I/O - currently built-in support for [text](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.InputandOutput.html#Text+files), [Sequence](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files) and [Avro](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input)
+ * Support for multiple types of I/O - currently built-in support for [text](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Text+files), [Sequence](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Sequence+files) and [Avro](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Avro+files) files with the ability to implement support for [custom sources/sinks](${GUIDE_OFFICIAL_PAGE}com.nicta.scoobi.guide.LoadAndPersist.html#Custom+input)
 
  * Optimization across library boundaries - the optimiser and execution engine will assemble Scoobi code spread across multiple software components so you still keep the benefits of modularity
 
- * It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and consise syntax that makes developing Hadoop applications very productive
+ * It's Scala - being a Scala library, Scoobi applications still have access to those precious Java libraries plus all the functional programming and concise syntax that makes developing Hadoop applications very productive
 
  * Apache V2 licence - just like the rest of Hadoop
 
@@ -82,7 +82,7 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
  * [Source code (github)](https://github.com/NICTA/scoobi)
  * [API Documentation](${API_OFFICIAL_PAGE})
  * [Examples](https://github.com/NICTA/scoobi/tree/${OFFICIAL_TAG}/examples)
- * User Guide for the [SNAPSHOT](${GUIDE_SNAPSHOT_PAGE}User%20Guide.html) version ([latest api](${API_SNAPSHOT_PAGE}))
+ * User Guide for the [SNAPSHOT](${GUIDE_SNAPSHOT_PAGE}com.nicta.scoobi.guide.UserGuide.html) version ([latest api](${API_SNAPSHOT_PAGE}))
  * Mailing Lists: [scoobi-users](http://groups.google.com/group/scoobi-users), [scoobi-dev](http://groups.google.com/group/scoobi-dev)
   """
 

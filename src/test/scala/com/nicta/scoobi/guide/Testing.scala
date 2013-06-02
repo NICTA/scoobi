@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package guide
 
 class Testing extends ScoobiPage { def is = "Testing guide".title^
-  """
+  s"""
 ### Running locally
 
 The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine.  The way to do that is simply to run your application normally under the JVM.  You can do that directly using `java`, but specifying the right class path is tricky; as a result, it's often easier to run using `sbt run-main`.  For example, if your main class is called `mypackage.myapp.RunMyApp`, run something like the following command from the top-level directory of your SBT project:
@@ -26,7 +26,7 @@ The first thing to do is to run your code locally (in non-distributed mode). Thi
 
 ### Running on the cluster
 
-Only when your application runs and works locally should you try running on a Hadoop cluster.  In order to do so you will probably need to build an assembly, i.e. a self-contained JAR file containing all of the libraries needed.  This can be done using the `sbt-assembly` plugin to SBT.  See the [Quick Start](${SCOOBI_GUIDE_PAGE}Quick%20Start.html) page in this User Guide for more information.
+Only when your application runs and works locally should you try running on a Hadoop cluster.  In order to do so you will probably need to build an assembly, i.e. a self-contained JAR file containing all of the libraries needed.  This can be done using the `sbt-assembly` plugin to SBT.  See the [Quick Start](${GUIDE_PAGE}com.nicta.scoobi.guide.QuickStart.html) page in this User Guide for more information.
 
 Once you have built the assembly, you can run it by logging into the job tracker and running it using `hadoop`, e.g. as follows:
 
@@ -36,7 +36,7 @@ Once you have built the assembly, you can run it by logging into the job tracker
 
 Scoobi provides testing support to make your coding experience as productive as possible. It is tightly integrated with [specs2](http://specs2.org) out-of-the-box, but you can reuse the testing traits with your own favorite testing library.
 
-First of all you need to add the specs2 dependency to your build.sbt file (use the same version that [Scoobi is using](https://github.com/NICTA/scoobi/tree/${SCOOBI_BRANCH}/build.sbt))
+First of all you need to add the specs2 dependency to your build.sbt file (use the same version that [Scoobi is using](https://github.com/NICTA/scoobi/tree/${BRANCH}/build.sbt))
 
 #### Base specification
 
@@ -55,7 +55,7 @@ The abstract class `com.nicta.scoobi.testing.mutable.HadoopSpecification` is the
 This specification does several things for you:
 
   * it creates a new `ScoobiConfiguration` for each example so that you should be able to run your examples concurrently
-  * this configuration is setup with the properties found in the `$HADOOP_HOME/conf` directory. If the `$HADOOP_HOME` variable is not set or the properties not found you will get an exception at runtime
+  * this configuration is setup with the properties found in the `$$HADOOP_HOME/conf` directory. If the `$$HADOOP_HOME` variable is not set or the properties not found you will get an exception at runtime
   * because you are passed in the configuration you can change those properties if required
   * each example will be executed locally only. If you want to execute them on the cluster as well, add `scoobi cluster` to the command line arguments. If you want some cluster execution but no local execution, use `scoobi !local.cluster`.
   * all the logging is intercepted so as not to clutter the console output
@@ -74,7 +74,7 @@ You can change every step in the process above and create your own Specification
 
 #### Command-line arguments
 
-The [command-line arguments](${SCOOBI_GUIDE_PAGE}com.nicta.scoobi.guide.Application.html#Arguments) which you can use to execute a Scoobi application are also applicable when running specs2 specifications. Here are a few examples:
+The [command-line arguments](${GUIDE_PAGE}com.nicta.scoobi.guide.Application.html#Arguments) which you can use to execute a Scoobi application are also applicable when running specs2 specifications. Here are a few examples:
 
 ```
 // enable logging with all the categories
@@ -125,7 +125,7 @@ This will be especially useful if you execute your specifications on a build ser
 
 ##### Logging
 
-The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a `ScoobiApp`) but they can be turned on by using the `verbose` arguments. See the [Application](${SCOOBI_GUIDE_PAGE}com.nicta.scoobi.guide.Application.html#Logging) in this User Guide to learn how to set log levels and log categories.
+The display of Hadoop and Scoobi logs can be controlled by passing command-line arguments. By default logs are turned off (contrary to a `ScoobiApp`) but they can be turned on by using the `verbose` arguments. See the [Application](${GUIDE_PAGE}com.nicta.scoobi.guide.Application.html#Logging) in this User Guide to learn how to set log levels and log categories.
 
 ##### Type alias
 

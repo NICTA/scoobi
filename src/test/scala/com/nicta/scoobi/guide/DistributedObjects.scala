@@ -27,12 +27,12 @@ The distributed list abstraction is very useful for specifying operations that t
 * From a collection of entity-score pairs, determining the ten entities with the highest scores;
 * From a corpus of documents, compute word frequencies for words present in a 1000-word dictionary.
 
-Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the [`DObject`]($API_PAGE#com.nicta.scoobi.DObject) trait.
+Scoobi provides the distributed object abstraction as a solution for these cases. Like distributed lists, distributed objects are delayed computations. However, whereas a distributed list abstracts a very large data set in, say, HDFS, a distributed object simply abstract an in-memory value, which is typically the result of a distributed list (MapReduce) operation. Distributed objects are described by the [`DObject`]($API_PAGE#com.nicta.scoobi.core.DObject) trait.
 
 
 ### Materialising
 
-After computing a `DList` on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a `DList` with relatively few entires, *relative* meaning the entries could fit into the memory of a single machine.
+After computing a `DList` on Hadoop, it is often desirable to be able to work with its contents as an ordinary Scala collection on the client. For example, it can be common to perform some operations that results in a `DList` with relatively few entries, *relative* meaning the entries could fit into the memory of a single machine.
 
 To bring the contents of such a `DList` on to the client, you can use the `materialise` method:
 
