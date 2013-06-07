@@ -348,19 +348,20 @@ serialised object.</p>
       </h4>
       <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
 the current job.</p>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#pushObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pushObject[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String):org.apache.hadoop.fs.Path"></a>
-      <a id="pushObject[T](Configuration,T,String):Path"></a>
+    </li><li name="com.nicta.scoobi.impl.util.DistCache#pushObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pushObject[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String,check:Boolean):org.apache.hadoop.fs.Path"></a>
+      <a id="pushObject[T](Configuration,T,String,Boolean):Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pushObject.T">T</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
+        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pushObject.T">T</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="check">check: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job.</p>
+      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job</p><div class="fullcomment"><div class="comment cmt"><p>Distribute an object to be available for tasks in the current job</p><p>By default check right away if the object can be deserialised
+</p></div></div>
     </li><li name="com.nicta.scoobi.impl.util.DistCache#serialise" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="serialise[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String)(action:org.apache.hadoop.fs.Path=&gt;Unit):org.apache.hadoop.fs.Path"></a>
       <a id="serialise[T](Configuration,T,String)((Path)⇒Unit):Path"></a>
