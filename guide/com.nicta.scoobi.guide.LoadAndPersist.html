@@ -62,10 +62,10 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Load and persist data</title>
-    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html">LoadAndPersist</a></div><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html">LoadAndPersist</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Load and persist data</title><a name="Load+and+persist+data"><h2 specId="2097414894">Load and persist data</h2></a><status class="ok"><div class="level0" style="display: show"><p><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the <a href="Application.html">WordCount example</a> we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally <em>loaded</em> from files and the results <em>persisted</em> to files. Let's see how to specify this.</p><a name="Loading"><h3>Loading</h3></a><a name="DLists"><h4>DLists</h4></a><p>Most of the time when we create <code class="prettyprint">DList</code> objects, it is the result of calling a method on another <code class="prettyprint">DList</code> object (e.g. <code class="prettyprint">map</code>). <em>Loading</em>, on the other hand, is the only way to create a <code class="prettyprint">DList</code> object that is not based on any others. It is the means by which we associate a <code class="prettyprint">DList</code> object with some data files on HDFS. Scoobi provides functions to create <code class="prettyprint">DList</code> objects associated with text files on HDFS, which are implemented in the object <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC2-cdh4/index.html#com.nicta.scoobi.io.text.TextInput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextInput</code></a>.</p><a name="Text+files"><h5>Text files</h5></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files: </p>
+                       <div class="col1"><div id="central"><title>Load and persist data</title><a name="Load+and+persist+data"><h2 specId="873697925">Load and persist data</h2></a><status class="ok"><div class="level0" style="display: show"><p><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the <a href="Application.html">WordCount example</a> we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally <em>loaded</em> from files and the results <em>persisted</em> to files. Let's see how to specify this.</p><a name="Loading"><h3>Loading</h3></a><a name="DLists"><h4>DLists</h4></a><p>Most of the time when we create <code class="prettyprint">DList</code> objects, it is the result of calling a method on another <code class="prettyprint">DList</code> object (e.g. <code class="prettyprint">map</code>). <em>Loading</em>, on the other hand, is the only way to create a <code class="prettyprint">DList</code> object that is not based on any others. It is the means by which we associate a <code class="prettyprint">DList</code> object with some data files on HDFS. Scoobi provides functions to create <code class="prettyprint">DList</code> objects associated with text files on HDFS, which are implemented in the object <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.0-RC2-cdh4/index.html#com.nicta.scoobi.io.text.TextInput$"><code class="prettyprint">com.nicta.scoobi.io.text.TextInput</code></a>.</p><a name="Text+files"><h5>Text files</h5></a><p>There are a number of ways in which to construct a <code class="prettyprint">DList</code> object from a text file. The simplest is <code class="prettyprint">fromTextFile</code>. It takes one or more paths (globs are supported) to text files on HDFS (or whichever file system Hadoop has been configured for) and returns a <code class="prettyprint">DList[String]</code> object, where each element of the distributed list refers to one of the lines of text from the files: </p>
 <pre><code class="prettyprint">// load a single text file
 val lines1: DList[String] = fromTextFile(&quot;hdfs://path/to/file&quot;)
 
@@ -308,7 +308,8 @@ val xs1: DList[(Int, String, Float)] = fromAvroFile(&quot;hdfs://path/to/file1&q
 val files = Seq(&quot;hdfs://path/to/file1&quot;, &quot;hdfs://path/to/file2&quot;)
 val xs2: DList[(Int, String, Float)] = fromAvroFile(files)
 </code></pre><a name="With+a+predefined+avro+schema"><h6>With a predefined avro schema</h6></a><p>Any type that extends <code class="prettyprint">org.apache.avro.generic.GenericContainer</code> Scoobi knows how to generate a WireFormat for. This means that Scoobi is capable of seemlessly interoperating with the Java classes, including the auto-generated ones (and sbt-avro is capable of generating a Java class for a given Avro record/protocol. See <code class="prettyprint">examples/avro</code> for an example of this plugin in action</p><p>It is also possible to load and persist <code class="prettyprint">GenericRecord</code>s even if you don't know the schema. You can indeed access the schema and all the fields at run-time like this: </p>
-<pre><code class="prettyprint">fromAvroFile[GenericRecord](&quot;path&quot;).map { record =&gt;
+<pre><code class="prettyprint">// load generic records
+  fromAvroFile[GenericRecord](&quot;path&quot;).map { record =&gt;
     // you can get the schema and do the mapping based on its structure
     if (record.getSchema.getFields.size == 1) record.get(0).asInstanceOf[Int]
     else                                      1 // default value
@@ -478,20 +479,8 @@ xs.toAvroFile(&quot;hdfs://path/to/file&quot;).persist
 </code></pre><a name="Custom+output"><h5>Custom output</h5></a><p>We have seen that to persist a <code class="prettyprint">DList</code> object we use the <code class="prettyprint">persist</code> method: </p>
 <pre><code class="prettyprint">val (dogs, names) = (DList(&quot;Labrador retriever&quot;, &quot;Poodle&quot;, &quot;Boxer&quot;), DList(&quot;Max&quot;, &quot;Molly&quot;, &quot;Toby&quot;))
 persist(dogs.toTextFile(&quot;hdfs://path/to/dogs&quot;), names.toAvroFile(&quot;hdfs://path/to/names&quot;))
-</code></pre><p>But what exactly does <code class="prettyprint">toTextFile</code>, <code class="prettyprint">toAvroFile</code> and the other output methods? Those methods simply add <em>Sinks</em> to the <code class="prettyprint">DList</code>. Those sinks implement the <code class="prettyprint">DataSink</code> trait. The <code class="prettyprint">DataSink</code> trait is, not surpringly, the reverse of the <code class="prettyprint">DataSource</code> trait. It is tightly coupled with the Hadoop <code class="prettyprint">OutputFormat</code> interface and requires the specification of an <code class="prettyprint">OutputConverter</code> that converts values contained within the <code class="prettyprint">DList</code> to key-value records to be persisted by the <code class="prettyprint">OutputFormat</code>: </p>
-<pre><code class="prettyprint">trait DataSink[K, V, B] extends Sink {
-  def outputFormat(implicit sc: ScoobiConfiguration): Class[_ &lt;: OutputFormat[K, V]]
-  def outputKeyClass(implicit sc: ScoobiConfiguration): Class[K]
-  def outputValueClass(implicit sc: ScoobiConfiguration): Class[V]
-  def outputConverter: OutputConverter[K, V, B]
-  def outputCheck(implicit sc: ScoobiConfiguration)
-  def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
-}
-</code></pre>
-<pre><code class="prettyprint">trait OutputConverter[K, V, B] {
-  def toKeyValue(x: B): (K, V)
-}
-</code></pre><p>Again, we can follow the types through to get a sense of how it works:</p>
+</code></pre><p>But what exactly does <code class="prettyprint">toTextFile</code>, <code class="prettyprint">toAvroFile</code> and the other output methods? Those methods simply add <em>Sinks</em> to the <code class="prettyprint">DList</code>. Those sinks implement the <code class="prettyprint">DataSink</code> trait. The <code class="prettyprint">DataSink</code> trait is, not surpringly, the reverse of the <code class="prettyprint">DataSource</code> trait. It is tightly coupled with the Hadoop <code class="prettyprint">OutputFormat</code> interface and requires the specification of an <code class="prettyprint">OutputConverter</code> that converts values contained within the <code class="prettyprint">DList</code> to key-value records to be persisted by the <code class="prettyprint">OutputFormat</code>: <code class="prettyprint">
+</code></p><p>Again, we can follow the types through to get a sense of how it works:</p>
 <ul>
   <li><code class="prettyprint">persist</code> is called with a <code class="prettyprint">DList</code> object that specifies <code class="prettyprint">Sinks</code> implementing the trait <code class="prettyprint">DataSink[K, V, B]</code></li>
   <li>The <code class="prettyprint">DataSink</code> object specifies the class of an <code class="prettyprint">OutputFormat</code> that can persist or write key-values of type <code class="prettyprint">K</code>-<code class="prettyprint">V</code>, which are specified by <code class="prettyprint">outputKeyClass</code> and <code class="prettyprint">outputValueClass</code>, respectively</li>
@@ -622,8 +611,8 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
 </code></pre><p>If you run the <code class="prettyprint">after</code> program twice, the second time the program is run, only the <code class="prettyprint">filter</code> operation will be executed taking its input data from the saved Avro file.</p><p><em>Important limitation</em>: you can't use a <code class="prettyprint">Text</code> sink as a checkpoint because Text file sinks can't not be used as source files.</p>
 <hr /></p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="808008327"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1950749020"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="562850178"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="1542989260"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -633,7 +622,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="800022295"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="835501822"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -657,7 +646,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="579598198"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="2031038268"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -673,7 +662,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="321090994"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1407601211"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -687,7 +676,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="2097414894"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="873697925"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -733,7 +722,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
             
           </li></ul>
           </li></ul>
-          </li><li id="308057953"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1895330936"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -745,7 +734,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
             
           </li></ul>
           </li></ul>
-          </li><li id="2094426801"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1202105401"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -753,7 +742,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1626786430"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="259323631"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -769,7 +758,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1785219053"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="1207946454"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -799,7 +788,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1682591534"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1793137287"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -815,7 +804,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1251248242"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1620364258"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -823,7 +812,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1569331870"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1221956599"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -835,7 +824,7 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile(&quot;path&quot;, overwrite = t
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['808008327','2097414894'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['562850178','873697925'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
