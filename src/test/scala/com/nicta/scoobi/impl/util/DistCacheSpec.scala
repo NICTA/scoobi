@@ -13,9 +13,8 @@ class DistCacheSpec extends UnitSpecification with SpecificationLike with Groups
 
  + pushObject/pullObject must bring back the same object
  + when an object is push, we try to deserialise it right away and throw an exception if this is not possible
+"""
 
-
-                                                     """
  "dist cache" - new group {
    eg := {
      val configuration = new Configuration
