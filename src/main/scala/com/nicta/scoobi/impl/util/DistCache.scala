@@ -24,6 +24,7 @@ import Configurations._
 import ScoobiConfiguration._
 import java.net.URI
 import DistributedCache._
+import java.io.IOException
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialise objects to XML strings and then send out via Hadoop's
@@ -37,11 +38,21 @@ object DistCache {
     new Path(scratchDir, tag+ Option(configuration.get(JOB_STEP)).map("-"+_).getOrElse(""))
   }
 
-  /** Distribute an object to be available for tasks in the current job. */
-  def pushObject[T](configuration: Configuration, obj: T, tag: String): Path = {
-    serialise[T](configuration, obj, tag) { path =>
+  /**
+   * Distribute an object to be available for tasks in the current job
+   *
+   * By default check right away if the object can be deserialised
+   */
+  def pushObject[T](configuration: Configuration, obj: T, tag: String, check: Boolean = true): Path = {
+    val path = serialise[T](configuration, obj, tag) { path =>
       DistributedCache.addCacheFile(path.toUri, configuration)
     }
+
+    if (check)
+      try Serialiser.deserialise(path.getFileSystem(configuration).open(path))
+      catch { case e: Throwable => throw new IOException(s"The object $obj can not be serialised/deserialised: ${e.getMessage}", e) }
+
+    path
   }
 
   /**
