@@ -84,10 +84,10 @@ object build extends Build {
       "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
       "org.specs2"                        %% "specs2"                    % "2.0-RC2-SNAPSHOT" % "optional",
       "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
-      "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
       "org.scala-tools.testing"           %  "test-interface"            % "0.5"              % "test",
       "org.hamcrest"                      %  "hamcrest-all"              % "1.1"              % "test",
       "org.pegdown"                       %  "pegdown"                   % "1.2.1"            % "test",
+      "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
       "junit"                             %  "junit"                     % "4.7"              % "test",
       "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
       "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test"
