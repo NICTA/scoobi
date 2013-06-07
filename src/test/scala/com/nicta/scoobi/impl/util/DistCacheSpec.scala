@@ -3,10 +3,11 @@ package impl
 package util
 
 import org.specs2.specification._
-import script.Specification
+import script.SpecificationLike
 import org.apache.hadoop.conf.Configuration
+import com.nicta.scoobi.testing.UnitSpecification
 
-class DistCacheSpec extends Specification with Groups { def is = s2"""
+class DistCacheSpec extends UnitSpecification with SpecificationLike with Groups { def is = s2"""
 
  The DistCache object can be object to serialise objects and push them to Hadoop's distributed cache
 
