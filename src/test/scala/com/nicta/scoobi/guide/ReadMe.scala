@@ -87,9 +87,9 @@ The user mailing list is at <http://groups.google.com/group/scoobi-users>. Pleas
   """
 
   override def map(fs: =>Fragments) =
-    noindent ^ fs.map {
-      case start @ SpecStart(_,_,_) => start.baseDirIs(".")
-      case other                    => other
+    fs.map {
+      case start: SpecStart => start.baseDirIs(".")
+      case other            => other
     }
 
 }

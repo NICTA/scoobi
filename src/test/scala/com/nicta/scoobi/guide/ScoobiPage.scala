@@ -28,10 +28,10 @@ import org.specs2.specification.Snippets
  */
 trait ScoobiPage extends Specification with ScoobiVariables with Snippets {
   override def map(fs: =>Fragments) =
-    noindent ^ Fragments.create(fs.fragments.map {
-      case start @ SpecStart(_,_,_) if isIndex(start) => start.urlIs("index.html")
-      case start @ SpecStart(_,_,_)                   => start.baseDirIs(s"./$GUIDE_DIR")
-      case other                                      => other
+    Fragments.create(fs.fragments.map {
+      case start: SpecStart if isIndex(start) => start.urlIs("index.html")
+      case start: SpecStart                   => start.baseDirIs(s"./$GUIDE_DIR")
+      case other                              => other
     }:_*)
 
   private def isIndex(start: SpecStart) = start.specName.javaClassName endsWith "Index"
