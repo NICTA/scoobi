@@ -52,6 +52,16 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
       // this way of testing if the computation has been done only once can only work locally
       evaluationsNb2 must be_==(1).unless(sc.isRemote)
     }
+
+    "the checkpoint files must be written at the right place" ==> { sink.listFiles must not be empty }
+  }
+
+  "5. there must be an expiry date on checkpoint files" >> { implicit sc: SC =>
+    val sink = new java.io.File("test")
+    sink.mkdirs
+    val list = DList(1, 2, 3).checkpoint(path(sink)).map(_+1)
+    persist(list)
+    ok
   }
 
   def checkEvaluations(restart: Boolean = false)(implicit sc: SC) = {

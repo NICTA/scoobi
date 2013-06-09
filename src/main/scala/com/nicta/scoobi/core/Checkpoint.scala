@@ -17,11 +17,23 @@ package com.nicta.scoobi
 package core
 
 import java.util.UUID
+import org.apache.hadoop.fs.Path
 
 /** store the output path of a Sink as a checkpoint */
-case class Checkpoint(name: String)
+case class Checkpoint(path: Path) {
+  /** @return the name for the file used as checkpoint */
+  lazy val name = path.getName
+
+  /**
+   * @return the path for the file used as checkpoint as a string
+   *
+   * Important! This needs to be computed only once because it is used with an identity map in the filledSink attribute
+   * to determine if a sink has been filled or not  
+   */
+  lazy val pathAsString = path.toString
+}
 
 object Checkpoint {
   def create(path: Option[String], doIt: Boolean)(implicit sc: ScoobiConfiguration) =
-    if (doIt) Some(Checkpoint(path.map(_.toString).getOrElse(UUID.randomUUID().toString))) else None
+    if (doIt) Some(Checkpoint(new Path(path.map(_.toString).getOrElse(UUID.randomUUID().toString)))) else None
 }

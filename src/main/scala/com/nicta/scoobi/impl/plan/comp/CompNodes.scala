@@ -50,7 +50,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
 
   /** mark a sink as filled so it doesn't have to be recomputed */
   protected def markSinkAsFilled = (s: Sink) => s match {
-    case ss: SinkSource => ss.checkpoint.map(cp => filledSink(cp.name)).getOrElse(filledSink(ss.stringId))
+    case ss: SinkSource => ss.checkpoint.map(cp => filledSink(cp.pathAsString)).getOrElse(filledSink(ss.stringId))
     case _              => filledSink(s.stringId)
   }
 
@@ -66,7 +66,7 @@ trait CompNodes extends GraphNodes with CollectFunctions {
   /** @return true if a given Sink has already received data */
   protected lazy val hasBeenFilled = (s: Sink) => {
     filledSink.hasBeenComputedAt(s.stringId) || (s match {
-      case ss: SinkSource => ss.checkpoint.map(cp => filledSink.hasBeenComputedAt(cp.name)).getOrElse(false)
+      case ss: SinkSource => ss.checkpoint.map(cp => filledSink.hasBeenComputedAt(cp.pathAsString)).getOrElse(false)
       case _              => false
     })
   }

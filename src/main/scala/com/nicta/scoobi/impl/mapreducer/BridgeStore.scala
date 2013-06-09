@@ -55,7 +55,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
   /** type of the generated class for this Bridge */
   val typeName = "BS" + bridgeStoreId
 
-  def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
+  def path(implicit sc: ScoobiConfiguration) = checkpoint.map(_.path).getOrElse(new Path(sc.workingDirectory, "bridges/" + bridgeStoreId))
 
   /* Output (i.e. input to bridge) */
   def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
