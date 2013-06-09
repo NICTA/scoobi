@@ -79,8 +79,12 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     logger.info("Outputs are " + sinks.map(_.outputPath(ScoobiConfiguration(configuration))).mkString("\n"))
 
-    sinks.foreach(_.outputSetup(configuration))
+    sinks.foreach(_.outputSetup(ScoobiConfiguration(configuration)))
     emitter = createEmitter(channelOutput)
+  }
+
+  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    sinks.foreach(_.outputTeardown(ScoobiConfiguration(configuration)))
   }
 
   /** copy all outputs files to the destinations specified by sink files */
@@ -185,8 +189,9 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   }
 
   /** invoke the reducer cleanup if there is one */
-  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+  override def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     reducer.foreach(_.cleanup(environment, emitter))
+    super.cleanup(channelOutput)
   }
 
   /** @return the last node of this channel */
@@ -218,9 +223,6 @@ case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     values foreach emitter.write
   }
-
-  /** no cleanup is required because this node has already been cleaned-up as a mapper */
-  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {}
 }
 
 /**

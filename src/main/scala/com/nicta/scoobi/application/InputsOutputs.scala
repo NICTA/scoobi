@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import com.nicta.scoobi.core.{Source, ScoobiConfiguration, WireFormat, Checkpoint, Sink}
+import com.nicta.scoobi.core._
 import WireFormat._
 import impl.collection._
 import Seqs._
@@ -29,6 +29,7 @@ import io.sequence.SequenceInput
 import io.sequence.SequenceOutput
 import impl.mapreducer.BridgeStore
 import java.util.UUID
+import scala.Some
 
 /**
  * This trait provides way to create DLists from files
@@ -89,26 +90,26 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
       o.addSink(SequenceOutput.keySchemaSequenceFile(path, overwrite, check))
   }
   implicit class ConvertValueListToSequenceFile[V](val list: core.DList[V]) {
-    def valueToSequenceFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
-      list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, check, checkpoint))
+    def valueToSequenceFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
+      list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, check, checkpoint, expiryPolicy))
   }
   implicit class ConvertValueListToSequenceFile1[K, V](val list: core.DList[(K, V)]) {
     def valueToSequenceFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
       list.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, check))
   }
   implicit class ConvertValueObjectToSequenceFile[V](val o: core.DObject[V]) {
-    def valueToSequenceFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
-      o.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, check, checkpoint))
+    def valueToSequenceFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit vs: SeqSchema[V], sc: ScoobiConfiguration) =
+      o.addSink(SequenceOutput.valueSchemaSequenceFile(path, overwrite, check, checkpoint, expiryPolicy))
   }
   implicit class ConvertListToSequenceFile[T](val list: core.DList[T]) {
-    def toSequenceFile[K, V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)
+    def toSequenceFile[K, V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)
       (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration)
-        = list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite, check, checkpoint)(ks, vs, sc))
+        = list.addSink(SequenceOutput.schemaSequenceSink(path, overwrite, check, checkpoint, expiryPolicy)(ks, vs, sc))
   }
   implicit class ConvertObjectToSequenceFile[T](val o: core.DObject[T]) {
-    def toSequenceFile[K, V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)
+    def toSequenceFile[K, V](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)
                                    (implicit ev: T <:< (K, V), ks: SeqSchema[K], vs: SeqSchema[V], sc: ScoobiConfiguration)
-    = o.addSink(SequenceOutput.schemaSequenceSink(path, overwrite, check, checkpoint)(ks, vs, sc))
+    = o.addSink(SequenceOutput.schemaSequenceSink(path, overwrite, check, checkpoint, expiryPolicy)(ks, vs, sc))
   }
 
   /** Avro I/O */
@@ -120,18 +121,18 @@ trait InputsOutputs extends TextInput with TextOutput with AvroInput with AvroOu
   def objectFromAvroFile[A : WireFormat : AvroSchema](paths: Seq[String], checkSchemas: Boolean = true) = fromAvroFile[A](paths, checkSchemas).head
 
   implicit class ListToAvroFile[A](val list: core.DList[A]) {
-    def toAvroFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
-      list.addSink(AvroOutput.avroSink(path, overwrite, check, checkpoint))
+    def toAvroFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
+      list.addSink(AvroOutput.avroSink(path, overwrite, check, checkpoint, expiryPolicy))
   }
   implicit class ObjectToAvroFile[A](val o: core.DObject[A]) {
-    def toAvroFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
-      o.addSink(AvroOutput.avroSink(path, overwrite, check, checkpoint))
+    def toAvroFile(path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit as: AvroSchema[A], sc: ScoobiConfiguration) =
+      o.addSink(AvroOutput.avroSink(path, overwrite, check, checkpoint, expiryPolicy))
   }
 
   /** checkpoints */
   implicit class ListToCheckpointFile[A](val list: core.DList[A]) {
-    def checkpoint(path: String)(implicit sc: ScoobiConfiguration) =
-      list.addSink(new BridgeStore(UUID.randomUUID.toString, list.wf, Checkpoint.create(Some(path), doIt = true)))
+    def checkpoint(path: String, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit sc: ScoobiConfiguration) =
+      list.addSink(new BridgeStore(UUID.randomUUID.toString, list.wf, Checkpoint.create(Some(path), expiryPolicy, doIt = true)))
   }
 
 }

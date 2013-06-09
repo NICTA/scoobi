@@ -66,7 +66,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
     val sinks = sinksToSave(node)
     val valuesToSave = if (WireFormat.isTraversable(node.wf)) values.head.asInstanceOf[Traversable[Any]] else values
 
-    sinks.foreach(_.outputSetup(sc.configuration))
+    sinks.foreach(_.outputSetup(sc))
     sinks.foreach { sink =>
       val job = new Job(new Configuration(sc.configuration))
 
@@ -95,5 +95,6 @@ trait ExecutionMode extends ShowNode with Optimiser {
       oc.commitTask(taskContext)
       oc.commitJob(job)
     }
+    sinks.foreach(_.outputTeardown(sc))
   }
 }

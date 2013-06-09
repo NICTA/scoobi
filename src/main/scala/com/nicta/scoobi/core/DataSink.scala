@@ -54,7 +54,8 @@ trait DataSink[K, V, B] extends Sink { outer =>
 
   def isCompressed = compression.isDefined
 
-  def outputSetup(implicit configuration: Configuration) {}
+  def outputSetup(implicit sc: ScoobiConfiguration) {}
+  def outputTeardown(implicit sc: ScoobiConfiguration) {}
 
   private [scoobi]
   def write(values: Traversable[_], recordWriter: RecordWriter[_,_])(implicit configuration: Configuration) {
@@ -92,7 +93,9 @@ trait Sink { outer =>
   /** @return the path for this Sink. */
   def outputPath(implicit sc: ScoobiConfiguration): Option[Path]
   /** This method is called just before writing data to the sink */
-  def outputSetup(implicit configuration: Configuration)
+  def outputSetup(implicit sc: ScoobiConfiguration)
+  /** This method is called just after writing data to the sink */
+  def outputTeardown(implicit sc: ScoobiConfiguration)
 
   /** configure the compression for a given job */
   def configureCompression(configuration: Configuration): Sink
@@ -129,6 +132,8 @@ object Sink {
 
 }
 
+import scalaz._
+import Scalaz._
 /**
  * This is a Sink which can also be used as a Source
  */
@@ -143,10 +148,15 @@ trait SinkSource extends Sink {
 
   /** @return true if this Sink is a checkpoint and has been filled with data */
   def checkpointExists(implicit sc: ScoobiConfiguration): Boolean =
-    isCheckpoint && outputPath.exists(p => sc.fileSystem.exists(p) && Option(sc.fileSystem.listStatus(p)).map(_.nonEmpty).getOrElse(false))
+    (checkpoint |@| outputPath)((c, p) => c.isExpired(p, sc)).getOrElse(false)
 
   /** @return the name of the checkpoint */
-  def checkpointName: Option[String] = checkpoint.map(_.name)
+  def checkpointPath: Option[String] = checkpoint.map(_.name)
+
+  override def outputSetup(implicit sc: ScoobiConfiguration) {
+    (checkpoint |@| outputPath)((c, p) => c.setup(p, sc))
+  }
+
 }
 
 object Data {
@@ -197,7 +207,8 @@ object Bridge {
     def outputConverter = sink.outputConverter
     def outputCheck(implicit sc: ScoobiConfiguration) { sink.outputCheck }
     def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) { sink.outputConfigure(job) }
-    def outputSetup(implicit configuration: Configuration) { sink.outputSetup }
+    override def outputSetup(implicit sc: ScoobiConfiguration) { super.outputSetup; sink.outputSetup }
+    def outputTeardown(implicit sc: ScoobiConfiguration) { sink.outputTeardown }
     def outputPath(implicit sc: ScoobiConfiguration) = sink.outputPath
     def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = sink.compressWith(codec, compressionType)
     def configureCompression(configuration: Configuration) = sink.configureCompression(configuration)

@@ -53,7 +53,7 @@ trait ProcessNodeImpl extends ProcessNode {
   def nodeSinks : Seq[Sink]
 
   /** display the bridge id */
-  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointName.map(" "+_)).getOrElse("")+")"
+  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointPath.map(" "+_)).getOrElse("")+")"
   /** display the sinks if any */
   def nodeSinksString = if (nodeSinks.nonEmpty) nodeSinks.map(s => s.outputPath(ScoobiConfiguration())).mkString("[sinks: ", ",", "]") else ""
 }

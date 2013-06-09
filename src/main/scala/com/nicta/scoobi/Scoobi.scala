@@ -58,6 +58,8 @@ object Scoobi extends core.WireFormatImplicits
   type Counters = com.nicta.scoobi.core.Counters
   type Heartbeat = com.nicta.scoobi.core.Heartbeat
 
+  type ExpiryPolicy = com.nicta.scoobi.core.ExpiryPolicy
+
 }
 
 

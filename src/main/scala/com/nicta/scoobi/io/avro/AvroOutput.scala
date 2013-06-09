@@ -45,14 +45,16 @@ trait AvroOutput {
    * Specify a distributed list to be persistent by storing it to disk as an Avro File
    * @deprecated(message="use list.toAvroFile(...) instead", since="0.7.0")
    */
-  def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
-    list.addSink(avroSink(path, overwrite, check, checkpoint))
+  def toAvroFile[B](list: DList[B], path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck,
+                    checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit schema: AvroSchema[B], sc: ScoobiConfiguration) =
+    list.addSink(avroSink(path, overwrite, check, checkpoint, expiryPolicy))
 
-  def avroSink[B](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck, checkpoint: Boolean = false)(implicit sc: ScoobiConfiguration, schema: AvroSchema[B]) = {
+  def avroSink[B](path: String, overwrite: Boolean = false, check: Sink.OutputCheck = Sink.defaultOutputCheck,
+                  checkpoint: Boolean = false, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default)(implicit sc: ScoobiConfiguration, schema: AvroSchema[B]) = {
     val converter = new OutputConverter[AvroKey[schema.AvroType], NullWritable, B] {
       def toKeyValue(x: B)(implicit configuration: Configuration) = (new AvroKey(schema.toAvro(x)), NullWritable.get)
     }
-    AvroSink[schema.AvroType, B](schema, path, converter, overwrite, check, Checkpoint.create(Some(path), checkpoint))
+    AvroSink[schema.AvroType, B](schema, path, converter, overwrite, check, Checkpoint.create(Some(path), expiryPolicy, checkpoint))
   }
 
 }
@@ -86,10 +88,11 @@ case class AvroSink[K, B](schema: AvroSchema[B],
     job.getConfiguration.set("avro.schema.output.key", schema.toString)
   }
 
-  override def outputSetup(implicit configuration: Configuration) {
-    if (Helper.pathExists(output)(configuration) && overwrite) {
+  override def outputSetup(implicit sc: ScoobiConfiguration) {
+    super.outputSetup(sc)
+    if (Helper.pathExists(output)(sc.configuration) && overwrite) {
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
-      Helper.deletePath(output)(configuration)
+      Helper.deletePath(output)(sc.configuration)
     }
   }
 

@@ -91,10 +91,12 @@ case class TextFileSink[A : Manifest](path: String, overwrite: Boolean = false, 
   def outputPath(implicit sc: ScoobiConfiguration) = Some(output)
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
 
-  override def outputSetup(implicit configuration: Configuration) {
-    if (Helper.pathExists(output)(configuration) && overwrite) {
+  override def outputSetup(implicit sc: ScoobiConfiguration) {
+    super.outputSetup(sc)
+
+    if (Helper.pathExists(output)(sc.configuration) && overwrite) {
       logger.info("Deleting the pre-existing output path: " + output.toUri.toASCIIString)
-      Helper.deletePath(output)(configuration)
+      Helper.deletePath(output)(sc.configuration)
     }
   }
 
