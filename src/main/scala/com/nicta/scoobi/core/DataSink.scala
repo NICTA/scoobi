@@ -148,13 +148,13 @@ trait SinkSource extends Sink {
 
   /** @return true if this Sink is a checkpoint and has been filled with data */
   def checkpointExists(implicit sc: ScoobiConfiguration): Boolean =
-    (checkpoint |@| outputPath)((c, p) => c.isExpired(p, sc)).getOrElse(false)
+    !checkpoint.map(_.hasExpired).getOrElse(true)
 
-  /** @return the name of the checkpoint */
-  def checkpointPath: Option[String] = checkpoint.map(_.name)
+  /** @return the path of the checkpoint */
+  def checkpointPath: Option[String] = checkpoint.map(_.pathAsString)
 
   override def outputSetup(implicit sc: ScoobiConfiguration) {
-    (checkpoint |@| outputPath)((c, p) => c.setup(p, sc))
+    checkpoint.map(_.setup)
   }
 
 }

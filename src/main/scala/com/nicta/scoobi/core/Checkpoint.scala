@@ -19,10 +19,23 @@ package core
 import java.util.{Calendar, UUID}
 import org.apache.hadoop.fs.{FileSystem, Path}
 
-/** store the output name of a Sink as a checkpoint */
-case class Checkpoint(name: String, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default) {
-  def setup(outputPath: Path, sc: ScoobiConfiguration) = expiryPolicy.setup(outputPath, sc)
-  def isExpired(outputPath: Path, sc: ScoobiConfiguration) = expiryPolicy.isExpired(outputPath, sc)
+/** store the output path of a Sink as a checkpoint */
+case class Checkpoint(path: Path, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default) {
+  /** @return the name for the file used as checkpoint */
+  lazy val name = path.getName
+
+  /**
+   * @return the path for the file used as checkpoint as a string
+   *
+   * Important! This needs to be computed only once because it is used with an identity map in the filledSink attribute
+   * to determine if a sink has been filled or not
+   */
+  lazy val pathAsString = path.toString
+
+  /** setup the checkpoint by possibly deleting/versioning the previous checkpoint file */
+  def setup(implicit sc: ScoobiConfiguration) = expiryPolicy.setup(path, sc)
+  /** @return true if the checkpoint has expired */
+  def hasExpired(implicit sc: ScoobiConfiguration) = expiryPolicy.hasExpired(path, sc)
 }
 
 /**
@@ -31,15 +44,15 @@ case class Checkpoint(name: String, expiryPolicy: ExpiryPolicy = ExpiryPolicy.de
  * You can define
  *
  *  - the expiry time: how long a checkpoint file is valid (long value representing milliseconds)
- *  - the versioning strategy: what you do with an expired file (delete it, rename it,...)
+ *  - the archiving strategy: what you do with an expired file (delete it, rename it,...)
  *
  */
-case class ExpiryPolicy(expiryTime: Long = -1, versioning: (Path, ScoobiConfiguration) => Unit = ExpiryPolicy.deleteOldFile) {
+case class ExpiryPolicy(expiryTime: Long = -1, archive: (Path, ScoobiConfiguration) => Unit = ExpiryPolicy.deleteOldFile) {
 
   /**
    * @return true if an expiry time is set and if there exists a checkpoint file that's older than now - expiryTime
    */
-  def isExpired(outputPath: Path, sc: ScoobiConfiguration) = {
+  def hasExpired(outputPath: Path, sc: ScoobiConfiguration) = {
     val fs = sc.fileSystem
     (expiryTime <= 0) || (
     (expiryTime > 0)        &&
@@ -51,27 +64,27 @@ case class ExpiryPolicy(expiryTime: Long = -1, versioning: (Path, ScoobiConfigur
    * Apply the versioning policy before trying to use the checkpoint file again
    */
   def setup(outputPath: Path, sc: ScoobiConfiguration) = {
-    if (isExpired(outputPath, sc)) versioning(outputPath, sc)
+    if (hasExpired(outputPath, sc)) archive(outputPath, sc)
   }
 }
 
 object ExpiryPolicy {
-  type VersioningPolicy = (Path, ScoobiConfiguration) => Unit
+  type ArchivingPolicy = (Path, ScoobiConfiguration) => Unit
 
   /** delete the previous checkpoint file */
-  val deleteOldFile: VersioningPolicy = (p: Path, sc: ScoobiConfiguration) => {
+  val deleteOldFile: ArchivingPolicy = (p: Path, sc: ScoobiConfiguration) => {
     sc.fileSystem.delete(p, true)
   }
 
   /** rename the previous checkpoint file with an increasing version number */
-  val incrementCounterFile: VersioningPolicy = (p: Path, sc: ScoobiConfiguration) => {
+  val incrementCounterFile: ArchivingPolicy = (p: Path, sc: ScoobiConfiguration) => {
     val fs = sc.fileSystem
     val newIndex = lastIndex(p, sc).map(_ + 1).getOrElse(1)
     fs.rename(p, new Path(p.getParent, s"$p-$newIndex"))
   }
 
   /** rename the previous checkpoint file with an increasing version number, and remove the n oldest files */
-  def incrementCounterAndRemoveLast(n: Int): VersioningPolicy = (p: Path, sc: ScoobiConfiguration) => {
+  def incrementCounterAndRemoveLast(n: Int): ArchivingPolicy = (p: Path, sc: ScoobiConfiguration) => {
     incrementCounterFile(p, sc)
     val fs = sc.fileSystem
     oldCheckpointFiles(p, sc).take(n).foreach(f => fs.delete(f.getPath, true))
@@ -96,5 +109,5 @@ object ExpiryPolicy {
 
 object Checkpoint {
   def create(path: Option[String], expiryPolicy: ExpiryPolicy, doIt: Boolean)(implicit sc: ScoobiConfiguration) =
-    if (doIt) Some(Checkpoint(path.map(_.toString).getOrElse(UUID.randomUUID().toString))) else None
+    if (doIt) Some(Checkpoint(new Path(path.getOrElse(UUID.randomUUID.toString)))) else None
 }
