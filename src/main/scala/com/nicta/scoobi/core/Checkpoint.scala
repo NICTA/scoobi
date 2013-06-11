@@ -109,5 +109,5 @@ object ExpiryPolicy {
 
 object Checkpoint {
   def create(path: Option[String], expiryPolicy: ExpiryPolicy, doIt: Boolean)(implicit sc: ScoobiConfiguration) =
-    if (doIt) Some(Checkpoint(new Path(path.getOrElse(UUID.randomUUID.toString)))) else None
+    if (doIt) Some(Checkpoint(new Path(path.getOrElse(UUID.randomUUID.toString)), expiryPolicy)) else None
 }

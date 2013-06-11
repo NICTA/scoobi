@@ -60,7 +60,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
   "5. there must be an expiry date on checkpoint files" >> { implicit sc: SC =>
     val sink = new java.io.File("test")
     sink.mkdir
-    val list = DList(1, 2, 3).checkpoint(path(sink), expiryPolicy = ExpiryPolicy(expiryTime = 1000*3)).map(_+1)
+    val list = DList(1, 2, 3).checkpoint(path(sink), expiryPolicy = ExpiryPolicy(expiryTime = 1000*2, archive = ExpiryPolicy.incrementCounterFile)).map(_+1)
     persist(list)
     Thread.sleep(3000)
     persist(list)
