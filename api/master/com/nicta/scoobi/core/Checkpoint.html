@@ -40,7 +40,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Checkpoint</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Checkpoint</span><span class="params">(<span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.core.Checkpoint#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(name:String):com.nicta.scoobi.core.Checkpoint"></a>
+      <a id="&lt;init&gt;(path:org.apache.hadoop.fs.Path):com.nicta.scoobi.core.Checkpoint"></a>
       <a id="&lt;init&gt;:Checkpoint"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Checkpoint</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">Checkpoint</span><span class="params">(<span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span>
       </span>
       </h4>
       
@@ -255,19 +255,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.Checkpoint#name" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="name:String"></a>
       <a id="name:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">name</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the name for the file used as checkpoint</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -307,6 +307,34 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Checkpoint#path" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="path:org.apache.hadoop.fs.Path"></a>
+      <a id="path:Path"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">path</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.Checkpoint#pathAsString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pathAsString:String"></a>
+      <a id="pathAsString:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pathAsString</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for the file used as checkpoint as a string</p><p>Important! This needs to be computed only once because it is used with an identity map in the filledSink attribute
+to determine if a sink has been filled or not
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

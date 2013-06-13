@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>DistCache - com.nicta.scoobi.impl.util.DistCache</title>
-          <meta name="description" content="DistCache - com.nicta.scoobi.impl.util.DistCache" />
-          <meta name="keywords" content="DistCache com.nicta.scoobi.impl.util.DistCache" />
+          <title>Set - com.nicta.scoobi.impl.collection.Set</title>
+          <meta name="description" content="Set - com.nicta.scoobi.impl.collection.Set" />
+          <meta name="keywords" content="Set com.nicta.scoobi.impl.collection.Set" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.util.DistCache$';
+            var hash = 'com.nicta.scoobi.impl.collection.Set';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -27,28 +27,30 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.util">util</a></p>
-        <h1>DistCache</h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.collection">collection</a></p>
+        <h1>Set</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">DistCache</span>
+        <span class="name">Set</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Faciliate making an object available to all tasks (mappers, reducers, etc). Use
-XStream to serialise objects to XML strings and then send out via Hadoop's
-distributed cache. Two APIs are provided for pushing and pulling objects.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A common class for lightweight sets.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="WeakHashSet.html" class="extype" name="com.nicta.scoobi.impl.collection.WeakHashSet">WeakHashSet</a></div>
         </div></div>
         
 
@@ -66,7 +68,7 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.util.DistCache"><span>DistCache</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.collection.Set"><span>Set</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -84,14 +86,72 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.nicta.scoobi.impl.collection.Set#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():com.nicta.scoobi.impl.collection.Set[T]"></a>
+      <a id="&lt;init&gt;:Set[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Set</span><span class="params">()</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.collection.Set#addEntry" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="addEntry(x:T):Unit"></a>
+      <a id="addEntry(T):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addEntry</span><span class="params">(<span name="x">x: <span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.collection.Set#findEntry" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="findEntry(x:T):T"></a>
+      <a id="findEntry(T):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">findEntry</span><span class="params">(<span name="x">x: <span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.collection.Set#iterator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="iterator:Iterator[T]"></a>
+      <a id="iterator:Iterator[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">iterator</span><span class="result">: <a href="../../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -157,6 +217,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.collection.Set#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(x:T):Boolean"></a>
+      <a id="apply(T):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="x">x: <span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -186,20 +259,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#deserialise" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="deserialise[T](configuration:org.apache.hadoop.conf.Configuration):org.apache.hadoop.fs.Path=&gt;Option[T]"></a>
-      <a id="deserialise[T](Configuration):(Path)⇒Option[T]"></a>
+    </li><li name="com.nicta.scoobi.impl.collection.Set#contains" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contains(x:T):Boolean"></a>
+      <a id="contains(T):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">deserialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.deserialise.T">T</span>]</span>
+        <span class="name">contains</span><span class="params">(<span name="x">x: <span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">deserialise an object from a path file
-</p>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -242,6 +314,19 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.collection.Set#foreach" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="foreach[U](f:T=&gt;U):Unit"></a>
+      <a id="foreach[U]((T)⇒U):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">foreach</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span>) ⇒ <span class="extype" name="com.nicta.scoobi.impl.collection.Set.foreach.U">U</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -281,20 +366,6 @@ distributed cache. Two APIs are provided for pushing and pulling objects.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#mkPath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkPath(configuration:org.apache.hadoop.conf.Configuration,tag:String):org.apache.hadoop.fs.Path"></a>
-      <a id="mkPath(Configuration,String):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkPath</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Make a local filesystem path based on a 'tag' to temporarily store the
-serialised object.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -334,48 +405,6 @@ serialised object.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#pullObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pullObject[T](configuration:org.apache.hadoop.conf.Configuration,tag:String):Option[T]"></a>
-      <a id="pullObject[T](Configuration,String):Option[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pullObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pullObject.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Get an object that has been distributed so as to be available for tasks in
-the current job.</p>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#pushObject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pushObject[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String,check:Boolean):org.apache.hadoop.fs.Path"></a>
-      <a id="pushObject[T](Configuration,T,String,Boolean):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pushObject</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.pushObject.T">T</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="check">check: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Distribute an object to be available for tasks in the current job</p><div class="fullcomment"><div class="comment cmt"><p>Distribute an object to be available for tasks in the current job</p><p>By default check right away if the object can be deserialised
-</p></div></div>
-    </li><li name="com.nicta.scoobi.impl.util.DistCache#serialise" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="serialise[T](configuration:org.apache.hadoop.conf.Configuration,obj:T,tag:String)(action:org.apache.hadoop.fs.Path=&gt;Unit):org.apache.hadoop.fs.Path"></a>
-      <a id="serialise[T](Configuration,T,String)((Path)⇒Unit):Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">serialise</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="obj">obj: <span class="extype" name="com.nicta.scoobi.impl.util.DistCache.serialise.T">T</span></span>, <span name="tag">tag: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span name="action">action: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">serialise an object to a path
-</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -389,6 +418,19 @@ the current job.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.collection.Set#toList" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="toList:List[T]"></a>
+      <a id="toList:List[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toList</span><span class="result">: <a href="../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="com.nicta.scoobi.impl.collection.Set.T">T</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
