@@ -330,7 +330,7 @@ a new distributed list
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#by" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="by[K](kf:A=&gt;K)(implicitevidence$12:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,A)]"></a>
+      <a id="by[K](kf:A=&gt;K)(implicitevidence$13:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,A)]"></a>
       <a id="by[K]((A)⇒K)(WireFormat[K]):DList[(K,A)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -546,7 +546,7 @@ all the values are concatenated.</p>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DList#groupBy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupBy[K](f:A=&gt;K)(implicitevidence$9:com.nicta.scoobi.core.WireFormat[K],implicitevidence$10:com.nicta.scoobi.core.Grouping[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
+      <a id="groupBy[K](f:A=&gt;K)(implicitevidence$10:com.nicta.scoobi.core.WireFormat[K],implicitevidence$11:com.nicta.scoobi.core.Grouping[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
       <a id="groupBy[K]((A)⇒K)(WireFormat[K],Grouping[K]):DList[(K,Iterable[A])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -576,7 +576,7 @@ secondary sorts, or groupings with strange logic (like making sure None's / null
 sprayed across all reducers
 </p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#groupWith" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="groupWith[K](f:A=&gt;K)(gpk:com.nicta.scoobi.core.Grouping[K])(implicitevidence$11:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
+      <a id="groupWith[K](f:A=&gt;K)(gpk:com.nicta.scoobi.core.Grouping[K])(implicitevidence$12:com.nicta.scoobi.core.WireFormat[K]):com.nicta.scoobi.core.DList[(K,Iterable[A])]"></a>
       <a id="groupWith[K]((A)⇒K)(Grouping[K])(WireFormat[K]):DList[(K,Iterable[A])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -877,7 +877,8 @@ new distributed list
       <p class="shortcomment cmt">Partitions this distributed list into a pair of distributed lists according to some
 predicate.</p><div class="fullcomment"><div class="comment cmt"><p>Partitions this distributed list into a pair of distributed lists according to some
 predicate. The first distributed list consists of elements that satisfy the predicate
-and the second of all elements that don't.</p></div></div>
+and the second of all elements that don't.
+</p></div></div>
     </li><li name="com.nicta.scoobi.core.DList#product" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="product(implicitnum:Numeric[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="product(Numeric[A]):DObject[A]"></a>
@@ -948,6 +949,33 @@ the list is empty. The order in which the elements are reduced is unspecified an
       </span>
       </h4>
       <p class="shortcomment cmt">The size of the distributed list.</p>
+    </li><li name="com.nicta.scoobi.core.DList#stratify" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="stratify(n:Int)(f:A=&gt;Int):Seq[com.nicta.scoobi.core.DList[A]]"></a>
+      <a id="stratify(Int)((A)⇒Int):Seq[DList[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stratify</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>) ⇒ <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Divide a DList into multiple partitions.</p>
+    </li><li name="com.nicta.scoobi.core.DList#stratifyWeighted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="stratifyWeighted[N](weights:Seq[N])(implicitevidence$9:Numeric[N]):Seq[com.nicta.scoobi.core.DList[A]]"></a>
+      <a id="stratifyWeighted[N](Seq[N])(Numeric[N]):Seq[DList[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stratifyWeighted</span><span class="tparams">[<span name="N">N</span>]</span><span class="params">(<span name="weights">weights: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.DList.stratifyWeighted.N">N</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../../../scala/package.html#Numeric[T]=scala.math.Numeric[T]" class="extmbr" name="scala.Numeric">Numeric</a>[<span class="extype" name="com.nicta.scoobi.core.DList.stratifyWeighted.N">N</span>]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.core.DList.A">A</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Randomly divide a DList into multiple partitions where the stratum proportions are
+defined by <code>weights</code>.</p>
     </li><li name="com.nicta.scoobi.core.DList#sum" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="sum(implicitnum:Numeric[A]):com.nicta.scoobi.core.DObject[A]"></a>
       <a id="sum(Numeric[A]):DObject[A]"></a>
