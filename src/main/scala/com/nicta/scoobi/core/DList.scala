@@ -130,7 +130,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
   def stratify(n: Int)(f: A => Int): Seq[DList[A]] = {
     val tagged = map(x => (f(x), x))
     (0 until n).toSeq map { i =>
-      tagged.filter { case (t, _) => t == i }  map { _._2 }
+      tagged.collect { case (t, v) if t == i => v }
     }
   }
 
@@ -142,8 +142,8 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     import scala.math.Numeric.Implicits._
     val total = weights.sum.toDouble
 
-    val accWeights: Seq[(Double, Int)] = weights.map(_.toDouble).scan(0.0)(_+_).tail.map(_ / total).zipWithIndex
-    def inStratum(k: Double, i: Int) = accWeights.find(k < _._1).get._2 == i
+    val accumulatedWeights: Seq[(Double, Int)] = weights.map(_.toDouble).scan(0.0)(_+_).tail.map(_ / total).zipWithIndex
+    def inStratum(k: Double, i: Int) = accumulatedWeights.find(k < _._1).map(_._2 == i).getOrElse(false)
 
     val randomlyKeyed = map { v => (scala.util.Random.nextDouble(), v) }
     (0 until weights.size).toSeq map { i => randomlyKeyed.filter(x => inStratum(x._1, i)).map(_._2) }

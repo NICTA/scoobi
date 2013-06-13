@@ -165,7 +165,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   "Partitioning a DList doesn't add or remove any elements" >> {
 
     /**
-     * Property than when a DList is split into 1 or more, partitions, the concatenation of
+     * Property that when a DList is split into 1 or more, partitions, the concatenation of
      * all partitions contains the same set of elements as the original DList.
      */
     def partitionProperty(f: DList[Int] => Seq[DList[Int]])(implicit sc: ScoobiConfiguration): List[Int] => Prop = {
@@ -173,7 +173,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
         (list.length > 0) ==>  {
           val orig = list.toDList
           val partitions = f(orig)
-          run(orig isEqual partitions.reduce(_ ++ _)) == true
+          run(orig isEqual partitions.reduce(_ ++ _)) must beTrue
         }
       }
     }
