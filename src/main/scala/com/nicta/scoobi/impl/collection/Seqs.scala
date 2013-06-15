@@ -17,6 +17,10 @@ package com.nicta.scoobi
 package impl
 package collection
 
+import scalaz._
+import NonEmptyList._
+import Zipper._
+
 private[scoobi]
 trait Seqs {
 
@@ -64,6 +68,30 @@ trait Seqs {
       withoutElement ++ startWithElement.drop(1)
     }
 
+  }
+
+  /**
+   * @return a group elements of a sequence into groups so that for each element of a group there is at least another
+   *         element in the same group verifying the predicate
+   */
+  def groupWhen[A](seq: Seq[A])(predicate: (A, A) => Boolean): Seq[Seq[A]] =
+    seq.foldLeft(Seq[Seq[A]]()) { (res, cur) =>
+      val groups = res.toZipper(Seq())
+      groups.findZor(group => group.isEmpty || group.exists(predicate(_, cur)),
+                              groups.insertRight(Seq[A]()))
+            .modify(_ :+ cur).toStream.toSeq
+    }
+
+  /** add a to Nel method on a sequence to turn it into a Nel, depending on the existence of 'head' */
+  implicit class ToNel[A](seq: Seq[A]) {
+    def toNel(default: =>A): NonEmptyList[A] = seq match {
+      case head +: rest => nel(head, rest.toList)
+      case _            => nel(default, Nil)
+    }
+  }
+  /** add a toZipper method on a sequence to turn it into a Zipper, depending on the existence of 'head' */
+  implicit class ToZipper[A](seq: Seq[A]) {
+    def toZipper(default: =>A): Zipper[A] = seq.toNel(default).toZipper
   }
 
   /** function returning elements toString separated by a newline */

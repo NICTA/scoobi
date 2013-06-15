@@ -280,12 +280,11 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    *  be used (after)
    */
   def diff(that: DList[A])(implicit cmp: Grouping[A]): DList[A] = {
-    val left: DList[(A, Byte)] = map((_, 1))
+    val left: DList[(A, Byte)]  = map((_, 1))
     val right: DList[(A, Byte)] = that.map((_, -1))
 
     (left ++ right).groupByKey.mapFlatten { case (k, vs) =>
-        for (_ <- 1 to vs.map(_.toInt).sum)
-          yield k
+      Seq.fill(vs.map(_.toInt).sum)(k)
     }
   }
   
