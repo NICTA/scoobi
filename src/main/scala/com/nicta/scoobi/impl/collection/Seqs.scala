@@ -74,7 +74,7 @@ trait Seqs {
    * @return a group elements of a sequence into groups so that for each element of a group there is at least another
    *         element in the same group verifying the predicate
    */
-  def groupWhen[A](seq: Seq[A])(predicate: (A, A) => Boolean): Seq[Seq[A]] =
+  def partitionWhen[A](seq: Seq[A])(predicate: (A, A) => Boolean): Seq[Seq[A]] =
     seq.foldLeft(Seq[Seq[A]]()) { (res, cur) =>
       val groups = res.toZipper(Seq())
       groups.findZor(group => group.isEmpty || group.exists(predicate(_, cur)),

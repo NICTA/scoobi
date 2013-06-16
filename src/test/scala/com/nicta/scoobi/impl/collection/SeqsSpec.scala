@@ -34,28 +34,28 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
  ${ split(Seq(1, 2, 3, 4), 3, Splitted) === Seq(Splitted(0, 3, Seq(1, 2, 3, 4)), Splitted(3, 1, Seq(1, 2, 3, 4))) }
 
  A sequence can be partitioned into sub-sequences
-   for each element in a subgroup, there exists another element satisfying a predicate   ${g1.e1}
-   and there doesn't exist an element in any other subsequence satisfying the predicate  ${g1.e2}
-   2 elements which not satifying the predicate must end up in different groups          ${g1.e3}
-                                                                                         """
+   for each element in a subsequence, there exists another element satisfying a predicate   ${g1.e1}
+   and there doesn't exist an element in any other subsequence satisfying the predicate     ${g1.e2}
+   2 elements which don't satisfy the predicate must end up in different sequences          ${g1.e3}
+                                                                                            """
 
-  "groupWhen" - new g1 {
+  "partitionWhen" - new g1 {
     e1 := prop { (list: List[Int]) =>
-      val groups = groupWhen((0 :: list))(predicate)
+      val groups = partitionWhen((0 :: list))(predicate)
       groups must contain(similarElements).forall
     }
     e2 := prop { (list: List[Int]) =>
-      val groups = groupWhen(0 :: list)(predicate).toStream
+      val groups = partitionWhen(0 :: list)(predicate).toStream
       (zipper(Stream.empty, groups.head, groups.drop(1)).positions.toStream must not contain(sharedElements))
     }
     e3 := prop { (numbers: List[Int]) =>
       val distinct = (0 :: numbers).distinct
-      val groups = groupWhen(distinct)(alwaysFalse)
+      val groups = partitionWhen(distinct)(alwaysFalse)
       groups must have size(distinct.size)
     }
   }
 
-  val predicate   = (n1: Int, n2: Int) => (n1 - n2) % 3 == 0
+  val predicate   = (n1: Int, n2: Int) => math.abs(n1 - n2) % 3 == 0
   val alwaysFalse = (n1: Int, n2: Int) => false
 
   /** check if all elements of the sequence are "connected" with each other through the predicate */
