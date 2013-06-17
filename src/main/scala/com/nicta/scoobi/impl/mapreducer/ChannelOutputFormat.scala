@@ -18,12 +18,7 @@ package impl
 package mapreducer
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.OutputFormat
-import org.apache.hadoop.mapreduce.TaskInputOutputContext
-import org.apache.hadoop.mapreduce.TaskAttemptContext
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
-import org.apache.hadoop.mapreduce.RecordWriter
+import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.fs.Path
@@ -32,6 +27,7 @@ import scala.collection.mutable.{Map => MMap}
 import core._
 import Configurations._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import impl.util.Compatibility
 
 /**
  * A class that simplifies writing output to different paths and with different types
@@ -73,7 +69,7 @@ class ChannelOutputFormat(val context: TaskInputOutputContext[_, _, _, _]) {
         case (k, v) => job.getConfiguration.set(k, v)
       }
 
-      new TaskAttemptContextImpl(job.getConfiguration, context.getTaskAttemptID)
+      Compatibility.newTaskAttemptContext(job.getConfiguration, context.getTaskAttemptID)
     }
 
     taskContexts.getOrElseUpdate((tag, sinkId), mkTaskContext)

@@ -296,18 +296,10 @@ object build extends Build {
   lazy val publishSignedArtifacts = executeStepTask(publishSigned, "Publishing signed artifacts")
 
   lazy val publishForCDH3 = ReleaseStep { st: State =>
-    // this specific commit changes the necessary files for working with CDH3
-    "git cherry-pick -n 5f16313" !! st.log
-
-    try {
-      val extracted = Project.extract(st)
-      val ref: ProjectRef = extracted.get(thisProjectRef)
-      val st2 = extracted.append(List(version in ThisBuild in ref ~= (_.replace("cdh4", "cdh3"))), st)
-      executeTask(publishSigned, "Publishing CDH3 signed artifacts")(st2)
-    } finally {
-      st.log.info("Reverting the CDH3 changes")
-      "git reset --hard HEAD" !! st.log
-    }
+    val extracted = Project.extract(st)
+    val ref: ProjectRef = extracted.get(thisProjectRef)
+    val st2 = extracted.append(List(version in ThisBuild in ref ~= (_.replace("cdh4", "cdh3"))), st)
+    executeTask(publishSigned, "Publishing CDH3 signed artifacts")(st2)
   }
 
   /**

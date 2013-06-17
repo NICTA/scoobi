@@ -20,13 +20,13 @@ import org.apache.hadoop.mapreduce._
 import Data._
 import collection.immutable.VectorBuilder
 import org.apache.hadoop.conf.Configuration
-import task.{MapContextImpl, TaskAttemptContextImpl}
 import scala.collection.JavaConversions._
 import com.nicta.scoobi.impl.io.Helper
 import java.io.IOException
 import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
 import impl.control.Exceptions._
+import impl.util.Compatibility
 
 /**
  * DataSource for a computation graph.
@@ -87,9 +87,9 @@ object Source {
     val splits = tryOr(inputFormat.getSplits(job)) { case e: Throwable => logger.warn(e.getMessage); Seq() }
     splits foreach { split =>
       val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val taskContext = Compatibility.newTaskAttemptContext(job.getConfiguration, tid)
       val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
-      val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
+      val mapContext = InputOutputContext(Compatibility.newMapContext(job.getConfiguration, tid, rr, null, null, null, split))
 
       rr.initialize(split, taskContext)
 

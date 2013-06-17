@@ -18,13 +18,7 @@ package impl
 package mapreducer
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.JobContext
-import org.apache.hadoop.mapreduce.InputFormat
-import org.apache.hadoop.mapreduce.InputSplit
-import org.apache.hadoop.mapreduce.RecordReader
-import org.apache.hadoop.mapreduce.TaskAttemptContext
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
@@ -37,6 +31,7 @@ import rtt.JarBuilder
 import Configurations._
 import ChannelsInputFormat._
 import monitor.Loggable._
+import impl.util.Compatibility
 
 /** An input format that delegates to multiple input formats, one for each
   * input channel. */
@@ -70,9 +65,8 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
     val taggedInputSplit = split.asInstanceOf[TaggedInputSplit]
     new ChannelRecordReader(
       taggedInputSplit,
-      new TaskAttemptContextImpl(
-        extractChannelConfiguration(context, taggedInputSplit.channel),
-        context.getTaskAttemptID))
+      Compatibility.newTaskAttemptContext(extractChannelConfiguration(context, taggedInputSplit.channel),
+                                          context.getTaskAttemptID))
   }
 
 }
