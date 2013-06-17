@@ -39,18 +39,18 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
    2 elements which don't satisfy the predicate must end up in different sequences          ${g1.e3}
                                                                                             """
 
-  "partitionWhen" - new g1 {
+  "partition" - new g1 {
     e1 := prop { (list: List[Int]) =>
-      val groups = partitionWhen((0 :: list))(predicate)
+      val groups = partition((0 :: list))(predicate)
       groups must contain(similarElements).forall
     }
     e2 := prop { (list: List[Int]) =>
-      val groups = partitionWhen(0 :: list)(predicate).toStream
+      val groups = partition(0 :: list)(predicate).toStream
       (zipper(Stream.empty, groups.head, groups.drop(1)).positions.toStream must not contain(sharedElements))
     }
     e3 := prop { (numbers: List[Int]) =>
       val distinct = (0 :: numbers).distinct
-      val groups = partitionWhen(distinct)(alwaysFalse)
+      val groups = partition(distinct)(alwaysFalse)
       groups must have size(distinct.size)
     }
   }
