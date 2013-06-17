@@ -18,6 +18,7 @@ package core
 
 import java.util.{Calendar, UUID}
 import org.apache.hadoop.fs.{FileSystem, Path}
+import com.nicta.scoobi.impl.io.FileSystems
 
 /** store the output path of a Sink as a checkpoint */
 case class Checkpoint(path: Path, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default) {
@@ -33,9 +34,16 @@ case class Checkpoint(path: Path, expiryPolicy: ExpiryPolicy = ExpiryPolicy.defa
   lazy val pathAsString = path.toString
 
   /** setup the checkpoint by possibly deleting/versioning the previous checkpoint file */
-  def setup(implicit sc: ScoobiConfiguration) = expiryPolicy.setup(path, sc)
+  def setup(implicit sc: ScoobiConfiguration) = if (outputIsSuccess(path, sc)) expiryPolicy.setup(path, sc)
+
+  /** @return true if this checkpoint can be used for a further job */
+  def isValid(implicit sc: ScoobiConfiguration) = outputIsSuccess(path, sc) && !hasExpired
+
   /** @return true if the checkpoint has expired */
   def hasExpired(implicit sc: ScoobiConfiguration) = expiryPolicy.hasExpired(path, sc)
+  /** @return true if the files of this checkpoint are the result of a successful job */
+  def outputIsSuccess(outputPath: Path, sc: ScoobiConfiguration) =
+    sc.fileSystem.listStatus(outputPath).toList.exists(_.getPath.getName == "_SUCCESS")
 }
 
 /**
@@ -54,10 +62,9 @@ case class ExpiryPolicy(expiryTime: Long = -1, archive: (Path, ScoobiConfigurati
    */
   def hasExpired(outputPath: Path, sc: ScoobiConfiguration) = {
     val fs = sc.fileSystem
-    (expiryTime <= 0) || (
-    (expiryTime > 0)        &&
-    (fs.exists(outputPath)) &&
-    ((fs.getFileStatus(outputPath).getModificationTime + expiryTime) > Calendar.getInstance.getTimeInMillis))
+    expiryTime <= 0 || !fs.exists(outputPath) ||
+    expiryTime > 0  &&
+    fs.getFileStatus(outputPath).getModificationTime + expiryTime < Calendar.getInstance.getTimeInMillis
   }
 
   /**
@@ -78,9 +85,8 @@ object ExpiryPolicy {
 
   /** rename the previous checkpoint file with an increasing version number */
   val incrementCounterFile: ArchivingPolicy = (p: Path, sc: ScoobiConfiguration) => {
-    val fs = sc.fileSystem
     val newIndex = lastIndex(p, sc).map(_ + 1).getOrElse(1)
-    fs.rename(p, new Path(p.getParent, s"$p-$newIndex"))
+    FileSystems.copyTo(new Path(p.getParent, s"$p-$newIndex"))(sc)(p)
   }
 
   /** rename the previous checkpoint file with an increasing version number, and remove the n oldest files */

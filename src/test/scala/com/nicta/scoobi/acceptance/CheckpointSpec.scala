@@ -20,10 +20,13 @@ import testing.mutable.NictaSimpleJobs
 import testing.{TestFiles, TempFiles}
 import Scoobi._
 import impl.plan.comp.CompNodeData._
-import testing.TestFiles._
+import com.nicta.scoobi.testing.TestFiles._
 import CheckpointEvaluations1._
 import java.io.File
-import com.nicta.scoobi.core.ExpiryPolicy
+import com.nicta.scoobi.core.{ScoobiConfiguration, ExpiryPolicy}
+import org.apache.hadoop.fs.Path
+import com.nicta.scoobi.Scoobi.ScoobiConfiguration
+import com.nicta.scoobi.application.Application.ScoobiConfiguration
 
 class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 
@@ -57,15 +60,36 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
     "the checkpoint files must be written at the right place" ==> { sink.listFiles must not be empty }
   }
 
-  "5. there must be an expiry date on checkpoint files" >> { implicit sc: SC =>
-    val sink = new java.io.File("test")
-    sink.mkdir
-    val list = DList(1, 2, 3).checkpoint(path(sink), expiryPolicy = ExpiryPolicy(expiryTime = 1000*2, archive = ExpiryPolicy.incrementCounterFile)).map(_+1)
-    persist(list)
-    Thread.sleep(3000)
-    persist(list)
-    ok
-  }.pendingUntilFixed
+  "5. there must be an expiry date on checkpoint files" >> {
+    "If the expiry date is passed the expiry policy must be used to archive files" >> {
+      "By default the old files are suppressed" >> { implicit sc: SC =>
+        val archiving = (p: Path, sc: ScoobiConfiguration) => {
+          oldFileIsDeleted = true
+          ExpiryPolicy.deleteOldFile(p, sc)
+        }
+        runListWithExpiry(archiving)
+        "the expired files have been suppressed" ==> { oldFileIsDeleted must beTrue }
+      }
+      "But the old output directory can also be renamed" >> { implicit sc: SC =>
+        val sink = runListWithExpiry(ExpiryPolicy.incrementCounterFile)
+        "the expired files have been renamed" ==> {
+          sink.getParentFile.listFiles.map(_.getName).toSeq must contain((s: String) => s === sink.getName+"-1")
+        }
+      }
+    }
+  }
+
+  def runListWithExpiry(archiving: ExpiryPolicy.ArchivingPolicy)(implicit sc: SC): File = {
+    val sink = TestFiles.createTempDir("test")
+    persist(list(sink.getPath, 1, archiving))
+    Thread.sleep(1000*3)
+    persist(list(sink.getPath, 1, archiving))
+    sink
+  }
+
+  def list(sink: String, expiryInSeconds: Int, archiving: ExpiryPolicy.ArchivingPolicy)(implicit sc: SC) =
+    DList(1, 2, 3).map(_+1).checkpoint(path(sink), expiryPolicy = ExpiryPolicy(expiryTime = 1000 * expiryInSeconds, archive = archiving))
+      .map(_+1)
 
   def checkEvaluations(restart: Boolean = false)(implicit sc: SC) = {
     val sink = TempFiles.createTempDir("test")
@@ -101,5 +125,6 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 object CheckpointEvaluations1 {
   var evaluationsNb1: Int = 0
   var evaluationsNb2: Int = 0
+  var oldFileIsDeleted = false
 }
 
