@@ -268,7 +268,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   private def setDefaultForInMemoryAndLocal = {
-    set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+    set("fs.defaultFS", "file:///")
     set("mapred.job.tracker", "local")
     setDirectories
   }

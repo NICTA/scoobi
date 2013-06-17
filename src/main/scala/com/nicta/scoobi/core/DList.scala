@@ -124,12 +124,39 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    */
   def collect[B : WireFormat](pf: PartialFunction[A, B]): DList[B] = parallelDo((input: A, emitter: Emitter[B]) => if (pf.isDefinedAt(input)) emitter.emit(pf(input)))
 
-  /**Partitions this distributed list into a pair of distributed lists according to some
+  /**
+   * Divide a DList into multiple partitions.
+   */
+  def stratify(n: Int)(f: A => Int): Seq[DList[A]] = {
+    val tagged = map(x => (f(x), x))
+    (0 until n).toSeq map { i =>
+      tagged.collect { case (t, v) if t == i => v }
+    }
+  }
+
+  /**
+   * Randomly divide a DList into multiple partitions where the stratum proportions are
+   * defined by `weights`.
+   */
+  def stratifyWeighted[N : Numeric](weights: Seq[N]): Seq[DList[A]] = {
+    import scala.math.Numeric.Implicits._
+    val total = weights.sum.toDouble
+
+    val accumulatedWeights: Seq[(Double, Int)] = weights.map(_.toDouble).scan(0.0)(_+_).tail.map(_ / total).zipWithIndex
+    def inStratum(k: Double, i: Int) = accumulatedWeights.find(k < _._1).map(_._2 == i).getOrElse(false)
+
+    val randomlyKeyed = map { v => (scala.util.Random.nextDouble(), v) }
+    (0 until weights.size).toSeq map { i => randomlyKeyed.filter(x => inStratum(x._1, i)).map(_._2) }
+  }
+
+  /**
+   * Partitions this distributed list into a pair of distributed lists according to some
    * predicate. The first distributed list consists of elements that satisfy the predicate
-   * and the second of all elements that don't. */
+   * and the second of all elements that don't.
+   */
   def partition(p: A => Boolean): (DList[A], DList[A]) = {
-    val t = map(x => (x, p(x)))
-    (t.filter(_._2).map(_._1), t.filterNot(_._2).map(_._1))
+    val parts = stratify(2)(a => if (p(a)) 0 else 1)
+    (parts(0), parts(1))
   }
 
   /**Converts a distributed list of iterable values into to a distributed list in which
@@ -168,8 +195,6 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /** Build a new distributed list from this list without any duplicate elements. */
   def distinct: DList[A] = {
-    import scala.collection.mutable.{ Set => MSet }
-
     parallelDo(new DoFn[A, (Int, A)] {
 
       /* Cache input values that have not been seen before. And, if a value has been
@@ -255,12 +280,11 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
    *  be used (after)
    */
   def diff(that: DList[A])(implicit cmp: Grouping[A]): DList[A] = {
-    val left: DList[(A, Byte)] = map((_, 1))
+    val left: DList[(A, Byte)]  = map((_, 1))
     val right: DList[(A, Byte)] = that.map((_, -1))
 
     (left ++ right).groupByKey.mapFlatten { case (k, vs) =>
-        for (_ <- 1 to vs.map(_.toInt).sum)
-          yield k
+      Seq.fill(vs.map(_.toInt).sum)(k)
     }
   }
   

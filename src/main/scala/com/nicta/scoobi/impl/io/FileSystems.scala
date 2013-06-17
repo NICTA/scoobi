@@ -19,13 +19,14 @@ package io
 
 import java.io.File
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.fs.{FileUtil, LocalFileSystem, Path, FileSystem}
+import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache.DistributedCache
 import com.nicta.scoobi.{impl, core}
 import core._
 import impl.ScoobiConfiguration._
 import impl.monitor.Loggable._
 import java.net.URI
+import util.Compatibility
 
 /**
  * Utility methods for copying files in the local / remote filesystem or across file systems
@@ -162,6 +163,8 @@ trait FileSystems {
     (equalIgnoreCase(from.getHost, to.getHost) && equalIgnoreCase(from.getScheme, to.getScheme))
   }
 
+  /** @return true if the file is a directory */
+  def isDirectory(fileStatus: FileStatus) = Compatibility.isDirectory(fileStatus)
 }
 
 

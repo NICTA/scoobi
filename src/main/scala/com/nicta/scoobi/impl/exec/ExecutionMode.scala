@@ -24,8 +24,8 @@ import monitor.Loggable._
 import org.apache.hadoop.mapreduce.{TaskAttemptID, Job}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import ScoobiConfigurationImpl._
+import util.Compatibility
 
 trait ExecutionMode extends ShowNode with Optimiser {
   implicit protected def modeLogger: Log
@@ -82,7 +82,7 @@ trait ExecutionMode extends ShowNode with Optimiser {
       sink.configureCompression(job.getConfiguration)
       sink.outputConfigure(job)(sc)
 
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, new TaskAttemptID())
+      val taskContext = Compatibility.newTaskAttemptContext(job.getConfiguration, new TaskAttemptID)
       val rw = outputFormat.getRecordWriter(taskContext)
       val oc = outputFormat.getOutputCommitter(taskContext)
 

@@ -16,17 +16,16 @@
 package com.nicta.scoobi
 package application
 
-import org.apache.hadoop.fs.FileSystem._
 import impl.ScoobiConfiguration
 import ScoobiConfiguration._
 /**
  * Definition of the Cluster addresses: FileSystem + JobTracker
  */
 trait Cluster {
-  /**@return the filesystem address  */
+  /** @return the filesystem address  */
   def fs: String
 
-  /**@return the jobtracker address  */
+  /** @return the jobtracker address  */
   def jobTracker: String
 }
 
@@ -38,7 +37,7 @@ trait ClusterConfiguration extends Cluster {
 
   def configuration: com.nicta.scoobi.core.ScoobiConfiguration
 
-  def fs         = configuration.get(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+  def fs         = configuration.get("fs.defaultFS", "file:///")
   def jobTracker = configuration.get("mapred.job.tracker", "local")
 }
 

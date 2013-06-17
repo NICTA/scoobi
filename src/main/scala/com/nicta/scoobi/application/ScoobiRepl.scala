@@ -26,6 +26,7 @@ import tools.nsc.interpreter.IMain.ReplStrippingWriter
 import tools.nsc.util.ScalaClassLoader.URLClassLoader
 import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
 import core.ScoobiConfiguration
+import impl.io.FileSystems
 
 /** A REPL for Scoobi.
   *
@@ -183,7 +184,7 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
   def ls(path: String) {
     configuration.fileSystem.listStatus(new Path(path)) foreach { fstat =>
       Console.printf("%s%s  %-15s  %-12s  %s\n",
-        if (fstat.isFile) "-" else "d",
+        if (FileSystems.isDirectory(fstat)) "d" else "-",
         fstat.getPermission,
         fstat.getOwner,
         fstat.getBlockSize,

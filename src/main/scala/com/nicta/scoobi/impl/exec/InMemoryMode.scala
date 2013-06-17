@@ -26,9 +26,8 @@ import monitor.Loggable._
 import impl.plan._
 import comp._
 import ScoobiConfiguration._
-import scalaz.Scalaz._
-import org.apache.hadoop.mapreduce.Job
 import Configurations._
+import scalaz.Scalaz._
 
 /**
  * A fast local mode for execution of Scoobi applications.

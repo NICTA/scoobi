@@ -65,7 +65,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
     Thread.sleep(3000)
     persist(list)
     ok
-  }
+  }.pendingUntilFixed
 
   def checkEvaluations(restart: Boolean = false)(implicit sc: SC) = {
     val sink = TempFiles.createTempDir("test")

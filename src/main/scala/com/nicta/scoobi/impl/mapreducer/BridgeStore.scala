@@ -35,6 +35,7 @@ import ScoobiConfiguration._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
 import org.apache.hadoop.io.SequenceFile.CompressionType
+import util.Compatibility
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
@@ -129,7 +130,7 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
   def init {
     if (!initialised)  {
       readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
+        Compatibility.newSequenceFileReader(sc, stat.getPath)
       }
       remainingReaders = readers.toList
       empty = readers.isEmpty || !readNext()

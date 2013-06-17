@@ -17,8 +17,7 @@ package com.nicta.scoobi
 package impl
 package mapreducer
 
-import org.apache.hadoop.mapreduce.{JobID, Job}
-import org.apache.hadoop.mapreduce.task.JobContextImpl
+import org.apache.hadoop.mapreduce._
 import ChannelsInputFormat._
 import scala.collection.JavaConversions._
 import org.specs2.mock.Mockito
@@ -33,6 +32,7 @@ import WireFormat._
 import rtt.RuntimeClass
 import org.apache.hadoop.filecache.DistributedCache
 import testing.TestFiles
+import impl.util.Compatibility
 
 class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """
@@ -88,7 +88,7 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     val job = new Job(sc.configuration, "id")
     val jarBuilder = mock[JarBuilder]
     val configuration = configureSources(job, jarBuilder, Seq(sources:_*))
-    new JobContextImpl(configuration, new JobID)
+    Compatibility.newJobContext(configuration, new JobID)
   }
 
   def stringDataSource(string: String) =  new ConstantStringDataSource(string) {
