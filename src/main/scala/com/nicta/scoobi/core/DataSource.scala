@@ -34,7 +34,7 @@ import impl.util.Compatibility
  * It reads key-values (K, V) from the file system and uses an input converter to create a type A of input
  */
 trait DataSource[K, V, A] extends Source {
-  lazy val id = ids.get
+  val id = ids.get
   def inputFormat: Class[_ <: InputFormat[K, V]]
   def inputCheck(implicit sc: ScoobiConfiguration)
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
@@ -89,7 +89,7 @@ object Source {
       val tid = new TaskAttemptID()
       val taskContext = Compatibility.newTaskAttemptContext(job.getConfiguration, tid)
       val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
-      val mapContext = InputOutputContext(Compatibility.newMapContext(job.getConfiguration, tid, rr, null, null, null, split))
+      val mapContext = new InputOutputContext(Compatibility.newMapContext(job.getConfiguration, tid, rr, null, null, null, split))
 
       rr.initialize(split, taskContext)
 
@@ -119,7 +119,7 @@ trait FromKeyValueConverter {
   def asValue(context: InputOutputContext, key: Any, value: Any): Any
 }
 
-case class InputOutputContext(context: TaskInputOutputContext[Any,Any,Any,Any]) {
+class InputOutputContext(val context: TaskInputOutputContext[Any,Any,Any,Any]) {
   def configuration = context.getConfiguration
   def write(key: Any, value: Any) { context.write(key, value) }
   def incrementCounter(groupName: String, name: String, increment: Long = 1L) {

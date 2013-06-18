@@ -66,7 +66,10 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
   def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_) => combiner }
   /** @return all the combiners of this mscr by tag */
   def combinersByTag  = Map(outputChannels.collect { case out @ GbkOutputChannel(_,Some(combiner),_) => (out.tag, combiner) }: _*)
-
+  /** @return only the GbkOutputChannels */
+  def gbkOutputChannels: Seq[GbkOutputChannel] = outputChannels.collect { case g: GbkOutputChannel => g }
+  /** @return only the floating input channels */
+  def floatingInputChannels: Seq[FloatingInputChannel] = inputChannels.collect { case i: FloatingInputChannel => i }
 }
 
 /**

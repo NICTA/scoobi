@@ -44,7 +44,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
    DataSink[NullWritable, ScoobiWritable[A], A]   with
    Bridge {
 
-  override lazy val id: Int = Data.ids.get
+  override val id: Int = Data.ids.get
   override lazy val stringId = bridgeStoreId
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")

@@ -33,7 +33,7 @@ import impl.util.Compatibility
  * A class that simplifies writing output to different paths and with different types
  * depending on the output channel and required outputs per channel
  */
-class ChannelOutputFormat(val context: TaskInputOutputContext[_, _, _, _]) {
+class ChannelOutputFormat(val context: TaskAttemptContext) {
 
   private val taskContexts: MMap[(Int, Int), TaskAttemptContext] = MMap.empty
   private val recordWriters: MMap[(Int, Int), RecordWriter[_,_]] = MMap.empty
@@ -98,7 +98,7 @@ object ChannelOutputFormat {
   def isResultFile(tag: Int, sinkId: Int) =
     (f: Path) => f.getName match {
       case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == sinkId
-      case _                    => false
+      case _                           => false
     }
 
   private def propertyPrefix(tag: Int, sinkId: Int) = "scoobi.output." + tag + ":" + sinkId

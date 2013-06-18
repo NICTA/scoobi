@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory
  * An output store from a MapReduce job
  */
 trait DataSink[K, V, B] extends Sink { outer =>
-  lazy val id = ids.get
+  val id = ids.get
   lazy val stringId = id.toString
 
   def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[K, V]]

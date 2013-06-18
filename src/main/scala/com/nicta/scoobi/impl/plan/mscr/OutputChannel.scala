@@ -124,7 +124,7 @@ trait MscrOutputChannel extends OutputChannel { outer =>
         channelOutput.write(tag, sink.id, convert(sink, x))
       }
     }
-    def context = InputOutputContext(channelOutput.context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]])
+    def context = new InputOutputContext(channelOutput.context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]])
   }
 
   /** use the output converter of a sink to convert a value to a key/value */

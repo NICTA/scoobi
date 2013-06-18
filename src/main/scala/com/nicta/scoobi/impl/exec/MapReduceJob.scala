@@ -26,7 +26,7 @@ import scalaz.syntax.all._
 
 import core._
 import plan._
-import mscr.{OutputChannels, InputChannels, Mscr}
+import com.nicta.scoobi.impl.plan.mscr.{GbkOutputChannel, OutputChannels, InputChannels, Mscr}
 import rtt._
 import impl.util._
 import reflect.Classes._
@@ -158,21 +158,27 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
     job.setReducerClass(classOf[MscrReducer].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
+    if (mscr.gbkOutputChannels.isEmpty) {
+      job.setNumReduceTasks(0)
+      logger.info("There are no reducers for this job")
+    }
+    else {
+      /**
+       * Calculate the number of reducers to use with a simple heuristic:
+       *
+       * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
+       * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
+       * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
+      val inputBytes: Long = mscr.sources.map(_.inputSize).sum
+      val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
+      val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
+      job.setNumReduceTasks(numReducers)
 
-    /**
-     * Calculate the number of reducers to use with a simple heuristic:
-     *
-     * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
-     * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
-     * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mscr.sources.map(_.inputSize).sum
-    val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
-    val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
-    job.setNumReduceTasks(numReducers)
+      /* Log stats on this MR job. */
+      logger.info("Total input size: " +  Helper.sizeString(inputBytes))
+      logger.info("Number of reducers: " + numReducers)
+    }
 
-    /* Log stats on this MR job. */
-    logger.info("Total input size: " +  Helper.sizeString(inputBytes))
-    logger.info("Number of reducers: " + numReducers)
   }
 
   private def executeJob = {
