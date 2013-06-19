@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ConvertObjectToSequenceFile - com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile</title>
-          <meta name="description" content="ConvertObjectToSequenceFile - com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile" />
-          <meta name="keywords" content="ConvertObjectToSequenceFile com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile" />
+          <title>ExpiryPolicy - com.nicta.scoobi.core.ExpiryPolicy</title>
+          <meta name="description" content="ExpiryPolicy - com.nicta.scoobi.core.ExpiryPolicy" />
+          <meta name="keywords" content="ExpiryPolicy com.nicta.scoobi.core.ExpiryPolicy" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.nicta.scoobi.application.InputsOutputs$ConvertObjectToSequenceFile';
+            var hash = 'com.nicta.scoobi.core.ExpiryPolicy';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -29,24 +29,24 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.application">application</a>.<a href="InputsOutputs.html" class="extype" name="com.nicta.scoobi.application.InputsOutputs">InputsOutputs</a></p>
-        <h1>ConvertObjectToSequenceFile</h1>
+        <a href="ExpiryPolicy$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
+        <h1><a href="ExpiryPolicy$.html" title="Go to companion">ExpiryPolicy</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ConvertObjectToSequenceFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">ExpiryPolicy</span><span class="params">(<span name="expiryTime">expiryTime: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span> = <span class="defval" name="scala.concurrent.duration.Duration.Zero">...</span></span>, <span name="archive">archive: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">ExpiryPolicy.deleteOldFile</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Define the expiry policy for checkpoint files</p><p>You can define</p><ul><li>the expiry time: how long a checkpoint file is valid (long value representing milliseconds)</li><li>the archiving strategy: what you do with an expired file (delete it, rename it,...)</li></ul></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile"><span>ConvertObjectToSequenceFile</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.ExpiryPolicy"><span>ExpiryPolicy</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -84,16 +84,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(o:com.nicta.scoobi.core.DObject[T]):InputsOutputs.this.ConvertObjectToSequenceFile[T]"></a>
-      <a id="&lt;init&gt;:ConvertObjectToSequenceFile[T]"></a>
+              <ol><li name="com.nicta.scoobi.core.ExpiryPolicy#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(expiryTime:scala.concurrent.duration.FiniteDuration,archive:(org.apache.hadoop.fs.Path,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.core.ExpiryPolicy"></a>
+      <a id="&lt;init&gt;:ExpiryPolicy"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ConvertObjectToSequenceFile</span><span class="params">(<span name="o">o: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.T">T</span>]</span>)</span>
+        <span class="name">ExpiryPolicy</span><span class="params">(<span name="expiryTime">expiryTime: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span> = <span class="defval" name="scala.concurrent.duration.Duration.Zero">...</span></span>, <span name="archive">archive: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">ExpiryPolicy.deleteOldFile</span></span>)</span>
       </span>
       </h4>
       
@@ -171,6 +171,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.ExpiryPolicy#archive" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="archive:(org.apache.hadoop.fs.Path,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
+      <a id="archive:(Path,ScoobiConfiguration)⇒Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">archive</span><span class="result">: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -213,19 +226,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
+    </li><li name="com.nicta.scoobi.core.ExpiryPolicy#expiryTime" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="expiryTime:scala.concurrent.duration.FiniteDuration"></a>
+      <a id="expiryTime:FiniteDuration"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">expiryTime</span><span class="result">: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -255,19 +268,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
+    </li><li name="com.nicta.scoobi.core.ExpiryPolicy#hasExpired" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hasExpired(outputPath:org.apache.hadoop.fs.Path,sc:com.nicta.scoobi.core.ScoobiConfiguration):Boolean"></a>
+      <a id="hasExpired(Path,ScoobiConfiguration):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hasExpired</span><span class="params">(<span name="outputPath">outputPath: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="sc">sc: <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if there is no checkpoint file or if an expiry time is set and if there exists a checkpoint file that's older than now - expiryTime
+</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -320,19 +334,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile#o" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="o:com.nicta.scoobi.core.DObject[T]"></a>
-      <a id="o:DObject[T]"></a>
+    </li><li name="com.nicta.scoobi.core.ExpiryPolicy#setup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="setup(outputPath:org.apache.hadoop.fs.Path,sc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="setup(Path,ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">o</span><span class="result">: <a href="../core/DObject.html" class="extype" name="com.nicta.scoobi.core.DObject">DObject</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.T">T</span>]</span>
+        <span class="name">setup</span><span class="params">(<span name="outputPath">outputPath: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="sc">sc: <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Apply the versioning policy before trying to use the checkpoint file again
+</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -346,32 +361,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile#toSequenceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="toSequenceFile[K,V](path:String,overwrite:Boolean,check:(org.apache.hadoop.fs.Path,Boolean,com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit,checkpoint:Boolean,expiryPolicy:com.nicta.scoobi.core.ExpiryPolicy)(implicitev:&lt;:&lt;[T,(K,V)],implicitks:InputsOutputs.this.SeqSchema[K],implicitvs:InputsOutputs.this.SeqSchema[V],implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):ConvertObjectToSequenceFile.this.o.T"></a>
-      <a id="toSequenceFile[K,V](String,Boolean,(Path,Boolean,ScoobiConfiguration)⇒Unit,Boolean,ExpiryPolicy)(&lt;:&lt;[T,(K,V)],SeqSchema[K],SeqSchema[V],ScoobiConfiguration):T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../../package.html">Sink.defaultOutputCheck</a></span></span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="expiryPolicy">expiryPolicy: <a href="../core/ExpiryPolicy.html" class="extype" name="com.nicta.scoobi.core.ExpiryPolicy">ExpiryPolicy</a> = <span class="symbol"><span class="name"><a href="../../../package.html">ExpiryPolicy.default</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.T">T</span>, (<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.toSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.toSequenceFile.V">V</span>)]</span>, <span name="ks">ks: <a href="InputsOutputs.html#SeqSchema[A]=com.nicta.scoobi.io.sequence.SeqSchema[A]" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.toSequenceFile.K">K</span>]</span>, <span name="vs">vs: <a href="InputsOutputs.html#SeqSchema[A]=com.nicta.scoobi.io.sequence.SeqSchema[A]" class="extmbr" name="com.nicta.scoobi.application.InputsOutputs.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.application.InputsOutputs.ConvertObjectToSequenceFile.toSequenceFile.V">V</span>]</span>, <span name="sc">sc: <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <a href="../core/DObject.html#T=com.nicta.scoobi.core.DObject[A]" class="extmbr" name="com.nicta.scoobi.core.DObject.T">T</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -429,7 +418,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

@@ -85,7 +85,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Checkpoint.html"><span class="name">Checkpoint</span></a><span class="params">(<span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="Checkpoint.html"><span class="name">Checkpoint</span></a><span class="params">(<span name="path">path: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>, <span name="expiryPolicy">expiryPolicy: <a href="ExpiryPolicy.html" class="extype" name="com.nicta.scoobi.core.ExpiryPolicy">ExpiryPolicy</a> = <span class="symbol">ExpiryPolicy.default</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">store the output path of a Sink as a checkpoint</p>
@@ -264,6 +264,19 @@ environment
       </h4>
       <p class="comment cmt">An object holder which can hold a distributed value
 </p>
+    </li><li name="com.nicta.scoobi.core.ExpiryPolicy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExpiryPolicyextendsProductwithSerializable"></a>
+      <a id="ExpiryPolicy:ExpiryPolicy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ExpiryPolicy.html"><span class="name">ExpiryPolicy</span></a><span class="params">(<span name="expiryTime">expiryTime: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span> = <span class="defval" name="scala.concurrent.duration.Duration.Zero">...</span></span>, <span name="archive">archive: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">ExpiryPolicy.deleteOldFile</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Define the expiry policy for checkpoint files</p>
     </li><li name="com.nicta.scoobi.core.Grouped" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="Grouped[K,V]extendsAnyRef"></a>
       <a id="Grouped[K,V]:Grouped[K,V]"></a>
@@ -357,15 +370,15 @@ environment
       <p class="comment cmt">Convert an InputFormat's key-value types to the type produced by a source
 </p>
     </li><li name="com.nicta.scoobi.core.InputOutputContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InputOutputContextextendsProductwithSerializable"></a>
+      <a id="InputOutputContextextendsAnyRef"></a>
       <a id="InputOutputContext:InputOutputContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="InputOutputContext.html"><span class="name">InputOutputContext</span></a><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="InputOutputContext.html"><span class="name">InputOutputContext</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
@@ -730,6 +743,19 @@ added to the classpath.</p>
       </span>
       <span class="symbol">
         <a href="DoFn$.html"><span class="name">DoFn</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.ExpiryPolicy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExpiryPolicy"></a>
+      <a id="ExpiryPolicy:ExpiryPolicy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ExpiryPolicy$.html"><span class="name">ExpiryPolicy</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       

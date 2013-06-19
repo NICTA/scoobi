@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>SeqSource - com.nicta.scoobi.io.sequence.SeqSource</title>
-          <meta name="description" content="SeqSource - com.nicta.scoobi.io.sequence.SeqSource" />
-          <meta name="keywords" content="SeqSource com.nicta.scoobi.io.sequence.SeqSource" />
+          <title>InMemoryInputOutputContext - com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext</title>
+          <meta name="description" content="InMemoryInputOutputContext - com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext" />
+          <meta name="keywords" content="InMemoryInputOutputContext com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -17,7 +17,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.nicta.scoobi.io.sequence.SeqSource';
+            var hash = 'com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -30,8 +30,8 @@
         <body class="type">
       <div id="definition">
         <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.sequence">sequence</a></p>
-        <h1>SeqSource</h1>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.mapreducer">mapreducer</a></p>
+        <h1>InMemoryInputOutputContext</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,16 +40,14 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqSource</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.A">A</span>]</span>
+        <span class="name">InMemoryInputOutputContext</span><span class="result"> extends <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This context holds values in memory, by tag, in order to pass them later on to output channels for writing
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Source">Source</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="CheckedSeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource">CheckedSeqSource</a></div>
+          <div class="superTypes hiddenContent"><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -67,7 +65,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.io.sequence.SeqSource"><span>SeqSource</span></li><li class="in" name="com.nicta.scoobi.core.DataSource"><span>DataSource</span></li><li class="in" name="com.nicta.scoobi.core.Source"><span>Source</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext"><span>InMemoryInputOutputContext</span></li><li class="in" name="com.nicta.scoobi.core.InputOutputContext"><span>InputOutputContext</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -87,16 +85,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.nicta.scoobi.io.sequence.SeqSource#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(paths:Seq[String],inputFormat:Class[org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat[K,V]],inputConverter:com.nicta.scoobi.core.InputConverter[K,V,A],checkFileTypes:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit):com.nicta.scoobi.io.sequence.SeqSource[K,V,A]"></a>
-      <a id="&lt;init&gt;:SeqSource[K,V,A]"></a>
+              <ol><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(context:org.apache.hadoop.mapreduce.TaskInputOutputContext[Any,Any,Any,Any]):com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext"></a>
+      <a id="&lt;init&gt;:InMemoryInputOutputContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SeqSource</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="inputFormat">inputFormat: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat">SequenceFileInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>]] = <span class="defval" name="SequenceInput.defaultSequenceInputFormat[Nothing, Nothing]">...</span></span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.A">A</span>]</span>, <span name="checkFileTypes">checkFileTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Source.defaultInputCheck</span></span>)</span>
+        <span class="name">InMemoryInputOutputContext</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.hadoop.mapreduce.TaskInputOutputContext">TaskInputOutputContext</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Any">Any</span>]</span>)</span>
       </span>
       </h4>
       
@@ -187,32 +185,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#check" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit"></a>
-      <a id="check:(Seq[Path],ScoobiConfiguration)⇒Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">check</span><span class="result">: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#checkInputPathType" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="checkInputPathType(p:org.apache.hadoop.fs.Path)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
-      <a id="checkInputPathType(Path)(ScoobiConfiguration):Unit"></a>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext#clear" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="clear:Unit"></a>
+      <a id="clear:Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">checkInputPathType</span><span class="params">(<span name="p">p: <span class="extype" name="org.apache.hadoop.fs.Path">Path</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">clear</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -229,6 +214,19 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#configuration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="configuration:org.apache.hadoop.conf.Configuration"></a>
+      <a id="configuration:Configuration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">configuration</span><span class="result">: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -271,19 +269,6 @@
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSource#fromKeyValueConverter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromKeyValueConverter:com.nicta.scoobi.core.InputConverter[K,V,A]"></a>
-      <a id="fromKeyValueConverter:InputConverter[K,V,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromKeyValueConverter</span><span class="result">: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">map the key-values of a source's InputFormat to the final type produced by it</p><div class="fullcomment"><div class="comment cmt"><p>map the key-values of a source's InputFormat to the final type produced by it</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -297,6 +282,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#getCounter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getCounter(groupName:String,name:String):Long"></a>
+      <a id="getCounter(String,String):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext#getValues" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getValues(tag:Int):Option[Vector[Any]]"></a>
+      <a id="getValues(Int):Option[Vector[Any]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getValues</span><span class="params">(<span name="tag">tag: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../scala/package.html#Vector[+A]=scala.collection.immutable.Vector[A]" class="extmbr" name="scala.Vector">Vector</a>[<span class="extype" name="scala.Any">Any</span>]]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -310,85 +321,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSource#id" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="id:Int"></a>
-      <a id="id:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a unique id for this source</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#inputCheck" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="inputCheck(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
-      <a id="inputCheck(ScoobiConfiguration):Unit"></a>
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#incrementCounter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="incrementCounter(groupName:String,name:String,increment:Long):Unit"></a>
+      <a id="incrementCounter(String,String,Long):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputCheck</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">incrementCounter</span><span class="params">(<span name="groupName">groupName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="increment">increment: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">1L</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Check if the input path exists, and optionally the expected key/value types match those in the file.</p><div class="fullcomment"><div class="comment cmt"><p>Check if the input path exists, and optionally the expected key/value types match those in the file.
-For efficiency, the type checking will only check one file per dir</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a> → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#inputConfigure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="inputConfigure(job:org.apache.hadoop.mapreduce.Job)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
-      <a id="inputConfigure(Job)(ScoobiConfiguration):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">inputConfigure</span><span class="params">(<span name="job">job: <span class="extype" name="org.apache.hadoop.mapreduce.Job">Job</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">configure the source.</p><div class="fullcomment"><div class="comment cmt"><p>configure the source.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a> → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#inputConverter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="inputConverter:com.nicta.scoobi.core.InputConverter[K,V,A]"></a>
-      <a id="inputConverter:InputConverter[K,V,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">inputConverter</span><span class="result">: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.A">A</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a> → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#inputFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="inputFormat:Class[org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat[K,V]]"></a>
-      <a id="inputFormat:Class[SequenceFileInputFormat[K,V]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">inputFormat</span><span class="result">: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat">SequenceFileInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>]]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">the InputFormat specifying the type of input for this source</p><div class="fullcomment"><div class="comment cmt"><p>the InputFormat specifying the type of input for this source</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a> → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#inputSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="inputSize(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Long"></a>
-      <a id="inputSize(ScoobiConfiguration):Long"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">inputSize</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the size in bytes of the data being input by this source</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a> → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -454,7 +399,20 @@ For efficiency, the type checking will only check one file per dir</p></div><dl 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SeqSource#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.InputOutputContext#tick" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tick:Unit"></a>
+      <a id="tick:Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tick</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -466,7 +424,20 @@ For efficiency, the type checking will only check one file per dir</p></div><dl 
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext#values" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="values:Map[Int,Vector[Any]]"></a>
+      <a id="values:Map[Int,Vector[Any]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">values</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <a href="../../../../../scala/package.html#Vector[+A]=scala.collection.immutable.Vector[A]" class="extmbr" name="scala.Vector">Vector</a>[<span class="extype" name="scala.Any">Any</span>]]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -515,6 +486,19 @@ For efficiency, the type checking will only check one file per dir</p></div><dl 
                 <span class="name">@throws</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext#write" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="write(k:Any,v:Any):Unit"></a>
+      <a id="write(Any,Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">write</span><span class="params">(<span name="k">k: <span class="extype" name="scala.Any">Any</span></span>, <span name="v">v: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext">InMemoryInputOutputContext</a> → <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -524,10 +508,8 @@ For efficiency, the type checking will only check one file per dir</p></div><dl 
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.nicta.scoobi.core.DataSource">
-              <h3>Inherited from <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSource.A">A</span>]</h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.Source">
-              <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></h3>
+        <div class="parent" name="com.nicta.scoobi.core.InputOutputContext">
+              <h3>Inherited from <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
