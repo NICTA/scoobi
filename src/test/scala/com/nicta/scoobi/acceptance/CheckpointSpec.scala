@@ -23,12 +23,13 @@ import impl.plan.comp.CompNodeData._
 import com.nicta.scoobi.testing.TestFiles._
 import CheckpointEvaluations1._
 import java.io.File
-import com.nicta.scoobi.core.{ScoobiConfiguration, ExpiryPolicy}
+import com.nicta.scoobi.core.ExpiryPolicy
 import org.apache.hadoop.fs.Path
-import com.nicta.scoobi.Scoobi.ScoobiConfiguration
 import com.nicta.scoobi.application.Application.ScoobiConfiguration
+import scala.concurrent.duration._
+import org.specs2.time.NoTimeConversions
 
-class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
+class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConversions { sequential
 
   "1. It is possible to add checkpoint files which are reused on a subsequent run" >> { implicit sc: SC =>
     checkEvaluations()
@@ -81,14 +82,14 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles { sequential
 
   def runListWithExpiry(archiving: ExpiryPolicy.ArchivingPolicy)(implicit sc: SC): File = {
     val sink = TestFiles.createTempDir("test")
-    persist(list(sink.getPath, 1, archiving))
+    persist(list(sink.getPath, 1 second, archiving))
     Thread.sleep(1000*3)
-    persist(list(sink.getPath, 1, archiving))
+    persist(list(sink.getPath, 1 second, archiving))
     sink
   }
 
-  def list(sink: String, expiryInSeconds: Int, archiving: ExpiryPolicy.ArchivingPolicy)(implicit sc: SC) =
-    DList(1, 2, 3).map(_+1).checkpoint(path(sink), expiryPolicy = ExpiryPolicy(expiryTime = 1000 * expiryInSeconds, archive = archiving))
+  def list(sink: String, expiry: FiniteDuration, archiving: ExpiryPolicy.ArchivingPolicy)(implicit sc: SC) =
+    DList(1, 2, 3).map(_+1).checkpoint(path(sink), expiryPolicy = ExpiryPolicy(expiryTime = expiry, archive = archiving))
       .map(_+1)
 
   def checkEvaluations(restart: Boolean = false)(implicit sc: SC) = {

@@ -22,10 +22,12 @@ import org.apache.hadoop.io.{Writable, Text, IntWritable}
 import org.apache.avro.Schema
 import Scoobi._
 import io.text._
-import core.{Source, Sink, DataSource, DataSink, OutputConverter}
+import core.{Source, Sink, DataSource, ExpiryPolicy, OutputConverter}
 import org.apache.avro.generic.GenericRecord
+import org.specs2.time.NoTimeConversions
+import org.apache.hadoop.fs.Path
 
-class LoadAndPersist extends ScoobiPage { def is = "Load and persist data".title^ s2"""
+class LoadAndPersist extends ScoobiPage with NoTimeConversions { def is = "Load and persist data".title^ s2"""
 
 `DList` objects are merely nodes in a graph describing a series of data computation we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. In the [WordCount example](Application.html) we simply use in memory data and we print out the result of the computations. However the data used by Hadoop jobs is generally *loaded* from files and the results *persisted* to files. Let's see how to specify this.
 
@@ -746,7 +748,7 @@ iterate6(ints).persist
 
 When you have a big pipeline of consecutive computations it can be very time-consuming to start the process all over again if you've just changed some function down the track.
 
-In order to avoid this you can create *checkpoints*, that is sinks which will persist data in between executions:  ${snippet{
+In order to avoid this you can create *checkpoints*, that is sinks which will persist data in between executions: ${snippet{
 // 8<--
 val isEven = (i: Int) => i % 2 == 0
 // 8<--
@@ -762,6 +764,43 @@ val list2 = DList(1, 2, 3).map(_ + 1).toAvroFile("path", overwrite = true, check
 If you run the `after` program twice, the second time the program is run, only the `filter` operation will be executed taking its input data from the saved Avro file.
 
 *Important limitation*: you can't use a `Text` sink as a checkpoint because Text file sinks can't not be used as source files.
+
+##### Default checkpoint
+
+It is not necessary to declare a file type in order to create a checkpoint ${snippet{
+  // 8<--
+  val isEven = (i: Int) => i % 2 == 0
+  // 8<--
+  val list = DList(1, 2, 3).map(_ + 1).checkpoint("path").filter(isEven)
+}}
+
+In this case a SequenceFile will be created under to hold the checkpoint data.
+
+##### Expiry policy
+
+By default the checkpoint files will always persist on disk and be reused the next time you run your application. However you can, if you want, specify an expiry time: ${snippet{
+  import scala.concurrent.duration._
+  val list = DList(1, 2, 3).map(_ + 1).checkpoint("path", expiryPolicy = ExpiryPolicy(expiryTime = 1 day)).filter(_ > 2)
+}}
+
+When the file is expired, it will be simply overwritten. If this is a concern for you, there is another parameter "archiving" which can be used to specify what to do with the old checkpoint file:  ${snippet{
+  import scala.concurrent.duration._
+
+  // append a counter to the old checkpoint file name
+  val list1 = DList(1, 2, 3).map(_ + 1).checkpoint("path",
+    expiryPolicy = ExpiryPolicy(expiryTime = 1 day, archive = ExpiryPolicy.incrementCounterFile)).filter(_ > 2)
+
+  // append a counter to the old checkpoint file name and remove the 5 oldest files
+  val list2 = DList(1, 2, 3).map(_ + 1).checkpoint("path",
+    expiryPolicy = ExpiryPolicy(expiryTime = 1 day, archive = ExpiryPolicy.incrementCounterAndRemoveLast(5))).filter(_ > 2)
+
+  // append a counter to the old checkpoint file name and remove the 5 oldest files
+  val customArchiving = (path: Path, sc: ScoobiConfiguration) => {
+    sc.fileSystem.rename(path, new Path(path.toUri+"-old")); ()
+  }
+  val list3 = DList(1, 2, 3).map(_ + 1).checkpoint("path",
+    expiryPolicy = ExpiryPolicy(expiryTime = 1 day, archive = customArchiving)).filter(_ > 2)
+}}
 
 ------
   """

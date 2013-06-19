@@ -19,6 +19,7 @@ package core
 import java.util.{Calendar, UUID}
 import org.apache.hadoop.fs.{FileSystem, Path}
 import com.nicta.scoobi.impl.io.FileSystems
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
 /** store the output path of a Sink as a checkpoint */
 case class Checkpoint(path: Path, expiryPolicy: ExpiryPolicy = ExpiryPolicy.default) {
@@ -55,16 +56,16 @@ case class Checkpoint(path: Path, expiryPolicy: ExpiryPolicy = ExpiryPolicy.defa
  *  - the archiving strategy: what you do with an expired file (delete it, rename it,...)
  *
  */
-case class ExpiryPolicy(expiryTime: Long = -1, archive: (Path, ScoobiConfiguration) => Unit = ExpiryPolicy.deleteOldFile) {
+case class ExpiryPolicy(expiryTime: FiniteDuration = Duration.Zero, archive: (Path, ScoobiConfiguration) => Unit = ExpiryPolicy.deleteOldFile) {
 
   /**
-   * @return true if an expiry time is set and if there exists a checkpoint file that's older than now - expiryTime
+   * @return true if there is no checkpoint file or if an expiry time is set and if there exists a checkpoint file that's older than now - expiryTime
    */
   def hasExpired(outputPath: Path, sc: ScoobiConfiguration) = {
     val fs = sc.fileSystem
-    expiryTime <= 0 || !fs.exists(outputPath) ||
-    expiryTime > 0  &&
-    fs.getFileStatus(outputPath).getModificationTime + expiryTime < Calendar.getInstance.getTimeInMillis
+    expiryTime.toMillis <= 0 && !fs.exists(outputPath) ||
+    expiryTime.toMillis > 0  &&
+    fs.getFileStatus(outputPath).getModificationTime + expiryTime.toMillis < Calendar.getInstance.getTimeInMillis
   }
 
   /**
