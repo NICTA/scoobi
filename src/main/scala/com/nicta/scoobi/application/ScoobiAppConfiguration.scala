@@ -60,9 +60,13 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
     else                  c
   }
 
+  /** @return true if there are some configuration directories for hadoop */
+  def isHadoopConfigured = hadoopConfDirs.nonEmpty
+
+  /** @return a configuration object set with the properties found in the hadoop directories */
   def configurationFromConfigurationDirectory(conf: Configuration) = {
     conf.clear
-    if (hadoopConfDirs.isEmpty) logger.error(s"No configuration directory could be found. $$HADOOP_HOME is $HADOOP_HOME, $$HADOOP_CONF_DIR is $HADOOP_CONF_DIR")
+    if (!isHadoopConfigured) logger.error(s"No configuration directory could be found. $$HADOOP_HOME is $HADOOP_HOME, $$HADOOP_CONF_DIR is $HADOOP_CONF_DIR")
 
     hadoopConfDirs.foreach { dir =>
       Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>

@@ -155,7 +155,8 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
     intp.beQuietDuring {
       imports.foreach(i => intp.addImports(i))
       configuration.addClassLoader(intp.classLoader)
-      scoobiInterpreter.cluster
+      if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
+      else                                      scoobiInterpreter.local
       scoobiInterpreter.setDefaultArgs
       woof()
     }
