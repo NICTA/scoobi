@@ -54,7 +54,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
     BridgeStore.runtimeClasses.getOrElseUpdate(typeName, ScoobiWritable(typeName, wf))
 
   /** type of the generated class for this Bridge */
-  val typeName = "BS" + bridgeStoreId
+  lazy val typeName = "BS" + checkpoint.map(c => scala.util.hashing.MurmurHash3.stringHash(c.path.toUri.toString)).getOrElse(bridgeStoreId)
 
   def path(implicit sc: ScoobiConfiguration) = checkpoint.map(_.path).getOrElse(new Path(sc.workingDirectory, "bridges/" + bridgeStoreId))
 
@@ -67,7 +67,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
   def outputPath(implicit sc: ScoobiConfiguration) = Some(path)
 
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
-
 
   /* Input (i.e. output of bridge) */
   lazy val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]

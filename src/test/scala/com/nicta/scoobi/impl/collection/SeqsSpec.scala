@@ -20,8 +20,9 @@ package collection
 import Seqs._
 import org.specs2._
 import scalaz.Zipper
-import specification.Grouped
 import Zipper._
+import scalaz.syntax.cojoin._
+import specification.Grouped
 import testing.UnitSpecification
 
 class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is = s2"""
@@ -46,7 +47,7 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
     }
     e2 := prop { (list: List[Int]) =>
       val groups = partition(0 :: list)(predicate).toStream
-      (zipper(Stream.empty, groups.head, groups.drop(1)).positions.toStream must not contain(sharedElements))
+      (zipper(Stream.empty, groups.head, groups.drop(1)).cojoin.toStream must not contain(sharedElements))
     }
     e3 := prop { (numbers: List[Int]) =>
       val distinct = (0 :: numbers).distinct
