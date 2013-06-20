@@ -33,7 +33,8 @@ object Helper {
 
   /** Determine whether a path exists or not. */
   def pathExists(p: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Boolean = tryOrElse {
-    FileSystem.get(p.toUri, conf).exists(p) || getFileStatus(p, pathFilter).nonEmpty
+    val fs = FileSystem.get(p.toUri, conf)
+    (fs.isFile(p) && fs.exists(p)) || getFileStatus(p, pathFilter).nonEmpty
   }(false)
 
   /** Get a Set of FileStatus objects for a given Path. */
