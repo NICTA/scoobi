@@ -33,17 +33,14 @@ object Helper {
 
   /** Determine whether a path exists or not. */
   def pathExists(p: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Boolean = tryOrElse {
-    getFileStatus(p, pathFilter).size > 0
+    FileSystem.get(path.toUri, conf).exists(p) || getFileStatus(p, pathFilter).nonEmpty
   }(false)
 
   /** Get a Set of FileStatus objects for a given Path. */
   def getFileStatus(path: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Seq[FileStatus] =
     tryOrElse {
-      ?(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)) match {
-        case None    => Seq.empty
-        case Some(s) => s.toSeq
-      }
-    }(Seq.empty)
+      Option(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)).map(_.toSeq).getOrElse(Seq())
+    }(Seq())
 
   /** Only get one file per dir. This helps when checking correctness of input data by reducing
     *  the number of files to check. We don't want to check every file as its expensive */
