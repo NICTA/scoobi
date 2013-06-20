@@ -43,7 +43,7 @@ object build extends Build {
     base = file("."),
     settings = Defaults.defaultSettings ++
                scoobiSettings           ++
-               dependenciesSettings     ++
+               dependencies.settings    ++
                compilationSettings      ++
                testingSettings          ++
                siteSettings             ++
@@ -57,46 +57,7 @@ object build extends Build {
     name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
-    scalaVersion := "2.10.1")
-
-  lazy val dependenciesSettings: Seq[Settings] = Seq(
-    libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
-      val hadoop =
-        if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
-                                          "org.apache.avro"   % "avro-mapred"   % "1.7.4")
-        else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
-                                          "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
-                                          "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
-
-      Seq(
-      "javassist"                         %  "javassist"                 % "3.12.1.GA",
-      "org.apache.avro"                   %  "avro"                      % "1.7.4",
-      "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
-      "com.googlecode.kiama"              %% "kiama"                     % "1.5.0",
-      "com.github.mdr"                    %% "ascii-graphs"              % "0.0.3",
-      "com.chuusai"                       %% "shapeless"                 % "1.2.4",
-      "org.scalaz"                        %% "scalaz-core"               % "7.0.0",
-      "org.scalaz"                        %% "scalaz-concurrent"         % "7.0.0",
-      "org.scalaz"                        %% "scalaz-scalacheck-binding" % "7.0.0"            intransitive(),
-      "org.scalaz"                        %% "scalaz-typelevel"          % "7.0.0"            intransitive(),
-      "org.scalaz"                        %% "scalaz-xml"                % "7.0.0"            intransitive(),
-      "org.scala-lang"                    %  "scala-compiler"            % scalaVersion,
-      "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
-      "org.specs2"                        %% "specs2"                    % "2.0"              % "optional",
-      "org.pegdown"                       %  "pegdown"                   % "1.2.1"            % "test",
-      "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
-      "org.scala-tools.testing"           %  "test-interface"            % "0.5"              % "test",
-      "org.hamcrest"                      %  "hamcrest-all"              % "1.1"              % "test",
-      "org.specs2"                        %  "classycle"                 % "1.4.1"            % "test",
-      "junit"                             %  "junit"                     % "4.7"              % "test",
-      "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
-      "org.apache.commons"                %  "commons-compress"          % "1.0"              % "test"
-    ) ++ hadoop },
-    resolvers ++= Seq(
-      "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-      "sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
-      "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
-  )
+    scalaVersion := "2.10.2")
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
