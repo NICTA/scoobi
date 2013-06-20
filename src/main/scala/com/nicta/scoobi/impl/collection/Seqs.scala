@@ -74,12 +74,15 @@ trait Seqs {
    * @return a group elements of a sequence into groups so that for each element of a group there is at least another
    *         element in the same group verifying the predicate
    */
-  def partition[A](seq: Seq[A])(predicate: (A, A) => Boolean): Seq[Seq[A]] =
-    seq.foldLeft(Seq[Seq[A]]()) { (res, cur) =>
-      val groups = res.toZipper(Seq())
-      groups.findZor(group => group.isEmpty || group.exists(predicate(_, cur)),
-                              groups.insertRight(Seq[A]()))
-            .modify(_ :+ cur).toStream.toSeq
+  def partition[A](seq: Seq[A])(relation: (A, A) => Boolean) =
+    seq.foldLeft(Seq[NonEmptyList[A]]()) { (res, cur) =>
+      res.toList match {
+        case Nil          => Seq(nels(cur))
+        case head :: tail =>
+          val groups = nel(head, tail).toZipper
+          groups.findZ(_.list.exists(relation(_, cur))).map(_.modify(_ :::> List(cur))).
+            getOrElse(groups.insertRight(nels(cur))).toStream.toSeq
+      }
     }
 
   /** add a to Nel method on a sequence to turn it into a Nel, depending on the existence of 'head' */

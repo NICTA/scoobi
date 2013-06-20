@@ -19,8 +19,9 @@ package collection
 
 import Seqs._
 import org.specs2._
-import scalaz.Zipper
+import scalaz.{NonEmptyList, Zipper}
 import Zipper._
+import NonEmptyList._
 import scalaz.syntax.cojoin._
 import specification.Grouped
 import testing.UnitSpecification
@@ -35,40 +36,44 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
  ${ split(Seq(1, 2, 3, 4), 3, Splitted) === Seq(Splitted(0, 3, Seq(1, 2, 3, 4)), Splitted(3, 1, Seq(1, 2, 3, 4))) }
 
  A sequence can be partitioned into sub-sequences
-   for each element in a subsequence, there exists another element satisfying a predicate   ${g1.e1}
-   and there doesn't exist an element in any other subsequence satisfying the predicate     ${g1.e2}
-   2 elements which don't satisfy the predicate must end up in different sequences          ${g1.e3}
+   for each element in a group, there exists at least another related element in the group  ${g1.e1}
+   for each element in a group, there doesn't exist a related element in any other group    ${g1.e2}
+   2 elements which are not related must end up in different groups                         ${g1.e3}
                                                                                             """
 
   "partition" - new g1 {
-    e1 := prop { (list: List[Int]) =>
-      val groups = partition((0 :: list))(predicate)
-      groups must contain(similarElements).forall
+    e1 := prop { (list: List[Int], relation: (Int, Int) => Boolean) =>
+      val groups = partition(list)(relation)
+      groups must contain(relatedElements(relation)).forall
     }
-    e2 := prop { (list: List[Int]) =>
-      val groups = partition(0 :: list)(predicate).toStream
-      (zipper(Stream.empty, groups.head, groups.drop(1)).cojoin.toStream must not contain(sharedElements))
+
+    e2 := prop { (list: List[Int], relation: (Int, Int) => Boolean) =>
+      val groups = partition(list)(relation)
+      groups match {
+        case Nil          => list must beEmpty
+        case head :: tail =>
+          nel(head, tail).toZipper.cojoin.toStream must not contain(relatedElementsAcrossGroups(relation))
+      }
     }
-    e3 := prop { (numbers: List[Int]) =>
-      val distinct = (0 :: numbers).distinct
-      val groups = partition(distinct)(alwaysFalse)
-      groups must have size(distinct.size)
+
+    e3 := prop { (list: List[Int]) =>
+      val neverRelated = (n1: Int, n2: Int) => false
+      val groups = partition(list)(neverRelated)
+      groups must have size(list.size)
     }
   }
 
-  val predicate   = (n1: Int, n2: Int) => math.abs(n1 - n2) % 3 == 0
-  val alwaysFalse = (n1: Int, n2: Int) => false
-
-  /** check if all elements of the sequence are "connected" with each other through the predicate */
-  def similarElements = (seq: Seq[Int]) => {
-    seq must contain((e1: Int) => seq must contain((e2: Int) => predicate(e1, e2))).atLeastOnce
-  }
-  /** check that one group (the zipper's focus) doesn't share any element with the other groups */
-  def sharedElements = (groups: Zipper[Seq[Int]]) =>
-    groups.focus must not contain { e1: Int =>
-      (groups.lefts ++ groups.rights) must not contain((group: Seq[Int]) => group.contains((e2: Int) => predicate(e1, e2)))
+  def relatedElements(relation: (Int, Int) => Boolean) = (group: NonEmptyList[Int]) => {
+    group.toZipper.cojoin.toStream must contain { zipper: Zipper[Int] =>
+      (zipper.lefts ++ zipper.rights) must contain(relation.curried(zipper.focus)).forall
     }
+  }
 
+  def relatedElementsAcrossGroups(relation: (Int, Int) => Boolean) =
+    (groups: Zipper[NonEmptyList[Int]]) =>
+      groups.focus.list must not contain { e1: Int =>
+        (groups.lefts ++ groups.rights) must not contain(relatedElements(relation))
+      }
 
   case class Splitted(offset: Int, length: Int, seq: Seq[Int])
 }
