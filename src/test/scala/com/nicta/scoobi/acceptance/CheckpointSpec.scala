@@ -69,12 +69,12 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConvers
           ExpiryPolicy.deleteOldFile(p, sc)
         }
         runListWithExpiry(archiving)
-        "the expired files have been suppressed" ==> { oldFileIsDeleted must beTrue }
+        "the expired files have been suppressed" ==> (oldFileIsDeleted must beTrue).unless(sc.isRemote)
       }
       "But the old output directory can also be renamed" >> { implicit sc: SC =>
         val sink = runListWithExpiry(ExpiryPolicy.incrementCounterFile)
         "the expired files have been renamed" ==> {
-          sink.getParentFile.listFiles.map(_.getName).toSeq must contain((s: String) => s === sink.getName+"-1")
+          (sink.getParentFile.listFiles.map(_.getName).toSeq must contain((s: String) => s === sink.getName+"-1")).unless(sc.isRemote)
         }
       }
     }
