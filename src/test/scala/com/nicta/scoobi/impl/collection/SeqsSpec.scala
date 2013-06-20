@@ -49,7 +49,7 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
 
     e2 := prop { (list: List[Int], relation: (Int, Int) => Boolean) =>
       val groups = partition(list)(relation)
-      groups match {
+      groups.toList match {
         case Nil          => list must beEmpty
         case head :: tail =>
           nel(head, tail).toZipper.cojoin.toStream must not contain(relatedElementsAcrossGroups(relation))
@@ -71,8 +71,8 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
 
   def relatedElementsAcrossGroups(relation: (Int, Int) => Boolean) =
     (groups: Zipper[NonEmptyList[Int]]) =>
-      groups.focus.list must not contain { e1: Int =>
-        (groups.lefts ++ groups.rights) must not contain(relatedElements(relation))
+      groups.focus.list must contain { e1: Int =>
+        (groups.lefts ++ groups.rights) must contain(relation(e1, _:Int))
       }
 
   case class Splitted(offset: Int, length: Int, seq: Seq[Int])
