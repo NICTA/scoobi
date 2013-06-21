@@ -42,7 +42,7 @@ class CheckpointSpec extends NictaSimpleJobs with ResultFiles with NoTimeConvers
   "3. A checkpoint must work after a group by key" >> { implicit sc: SC =>
     val sink = TempFiles.createTempDir("test")
     val list = DList(1, 2, 3).map(i => (i.toString, i + 1)).toAvroFile(path(sink)(configuration), overwrite = true, checkpoint = true)
-    list.groupByKey.combine(Sum.int).run.normalise === "Vector((1,2), (2,3), (3,4))"
+    list.groupByKey.combine(Reduction.Sum.int).run.normalise === "Vector((1,2), (2,3), (3,4))"
   }
 
   "4. A checkpoint can be created with a path, as a BridgeStore" >> { implicit sc: SC =>

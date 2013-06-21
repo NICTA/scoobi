@@ -426,8 +426,7 @@ trait Reduction[A] {
 
 }
 
-object Reduction extends Reductions
-trait Reductions {
+object Reduction extends Reductions {
   /**
    * Construct a reduction from the given binary operation.
    */
@@ -435,476 +434,488 @@ trait Reductions {
     new Reduction[A] {
       val reduce = f
     }
+}
 
-  /**
-   * Construct a reduction that ignores its argument pair.
-   */
-  def constant[A](a: => A): Reduction[A] =
-    apply((_, _) => a)
-
-  /**
-   * Construct a reduction that applies its first argument to the given function.
-   */
-  def split1[A](f: A => A): Reduction[A] =
-    apply((a1, _) => f(a1))
-
-  /**
-   * Construct a reduction that applies its first argument to the given endomorphism.
-   */
-  def split1E[A](e: Endo[A]): Reduction[A] =
-    split1(e.run)
-
-  /**
-   * Construct a reduction that applies its second argument to the given function.
-   */
-  def split2[A](f: A => A): Reduction[A] =
-    apply((_, a2) => f(a2))
-
-  /**
-   * Construct a reduction that applies its second argument to the given endomorphism.
-   */
-  def split2E[A](e: Endo[A]): Reduction[A] =
-    split2(e.run)
-
-  /**
-   * A reduction that cancels.
-   */
-  def unit: Reduction[Unit] =
-    constant(())
-
-  /**
-   * A reduction that returns the first argument.
-   */
-  def first[A]: Reduction[A] =
-    Reduction((a, _) => a)
-
-  /**
-   * A reduction that returns the last argument.
-   */
-  def last[A]: Reduction[A] =
-    Reduction((_, a) => a)
-
-  /**
-   * A reduction that tries the first option for `Some`, otherwise the last.
-   */
-  def firstOption[A]: Reduction[Option[A]] =
-    Reduction((a1, a2) => a1 orElse a2)
-
-  /**
-   * A reduction that tries the last option for `Some`, otherwise the first.
-   */
-  def lastOption[A]: Reduction[Option[A]] =
-    Reduction((a1, a2) => a2 orElse a1)
-
-  /**
-   * A reduction that produces the minimum value of its two arguments.
-   */
-  def minimum[A](implicit O: Order[A]): Reduction[A] =
-    Reduction((a1, a2) => O min (a1, a2))
-
-  /**
-   * A reduction that produces the maximum value of its two arguments.
-   */
-  def maximum[A](implicit O: Order[A]): Reduction[A] =
-    Reduction((a1, a2) => O max (a1, a2))
-
-  /**
-   * A reduction that produces the minimum value of its two arguments.
-   */
-  def minimumS[A](implicit O: math.Ordering[A]): Reduction[A] =
-    Reduction((a1, a2) => O min (a1, a2))
-
-  /**
-   * A reduction that produces the maximum value of its two arguments.
-   */
-  def maximumS[A](implicit O: math.Ordering[A]): Reduction[A] =
-    Reduction((a1, a2) => O max (a1, a2))
-
-  /**
-   * A reduction that composes two functions.
-   */
-  def endo[A]: Reduction[A => A] =
-    Reduction((a1, a2) => a1 compose a2)
-
-  /**
-   * A reduction that composes two endomorphisms.
-   */
-  def endoE[A]: Reduction[Endo[A]] =
-    Reduction((a1, a2) => a1 compose a2)
-
-  /**
-   * A reduction that takes the disjunction of its two arguments.
-   */
-  def or: Reduction[Boolean] =
-    Reduction(_ || _)
-
-  /**
-   * A reduction that takes the conjunction of its two arguments.
-   */
-  def and: Reduction[Boolean] =
-    Reduction(_ && _)
-
-  /**
-   * Takes a boolean reduction to a reduction on equal instances.
-   */
-  def equal[A](r: Reduction[Boolean]): Reduction[Equal[A]] =
-    Reduction((e1, e2) => new Equal[A] {
-      def equal(a1: A, a2: A) =
-        r.reduce(e1 equal (a1, a2), e2 equal (a1, a2))
-    })
-
-  /**
-   * Takes a boolean reduction to a reduction on unequal instances.
-   */
-  def unequal[A](r: Reduction[Boolean]): Reduction[Equal[A]] =
-    Reduction((e1, e2) => new Equal[A] {
-      def equal(a1: A, a2: A) =
-        r.reduce(!(e1 equal (a1, a2)), !(e2 equal (a1, a2)))
-    })
-
-  /**
-   * Takes an ordering reduction to a reduction on order instances.
-   */
-  def order[A](r: Reduction[Ordering]): Reduction[Order[A]] =
-    Reduction((e1, e2) => new Order[A] {
-      def order(a1: A, a2: A) =
-        r.reduce(e1 order (a1, a2), e2 order (a1, a2))
-    })
-
-  /**
-   * A reduction on ordering (3) values by first looking for `EQ`.
-   */
-  def ordering: Reduction[Ordering] =
-    Reduction((a1, a2) => a1 match {
-      case Ordering.EQ => a2
-      case _ => a1
-    })
-
-  /**
-   * A reduction on values having a Semigroup instance
-   */
-  def semigroup[A : Semigroup] = Reduction((a1: A, a2: A) => implicitly[Semigroup[A]].append(a1, a2))
-
-  /**
-   * A reduction on comparable values by first looking for `0`.
-   */
-  def comparable[A]: Reduction[Comparable[A]] =
-    Reduction((c1, c2) => new Comparable[A] {
-      def compareTo(a: A) =
-        c1.compareTo(a) match {
-          case 0 => c2.compareTo(a)
-          case n => n
-        }
-    })
-
-  /**
-   * A reduction on comparator values by first looking for `0`.
-   */
-  def comparator[A]: Reduction[java.util.Comparator[A]] =
-    Reduction((c1, c2) => new java.util.Comparator[A] {
-      def compare(a1: A, a2: A) =
-        c1.compare(a1, a2) match {
-          case 0 => c2.compare(a1, a2)
-          case n => n
-        }
-    })
-
-  /**
-   * A reduction on scala ordering by first looking for `0`.
-   */
-  def orderingS[A]: Reduction[math.Ordering[A]] =
-    Reduction((o1, o2) => new math.Ordering[A] {
-      def compare(a1: A, a2: A) =
-        o1.compare(a1, a2) match {
-          case 0 => o2.compare(a1, a2)
-          case n => n
-        }
-    })
-
-  /**
-   * A reduction on strings by appending.
-   */
-  def string: Reduction[String] =
-    Reduction(_ + _)
-
-  /**
-   * A reduction on lists by appending.
-   */
-  def list[A]: Reduction[List[A]] =
-    Reduction(_ ::: _)
-
-  /**
-   * A reduction on streams by appending.
-   */
-  def stream[A]: Reduction[Stream[A]] =
-    Reduction(_ #::: _)
-
-  /**
-   * A reduction on ephemeral streams by appending.
-   */
-  def ephemeralStream[A]: Reduction[EphemeralStream[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on vectors by appending.
-   */
-  def vector[A]: Reduction[Vector[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on arrays by appending.
-   */
-  def array[A : ClassTag]: Reduction[Array[A]] =
-    Reduction((c1, c2) => (c1 ++ c2).toArray)
-
-  /**
-   * A reduction on difference lists by appending.
-   */
-  def differenceList[A]: Reduction[DList[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on non-empty lists by appending.
-   */
-  def nonEmptyList[A]: Reduction[NonEmptyList[A]] =
-    Reduction(_ append _)
-
-  /**
-   * A reduction on int maps by appending.
-   */
-  def intmap[A]: Reduction[collection.immutable.IntMap[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on long maps by appending.
-   */
-  def longmap[A]: Reduction[collection.immutable.LongMap[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on hash maps by appending.
-   */
-  def hashmap[A, B]: Reduction[collection.immutable.HashMap[A, B]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on hash sets by appending.
-   */
-  def hashset[A]: Reduction[collection.immutable.HashSet[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on tree maps by appending.
-   */
-  def treemap[A, B]: Reduction[collection.immutable.TreeMap[A, B]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on tree sets by appending.
-   */
-  def treeset[A]: Reduction[collection.immutable.TreeSet[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on list maps by appending.
-   */
-  def listmap[A, B]: Reduction[collection.immutable.ListMap[A, B]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on list sets by appending.
-   */
-  def listset[A]: Reduction[collection.immutable.ListSet[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on queues by appending.
-   */
-  def queue[A]: Reduction[collection.immutable.Queue[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on stacks by appending.
-   */
-  def stack[A]: Reduction[collection.immutable.Stack[A]] =
-    Reduction(_ ++ _)
-
-  /**
-   * A reduction on xml node sequences by appending.
-   */
-  def nodeseq: Reduction[scala.xml.NodeSeq] =
-    Reduction(_ ++ _)
-
-  /**
-   * Reductions that perform addition.
-   */
-  object Sum {
+trait Reductions {
+  object Reduction {
+    /**
+     * Construct a reduction from the given binary operation.
+     */
+    def apply[A](f: (A, A) => A): Reduction[A] =
+      new Reduction[A] {
+        val reduce = f
+      }
 
     /**
-     * Reduction on big integers by addition.
+     * Construct a reduction that ignores its argument pair.
      */
-    def bigint: Reduction[BigInt] =
+    def constant[A](a: => A): Reduction[A] =
+      Reduction((_, _) => a)
+
+    /**
+     * Construct a reduction that applies its first argument to the given function.
+     */
+    def split1[A](f: A => A): Reduction[A] =
+      Reduction((a1, _) => f(a1))
+
+    /**
+     * Construct a reduction that applies its first argument to the given endomorphism.
+     */
+    def split1E[A](e: Endo[A]): Reduction[A] =
+      split1(e.run)
+
+    /**
+     * Construct a reduction that applies its second argument to the given function.
+     */
+    def split2[A](f: A => A): Reduction[A] =
+      Reduction((_, a2) => f(a2))
+
+    /**
+     * Construct a reduction that applies its second argument to the given endomorphism.
+     */
+    def split2E[A](e: Endo[A]): Reduction[A] =
+      split2(e.run)
+
+    /**
+     * A reduction that cancels.
+     */
+    def unit: Reduction[Unit] =
+      constant(())
+
+    /**
+     * A reduction that returns the first argument.
+     */
+    def first[A]: Reduction[A] =
+      Reduction((a, _) => a)
+
+    /**
+     * A reduction that returns the last argument.
+     */
+    def last[A]: Reduction[A] =
+      Reduction((_, a) => a)
+
+    /**
+     * A reduction that tries the first option for `Some`, otherwise the last.
+     */
+    def firstOption[A]: Reduction[Option[A]] =
+      Reduction((a1, a2) => a1 orElse a2)
+
+    /**
+     * A reduction that tries the last option for `Some`, otherwise the first.
+     */
+    def lastOption[A]: Reduction[Option[A]] =
+      Reduction((a1, a2) => a2 orElse a1)
+
+    /**
+     * A reduction that produces the minimum value of its two arguments.
+     */
+    def minimum[A](implicit O: Order[A]): Reduction[A] =
+      Reduction((a1, a2) => O min (a1, a2))
+
+    /**
+     * A reduction that produces the maximum value of its two arguments.
+     */
+    def maximum[A](implicit O: Order[A]): Reduction[A] =
+      Reduction((a1, a2) => O max (a1, a2))
+
+    /**
+     * A reduction that produces the minimum value of its two arguments.
+     */
+    def minimumS[A](implicit O: math.Ordering[A]): Reduction[A] =
+      Reduction((a1, a2) => O min (a1, a2))
+
+    /**
+     * A reduction that produces the maximum value of its two arguments.
+     */
+    def maximumS[A](implicit O: math.Ordering[A]): Reduction[A] =
+      Reduction((a1, a2) => O max (a1, a2))
+
+    /**
+     * A reduction that composes two functions.
+     */
+    def endo[A]: Reduction[A => A] =
+      Reduction((a1, a2) => a1 compose a2)
+
+    /**
+     * A reduction that composes two endomorphisms.
+     */
+    def endoE[A]: Reduction[Endo[A]] =
+      Reduction((a1, a2) => a1 compose a2)
+
+    /**
+     * A reduction that takes the disjunction of its two arguments.
+     */
+    def or: Reduction[Boolean] =
+      Reduction(_ || _)
+
+    /**
+     * A reduction that takes the conjunction of its two arguments.
+     */
+    def and: Reduction[Boolean] =
+      Reduction(_ && _)
+
+    /**
+     * Takes a boolean reduction to a reduction on equal instances.
+     */
+    def equal[A](r: Reduction[Boolean]): Reduction[Equal[A]] =
+      Reduction((e1, e2) => new Equal[A] {
+        def equal(a1: A, a2: A) =
+          r.reduce(e1 equal (a1, a2), e2 equal (a1, a2))
+      })
+
+    /**
+     * Takes a boolean reduction to a reduction on unequal instances.
+     */
+    def unequal[A](r: Reduction[Boolean]): Reduction[Equal[A]] =
+      Reduction((e1, e2) => new Equal[A] {
+        def equal(a1: A, a2: A) =
+          r.reduce(!(e1 equal (a1, a2)), !(e2 equal (a1, a2)))
+      })
+
+    /**
+     * Takes an ordering reduction to a reduction on order instances.
+     */
+    def order[A](r: Reduction[Ordering]): Reduction[Order[A]] =
+      Reduction((e1, e2) => new Order[A] {
+        def order(a1: A, a2: A) =
+          r.reduce(e1 order (a1, a2), e2 order (a1, a2))
+      })
+
+    /**
+     * A reduction on ordering (3) values by first looking for `EQ`.
+     */
+    def ordering: Reduction[Ordering] =
+      Reduction((a1, a2) => a1 match {
+        case Ordering.EQ => a2
+        case _ => a1
+      })
+
+    /**
+     * A reduction on values having a Semigroup instance
+     */
+    def semigroup[A : Semigroup] = Reduction((a1: A, a2: A) => implicitly[Semigroup[A]].append(a1, a2))
+
+    /**
+     * A reduction on comparable values by first looking for `0`.
+     */
+    def comparable[A]: Reduction[Comparable[A]] =
+      Reduction((c1, c2) => new Comparable[A] {
+        def compareTo(a: A) =
+          c1.compareTo(a) match {
+            case 0 => c2.compareTo(a)
+            case n => n
+          }
+      })
+
+    /**
+     * A reduction on comparator values by first looking for `0`.
+     */
+    def comparator[A]: Reduction[java.util.Comparator[A]] =
+      Reduction((c1, c2) => new java.util.Comparator[A] {
+        def compare(a1: A, a2: A) =
+          c1.compare(a1, a2) match {
+            case 0 => c2.compare(a1, a2)
+            case n => n
+          }
+      })
+
+    /**
+     * A reduction on scala ordering by first looking for `0`.
+     */
+    def orderingS[A]: Reduction[math.Ordering[A]] =
+      Reduction((o1, o2) => new math.Ordering[A] {
+        def compare(a1: A, a2: A) =
+          o1.compare(a1, a2) match {
+            case 0 => o2.compare(a1, a2)
+            case n => n
+          }
+      })
+
+    /**
+     * A reduction on strings by appending.
+     */
+    def string: Reduction[String] =
       Reduction(_ + _)
 
     /**
-     * Reduction on java big integers by addition.
+     * A reduction on lists by appending.
      */
-    def biginteger: Reduction[java.math.BigInteger] =
-      Reduction(_ add _)
+    def list[A]: Reduction[List[A]] =
+      Reduction(_ ::: _)
 
     /**
-     * Reduction on big decimals by addition.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on streams by appending.
      */
-    def bigdec: Reduction[BigDecimal] =
-      Reduction(_ + _)
+    def stream[A]: Reduction[Stream[A]] =
+      Reduction(_ #::: _)
 
     /**
-     * Reduction on java big decimals by addition.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on ephemeral streams by appending.
      */
-    def bigdecimal: Reduction[java.math.BigDecimal] =
-      Reduction(_ add _)
+    def ephemeralStream[A]: Reduction[EphemeralStream[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on floats by addition.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on vectors by appending.
      */
-    def float: Reduction[Float] =
-      Reduction((c1, c2) => c1 + c2)
+    def vector[A]: Reduction[Vector[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on doubles by addition.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on arrays by appending.
      */
-    def double: Reduction[Double] =
-      Reduction((c1, c2) => c1 + c2)
+    def array[A : ClassTag]: Reduction[Array[A]] =
+      Reduction((c1, c2) => (c1 ++ c2).toArray)
 
     /**
-     * Reduction on bytes by addition.
+     * A reduction on difference lists by appending.
      */
-    def byte: Reduction[Byte] =
-      Reduction((c1, c2) => (c1 + c2).toByte)
+    def differenceList[A]: Reduction[DList[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on characters by addition.
+     * A reduction on non-empty lists by appending.
      */
-    def char: Reduction[Char] =
-      Reduction((c1, c2) => (c1 + c2).toChar)
+    def nonEmptyList[A]: Reduction[NonEmptyList[A]] =
+      Reduction(_ append _)
 
     /**
-     * Reduction on integers by addition.
+     * A reduction on int maps by appending.
      */
-    def int: Reduction[Int] =
-      Reduction(_ + _)
+    def intmap[A]: Reduction[collection.immutable.IntMap[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on longs by addition.
+     * A reduction on long maps by appending.
      */
-    def long: Reduction[Long] =
-      Reduction(_ + _)
+    def longmap[A]: Reduction[collection.immutable.LongMap[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on shorts by addition.
+     * A reduction on hash maps by appending.
      */
-    def short: Reduction[Short] =
-      Reduction((c1, c2) => (c1 + c2).toShort)
+    def hashmap[A, B]: Reduction[collection.immutable.HashMap[A, B]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on digits by addition.
+     * A reduction on hash sets by appending.
      */
-    def digit: Reduction[Digit] =
-      Reduction((d1, d2) => Digit.mod10Digit(d1.toInt + d2.toInt))
-
-  }
-
-  /**
-   * Reductions that perform multiplication.
-   */
-  object Product {
-    /**
-     * Reduction on big integers by multiplication.
-     */
-    def bigint: Reduction[BigInt] =
-      Reduction(_ * _)
+    def hashset[A]: Reduction[collection.immutable.HashSet[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on java big integers by multiplication.
+     * A reduction on tree maps by appending.
      */
-    def biginteger: Reduction[java.math.BigInteger] =
-      Reduction(_ multiply _)
+    def treemap[A, B]: Reduction[collection.immutable.TreeMap[A, B]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on big decimals by multiplication.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on tree sets by appending.
      */
-    def bigdec: Reduction[BigDecimal] =
-      Reduction(_ * _)
+    def treeset[A]: Reduction[collection.immutable.TreeSet[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on java big decimals by multiplication.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on list maps by appending.
      */
-    def bigdecimal: Reduction[java.math.BigDecimal] =
-      Reduction(_ multiply _)
+    def listmap[A, B]: Reduction[collection.immutable.ListMap[A, B]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on floats by multiplication.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on list sets by appending.
      */
-    def float: Reduction[Float] =
-      Reduction((c1, c2) => c1 * c2)
+    def listset[A]: Reduction[collection.immutable.ListSet[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on doubles by addition.
-     *
-     * _Note that this is not an associative operation._
+     * A reduction on queues by appending.
      */
-    def double: Reduction[Double] =
-      Reduction((c1, c2) => c1 * c2)
+    def queue[A]: Reduction[collection.immutable.Queue[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on bytes by multiplication.
+     * A reduction on stacks by appending.
      */
-    def byte: Reduction[Byte] =
-      Reduction((c1, c2) => (c1 * c2).toByte)
+    def stack[A]: Reduction[collection.immutable.Stack[A]] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on chars by multiplication.
+     * A reduction on xml node sequences by appending.
      */
-    def char: Reduction[Char] =
-      Reduction((c1, c2) => (c1 * c2).toChar)
+    def nodeseq: Reduction[scala.xml.NodeSeq] =
+      Reduction(_ ++ _)
 
     /**
-     * Reduction on integers by multiplication.
+     * Reductions that perform addition.
      */
-    def int: Reduction[Int] =
-      Reduction(_ * _)
+    object Sum {
+
+      /**
+       * Reduction on big integers by addition.
+       */
+      def bigint: Reduction[BigInt] =
+        Reduction(_ + _)
+
+      /**
+       * Reduction on java big integers by addition.
+       */
+      def biginteger: Reduction[java.math.BigInteger] =
+        Reduction(_ add _)
+
+      /**
+       * Reduction on big decimals by addition.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def bigdec: Reduction[BigDecimal] =
+        Reduction(_ + _)
+
+      /**
+       * Reduction on java big decimals by addition.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def bigdecimal: Reduction[java.math.BigDecimal] =
+        Reduction(_ add _)
+
+      /**
+       * Reduction on floats by addition.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def float: Reduction[Float] =
+        Reduction((c1, c2) => c1 + c2)
+
+      /**
+       * Reduction on doubles by addition.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def double: Reduction[Double] =
+        Reduction((c1, c2) => c1 + c2)
+
+      /**
+       * Reduction on bytes by addition.
+       */
+      def byte: Reduction[Byte] =
+        Reduction((c1, c2) => (c1 + c2).toByte)
+
+      /**
+       * Reduction on characters by addition.
+       */
+      def char: Reduction[Char] =
+        Reduction((c1, c2) => (c1 + c2).toChar)
+
+      /**
+       * Reduction on integers by addition.
+       */
+      def int: Reduction[Int] =
+        Reduction(_ + _)
+
+      /**
+       * Reduction on longs by addition.
+       */
+      def long: Reduction[Long] =
+        Reduction(_ + _)
+
+      /**
+       * Reduction on shorts by addition.
+       */
+      def short: Reduction[Short] =
+        Reduction((c1, c2) => (c1 + c2).toShort)
+
+      /**
+       * Reduction on digits by addition.
+       */
+      def digit: Reduction[Digit] =
+        Reduction((d1, d2) => Digit.mod10Digit(d1.toInt + d2.toInt))
+
+    }
 
     /**
-     * Reduction on longs by multiplication.
+     * Reductions that perform multiplication.
      */
-    def long: Reduction[Long] =
-      Reduction(_ * _)
+    object Product {
+      /**
+       * Reduction on big integers by multiplication.
+       */
+      def bigint: Reduction[BigInt] =
+        Reduction(_ * _)
 
-    /**
-     * Reduction on shorts by multiplication.
-     */
-    def short: Reduction[Short] =
-      Reduction((c1, c2) => (c1 * c2).toShort)
+      /**
+       * Reduction on java big integers by multiplication.
+       */
+      def biginteger: Reduction[java.math.BigInteger] =
+        Reduction(_ multiply _)
 
-    /**
-     * Reduction on digits by multiplication.
-     */
-    def digit: Reduction[Digit] =
-      Reduction((d1, d2) => Digit.mod10Digit(d1.toInt * d2.toInt))
+      /**
+       * Reduction on big decimals by multiplication.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def bigdec: Reduction[BigDecimal] =
+        Reduction(_ * _)
 
+      /**
+       * Reduction on java big decimals by multiplication.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def bigdecimal: Reduction[java.math.BigDecimal] =
+        Reduction(_ multiply _)
+
+      /**
+       * Reduction on floats by multiplication.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def float: Reduction[Float] =
+        Reduction((c1, c2) => c1 * c2)
+
+      /**
+       * Reduction on doubles by addition.
+       *
+       * _Note that this is not an associative operation._
+       */
+      def double: Reduction[Double] =
+        Reduction((c1, c2) => c1 * c2)
+
+      /**
+       * Reduction on bytes by multiplication.
+       */
+      def byte: Reduction[Byte] =
+        Reduction((c1, c2) => (c1 * c2).toByte)
+
+      /**
+       * Reduction on chars by multiplication.
+       */
+      def char: Reduction[Char] =
+        Reduction((c1, c2) => (c1 * c2).toChar)
+
+      /**
+       * Reduction on integers by multiplication.
+       */
+      def int: Reduction[Int] =
+        Reduction(_ * _)
+
+      /**
+       * Reduction on longs by multiplication.
+       */
+      def long: Reduction[Long] =
+        Reduction(_ * _)
+
+      /**
+       * Reduction on shorts by multiplication.
+       */
+      def short: Reduction[Short] =
+        Reduction((c1, c2) => (c1 * c2).toShort)
+
+      /**
+       * Reduction on digits by multiplication.
+       */
+      def digit: Reduction[Digit] =
+        Reduction((d1, d2) => Digit.mod10Digit(d1.toInt * d2.toInt))
+
+    }
   }
 }

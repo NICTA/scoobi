@@ -31,7 +31,7 @@ val lines = fromTextFile("hdfs://in/...")
 val counts = lines.mapFlatten(_.split(" ")).
                    map(word => (word, 1)).
                    groupByKey.
-                   combine(Sum.int)
+                   combine(Reduction.Sum.int)
 
 counts.toTextFile("hdfs://out/...").persist
 }}

@@ -22,7 +22,6 @@ import Scoobi._
 import impl.plan.comp.CompNodeData
 import CompNodeData._
 import TestFiles._
-import core.Reduction.Sum
 import io.text.TextSource
 import org.apache.hadoop.mapreduce.RecordReader
 import core.{InputConverter, InputOutputContext}
@@ -179,7 +178,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags { sequentia
 
 
   "13. 1 combine + 1 persist + 1 combine" >> {implicit sc: SC =>
-    val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    val l1 = DList(1, 2, 1, 2).map(x => (x % 2, x)).groupByKey.combine(Reduction.Sum.int)
     l1.run
     l1.map(_._2).run.normalise === "Vector(2, 4)"
   }
@@ -187,7 +186,7 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags { sequentia
   "14. complex flatten + gbk" >> {implicit sc: SC =>
     val l1 = DList(1, 2, 3)
     val l2 = (DList(1).sum join DList(4, 5, 6)).map(_._2)
-    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Sum.int)
+    val l3 = (l1 ++ l2).map(x => (x % 2, x)).groupByKey.combine(Reduction.Sum.int)
     l3.map(_._2).run.normalise === "Vector(12, 9)"
   }
 

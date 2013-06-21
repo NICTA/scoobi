@@ -18,6 +18,7 @@ package core
 
 import impl.control.{ImplicitParameter2, ImplicitParameter1, ImplicitParameter}
 import com.nicta.scoobi.impl.collection.WeakHashSet
+import Reduction.{Reduction => R}
 
 /**
  * A list that is distributed across multiple machines.
@@ -231,7 +232,7 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
     })
 
     /* Now we can count how many elements each mapper saw */
-    val taskCount = byMapper.map(_._1 -> 1).groupByKey.combine(Reduction.Sum.int).materialise
+    val taskCount = byMapper.map(_._1 -> 1).groupByKey.combine(R.Sum.int).materialise
 
     /* ..and then convert it to a series of offsets */
     val taskMap = taskCount.map { x =>
@@ -390,19 +391,19 @@ trait DList[A] extends DataSinks with Persistent[Seq[A]] {
 
   /**Find the largest element in the distributed list. */
   def max(implicit cmp: Ordering[A]): DObject[A] =
-    reduce(Reduction.maximumS)
+    reduce(R.maximumS)
 
   /**Find the largest element in the distributed list. */
   def maxBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
-    reduce(Reduction.maximumS(cmp on f))
+    reduce(R.maximumS(cmp on f))
 
   /**Find the smallest element in the distributed list. */
   def min(implicit cmp: Ordering[A]): DObject[A] =
-    reduce(Reduction.minimumS)
+    reduce(R.minimumS)
 
   /**Find the smallest element in the distributed list. */
   def minBy[B](f: A => B)(cmp: Ordering[B]): DObject[A] =
-    reduce(Reduction.minimumS(cmp on f))
+    reduce(R.minimumS(cmp on f))
 
   /** @return the head of the DList as a DObject. This is an unsafe operation */
   def head: DObject[A] = materialise.map(_.head)

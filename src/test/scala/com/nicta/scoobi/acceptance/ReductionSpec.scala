@@ -17,7 +17,8 @@ package com.nicta.scoobi
 package acceptance
 
 import com.nicta.scoobi.testing.mutable.NictaSimpleJobs
-import core.Reduction, Reduction._
+import core.Reduction
+import core.Reduction.{Reduction => R}
 import scalaz._, Scalaz._
 
 class ReductionSpec extends NictaSimpleJobs {
@@ -27,7 +28,7 @@ class ReductionSpec extends NictaSimpleJobs {
   "option reduction" >> {
     // Reduction on Option[String] from a reduction on String.
     val r: Reduction[Option[String]] =
-      string.option
+      R.string.option
     // Reduce two Some values, which will reduce their inner values.
     val a: Option[String] =
       r.reduce(Some("abc"), Some("def"))
@@ -48,7 +49,7 @@ class ReductionSpec extends NictaSimpleJobs {
   // A reduction that will take the first Some value, starting at the one appearing left-most.
   "first option reduction" >> {
     val r: Reduction[Option[String]] =
-      firstOption
+      R.firstOption
     // Reduce on two Some values, which will take the one on the left.
     val a: Option[String] =
       r.reduce(Some("abc"), Some("def"))
@@ -69,7 +70,7 @@ class ReductionSpec extends NictaSimpleJobs {
   // A reduction that will take the first Some value, starting at the one appearing right-most.
   "last option reduction" >> {
     val r: Reduction[Option[String]] =
-      lastOption
+      R.lastOption
     // Reduce on two Some values, which will take the one on the right.
     val a: Option[String] =
       r.reduce(Some("abc"), Some("def"))
@@ -93,7 +94,7 @@ class ReductionSpec extends NictaSimpleJobs {
   "dual reduction" >> {
     // Construct the dual of the list reduction.
     val r: Reduction[List[String]] =
-      list.dual
+      R.list.dual
     // Reduce two list values.
     val a =
       r.reduce(List("abc", "def"), List("xyz"))
@@ -105,7 +106,7 @@ class ReductionSpec extends NictaSimpleJobs {
     // Zip the integer addition reduction with the string append reduction.
     // This creates a reduction on the pair of Int and String.
     val r: Reduction[(Int, String)] =
-      Sum.int zip string
+      R.Sum.int zip R.string
     // Apply values to the paired reduction.
     val a: (Int, String) =
       r.reduce((7, "abc"), (8, "def"))
@@ -123,7 +124,7 @@ class ReductionSpec extends NictaSimpleJobs {
 
     // Construct a reduction on Int => Int
     val r: Reduction[Int => Int] =
-      endo
+      R.endo
     // Apply the reduction to two endomorphic mappings.
     // The -\ method is used, which is an alias for reduce.
     val a: Int => Int =
@@ -137,7 +138,7 @@ class ReductionSpec extends NictaSimpleJobs {
     // Takes the list append reduction to a function accepting Int to list.
     // The pointwise reduction runs the reduction of the return value; in this case list append.
     val r: Reduction[Int => List[String]] =
-      list.pointwise
+      R.list.pointwise
     // Apply the reduction to a pair of functions: Int => List[String]
     val a: Int => List[String] =
       r(n => List(n.toString, n.toString.reverse), n => List((n * 2).toString))
@@ -152,7 +153,7 @@ class ReductionSpec extends NictaSimpleJobs {
     // Construct a reduction on the argument type of Int and result type of String
     // within the Option applicative environment.
     val r: Reduction[Kleisli[Option, Int, String]] =
-      string.pointwiseK
+      R.string.pointwiseK
     // Apply the reduction to two kleisli functions that always produce a Some value.
     val a: Kleisli[Option, Int, String] =
       r.reduce(Kleisli(n => Some(n.toString)), Kleisli(n => Some((n * 10).toString)))
@@ -173,7 +174,7 @@ class ReductionSpec extends NictaSimpleJobs {
   "pointwiseC reduction" >> {
     // Construct a reduction on the result type of String and argument type of Int.
     val r: Reduction[Cokleisli[Option, Int, String]] =
-      string.pointwiseC
+      R.string.pointwiseC
     // Apply the reduction to two cokleisli functions that switch on the Option argument.
     val a: Cokleisli[Option, Int, String] =
       r.reduce(Cokleisli(_ match {
@@ -199,7 +200,7 @@ class ReductionSpec extends NictaSimpleJobs {
     //   * a function: (List[Char] => String)
     //   * a value: List[Char]
     val r: Reduction[Store[List[Char], String]] =
-      list store string
+      R.list store R.string
     // Apply the reduction to a pair of store values.
     val a: Store[List[Char], String] =
       r(Store(_.reverse.mkString, List('a', 'b')), Store(_.map(_.toUpper).mkString, List('c', 'd')))
@@ -223,7 +224,7 @@ class ReductionSpec extends NictaSimpleJobs {
     // The string reduction is used through reduction on the state data structure.
     // State[Int, String] can be thought of as a function: Int => (Int, String).
     val r: Reduction[State[Int, String]] =
-      string.state
+      R.string.state
     // Reduce two state values.
     // The first state value modifies the Int state by adding 10 and produces an arbitrary value
     // that appends the Int state to a string ("abc").
@@ -237,7 +238,7 @@ class ReductionSpec extends NictaSimpleJobs {
   // Reduction on the Semigroup typeclass
   "semigroup reduction" >> {
     // Produce a reduction on a 2 values having a Semigroup
-    val r1: Reduction[String] = semigroup[String]
+    val r1: Reduction[String] = R.semigroup[String]
 
     // Reduce two String values using the Semigroup for Strings
     r1("abc", "def") ==== "abcdef"
@@ -245,7 +246,7 @@ class ReductionSpec extends NictaSimpleJobs {
     // use a reduction provided there is a Semigroup group for the type T
     // here type T = (Long, Int, (String, String))
     def combine(r: Reduction[(Long, Int, (String, String))]) = ok
-    combine(semigroup)
+    combine(R.semigroup)
   }
 
 
@@ -254,7 +255,7 @@ class ReductionSpec extends NictaSimpleJobs {
   // or if none is found, then resulting in equality.
   "comparable reduction" >> {
     val r: Reduction[Comparable[Int]] =
-      comparable
+      R.comparable
     // Reduce the pair of values 7 then 8. The will result in inequality (less-than).
     val a: Comparable[Int] =
       r(7, 8)

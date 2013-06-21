@@ -31,7 +31,6 @@ import org.scalacheck.Prop
 import testing.mutable.NictaSimpleJobs
 import lib.{DMatrix, LinearAlgebra}
 import Scoobi._
-import core.Reduction
 
 import java.util.Random
 
