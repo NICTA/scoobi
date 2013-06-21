@@ -208,7 +208,7 @@ object build extends Build {
    */
   lazy val documentationSettings =
     testTaskDefinition(generateUserGuideTask, Seq(Tests.Filter(_.endsWith("UserGuide")), Tests.Argument("html"))) ++
-    testTaskDefinition(generateReadMeTask, Seq(Tests.Filter(_.endsWith("ReadMe")), Tests.Argument("markup"))) ++
+    testTaskDefinition(generateReadMeTask, Seq(Tests.Filter(_.endsWith("ReadMe")), Tests.Argument("markdown"))) ++
     testTaskDefinition(generateIndexTask, Seq(Tests.Filter(_.endsWith("Index")), Tests.Argument("html", "checkurls")))
 
   lazy val updateLicences = ReleaseStep { st =>
