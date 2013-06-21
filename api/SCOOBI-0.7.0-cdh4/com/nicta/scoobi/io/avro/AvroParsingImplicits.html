@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -29,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/trait_big.png" />
+        <a href="AvroParsingImplicits$.html" title="Go to companion"><img src="../../../../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.avro">avro</a></p>
-        <h1>AvroParsingImplicits</h1>
+        <h1><a href="AvroParsingImplicits$.html" title="Go to companion">AvroParsingImplicits</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -49,7 +44,7 @@
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="AvroInput$.html" class="extype" name="com.nicta.scoobi.io.avro.AvroInput">AvroInput</a>, <a href="EnhancedSymbol.html" class="extype" name="com.nicta.scoobi.io.avro.EnhancedSymbol">EnhancedSymbol</a></div>
+          <div class="subClasses hiddenContent"><a href="AvroParsingImplicits$.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></div>
         </div></div>
         
 
@@ -87,7 +82,23 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits.EnhancedSymbol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EnhancedSymbolextendsAnyRef"></a>
+      <a id="EnhancedSymbol:EnhancedSymbol"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroParsingImplicits$EnhancedSymbol.html"><span class="name">EnhancedSymbol</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -183,8 +194,11 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -225,8 +239,11 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -307,19 +324,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits#pimpSymbol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pimpSymbol(sym:org.apache.avro.io.parsing.Symbol):com.nicta.scoobi.io.avro.EnhancedSymbol"></a>
-      <a id="pimpSymbol(Symbol):EnhancedSymbol"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pimpSymbol</span><span class="params">(<span name="sym">sym: <span class="extype" name="org.apache.avro.io.parsing.Symbol">Symbol</span></span>)</span><span class="result">: <a href="EnhancedSymbol.html" class="extype" name="com.nicta.scoobi.io.avro.EnhancedSymbol">EnhancedSymbol</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -359,7 +363,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -375,7 +382,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -391,7 +401,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -423,7 +436,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

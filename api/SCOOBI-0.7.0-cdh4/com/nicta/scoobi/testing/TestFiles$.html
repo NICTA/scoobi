@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -180,8 +175,11 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.TestFiles#createTempDir" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -263,15 +261,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TestFiles.html" class="extype" name="com.nicta.scoobi.testing.TestFiles">TestFiles</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.TestFiles#dirResults" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="dirResults(implicitsc:com.nicta.scoobi.Scoobi.ScoobiConfiguration):java.io.File=&gt;Seq[String]"></a>
-      <a id="dirResults(Scoobi.ScoobiConfiguration):(File)⇒Seq[String]"></a>
+      <a id="dirResults(implicitsc:com.nicta.scoobi.Scoobi.ScoobiConfiguration):java.io.File=&gt;scala.collection.immutable.Vector[String]"></a>
+      <a id="dirResults(Scoobi.ScoobiConfiguration):(File)⇒Vector[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dirResults</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../Scoobi$.html#ScoobiConfiguration=com.nicta.scoobi.core.ScoobiConfiguration" class="extmbr" name="com.nicta.scoobi.Scoobi.ScoobiConfiguration">Scoobi.ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="java.io.File">File</span>) ⇒ <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">dirResults</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../Scoobi$.html#ScoobiConfiguration=com.nicta.scoobi.core.ScoobiConfiguration" class="extmbr" name="com.nicta.scoobi.Scoobi.ScoobiConfiguration">Scoobi.ScoobiConfiguration</a></span>)</span><span class="result">: (<span class="extype" name="java.io.File">File</span>) ⇒ <span class="extype" name="scala.collection.immutable.Vector">Vector</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">readLines in the ch* files of a result directory</p><div class="fullcomment"><div class="comment cmt"><p>readLines in the ch* files of a result directory</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TestFiles.html" class="extype" name="com.nicta.scoobi.testing.TestFiles">TestFiles</a></dd></dl></div>
@@ -313,8 +311,11 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.testing.TestFiles#fs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -538,7 +539,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -554,7 +558,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -570,7 +577,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -604,7 +614,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

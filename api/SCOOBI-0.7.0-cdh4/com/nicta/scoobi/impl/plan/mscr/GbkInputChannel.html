@@ -9,11 +9,6 @@
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -86,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(sourceNode:com.nicta.scoobi.core.CompNode,groupByKeys:Seq[com.nicta.scoobi.impl.plan.comp.GroupByKey]):com.nicta.scoobi.impl.plan.mscr.GbkInputChannel"></a>
+      <a id="&lt;init&gt;(sourceNode:com.nicta.scoobi.core.CompNode,groupByKeys:Seq[com.nicta.scoobi.impl.plan.comp.GroupByKey],nodes:com.nicta.scoobi.impl.plan.mscr.Layering):com.nicta.scoobi.impl.plan.mscr.GbkInputChannel"></a>
       <a id="&lt;init&gt;:GbkInputChannel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -94,7 +89,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">GbkInputChannel</span><span class="params">(<span name="sourceNode">sourceNode: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="groupByKeys">groupByKeys: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../comp/GroupByKey.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a>]</span>)</span>
+        <span class="name">GbkInputChannel</span><span class="params">(<span name="sourceNode">sourceNode: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>, <span name="groupByKeys">groupByKeys: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../comp/GroupByKey.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a>]</span>, <span name="nodes">nodes: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>)</span>
       </span>
       </h4>
       
@@ -210,8 +205,11 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#configuration" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -228,15 +226,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#createEmitter" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createEmitter(tag:Int,context:com.nicta.scoobi.core.InputOutputContext):com.nicta.scoobi.core.EmitterWriter"></a>
-      <a id="createEmitter(Int,InputOutputContext):EmitterWriter"></a>
+      <a id="createEmitter(tag:Int,ioContext:com.nicta.scoobi.core.InputOutputContext):com.nicta.scoobi.core.EmitterWriterwithcom.nicta.scoobi.core.InputOutputContextScoobiJobContext"></a>
+      <a id="createEmitter(Int,InputOutputContext):EmitterWriterwithInputOutputContextScoobiJobContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">createEmitter</span><span class="params">(<span name="tag">tag: <span class="extype" name="scala.Int">Int</span></span>, <span name="context">context: <a href="../../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></span>
+        <span class="name">createEmitter</span><span class="params">(<span name="tag">tag: <span class="extype" name="scala.Int">Int</span></span>, <span name="ioContext">ioContext: <a href="../../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">create an emitter for a given output tag, which will either emit values with auto-generated keys for a FloatingInputChannel,
@@ -308,8 +306,11 @@ or key/values for a GbkInputChannel
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -325,6 +326,19 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#graphNodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="graphNodes:com.nicta.scoobi.impl.plan.mscr.Layering"></a>
+      <a id="graphNodes:Layering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">graphNodes</span><span class="result">: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -442,6 +456,19 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <p class="shortcomment cmt">collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p><div class="fullcomment"><div class="comment cmt"><p>collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#mappersToString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mappersToString(name:String,mps:Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]):String"></a>
+      <a id="mappersToString(String,Seq[ParallelDo]):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mappersToString</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mps">mps: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>]</span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -455,19 +482,19 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel#nodes" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="nodes:com.nicta.scoobi.impl.plan.mscr.MscrsDefinition"></a>
-      <a id="nodes:MscrsDefinition"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel#nodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nodes:com.nicta.scoobi.impl.plan.mscr.Layering"></a>
+      <a id="nodes:Layering"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">nodes</span><span class="result">: <a href="MscrsDefinition.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition">MscrsDefinition</a></span>
+        <span class="name">nodes</span><span class="result">: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel">GbkInputChannel</a> → <a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -669,7 +696,7 @@ or key/values for a GbkInputChannel
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
         <span class="name">vectorEmitter</span><span class="result">: <a href="../../mapreducer/VectorEmitterWriter.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter">VectorEmitterWriter</a></span>
@@ -689,7 +716,10 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -705,7 +735,10 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -721,7 +754,10 @@ or key/values for a GbkInputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -757,7 +793,6 @@ or key/values for a GbkInputChannel
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -40,17 +35,17 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">DataSink</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span> with <a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></span>
+        <span class="name">DataSink</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An output store from a MapReduce job
 </p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="com.nicta.scoobi.core.DataSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.DataSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.DataSink.B">B</span>]</dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="../impl/mapreducer/BridgeStore.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a>, <a href="../io/sequence/SequenceOutput$$SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.SeqSink">SeqSink</a>, <a href="../io/text/TextFileSink.html" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a>, <a href="../io/sequence/SequenceOutput$$ValueSeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceOutput.ValueSeqSink">ValueSeqSink</a></div>
+          <div class="subClasses hiddenContent"><a href="../io/avro/AvroSink.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSink">AvroSink</a>, <a href="../impl/mapreducer/BridgeStore.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a>, <a href="../io/sequence/SeqSink.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSink">SeqSink</a>, <a href="../io/text/TextFileSink.html" class="extype" name="com.nicta.scoobi.io.text.TextFileSink">TextFileSink</a></div>
         </div></div>
         
 
@@ -68,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.core.DataSink"><span>DataSink</span></li><li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="com.nicta.scoobi.core.Checkpoint"><span>Checkpoint</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.core.DataSink"><span>DataSink</span></li><li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -92,7 +87,33 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.nicta.scoobi.core.DataSink#outputCheck" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.core.Sink#compressWith" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):com.nicta.scoobi.core.Sink"></a>
+      <a id="compressWith(CompressionCodec,CompressionType):Sink"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DataSink#compression" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="compression:Option[com.nicta.scoobi.core.Compression]"></a>
+      <a id="compression:Option[Compression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compression</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a compression object if this sink is compressed</p></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DataSink#outputCheck" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="outputCheck(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="outputCheck(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
@@ -266,45 +287,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#checkpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="checkpoint(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.Sink"></a>
-      <a id="checkpoint(ScoobiConfiguration):Sink"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">checkpoint</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">set this sink as a checkpoint</p><div class="fullcomment"><div class="comment cmt"><p>set this sink as a checkpoint</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#checkpointExists" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="checkpointExists(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Boolean"></a>
-      <a id="checkpointExists(ScoobiConfiguration):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">checkpointExists</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink has been filled with data</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#checkpointName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="checkpointName:Option[String]"></a>
-      <a id="checkpointName:Option[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">checkpointName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink is a checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -317,8 +299,11 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.core.Sink#compress" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -333,20 +318,7 @@
         <span class="name">compress</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Sink#compressWith" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):com.nicta.scoobi.core.Sink"></a>
-      <a id="compressWith(CompressionCodec,CompressionType):Sink"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with Gzip compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DataSink#configureCompression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configureCompression(configuration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.DataSink[K,V,B]"></a>
       <a id="configureCompression(Configuration):DataSink[K,V,B]"></a>
@@ -398,8 +370,11 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -434,26 +409,13 @@
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
         <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#isCheckpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isCheckpoint:Boolean"></a>
-      <a id="isCheckpoint:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isCheckpoint</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink is a checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
+      <p class="shortcomment cmt">unique id for this Sink</p><div class="fullcomment"><div class="comment cmt"><p>unique id for this Sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DataSink#isCompressed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isCompressed:Boolean"></a>
       <a id="isCompressed:Boolean"></a>
@@ -519,32 +481,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#outputCompression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputCompression(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):$anonforSome{type$anon&lt;:com.nicta.scoobi.core.DataSink[K,V,B]{defconfigureCompression(configuration:org.apache.hadoop.conf.Configuration):$anon}}"></a>
-      <a id="outputCompression(CompressionCodec,CompressionType):$anonforSome{type$anon&lt;:DataSink[K,V,B]{defconfigureCompression(configuration:org.apache.hadoop.conf.Configuration):$anon}}"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputCompression</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.DataSink.outputCompression.$anon">$anon</span> forSome {type $anon &lt;: <a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="com.nicta.scoobi.core.DataSink.K">K</span>, <span class="extype" name="com.nicta.scoobi.core.DataSink.V">V</span>, <span class="extype" name="com.nicta.scoobi.core.DataSink.B">B</span>] { def configureCompression(configuration: org.apache.hadoop.conf.Configuration): $anon }}</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Set the compression configuration</p><div class="fullcomment"><div class="comment cmt"><p>Set the compression configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DataSink#outputSetup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputSetup(implicitconfiguration:org.apache.hadoop.conf.Configuration):Unit"></a>
-      <a id="outputSetup(Configuration):Unit"></a>
+      <a id="outputSetup(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="outputSetup(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputSetup</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">outputSetup</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">This method is called just before writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just before writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DataSink#outputTeardown" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputTeardown(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="outputTeardown(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputTeardown</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">This method is called just after writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just after writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DataSink#stringId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="stringId:String"></a>
       <a id="stringId:String"></a>
@@ -571,19 +533,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Sink#toSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toSource:Option[com.nicta.scoobi.core.Source]"></a>
-      <a id="toSource:Option[Source]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toSource</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.core.Source">Source</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">implement this function if this sink can be turned into a Source</p><div class="fullcomment"><div class="comment cmt"><p>implement this function if this sink can be turned into a Source</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -610,7 +559,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -626,7 +578,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -642,7 +597,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -656,8 +614,6 @@
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.core.Sink">
               <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.Checkpoint">
-              <h3>Inherited from <a href="Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
@@ -678,7 +634,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

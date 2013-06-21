@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -29,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
+        <a href="BridgeStore$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.mapreducer">mapreducer</a></p>
-        <h1>BridgeStore</h1>
+        <h1><a href="BridgeStore$.html" title="Go to companion">BridgeStore</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,14 +35,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">BridgeStore</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">BridgeStore</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A bridge store is any data that moves between MSCRs. It must first be computed, but
 may be removed once all successor MSCRs have consumed it.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span>, <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>, <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Source">Source</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span>, <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a>, <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>, <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.core.Source">Source</span>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -65,7 +60,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.BridgeStore"><span>BridgeStore</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.nicta.scoobi.core.Bridge"><span>Bridge</span></li><li class="in" name="com.nicta.scoobi.core.DataSink"><span>DataSink</span></li><li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="com.nicta.scoobi.core.Checkpoint"><span>Checkpoint</span></li><li class="in" name="com.nicta.scoobi.core.DataSource"><span>DataSource</span></li><li class="in" name="com.nicta.scoobi.core.Source"><span>Source</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.mapreducer.BridgeStore"><span>BridgeStore</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.nicta.scoobi.core.Bridge"><span>Bridge</span></li><li class="in" name="com.nicta.scoobi.core.SinkSource"><span>SinkSource</span></li><li class="in" name="com.nicta.scoobi.core.DataSink"><span>DataSink</span></li><li class="in" name="com.nicta.scoobi.core.Sink"><span>Sink</span></li><li class="in" name="com.nicta.scoobi.core.DataSource"><span>DataSource</span></li><li class="in" name="com.nicta.scoobi.core.Source"><span>Source</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -86,7 +81,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(bridgeStoreId:String,wf:com.nicta.scoobi.core.WireReaderWriter):com.nicta.scoobi.impl.mapreducer.BridgeStore[A]"></a>
+      <a id="&lt;init&gt;(bridgeStoreId:String,wf:com.nicta.scoobi.core.WireReaderWriter,checkpoint:Option[com.nicta.scoobi.core.Checkpoint],compression:Option[com.nicta.scoobi.core.Compression]):com.nicta.scoobi.impl.mapreducer.BridgeStore[A]"></a>
       <a id="&lt;init&gt;:BridgeStore[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -94,7 +89,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">BridgeStore</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span>
+        <span class="name">BridgeStore</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span>
       </span>
       </h4>
       
@@ -198,20 +193,20 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → Bridge</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#checkpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="checkpoint(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.core.Sink"></a>
-      <a id="checkpoint(ScoobiConfiguration):Sink"></a>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#checkpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkpoint:Option[com.nicta.scoobi.core.Checkpoint]"></a>
+      <a id="checkpoint:Option[Checkpoint]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">checkpoint</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
+        <span class="name">checkpoint</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">set this sink as a checkpoint</p><div class="fullcomment"><div class="comment cmt"><p>set this sink as a checkpoint</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#checkpointExists" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the checkpoint parameters if this sink is a Checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.SinkSource#checkpointExists" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="checkpointExists(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Boolean"></a>
       <a id="checkpointExists(ScoobiConfiguration):Boolean"></a>
       <h4 class="signature">
@@ -223,20 +218,20 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="name">checkpointExists</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink has been filled with data</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#checkpointName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="checkpointName:Option[String]"></a>
-      <a id="checkpointName:Option[String]"></a>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink is a checkpoint and has been filled with data</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.SinkSource#checkpointPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkpointPath:Option[String]"></a>
+      <a id="checkpointPath:Option[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">checkpointName</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">checkpointPath</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink is a checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path of the checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -249,8 +244,11 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.core.Sink#compress" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -265,20 +263,33 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="name">compress</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Sink#compressWith" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):com.nicta.scoobi.core.Sink"></a>
-      <a id="compressWith(CompressionCodec,CompressionType):Sink"></a>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with Gzip compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#compressWith" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compressWith(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):com.nicta.scoobi.impl.mapreducer.BridgeStore[Nothing]"></a>
+      <a id="compressWith(CompressionCodec,CompressionType):BridgeStore[Nothing]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>
+        <span class="name">compressWith</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a>[<span class="extype" name="scala.Nothing">Nothing</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Sink</dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new sink with compression enabled</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#compression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compression:Option[com.nicta.scoobi.core.Compression]"></a>
+      <a id="compression:Option[Compression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compression</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a compression object if this sink is compressed</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DataSink#configureCompression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="configureCompression(configuration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.DataSink[K,V,B]"></a>
       <a id="configureCompression(Configuration):DataSink[NullWritable,ScoobiWritable[A],A]"></a>
@@ -330,8 +341,11 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#freePath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -392,13 +406,13 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
         <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
+      <p class="shortcomment cmt">unique id for this Sink</p><div class="fullcomment"><div class="comment cmt"><p>unique id for this Sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#inputCheck" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="inputCheck(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="inputCheck(ScoobiConfiguration):Unit"></a>
@@ -464,7 +478,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the size in bytes of the data being input by this source</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a> → Source</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Checkpoint#isCheckpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.core.SinkSource#isCheckpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isCheckpoint:Boolean"></a>
       <a id="isCheckpoint:Boolean"></a>
       <h4 class="signature">
@@ -476,7 +490,7 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
         <span class="name">isCheckpoint</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this Sink is a checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if this sink is a checkpoint</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DataSink#isCompressed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isCompressed:Boolean"></a>
       <a id="isCompressed:Boolean"></a>
@@ -568,19 +582,6 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       </h4>
       <p class="shortcomment cmt">Check the validity of the DataSink specification.</p><div class="fullcomment"><div class="comment cmt"><p>Check the validity of the DataSink specification.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#outputCompression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputCompression(codec:org.apache.hadoop.io.compress.CompressionCodec,compressionType:org.apache.hadoop.io.SequenceFile.CompressionType):$anonforSome{type$anon&lt;:com.nicta.scoobi.core.DataSink[K,V,B]{defconfigureCompression(configuration:org.apache.hadoop.conf.Configuration):$anon}}"></a>
-      <a id="outputCompression(CompressionCodec,CompressionType):$anonforSome{type$anon&lt;:DataSink[NullWritable,ScoobiWritable[A],A]{defconfigureCompression(configuration:org.apache.hadoop.conf.Configuration):$anon}}"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outputCompression</span><span class="params">(<span name="codec">codec: <span class="extype" name="org.apache.hadoop.io.compress.CompressionCodec">CompressionCodec</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.hadoop.io.SequenceFile.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.BLOCK</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.DataSink.outputCompression.$anon">$anon</span> forSome {type $anon &lt;: <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] { def configureCompression(configuration: org.apache.hadoop.conf.Configuration): $anon }}</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Set the compression configuration</p><div class="fullcomment"><div class="comment cmt"><p>Set the compression configuration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputConfigure" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputConfigure(job:org.apache.hadoop.mapreduce.Job)(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
       <a id="outputConfigure(Job)(ScoobiConfiguration):Unit"></a>
@@ -646,19 +647,32 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the path for this Sink.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → Sink</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.DataSink#outputSetup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="outputSetup(implicitconfiguration:org.apache.hadoop.conf.Configuration):Unit"></a>
-      <a id="outputSetup(Configuration):Unit"></a>
+    </li><li name="com.nicta.scoobi.core.SinkSource#outputSetup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputSetup(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="outputSetup(ScoobiConfiguration):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">outputSetup</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">outputSetup</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">This method is called just before writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just before writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
+      <p class="shortcomment cmt">This method is called just before writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just before writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a> → Sink</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DataSink#outputTeardown" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputTeardown(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Unit"></a>
+      <a id="outputTeardown(ScoobiConfiguration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputTeardown</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">This method is called just after writing data to the sink</p><div class="fullcomment"><div class="comment cmt"><p>This method is called just after writing data to the sink</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a> → Sink</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#outputValueClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="outputValueClass(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Class[com.nicta.scoobi.impl.rtt.ScoobiWritable[A]]"></a>
       <a id="outputValueClass(ScoobiConfiguration):Class[ScoobiWritable[A]]"></a>
@@ -701,6 +715,19 @@ may be removed once all successor MSCRs have consumed it.</p></div><div class="t
 underlying Iterator has a lazy implementation and will only bring one element into memory
 at a time
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → Bridge</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Bridge#readAsValue" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="readAsValue(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):Any"></a>
+      <a id="readAsValue(ScoobiConfiguration):Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">readAsValue</span><span class="params">(<span class="implicit">implicit </span><span name="sc">sc: <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></span>)</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Bridge</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#rtClass" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="rtClass(implicitsc:com.nicta.scoobi.core.ScoobiConfiguration):com.nicta.scoobi.impl.rtt.RuntimeClass"></a>
       <a id="rtClass(ScoobiConfiguration):RuntimeClass"></a>
@@ -741,18 +768,18 @@ at a time
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#toSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toSource:Option[com.nicta.scoobi.core.Source]"></a>
-      <a id="toSource:Option[Source]"></a>
+      <a id="toSource:com.nicta.scoobi.core.Source"></a>
+      <a id="toSource:Source"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toSource</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.core.Source">Source</span>]</span>
+        <span class="name">toSource</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Source">Source</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">implement this function if this sink can be turned into a Source</p><div class="fullcomment"><div class="comment cmt"><p>implement this function if this sink can be turned into a Source</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → Sink</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a> → <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -772,7 +799,7 @@ at a time
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
         <span class="name">typeName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
@@ -792,7 +819,10 @@ at a time
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -808,7 +838,10 @@ at a time
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -824,7 +857,10 @@ at a time
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore#wf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -859,12 +895,12 @@ at a time
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="com.nicta.scoobi.core.Bridge">
               <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span></h3>
+            </div><div class="parent" name="com.nicta.scoobi.core.SinkSource">
+              <h3>Inherited from <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a></h3>
             </div><div class="parent" name="com.nicta.scoobi.core.DataSink">
               <h3>Inherited from <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>]</h3>
             </div><div class="parent" name="com.nicta.scoobi.core.Sink">
               <h3>Inherited from <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></h3>
-            </div><div class="parent" name="com.nicta.scoobi.core.Checkpoint">
-              <h3>Inherited from <a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a></h3>
             </div><div class="parent" name="com.nicta.scoobi.core.DataSource">
               <h3>Inherited from <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>]</h3>
             </div><div class="parent" name="com.nicta.scoobi.core.Source">
@@ -889,7 +925,6 @@ at a time
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

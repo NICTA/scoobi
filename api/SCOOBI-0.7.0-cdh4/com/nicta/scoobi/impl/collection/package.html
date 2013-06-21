@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -64,7 +59,7 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="com.nicta.scoobi.impl.collection.BoundedLinearSeq" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="BoundedLinearSeq[+A]extendsObject"></a>
+      <a id="BoundedLinearSeq[+A]extendsAnyRef"></a>
       <a id="BoundedLinearSeq[+A]:BoundedLinearSeq[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -102,6 +97,32 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.impl.collection.Set" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Set[T]extendsAnyRef"></a>
+      <a id="Set[T]:Set[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Set.html"><span class="name">Set</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A common class for lightweight sets.</p>
+    </li><li name="com.nicta.scoobi.impl.collection.WeakHashSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WeakHashSet[A]extendsSet[A]withA=&gt;BooleanwithSet[A]"></a>
+      <a id="WeakHashSet[A]:WeakHashSet[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="WeakHashSet.html"><span class="name">WeakHashSet</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Set.html" class="extype" name="com.nicta.scoobi.impl.collection.Set">Set</a>[<span class="extype" name="com.nicta.scoobi.impl.collection.WeakHashSet.A">A</span>] with (<span class="extype" name="com.nicta.scoobi.impl.collection.WeakHashSet.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span> with <span class="extype" name="scala.collection.mutable.Set">scala.collection.mutable.Set</span>[<span class="extype" name="com.nicta.scoobi.impl.collection.WeakHashSet.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">A HashSet where the elements are stored weakly.</p>
     </li></ol>
             </div>
 
@@ -150,6 +171,20 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.impl.collection.WeakHashSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WeakHashSet"></a>
+      <a id="WeakHashSet:WeakHashSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="WeakHashSet$.html"><span class="name">WeakHashSet</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion object for WeakHashSet
+</p>
     </li></ol>
             </div>
 
@@ -175,7 +210,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

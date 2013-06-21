@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -40,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>, <span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span> = <span class="defval" name="new org.apache.hadoop.mapreduce.Counters()">...</span></span>)</span><span class="result"> extends <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(hadoopConfiguration:org.apache.hadoop.conf.Configuration,userJars:Set[String],userDirs:Set[String],classLoader:Option[scala.tools.nsc.util.ScalaClassLoader]):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="&lt;init&gt;(hadoopConfiguration:org.apache.hadoop.conf.Configuration,userJars:Set[String],userDirs:Set[String],classLoader:Option[scala.tools.nsc.interpreter.AbstractFileClassLoader],counters:org.apache.hadoop.mapreduce.Counters):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
       <a id="&lt;init&gt;:ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +88,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>] = <span class="symbol">scala.None</span></span>)</span>
+        <span class="name">ScoobiConfigurationImpl</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span> = <span class="defval" name="new org.apache.hadoop.conf.Configuration()">...</span></span>, <span name="userJars">userJars: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="userDirs">userDirs: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="scala.this.Predef.Set.apply[String]()">...</span></span>, <span name="classLoader">classLoader: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>] = <span class="symbol">scala.None</span></span>, <span name="counters">counters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span> = <span class="defval" name="new org.apache.hadoop.mapreduce.Counters()">...</span></span>)</span>
       </span>
       </h4>
       
@@ -172,15 +167,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#addClassLoader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="addClassLoader(cl:scala.tools.nsc.util.ScalaClassLoader):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
-      <a id="addClassLoader(ScalaClassLoader):ScoobiConfigurationImpl"></a>
+      <a id="addClassLoader(cl:scala.tools.nsc.interpreter.AbstractFileClassLoader):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="addClassLoader(AbstractFileClassLoader):ScoobiConfigurationImpl"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addClassLoader</span><span class="params">(<span name="cl">cl: <span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
+        <span class="name">addClassLoader</span><span class="params">(<span name="cl">cl: <span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">attach a classloader which classes must be put on the job classpath
@@ -275,15 +270,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#classLoader" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="classLoader:Option[scala.tools.nsc.util.ScalaClassLoader]"></a>
-      <a id="classLoader:Option[ScalaClassLoader]"></a>
+      <a id="classLoader:Option[scala.tools.nsc.interpreter.AbstractFileClassLoader]"></a>
+      <a id="classLoader:Option[AbstractFileClassLoader]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">classLoader</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.util.ScalaClassLoader">ScalaClassLoader</span>]</span>
+        <span class="name">classLoader</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.tools.nsc.interpreter.AbstractFileClassLoader">AbstractFileClassLoader</span>]</span>
       </span>
       </h4>
       
@@ -299,8 +294,11 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#concurrentJobs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -329,6 +327,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Scoobi's configuration, initialised with a job id</p><div class="fullcomment"><div class="comment cmt"><p>Scoobi's configuration, initialised with a job id</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#counters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="counters:org.apache.hadoop.mapreduce.Counters"></a>
+      <a id="counters:Counters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">counters</span><span class="result">: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#defaultScoobiDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="defaultScoobiDir:String"></a>
       <a id="defaultScoobiDir:String"></a>
@@ -432,8 +443,11 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#getBytesPerReducer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -773,6 +787,19 @@ The command line argument doesn't have to start with a dash.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#scoobiClassLoader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scoobiClassLoader:ClassLoader"></a>
+      <a id="scoobiClassLoader:ClassLoader"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scoobiClassLoader</span><span class="result">: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the class loader to use with Scoobi classes, including generated ones</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#scoobiDir" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scoobiDir:String"></a>
       <a id="scoobiDir:String"></a>
@@ -980,6 +1007,19 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#updateCounters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="updateCounters(hadoopCounters:org.apache.hadoop.mapreduce.Counters):com.nicta.scoobi.impl.ScoobiConfigurationImpl"></a>
+      <a id="updateCounters(Counters):ScoobiConfigurationImpl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateCounters</span><span class="params">(<span name="hadoopCounters">hadoopCounters: <span class="extype" name="org.apache.hadoop.mapreduce.Counters">Counters</span></span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">update the current counters from the result of a job that has just been run</p><div class="fullcomment"><div class="comment cmt"><p>update the current counters from the result of a job that has just been run</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.ScoobiConfigurationImpl">ScoobiConfigurationImpl</a> → <a href="../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#uploadedLibJars" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="uploadedLibJars:Boolean"></a>
       <a id="uploadedLibJars:Boolean"></a>
@@ -1046,7 +1086,10 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1062,7 +1105,10 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1078,7 +1124,10 @@ because all the paths will depend on that
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.ScoobiConfigurationImpl#withHadoopArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1194,7 +1243,6 @@ because all the paths will depend on that
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -77,7 +72,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.testing.HadoopExamples" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="HadoopExamplesextendsHadoopwithCommandLineScoobiUserArgswithCluster"></a>
+      <a id="HadoopExamplesextendsHadoopwithCommandLineScoobiUserArgswithClusterwithHadoopLogFactoryInitialisation"></a>
       <a id="HadoopExamples:HadoopExamples"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -85,7 +80,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="HadoopExamples.html"><span class="name">HadoopExamples</span></a><span class="result"> extends <a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a> with <a href="../application/CommandLineScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs">CommandLineScoobiUserArgs</a> with <a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a></span>
+        <a href="HadoopExamples.html"><span class="name">HadoopExamples</span></a><span class="result"> extends <a href="../application/Hadoop.html" class="extype" name="com.nicta.scoobi.application.Hadoop">Hadoop</a> with <a href="../application/CommandLineScoobiUserArgs.html" class="extype" name="com.nicta.scoobi.application.CommandLineScoobiUserArgs">CommandLineScoobiUserArgs</a> with <a href="../application/Cluster.html" class="extype" name="com.nicta.scoobi.application.Cluster">Cluster</a> with <a href="../application/HadoopLogFactoryInitialisation.html" class="extype" name="com.nicta.scoobi.application.HadoopLogFactoryInitialisation">HadoopLogFactoryInitialisation</a></span>
       </span>
       </h4>
       <p class="comment cmt">This trait provides an Around context to be used in a Specification</p>
@@ -103,7 +98,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.testing.HadoopSpecification" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="HadoopSpecificationextendsSpecificationwithHadoopSpecificationStructurewithScoobiAppConfiguration"></a>
+      <a id="HadoopSpecificationextendsSpecificationwithHadoopSpecificationLike"></a>
       <a id="HadoopSpecification:HadoopSpecification"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -111,11 +106,24 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="HadoopSpecification.html"><span class="name">HadoopSpecification</span></a><span class="result"> extends <span class="extype" name="org.specs2.Specification">Specification</span> with <a href="HadoopSpecificationStructure.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationStructure">HadoopSpecificationStructure</a> with <a href="../application/ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></span>
+        <a href="HadoopSpecification.html"><span class="name">HadoopSpecification</span></a><span class="result"> extends <span class="extype" name="org.specs2.Specification">Specification</span> with <a href="HadoopSpecificationLike.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationLike">HadoopSpecificationLike</a></span>
       </span>
       </h4>
       <p class="comment cmt">Hadoop specification with an acceptance specification
 </p>
+    </li><li name="com.nicta.scoobi.testing.HadoopSpecificationLike" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HadoopSpecificationLikeextendsSpecificationwithHadoopSpecificationStructurewithScoobiAppConfiguration"></a>
+      <a id="HadoopSpecificationLike:HadoopSpecificationLike"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HadoopSpecificationLike.html"><span class="name">HadoopSpecificationLike</span></a><span class="result"> extends <span class="extype" name="org.specs2.Specification">Specification</span> with <a href="HadoopSpecificationStructure.html" class="extype" name="com.nicta.scoobi.testing.HadoopSpecificationStructure">HadoopSpecificationStructure</a> with <a href="../application/ScoobiAppConfiguration.html" class="extype" name="com.nicta.scoobi.application.ScoobiAppConfiguration">ScoobiAppConfiguration</a></span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.testing.HadoopSpecificationStructure" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="HadoopSpecificationStructureextendsClusterwithHadoopExampleswithUploadedLibJarswithHadoopLogFactorySetupwithCommandLineHadoopLogFactory"></a>
       <a id="HadoopSpecificationStructure:HadoopSpecificationStructure"></a>
@@ -143,7 +151,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.testing.InputTestFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InputTestFile[S]extendsObject"></a>
+      <a id="InputTestFile[S]extendsAnyRef"></a>
       <a id="InputTestFile[S]:InputTestFile[S]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -182,7 +190,7 @@
       </h4>
       <p class="comment cmt">This trait helps in the creation of DLists and Scoobi jobs where the user doesn't have to track the creation of files.</p>
     </li><li name="com.nicta.scoobi.testing.TempFiles" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="TempFilesextendsObject"></a>
+      <a id="TempFilesextendsAnyRef"></a>
       <a id="TempFiles:TempFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -196,7 +204,7 @@
       <p class="comment cmt">This trait helps with the creation of temporary files and directories
 </p>
     </li><li name="com.nicta.scoobi.testing.TestFiles" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="TestFilesextendsObject"></a>
+      <a id="TestFilesextendsAnyRef"></a>
       <a id="TestFiles:TestFiles"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -295,7 +303,6 @@ The files paths are registered in the configuration so that they can be deleted 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

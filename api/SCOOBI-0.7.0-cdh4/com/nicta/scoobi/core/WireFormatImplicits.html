@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -765,6 +760,19 @@
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenericAvroWireFormat[T&lt;:org.apache.avro.generic.GenericRecord]extendsWireFormat[T]"></a>
+      <a id="GenericAvroWireFormat[T&lt;:GenericRecord]:GenericAvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="WireFormatImplicits$GenericAvroWireFormat.html"><span class="name">GenericAvroWireFormat</span></a><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result"> extends <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat.T">T</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits.IntWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="IntWireFormatextendsWireFormat[Int]"></a>
       <a id="IntWireFormat:IntWireFormat"></a>
@@ -1217,8 +1225,8 @@ import it when you need it.
       </span>
       </h4>
       
-    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#AvroFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AvroFmt[T&lt;:org.apache.avro.specific.SpecificRecordBase](implicitevidence$9:Manifest[T],implicitevidence$10:com.nicta.scoobi.io.avro.AvroSchema[T]):WireFormatImplicits.this.AvroWireFormat[T]"></a>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#AvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="AvroFmt[T&lt;:org.apache.avro.specific.SpecificRecordBase](implicitevidence$10:Manifest[T],implicitevidence$11:com.nicta.scoobi.io.avro.AvroSchema[T]):WireFormatImplicits.this.AvroWireFormat[T]"></a>
       <a id="AvroFmt[T&lt;:SpecificRecordBase](Manifest[T],AvroSchema[T]):AvroWireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1229,8 +1237,8 @@ import it when you need it.
         <span class="name">AvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>, <span name="arg1">arg1: <a href="../io/avro/AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>)</span><span class="result">: <a href="WireFormatImplicits$AvroWireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroWireFormat">AvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.AvroFmt.T">T</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Avro types
-</p>
+      <p class="shortcomment cmt">WireFormat instance for Avro Specific Records</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro Specific Records</p><p>This requires an implicit AvroSchema instance
+</p></div></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#BooleanFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="BooleanFmt:WireFormatImplicits.this.BooleanWireFormat"></a>
       <a id="BooleanFmt:BooleanWireFormat"></a>
@@ -1323,6 +1331,22 @@ import it when you need it.
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#GenericAvroFmt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GenericAvroFmt[T&lt;:org.apache.avro.generic.GenericRecord]:WireFormatImplicits.this.GenericAvroWireFormat[T]"></a>
+      <a id="GenericAvroFmt[T&lt;:GenericRecord]:GenericAvroWireFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">GenericAvroFmt</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</span></span>]</span><span class="result">: <a href="WireFormatImplicits$GenericAvroWireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroWireFormat">GenericAvroWireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.GenericAvroFmt.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">WireFormat instance for Avro Generic Records</p><div class="fullcomment"><div class="comment cmt"><p>WireFormat instance for Avro Generic Records</p><p>No implicit AvroSchema instance is required. A dummy schema is used to start the reading of the file
+and then the GenericAvroKeyRecordWriter/GenericAvroKeyRecordReader will inspect the schema that is defined by the
+first generic record that is written / read to instance an appropriate AvroKeyRecordWriter/AvroKeyRecordReader
+</p></div></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#IntFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="IntFmt:WireFormatImplicits.this.IntWireFormat"></a>
       <a id="IntFmt:IntWireFormat"></a>
@@ -1703,7 +1727,7 @@ import it when you need it.
       </h4>
       <p class="shortcomment cmt">&quot;Primitive&quot; types.</p>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#WritableFmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WritableFmt[T&lt;:org.apache.hadoop.io.Writable](implicitevidence$8:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="WritableFmt[T&lt;:org.apache.hadoop.io.Writable](implicitevidence$9:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="WritableFmt[T&lt;:Writable](Manifest[T]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1740,8 +1764,11 @@ import it when you need it.
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1782,8 +1809,11 @@ import it when you need it.
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -1812,6 +1842,32 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#hlistHasWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hlistHasWireFormat[T,H1&lt;:shapeless.HList](implicitwft:com.nicta.scoobi.core.WireFormat[T],implicitwfh1:com.nicta.scoobi.core.WireFormat[H1]):com.nicta.scoobi.core.WireFormat[shapeless.::[T,H1]]"></a>
+      <a id="hlistHasWireFormat[T,H1&lt;:HList](WireFormat[T],WireFormat[H1]):WireFormat[::[T,H1]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hlistHasWireFormat</span><span class="tparams">[<span name="T">T</span>, <span name="H1">H1 &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="wft">wft: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.hlistHasWireFormat.T">T</span>]</span>, <span name="wfh1">wfh1: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.hlistHasWireFormat.H1">H1</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.hlistHasWireFormat.T">T</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.hlistHasWireFormat.H1">H1</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.WireFormatImplicits#hnilHasWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hnilHasWireFormat:com.nicta.scoobi.core.WireFormat[shapeless.HNil]"></a>
+      <a id="hnilHasWireFormat:WireFormat[HNil]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hnilHasWireFormat</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="shapeless.HNil">HNil</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -2099,7 +2155,7 @@ import it when you need it.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#mkCaseWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkCaseWireFormat[T,A1](apply:A1=&gt;T,unapply:T=&gt;Option[A1])(implicitevidence$7:com.nicta.scoobi.core.WireFormat[A1]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="mkCaseWireFormat[T,A1](apply:A1=&gt;T,unapply:T=&gt;Option[A1])(implicitevidence$8:com.nicta.scoobi.core.WireFormat[A1]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="mkCaseWireFormat[T,A1]((A1)⇒T,(T)⇒Option[A1])(WireFormat[A1]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2112,7 +2168,7 @@ import it when you need it.
       </h4>
       
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#mkCaseWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkCaseWireFormat[T](apply:()=&gt;T,unapply:T=&gt;Boolean)(implicitevidence$5:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="mkCaseWireFormat[T](apply:()=&gt;T,unapply:T=&gt;Boolean)(implicitevidence$6:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="mkCaseWireFormat[T](()⇒T,(T)⇒Boolean)(Manifest[T]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2398,7 +2454,7 @@ import it when you need it.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../codegen/GeneratedWireFormats.html" class="extype" name="com.nicta.scoobi.codegen.GeneratedWireFormats">GeneratedWireFormats</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#mkObjectWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkObjectWireFormat[T](x:T)(implicitevidence$3:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
+      <a id="mkObjectWireFormat[T](x:T)(implicitevidence$4:Manifest[T]):com.nicta.scoobi.core.WireFormat[T]"></a>
       <a id="mkObjectWireFormat[T](T)(Manifest[T]):WireFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2463,7 +2519,7 @@ import it when you need it.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.nicta.scoobi.core.WireFormatImplicits#taggedTypeWireFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="taggedTypeWireFormat[T,U](implicitevidence$14:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[shapeless.TypeOperators.@@[T,U]]"></a>
+      <a id="taggedTypeWireFormat[T,U](implicitevidence$15:com.nicta.scoobi.core.WireFormat[T]):com.nicta.scoobi.core.WireFormat[scalaz.@@[T,U]]"></a>
       <a id="taggedTypeWireFormat[T,U](WireFormat[T]):WireFormat[@@[T,U]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2471,7 +2527,7 @@ import it when you need it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">taggedTypeWireFormat</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.taggedTypeWireFormat.T">T</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="shapeless.TypeOperators.@@">@@</span>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.taggedTypeWireFormat.T">T</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.taggedTypeWireFormat.U">U</span>]]</span>
+        <span class="name">taggedTypeWireFormat</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.taggedTypeWireFormat.T">T</span>]</span>)</span><span class="result">: <a href="WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<a href="../../../../scalaz/package.html#@@[+T,Tag]=Twithscalaz.package.Tagged[Tag]" class="extmbr" name="scalaz.@@">@@</a>[<span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.taggedTypeWireFormat.T">T</span>, <span class="extype" name="com.nicta.scoobi.core.WireFormatImplicits.taggedTypeWireFormat.U">U</span>]]</span>
       </span>
       </h4>
       
@@ -2501,7 +2557,10 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -2517,7 +2576,10 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -2533,7 +2595,10 @@ import it when you need it.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -2567,7 +2632,6 @@ import it when you need it.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

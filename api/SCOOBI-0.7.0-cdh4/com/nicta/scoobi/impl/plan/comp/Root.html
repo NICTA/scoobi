@@ -9,11 +9,6 @@
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -40,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Root</span><span class="params">(<span name="ins">ins: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Root</span><span class="params">(<span name="ins">ins: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -85,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.plan.comp.Root#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(ins:Seq[com.nicta.scoobi.core.CompNode]):com.nicta.scoobi.impl.plan.comp.Root"></a>
+      <a id="&lt;init&gt;(ins:Seq[com.nicta.scoobi.core.CompNode],sinks:Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Root"></a>
       <a id="&lt;init&gt;:Root"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,14 +88,30 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Root</span><span class="params">(<span name="ins">ins: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>)</span>
+        <span class="name">Root</span><span class="params">(<span name="ins">ins: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>, <span name="sinks">sinks: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span>
       </span>
       </h4>
       
     </li></ol>
             </div>
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.nicta.scoobi.core.ValueNode.C" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="C=com.nicta.scoobi.core.ValueNode"></a>
+      <a id="C:C"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">C</span><span class="result"> = <a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/ValueNode.html" class="extype" name="com.nicta.scoobi.core.ValueNode">ValueNode</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
+    </li></ol>
+            </div>
 
         
 
@@ -203,6 +214,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.CompNode#addSink" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addSink(sink:com.nicta.scoobi.core.Sink):CompNode.this.C"></a>
+      <a id="addSink(Sink):C"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addSink</span><span class="params">(<span name="sink">sink: <span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span></span>)</span><span class="result">: <a href="#C=com.nicta.scoobi.core.ValueNode" class="extmbr" name="com.nicta.scoobi.impl.plan.comp.Root.C">C</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -293,8 +317,11 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#firstChild" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -323,6 +350,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.CompNode#hasCheckpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hasCheckpoint:Boolean"></a>
+      <a id="hasCheckpoint:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasCheckpoint</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="org.kiama.attribution.Attributable#hasChildren" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hasChildren:Boolean"></a>
       <a id="hasChildren:Boolean"></a>
@@ -596,6 +636,32 @@
       </span>
       </h4>
       <p class="shortcomment cmt">push a value for this environment.</p><div class="fullcomment"><div class="comment cmt"><p>push a value for this environment. This serialises the value and distribute it in the file cache</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="WithEnvironment.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.WithEnvironment">WithEnvironment</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Root#sinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
+      <a id="sinks:Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sinks</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Root">Root</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl#sinksString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sinksString:String"></a>
+      <a id="sinksString:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sinksString</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">display the sinks if any</p><div class="fullcomment"><div class="comment cmt"><p>display the sinks if any</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ValueNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ValueNodeImpl">ValueNodeImpl</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -609,6 +675,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.comp.Root#updateSinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="updateSinks(f:Seq[com.nicta.scoobi.core.Sink]=&gt;Seq[com.nicta.scoobi.core.Sink]):com.nicta.scoobi.impl.plan.comp.Root"></a>
+      <a id="updateSinks((Seq[Sink])⇒Seq[Sink]):Root"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updateSinks</span><span class="params">(<span name="f">f: (<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]) ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>)</span><span class="result">: <a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Root">Root</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.Root">Root</a> → <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -622,7 +701,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -638,7 +720,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -654,7 +739,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.Root#wf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -721,7 +809,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

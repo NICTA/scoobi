@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -29,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
+        <a href="SequenceInput.html" title="Go to companion"><img src="../../../../../lib/object_to_trait_big.png" /></a>
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.io">io</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.io.sequence">sequence</a></p>
-        <h1>SequenceInput</h1>
+        <h1><a href="SequenceInput.html" title="Go to companion">SequenceInput</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,13 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">SequenceInput</span>
+        <span class="name">SequenceInput</span><span class="result"> extends <a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Smart functions for materialising distributed lists by loading Sequence files.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -64,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.io.sequence.SequenceInput"><span>SequenceInput</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.io.sequence.SequenceInput"><span>SequenceInput</span></li><li class="in" name="com.nicta.scoobi.io.sequence.SequenceInput"><span>SequenceInput</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -84,36 +79,7 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.io.sequence.SequenceInput.CheckedSeqSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CheckedSeqSource[K,V,A]extendsSequenceInput.SeqSource[K,V,A]"></a>
-      <a id="CheckedSeqSource[K,V,A]:CheckedSeqSource[K,V,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="SequenceInput$$CheckedSeqSource.html"><span class="name">CheckedSeqSource</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="result"> extends <a href="SequenceInput$$SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource">SeqSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.CheckedSeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.CheckedSeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.CheckedSeqSource.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">This class can check if the source types are ok, based on the Manifest of the input types</p>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SeqSource[K,V,A]extendsDataSource[K,V,A]"></a>
-      <a id="SeqSource[K,V,A]:SeqSource[K,V,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="SequenceInput$$SeqSource.html"><span class="name">SeqSource</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource.A">A</span>]</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -197,8 +163,8 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#checkedSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="checkedSource[K,V](paths:Seq[String],checkFileTypes:Boolean)(implicitevidence$21:Manifest[K],implicitevidence$22:Manifest[V]):com.nicta.scoobi.io.sequence.SequenceInput.CheckedSeqSource[K,V,(K,V)]"></a>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#checkedSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkedSource[K,V](paths:Seq[String],checkKeyValueTypes:Boolean)(implicitevidence$18:Manifest[K],implicitevidence$19:Manifest[V]):com.nicta.scoobi.io.sequence.CheckedSeqSource[K,V,(K,V)]"></a>
       <a id="checkedSource[K,V](Seq[String],Boolean)(Manifest[K],Manifest[V]):CheckedSeqSource[K,V,(K,V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -206,10 +172,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">checkedSource</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkFileTypes">checkFileTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.V">V</span>]</span>)</span><span class="result">: <a href="SequenceInput$$CheckedSeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.CheckedSeqSource">CheckedSeqSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.V">V</span>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.V">V</span>)]</span>
+        <span class="name">checkedSource</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkKeyValueTypes">checkKeyValueTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.V">V</span>]</span>)</span><span class="result">: <a href="CheckedSeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.CheckedSeqSource">CheckedSeqSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.V">V</span>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.checkedSource.V">V</span>)]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -222,100 +188,26 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#convertFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="convertFromSequenceFile[K,V](paths:List[String],checkFileTypes:Boolean)(implicitevidence$9:com.nicta.scoobi.core.WireFormat[K],implicitevidence$10:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitevidence$11:com.nicta.scoobi.core.WireFormat[V],implicitevidence$12:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
-      <a id="convertFromSequenceFile[K,V](List[String],Boolean)(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):DList[(K,V)]"></a>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#defaultSequenceInputFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultSequenceInputFormat[K,V]:Class[org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat[K,V]]"></a>
+      <a id="defaultSequenceInputFormat[K,V]:Class[SequenceFileInputFormat[K,V]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">convertFromSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkFileTypes">checkFileTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.K">K</span>]</span>, <span name="arg2">arg2: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.V">V</span>]</span>, <span name="arg3">arg3: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.V">V</span>)]</span>
+        <span class="name">defaultSequenceInputFormat</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[<span class="extype" name="org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat">SequenceFileInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.defaultSequenceInputFormat.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.defaultSequenceInputFormat.V">V</span>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Sequence Files. Note that the type parameters
-K and V are the &quot;converted&quot; Scala types for the Writable key-value types that must be contained in the the
-Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#convertFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="convertFromSequenceFile[K,V](paths:String*)(implicitwfk:com.nicta.scoobi.core.WireFormat[K],implicitsk:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitwfv:com.nicta.scoobi.core.WireFormat[V],implicitsv:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
-      <a id="convertFromSequenceFile[K,V](String*)(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):DList[(K,V)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">convertFromSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="wfk">wfk: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.K">K</span>]</span>, <span name="sk">sk: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.K">K</span>]</span>, <span name="wfv">wfv: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.V">V</span>]</span>, <span name="sv">sv: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertFromSequenceFile.V">V</span>)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new DList from the contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
-are the &quot;converted&quot; Scala types for the Writable key-value types that must be contained in the the Sequence
-Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#convertKeyFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="convertKeyFromSequenceFile[K](paths:List[String],checkKeyType:Boolean)(implicitevidence$3:com.nicta.scoobi.core.WireFormat[K],implicitevidence$4:com.nicta.scoobi.io.sequence.SeqSchema[K]):com.nicta.scoobi.core.DList[K]"></a>
-      <a id="convertKeyFromSequenceFile[K](List[String],Boolean)(WireFormat[K],SeqSchema[K]):DList[K]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">convertKeyFromSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkKeyType">checkKeyType: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertKeyFromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertKeyFromSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertKeyFromSequenceFile.K">K</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new DList from the &quot;key&quot; contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;key&quot; contents of a list of one or more Sequence Files. Note that the type parameter
-K is the &quot;converted&quot; Scala type for the Writable key type that must be contained in the the
-Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#convertKeyFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="convertKeyFromSequenceFile[K](paths:String*)(implicitevidence$1:com.nicta.scoobi.core.WireFormat[K],implicitevidence$2:com.nicta.scoobi.io.sequence.SeqSchema[K]):com.nicta.scoobi.core.DList[K]"></a>
-      <a id="convertKeyFromSequenceFile[K](String*)(WireFormat[K],SeqSchema[K]):DList[K]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">convertKeyFromSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertKeyFromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertKeyFromSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertKeyFromSequenceFile.K">K</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new DList from the &quot;key&quot; contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;key&quot; contents of one or more Sequence Files. Note that the type parameter K
-is the &quot;converted&quot; Scala type for the Writable key type that must be contained in the the Sequence
-Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#convertValueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="convertValueFromSequenceFile[V](paths:Seq[String],checkValueType:Boolean)(implicitevidence$7:com.nicta.scoobi.core.WireFormat[V],implicitevidence$8:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[V]"></a>
-      <a id="convertValueFromSequenceFile[V](Seq[String],Boolean)(WireFormat[V],SeqSchema[V]):DList[V]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">convertValueFromSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkValueType">checkValueType: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertValueFromSequenceFile.V">V</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertValueFromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertValueFromSequenceFile.V">V</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new DList from the &quot;value&quot; contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;value&quot; contents of a list of one or more Sequence Files. Note that the type parameter
-V is the &quot;converted&quot; Scala type for the Writable value type that must be contained in the the
-Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#convertValueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="convertValueFromSequenceFile[V](paths:String*)(implicitevidence$5:com.nicta.scoobi.core.WireFormat[V],implicitevidence$6:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[V]"></a>
-      <a id="convertValueFromSequenceFile[V](String*)(WireFormat[V],SeqSchema[V]):DList[V]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">convertValueFromSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertValueFromSequenceFile.V">V</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertValueFromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.convertValueFromSequenceFile.V">V</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Create a new DList from the &quot;value&quot; contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;value&quot; contents of one or more Sequence Files. Note that the type parameter V
-is the &quot;converted&quot; Scala type for the Writable value type that must be contained in the the Sequence
-Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -354,41 +246,54 @@ Files. In the case of a directory being specified, the input forms all the files
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#fromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromSequenceFile[K&lt;:org.apache.hadoop.io.Writable,V&lt;:org.apache.hadoop.io.Writable](paths:Seq[String],checkFileTypes:Boolean)(implicitevidence$17:com.nicta.scoobi.core.WireFormat[K],implicitevidence$18:Manifest[K],implicitevidence$19:com.nicta.scoobi.core.WireFormat[V],implicitevidence$20:Manifest[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
-      <a id="fromSequenceFile[K&lt;:Writable,V&lt;:Writable](Seq[String],Boolean)(WireFormat[K],Manifest[K],WireFormat[V],Manifest[V]):DList[(K,V)]"></a>
+      <a id="fromSequenceFile[K,V](paths:Seq[String],checkKeyValueTypes:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$13:com.nicta.scoobi.core.WireFormat[K],implicitevidence$14:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitevidence$15:com.nicta.scoobi.core.WireFormat[V],implicitevidence$16:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
+      <a id="fromSequenceFile[K,V](Seq[String],Boolean,(Seq[Path],ScoobiConfiguration)⇒Unit)(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):DList[(K,V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>, <span name="V">V &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkFileTypes">checkFileTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg2">arg2: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>, <span name="arg3">arg3: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>)]</span>
+        <span class="name">fromSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkKeyValueTypes">checkKeyValueTypes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg2">arg2: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>, <span name="arg3">arg3: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>)]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Sequence Files. Note
-that the type parameters K and V must match the type key-value type of the Sequence
-Files. In the case of a directory being specified, the input forms all the files in
-that directory.</p></div></div>
+      <p class="shortcomment cmt">Create a new DList from the contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of a list of one or more Sequence Files. Note that the type parameters
+K and V are the &quot;converted&quot; Scala types for the Writable key-value types that must be contained in the the
+Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#fromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromSequenceFile[K&lt;:org.apache.hadoop.io.Writable,V&lt;:org.apache.hadoop.io.Writable](paths:String*)(implicitevidence$13:com.nicta.scoobi.core.WireFormat[K],implicitevidence$14:Manifest[K],implicitevidence$15:com.nicta.scoobi.core.WireFormat[V],implicitevidence$16:Manifest[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
-      <a id="fromSequenceFile[K&lt;:Writable,V&lt;:Writable](String*)(WireFormat[K],Manifest[K],WireFormat[V],Manifest[V]):DList[(K,V)]"></a>
+      <a id="fromSequenceFile[K,V](paths:String*)(implicitevidence$9:com.nicta.scoobi.core.WireFormat[K],implicitevidence$10:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitevidence$11:com.nicta.scoobi.core.WireFormat[V],implicitevidence$12:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[(K,V)]"></a>
+      <a id="fromSequenceFile[K,V](String*)(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):DList[(K,V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromSequenceFile</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>, <span name="V">V &lt;: <span class="extype" name="org.apache.hadoop.io.Writable">Writable</span></span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg2">arg2: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>, <span name="arg3">arg3: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>)]</span>
+        <span class="name">fromSequenceFile</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>]</span>, <span name="arg2">arg2: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>, <span name="arg3">arg3: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceFile.V">V</span>)]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Create a new DList from the contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the contents of one or more Sequence Files. Note that the type parameters K and V
-must match the type key-value type of the Sequence Files. In the case of a directory being specified,
-the input forms all the files in that directory.</p></div></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#fromSequenceSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromSequenceSource[K,V,A](source:com.nicta.scoobi.io.sequence.SeqSource[K,V,A])(implicitevidence$17:com.nicta.scoobi.core.WireFormat[A]):com.nicta.scoobi.impl.plan.DListImpl[A]"></a>
+      <a id="fromSequenceSource[K,V,A](SeqSource[K,V,A])(WireFormat[A]):DListImpl[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromSequenceSource</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>, <span name="A">A</span>]</span><span class="params">(<span name="source">source: <a href="SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceSource.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceSource.V">V</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceSource.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceSource.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.impl.plan.DListImpl">DListImpl</span>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.fromSequenceSource.A">A</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -428,19 +333,36 @@ the input forms all the files in that directory.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#logger" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="logger:org.apache.commons.logging.Log"></a>
-      <a id="logger:Log"></a>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#keyFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="keyFromSequenceFile[K](paths:Seq[String],checkKeyType:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$3:com.nicta.scoobi.core.WireFormat[K],implicitevidence$4:com.nicta.scoobi.io.sequence.SeqSchema[K]):com.nicta.scoobi.core.DList[K]"></a>
+      <a id="keyFromSequenceFile[K](Seq[String],Boolean,(Seq[Path],ScoobiConfiguration)⇒Unit)(WireFormat[K],SeqSchema[K]):DList[K]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">logger</span><span class="result">: <span class="extype" name="org.apache.commons.logging.Log">Log</span></span>
+        <span class="name">keyFromSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkKeyType">checkKeyType: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.keyFromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.keyFromSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.keyFromSequenceFile.K">K</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Create a new DList from the &quot;key&quot; contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;key&quot; contents of a list of one or more Sequence Files. Note that the type parameter
+K is the &quot;converted&quot; Scala type for the Writable key type that must be contained in the the
+Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#keyFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="keyFromSequenceFile[K](paths:String*)(implicitevidence$1:com.nicta.scoobi.core.WireFormat[K],implicitevidence$2:com.nicta.scoobi.io.sequence.SeqSchema[K]):com.nicta.scoobi.core.DList[K]"></a>
+      <a id="keyFromSequenceFile[K](String*)(WireFormat[K],SeqSchema[K]):DList[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">keyFromSequenceFile</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.keyFromSequenceFile.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.keyFromSequenceFile.K">K</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.keyFromSequenceFile.K">K</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;key&quot; contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;key&quot; contents of one or more Sequence Files. Note that the type parameter K
+is the &quot;converted&quot; Scala type for the Writable key type that must be contained in the the Sequence
+Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -480,19 +402,19 @@ the input forms all the files in that directory.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#source" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="source[K,V](paths:Seq[String]):com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[K,V,(K,V)]"></a>
-      <a id="source[K,V](Seq[String]):SeqSource[K,V,(K,V)]"></a>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#source" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="source[K,V](paths:Seq[String])(implicitevidence$20:com.nicta.scoobi.core.WireFormat[K],implicitevidence$21:com.nicta.scoobi.io.sequence.SeqSchema[K],implicitevidence$22:com.nicta.scoobi.core.WireFormat[V],implicitevidence$23:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.io.sequence.SeqSource[K,V,(K,V)]"></a>
+      <a id="source[K,V](Seq[String])(WireFormat[K],SeqSchema[K],WireFormat[V],SeqSchema[V]):SeqSource[K,V,(K,V)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">source</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="SequenceInput$$SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource">SeqSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.V">V</span>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.V">V</span>)]</span>
+        <span class="name">source</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.K">K</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.K">K</span>]</span>, <span name="arg2">arg2: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.V">V</span>]</span>, <span name="arg3">arg3: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.V">V</span>]</span>)</span><span class="result">: <a href="SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.V">V</span>, (<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.K">K</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.source.V">V</span>)]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -519,8 +441,38 @@ the input forms all the files in that directory.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#valueSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="valueSource[V](paths:Seq[String])(implicitevidence$23:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.io.sequence.SequenceInput.SeqSource[org.apache.hadoop.io.Writable,convV.SeqType,V]forSome{valconvV:com.nicta.scoobi.io.sequence.SeqSchema[V]}"></a>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#valueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="valueFromSequenceFile[V](paths:Seq[String],checkValueType:Boolean,check:(Seq[org.apache.hadoop.fs.Path],com.nicta.scoobi.core.ScoobiConfiguration)=&gt;Unit)(implicitevidence$7:com.nicta.scoobi.core.WireFormat[V],implicitevidence$8:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[V]"></a>
+      <a id="valueFromSequenceFile[V](Seq[String],Boolean,(Seq[Path],ScoobiConfiguration)⇒Unit)(WireFormat[V],SeqSchema[V]):DList[V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">valueFromSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="checkValueType">checkValueType: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol"><span class="name"><a href="../../core/package.html">Source.defaultInputCheck</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueFromSequenceFile.V">V</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueFromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueFromSequenceFile.V">V</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;value&quot; contents of a list of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;value&quot; contents of a list of one or more Sequence Files. Note that the type parameter
+V is the &quot;converted&quot; Scala type for the Writable value type that must be contained in the the
+Sequence Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#valueFromSequenceFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="valueFromSequenceFile[V](paths:String*)(implicitevidence$5:com.nicta.scoobi.core.WireFormat[V],implicitevidence$6:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.core.DList[V]"></a>
+      <a id="valueFromSequenceFile[V](String*)(WireFormat[V],SeqSchema[V]):DList[V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">valueFromSequenceFile</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueFromSequenceFile.V">V</span>]</span>, <span name="arg1">arg1: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueFromSequenceFile.V">V</span>]</span>)</span><span class="result">: <a href="../../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueFromSequenceFile.V">V</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Create a new DList from the &quot;value&quot; contents of one or more Sequence Files.</p><div class="fullcomment"><div class="comment cmt"><p>Create a new DList from the &quot;value&quot; contents of one or more Sequence Files. Note that the type parameter V
+is the &quot;converted&quot; Scala type for the Writable value type that must be contained in the the Sequence
+Files. In the case of a directory being specified, the input forms all the files in that directory.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.io.sequence.SequenceInput#valueSource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="valueSource[V](paths:Seq[String])(implicitevidence$24:com.nicta.scoobi.io.sequence.SeqSchema[V]):com.nicta.scoobi.io.sequence.SeqSource[org.apache.hadoop.io.Writable,convV.SeqType,V]forSome{valconvV:com.nicta.scoobi.io.sequence.SeqSchema[V]}"></a>
       <a id="valueSource[V](Seq[String])(SeqSchema[V]):SeqSource[Writable,SequenceInput.valueSource.convV.type.SeqType,V]forSome{valconvV:SeqSchema[V]}"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -528,10 +480,10 @@ the input forms all the files in that directory.</p></div></div>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">valueSource</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueSource.V">V</span>]</span>)</span><span class="result">: <a href="SequenceInput$$SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.SeqSource">SeqSource</a>[<span class="extype" name="org.apache.hadoop.io.Writable">Writable</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SequenceInput.valueSource.convV.type.SeqType</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueSource.V">V</span>] forSome {val convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueSource.V">V</span>]}</span>
+        <span class="name">valueSource</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueSource.V">V</span>]</span>)</span><span class="result">: <a href="SeqSource.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSource">SeqSource</a>[<span class="extype" name="org.apache.hadoop.io.Writable">Writable</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema.SeqType">SequenceInput.valueSource.convV.type.SeqType</span>, <span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueSource.V">V</span>] forSome {val convV: <a href="SeqSchema.html" class="extype" name="com.nicta.scoobi.io.sequence.SeqSchema">SeqSchema</a>[<span class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput.valueSource.V">V</span>]}</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -545,7 +497,10 @@ the input forms all the files in that directory.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -561,7 +516,10 @@ the input forms all the files in that directory.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -577,7 +535,10 @@ the input forms all the files in that directory.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -589,7 +550,9 @@ the input forms all the files in that directory.</p></div></div>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="com.nicta.scoobi.io.sequence.SequenceInput">
+              <h3>Inherited from <a href="SequenceInput.html" class="extype" name="com.nicta.scoobi.io.sequence.SequenceInput">SequenceInput</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -609,7 +572,6 @@ the input forms all the files in that directory.</p></div></div>
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

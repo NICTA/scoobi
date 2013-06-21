@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -63,8 +58,21 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.nicta.scoobi.io.avro.AvroFixed" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="AvroFixed[T]extendsObject"></a>
+              <ol><li name="com.nicta.scoobi.io.avro.AvroDataSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AvroDataSource[K,A]extendsDataSource[org.apache.avro.mapred.AvroKey[K],org.apache.hadoop.io.NullWritable,A]withProductwithSerializable"></a>
+      <a id="AvroDataSource[K,A]:AvroDataSource[K,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroDataSource.html"><span class="name">AvroDataSource</span></a><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>]</span><span class="params">(<span name="paths">paths: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>]</span>, <span name="inputConverter">inputConverter: <a href="../../core/InputConverter.html" class="extype" name="com.nicta.scoobi.core.InputConverter">InputConverter</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>]</span>, <span name="checkSchemas">checkSchemas: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="check">check: (<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>], <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Source.defaultInputCheck</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroDataSource.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.io.avro.AvroFixed" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AvroFixed[T]extendsAnyRef"></a>
       <a id="AvroFixed[T]:AvroFixed[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -76,8 +84,35 @@
       </span>
       </h4>
       <p class="comment cmt">Provide an implicit of this, if your type is a fixed.</p>
+    </li><li name="com.nicta.scoobi.io.avro.AvroInput" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AvroInputextendsAnyRef"></a>
+      <a id="AvroInput:AvroInput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroInput.html"><span class="name">AvroInput</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Functions for materialising distributed lists by loading Avro files
+</p>
+    </li><li name="com.nicta.scoobi.io.avro.AvroOutput" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AvroOutputextendsAnyRef"></a>
+      <a id="AvroOutput:AvroOutput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroOutput.html"><span class="name">AvroOutput</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Functions for persisting distributed lists by storing them as Avro files.</p>
     </li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="AvroParsingImplicitsextendsObject"></a>
+      <a id="AvroParsingImplicitsextendsAnyRef"></a>
       <a id="AvroParsingImplicits:AvroParsingImplicits"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +125,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.io.avro.AvroSchema" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="AvroSchema[A]extendsObject"></a>
+      <a id="AvroSchema[A]extendsAnyRef"></a>
       <a id="AvroSchema[A]:AvroSchema[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -102,19 +137,45 @@
       </span>
       </h4>
       <p class="comment cmt">Defines the Avro schema for a given Scala type.</p>
-    </li><li name="com.nicta.scoobi.io.avro.EnhancedSymbol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="EnhancedSymbolextendsAvroParsingImplicits"></a>
-      <a id="EnhancedSymbol:EnhancedSymbol"></a>
+    </li><li name="com.nicta.scoobi.io.avro.AvroSink" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AvroSink[K,B]extendsDataSink[org.apache.avro.mapred.AvroKey[K],org.apache.hadoop.io.NullWritable,B]withSinkSourcewithProductwithSerializable"></a>
+      <a id="AvroSink[K,B]:AvroSink[K,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroSink.html"><span class="name">AvroSink</span></a><span class="tparams">[<span name="K">K</span>, <span name="B">B</span>]</span><span class="params">(<span name="schema">schema: <a href="AvroSchema.html" class="extype" name="com.nicta.scoobi.io.avro.AvroSchema">AvroSchema</a>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroSink.B">B</span>]</span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="outputConverter">outputConverter: <a href="../../core/OutputConverter.html" class="extype" name="com.nicta.scoobi.core.OutputConverter">OutputConverter</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroSink.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroSink.B">B</span>]</span>, <span name="overwrite">overwrite: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="check">check: (<span class="extype" name="org.apache.hadoop.fs.Path">Path</span>, <span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../core/ScoobiConfiguration.html" class="extype" name="com.nicta.scoobi.core.ScoobiConfiguration">ScoobiConfiguration</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="symbol">core.Sink.defaultOutputCheck</span></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.avro.mapred.AvroKey">AvroKey</span>[<span class="extype" name="com.nicta.scoobi.io.avro.AvroSink.K">K</span>], <span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <span class="extype" name="com.nicta.scoobi.io.avro.AvroSink.B">B</span>] with <a href="../../core/SinkSource.html" class="extype" name="com.nicta.scoobi.core.SinkSource">SinkSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenericAvroKeyInputFormat[T]extendsAvroKeyInputFormat[T]"></a>
+      <a id="GenericAvroKeyInputFormat[T]:GenericAvroKeyInputFormat[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="EnhancedSymbol.html"><span class="name">EnhancedSymbol</span></a><span class="result"> extends <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></span>
+        <a href="GenericAvroKeyInputFormat.html"><span class="name">GenericAvroKeyInputFormat</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="org.apache.avro.mapreduce.AvroKeyInputFormat">AvroKeyInputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyInputFormat.T">T</span>]</span>
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.io.avro.GenericAvroKeyOutputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenericAvroKeyOutputFormat[T]extendsAvroKeyOutputFormat[T]"></a>
+      <a id="GenericAvroKeyOutputFormat[T]:GenericAvroKeyOutputFormat[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenericAvroKeyOutputFormat.html"><span class="name">GenericAvroKeyOutputFormat</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="org.apache.avro.mapreduce.AvroKeyOutputFormat">AvroKeyOutputFormat</span>[<span class="extype" name="com.nicta.scoobi.io.avro.GenericAvroKeyOutputFormat.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">This AvroKeyOutputFormat is used when writing out Generic Record.</p>
     </li></ol>
             </div>
 
@@ -131,10 +192,10 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="AvroInput$.html"><span class="name">AvroInput</span></a><span class="result"> extends <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></span>
+        <a href="AvroInput$.html"><span class="name">AvroInput</span></a><span class="result"> extends <a href="AvroInput.html" class="extype" name="com.nicta.scoobi.io.avro.AvroInput">AvroInput</a></span>
       </span>
       </h4>
-      <p class="comment cmt">Smart functions for materialising distributed lists by loading Avro files.</p>
+      
     </li><li name="com.nicta.scoobi.io.avro.AvroOutput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="AvroOutput"></a>
       <a id="AvroOutput:AvroOutput"></a>
@@ -144,10 +205,23 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="AvroOutput$.html"><span class="name">AvroOutput</span></a>
+        <a href="AvroOutput$.html"><span class="name">AvroOutput</span></a><span class="result"> extends <a href="AvroOutput.html" class="extype" name="com.nicta.scoobi.io.avro.AvroOutput">AvroOutput</a></span>
       </span>
       </h4>
-      <p class="comment cmt">Smart functions for persisting distributed lists by storing them as Avro files.</p>
+      
+    </li><li name="com.nicta.scoobi.io.avro.AvroParsingImplicits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AvroParsingImplicits"></a>
+      <a id="AvroParsingImplicits:AvroParsingImplicits"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="AvroParsingImplicits$.html"><span class="name">AvroParsingImplicits</span></a><span class="result"> extends <a href="AvroParsingImplicits.html" class="extype" name="com.nicta.scoobi.io.avro.AvroParsingImplicits">AvroParsingImplicits</a></span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.io.avro.AvroSchema" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="AvroSchema"></a>
       <a id="AvroSchema:AvroSchema"></a>
@@ -186,7 +260,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

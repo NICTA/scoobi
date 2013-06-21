@@ -9,11 +9,6 @@
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -92,20 +87,7 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#cleanup" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="cleanup(channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):Unit"></a>
-      <a id="cleanup(ChannelOutputFormat)(Configuration):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cleanup</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">cleanup the channel, given the current output format</p><div class="fullcomment"><div class="comment cmt"><p>cleanup the channel, given the current output format</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#inputNodes" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#inputNodes" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="inputNodes:Seq[com.nicta.scoobi.core.CompNode]"></a>
       <a id="inputNodes:Seq[CompNode]"></a>
       <h4 class="signature">
@@ -244,6 +226,19 @@ needing its environment
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="cleanup(channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):Unit"></a>
+      <a id="cleanup(ChannelOutputFormat)(Configuration):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cleanup</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">cleanup the channel, given the current output format</p><div class="fullcomment"><div class="comment cmt"><p>cleanup the channel, given the current output format</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> → <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -256,8 +251,11 @@ needing its environment
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#collectOutputs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -287,15 +285,15 @@ needing its environment
       </h4>
       <p class="shortcomment cmt">use the output converter of a sink to convert a value to a key/value</p><div class="fullcomment"><div class="comment cmt"><p>use the output converter of a sink to convert a value to a key/value</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#createEmitter" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createEmitter(channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.EmitterWriter"></a>
-      <a id="createEmitter(ChannelOutputFormat)(Configuration):EmitterWriter"></a>
+      <a id="createEmitter(channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.EmitterWriterwithcom.nicta.scoobi.core.InputOutputContextScoobiJobContext"></a>
+      <a id="createEmitter(ChannelOutputFormat)(Configuration):EmitterWriterwithInputOutputContextScoobiJobContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">createEmitter</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></span>
+        <span class="name">createEmitter</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">create an emitter to output values on the current tag for each sink.</p><div class="fullcomment"><div class="comment cmt"><p>create an emitter to output values on the current tag for each sink. Values are converted to (key, values) using
@@ -352,8 +350,11 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -512,7 +513,10 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -528,7 +532,10 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -544,7 +551,10 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -578,7 +588,6 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

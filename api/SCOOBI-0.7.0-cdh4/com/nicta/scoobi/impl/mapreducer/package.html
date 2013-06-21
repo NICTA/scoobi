@@ -9,11 +9,6 @@
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
@@ -72,7 +67,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="BridgeStore.html"><span class="name">BridgeStore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="BridgeStore.html"><span class="name">BridgeStore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bridgeStoreId">bridgeStoreId: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="wf">wf: <a href="../../core/WireReaderWriter.html" class="extype" name="com.nicta.scoobi.core.WireReaderWriter">WireReaderWriter</a></span>, <span name="checkpoint">checkpoint: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Checkpoint.html" class="extype" name="com.nicta.scoobi.core.Checkpoint">Checkpoint</a>] = <span class="symbol">scala.None</span></span>, <span name="compression">compression: <span class="extype" name="scala.Option">Option</span>[<a href="../../core/Compression.html" class="extype" name="com.nicta.scoobi.core.Compression">Compression</a>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../core/DataSource.html" class="extype" name="com.nicta.scoobi.core.DataSource">DataSource</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <a href="../../core/DataSink.html" class="extype" name="com.nicta.scoobi.core.DataSink">DataSink</a>[<span class="extype" name="org.apache.hadoop.io.NullWritable">NullWritable</span>, <a href="../rtt/ScoobiWritable.html" class="extype" name="com.nicta.scoobi.impl.rtt.ScoobiWritable">ScoobiWritable</a>[<span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>], <span class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore.A">A</span>] with <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A bridge store is any data that moves between MSCRs.</p>
@@ -90,7 +85,7 @@
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ChannelOutputFormatextendsObject"></a>
+      <a id="ChannelOutputFormatextendsAnyRef"></a>
       <a id="ChannelOutputFormat:ChannelOutputFormat"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -146,6 +141,20 @@ input channel.</p>
       </h4>
       <p class="comment cmt">A reference to the storage location of a value that represents the &quot;environment&quot;
 in which a computation is performed within.</p>
+    </li><li name="com.nicta.scoobi.impl.mapreducer.InMemoryInputOutputContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InMemoryInputOutputContextextendsInputOutputContext"></a>
+      <a id="InMemoryInputOutputContext:InMemoryInputOutputContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="InMemoryInputOutputContext.html"><span class="name">InMemoryInputOutputContext</span></a><span class="result"> extends <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">This context holds values in memory, by tag, in order to pass them later on to output channels for writing
+</p>
     </li><li name="com.nicta.scoobi.impl.mapreducer.MscrCombiner" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="MscrCombinerextendsReducer[com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue,com.nicta.scoobi.impl.rtt.TaggedKey,com.nicta.scoobi.impl.rtt.TaggedValue]"></a>
       <a id="MscrCombiner:MscrCombiner"></a>
@@ -225,7 +234,7 @@ in which a computation is performed within.</p>
       </h4>
       
     </li><li name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="VectorEmitterWriterextendsEmitterWriterwithProductwithSerializable"></a>
+      <a id="VectorEmitterWriterextendsEmitterWriterwithInputOutputContextScoobiJobContextwithProductwithSerializable"></a>
       <a id="VectorEmitterWriter:VectorEmitterWriter"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -233,7 +242,7 @@ in which a computation is performed within.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="VectorEmitterWriter.html"><span class="name">VectorEmitterWriter</span></a><span class="params">()</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="VectorEmitterWriter.html"><span class="name">VectorEmitterWriter</span></a><span class="params">(<span name="context">context: <a href="../../core/InputOutputContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContext">InputOutputContext</a></span>)</span><span class="result"> extends <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">In memory emitter writer saving the values to a Vector
@@ -245,7 +254,20 @@ in which a computation is performed within.</p>
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.impl.mapreducer.BridgeStore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BridgeStore"></a>
+      <a id="BridgeStore:BridgeStore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BridgeStore$.html"><span class="name">BridgeStore</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ChannelOutputFormat"></a>
       <a id="ChannelOutputFormat:ChannelOutputFormat"></a>
       <h4 class="signature">
@@ -299,6 +321,19 @@ to be specified.</p>
       </span>
       </h4>
       
+    </li><li name="com.nicta.scoobi.impl.mapreducer.VectorEmitterWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VectorEmitterWriter"></a>
+      <a id="VectorEmitterWriter:VectorEmitterWriter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VectorEmitterWriter$.html"><span class="name">VectorEmitterWriter</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 
@@ -324,7 +359,6 @@ to be specified.</p>
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

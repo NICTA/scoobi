@@ -9,11 +9,6 @@
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -198,7 +193,7 @@ by the Optimiser
         <span class="name">cleanup</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">invoke the reducer cleanup if there is one</p><div class="fullcomment"><div class="comment cmt"><p>invoke the reducer cleanup if there is one</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel">GbkOutputChannel</a> → <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
+      <p class="shortcomment cmt">invoke the reducer cleanup if there is one</p><div class="fullcomment"><div class="comment cmt"><p>invoke the reducer cleanup if there is one</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel">GbkOutputChannel</a> → <a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> → <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -211,8 +206,11 @@ by the Optimiser
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#collectOutputs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -255,15 +253,15 @@ by the Optimiser
       </h4>
       <p class="shortcomment cmt">use the output converter of a sink to convert a value to a key/value</p><div class="fullcomment"><div class="comment cmt"><p>use the output converter of a sink to convert a value to a key/value</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#createEmitter" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createEmitter(channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.EmitterWriter"></a>
-      <a id="createEmitter(ChannelOutputFormat)(Configuration):EmitterWriter"></a>
+      <a id="createEmitter(channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):com.nicta.scoobi.core.EmitterWriterwithcom.nicta.scoobi.core.InputOutputContextScoobiJobContext"></a>
+      <a id="createEmitter(ChannelOutputFormat)(Configuration):EmitterWriterwithInputOutputContextScoobiJobContext"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">createEmitter</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span></span>
+        <span class="name">createEmitter</span><span class="params">(<span name="channelOutput">channelOutput: <a href="../../mapreducer/ChannelOutputFormat.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat">ChannelOutputFormat</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="configuration">configuration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.EmitterWriter">EmitterWriter</span> with <a href="../../../core/InputOutputContextScoobiJobContext.html" class="extype" name="com.nicta.scoobi.core.InputOutputContextScoobiJobContext">InputOutputContextScoobiJobContext</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">create an emitter to output values on the current tag for each sink.</p><div class="fullcomment"><div class="comment cmt"><p>create an emitter to output values on the current tag for each sink. Values are converted to (key, values) using
@@ -333,8 +331,11 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -587,7 +588,10 @@ otherwise just emit key/value pairs.</p><p>The key and values are untagged. The 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -603,7 +607,10 @@ otherwise just emit key/value pairs.</p><p>The key and values are untagged. The 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -619,7 +626,10 @@ otherwise just emit key/value pairs.</p><p>The key and values are untagged. The 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -663,7 +673,6 @@ otherwise just emit key/value pairs.</p><p>The key and values are untagged. The 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

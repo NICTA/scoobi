@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -177,7 +172,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">blockJoin</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="left">left: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.A">A</span>)]</span>, <span name="right">right: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.B">B</span>)]</span>, <span name="replicationFactor">replicationFactor: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>]</span>, <span name="arg1">arg1: <a href="../core/Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>]</span>, <span name="arg2">arg2: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.A">A</span>]</span>, <span name="arg3">arg3: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.B">B</span>]</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>, (<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.A">A</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.B">B</span>))]</span>
+        <span class="name">blockJoin</span><span class="tparams">[<span name="K">K</span>, <span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="left">left: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.A">A</span>)]</span>, <span name="right">right: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.B">B</span>)]</span>, <span name="replicationFactor">replicationFactor: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">5</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>]</span>, <span name="arg1">arg1: <a href="../core/Grouping.html" class="extype" name="com.nicta.scoobi.core.Grouping">Grouping</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>]</span>, <span name="arg2">arg2: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.A">A</span>]</span>, <span name="arg3">arg3: <a href="../core/WireFormat.html" class="extype" name="com.nicta.scoobi.core.WireFormat">WireFormat</a>[<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.B">B</span>]</span>)</span><span class="result">: <a href="../core/DList.html" class="extype" name="com.nicta.scoobi.core.DList">DList</a>[(<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.K">K</span>, (<span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.A">A</span>, <span class="extype" name="com.nicta.scoobi.lib.Relational.blockJoin.B">B</span>))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Perform an equijoin using block-join (aka replicate fragment join).</p><div class="fullcomment"><div class="comment cmt"><p>Perform an equijoin using block-join (aka replicate fragment join).</p><p>Replicate the small (left) side n times including the id of the replica in the key. On the right
@@ -195,8 +190,11 @@ fields.</p><p>Useful for skewed join keys and large datasets.</p></div></div>
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="com.nicta.scoobi.lib.Relational#coGroup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
@@ -250,8 +248,11 @@ fields.</p><p>Useful for skewed join keys and large datasets.</p></div></div>
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -460,7 +461,10 @@ for when there is no value in the right dlist (d1).
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -476,7 +480,10 @@ for when there is no value in the right dlist (d1).
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -492,7 +499,10 @@ for when there is no value in the right dlist (d1).
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -528,7 +538,6 @@ for when there is no value in the right dlist (d1).
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

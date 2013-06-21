@@ -9,11 +9,6 @@
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../../../../lib/template.js"></script>
-      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
-      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
@@ -29,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="BasicDoFn$.html" title="Go to companion"><img src="../../../../lib/trait_to_object_big.png" /></a>
+        <img src="../../../../lib/trait_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
-        <h1><a href="BasicDoFn$.html" title="Go to companion">BasicDoFn</a></h1>
+        <h1>BasicDoFn</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -40,13 +35,14 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">BasicDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>
+        <span class="name deprecated" title="Deprecated: (Since version 0.7) use DoFn instead or use a function (A, Emitter[B]) =&gt; Unit">BasicDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Interface for specifying parallel operation over DLists in the absence of an
-environment with an do-nothing setup and cleanup phases
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 0.7)</i> use DoFn instead or use a function (A, Emitter[B]) =&gt; Unit</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>], <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span>, <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>, <span class="extype" name="scala.Unit">Unit</span>], <span class="extype" name="com.nicta.scoobi.core.DoFunction">DoFunction</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -90,7 +86,20 @@ environment with an do-nothing setup and cleanup phases
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.nicta.scoobi.core.DoFn#process" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.core.DoFn#cleanup" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="cleanup(emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
+      <a id="cleanup(Emitter[B]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cleanup</span><span class="params">(<span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DoFn#process" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="process(input:A,emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
       <a id="process(A,Emitter[B]):Unit"></a>
       <h4 class="signature">
@@ -100,6 +109,19 @@ environment with an do-nothing setup and cleanup phases
       </span>
       <span class="symbol">
         <span class="name">process</span><span class="params">(<span name="input">input: <span class="extype" name="com.nicta.scoobi.core.BasicDoFn.A">A</span></span>, <span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.DoFn#setup" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="setup():Unit"></a>
+      <a id="setup():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setup</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
@@ -186,19 +208,6 @@ environment with an do-nothing setup and cleanup phases
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.BasicDoFn#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="cleanup(emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
-      <a id="cleanup(Emitter[B]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cleanup</span><span class="params">(<span name="emitter">emitter: <a href="Emitter.html" class="extype" name="com.nicta.scoobi.core.Emitter">Emitter</a>[<span class="extype" name="com.nicta.scoobi.core.BasicDoFn.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.BasicDoFn">BasicDoFn</a> → <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DoFn#cleanup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cleanup(env:Unit,emitter:com.nicta.scoobi.core.Emitter[B]):Unit"></a>
       <a id="cleanup(Unit,Emitter[B]):Unit"></a>
@@ -224,8 +233,11 @@ environment with an do-nothing setup and cleanup phases
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -266,8 +278,11 @@ environment with an do-nothing setup and cleanup phases
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">java.lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -361,19 +376,6 @@ environment with an do-nothing setup and cleanup phases
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a> → <a href="EnvDoFn.html" class="extype" name="com.nicta.scoobi.core.EnvDoFn">EnvDoFn</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.BasicDoFn#setup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setup():Unit"></a>
-      <a id="setup():Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setup</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.core.BasicDoFn">BasicDoFn</a> → <a href="DoFn.html" class="extype" name="com.nicta.scoobi.core.DoFn">DoFn</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.core.DoFn#setup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setup(env:Unit):Unit"></a>
       <a id="setup(Unit):Unit"></a>
@@ -426,7 +428,10 @@ environment with an do-nothing setup and cleanup phases
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -442,7 +447,10 @@ environment with an do-nothing setup and cleanup phases
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -458,7 +466,10 @@ environment with an do-nothing setup and cleanup phases
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
-                <span class="name">@throws</span><span class="args">()</span>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
               
         </dd></dl></div>
     </li></ol>
@@ -496,7 +507,6 @@ environment with an do-nothing setup and cleanup phases
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>
