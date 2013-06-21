@@ -1,62 +1,78 @@
 {
   "organization" : "com.nicta",
   "name" : "scoobi",
-  "version" : "0.7.0-cdh3-SNAPSHOT",
+  "version" : "0.7.0-cdh3",
   "description" : "scoobi",
   "site" : "",
   "tags" : [ ],
   "docs" : "",
   "resolvers" : [ "https://oss.sonatype.org/content/repositories/releases" ],
   "dependencies" : [ {
-    "organization" : "org.apache.hadoop",
-    "name" : "hadoop-core",
-    "version" : "0.20.2-cdh3u1"
+    "organization" : "org.apache.avro",
+    "name" : "avro",
+    "version" : "1.7.4"
+  }, {
+    "organization" : "com.thoughtworks.xstream",
+    "name" : "xstream",
+    "version" : "1.4.4"
   }, {
     "organization" : "javassist",
     "name" : "javassist",
     "version" : "3.12.1.GA"
   }, {
-    "organization" : "org.apache.avro",
-    "name" : "avro-mapred",
-    "version" : "1.7.3.1"
-  }, {
-    "organization" : "org.apache.avro",
-    "name" : "avro",
-    "version" : "1.7.3.1"
-  }, {
-    "organization" : "com.thoughtworks.xstream",
-    "name" : "xstream",
-    "version" : "1.4.3"
-  }, {
     "organization" : "com.googlecode.kiama",
     "name" : "kiama",
-    "version" : "1.4.0"
+    "version" : "1.5.0"
   }, {
     "organization" : "com.github.mdr",
     "name" : "ascii-graphs",
-    "version" : "0.0.2"
-  }, {
-    "organization" : "org.scalaz",
-    "name" : "scalaz-core",
-    "version" : "7.0.0-M7"
-  }, {
-    "organization" : "org.scalaz",
-    "name" : "scalaz-concurrent",
-    "version" : "7.0.0-M7"
-  }, {
-    "organization" : "org.specs2",
-    "name" : "specs2",
-    "version" : "1.12.3"
+    "version" : "0.0.3"
   }, {
     "organization" : "com.chuusai",
     "name" : "shapeless",
-    "version" : "1.2.2"
+    "version" : "1.2.4"
+  }, {
+    "organization" : "org.apache.hadoop",
+    "name" : "hadoop-core",
+    "version" : "0.20.2-cdh3u1"
+  }, {
+    "organization" : "org.apache.avro",
+    "name" : "avro-mapred",
+    "version" : "1.7.4"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-core",
+    "version" : "7.0.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-concurrent",
+    "version" : "7.0.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-scalacheck-binding",
+    "version" : "7.0.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-typelevel",
+    "version" : "7.0.0"
+  }, {
+    "organization" : "org.scalaz",
+    "name" : "scalaz-xml",
+    "version" : "7.0.0"
+  }, {
+    "organization" : "org.specs2",
+    "name" : "specs2",
+    "version" : "2.0"
+  }, {
+    "organization" : "org.scalacheck",
+    "name" : "scalacheck",
+    "version" : "1.10.0"
   }, {
     "organization" : "org.mockito",
     "name" : "mockito-all",
     "version" : "1.9.0"
   } ],
-  "scalas" : [ "2.9.2" ],
+  "scalas" : [ "2.10.2" ],
   "licenses" : [ ],
   "sbt" : false
 }
