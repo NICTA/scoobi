@@ -136,7 +136,7 @@ $$ hadoop WordCount <args>
 
 ### Troubleshooting
 
-You might get some `ClassNotFoundException` on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi "job jar" that is distributed to the cluster node by turning off the dependency uploading mechanism (see the [Application](Application.html) page):
+You might get some `ClassNotFoundException` on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi "job jar" that is distributed to the cluster node by turning off the dependency uploading mechanism (see the [Application](${GUIDE_PAGE}com.nicta.scoobi.guide.Application.html) page):
 
 `$$ hadoop WordCount <args> scoobi nolibjars`
 

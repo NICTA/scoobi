@@ -23,7 +23,7 @@ class DistributedLists extends ScoobiPage { def is = "Distributed Lists".title ^
 
 ### Introduction
 
-Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`]($API_PAGE#com.nicta.scoobi.core.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parameterised by a type and they provide methods that can be used to produce new `DList` objects, often parameterised by higher-order functions. For example:
+Scoobi is centered around the idea of a **distributed collection**, which is implemented by the [`DList`]($API_PAGE#com.nicta.scoobi.core.DList) (*distributed list*) class.  In a lot of ways, `DList` objects are similar to normal [Scala `List`](http://www.scala-lang.org/api/current/scala/collection/immutable/List.html) objects: they are parametrised by a type and they provide methods that can be used to produce new `DList` objects, often parameterised by higher-order functions. For example:
 
 ```scala
 // Converting a List[Int] to a List[String] keeping only evens
