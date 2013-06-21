@@ -1,4 +1,4 @@
-This is a greatly refactored and enhanced version!
+This is a greatly [refactored and enhanced version](https://github.com/NICTA/scoobi/wiki/0.7.0-RC1)!
 
 ### New Features
 
