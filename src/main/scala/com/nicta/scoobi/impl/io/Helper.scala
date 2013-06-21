@@ -27,10 +27,6 @@ import impl.control.Exceptions._
 /** A set of helper functions for implementing DataSources and DataSinks. */
 object Helper {
 
-  private val hiddenFilePathFilter = new PathFilter {
-    def accept(p: Path): Boolean = !p.getName.startsWith("_") && !p.getName.startsWith(".")
-  }
-
   /** Determine whether a path exists or not. */
   def pathExists(p: Path, pathFilter: PathFilter = hiddenFilePathFilter)(implicit conf: Configuration): Boolean = tryOrElse {
     val fs = FileSystem.get(p.toUri, conf)
@@ -42,6 +38,10 @@ object Helper {
     tryOrElse {
       Option(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)).map(_.toSeq).getOrElse(Seq())
     }(Seq())
+
+  private val hiddenFilePathFilter = new PathFilter {
+    def accept(p: Path): Boolean = !p.getName.startsWith("_") && !p.getName.startsWith(".")
+  }
 
   /** Only get one file per dir. This helps when checking correctness of input data by reducing
     *  the number of files to check. We don't want to check every file as its expensive */
