@@ -71,10 +71,9 @@ trait Seqs {
   }
 
   /**
-   * @return a group elements of a sequence into groups so that for each element of a group there is at least another
-   *         element in the same group verifying the predicate
+   * @return a group elements of a sequence into groups all elements are transitively related in each group
    */
-  def partition[A](seq: Seq[A])(relation: (A, A) => Boolean) =
+  def transitiveClosure[A](seq: Seq[A])(relation: (A, A) => Boolean) =
     seq.foldLeft(Seq[NonEmptyList[A]]()) { (res, cur) =>
       res.toList match {
         case Nil          => Seq(nels(cur))
