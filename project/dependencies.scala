@@ -23,7 +23,7 @@ object dependencies {
     scoobi(scalaVersion) ++ 
     hadoop(version)      ++
     scalaz()             ++
-    specs2
+    specs2()
   }
 
   // Libraries
@@ -52,8 +52,8 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  lazy val specs2 = Seq(
-    "org.specs2"                        %% "specs2"                    % "2.0"              % "optional",
+  def specs2(specs2Version: String = "2.1-SNAPSHOT") = Seq(
+    "org.specs2"                        %% "specs2"                    % specs2Version      % "optional",
     "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
     "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
     "org.pegdown"                       %  "pegdown"                   % "1.2.1"            % "test",
