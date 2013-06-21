@@ -201,7 +201,7 @@ Note that logs can be turned off by using the 'quiet' argument:  `run-main mypac
 
 A special kind of application is the REPL. In order to use the Scoobi REPL you need to create a Java script with the classpath of all the jars you are using invoking the `ScoobiRepl` class:
 
-    java -cp <all your jars here> com.nicta.scoobi.application.ScoobiRepl
+    java -cp [all your jars here] com.nicta.scoobi.application.ScoobiRepl
 
 Once the REPL is initialized, you can start jobs by simply running `DLists`:
 
