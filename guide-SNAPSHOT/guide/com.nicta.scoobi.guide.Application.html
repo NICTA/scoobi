@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html">Application</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Application</title><a name="Application"><h2 specId="609482911">Application</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Creation"><h3>Creation</h3></a><p>Scoobi provides several traits to help building applications. <code class="prettyprint">ScoobiApp</code> brings them all together:</p>
+                       <div class="col1"><div id="central"><title>Application</title><a name="Application"><h2 specId="489049077">Application</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Creation"><h3>Creation</h3></a><p>Scoobi provides several traits to help building applications. <code class="prettyprint">ScoobiApp</code> brings them all together:</p>
 <pre><code class="prettyprint">object WordCount extends ScoobiApp {
 &amp;nbsp;&amp;nbsp;def run() {
 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;val lines = DList(repeat(&quot;hello&quot; -&gt; 3, &quot;world&quot; -&gt; 4):_*)
@@ -107,8 +107,8 @@ object MyApp extends ScoobiApp {
 }
 </code></pre><a name="Configuration"><h3>Configuration</h3></a><p>The <code class="prettyprint">ScoobiApp</code> trait can be used in 2 different contexts:</p><p>  1. with the <code class="prettyprint">hadoop jar</code> command</p><p>    In that case, <code class="prettyprint">hadoop</code> finds the cluster location by either using the configuration files in its <code class="prettyprint">conf</code> directory or by using the <code class="prettyprint">fs</code> and <code class="prettyprint">jt</code> arguments</p><p>  2. within sbt</p><p>    In that case the cluster location can be either defined by using the <code class="prettyprint">useconfdir</code> command line argument to get the configuration files found in <code class="prettyprint">$HADOOP_HOME/conf</code> or the <code class="prettyprint">$HADOOP_CONF</code> directory<br />    You can also override the <code class="prettyprint">fs</code> and <code class="prettyprint">jobTracker</code> methods, and get those values from your own properties file.</p><a name="Local+execution"><h3>Local execution</h3></a><p>For testing, it can useful to run Scoobi applications locally only:</p><p> - if you are using the <code class="prettyprint">hadoop jar</code> command, you can specify a local configuration by either using the <code class="prettyprint">fs</code>/<code class="prettyprint">jt</code> arguments<br /> - if you are using sbt, you can pass the &quot;<code class="prettyprint">scoobi local</code>&quot; argument for a local execution<br /> - if you are using sbt, you can pass the &quot;<code class="prettyprint">scoobi inmemory</code>&quot; argument for a fast execution backed up by Scala collections instead of Hadoop</p><a name="Logging"><h3>Logging</h3></a><p>By default, when extending the <code class="prettyprint">Hadoop</code> trait, Hadoop and Scoobi logs will be shown in the console at the &quot;INFO&quot; level. However for debugging failed jobs you may want to change the log level or the log categories:</p><p> * show some log levels: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn</code> (you can also override the <code class="prettyprint">level</code> method). The log levels are the ones from the Apache commons logging library: <code class="prettyprint">ALL</code>, <code class="prettyprint">FATAL</code>, <code class="prettyprint">INFO</code>, <code class="prettyprint">WARN</code>, <code class="prettyprint">TRACE</code></p><p> * show some log categories: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn.(hadoop|scoobi)</code> will only display the log lines where the category matches <code class="prettyprint">.*(hadoop|scoobi).*</code>. Note that you can visually separate this regular expression for log categories with brackets to help the reading: <code class="prettyprint">run mypackage.MyApp -- scoobi.warn.[(hadoop|scoobi)].times</code></p><p> * you can additionally show the execution times, locally and on the cluster: <code class="prettyprint">run-main mypackage.MyApp -- scoobi times</code> (or override the <code class="prettyprint">showTimes</code> method)</p><p> * finally you can combine those flags: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi warn.times</code></p><p>Note that logs can be turned off by using the 'quiet' argument: <code class="prettyprint">run-main mypackage.MyApp [ARGS] -- scoobi quiet</code> (you can also override the <code class="prettyprint">quiet</code> method to return <code class="prettyprint">true</code>)</p><a name="REPL"><h3>REPL</h3></a><p>A special kind of application is the REPL. In order to use the Scoobi REPL you need to create a Java script with the classpath of all the jars you are using invoking the <code class="prettyprint">ScoobiRepl</code> class:</p><p>    java -cp [all your jars here] com.nicta.scoobi.application.ScoobiRepl</p><p>Once the REPL is initialized, you can start jobs by simply running <code class="prettyprint">DLists</code>:</p><p>    scoobi&gt; DList(1, 2, 3).run</p><p>The default execution mode is using the Cluster with the configuration found in <code class="prettyprint">$HADOOP_HOME/conf</code> (if any). It is possible to switch between different execution modes by invoking <code class="prettyprint">inmemory</code>, <code class="prettyprint">local</code> at the prompt (and <code class="prettyprint">cluster</code> to come back to the cluster execution mode). Note also that the <code class="prettyprint">ScoobiConfiguration</code> is accessible with the <code class="prettyprint">configuration</code> variable.<br />  </p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1645408661"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="295308366"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1816677483"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="947131368"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -118,7 +118,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="609482911"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="489049077"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -142,7 +142,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="82288987"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1027920070"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -158,7 +158,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="51535841"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1894160022"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -172,7 +172,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="726969946"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="849906626"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -222,7 +222,7 @@ object MyApp extends ScoobiApp {
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="1149414639"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1466926985"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -234,7 +234,7 @@ object MyApp extends ScoobiApp {
             
           </li></ul>
           </li></ul>
-          </li><li id="1596432908"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1529569335"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -242,7 +242,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="587199138"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="2092558755"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -258,7 +258,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="1368554401"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="295308366"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -288,7 +288,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1743958237"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="412999145"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -304,7 +304,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1849275003"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="609482911"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -312,7 +312,7 @@ object MyApp extends ScoobiApp {
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="234152390"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="82288987"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -324,7 +324,7 @@ object MyApp extends ScoobiApp {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1645408661','609482911'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1816677483','489049077'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
