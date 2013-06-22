@@ -22,6 +22,7 @@ import Mode._
 import org.apache.commons.logging.LogFactory
 import impl.ScoobiConfiguration._
 import impl.reflect.Classes
+import com.nicta.scoobi.impl.util.Compatibility
 
 /**
  * This trait provides methods to execute map-reduce code, either locally or on the cluster.
@@ -80,7 +81,7 @@ trait Hadoop extends LocalHadoop with Cluster with LibJars { outer =>
     configuration.modeIs(Cluster)
 
     logger.debug("the file system is "+fs)
-    configuration.set(FileSystem.FS_DEFAULT_NAME_KEY, fs)
+    configuration.set(Compatibility.defaultFSKeyName, fs)
 
     logger.debug("the job tracker is "+jobTracker)
     configuration.set("mapred.job.tracker", jobTracker)

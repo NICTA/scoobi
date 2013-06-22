@@ -18,6 +18,8 @@ package application
 
 import impl.ScoobiConfiguration
 import ScoobiConfiguration._
+import com.nicta.scoobi.impl.util.Compatibility
+
 /**
  * Definition of the Cluster addresses: FileSystem + JobTracker
  */
@@ -37,7 +39,7 @@ trait ClusterConfiguration extends Cluster {
 
   def configuration: com.nicta.scoobi.core.ScoobiConfiguration
 
-  def fs         = configuration.get("fs.defaultFS", "file:///")
+  def fs         = configuration.get(Compatibility.defaultFSKeyName, "file:///")
   def jobTracker = configuration.get("mapred.job.tracker", "local")
 }
 

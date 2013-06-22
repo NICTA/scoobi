@@ -38,6 +38,7 @@ import Configurations._
 import FileSystems._
 import monitor.Loggable._
 import tools.nsc.interpreter.AbstractFileClassLoader
+import com.nicta.scoobi.impl.util.Compatibility
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
@@ -268,7 +269,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   private def setDefaultForInMemoryAndLocal = {
-    set("fs.defaultFS", "file:///")
+    set(Compatibility.defaultFSKeyName, "file:///")
     set("mapred.job.tracker", "local")
     setDirectories
   }

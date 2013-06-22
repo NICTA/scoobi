@@ -76,6 +76,9 @@ object Compatibility {
     } catch { case e: Throwable => throw new IllegalArgumentException("Error while trying to instantiate specific instances for CDH"+(if (useV2) "4" else "3")+": "+e.getMessage, e) }
   }
 
+  /** @return the key to use for the default file system */
+  lazy val defaultFSKeyName = if (v2.useV2) "fs.defaultFS" else "fs.default.name"
+
   /** @return true if the file is a directory */
   def isDirectory(fileStatus: FileStatus): Boolean = invoke(v2.isDirectory, fileStatus).asInstanceOf[Boolean]
 
