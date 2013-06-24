@@ -62,13 +62,95 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Grouping</title>
-    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Grouping.html">Grouping</a></div><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Grouping.html">Grouping</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="1658929028">Grouping</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.1-cdh4/index.html#com.nicta.scoobi.core.Grouping">Grouping</a> type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p><p> * Provide an <a href="http://www.scala-lang.org/api/current/index.html#scala.math.Ordering">Ordering</a> for your type.<br /> * Extend <a href="http://www.scala-lang.org/api/current/index.html#scala.math.Ordered">Ordered</a> with your type<br /> * Extend <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html">java.lang.Comparable</a> (preferable only for Java code)<br /> * Directly provide a <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.1-cdh4/index.html#com.nicta.scoobi.core.Grouping">scoobi.Grouping</a>.</p><p>Since the third option is the only one Scoobi specific, and a little more powerful, we'll focus on that.</p><a name="Basic+grouping"><h3>Basic grouping</h3></a><p>Let's say we have a user-defined type, <code class="prettyprint">case class Point(x: Integer, y: Integer)</code> and are using it in a <code class="prettyprint">DList[(Point, String)]</code>. Now if want to group all the same points together, so as to end up with a: <code class="prettyprint">DList[(Point, Iterable[String])</code> we will need to write a function that defines what makes two points equal. It would not be enough to merely provide a pure equality function, as that would require every point to be check against every point (quadratic time).</p><p>Instead, we need to provide strict total ordering. That is, provide a function that can reliably create an ordering for Points. It doesn't really matter how this ordering is done, as long as it is. The scheme normally used is to break the type down into all its members, and provide ordering based on it. So in the <code class="prettyprint">Point</code> case, we can order by <code class="prettyprint">Point.x</code>, if they're the same, order by <code class="prettyprint">Point.y</code> and finally, if they're the same -- we can say the two points are the same.</p><p>The <code class="prettyprint">Grouping[T]</code> trait has a method called <code class="prettyprint">sortCompare</code> that we will override. It takes two T's, and like Java's <code class="prettyprint">Comparable</code> it returns an Int. A negative number to indicate the first <code class="prettyprint">T</code> is less than the second. Zero if the two <code class="prettyprint">T</code>s are equal. And a positive number if the second <code class="prettyprint">T</code> is after the first <code class="prettyprint">T</code>.</p><p>Sample code for our <code class="prettyprint">Point</code>:</p><p>    import scalaz.Ordering._</p><p>    implicit val pointGrouping = new Grouping[Point] {<br />      override def groupCompare(first: Point, second: Point) = {<br />        val xResult = first.x.compareTo(second.x)<br />        val result =<br />          if (xResult != 0) xResult<br />          else {<br />            val yResult = first.y.compareTo(second.y)<br />            if (yResult != 0) yResult<br />            else 0<br />          }<br />        fromInt(result)<br />      }<br />    }</p><a name="Secondary+sort"><h3>Secondary sort</h3></a><p>Assuming you have read and understood the previous sections, we will move on to some advanced usage of Grouping by example. Let's start some type alias's to make the code more understandable:</p><p>    type FirstName = String<br />    type LastName = String</p><p>And let's start with a DList with some easily understandable data:</p><p>    val names: DList[(FirstName, LastName)] = DList.apply(<br />      (&quot;Michael&quot;, &quot;Jackson&quot;),<br />      (&quot;Leonardo&quot;, &quot;Da Vinci&quot;),<br />      (&quot;John&quot;, &quot;Kennedy&quot;),<br />      (&quot;Mark&quot;, &quot;Twain&quot;),<br />      (&quot;Bat&quot;, &quot;Man&quot;),<br />      (&quot;Michael&quot;, &quot;Jordan&quot;),<br />      (&quot;Mark&quot;, &quot;Edison&quot;),<br />      (&quot;Michael&quot;, &quot;Landon&quot;),<br />      (&quot;Leonardo&quot;, &quot;De Capro&quot;),<br />      (&quot;Michael&quot;, &quot;J. Fox&quot;))</p><p>Based on the previous sections, you should know that we could simply do <code class="prettyprint">names.groupByKey</code> to obtain a <code class="prettyprint">DList[(FirstName, Iterable[String])]. However, there's no ordering associated with the</code>Iterable[LastName]` this means, if order is required (e.g. we're processing a time series) or outputting the last names in alphabetical order -- we'd have to use a parallelDo to load the entire reducers collection to memory, then sort it there. This is both slow, and going to likely to use too much memory.</p><p>So this is where a &quot;Secondary Sort&quot;, comes into play. A secondary sort allows us to make sure the <code class="prettyprint">Iterable[LastName]</code> comes to us in a defined ordering, so we can efficiently process it.</p><p>In hadoop (and thus scoobi) sorting only happens on the Key, so what we need to do, is make our Key contain enough information to sort the last names for any given first name.</p><p>Your first instinct might be to <em>move</em> the information to the key, e.g. make the type: <code class="prettyprint">DList[((FirstName, LastName), Unit)]</code> however this will <em>not</em> work. We need to instead <em>duplicate</em> the information to the key, otherwise while things arrive in the correct order, it will not be possible to get the value!</p><p>    val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a =&gt; ((a._1, a._2), a._2))</p><p>Now the key part of <code class="prettyprint">bigKey</code> is <code class="prettyprint">(FirstName, LastName)</code> so this is what we need to provide a <code class="prettyprint">Grouping</code> object for. Our goal is to make sure that two keys with the same FirstName evaluate to being the same, so <code class="prettyprint">groupCompare</code> and <code class="prettyprint">partition</code> should only consider the FirstName part. However, <code class="prettyprint">sortCompare</code> should put everything in the correct order (so it should consider both parts).</p><p>    import scalaz.Ordering._</p><p>    val grouping = new Grouping[(FirstName, LastName)] {</p><p>      override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {<br />        // This function says what reducer this particular 'key' should go to. We must override the<br />        // default impl, because it looks at the entire key, and makes sure all the same<br />        // keys go to the same reducer. But we want to only 'look' at the 'FirstName' part<br />        // so that everything with the same FirstName goes to the same reducer (even if it has a different LastName)</p><p>        // So we'll just use the default (string) partition, and only on the first name<br />        implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)<br />      }</p><p>      override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): scalaz.Ordering = {<br />        // Ok, here's where the fun is! Everything that is sent to the same reducer now needs<br />        // an ordering. So this function is called. Here we return <code class="prettyprint">scalaz.Ordering.LT</code> if 'a' should be before 'b',<br />        // <code class="prettyprint">scalaz.Ordering.EQ</code> if they're they same, and <code class="prettyprint">scalaz.Ordering.GT</code> if they're different.</p><p>        // So the first thing we want to do, is look at first names<br />        val firstNameOrdering = a._1.compareTo(b._1)</p><p>        firstNameOrdering match {<br />          case 0 =&gt; {<br />            // Interesting! Here the firstName's are the same. So what we want to do, is order by<br />            // the lastNames</p><p>            fromInt(a._2.compareTo(b._2))<br />          }<br />          case x =&gt; fromInt(x) // otherwise, just return the result for which of the FirstName's is first<br />        }<br />      }</p><p>      override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): scalaz.Ordering = {<br />        // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)<br />        // now hadoop allows us to &quot;collapse&quot; everything that is logically the same. So two keys are logically<br />        // the same if the FirstName's are equal<br />        fromInt(a._1.compareTo(b._1))<br />      }</p><p>    }</p><p>Now calling <code class="prettyprint">bigKey.groupByKeyWith(grouping)</code> will work as intended, with all lastNames arriving in order. Note, that instead of explicitly passing in <code class="prettyprint">grouping</code> it's possible to use implicits and the plain <code class="prettyprint">groupByKey</code>, just be careful the correct one is being picked up.</p><p>  </p></div></status></div></div>
+                       <div class="col1"><div id="central"><title>Grouping</title><a name="Grouping"><h2 specId="873805838">Grouping</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><p>The sort and shuffle phase of MapReduce is abstracted by <code class="prettyprint">DList.groupByKey</code>, it allows us to have a <code class="prettyprint">DList[(K, V)]</code> and obtain a <code class="prettyprint">DList[(K, Iterable[V])]</code> where all the values <em>&quot;with the same&quot;</em> K are grouped together. Grouping is a scala trait, that defines exactly what constitutes <em>&quot;with the same K&quot;</em> means.</p><a name="The+Grouping+trait"><h3>The Grouping trait</h3></a><p>The <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.1-cdh4/index.html#com.nicta.scoobi.core.Grouping">Grouping</a> type class is automatically provided for anything with a <code class="prettyprint">scala.math.Ordering</code>, or that implements Java's <code class="prettyprint">java.lang.Comparable</code> interface. This means all common types (e.g. String, Int etc.) can be grouped out of the box. If you have a more complex type (or complex grouping requirements) you will need to write some code to group by the type. The three options are:</p>
+<ul>
+  <li>Provide an <a href="http://www.scala-lang.org/api/current/index.html#scala.math.Ordering">Ordering</a> for your type.</li>
+  <li>Extend <a href="http://www.scala-lang.org/api/current/index.html#scala.math.Ordered">Ordered</a> with your type</li>
+  <li>Extend <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Comparable.html">java.lang.Comparable</a> (preferable only for Java code)</li>
+  <li>Directly provide a <a href="http://nicta.github.io/scoobi/api/SCOOBI-0.7.1-cdh4/index.html#com.nicta.scoobi.core.Grouping">scoobi.Grouping</a>.</li>
+</ul><p>Since the third option is the only one Scoobi specific, and a little more powerful, we'll focus on that.</p><a name="Basic+grouping"><h3>Basic grouping</h3></a><p>Let's say we have a user-defined type, <code class="prettyprint">case class Point(x: Integer, y: Integer)</code> and are using it in a <code class="prettyprint">DList[(Point, String)]</code>. Now if want to group all the same points together, so as to end up with a: <code class="prettyprint">DList[(Point, Iterable[String])</code> we will need to write a function that defines what makes two points equal. It would not be enough to merely provide a pure equality function, as that would require every point to be check against every point (quadratic time).</p><p>Instead, we need to provide strict total ordering. That is, provide a function that can reliably create an ordering for Points. It doesn't really matter how this ordering is done, as long as it is. The scheme normally used is to break the type down into all its members, and provide ordering based on it. So in the <code class="prettyprint">Point</code> case, we can order by <code class="prettyprint">Point.x</code>, if they're the same, order by <code class="prettyprint">Point.y</code> and finally, if they're the same -- we can say the two points are the same.</p><p>The <code class="prettyprint">Grouping[T]</code> trait has a method called <code class="prettyprint">sortCompare</code> that we will override. It takes two T's, and like Java's <code class="prettyprint">Comparable</code> it returns an Int. A negative number to indicate the first <code class="prettyprint">T</code> is less than the second. Zero if the two <code class="prettyprint">T</code>s are equal. And a positive number if the second <code class="prettyprint">T</code> is after the first <code class="prettyprint">T</code>.</p><p>Sample code for our <code class="prettyprint">Point</code>:</p>
+<pre><code class="prettyprint">import scalaz.Ordering._
+
+implicit val pointGrouping = new Grouping[Point] {
+  override def groupCompare(first: Point, second: Point) = {
+    val xResult = first.x.compareTo(second.x)
+    val result =
+      if (xResult != 0) xResult
+      else {
+        val yResult = first.y.compareTo(second.y)
+        if (yResult != 0) yResult
+        else              0
+      }
+    fromInt(result)
+  }
+}
+</code></pre><a name="Secondary+sort"><h3>Secondary sort</h3></a><p>Assuming you have read and understood the previous sections, we will move on to some advanced usage of Grouping by example. Let's start some type alias's to make the code more understandable:</p>
+<pre><code class="prettyprint">type FirstName = String
+type LastName = String
+</code></pre><p>And let's start with a DList with some easily understandable data:</p>
+<pre><code class="prettyprint">val names: DList[(FirstName, LastName)] = DList.apply(
+  (&quot;Michael&quot;, &quot;Jackson&quot;),
+  (&quot;Leonardo&quot;, &quot;Da Vinci&quot;),
+  (&quot;John&quot;, &quot;Kennedy&quot;),
+  (&quot;Mark&quot;, &quot;Twain&quot;),
+  (&quot;Bat&quot;, &quot;Man&quot;),
+  (&quot;Michael&quot;, &quot;Jordan&quot;),
+  (&quot;Mark&quot;, &quot;Edison&quot;),
+  (&quot;Michael&quot;, &quot;Landon&quot;),
+  (&quot;Leonardo&quot;, &quot;De Capro&quot;),
+  (&quot;Michael&quot;, &quot;J. Fox&quot;))
+</code></pre><p>Based on the previous sections, you should know that we could simply do <code class="prettyprint">names.groupByKey</code> to obtain a <code class="prettyprint">DList[(FirstName, Iterable[String])]. However, there's no ordering associated with the</code>Iterable[LastName]` this means, if order is required (e.g. we're processing a time series) or outputting the last names in alphabetical order -- we'd have to use a parallelDo to load the entire reducers collection to memory, then sort it there. This is both slow, and going to likely to use too much memory.</p><p>So this is where a &quot;Secondary Sort&quot;, comes into play. A secondary sort allows us to make sure the <code class="prettyprint">Iterable[LastName]</code> comes to us in a defined ordering, so we can efficiently process it.</p><p>In hadoop (and thus scoobi) sorting only happens on the Key, so what we need to do, is make our Key contain enough information to sort the last names for any given first name.</p><p>Your first instinct might be to <em>move</em> the information to the key, e.g. make the type: <code class="prettyprint">DList[((FirstName, LastName), Unit)]</code> however this will <em>not</em> work. We need to instead <em>duplicate</em> the information to the key, otherwise while things arrive in the correct order, it will not be possible to get the value!</p>
+<pre><code class="prettyprint">val bigKey: DList[((FirstName, LastName), LastName)] = names.map(a =&gt; ((a._1, a._2), a._2))
+</code></pre><p>Now the key part of <code class="prettyprint">bigKey</code> is <code class="prettyprint">(FirstName, LastName)</code> so this is what we need to provide a <code class="prettyprint">Grouping</code> object for. Our goal is to make sure that two keys with the same FirstName evaluate to being the same, so <code class="prettyprint">groupCompare</code> and <code class="prettyprint">partition</code> should only consider the FirstName part. However, <code class="prettyprint">sortCompare</code> should put everything in the correct order (so it should consider both parts).</p>
+<pre><code class="prettyprint">import scalaz.Ordering._
+
+val grouping = new Grouping[(FirstName, LastName)] {
+
+  override def partition(key: (FirstName, LastName), howManyReducers: Int): Int = {
+    // This function says what reducer this particular 'key' should go to. We must override the
+    // default impl, because it looks at the entire key, and makes sure all the same
+    // keys go to the same reducer. But we want to only 'look' at the 'FirstName' part
+    // so that everything with the same FirstName goes to the same reducer (even if it has a different LastName)
+
+    // So we'll just use the default (string) partition, and only on the first name
+    implicitly[Grouping[FirstName]].partition(key._1, howManyReducers)
+  }
+
+
+  override def sortCompare(a: (FirstName, LastName), b: (FirstName, LastName)): scalaz.Ordering = {
+    // Ok, here's where the fun is! Everything that is sent to the same reducer now needs
+    // an ordering. So this function is called. Here we return `scalaz.Ordering.LT` if 'a' should be before 'b',
+    // `scalaz.Ordering.EQ` if they're they same, and `scalaz.Ordering.GT` if they're different.
+
+    // So the first thing we want to do, is look at first names
+    val firstNameOrdering = a._1.compareTo(b._1)
+
+    firstNameOrdering match {
+      case 0 =&gt; {
+        // Interesting! Here the firstName's are the same. So what we want to do, is order by
+        // the lastNames
+
+        fromInt(a._2.compareTo(b._2))
+      }
+      case x =&gt; fromInt(x) // otherwise, just return the result for which of the FirstName's is first
+    }
+  }
+
+  override def groupCompare(a: (FirstName, LastName), b: (FirstName, LastName)): scalaz.Ordering = {
+    // So now everything going to the reducer has a proper ordering (thanks to our 'sortCompare' function)
+    // now hadoop allows us to &quot;collapse&quot; everything that is logically the same. So two keys are logically
+    // the same if the FirstName's are equal
+    fromInt(a._1.compareTo(b._1))
+  }
+
+}
+</code></pre><p>Now calling <code class="prettyprint">bigKey.groupByKeyWith(grouping)</code> will work as intended, with all lastNames arriving in order. Note, that instead of explicitly passing in <code class="prettyprint">grouping</code> it's possible to use implicits and the plain <code class="prettyprint">groupByKey</code>, just be careful the correct one is being picked up.</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="943097115"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="718732323"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1314648233"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="726835127"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -78,7 +160,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1635517456"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1900838744"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -102,7 +184,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="351201392"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1430037636"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -118,7 +200,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1356733388"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="5571028"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -132,7 +214,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="636688270"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1290470775"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -182,7 +264,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="2056224536"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1504964372"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -194,7 +276,7 @@
             
           </li></ul>
           </li></ul>
-          </li><li id="1658929028"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="873805838"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -202,7 +284,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="839984595"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="1561541080"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -218,7 +300,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="63592787"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="423281573"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -248,7 +330,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1504598550"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1627558547"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -264,7 +346,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1167886425"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1877287590"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -272,7 +354,7 @@
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="666611395"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="742783406"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -284,7 +366,7 @@
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['943097115','1658929028'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1314648233','873805838'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
