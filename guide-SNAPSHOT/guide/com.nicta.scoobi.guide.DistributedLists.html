@@ -65,7 +65,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html">DistributedLists</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="721725057">Distributed Lists</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.io/scoobi/api/master/index.html#com.nicta.scoobi.core.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parametrised by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterised by higher-order functions. For example:</p>
+                       <div class="col1"><div id="central"><html><title>Distributed Lists</title><a name="Distributed+Lists"><h2 specId="1045394743">Distributed Lists</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>Scoobi is centered around the idea of a <strong>distributed collection</strong>, which is implemented by the <a href="http://nicta.github.io/scoobi/api/master/index.html#com.nicta.scoobi.core.DList"><code class="prettyprint">DList</code></a> (<em>distributed list</em>) class. In a lot of ways, <code class="prettyprint">DList</code> objects are similar to normal <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/List.html">Scala <code class="prettyprint">List</code></a> objects: they are parametrised by a type and they provide methods that can be used to produce new <code class="prettyprint">DList</code> objects, often parameterised by higher-order functions. For example:</p>
 <pre><code class="prettyprint">// Converting a List[Int] to a List[String] keeping only evens
 val stringList = intList filter { _ % 2 == 0 } map { _.toString }
 
@@ -162,7 +162,7 @@ val peoplebyAge: DList[(Int, Person)] = people.groupBy(_.age)
 </code></pre><p>The grouping methods abstract Hadoop's sort-and-shuffle phase. As such it is possible to have more control over this phase using the <code class="prettyprint">Grouping</code> type class. This allows functionality such as secondary sorting to be implemented. Refer to the Grouping section for a more detailed explanation.</p><a name="Combining"><h3>Combining</h3></a><p>The <code class="prettyprint">combine</code> method is Scoobi's abstraction of Hadoop's <em>combiner</em> functionality. For best results, <code class="prettyprint">combine</code> should be<br />called immediately after a <code class="prettyprint">groupBy</code> or <code class="prettyprint">groupByKey</code> method, as in the Word Count example.</p><p>The <code class="prettyprint">combine</code> method accepts an argument of the type <code class="prettyprint">Reduction[V]</code> where <code class="prettyprint">V</code> represents the type of value in the key/value pair. A reduction denotes a binary operation on a closed set (<code class="prettyprint">(V, V) =&gt; V</code>). The <code class="prettyprint">Reduction</code> class and object provide combinators for constructing reductions from existing ones.</p><p>For example, to obtain a reduction that performs append on a list of strings (<code class="prettyprint">Reduction[List[String]]</code>):</p>
 <pre><code class="prettyprint">val red: Reduction[List[String]]
   = Reduction.string.list
-</code></pre><p>Another example performs a reduction on a pair of integer addition and string append, then appending that pair in <code class="prettyprint">Option</code>:</p><p>val red: Reduction[Option[(Int, String)]] =<br /> = (Reduction.Sum.int zip Reduction.string).option</p><p>The API for <code class="prettyprint">Reduction</code> provides many more functions for combining and building reduction values. API documentation is provided for each.</p><p>The acceptance tests for <code class="prettyprint">Reduction</code> provide more usage examples with documentation (<code class="prettyprint">com.nicta.scoobi.acceptance.ReductionSpec</code>). The automated tests for <code class="prettyprint">Reduction</code> provide a specification for the algebraic program properties that reductions satisfy (<code class="prettyprint">com.nicta.scoobi.core.ReductionSpec</code>).</p><a name="Creating+and+persisting+DLists"><h3>Creating and persisting DLists</h3></a><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data transformations we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with <code class="prettyprint">fromTextFile(...)</code> and <code class="prettyprint">persist(toTextFile(...))</code>. The former is an example of <em>loading</em> data and the latter is an example of <em>persisting</em> data.</p><p>There are many ways of creating a new <code class="prettyprint">DList</code> by <em>loading</em> data. Data can be loaded from files or various formats (e.g. text, sequence files, Avro files). Similarly, there are many ways in which a <code class="prettyprint">DList</code> can be persisted. The Input and Output section provides a complete listing of all loading and persisting mechanisms.</p><p>There are two parts to persisting:</p>
+</code></pre><p>Another example performs a reduction on a pair of integer addition and string append, then appending that pair in <code class="prettyprint">Option</code>:</p><p>val red: Reduction[Option[(Int, String)]] =<br />       = (Reduction.Sum.int zip Reduction.string).option</p><p>The API for <code class="prettyprint">Reduction</code> provides many more functions for combining and building reduction values. API documentation is provided for each.</p><p>The acceptance tests for <code class="prettyprint">Reduction</code> provide more usage examples with documentation (<code class="prettyprint">com.nicta.scoobi.acceptance.ReductionSpec</code>). The automated tests for <code class="prettyprint">Reduction</code> provide a specification for the algebraic program properties that reductions satisfy (<code class="prettyprint">com.nicta.scoobi.core.ReductionSpec</code>).</p><a name="Creating+and+persisting+DLists"><h3>Creating and persisting DLists</h3></a><p><code class="prettyprint">DList</code> objects are merely nodes in a graph describing a series of data transformations we want to perform. However, at some point we need to specify what the inputs and outputs to that computation are. We have already seen this in the previous example with <code class="prettyprint">fromTextFile(...)</code> and <code class="prettyprint">persist(toTextFile(...))</code>. The former is an example of <em>loading</em> data and the latter is an example of <em>persisting</em> data.</p><p>There are many ways of creating a new <code class="prettyprint">DList</code> by <em>loading</em> data. Data can be loaded from files or various formats (e.g. text, sequence files, Avro files). Similarly, there are many ways in which a <code class="prettyprint">DList</code> can be persisted. The Input and Output section provides a complete listing of all loading and persisting mechanisms.</p><p>There are two parts to persisting:</p>
 <ol>
   <li>Specifying how the <code class="prettyprint">DList</code> object is to be persisted;</li>
   <li>Calling <code class="prettyprint">persist</code>, which triggers the evaluation of the <code class="prettyprint">DList</code> objects computation.</li>
@@ -177,10 +177,10 @@ val rankings_example: DList[(Int, String)] = rankings_reverse.groupByKey.map{ ca
 persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
         toTextFile(rankings_reverse, &quot;hdfs://path/to/output-reverse&quot;),
         toTextFile(rankings_example, &quot;hdfs://path/to/output-example&quot;))
-</code></pre></div></status></div></div>
+</code></pre></div></status></html></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="607551681"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1038443132"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="1301150326"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="514120355"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -190,7 +190,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1494094604"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="721725057"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -214,7 +214,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="721725057"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="1045394743"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -230,7 +230,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1045394743"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1385729494"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -244,7 +244,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1385729494"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="495453943"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -294,7 +294,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="495453943"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1300320582"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -306,7 +306,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
             
           </li></ul>
           </li></ul>
-          </li><li id="1300320582"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1694429802"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -314,7 +314,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1694429802"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="501039347"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -330,7 +330,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="501039347"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="684925142"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -360,7 +360,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="684925142"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1024513674"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -376,7 +376,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1024513674"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="477437272"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -384,7 +384,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="477437272"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1289325312"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -396,7 +396,7 @@ persist(toTextFile(rankings,         &quot;hdfs://path/to/output&quot;),
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['607551681','721725057'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1301150326','1045394743'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
