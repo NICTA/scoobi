@@ -86,7 +86,7 @@ The following are the possible configuration arguments for Scoobi:
 
 
  Name           | Default value                    | Description
- ---------------|----------------------------------|--------------------------------------------------------------------
+ -------------- | -------------------------------- | -------------------------------------------------------------------
  verbose        | true                             | if defined, log statements are displayed
  quiet          | false                            | if defined, log statements are not displayed
  times          | false                            | if defined the total execution time is logged

@@ -186,14 +186,14 @@ called immediately after a `groupBy` or `groupByKey` method, as in the Word Coun
 The `combine` method accepts an argument of the type `Reduction[V]` where `V` represents the type of value in the key/value pair. A reduction denotes a binary operation on a closed set (`(V, V) => V`). The `Reduction` class and object provide combinators for constructing reductions from existing ones.
 
 For example, to obtain a reduction that performs append on a list of strings (`Reduction[List[String]]`):
-
-    val red: Reduction[List[String]]
-      = Reduction.string.list
+```
+val red: Reduction[List[String]] = Reduction.string.list
+```
 
 Another example performs a reduction on a pair of integer addition and string append, then appending that pair in `Option`:
-
-   val red: Reduction[Option[(Int, String)]] =
-      = (Reduction.Sum.int zip Reduction.string).option
+```
+val red: Reduction[Option[(Int, String)]] = (Reduction.Sum.int zip Reduction.string).option
+```
 
 The API for `Reduction` provides many more functions for combining and building reduction values. API documentation is provided for each.
 
