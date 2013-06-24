@@ -62,14 +62,14 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Quick Start</title>
-    </head><body><div id="breadcrumbs"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.QuickStart.html">QuickStart</a></div><div class="colmask threecol">
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.QuickStart.html">QuickStart</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><title>Quick Start</title><a name="Quick+Start"><h2 specId="686931166">Quick Start</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><p><a name="Prerequisites"><h3>Prerequisites</h3></a><p>Before starting, you will need:</p>
+                       <div class="col1"><div id="central"><title>Quick Start</title><a name="Quick+Start"><h2 specId="718732323">Quick Start</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Prerequisites"><h3>Prerequisites</h3></a><p>Before starting, you will need:</p>
 <ul>
   <li><a href="http://www.cloudera.com/hadoop/">Cloudera's Hadoop 4.0.1 (CDH4)</a></li>
   <li><a href="http://www.scala-sbt.org/">Sbt 0.12.3</a></li>
-</ul><p>In addition to Hadoop, scoobi uses <a href="http://www.scala-sbt.org">sbt</a> (version 0.12.3) to simplify building and packaging a project for running on Hadoop.</p><a name="Directory+Structure"><h3>Directory Structure</h3></a><p>Here the steps to get started on your own project:</p>
+</ul><p>In addition to Hadoop, scoobi uses <a href="http://www.scala-sbt.org">sbt</a> (version 0.12.3) to simplify building and packaging a project for running on Hadoop.<br />  </p><a name="Directory+Structure"><h3>Directory Structure</h3></a><p>  <br />Here the steps to get started on your own project:</p>
 <pre><code class="prettyprint">$ mkdir my-app
 $ cd my-app
 $ mkdir -p src/main/scala
@@ -80,34 +80,34 @@ version := &quot;1.0&quot;
 
 scalaVersion := &quot;2.10.1&quot;
 
-libraryDependencies += &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.0-RC2-cdh4&quot;
+libraryDependencies += &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.1-cdh4&quot;
 
 resolvers ++= Seq(&quot;cloudera&quot; at &quot;https://repository.cloudera.com/content/repositories/releases&quot;,
-                  &quot;Sonatype-snapshots&quot; at &quot;http://oss.sonatype.org/content/repositories/snapshots&quot;)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&quot;Sonatype-snapshots&quot; at &quot;http://oss.sonatype.org/content/repositories/snapshots&quot;)
 </code></pre><a name="Write+your+code"><h3>Write your code</h3></a><p>Now we can write some code. In <code class="prettyprint">src/main/scala/myfile.scala</code>, for instance:</p>
 <pre><code class="prettyprint">package mypackage.myapp
 
 import com.nicta.scoobi.Scoobi._
 
 object WordCount extends ScoobiApp {
-  def run() {
-    val lines = fromTextFile(args(0))
+&amp;nbsp;&amp;nbsp;def run() {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;val lines = fromTextFile(args(0))
 
-    val counts = lines.flatMap(_.split(&quot; &quot;))
-                      .map(word =&gt; (word, 1))
-                      .groupByKey
-                      .combine((a: Int, b: Int) =&gt; a + b)
-    
-    persist(counts.toTextFile(args(1))
-  }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;val counts = lines.flatMap(_.split(&quot; &quot;))
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;.map(word =&gt; (word, 1))
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;.groupByKey
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;.combine((a: Int, b: Int) =&gt; a + b)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;persist(counts.toTextFile(args(1))
+&amp;nbsp;&amp;nbsp;}
 }
 </code></pre><a name="Running"><h3>Running</h3></a><p>The Scoobi application can now be compiled and run using sbt:</p>
 <pre><code class="prettyprint">&gt; sbt compile
 &gt; sbt run-main 'mypackage.myapp.WordCount input-files output'
-</code></pre><p>Your Hadoop configuration will automatically get picked up, and all relevant JARs will be made available.</p><p>If you had any trouble following along, take a look at <a href="https://github.com/NICTA/scoobi/tree/SCOOBI-0.7.0-RC2-cdh4/examples/wordCount">Word Count</a> for a self contained example.</p></p></div></status></div></div>
+</code></pre><p>Your Hadoop configuration will automatically get picked up, and all relevant JARs will be made available.</p><p>If you had any trouble following along, take a look at <a href="https://github.com/NICTA/scoobi/tree/SCOOBI-0.7.1-cdh4/examples/wordCount">Word Count</a> for a self contained example.</p></div></status></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="703270096"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="686931166"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="943097115"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="718732323"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -117,7 +117,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="391370652"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1635517456"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -141,7 +141,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="24137403"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="351201392"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -157,7 +157,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1950406585"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1356733388"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -171,7 +171,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1293086287"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="636688270"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -214,10 +214,14 @@ object WordCount extends ScoobiApp {
             
           </li></ul>
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Checkpoints">Checkpoints</a>
+            <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Default+checkpoint">Default checkpoint</a>
+            
+          </li><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Expiry+policy">Expiry policy</a>
             
           </li></ul>
           </li></ul>
-          </li><li id="366717969"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li></ul>
+          </li><li id="2056224536"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -229,7 +233,7 @@ object WordCount extends ScoobiApp {
             
           </li></ul>
           </li></ul>
-          </li><li id="150838093"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="1658929028"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -237,7 +241,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1105125591"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="839984595"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -253,7 +257,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="259745034"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="63592787"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -283,7 +287,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1848015734"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1504598550"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -299,7 +303,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="544454777"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="1167886425"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -307,7 +311,7 @@ object WordCount extends ScoobiApp {
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="223617172"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="666611395"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -319,7 +323,7 @@ object WordCount extends ScoobiApp {
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['703270096','686931166'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['943097115','718732323'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
