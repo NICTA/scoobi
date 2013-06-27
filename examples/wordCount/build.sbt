@@ -6,7 +6,7 @@ scalaVersion := "2.10.1"
 
 scalacOptions ++= Seq("-deprecation")
 
-libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT")
+libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4")
 
 resolvers ++= Seq("sonatype releases" at "http://oss.sonatype.org/content/repositories/releases",
                   "sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",

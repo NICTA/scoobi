@@ -11,7 +11,7 @@ scalaVersion := "2.10.1"
 scalacOptions ++= Seq("-deprecation")
 
 
-libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT")
+libraryDependencies ++= Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4")
 
 resolvers ++= Seq("sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
                   "cloudera" at "https://repository.cloudera.com/content/repositories/releases",

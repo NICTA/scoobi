@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.10.1"
 
 libraryDependencies ++= 
-  Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4-SNAPSHOT") 
+  Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4") 
 
 scalacOptions ++= Seq("-deprecation")
 
