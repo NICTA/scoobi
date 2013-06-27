@@ -25,7 +25,7 @@ object Text {
    */
   implicit def toNumber(s: String) = new ToNumber(s)
   class ToNumber(s: String) {
-    def toIntOrZero = try { s.toInt } catch { case e => 0 }
+    def toIntOrZero = try { s.toInt } catch { case e: Throwable => 0 }
   }
 
   /** @return an extended String */
@@ -50,7 +50,7 @@ object Text {
           else if (only.trim endsWith "/")   matches(only.trim.dropRight(1))
           else                               matches(only.trim)
 
-      } catch { case _ => true }
+      } catch { case _:Throwable => true }
 
     }
 

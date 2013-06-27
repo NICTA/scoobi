@@ -113,7 +113,7 @@ object CalendarDay {
       calendar.setTime(date)
       calendar.set(YEAR, todaysYear)
       CalendarDay(calendar)
-    } catch { case e => fromddMMYY(s) }
+    } catch { case e: Throwable => fromddMMYY(s) }
   }
 
   /**
@@ -125,7 +125,7 @@ object CalendarDay {
       val date = ddMMYY.parse(s)
       calendar.setTime(date)
       CalendarDay(calendar)
-    } catch { case e => fromddMMYYYY(s) }
+    } catch { case e: Throwable => fromddMMYYYY(s) }
   }
 
   /**
@@ -137,7 +137,7 @@ object CalendarDay {
       val date = ddMMYYYY.parse(s)
       calendar.setTime(date)
       CalendarDay(calendar)
-    } catch { case e => TODAY }
+    } catch { case e: Throwable => TODAY }
   }
 
 }

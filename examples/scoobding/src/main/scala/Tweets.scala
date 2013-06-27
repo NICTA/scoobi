@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.nicta.scoobi.Scoobi._,
-import com.nicta.scoobi.core.Reduction._
+import com.nicta.scoobi.Scoobi._
+import Reduction._
 import app.Histogram._
+import scalaz._,Scalaz._
 
 /**
  * A Scoobi application to display the number of tweets per tweet message size

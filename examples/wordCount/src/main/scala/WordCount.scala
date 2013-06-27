@@ -16,6 +16,7 @@
 package com.nicta.scoobi.examples
 
 import com.nicta.scoobi.Scoobi._
+import Reduction._
 
 object WordCount extends ScoobiApp {
   def run() {
