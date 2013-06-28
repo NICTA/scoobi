@@ -80,7 +80,7 @@ object DistCache {
     // use the local cached files on the cluster when the local files can be found
     val cacheFiles =
       if (localCacheFiles.nonEmpty) localCacheFiles
-      else                          { logger.warn(path+" was not found in the local cache files"+localCacheFiles.mkString("\n", "\n", "\n"))
+      else                          { logger.warn("there are no local cache files, using the distributed cache instead")
                                       remoteCacheFiles }
 
     cacheFiles.find(uri => uri.toString.endsWith(path.toString)).flatMap { case uri =>
