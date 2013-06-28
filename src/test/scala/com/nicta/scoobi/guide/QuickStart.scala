@@ -54,26 +54,22 @@ resolvers ++= Seq("cloudera" at "https://repository.cloudera.com/content/reposit
 
 ### Write your code
 
-Now we can write some code. In `src/main/scala/myfile.scala`, for instance:
-
-```scala
-package mypackage.myapp
-
+Now we can write some code. In `src/main/scala/myfile.scala`, for instance: ${snippet{
 import com.nicta.scoobi.Scoobi._
+import Reduction._
 
 object WordCount extends ScoobiApp {
   def run() {
     val lines = fromTextFile(args(0))
 
-    val counts = lines.flatMap(_.split(" "))
-                      .map(word => (word, 1))
-                      .groupByKey
-                      .combine((a: Int, b: Int) => a + b)
-    
-    persist(counts.toTextFile(args(1))
+    val counts = lines.mapFlatten(_.split(" "))
+      .map(word => (word, 1))
+      .groupByKey
+      .combine(Sum.int)
+    counts.toTextFile(args(1)).persist
   }
 }
-```  
+}}
 
 ### Running
 
