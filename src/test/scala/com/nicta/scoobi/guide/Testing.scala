@@ -22,7 +22,7 @@ class Testing extends ScoobiPage { def is = "Testing guide".title^
 
 The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine.  The way to do that is simply to run your application normally under the JVM.  You can do that directly using `java`, but specifying the right class path is tricky; as a result, it's often easier to run using `sbt run-main`.  For example, if your main class is called `mypackage.myapp.RunMyApp`, run something like the following command from the top-level directory of your SBT project:
 
-    sbt run-main mypackage.myapp.RunMyApp input-files output
+    sbt "run-main mypackage.myapp.RunMyApp input-files output"
 
 ### Running on the cluster
 

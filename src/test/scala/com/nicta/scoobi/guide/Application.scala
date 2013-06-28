@@ -62,11 +62,11 @@ where `COMMAND-TO-INVOKE-PROGRAM` is the invocation needed to run the program, `
 
 A simple example that runs an application `mypackage.MyApp` using `sbt run-main` with application arguments `input-dir output-dir` and without any configuration-level arguments is:
 
-  `sbt run-main mypackage.MyApp input-dir output-dir`
+  `sbt "run-main mypackage.MyApp input-dir output-dir"`
 
 A more complicated example is as follows:
 
-  `sbt run-main mypackage.MyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 --by-time input-dir output-dir -- scoobi warn.times`
+  `sbt "run-main mypackage.MyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 --by-time input-dir output-dir -- scoobi warn.times"`
 
 This command contains the following sets of arguments:
 
