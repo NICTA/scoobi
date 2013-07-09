@@ -70,6 +70,8 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
   def gbkOutputChannels: Seq[GbkOutputChannel] = outputChannels.collect { case g: GbkOutputChannel => g }
   /** @return only the floating input channels */
   def floatingInputChannels: Seq[FloatingInputChannel] = inputChannels.collect { case i: FloatingInputChannel => i }
+  /** @return true if the Mscr is empty */
+  def isEmpty = inputChannels.isEmpty && outputChannels.isEmpty
 }
 
 /**

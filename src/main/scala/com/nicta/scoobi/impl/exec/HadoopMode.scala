@@ -26,7 +26,6 @@ import collection.Seqs._
 import scalaz.{DList => _, _}
 import concurrent.Promise
 import Scalaz._
-import org.apache.hadoop.mapreduce.Job
 import control.Exceptions._
 
 /**
@@ -40,7 +39,7 @@ import control.Exceptions._
  *  - executing each layer in sequence
  */
 private[scoobi]
-case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with ExecutionMode {
+case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition2 with ExecutionMode {
   implicit lazy val modeLogger = LogFactory.getLog("scoobi.HadoopMode")
 
   /** execute a DList, storing the results in DataSinks */
@@ -63,7 +62,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   def executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      layers(node).info("Executing layers", mkStrings).map(executeLayer)
+      partitionLayers(node).info("Executing layers", mkStrings).map(executeLayer)
     }
 
     def getValue(node: CompNode): Any = {

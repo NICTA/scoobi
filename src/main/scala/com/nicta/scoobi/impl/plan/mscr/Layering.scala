@@ -99,6 +99,13 @@ trait Layering extends ShowNode {
 
     lazy val isEmpty = nodes.isEmpty
     override def toString = nodes.mkString("Layer("+id+"\n  ", ",\n  ", ")\n")
+
+    override def equals(a: Any) = a match {
+      case other: Layer[T] => id == other.id
+      case _               => false
+    }
+
+    override def hashCode = id.hashCode()
   }
 
   object Layer {

@@ -25,6 +25,7 @@ import NonEmptyList._
 import scalaz.syntax.cojoin._
 import specification.Grouped
 import testing.UnitSpecification
+import org.specs2.matcher.MustMatchers
 
 class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is = s2"""
 
@@ -40,9 +41,12 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
    for each element in a group, there doesn't exist a related element in any other group    ${g1.e2}
    2 elements which are not related must end up in different groups                         ${g1.e3}
    each element in the group must be reachable from another element                         ${g1.e4}
+
+ It is possible to take elements of a sequence until one verifies a predicate               ${g2.e1}
+ all elements are taken if none of them verifies the predicate                              ${g2.e2}
                                                                                             """
 
-  "partition" - new g1 {
+  "partition" - new g1 with Transitive {
     e1 := prop { (list: List[Int], relation: (Int, Int) => Boolean) =>
       val groups = transitiveClosure(list)(relation)
       groups must contain(relatedElements(relation)).forall
@@ -69,6 +73,16 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
     }
   }
 
+  "takeUntil" - new g2 {
+    e1 := Seq(1, 3, 5, 8, 10, 11).takeUntil(_ % 2 == 0) ==== Seq(1, 3, 5, 8)
+    e2 := Seq(1, 3, 5, 7, 9, 11).takeUntil(_ % 2 == 0) ==== Seq(1, 3, 5, 7, 9, 11)
+  }
+
+
+  case class Splitted(offset: Int, length: Int, seq: Seq[Int])
+}
+
+trait Transitive extends MustMatchers {
   def relatedElements(relation: (Int, Int) => Boolean) = (group: NonEmptyList[Int]) => {
     group.toZipper.cojoin.toStream must contain { zipper: Zipper[Int] =>
       (zipper.lefts ++ zipper.rights) must contain(relation.curried(zipper.focus)).forall
@@ -88,7 +102,7 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
       case Nil          => Nil
       case head :: rest =>
         Seq(head) ++
-        (if (rest.exists(relation.curried(head))) transitivePath(rest, relation) else Seq())
+          (if (rest.exists(relation.curried(head))) transitivePath(rest, relation) else Seq())
     }
   }
 
@@ -98,6 +112,5 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
         (groups.lefts ++ groups.rights) must contain(relation(e1, _:Int))
       }
 
-  case class Splitted(offset: Int, length: Int, seq: Seq[Int])
 }
 

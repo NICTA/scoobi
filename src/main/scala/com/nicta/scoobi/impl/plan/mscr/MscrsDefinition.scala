@@ -38,6 +38,8 @@ trait MscrsDefinition extends Layering {
 
   def isLayerNode = (isMaterialised  || isGbkOutput || isEndNode || isCheckpoint)
 
+  def partitionLayers(startNode: CompNode) = layers(startNode)
+
   /** node at the end of the graph */
   def isEndNode: CompNode => Boolean = attr { n =>
     parent(n).map(isRoot).getOrElse(true)
@@ -133,7 +135,7 @@ trait MscrsDefinition extends Layering {
   }
 
   /**
-\   * @return a gbk output channel based on the nodes which are following the gbk
+   * @return a gbk output channel based on the nodes which are following the gbk
    */
   protected def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
     parents(gbk) match {

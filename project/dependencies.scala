@@ -45,7 +45,7 @@ object dependencies {
                                       "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
                                       "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
 
-  def scalaz(scalazVersion: String = "7.0.0") = Seq(      
+  def scalaz(scalazVersion: String = "7.0.2") = Seq(
     "org.scalaz"                        %% "scalaz-core"               % scalazVersion,
     "org.scalaz"                        %% "scalaz-concurrent"         % scalazVersion,
     "org.scalaz"                        %% "scalaz-scalacheck-binding" % scalazVersion intransitive(),

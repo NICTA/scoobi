@@ -68,6 +68,15 @@ trait Seqs {
       withoutElement ++ startWithElement.drop(1)
     }
 
+    /**
+     * @return the elements of the sequence one by one until the last one verifies the predicate
+     *         the whole sequence if no element verifies the predicate
+     */
+    def takeUntil(predicate: T => Boolean): Seq[T] = {
+      val (first, rest) = seq.span(e => !predicate(e))
+      first ++ rest.headOption.toSeq
+    }
+
   }
 
   /**
