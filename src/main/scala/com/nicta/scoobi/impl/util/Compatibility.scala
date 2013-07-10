@@ -25,6 +25,7 @@ import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.fs.{FileSystem, Path, FileStatus}
 import org.apache.hadoop.io.SequenceFile
 import core.ScoobiConfiguration
+import org.apache.commons.logging.LogFactory
 
 
 /**
@@ -32,6 +33,8 @@ import core.ScoobiConfiguration
  * hadoop 1.x and 2.x via reflection.
  */
 object Compatibility {
+  private lazy val logger = LogFactory.getLog("scoobi.Compatibility")
+
   private case class V2(useV2: Boolean,
                         taskAttemptContextConstructor: Constructor[_],
                         mapContextConstructor: Constructor[_],
@@ -42,8 +45,8 @@ object Compatibility {
 
   private lazy val v2: V2 = {
     // use the presence of JobContextImpl as a test for 2.x
-    val useV2 = try { Class.forName("org.apache.hadoop.mapreduce.task.JobContextImpl"); true }
-                catch { case _: Throwable => false }
+    val useV2 = try { Class.forName("org.apache.hadoop.mapreduce.task.JobContextImpl"); logger.debug("Hadoop CDH4 compatibility class is being used"); true }
+                catch { case _: Throwable => logger.debug("Hadoop CDH3 compatibility class is being used"); false }
 
     try {
       val taskAttemptContextClass =
@@ -122,6 +125,6 @@ object Compatibility {
     try method.invoke(instance, args:_*)
     catch { case e: Throwable => throwIllegalArgumentException(s"Can't invoke ${method.getName}", args, e) }
 
-  private def throwIllegalArgumentException(what: String, args: Seq[AnyRef], exception: Throwable) =
+  private def throwIllegalArgumentException(what: String, args: Seq[AnyRef], e: Throwable) =
     throw new IllegalArgumentException(s"$what, with arguments: ${args.mkString(", ")} -> ${e.getMessage}\n${e.getStackTrace.mkString("\n")}")
 }
