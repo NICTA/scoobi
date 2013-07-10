@@ -7,10 +7,11 @@ import matcher.MustMatchers
 import Scoobi._
 import plan.mscr._
 import plan.comp._
-import core.CompNode
+import com.nicta.scoobi.core.{ProcessNode, CompNode}
+import control.Functions._
 import org.specs2.control.Debug
 
-class MscrsNewDefinitionSpec extends script.Specification with Groups { def is = s2"""
+class MscrsNewDefinitionSpec extends script.Specification with Groups with CompNodeData { def is = s2"""
 
  The algorithm for making mscrs works by:
 
@@ -21,19 +22,21 @@ Layers
 ======
 
   1. divide the computation graph into "layers" of nodes where all the nodes on a given layer are independent from each other
-    + make layers
+    + make layers of independent nodes
 
-  2. re-groupe those layers so that each group ends-up with "sink nodes"
-    + a sink node is a node where an output needs to be done: materialised or gbk output or end of the graph or checkpoint
+  2. re-group those layers so that each group ends-up with "output nodes"
+    + an output node is a node where an output needs to be done: materialised or gbk output or end of the graph or checkpoint
       (but not a return node or a load node, or a materialise node)
-    + regroup all the layers into bigger layers with sink nodes
+    + regroup all the layers into bigger layers with output nodes
+    + if a layer contains both output nodes and non-ouput nodes, the non-output nodes must be transferred to "lower" layers
 
 Mscrs
 =====
 
   3. create mscrs for each layer
     + first get the source nodes
-     + source nodes can be the output of the layer above
+     + source nodes are the output of the layer above
+     + source nodes cannot be Return nodes or Op nodes (because this input is retrieved via environments)
     + then create all the gbk channels from the source nodes
       + if there are no gbks, there must be no channel
     + and create all the "floating parallel do" channels from the source nodes
@@ -42,6 +45,13 @@ Mscrs
       + if a mapper is not only connected to a gbk, it must have its own output channel
     + group the input channels by common input
     + assemble the mscrs with input and output channels
+
+Robustness
+==========
+
+  + A ProcessNode can only belong to one and only one channel and all ProcessNodes must belong to a channel
+    except if it is a flatten node
+
 
 """
 
@@ -59,13 +69,17 @@ Mscrs
     }
 
     eg := partitionLayers(twoLayersList) must haveSize(3)
+
+    eg := pending
   }
 
   "mscrs" - new group with definition with someLists with Debug {
 
-    eg := partitionLayers(twoLayersList).map(inputNodes _).map(_.size) must_== Seq(0, 1, 2)
+    eg := partitionLayers(twoLayersList).map(inputNodes _).map(_.size) must_== Seq(0, 1, 1)
 
       eg := inputNodes(partitionLayers(twoGroupByKeys)(2)).filter(isCombine) must haveSize(1)
+
+      eg := partitionLayers(twoLayersList).flatMap(inputNodes) must not contain(isReturn || isOp)
 
     eg := gbkInputChannels(partitionLayers(simpleGroupByKeyList)(1)) must haveSize(1)
 
@@ -83,6 +97,35 @@ Mscrs
 
     eg := mscrs(partitionLayers(twoLayersList)(1)) must haveSize(1)
 
+  }
+
+  "robustness" - new group with definition with Optimiser with Debug {
+    eg := prop { (l1: DList[String]) =>
+      val listNodes = optimise(l1.getComp)
+      val layers = partitionLayers(listNodes)
+      val channels = layers.flatMap(mscrs).flatMap(_.channels).distinct
+
+      def print =
+        "\nOPTIMISED\n"+pretty(listNodes) +
+        "\nLAYERS\n"+layers.mkString("\n") +
+        "\nCHANNELS\n"+channels.mkString("\n")
+
+      processNodes(listNodes) must contain { (n: CompNode) =>
+        val nodeCountInChannels = channels.filter(_.processNodes.contains(n)) aka (print+"\nFOR NODE\n"+n)
+        if (isFlatten(n)) nodeCountInChannels must be_>=(1) ^^ ((_: Seq[_]).size)
+        else              nodeCountInChannels must haveSize(1)
+      }.forall
+    }.set(minTestsOk = 100)
+
+    lazy val processNodes: CompNode => Seq[CompNode] = attr {
+      case node: ProcessNode => Seq(node) ++ children(node).flatMap(processNodes)
+      case node              => children(node).flatMap(processNodes)
+    }
+
+    def isFlatten(node: CompNode) = node match {
+      case ParallelDo1(ins) if ins.size > 1 => true
+      case other                            => false
+    }
   }
 
   trait definition extends MscrsDefinition2 with MustMatchers {

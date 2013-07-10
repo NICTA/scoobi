@@ -58,7 +58,7 @@ import Loggable._
  *
  * Two InputChannels are equal if they have the same source id.
  */
-trait InputChannel {
+trait InputChannel extends Channel {
   def id: Int
 
   override def equals(a: Any) = a match {
@@ -87,6 +87,14 @@ trait InputChannel {
   def map(key: Any, value: Any, context: InputOutputContext)
   /** setup the parallelDos of this input channel */
   def cleanup(context: InputOutputContext)
+}
+
+/**
+ * Abstract trait for both input and output channels
+ */
+trait Channel {
+  /** @return all the ProcessNodes for this channel */
+  def processNodes: Seq[ProcessNode]
 }
 
 /**
@@ -221,7 +229,7 @@ trait MscrInputChannel extends InputChannel {
 /**
  * This input channel is a tree of Mappers which are all connected to Gbk nodes
  */
-class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey], val nodes: Layering) extends MscrInputChannel {
+class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey], val nodes: Layering) extends MscrInputChannel {
   import nodes._
 
   /** collect all the tags accessible from this source node */
@@ -233,7 +241,7 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey], va
 
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
-    else                   mappers.filter(m => uses(m).exists(terminalNodes.contains))
+    else                   mappers.filter(m => uses(m).exists(n => terminalNodes.contains(n) || !mappers.contains(n)))
 
   protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
@@ -248,6 +256,8 @@ class GbkInputChannel(val sourceNode: CompNode, groupByKeys: Seq[GroupByKey], va
     def context = ioContext
   }
   protected def outputTags(mapper: ParallelDo): Seq[Int] = uses(mapper).collect(isAGroupByKey).map(_.id).toSeq
+
+  def processNodes: Seq[ProcessNode] = mappers
 }
 
 /**
@@ -276,6 +286,8 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
     def context = ioContext
   }
   protected def outputTags(mapper: ParallelDo): Seq[Int] = Seq(mapper.id)
+
+  def processNodes: Seq[ProcessNode] = mappers
 }
 
 

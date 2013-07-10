@@ -35,7 +35,7 @@ import org.apache.hadoop.mapreduce.TaskInputOutputContext
  *
  * Two OutputChannels are equal if they have the same tag. This tag is the id of the last processing node of the channel
  */
-trait OutputChannel {
+trait OutputChannel extends Channel {
   /** unique identifier for the Channel */
   def tag: Int
 
@@ -203,6 +203,7 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
         reducer .map(n => "reducer  = "+n.toString)
     ).flatten.mkString("GbkOutputChannel(", ", ", ")")
 
+  def processNodes: Seq[ProcessNode] = Seq(groupByKey) ++ combiner.toSeq ++ reducer.toSeq
 }
 
 /**
@@ -223,6 +224,8 @@ case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     values foreach emitter.write
   }
+
+  def processNodes: Seq[ProcessNode] = Seq()
 }
 
 /**
