@@ -116,10 +116,12 @@ object Compatibility {
 
   private def newInstance(constructor: Constructor[_], args: AnyRef*) =
     try constructor.newInstance(args:_*)
-    catch { case e: Throwable => throw new IllegalArgumentException(s"Can't instantiate $constructor : ${e.getMessage}", e) }
+    catch { case e: Throwable => throwIllegalArgumentException(s"Can't instantiate $constructor", args, e) }
 
   private def invoke(method: Method, instance: AnyRef, args: AnyRef*) =
     try method.invoke(instance, args:_*)
-    catch { case e: Throwable => throw new IllegalArgumentException(s"Can't invoke ${method.getName} : ${e.getMessage}", e) }
+    catch { case e: Throwable => throwIllegalArgumentException(s"Can't invoke ${method.getName}", args, e) }
 
+  private def throwIllegalArgumentException(what: String, args: Seq[AnyRef], exception: Throwable) =
+    throw new IllegalArgumentException(s"$what, with arguments: ${args.mkString(", ")} -> ${e.getMessage}\n${e.getStackTrace.mkString("\n")}")
 }
