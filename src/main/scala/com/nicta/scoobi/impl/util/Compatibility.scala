@@ -126,5 +126,8 @@ object Compatibility {
     catch { case e: Throwable => throwIllegalArgumentException(s"Can't invoke ${method.getName}", args, e) }
 
   private def throwIllegalArgumentException(what: String, args: Seq[AnyRef], e: Throwable) =
-    throw new IllegalArgumentException(s"$what, with arguments: ${args.mkString(", ")} -> ${e.getMessage}\n${e.getStackTrace.mkString("\n")}")
+    throw new IllegalArgumentException(s"$what, with arguments: ${args.mkString(", ")} -> ${e.getMessage}\n${cause(e)}")
+
+  private def cause(e: Throwable) =
+    Option(e.getCause).map(c => s"caused by ${c.getMessage}\n${c.getStackTrace.mkString("\n")}").getOrElse("")
 }
