@@ -62,8 +62,11 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition2 with Exe
   def executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      partitionLayers(node).info("Executing layers", mkStrings).map(executeLayer)
+      partitionLayers(node).info("Executing layers", showLayers).map(executeLayer)
     }
+
+    def showLayers = (layers: Seq[Layer[T]]) =>
+      mkStrings(layers.flatMap(l => l +: mscrs(l)))
 
     def getValue(node: CompNode): Any = {
       node match {

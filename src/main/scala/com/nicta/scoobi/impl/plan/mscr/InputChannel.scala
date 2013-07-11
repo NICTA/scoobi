@@ -130,12 +130,14 @@ trait MscrInputChannel extends InputChannel {
 
   /** collect all the mappers which are connected to the source node and connect to one of the terminal nodes for this channel */
   lazy val mappers =
-    terminalNodes.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal)).
+    terminalNodes.flatMap(terminal => nodes.pathsToNode(sourceNode)(terminal))
       // drop the source node from the path
-      map(path => path.filterNot(_ == sourceNode)).
+      .map(path => path.filterNot(_ == sourceNode))
       // retain only the paths which contain parallelDos or a terminal node
-      filter(_.forall(nodes.isParallelDo || terminalNodes.contains)).
-      flatten.collect(nodes.isAParallelDo).distinct
+      .filter(_.forall(nodes.isParallelDo || terminalNodes.contains))
+      .flatten
+      .collect(nodes.isAParallelDo)
+      .distinct
 
 
   /** nodes defining the output values of this channel, group by keys for a GbkInputChannel or parallelDo nodes for a FloatingInputChannel */
@@ -241,7 +243,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 
   lazy val terminalNodes = groupByKeys
 
-  lazy val outputNodes = groupByKeys ++ mappers.filterNot(m => uses(m).exists(groupByKeys.contains) || uses(m).forall(mappers.contains))
+  lazy val outputNodes = groupByKeys ++ mappers.filter(m => uses(m).exists(groupByKeys.contains) || uses(m).exists(u => !mappers.contains(u)))
 
   lazy val bypassOutputNodes = outputNodes.collect(isAParallelDo)
 
@@ -251,7 +253,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
   }
   lazy val valueTypes = outputNodes.foldLeft(ValueTypes()) {
     case (res, cur: GroupByKey) => res.add(cur.id, cur.wfv)
-    case (res, cur: ParallelDo) => res.add(cur.id, cur.wfa)
+    case (res, cur: ParallelDo) => res.add(cur.id, cur.wfb)
     case (res, cur)             => res.add(cur.id, cur.wf)
   }
 
@@ -261,17 +263,23 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 
   protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
+    val isMapperEmitter = outputNodes.find(_.id == tag).map(isParallelDo).getOrElse(false)
     def write(x: Any) {
-      x match {
-        case (x1, x2) =>
-          key.set(x1)
-          value.set(x2)
-          ioContext.write(key, value)
-        case x1 =>
-          key.set(rollingInt.get)
-          value.set(x1)
-          ioContext.write(key, value)
-      }
+      if (isMapperEmitter) {
+        x match {
+          case x1 =>
+            key.set(rollingInt.get)
+            value.set(x1)
+            ioContext.write(key, value)
+        }
+      } else
+        x match {
+          case (x1, x2) =>
+            key.set(x1)
+            value.set(x2)
+            ioContext.write(key, value)
+        }
+
     }
     def context = ioContext
   }

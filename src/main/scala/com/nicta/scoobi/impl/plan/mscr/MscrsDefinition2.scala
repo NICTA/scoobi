@@ -29,10 +29,10 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
   }
 
   def fuse(layers: Seq[Layer[T]]) = {
-    Layer(layers.flatMap(_.nodes.filter(isProcessNode || isLoad)))
+    Layer(layers.flatMap(_.nodes.filter(n => isProcessNode(n) || isLoad(n))))
   }
 
-  def mscrs(layer: Layer[T]): Seq[Mscr] = {
+  lazy val mscrs: Layer[T] => Seq[Mscr] = attr { layer: Layer[T] =>
     val outChannels = outputChannels(layer)
     val channelsWithCommonTags = groupInputChannels(layer)
     // create Mscr for each set of channels with common tags
@@ -145,6 +145,11 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
     case pd @ ParallelDo1((cb @ Combine1((gbk: GroupByKey))) +: rest) => rest.isEmpty && isUsedAtMostOnce(pd) && isUsedAtMostOnce(cb) && isUsedAtMostOnce(gbk)
     case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                  => rest.isEmpty && isUsedAtMostOnce(pd) && isUsedAtMostOnce(gbk)
     case _                                                            => false
+  }
+
+  lazy val isAReducer: CompNode => Boolean = attr {
+    case node: ParallelDo if isReducer(node) => true
+    case _                                   => false
   }
 
   /**
