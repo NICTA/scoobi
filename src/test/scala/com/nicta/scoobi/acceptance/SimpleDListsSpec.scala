@@ -183,5 +183,8 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
 
     result.run.toSet === Set((1,1), (2,2), (1,1), (2,2))
   }
-
+  "xxx" >> {implicit sc: SC =>
+    DList.fill(3000000)("hey").run
+    ok
+  }
 }

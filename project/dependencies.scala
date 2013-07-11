@@ -41,8 +41,8 @@ object dependencies {
   def hadoop(version: String) =
     if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core"   % "0.20.2-cdh3u1",
                                       "org.apache.avro"   % "avro-mapred"   % "1.7.4")
-    else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1" exclude("asm", "asm"),
-                                      "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.0.1",
+    else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.3.0" exclude("asm", "asm"),
+                                      "org.apache.hadoop" % "hadoop-core"   % "2.0.0-mr1-cdh4.3.0",
                                       "org.apache.avro"   % "avro-mapred"   % "1.7.4" classifier "hadoop2")
 
   def scalaz(scalazVersion: String = "7.0.0") = Seq(
