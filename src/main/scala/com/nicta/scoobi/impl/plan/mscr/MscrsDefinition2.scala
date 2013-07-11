@@ -53,8 +53,8 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
   def inputChannels(layer: Layer[T]) = gbkInputChannels(layer) ++ floatingInputChannels(layer)
 
   def inputNodes(layer: Layer[T]): Seq[CompNode] =
-    layer.nodes.filterNot(isReturn || isOp).collect {
-      case node if children(node).exists(!layer.nodes.contains(_)) => children(node).filterNot(n => layer.nodes.contains(n) || isReturn(n) || isOp(n))
+    layer.nodes.filterNot(isValueNode).collect {
+      case node if children(node).exists(!layer.nodes.contains(_)) => children(node).filterNot(n => layer.nodes.contains(n) || isValueNode(n))
     }.distinct.flatten
 
   def hasSinkNode: Layer[T] => Boolean = (layer: Layer[T]) => {
@@ -80,7 +80,6 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
       val mappers = transitiveUses(inputNode)
         .collect(isAParallelDo)
         .filter(layer.nodes.contains)
-        .filterNot(isReducer)
         .filterNot(gbkChannels.flatMap(_.mappers).contains)
         .filterNot(n => uses(n).nonEmpty && uses(n).forall(gbks.contains)).toSeq
       new FloatingInputChannel(inputNode, mappers, this)
@@ -89,18 +88,18 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
 
   def gbkOutputChannels(layer: Layer[T]) = {
     val gbks = layer.nodes.collect(isAGroupByKey)
-    gbks.map(gbk => gbkOutputChannel(gbk))
+    gbks.map(gbk => gbkOutputChannel(gbk, layer))
   }
 
   /**
    * @return a gbk output channel based on the nodes which are following the gbk
    */
-  def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
+  def gbkOutputChannel(gbk: GroupByKey, layer: Layer[T]): GbkOutputChannel = {
     parents(gbk) match {
-      case (c: Combine) +: (p: ParallelDo) +: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
-      case (p: ParallelDo) +: rest                 if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p))
-      case (c: Combine) +: rest                                    => GbkOutputChannel(gbk, combiner = Some(c))
-      case _                                                       => GbkOutputChannel(gbk)
+      case (c: Combine) +: (p: ParallelDo) +: rest if isReducer(p) && layer.nodes.contains(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p))
+      case (p: ParallelDo) +: rest                 if isReducer(p) && layer.nodes.contains(p) => GbkOutputChannel(gbk, reducer = Some(p))
+      case (c: Combine) +: rest                                                               => GbkOutputChannel(gbk, combiner = Some(c))
+      case _                                                                                  => GbkOutputChannel(gbk)
     }
   }
 
@@ -115,7 +114,7 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
   def selectNode: CompNode => Boolean = (n: CompNode) => true
 
   def isAnInputNode(nodes: Seq[CompNode]) = (node: CompNode) =>
-    !isReturn(node) &&
+    !isValueNode(node) &&
       (children(node).isEmpty || children(node).forall(!nodes.contains(_)))
 
   def isAnOutputNode = (isMaterialised  || isGbkOutput || isEndNode || isCheckpoint || isLoad) && !isReturn

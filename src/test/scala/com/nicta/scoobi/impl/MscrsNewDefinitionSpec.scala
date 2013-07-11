@@ -91,11 +91,11 @@ Robustness
 
     eg := floatingOutputChannels(partitionLayers(simpleList.map(identity))(1)) must haveSize(1)
 
-      eg := outputChannels(partitionLayers(twoLayersList)(1)) must haveSize(2)
+      eg := outputChannels(partitionLayers(twoLayersList).pp.apply(1)) must haveSize(2)
 
     eg := groupInputChannels(partitionLayers(twoIndependentGroupByKeys)(1)).head must haveSize(2)
 
-    eg := mscrs(partitionLayers(twoLayersList)(1)) must haveSize(1)
+    eg := mscrs(partitionLayers(twoLayersList).pp.apply(1)) must haveSize(1)
 
   }
 
@@ -128,13 +128,13 @@ Robustness
     }
   }
 
-  trait definition extends MscrsDefinition2 with MustMatchers {
+  trait definition extends MscrsDefinition2 with MustMatchers with Debug {
     // for testing
     def makeLayers(start: CompNode): Seq[Layer[T]] =
       layers(optimise(start))
 
     def partitionLayers(list: DList[_]) =
-      super.partitionLayers(optimise(list.getComp))
+      super.partitionLayers(optimise(list.getComp).pp(pretty _))
   }
 
 

@@ -243,7 +243,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
 
   lazy val terminalNodes = groupByKeys
 
-  lazy val outputNodes = groupByKeys ++ mappers.filter(m => uses(m).exists(groupByKeys.contains) || uses(m).exists(u => !mappers.contains(u)))
+  lazy val outputNodes = groupByKeys ++ mappers.filter(m => uses(m).exists(u => !mappers.contains(u) && !groupByKeys.contains(u)))
 
   lazy val bypassOutputNodes = outputNodes.collect(isAParallelDo)
 

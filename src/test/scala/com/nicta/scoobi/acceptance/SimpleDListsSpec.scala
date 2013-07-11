@@ -183,11 +183,4 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
 
     result.run.toSet === Set((1,1), (2,2), (1,1), (2,2))
   }
-  "xxx" >> { implicit sc: SC =>
-    val dlist = DList(1, 2, 3, 4).filter { i => "hey".pp; i % 2 == 0 }
-    //dlist.persist
-    val r = dlist.size join dlist.map(identity)
-    r.run.pp
-    ok
-  }
 }
