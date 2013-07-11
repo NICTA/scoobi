@@ -41,6 +41,7 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
    for each element in a group, there doesn't exist a related element in any other group    ${g1.e2}
    2 elements which are not related must end up in different groups                         ${g1.e3}
    each element in the group must be reachable from another element                         ${g1.e4}
+   all elements must end up in a group                                                      ${g1.e5}
 
  It is possible to take elements of a sequence until one verifies a predicate               ${g2.e1}
  all elements are taken if none of them verifies the predicate                              ${g2.e2}
@@ -70,6 +71,11 @@ class SeqsSpec extends UnitSpecification with ScalaCheck with Grouped { def is =
     e4 := prop { (list: List[Int], relation: (Int, Int) => Boolean) =>
       val groups = transitiveClosure(list)(relation)
       groups must contain(transitiveElements(relation)).forall
+    }
+
+    e5 := prop { (list: List[Int], relation: (Int, Int) => Boolean) =>
+      val groups = transitiveClosure(list)(relation)
+      groups.map(_.list).flatten must contain(allOf(list:_*))
     }
   }
 

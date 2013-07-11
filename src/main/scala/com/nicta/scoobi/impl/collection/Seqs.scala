@@ -89,7 +89,7 @@ trait Seqs {
         case head :: tail =>
           val groups = nel(head, tail).toZipper
           groups.findZ(_.list.exists(relation(_, cur))).map(_.modify(_ :::> List(cur))).
-            getOrElse(groups.insertRight(nels(cur))).toStream.toSeq
+            getOrElse(groups.insertRight(nels(cur))).toStream.toVector
       }
     }
 

@@ -73,6 +73,10 @@ trait InputChannel extends Channel {
   def source: Source
   /** sourceNode + environments for the parallelDo nodes */
   def inputNodes: Seq[CompNode]
+  /** nodes where this input channel writes to */
+  def outputNodes: Seq[CompNode]
+  /** output nodes (parallelDos) which are not going in a reducer */
+  def bypassOutputNodes: Seq[ParallelDo]
 
   /** set of tags, which are node ids consuming the values produced by this input channel */
   def tags: Seq[Int]
@@ -236,12 +240,24 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
   lazy val tags = keyTypes.tags
 
   lazy val terminalNodes = groupByKeys
-  lazy val keyTypes   = groupByKeys.foldLeft(KeyTypes()) { (res, cur) => res.add(cur.id, cur.wfk, cur.gpk) }
-  lazy val valueTypes = groupByKeys.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wfv) }
+
+  lazy val outputNodes = groupByKeys ++ mappers.filterNot(m => uses(m).exists(groupByKeys.contains) || uses(m).forall(mappers.contains))
+
+  lazy val bypassOutputNodes = outputNodes.collect(isAParallelDo)
+
+  lazy val keyTypes   = outputNodes.foldLeft(KeyTypes()) {
+    case (res, cur: GroupByKey) => res.add(cur.id, cur.wfk, cur.gpk)
+    case (res, cur)             => res.add(cur.id, wireFormat[Int], Grouping.all)
+  }
+  lazy val valueTypes = outputNodes.foldLeft(ValueTypes()) {
+    case (res, cur: GroupByKey) => res.add(cur.id, cur.wfv)
+    case (res, cur: ParallelDo) => res.add(cur.id, cur.wfa)
+    case (res, cur)             => res.add(cur.id, cur.wf)
+  }
 
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
-    else                   mappers.filter(m => uses(m).exists(n => terminalNodes.contains(n) || !mappers.contains(n)))
+    else                   mappers.filter(m => uses(m).exists(outputNodes.contains) || outputNodes.contains(m))
 
   protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
@@ -251,11 +267,16 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
           key.set(x1)
           value.set(x2)
           ioContext.write(key, value)
+        case x1 =>
+          key.set(rollingInt.get)
+          value.set(x1)
+          ioContext.write(key, value)
       }
     }
     def context = ioContext
   }
-  protected def outputTags(mapper: ParallelDo): Seq[Int] = uses(mapper).collect(isAGroupByKey).map(_.id).toSeq
+  protected def outputTags(mapper: ParallelDo): Seq[Int] =
+    (outputNodes.filter(_ == mapper) ++ uses(mapper).filter(outputNodes.contains)).map(_.id).toSeq
 
   def processNodes: Seq[ProcessNode] = mappers
 }
@@ -264,16 +285,25 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
  * This input channel is a tree of Mappers which are not connected to Gbk nodes
  */
 class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[CompNode], val nodes: Layering) extends MscrInputChannel {
+  import nodes._
 
   /** collect all the tags accessible from this source node */
   lazy val tags = valueTypes.tags
 
-  lazy val keyTypes   = lastMappers.foldLeft(KeyTypes())   { (res, cur) => res.add(cur.id, wireFormat[Int], Grouping.all) }
-  lazy val valueTypes = lastMappers.foldLeft(ValueTypes()) { (res, cur) => res.add(cur.id, cur.wf) }
+  lazy val keyTypes   = outputNodes.foldLeft(KeyTypes()) {
+    case (res, cur)             => res.add(cur.id, wireFormat[Int], Grouping.all)
+  }
+  lazy val valueTypes = outputNodes.foldLeft(ValueTypes()) {
+    case (res, cur)             => res.add(cur.id, cur.wf)
+  }
 
   lazy val lastMappers: Seq[ParallelDo] =
     if (mappers.size <= 1) mappers
     else                   mappers.filter(terminalNodes.contains)
+
+  lazy val outputNodes = lastMappers
+
+  lazy val bypassOutputNodes = outputNodes
 
   protected def createEmitter(tag: Int, ioContext: InputOutputContext) = new EmitterWriter with InputOutputContextScoobiJobContext {
     val (key, value) = (tks(tag), tvs(tag))
@@ -285,9 +315,12 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
     }
     def context = ioContext
   }
-  protected def outputTags(mapper: ParallelDo): Seq[Int] = Seq(mapper.id)
+  protected def outputTags(mapper: ParallelDo): Seq[Int] =
+    outputNodes.filter(_ == mapper).map(_.id).toSeq
 
   def processNodes: Seq[ProcessNode] = mappers
+
+  def isEmpty = terminalNodes.isEmpty
 }
 
 

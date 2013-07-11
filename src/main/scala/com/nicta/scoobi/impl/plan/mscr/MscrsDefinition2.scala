@@ -23,7 +23,7 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
         }.getOrElse((Layer[T](), Layer[T]()))
 
         if (outputNodes.isEmpty) fuse(first :+ noOutputNodes) +: partition(rest.drop(1))
-        else                     fuse(first :+ outputNodes) +: partition(noOutputNodes +: rest.drop(1))
+        else                     fuse(first :+ outputNodes) +: partition(rest.drop(1).headOption.map(l => fuse(Seq(l, noOutputNodes))).toSeq ++ rest.drop(2))
       }
     partition(layers(start)).filterNot(_.isEmpty)
   }
@@ -40,15 +40,15 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
       val correspondingOutputTags = taggedInputChannels.flatMap(_.tags)
       val out = outChannels.filter(o => correspondingOutputTags.contains(o.tag))
 
-      if (out.isEmpty) Mscr.empty
-      else             Mscr.create(taggedInputChannels, out)
+      Mscr.create(taggedInputChannels, out)
     }.filterNot(_.isEmpty)
   }
 
-  def groupInputChannels(layer: Layer[T]) =
+  def groupInputChannels(layer: Layer[T]) = {
     Seqs.transitiveClosure(inputChannels(layer)) { (i1: InputChannel, i2: InputChannel) =>
-      i1.sourceNode == i2.sourceNode
+      (i1.tags intersect i2.tags).nonEmpty
     }.map(_.list)
+  }
 
   def inputChannels(layer: Layer[T]) = gbkInputChannels(layer) ++ floatingInputChannels(layer)
 
@@ -72,7 +72,8 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
   }
 
   def floatingInputChannels(layer: Layer[T]): Seq[FloatingInputChannel] = {
-    val gbks = gbkInputChannels(layer).flatMap(_.groupByKeys)
+    val gbkChannels = gbkInputChannels(layer)
+    val gbks = gbkChannels.flatMap(_.groupByKeys)
     val inputs = inputNodes(layer)
 
     inputs.map { inputNode =>
@@ -80,9 +81,10 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
         .collect(isAParallelDo)
         .filter(layer.nodes.contains)
         .filterNot(isReducer)
+        .filterNot(gbkChannels.flatMap(_.mappers).contains)
         .filterNot(n => uses(n).nonEmpty && uses(n).forall(gbks.contains)).toSeq
       new FloatingInputChannel(inputNode, mappers, this)
-    }
+    }.filterNot(_.isEmpty)
   }
 
   def gbkOutputChannels(layer: Layer[T]) = {
@@ -106,7 +108,7 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
   def outputChannels(layer: Layer[T]) = gbkOutputChannels(layer) ++ floatingOutputChannels(layer)
 
   def floatingOutputChannels(layer: Layer[T]) = {
-    val floatingMappers = inputChannels(layer).flatMap(_.lastMappers).filter(mapper => uses(mapper).isEmpty || uses(mapper).exists(!isGroupByKey))
+    val floatingMappers = inputChannels(layer).flatMap(_.bypassOutputNodes)
     floatingMappers.distinct.map(BypassOutputChannel(_))
   }
 

@@ -28,7 +28,7 @@ Layers
     + an output node is a node where an output needs to be done: materialised or gbk output or end of the graph or checkpoint
       (but not a return node or a load node, or a materialise node)
     + regroup all the layers into bigger layers with output nodes
-    + if a layer contains both output nodes and non-ouput nodes, the non-output nodes must be transferred to "lower" layers
+    + if a layer contains both output nodes and non-ouput nodes, the non-output nodes must be pushed to "lower" layers
 
 Mscrs
 =====
@@ -70,7 +70,7 @@ Robustness
 
     eg := partitionLayers(twoLayersList) must haveSize(3)
 
-    eg := pending
+    eg := partitionLayers(twoLayersList)(2).nodes must contain(isParallelDo)
   }
 
   "mscrs" - new group with definition with someLists with Debug {
@@ -150,7 +150,7 @@ Robustness
       l5 ++ l6
     }
 
-    lazy val twoGroupByKeys = DList((1, "1")).filter(_ => true).groupByKey.combine(Reduction.first).groupByKey.filter(_ => true)//DList((1, 2)).groupByKey.combine(Reduction.Sum.int).groupByKey
+    lazy val twoGroupByKeys = DList((1, "1")).filter(_ => true).groupByKey.combine(Reduction.first).groupByKey.filter(_ => true)
 
     lazy val twoLayersList = {
       lazy val dlist = DList(1, 2, 3, 4).filter(_ % 2 == 0)
@@ -159,4 +159,3 @@ Robustness
   }
 
 }
-
