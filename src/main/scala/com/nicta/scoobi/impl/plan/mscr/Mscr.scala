@@ -74,6 +74,8 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
   def isEmpty = inputChannels.isEmpty || outputChannels.isEmpty
   /** @return all the channels */
   def channels = inputChannels ++ outputChannels
+  /** @return all the nodes of this Mscr */
+  def nodes = inputChannels.flatMap(_.processNodes) ++ outputChannels.flatMap(_.processNodes)
 }
 
 /**

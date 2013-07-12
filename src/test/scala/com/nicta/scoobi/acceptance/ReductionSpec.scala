@@ -246,7 +246,7 @@ class ReductionSpec extends NictaSimpleJobs {
     // use a reduction provided there is a Semigroup group for the type T
     // here type T = (Long, Int, (String, String))
     def combine(r: Reduction[(Long, Int, (String, String))]) = ok
-    combine(R.semigroup)
+    combine(R.semigroup(implicitly[Semigroup[(Long, Int, (String, String))]]))
   }
 
 

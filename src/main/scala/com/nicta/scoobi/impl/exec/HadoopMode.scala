@@ -23,9 +23,11 @@ import plan.comp._
 import plan.mscr._
 import monitor.Loggable._
 import collection.Seqs._
-import scalaz.{DList => _, _}
+import scalaz.{DList => _, concurrent, syntax, std}
+import syntax.id._
+import syntax.traverse._
+import std.list._
 import concurrent.Promise
-import Scalaz._
 import control.Exceptions._
 
 /**

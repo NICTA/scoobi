@@ -283,7 +283,8 @@ object Relational {
       def cleanup(emitter: Emitter[((A, Int), B)]) {}
     }
 
-    import scalaz._, Scalaz._
+    import scalaz.syntax.semigroup._
+    import scalaz.syntax.order._
 
     implicit val grouping = new Grouping[(K, Int)] {
       def groupCompare(a: (K, Int), b: (K, Int)) =

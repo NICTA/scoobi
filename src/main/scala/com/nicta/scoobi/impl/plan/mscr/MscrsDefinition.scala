@@ -24,6 +24,7 @@ import control.Functions._
 import collection._
 import comp._
 import core._
+import CollectFunctions._
 
 trait MscrsDefinition extends Layering {
 

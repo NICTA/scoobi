@@ -134,8 +134,6 @@ object Sink {
 
 }
 
-import scalaz._
-import Scalaz._
 /**
  * This is a Sink which can also be used as a Source
  */

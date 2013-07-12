@@ -22,18 +22,10 @@ import collection.generic.CanBuildFrom
 import collection.mutable.{ListBuffer, Builder}
 import org.apache.avro.io.EncoderFactory
 import com.nicta.scoobi.io.avro.AvroSchema
-import org.apache.avro.mapred.{AvroKey, AvroWrapper}
-import org.apache.avro.hadoop.io.AvroSerialization
-import org.apache.hadoop.io.serializer.{Serializer, Deserializer}
-import org.apache.avro.reflect.ReflectDatumWriter
 import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter, SpecificData, SpecificRecordBase}
 import org.apache.avro.generic._
 import org.apache.avro.io.DecoderFactory
-import collection.mutable.ArrayBuffer
-import scalaz._, Scalaz._
-
 import annotation.implicitNotFound
-import collection.mutable
 
 /** Typeclass for sending types across the Hadoop wire */
 @implicitNotFound(msg = "Cannot find WireFormat type class for ${A}")
@@ -450,8 +442,7 @@ trait WireFormatImplicits extends codegen.GeneratedWireFormats {
   }
 
   /**  Shapeless tagged types */
-  import scalaz._
-
+  import scalaz.@@
   implicit def taggedTypeWireFormat[T : WireFormat, U]: WireFormat[T @@ U] =
     implicitly[WireFormat[T]].asInstanceOf[WireFormat[T @@ U]]
 

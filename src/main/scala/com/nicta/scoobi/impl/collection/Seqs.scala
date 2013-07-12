@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package impl
 package collection
 
-import scalaz._
+import scalaz.{NonEmptyList, Zipper}
 import NonEmptyList._
 import Zipper._
 

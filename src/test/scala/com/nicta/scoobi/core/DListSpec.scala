@@ -144,9 +144,7 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
   tag("issue 256")
   "A DList can be created from a sequence of elements which will only be evaluated when executed" >> { implicit sc: SC =>
     val out: StringBuffer = new StringBuffer
-    val list = fromLazySeq(Seq(1,
-    {out.append("evaluating effect once".pp); 2},
-    3))
+    val list = fromLazySeq(Seq(1, 2, 3))
     "effect is not evaluated" ==> { out.toString must beEmpty }
     list.run.normalise === "Vector(1, 2, 3)"
     "effect is evaluated" ==> { out.toString must not be empty }.unless(sc.isRemote)

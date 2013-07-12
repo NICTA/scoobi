@@ -18,8 +18,9 @@ package impl
 package plan
 package mscr
 
-import comp.ShowNode
+import comp._
 import core.{UniqueInt, CompNode}
+import CollectFunctions._
 
 /**
  * Simple layering algorithm using the Longest path method to assign nodes to layers.
@@ -41,10 +42,47 @@ trait Layering extends ShowNode {
   lazy val selectedDescendents: CompNode => Seq[T] = attr { case n =>
     (n -> descendents).collect(select)
   }
+  def selectDescendentsOf(node: CompNode, select: CompNode => Boolean): Seq[CompNode] = {
+    (node -> descendents).filter(select)
+  }
 
   /** @return the layer that a selected node is in. None if this is not a selected node */
   lazy val layer: CompNode => Option[Layer[T]] = attr { case n =>
     layers(root(n)).find(_.nodes.contains(n))
+  }
+
+  lazy val layersFromNodes: Seq[CompNode] => Seq[Layer[T]] = attr { case nodes =>
+    val selectedNodes = nodes.flatMap { n =>
+      if (selected(n)) n +: selectedDescendents(n)
+      else             selectedDescendents(n)
+    }
+
+    val (leaves, nonLeaves) = selectedNodes.partition { d =>
+      selectedDescendents(d).isEmpty
+    }
+    val leafNodes = if (leaves.isEmpty && nodes.exists(selected)) nodes.filter(selected) else Seq()
+
+    val result = Layer(leaves ++ leafNodes) +:
+      nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
+    result.filterNot(_.isEmpty)
+
+  }
+
+  def layersOf(nodes: Seq[CompNode], select: CompNode => Boolean): Seq[Layer[CompNode]] = {
+    val selectedNodes = nodes.flatMap { n =>
+      if (select(n)) n +: selectDescendentsOf(n, select)
+      else                selectDescendentsOf(n, select)
+    }
+
+    val (leaves, nonLeaves) = selectedNodes.partition { d =>
+      selectDescendentsOf(d, select).isEmpty
+    }
+    val leafNodes = if (leaves.isEmpty && nodes.exists(select)) nodes.filter(select) else Seq()
+
+    val result = Layer(leaves ++ leafNodes) +:
+      nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
+    result.filterNot(_.isEmpty)
+
   }
 
   lazy val layers: CompNode => Seq[Layer[T]] = attr { case n =>
@@ -93,7 +131,7 @@ trait Layering extends ShowNode {
    *
    * Because of this property they can be executed in parallel
    */
-  case class Layer[T <: CompNode](nodes: Seq[T] = Seq[T]()) {
+  case class Layer[T <: CompNode](nodes: Seq[T] = Seq[T](), mscrs: Seq[Mscr] = Seq()) {
     val id = rollingInt.get
     lazy val gbks = nodes.collect(isAGroupByKey)
 
@@ -110,6 +148,8 @@ trait Layering extends ShowNode {
 
   object Layer {
     object rollingInt extends UniqueInt
+
+    def apply(mscrs: Seq[Mscr]): Layer[CompNode] = new Layer[CompNode](mscrs.flatMap(_.nodes), mscrs)
   }
 
 }

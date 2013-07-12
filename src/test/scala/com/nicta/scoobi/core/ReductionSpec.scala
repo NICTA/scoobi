@@ -20,7 +20,14 @@ import org.specs2.ScalaCheck
 import com.nicta.scoobi.testing.mutable.UnitSpecification
 import Reduction.{Reduction => R}
 
-import scalaz._, Scalaz._, scalacheck.ScalazArbitrary._
+import scalaz.{scalacheck, Endo, Digit, std, NonEmptyList, Ordering}
+import std.anyVal._
+import std.math.bigInt._
+import std.stream._
+import std.option._
+import std.list._
+import std.string._
+import scalacheck.ScalazArbitrary._
 
 class ReductionSpec extends UnitSpecification with ScalaCheck {
   import Reduction._

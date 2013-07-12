@@ -28,6 +28,7 @@ import comp._
 import ScoobiConfiguration._
 import Configurations._
 import scalaz.Scalaz._
+import CollectFunctions._
 
 /**
  * A fast local mode for execution of Scoobi applications.

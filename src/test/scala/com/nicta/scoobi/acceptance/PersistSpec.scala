@@ -51,7 +51,8 @@ class PersistSpec extends NictaSimpleJobs with ResultFiles with Tags { sequentia
   }
   "4. a list, having a sink and also materialised" >> { implicit sc: SC =>
     val resultDir = createTempDir("test")
-    val list = DList(1, 2, 3).toTextFile(path(resultDir), overwrite = true).persist
+    val list = DList(1, 2, 3).toTextFile(path(resultDir), overwrite = true)
+    list.run.normalise === "Vector(1, 2, 3)"
 
     resultDir must containResults
     list.run.normalise === "Vector(1, 2, 3)"

@@ -31,6 +31,7 @@ import core.InputOutputContext
 import org.apache.commons.logging.LogFactory
 import monitor.Loggable
 import Loggable._
+import CollectFunctions._
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
@@ -134,9 +135,9 @@ trait MscrInputChannel extends InputChannel {
       // drop the source node from the path
       .map(path => path.filterNot(_ == sourceNode))
       // retain only the paths which contain parallelDos or a terminal node
-      .filter(_.forall(nodes.isParallelDo || terminalNodes.contains))
+      .filter(_.forall(isParallelDo || terminalNodes.contains))
       .flatten
-      .collect(nodes.isAParallelDo)
+      .collect(isAParallelDo)
       .distinct
 
 
@@ -184,7 +185,7 @@ trait MscrInputChannel extends InputChannel {
 
   /** memoise the mappers tree to improve performance */
   private lazy val nextMappers: CompNode => Seq[ParallelDo] = attribute("nextMappers") {
-    case node => nodes.uses(node).collect(nodes.isAParallelDo).toSeq.filter(mappers.contains)
+    case node => nodes.uses(node).collect(isAParallelDo).toSeq.filter(mappers.contains)
   }
   /** memoise the final mappers tree to improve performance */
   private lazy val isFinal: CompNode => Boolean = attribute("isFinal") {

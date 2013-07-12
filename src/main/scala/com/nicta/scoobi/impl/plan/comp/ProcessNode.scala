@@ -24,8 +24,8 @@ import mapreducer._
 import java.util.UUID._
 import CollectFunctions._
 import ScoobiConfigurationImpl._
-import scalaz._
-import Scalaz._
+import scalaz.{syntax}
+import syntax.std.option._
 /**
  * Processing node in the computation graph.
  *

@@ -25,6 +25,7 @@ import org.specs2.mutable.Tables
 import com.nicta.scoobi.io.text.TextOutput
 import TextOutput._
 import control.Functions._
+import CollectFunctions._
 
 class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
 

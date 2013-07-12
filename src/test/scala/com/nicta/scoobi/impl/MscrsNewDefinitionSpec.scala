@@ -10,6 +10,7 @@ import plan.comp._
 import com.nicta.scoobi.core.{ProcessNode, CompNode}
 import control.Functions._
 import org.specs2.control.Debug
+import CollectFunctions._
 
 class MscrsNewDefinitionSpec extends script.Specification with Groups with CompNodeData { def is = s2"""
 

@@ -20,11 +20,12 @@ package comp
 
 import core._
 import control.Functions._
+import CollectFunctions._
 
 /**
  * General methods for navigating a graph of CompNodes
  */
-trait CompNodes extends GraphNodes with CollectFunctions {
+trait CompNodes extends GraphNodes {
   type T = CompNode
 
   /**

@@ -16,7 +16,7 @@
 package com.nicta.scoobi
 package application
 
-import scalaz._
+import scalaz.@@
 
 object Levels {
 

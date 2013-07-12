@@ -28,6 +28,7 @@ import scala.collection.mutable
 import org.kiama.util.Emitter
 import core.Emitter
 import org.kiama.attribution.Attributable
+import CollectFunctions._
 
 /**
  * Optimiser for the CompNode graph

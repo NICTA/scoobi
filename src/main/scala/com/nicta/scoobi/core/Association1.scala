@@ -16,7 +16,8 @@
 package com.nicta.scoobi
 package core
 
-import scalaz._, Scalaz._
+import scalaz.{Semigroup, Functor, Lens, Store, @>, Zip, Apply, Bifunctor}
+
 
 /**
  * An association of a key to 1 or many values.

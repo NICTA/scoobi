@@ -16,7 +16,10 @@
 package com.nicta.scoobi
 package core
 
-import scalaz._, Scalaz._, BijectionT._
+import scalaz.{BijectionT, Semigroup, Kleisli, Cokleisli, Endo, Store, Order, Equal, Digit, Writer, Compose,
+               NonEmptyList, EphemeralStream, Validation, \/-, -\/, \/, State, Ordering, Failure, Success, Apply}
+import scalaz.syntax.equal._
+import BijectionT._
 import scala.reflect.ClassTag
 /*
  * A closed, binary operation on a set. Implementations may benefit by adhering to the law of associativity, however,
