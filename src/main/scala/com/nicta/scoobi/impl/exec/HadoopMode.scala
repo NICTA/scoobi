@@ -67,8 +67,8 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
       createMapReduceLayers(node).info("Executing layers", showLayers).map(executeLayer)
     }
 
-    def showLayers = (layers: Seq[Layer[T]]) =>
-      mkStrings(layers.flatMap(l => l +: mscrs(l)))
+    def showLayers = (layers: Seq[Layer]) =>
+      mkStrings(layers.flatMap(l => l +: l.mscrs))
 
     def getValue(node: CompNode): Any = {
       node match {
@@ -87,7 +87,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     }
   }
 
-  private def executeLayer: Layer[T] => Unit =
+  private def executeLayer: Layer => Unit =
     attr { case layer =>
       Execution(layer).execute
     }
@@ -95,13 +95,13 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
   /**
    * Execution of a "layer" of Mscrs
    */
-  private case class Execution(layer: Layer[T]) {
+  private case class Execution(layer: Layer) {
 
     def execute {
       (s"Executing layer ${layer.id}\n"+layer).info
-      runMscrs(mscrs(layer))
+      runMscrs(layer.mscrs)
 
-      layerSinks(layer).info("Layer sinks: ").foreach(markSinkAsFilled)
+      layer.sinks.info("Layer sinks: ").foreach(markSinkAsFilled)
       ("===== END OF LAYER "+layer.id+" ======\n").info
     }
 

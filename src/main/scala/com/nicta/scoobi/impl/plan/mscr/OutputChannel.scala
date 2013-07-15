@@ -47,6 +47,8 @@ trait OutputChannel extends Channel {
    * needing its environment
    */
   def inputNodes: Seq[CompNode]
+  /** output nodes for this channel */
+  def outputNodes: Seq[CompNode]
 
   /** setup the nodes of the channel before writing data */
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
@@ -64,6 +66,9 @@ trait OutputChannel extends Channel {
  */
 trait MscrOutputChannel extends OutputChannel { outer =>
   protected implicit lazy val logger = LogFactory.getLog("scoobi.OutputChannel")
+
+  def nodes: Layering
+  lazy val graphNodes = nodes
 
   override def equals(a: Any) = a match {
     case o: OutputChannel => o.tag == tag
@@ -152,7 +157,8 @@ trait MscrOutputChannel extends OutputChannel { outer =>
  */
 case class GbkOutputChannel(groupByKey: GroupByKey,
                             combiner:   Option[Combine]    = None,
-                            reducer:    Option[ParallelDo] = None) extends MscrOutputChannel {
+                            reducer:    Option[ParallelDo] = None,
+                            nodes: Layering = new Layering {}) extends MscrOutputChannel {
 
   /** the tag identifying a GbkOutputChannel is the groupByKey id */
   lazy val tag = groupByKey.id
@@ -160,6 +166,8 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   lazy val sinks = lastNode.sinks
   /** return the reducer environment if there is one */
   lazy val inputNodes = reducer.toSeq.map(_.env)
+  /** output nodes for this channel */
+  lazy val outputNodes: Seq[CompNode] = nodes.uses(lastNode).toSeq
 
   /** store the reducer environment during the setup if there is one */
   protected var environment: Any = _
@@ -210,14 +218,14 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
  * This output channel simply copy values coming from a ParallelDo input (a mapper in an Input channel)
  * to this node sinks and bridgeStore
  */
-case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
+case class BypassOutputChannel(input: ParallelDo, nodes: Layering = new Layering {}) extends MscrOutputChannel {
   /** the tag identifying a BypassOutputChannel is the parallelDo id */
   lazy val tag = input.id
   /** collect sinks on the input node */
   lazy val sinks = input.sinks
   /** return the environment of the input node */
   lazy val inputNodes = Seq(input.env)
-
+  lazy val outputNodes = nodes.uses(input).toSeq
   /**
    * Just emit the values to the sink, the key is irrelevant since it is a RollingInt in that case
    */

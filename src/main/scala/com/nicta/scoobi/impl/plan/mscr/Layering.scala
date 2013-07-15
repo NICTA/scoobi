@@ -19,7 +19,7 @@ package plan
 package mscr
 
 import comp._
-import core.{UniqueInt, CompNode}
+import com.nicta.scoobi.core.{Sink, UniqueInt, CompNode}
 import CollectFunctions._
 
 /**
@@ -33,22 +33,23 @@ trait Layering extends ShowNode {
 
   type T <: CompNode
 
-  def layersOf(nodes: Seq[CompNode], select: CompNode => Boolean = (n: CompNode) => true): Seq[Layer[CompNode]] = {
-    def selectDescendentsOf(n: CompNode) = descendents(n) filter select
+  def layersOf(nodes: Seq[T], select: T => Boolean = (n: T) => true): Seq[Seq[T]] = {
 
     val selectedNodes = nodes.flatMap { n =>
-      if (select(n)) n +: selectDescendentsOf(n)
-      else                selectDescendentsOf(n)
+      if (select(n)) n +: selectDescendentsOf(select)(n)
+      else                selectDescendentsOf(select)(n)
     }
 
-    val (leaves, nonLeaves) = selectedNodes.partition(n => selectDescendentsOf(n).isEmpty)
-    val leafNodes = if (leaves.isEmpty && nodes.exists(select)) nodes.filter(select) else Seq()
+    val (leaves, nonLeaves) = selectedNodes.partition(n => selectDescendentsOf(select)(n).isEmpty)
+    val leafNodes = if (leaves.isEmpty && nodes.exists(select)) nodes.filter(select) else Seq[T]()
 
-    val result = Layer(leaves ++ leafNodes) +:
-      nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
-    result.filterNot(_.isEmpty)
-
+    val result = (leaves ++ leafNodes) +:
+                 nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map(_._2)
+    result.filterNot(_.isEmpty).distinct
   }
+
+  private lazy val selectDescendentsOf =
+    paramAttr((select: (CompNode => Boolean)) => (n: CompNode) => descendents(n).filter(select).distinct)
 
   lazy val longestPathSizeTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
     target.map(t => node -> longestPathSizeToNode(t)).max
@@ -82,25 +83,34 @@ trait Layering extends ShowNode {
    *
    * Because of this property they can be executed in parallel
    */
-  case class Layer[T <: CompNode](nodes: Seq[T] = Seq[T](), mscrs: Seq[Mscr] = Seq()) {
+  case class Layer(mscrs: Seq[Mscr] = Seq()) {
     val id = rollingInt.get
+    /** @return all process nodes */
+    lazy val nodes = mscrs.flatMap(_.nodes)
+    /** @return all output nodes */
+    lazy val outputNodes: Seq[CompNode] = mscrs.flatMap(_.outputNodes)
+    /** @return all group by keys */
     lazy val gbks = nodes.collect(isAGroupByKey)
+    /** @return all the sinks for this layer */
+    lazy val sinks = mscrs.flatMap(_.sinks).distinct
 
     lazy val isEmpty = nodes.isEmpty
+
     override def toString = nodes.mkString("Layer("+id+"\n  ", ",\n  ", ")\n")
 
     override def equals(a: Any) = a match {
-      case other: Layer[T] => id == other.id
-      case _               => false
+      case other: Layer => id == other.id
+      case _            => false
     }
+
+    /** @return true if the layer contains the node n */
+    def contains(n: CompNode) = nodes.contains(n)
 
     override def hashCode = id.hashCode()
   }
 
   object Layer {
     object rollingInt extends UniqueInt
-
-    def apply(mscrs: Seq[Mscr]): Layer[CompNode] = new Layer[CompNode](mscrs.flatMap(_.nodes), mscrs)
   }
 
 }

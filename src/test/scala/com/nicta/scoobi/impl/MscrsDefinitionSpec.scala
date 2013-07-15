@@ -20,8 +20,13 @@ class MscrsDefinitionSpec extends script.Specification with Groups with CompNode
 
  The algorithm for making mscrs works by:
 
-  - creating layers of independent nodes
-  - creating mscrs for each layer
+ * building layers of independent nodes in the graph
+ * finding the input nodes for the first layer
+ * reaching "output" nodes from the input nodes
+ * building output channels with those nodes
+ * building input channels connecting the output to the input nodes
+ * aggregating input and output channels as Mscr representing a full map reduce job
+ * iterating on any processing node that is not part of a Mscr
 
 Layers
 ======
@@ -64,13 +69,12 @@ Robustness
 
   "layers" - new group with definition with CompNodeFactory with someLists with layers {
 
-    eg := prop { layer: Layer[CompNode] =>
-      val nodes = layer.nodes
-      nodes.forall(n => !nodes.exists(_ -> isStrictParentOf(n)))
+    eg := prop { layer: Seq[CompNode] =>
+      layer.forall(n => !layer.exists(_ -> isStrictParentOf(n)))
     }
 
-    eg := forAll(genLayerPair) { (pair: (Layer[CompNode], Layer[CompNode])) => val (layer1, layer2) = pair
-      val pairs = ^(layer1.gbks.toStream, layer2.gbks.toStream)((_,_))
+    eg := forAll(genLayerPair) { (pair: (Seq[CompNode], Seq[CompNode])) => val (layer1, layer2) = pair
+      val pairs = ^(layer1.collect(isAGroupByKey).toStream, layer2.collect(isAGroupByKey).toStream)((_,_))
 
       forallWhen(pairs) { case (n1, n2) =>
         (n1 -> isStrictParentOf(n2)) aka (showGraph(n1)+"\n"+showGraph(n2)) must beTrue
@@ -102,21 +106,21 @@ Robustness
 
       eg := partitionLayers(twoLayersList).map(_.nodes).flatMap(inputNodes) must not contain(isReturn || isOp)
 
-    eg := gbkInputChannels(partitionLayers(simpleGroupByKeyList)(1)) must haveSize(1)
+    eg := gbkInputChannels(partitionLayers(simpleGroupByKeyList)(1).nodes) must haveSize(1)
 
-      eg := gbkInputChannels(partitionLayers(simpleList)(1)) must beEmpty
+      eg := gbkInputChannels(partitionLayers(simpleList)(1).nodes) must beEmpty
 
-    eg := floatingInputChannels(partitionLayers(simpleList.map(identity))(1)) must haveSize(1)
+    eg := floatingInputChannels(partitionLayers(simpleList.map(identity))(1).nodes) must haveSize(1)
 
-    eg := gbkOutputChannels(partitionLayers(simpleList.groupByKey)(1)) must haveSize(1)
+    eg := gbkOutputChannels(partitionLayers(simpleList.groupByKey)(1).nodes) must haveSize(1)
 
-    eg := floatingOutputChannels(partitionLayers(simpleList.map(identity))(1)) must haveSize(1)
+    eg := floatingOutputChannels(partitionLayers(simpleList.map(identity))(1).nodes) must haveSize(1)
 
-      eg := outputChannels(partitionLayers(twoLayersList).pp.apply(1)) must haveSize(2)
+      eg := outputChannels(partitionLayers(twoLayersList)(1).nodes) must haveSize(2)
 
-    eg := groupInputChannels(partitionLayers(twoIndependentGroupByKeys)(1)).head must haveSize(2)
+    eg := groupInputChannels(partitionLayers(twoIndependentGroupByKeys)(1).nodes).head must haveSize(2)
 
-    eg := mscrs(partitionLayers(twoLayersList).pp.apply(1)) must haveSize(1)
+    eg := partitionLayers(twoLayersList)(1).mscrs must haveSize(1)
 
   }
 
@@ -124,7 +128,7 @@ Robustness
     eg := prop { (l1: DList[String]) =>
       val listNodes = optimise(l1.getComp)
       val layers = createMapReduceLayers(listNodes)
-      val channels = layers.flatMap(mscrs).flatMap(_.channels).distinct
+      val channels = layers.flatMap(_.mscrs).flatMap(_.channels).distinct
 
       def print =
         "\nOPTIMISED\n"+pretty(listNodes) +
@@ -151,7 +155,7 @@ Robustness
 
   trait definition extends MscrsDefinition with MustMatchers with Debug {
     // for testing
-    def makeLayers(start: CompNode): Seq[Layer[T]] =
+    def makeLayers(start: CompNode): Seq[Seq[CompNode]] =
       layersOf(Seq(optimise(start)))
 
     def partitionLayers(list: DList[_]) =
@@ -180,7 +184,7 @@ Robustness
   }
 
   trait layers extends Layering with CompNodeData {
-    implicit val arbitraryLayer: Arbitrary[Layer[CompNode]] = Arbitrary(genLayer)
+    implicit val arbitraryLayer: Arbitrary[Seq[T]] = Arbitrary(genLayer)
 
     // make sure there is at least one layer
     // by construction, there is no cycle
@@ -190,11 +194,6 @@ Robustness
     }
     val genLayer     = genLayers.flatMap(ls => Gen.pick(1, ls)).map(_.head)
     val genLayerPair = genLayers.flatMap(ls => Gen.pick(2, ls)).map(ls => (ls(0), ls(1))).filter { case (l1, l2) => l1 != l2 }
-
-    def graph(layer: Layer[CompNode]) =
-      if (layer.nodes.isEmpty) "empty layer - shouldn't happen"
-      else                     layer.nodes.map(showGraph).mkString("\nshowing graphs for layer\n", "\n", "\n")
-
   }
 }
 

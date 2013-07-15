@@ -120,7 +120,7 @@ class OutputChannelSpec extends UnitSpecification with Grouped { def is = s2"""
   }
 
   /** create a gbk output channel for a group by key, collecting the emitted results */
-  def gbkChannel(gbk: GroupByKey, combiner: Option[Combine] = None, reducer: Option[ParallelDo] = None) = new GbkOutputChannel(gbk, combiner, reducer) with MockOutputChannel
+  def gbkChannel(gbk: GroupByKey, combiner: Option[Combine] = None, reducer: Option[ParallelDo] = None) = new GbkOutputChannel(gbk, combiner, reducer, new Layering {}) with MockOutputChannel
   /** create a bypass output channel for a parallelDo */
   def bypassChannel(pd: ParallelDo) = new BypassOutputChannel(pd) with MockOutputChannel
 }
