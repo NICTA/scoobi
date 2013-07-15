@@ -41,7 +41,7 @@ import control.Exceptions._
  *  - executing each layer in sequence
  */
 private[scoobi]
-case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition2 with ExecutionMode {
+case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with ExecutionMode {
   implicit lazy val modeLogger = LogFactory.getLog("scoobi.HadoopMode")
 
   /** execute a DList, storing the results in DataSinks */
@@ -64,7 +64,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition2 with Exe
   def executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      partitionLayers(node).info("Executing layers", showLayers).map(executeLayer)
+      createMapReduceLayers(node).info("Executing layers", showLayers).map(executeLayer)
     }
 
     def showLayers = (layers: Seq[Layer[T]]) =>

@@ -33,70 +33,21 @@ trait Layering extends ShowNode {
 
   type T <: CompNode
 
-  /** a function to select only some nodes in the graph. They must be of type T */
-  def selectNode: CompNode => Boolean
+  def layersOf(nodes: Seq[CompNode], select: CompNode => Boolean = (n: CompNode) => true): Seq[Layer[CompNode]] = {
+    def selectDescendentsOf(n: CompNode) = descendents(n) filter select
 
-  lazy val selected: CompNode => Boolean = attr { case n => selectNode(n) }
-  lazy val select: PartialFunction[CompNode, T] = { case n if n -> selected => n.asInstanceOf[T] }
-
-  lazy val selectedDescendents: CompNode => Seq[T] = attr { case n =>
-    (n -> descendents).collect(select)
-  }
-  def selectDescendentsOf(node: CompNode, select: CompNode => Boolean): Seq[CompNode] = {
-    (node -> descendents).filter(select)
-  }
-
-  /** @return the layer that a selected node is in. None if this is not a selected node */
-  lazy val layer: CompNode => Option[Layer[T]] = attr { case n =>
-    layers(root(n)).find(_.nodes.contains(n))
-  }
-
-  lazy val layersFromNodes: Seq[CompNode] => Seq[Layer[T]] = attr { case nodes =>
     val selectedNodes = nodes.flatMap { n =>
-      if (selected(n)) n +: selectedDescendents(n)
-      else             selectedDescendents(n)
+      if (select(n)) n +: selectDescendentsOf(n)
+      else                selectDescendentsOf(n)
     }
 
-    val (leaves, nonLeaves) = selectedNodes.partition { d =>
-      selectedDescendents(d).isEmpty
-    }
-    val leafNodes = if (leaves.isEmpty && nodes.exists(selected)) nodes.filter(selected) else Seq()
-
-    val result = Layer(leaves ++ leafNodes) +:
-      nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
-    result.filterNot(_.isEmpty)
-
-  }
-
-  def layersOf(nodes: Seq[CompNode], select: CompNode => Boolean): Seq[Layer[CompNode]] = {
-    val selectedNodes = nodes.flatMap { n =>
-      if (select(n)) n +: selectDescendentsOf(n, select)
-      else                selectDescendentsOf(n, select)
-    }
-
-    val (leaves, nonLeaves) = selectedNodes.partition { d =>
-      selectDescendentsOf(d, select).isEmpty
-    }
+    val (leaves, nonLeaves) = selectedNodes.partition(n => selectDescendentsOf(n).isEmpty)
     val leafNodes = if (leaves.isEmpty && nodes.exists(select)) nodes.filter(select) else Seq()
 
     val result = Layer(leaves ++ leafNodes) +:
       nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
     result.filterNot(_.isEmpty)
 
-  }
-
-  lazy val layers: CompNode => Seq[Layer[T]] = attr { case n =>
-    val selectedNodes =
-      if (selected(n)) n +: selectedDescendents(n)
-      else             selectedDescendents(n)
-
-    val (leaves, nonLeaves) = selectedNodes.partition { d =>
-      selectedDescendents(d).isEmpty
-    }
-    val leaf = if (leaves.isEmpty && selectNode(n)) Seq(select(n)) else Seq()
-    val result = Layer(leaves ++ leaf) +:
-      nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
-    result.filterNot(_.isEmpty)
   }
 
   lazy val longestPathSizeTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
