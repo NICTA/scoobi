@@ -31,8 +31,13 @@ import impl.ScoobiConfiguration
 import WireFormat._
 import rtt.RuntimeClass
 import org.apache.hadoop.filecache.DistributedCache
-import testing.TestFiles
+import com.nicta.scoobi.testing.{TempFiles, TestFiles}
 import impl.util.Compatibility
+import com.nicta.scoobi.io.text.TextSource
+import com.nicta.scoobi.testing.TestFiles._
+import com.nicta.scoobi.io.text.TextSource
+import com.nicta.scoobi.impl.rtt.RuntimeClass
+import java.io.File
 
 class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """
@@ -75,6 +80,11 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     }
     "return no splits when the data source returns no splits" >> {
       getSplits(FailingDataSource()) must beEmpty
+    }
+    "only return one split if only one data source contain paths (see #283)" >> {
+      val inputDir = TestFiles.createTempDir("path")(ScoobiConfiguration())
+      new File(inputDir+"/test").createNewFile()
+      getSplits(TextSource(Seq(inputDir.getPath)), TextSource(Seq())) must haveSize(1)
     }
   }
 

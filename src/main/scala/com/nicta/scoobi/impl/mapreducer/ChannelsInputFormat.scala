@@ -32,6 +32,7 @@ import Configurations._
 import ChannelsInputFormat._
 import monitor.Loggable._
 import impl.util.Compatibility
+import java.io.IOException
 
 /** An input format that delegates to multiple input formats, one for each
   * input channel. */
@@ -54,7 +55,11 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
         }
       } catch {
         case e: InvalidInputException => {
-          logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because a previous MapReduce job didn't produce any output. See issue #60", e)
+          logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because a previous MapReduce job didn't produce any output (see issue #60)", e)
+          Nil
+        }
+        case e: IOException => {
+          logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because an input path has not been specified (see issue #283)", e)
           Nil
         }
       }
@@ -65,7 +70,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
     val taggedInputSplit = split.asInstanceOf[TaggedInputSplit]
     new ChannelRecordReader(
       taggedInputSplit,
-      Compatibility.newTaskAttemptContext(extractChannelConfiguration(context, taggedInputSplit.channel),
+      Compatibility.newTaskAttemptContext(extractChannelConfiguration(context.getConfiguration, taggedInputSplit.channel),
                                           context.getTaskAttemptID))
   }
 
@@ -147,7 +152,9 @@ object ChannelsInputFormat {
       conf.set(ChannelPrefix.prefix(source.id, CACHE_FILES), files)
       conf.addValues(CACHE_FILES, files)
     }
-    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  => (ChannelPrefix.prefix(source.id, k), v) }
+    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  =>
+      (ChannelPrefix.prefix(source.id, k), v)
+    }
   }
 
   /**
@@ -155,9 +162,12 @@ object ChannelsInputFormat {
    *
    * @return a new Configuration from an existing context (for the configuration) and a channel id
    */
-  private def extractChannelConfiguration(context: JobContext, channel: Int): Configuration = {
+  private def extractChannelConfiguration(configuration: Configuration, channel: Int): Configuration = {
     val Prefix = ChannelPrefix.regex(channel)
-    context.getConfiguration.updateWith { case (Prefix(k), v) if k != CACHE_FILES => (k, v) }
+
+    new Configuration(configuration).updateWith { case (Prefix(k), v) if k != CACHE_FILES =>
+      (k, v)
+    }
   }
 
   /** Get a map of all the input formats per channel id. */
@@ -167,11 +177,12 @@ object ChannelsInputFormat {
 
     conf.get(INPUT_FORMAT_PROPERTY).split(",").toList.map {
       case Entry(ch, infmt) => {
-        val configuration = new Configuration(extractChannelConfiguration(context, ch.toInt))
+        val configuration = extractChannelConfiguration(context.getConfiguration, ch.toInt)
         (ch.toInt, (ReflectionUtils.newInstance(conf.getClassLoader.loadClass(infmt), configuration).asInstanceOf[InputFormat[_,_]], configuration))
       }
     }.toMap
   }
+
 }
 
 object ChannelPrefix {
