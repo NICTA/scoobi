@@ -150,7 +150,7 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
   }
   "27. a DList can be used in a for-comprehension" >> { implicit sc: SC =>
     val list = for {
-      e  <- DList(1, 2, 3, 4) if (e % 2 == 0)
+      e  <- DList(1, 2, 3, 4) if e % 2 == 0
     } yield e
 
     normalise(list.run) === "Vector(2, 4)"
@@ -182,5 +182,11 @@ class SimpleDListsSpec extends NictaSimpleJobs with CompNodeData { section("unst
     val result = l2 ++ gbk
 
     result.run.toSet === Set((1,1), (2,2), (1,1), (2,2))
+  }
+  "xxx" >> { implicit sc: SC =>
+    val psv = DList(1, 2).map(identity)
+    val json = DList[Int]().map(identity)
+    val all = psv ++ json
+    all.map { i => i.pp; i } .run must_== Seq(1, 2)
   }
 }

@@ -123,7 +123,8 @@ trait MscrsDefinition2 extends Layering with Optimiser with ShowNode {
         .filter(layer.nodes.contains)
         .filterNot(gbkChannels.flatMap(_.mappers).contains)
         .filterNot(n => uses(n).nonEmpty && uses(n).forall(gbks.contains)).toSeq
-      new FloatingInputChannel(inputNode, mappers, this)
+      val lastLayer = layersOf(mappers, _ => true).lastOption.getOrElse(Layer()).nodes.collect(isAParallelDo)
+      new FloatingInputChannel(inputNode, lastLayer, this)
     }.filterNot(_.isEmpty)
   }
 

@@ -37,7 +37,7 @@ trait ProcessNodeImpl extends ProcessNode {
   val id: Int = UniqueId.get
 
   /** unique identifier for the bridgeStore storing data for this node */
-  protected def bridgeStoreId: String
+  def bridgeStoreId: String
   /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
   lazy val bridgeStore = if (nodeSinks.isEmpty) Some(createBridgeStore) else oneSinkAsBridge
   /** create a new bridgeStore if necessary */

@@ -148,12 +148,12 @@ trait MscrInputChannel extends InputChannel {
   override def toString =
     getClass.getSimpleName+"("+sourceNode+")" +
     mappersToString("mappers", mappers) +
-    (if (mappers.nonEmpty) mappersToString("last mappers", lastMappers) else "")
+    (if (lastMappers.nonEmpty) mappersToString("last mappers", lastMappers) else "")
 
   def mappersToString(name: String, mps: Seq[ParallelDo]) =
     "\n"+indent+
     (if (mps.isEmpty) s"no $name"
-     else             s"$name ${mappers.mkString(indent, indent, "")}")
+     else             s"$name ${mps.mkString(indent, indent, "")}")
 
   protected var tks: Map[Int, TaggedKey] = Map()
   protected var tvs: Map[Int, TaggedValue] = Map()

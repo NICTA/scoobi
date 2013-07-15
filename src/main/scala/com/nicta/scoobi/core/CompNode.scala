@@ -59,6 +59,7 @@ object CompNode {
 trait ProcessNode extends CompNode {
   type C = ProcessNode
   def bridgeStore: Option[Bridge]
+  def bridgeStoreId: String
   def createBridgeStore: Bridge
   def nodeSinks : Seq[Sink]
 }
