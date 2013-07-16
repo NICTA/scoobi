@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.nicta.scoobi.core.Mode$';
+            var hash = 'com.nicta.scoobi.core.Mode';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,29 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="Mode.html" title="Go to companion"><img src="../../../../lib/object_to_trait_big.png" /></a>
+        <a href="Mode$.html" title="Go to companion"><img src="../../../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.core">core</a></p>
-        <h1><a href="Mode.html" title="Go to companion">Mode</a></h1>
+        <h1><a href="Mode$.html" title="Go to companion">Mode</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Mode</span>
+        <span class="name">Mode</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="Mode$$Cluster$.html" class="extype" name="com.nicta.scoobi.core.Mode.Cluster">Cluster</a>, <a href="Mode$$InMemory$.html" class="extype" name="com.nicta.scoobi.core.Mode.InMemory">InMemory</a>, <a href="Mode$$Local$.html" class="extype" name="com.nicta.scoobi.core.Mode.Local">Local</a></div>
         </div></div>
         
 
@@ -150,45 +153,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Mode.Cluster" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Cluster"></a>
-      <a id="Cluster:Cluster"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Mode$$Cluster$.html"><span class="name">Cluster</span></a><span class="result"> extends <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.core.Mode.InMemory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InMemory"></a>
-      <a id="InMemory:InMemory"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Mode$$InMemory$.html"><span class="name">InMemory</span></a><span class="result"> extends <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.nicta.scoobi.core.Mode.Local" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Local"></a>
-      <a id="Local:Local"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Mode$$Local$.html"><span class="name">Local</span></a><span class="result"> extends <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -292,6 +256,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.core.Mode#isCluster" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isCluster:Boolean"></a>
+      <a id="isCluster:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isCluster</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.core.Mode#isInMemory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isInMemory:Boolean"></a>
+      <a id="isInMemory:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInMemory</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -305,16 +295,16 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Mode#modes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="modes:Set[com.nicta.scoobi.core.Mode]"></a>
-      <a id="modes:Set[Mode]"></a>
+    </li><li name="com.nicta.scoobi.core.Mode#isLocal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isLocal:Boolean"></a>
+      <a id="isLocal:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">modes</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a>]</span>
+        <span class="name">isLocal</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
@@ -383,19 +373,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Mode#unsafeWithName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="unsafeWithName(s:String):com.nicta.scoobi.core.Mode"></a>
-      <a id="unsafeWithName(String):Mode"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">unsafeWithName</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -453,19 +430,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.core.Mode#withName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="withName(s:String):Option[com.nicta.scoobi.core.Mode]"></a>
-      <a id="withName(String):Option[Mode]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withName</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="Mode.html" class="extype" name="com.nicta.scoobi.core.Mode">Mode</a>]</span>
-      </span>
-      </h4>
-      
     </li></ol>
             </div>
 
