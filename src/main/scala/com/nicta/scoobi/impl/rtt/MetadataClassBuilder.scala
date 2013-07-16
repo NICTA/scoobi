@@ -88,6 +88,7 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
   private lazy val pool: ClassPool = {
     val pool = new ClassPool
     pool.appendClassPath(new LoaderClassPath(sc.scoobiClassLoader))
+    pool.appendClassPath(new LoaderClassPath(getClass.getClassLoader))
     pool
   }
   /** The class bytecode */
