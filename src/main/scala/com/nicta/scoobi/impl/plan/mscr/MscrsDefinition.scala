@@ -40,24 +40,32 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
     processLayers(startNodes.distinct, visited) match {
       case firstLayer +: rest => {
         val mscrLayer = createMscrs(inputNodes(firstLayer), visited)
-        mscrLayer +: createLayers(mscrLayer.outputNodes, visited ++ firstLayer ++ mscrLayer.nodes)
+        mscrLayer +: createLayers(startNodes, (visited ++ firstLayer ++ mscrLayer.nodes).distinct)
       }
       case Nil => Nil
     }
 
   /** @return non-empty layers of processing nodes */
-  private def processLayers(startNodes: Seq[CompNode], visited: Seq[CompNode]) =
-    layersOf(startNodes.distinct).map(layer => layer.filterNot(isLoad || isValueNode || visited.contains)).filter(_.nonEmpty)
+  protected def processLayers(startNodes: Seq[CompNode], visited: Seq[CompNode]): Seq[Seq[ProcessNode]] =
+    layersOf(startNodes.distinct)
+      .map(_.filterNot(visited.contains))
+      .map(_.collect(isAProcessNode))
+      .filter(_.nonEmpty)
+      .map(_.distinct)
 
   /**
    * create a layer of Mscrs from input nodes, making sure not to use already visited nodes
    */
-  private def createMscrs(inputNodes: Seq[CompNode], visited: Seq[CompNode]): Layer = {
+  protected def createMscrs(inputNodes: Seq[CompNode], visited: Seq[CompNode]): Layer =
+    createMscrs(createInputOutputLayer(inputNodes, visited))
 
-    // get all the nodes accessible from the input nodes and leading to an output node
-    val layer = createInputOutputLayer(inputNodes, visited)
-    val outChannels = outputChannels(layer)
-    val channelsWithCommonTags = groupInputChannels(layer)
+  /**
+   * find the input and output channels on the layer, assemble them into Mscrs when they have common tags
+   */
+  protected def createMscrs(inputOutputLayer: Seq[CompNode]): Layer = {
+
+    val outChannels = outputChannels(inputOutputLayer)
+    val channelsWithCommonTags = groupInputChannelsByOutputTags(inputOutputLayer)
 
     // create Mscr for each set of channels with common tags
     Layer(channelsWithCommonTags.map { inputChannels =>
@@ -69,15 +77,16 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
   }
 
   /**
-   * get all the nodes going from an input nodes to an output
+   * get all the non-visited nodes going from an input nodes to an output
    */
-  private def createInputOutputLayer(inputNodes: Seq[CompNode], visited: Seq[CompNode]): Seq[CompNode] = {
+  protected def createInputOutputLayer(inputNodes: Seq[CompNode], visited: Seq[CompNode]): Seq[CompNode] = {
     val layerNodes       = transitiveUsesUntil(inputNodes, isAnOutputNode)
     val outputs          = layerNodes.filter(isAnOutputNode).filterNot(visited.contains)
     val outputLayers     = layersOf(outputs, isAnOutputNode)
     val firstOutputLayer = outputLayers.dropWhile(l => !l.exists(outputs.contains)).headOption.map(_.filter(isAnOutputNode)).getOrElse(Seq()).distinct
 
-    layerNodes.filterNot(n => firstOutputLayer.exists(gbk => transitiveUses(gbk).contains(n)))
+    // remove visited nodes or nodes which depend on a node in the first layer
+    layerNodes.filterNot(n => firstOutputLayer.exists(out => transitiveUses(out).contains(n)))
       .filterNot(visited.contains)
       .distinct
   }
@@ -90,22 +99,29 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
     }
   }
 
-  def groupInputChannels(layer: Seq[CompNode]): Seq[Seq[InputChannel]] = {
+  /**
+   * @return groups of input channels having the same output tags
+   */
+  protected def groupInputChannelsByOutputTags(layer: Seq[CompNode]): Seq[Seq[InputChannel]] = {
     Seqs.transitiveClosure(inputChannels(layer)) { (i1: InputChannel, i2: InputChannel) =>
       (i1.tags intersect i2.tags).nonEmpty
     }.map(_.list)
   }
 
-  def inputChannels(layer: Seq[CompNode]): Seq[InputChannel] = gbkInputChannels(layer) ++ floatingInputChannels(layer)
+  protected def inputChannels(layer: Seq[CompNode]): Seq[InputChannel] = gbkInputChannels(layer) ++ floatingInputChannels(layer)
 
-  def inputNodes(nodes: Seq[CompNode]): Seq[CompNode] =
-    nodes.filterNot(isValueNode).collect {
-      case node if children(node).exists(!nodes.contains(_)) => children(node).filterNot(n => nodes.contains(n) || isValueNode(n))
-    }.distinct.flatten
+  /**
+   * @return Process or Load nodes which are children of the nodes parameters but not included in the group
+   *         these "input nodes" don't include Return nodes or Op nodes because those inputs are retrieved via environments
+   */
+  protected def inputNodes(nodes: Seq[ProcessNode]): Seq[CompNode] =
+    nodes.collect { case node =>
+      children(node).filterNot(isValueNode || nodes.contains)
+    }.flatten.distinct
 
-  def gbkInputChannels(layer: Seq[CompNode]): Seq[GbkInputChannel] = {
+  protected def gbkInputChannels(layer: Seq[CompNode]): Seq[GbkInputChannel] = {
     val gbks = layer.filter(isGroupByKey)
-    val in = inputNodes(layer)
+    val in = inputNodes(layer.collect(isAProcessNode))
     in.flatMap { inputNode =>
       val groupByKeyUses = transitiveUses(inputNode).collect(isAGroupByKey).filter(gbks.contains).toSeq
       if (groupByKeyUses.isEmpty) Seq()
@@ -113,23 +129,22 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
     }
   }
 
-  def floatingInputChannels(layer: Seq[CompNode]): Seq[FloatingInputChannel] = {
+  protected def floatingInputChannels(layer: Seq[CompNode]): Seq[FloatingInputChannel] = {
     val gbkChannels = gbkInputChannels(layer)
-    val gbks = gbkChannels.flatMap(_.groupByKeys)
-    val inputs = inputNodes(layer)
+    val inputs = inputNodes(layer.collect(isAProcessNode))
 
     inputs.map { inputNode =>
       val mappers = transitiveUses(inputNode)
         .collect(isAParallelDo)
         .filter(layer.contains)
         .filterNot(gbkChannels.flatMap(_.mappers).contains)
-        .filterNot(n => uses(n).nonEmpty && uses(n).forall(gbks.contains)).toSeq
+        .toSeq
       val lastLayer = layersOf(mappers).lastOption.getOrElse(Seq()).collect(isAParallelDo)
       new FloatingInputChannel(inputNode, lastLayer, this)
     }.filterNot(_.isEmpty)
   }
 
-  def gbkOutputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = {
+  protected def gbkOutputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = {
     val gbks = layer.collect(isAGroupByKey)
     gbks.map(gbk => gbkOutputChannel(gbk))
   }
@@ -137,7 +152,7 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
   /**
    * @return a gbk output channel based on the nodes which are following the gbk
    */
-  def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
+  protected def gbkOutputChannel(gbk: GroupByKey): GbkOutputChannel = {
     parents(gbk) match {
       case (c: Combine) +: (p: ParallelDo) +: rest if isReducer(p) => GbkOutputChannel(gbk, combiner = Some(c), reducer = Some(p), nodes = this)
       case (p: ParallelDo) +: rest                 if isReducer(p) => GbkOutputChannel(gbk, reducer = Some(p), nodes = this)
@@ -146,48 +161,54 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
     }
   }
 
+  /** @return all output channels for a given layer */
+  protected def outputChannels(layer: Seq[CompNode]): Seq[OutputChannel] =
+    gbkOutputChannels(layer) ++ bypassOutputChannels(layer)
 
-  def outputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = gbkOutputChannels(layer) ++ floatingOutputChannels(layer)
-
-  def floatingOutputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = {
-    val floatingMappers = inputChannels(layer).flatMap(_.bypassOutputNodes)
-    floatingMappers.distinct.map(m => BypassOutputChannel(m, nodes = this))
+  /** @return the bypass output channels for a given layer */
+  protected def bypassOutputChannels(layer: Seq[CompNode]): Seq[OutputChannel] = {
+    val bypassMappers = inputChannels(layer).flatMap(_.bypassOutputNodes)
+    bypassMappers.distinct.map(m => BypassOutputChannel(m, nodes = this))
   }
 
-  def isAnInputNode(nodes: Seq[CompNode]): CompNode => Boolean = (node: CompNode) =>
+  /** @return true if a node is an input node for a given layer */
+  protected def isAnInputNode(nodes: Seq[CompNode]): CompNode => Boolean = (node: CompNode) =>
     !isValueNode(node) &&
       (children(node).isEmpty || children(node).forall(!nodes.contains(_)))
 
-  def isAnOutputNode: CompNode => Boolean = (isMaterialised  || isGroupByKey || isEndNode || isCheckpoint) && !isReturn
+  /**
+   * @return true if a node is a candidate for outputing values
+   */
+  protected def isAnOutputNode: CompNode => Boolean = (isMaterialised  || isGroupByKey || isEndNode || isCheckpoint) && !isReturn
 
   /** node at the end of the graph */
-  def isEndNode: CompNode => Boolean = attr { n =>
+  protected def isEndNode: CompNode => Boolean = attr { n =>
     parent(n).isEmpty
   }
 
-  def isMaterialised: CompNode => Boolean = attr {
+  protected def isMaterialised: CompNode => Boolean = attr {
     case n => uses(n).exists(isMaterialise || isOp)
   }
 
-  def isCheckpoint: CompNode => Boolean = attr {
+  protected def isCheckpoint: CompNode => Boolean = attr {
     case p: ProcessNode => p.hasCheckpoint
     case other          => false
   }
 
-  def isGbkOutput: CompNode => Boolean = attr {
+  protected def isGbkOutput: CompNode => Boolean = attr {
     case pd: ParallelDo                       => isReducer(pd)
     case cb @ Combine1(gbk: GroupByKey)       => parent(cb).map(!isReducingNode).getOrElse(true) && isUsedAtMostOnce(gbk)
     case gbk: GroupByKey                      => parent(gbk).map(!isReducingNode).getOrElse(true)
     case other                                => false
   }
 
-  lazy val isReducer: ParallelDo => Boolean = attr {
+  protected lazy val isReducer: ParallelDo => Boolean = attr {
     case pd @ ParallelDo1((cb @ Combine1((gbk: GroupByKey))) +: rest) => rest.isEmpty && isReturn(pd.env) && isUsedAtMostOnce(pd) && isUsedAtMostOnce(cb) && isUsedAtMostOnce(gbk)
     case pd @ ParallelDo1((gbk: GroupByKey) +: rest)                  => rest.isEmpty && isReturn(pd.env) && isUsedAtMostOnce(pd) && isUsedAtMostOnce(gbk)
     case _                                                            => false
   }
 
-  lazy val isAReducer: CompNode => Boolean = attr {
+  protected lazy val isAReducer: CompNode => Boolean = attr {
     case node: ParallelDo if isReducer(node) => true
     case _                                   => false
   }
@@ -200,7 +221,7 @@ trait MscrsDefinition extends Layering with Optimiser with ShowNode {
    *  - parallelDo(gbk)          // parallelDo is reducing
    * @return
    */
-  def isReducingNode: CompNode => Boolean = attr {
+  protected def isReducingNode: CompNode => Boolean = attr {
     case pd: ParallelDo          => isReducer(pd)
     case Combine1(_: GroupByKey) => true
     case other                   => false

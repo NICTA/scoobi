@@ -33,19 +33,13 @@ import WireFormat._
 import org.kiama.rewriting.Rewriter._
 import CompNodeData._
 
-trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArguments with CompNodeFactory { outer =>
+trait CompNodeData extends Data with ScalaCheckMatchers with CompNodeFactory { outer =>
+  override implicit def defaultParameters = Parameters(1000, 1, 5f, 8, 1)
 
   /**
    * Arbitrary instance for a CompNode
    */
   import scalaz.Scalaz._
-
-  override implicit def defaultParameters = Parameters(
-    arguments.commandLine.int("mintestsok").                    getOrElse(1000),
-    arguments.commandLine.int("minsize").                       getOrElse(1),
-    arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
-    arguments.commandLine.int("maxsize").                       getOrElse(8),
-    arguments.commandLine.int("workers").                       getOrElse(1))
 
   import Gen._
   implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinit))
@@ -90,6 +84,16 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
 
 }
 
+/** this trait allows to set the arguments from the command line */
+trait CompNodeDataWithArgumens extends CompNodeData with CommandLineArguments {
+  override implicit def defaultParameters = Parameters(
+    arguments.commandLine.int("mintestsok").                    getOrElse(1000),
+    arguments.commandLine.int("minsize").                       getOrElse(1),
+    arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
+    arguments.commandLine.int("maxsize").                       getOrElse(8),
+    arguments.commandLine.int("workers").                       getOrElse(1))
+}
+
 object CompNodeData { outer =>
   /**
    * rewrite the MscrReducer iterables as vectors to facilitate the comparison
@@ -109,6 +113,7 @@ object CompNodeData { outer =>
   }
 
 }
+
 /**
  * Creation functions
  */

@@ -3,7 +3,7 @@ package impl
 
 import org.specs2._
 import specification._
-import matcher.MustMatchers
+import org.specs2.matcher.{ThrownExpectations, MustMatchers}
 import Scoobi._
 import plan.mscr._
 import plan.comp._
@@ -15,60 +15,78 @@ import org.scalacheck.Prop._
 import scalaz.syntax.apply._
 import scalaz.std.stream._
 import org.scalacheck.{Gen, Arbitrary}
+import com.nicta.scoobi.testing.script.UnitSpecification
 
-class MscrsDefinitionSpec extends script.Specification with Groups with CompNodeData { def is = s2"""
+class MscrsDefinitionSpec extends UnitSpecification with Groups { def is = s2"""
 
  The algorithm for making mscrs works by:
 
- * building layers of independent nodes in the graph
- * finding the input nodes for the first layer
- * reaching "output" nodes from the input nodes
- * building output channels with those nodes
- * building input channels connecting the output to the input nodes
- * aggregating input and output channels as Mscr representing a full map reduce job
- * iterating on any processing node that is not part of a Mscr
+ 1. building layers of independent nodes in the graph
+ 1. finding the input nodes for the first "process" layer
+ 1. reaching "output" nodes from the input nodes to create the "InputOutput layer"
+ 1. building output channels with those nodes
+ 1. building input channels connecting the output to the input nodes
+ 1. aggregating input and output channels as Mscr representing a full map reduce job
+ 1. iterating on any processing node that is not part of a Mscr
 
 Layers
 ======
 
-  1. divide the computation graph into "layers" of nodes where all the nodes on a given layer are independent from each other
-    + all the nodes in a layer cannot be parent of one another
-    + 2 different layers have at least 2 nodes parent of each other
-    + example of layers on a simple graph
+ Divide the computation graph into "layers" of nodes where all the nodes on a given layer are independent from each other
+  + all the nodes in a layer cannot be parent of one another
+  + 2 different layers have at least 2 nodes parent of each other
 
-  2. re-group those layers so that each group ends-up with "output nodes"
-    + an output node is a node where an output needs to be done: materialised or gbk output or end of the graph or checkpoint
-      (but not a return node or a load node, or a materialise node)
-    + regroup all the layers into bigger layers with output nodes
-    + if a layer contains both output nodes and non-ouput nodes, the non-output nodes must be pushed to "lower" layers
+Process layer and input nodes
+=============================
+  + the "processLayers" method returns layers of non-visited processing nodes
+  + the "inputNodes" of a given group of nodes are non-value nodes outside the group which are directly connected to the group
+
+Output nodes
+============
+
+  + an "output node" is a node where an output needs to be done: materialised or gbk output or end of the graph or checkpoint
+    (but not a return node or a load node, or a materialise node)
+  + the "input/output layer" contains all the nodes connected to input nodes up to the first output nodes
+    it must not contain already visited nodes
+
+Output channels
+===============
+
+ Gbk output channels are created from the gbk belonging to the input/output layer
+  + each gbk of the layer belongs to one and only one GbkOutputChannel
+  + the output channel must contain the combine node if there is one after the gbk (even if it is not part of the layer)
+  + the output channel must contain the pd node if there is one after the gbk (even if it is not part of the layer)
+  + the output channel must contain the combine and pd nodes if they are after the gbk (even if not part of the layer)
+
+ Bypass output channels are created from the "bypass mappers" of input channels
+  + last mappers of gbk input channels not being used only by gbks
+  + last mappers of floating input channels
+
+
+Input channels
+===============
+
+ + Gbk input channels are built by collecting all the nodes in between *one* input node and gbks on the layer
+
+ + Floating input channels are built by finding the "last floating" mappers. Those are mappers of the layer which are not
+   mappers from a Gbk input channel and which are used outside of the layer
 
 Mscrs
 =====
 
-  3. create mscrs for each layer
-    + first get the source nodes
-     + source nodes are the output of the layer above
-     + source nodes cannot be Return nodes or Op nodes (because this input is retrieved via environments)
-    + then create all the gbk channels from the source nodes
-      + if there are no gbks, there must be no channel
-    + and create all the "floating parallel do" channels from the source nodes
-    + then create the output channels for the gbks
-    + and create the output channels for the "floating parallel do nodes"
-      + if a mapper is not only connected to a gbk, it must have its own output channel
-    + group the input channels by common input
-    + assemble the mscrs with input and output channels
+ The mscrs are created by
+  + grouping all the input channels when they have at least one output tag in common into the same mscr
+  + adding the corresponding output channels (the ones having the same output tag) to the mscr
+
 
 Robustness
 ==========
 
   + A ProcessNode can only belong to one and only one channel and all ProcessNodes must belong to a channel
     except if it is a flatten node
-
-
 """
 
-  "layers" - new group with definition with CompNodeFactory with someLists with layers {
-
+  "layers" - new group with definition with layers with CompNodeData {
     eg := prop { layer: Seq[CompNode] =>
       layer.forall(n => !layer.exists(_ -> isStrictParentOf(n)))
     }
@@ -81,66 +99,132 @@ Robustness
       }
 
     }.set(maxSize = 6, maxDiscardRatio = 7f)
+  }
 
-    eg := layersOf(Seq(optimise(twoLayersList.getComp))) must haveSize(11)
-
+  "input nodes" - new group with definition with factory {
     eg := {
-      val (materialised, gbkOutput, endNode, withCheckpoint, returnNode) =
-        (pd(), pd(gbk(pd())), aRoot(load), DList(1).checkpoint("path")(ScoobiConfiguration()).getComp, rt)
-      initTree(aRoot(mt(materialised), gbkOutput, endNode, withCheckpoint))
-
-      (Seq(materialised, gbkOutput, endNode, withCheckpoint) must contain(isAnOutputNode).forall) and
-      (Seq(returnNode) must not(contain(isAnOutputNode)))
+      val pd0 = pd(load); val pd1 = pd(pd0); val pd2 = pd(pd1)
+      processLayers(Seq(pd0, pd1, pd2, load, op(load, load), mt(pd1), rt), visited = Seq(pd0)) ===
+        Seq(Seq(pd1), Seq(pd2))
     }
 
-    eg := partitionLayers(twoLayersList) must haveSize(3)
-
-    eg := partitionLayers(twoLayersList)(2).nodes must contain(isParallelDo)
+    eg := "there are 2 inputs for the flatten node" ==> {
+      val pd1 = pd(load, load); val pd2 = pd(pd1)
+      inputNodes(Seq(pd1, pd2)) must haveSize(2)
+    }
   }
 
-  "mscrs" - new group with definition with someLists with Debug {
+  "Input/Output layer" - new group with definition with factory with ThrownExpectations {
+    eg := "some nodes only are output nodes" ==> {
+      val (materialised, gbkOutput, endNode, withCheckpoint, returnNode) =
+        (pd(), pd(gbk(pd())), aRoot(load), DList(1).checkpoint("path")(ScoobiConfiguration()).getComp, rt)
 
-    eg := partitionLayers(twoLayersList).map(_.nodes).map(inputNodes _).map(_.size) must_== Seq(0, 1, 1)
+      Seq(materialised, gbkOutput, endNode, withCheckpoint) must contain(isAnOutputNode).forall
+      Seq(returnNode) must not(contain(isAnOutputNode))
+    }
 
-      eg := inputNodes(partitionLayers(twoGroupByKeys)(2).nodes).filter(isCombine) must haveSize(1)
-
-      eg := partitionLayers(twoLayersList).map(_.nodes).flatMap(inputNodes) must not contain(isReturn || isOp)
-
-    eg := gbkInputChannels(partitionLayers(simpleGroupByKeyList)(1).nodes) must haveSize(1)
-
-      eg := gbkInputChannels(partitionLayers(simpleList)(1).nodes) must beEmpty
-
-    eg := floatingInputChannels(partitionLayers(simpleList.map(identity))(1).nodes) must haveSize(1)
-
-    eg := gbkOutputChannels(partitionLayers(simpleList.groupByKey)(1).nodes) must haveSize(1)
-
-    eg := floatingOutputChannels(partitionLayers(simpleList.map(identity))(1).nodes) must haveSize(1)
-
-      eg := outputChannels(partitionLayers(twoLayersList)(1).nodes) must haveSize(2)
-
-    eg := groupInputChannels(partitionLayers(twoIndependentGroupByKeys)(1).nodes).head must haveSize(2)
-
-    eg := partitionLayers(twoLayersList)(1).mscrs must haveSize(1)
-
+    eg := "this input-output layer contains only the nodes between the input and the first output" ==> {
+      // load -> pd -> pd -> pd -> gbk -> cb -> gbk
+      val pd0 = pd(load); val pd1 = pd(pd0); val pd2 = pd(pd1); val gbk1 = gbk(pd2); val cb1 = cb(gbk1); val gbk2 = gbk(cb1)
+      // gbk2 cannot be part of the layer because it depends on a node that is already part of it
+      createInputOutputLayer(Seq(pd0), Seq(pd0)) must contain(exactly[CompNode](pd1, pd2, gbk1))
+    }
   }
 
-  "robustness" - new group with definition with Optimiser with Debug {
+  "Output channels" - new group with definition with factory {
+
+    eg := {
+      val (gbk1, gbk2, gbk3) = (gbk(load), gbk(load), gbk(load))
+      outputChannels(Seq(gbk1, gbk2, gbk3)) === Seq(GbkOutputChannel(gbk1), GbkOutputChannel(gbk2), GbkOutputChannel(gbk3))
+    }
+    eg := {
+      val gbk1 = gbk(load)
+      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1))
+    }
+    eg := {
+      val gbk1 = gbk(load); val cb1 = cb(gbk1)
+      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1, combiner = Some(cb1)))
+    }
+    eg := {
+      val gbk1 = gbk(load); val pd1 = pd(gbk1)
+      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1, reducer = Some(pd1)))
+    }
+    eg := {
+      val gbk1 = gbk(load); val cb1 = cb(gbk1); val pd1 = pd(cb1)
+      outputChannels(Seq(gbk1)) === Seq(GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1)))
+    }
+    eg := "there is one bypass output channel for pd2" ==> {
+      val l1 = load
+      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load))
+      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
+      aRoot(mt(pd2), gbk1, gbk2, gbk3)
+      bypassOutputChannels(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)) must haveSize(1)
+    }
+    eg := "there is one bypass output channel for pd4" ==> {
+      val l1 = load
+      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load)); val pd4 = pd(pd1)
+      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
+      aRoot(mt(pd4), gbk1, gbk2, gbk3)
+      bypassOutputChannels(Seq(pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3)) must haveSize(1)
+    }
+  }
+
+  "Input channels" - new group with definition with factory {
+    eg := {
+      val l1 = load
+      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load))
+      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
+      inputChannels(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)) must haveSize(2)
+    }
+    eg := "there is a FloatingInput channel for the materialised mapper" ==> {
+      val l1 = load
+      val (pd1, pd2, pd3) = (pd(l1), pd(l1), pd(load)); val pd4 = pd(pd1)
+      val (gbk1, gbk2, gbk3) = (gbk(pd1), gbk(pd2), gbk(pd3))
+      aRoot(mt(pd4), gbk1, gbk2, gbk3)
+      inputChannels(Seq(pd1, pd2, pd3, pd4, gbk1, gbk2, gbk3)) must haveSize(3)
+    }
+  }
+
+  "mscrs creation" - new group with definition with factory {
+    val (l1, l2) = (load, load)
+    val (pd1, pd2) = (pd(l1), pd(l2)); val pd3 = pd(pd1, pd2); val pd4 = pd(load)
+    val (gbk1, gbk2, gbk3) = (gbk(pd3), gbk(pd3), gbk(pd4))
+    aRoot(gbk1, gbk2, gbk3)
+
+    eg := "there is one mscr with 2 input channels and one mscr with 1 input channel" ==> {
+      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)).mscrs.map(_.inputChannels.size) === Seq(2, 1)
+    }
+    eg := "there is one mscr with 2 output channels and one mscr with 1 output channel" ==> {
+      createMscrs(Seq(pd1, pd2, pd3, gbk1, gbk2, gbk3)).mscrs.map(_.outputChannels.size) === Seq(2, 1)
+    }
+  }
+
+  "robustness" - new group with definition with Debug with CompNodeData with factory {
     eg := prop { (l1: DList[String]) =>
-      val listNodes = optimise(l1.getComp)
-      val layers = createMapReduceLayers(listNodes)
-      val channels = layers.flatMap(_.mscrs).flatMap(_.channels).distinct
+      val start = optimise(l1.getComp)
+      val mscrLayers = createMapReduceLayers(start)
 
-      def print =
-        "\nOPTIMISED\n"+pretty(listNodes) +
-        "\nLAYERS\n"+layers.mkString("\n") +
-        "\nCHANNELS\n"+channels.mkString("\n")
+      // for each process node in the graph count how many times it is represented in a channel
+      processNodes(start) must contain { n: CompNode =>
+        val nodeCountInChannels = count(mscrLayers, start, n)
 
-      processNodes(listNodes) must contain { (n: CompNode) =>
-        val nodeCountInChannels = channels.filter(_.processNodes.contains(n)) aka (print+"\nFOR NODE\n"+n)
         if (isFlatten(n)) nodeCountInChannels must be_>=(1) ^^ ((_: Seq[_]).size)
         else              nodeCountInChannels must haveSize(1)
       }.forall
-    }.set(minTestsOk = 100)
+
+    }.set(minTestsOk = 1000)
+  }
+
+  trait definition extends MscrsDefinition with MustMatchers with Debug {
+    // for testing
+    def makeLayers(start: CompNode): Seq[Seq[CompNode]] =
+      layersOf(Seq(optimise(start)))
+
+    def processLayers(list: DList[_]) =
+      super.processLayers(Seq(optimise(list.getComp)), visited = Seq())
+
+    def createMapReduceLayers(list: DList[_]) =
+      super.createMapReduceLayers(optimise(list.getComp))
 
     lazy val processNodes: CompNode => Seq[CompNode] = attr {
       case node: ProcessNode => Seq(node) ++ children(node).flatMap(processNodes)
@@ -151,35 +235,16 @@ Robustness
       case ParallelDo1(ins) if ins.size > 1 => true
       case other                            => false
     }
-  }
 
-  trait definition extends MscrsDefinition with MustMatchers with Debug {
-    // for testing
-    def makeLayers(start: CompNode): Seq[Seq[CompNode]] =
-      layersOf(Seq(optimise(start)))
+    def count(layers: Seq[Layer], start: CompNode, n: CompNode) = {
+      val channels = layers.flatMap(_.mscrs).flatMap(_.channels).distinct
 
-    def partitionLayers(list: DList[_]) =
-      super.createMapReduceLayers(optimise(list.getComp).pp(pretty _))
-  }
+      def print =
+        (Seq("OPTIMISED", pretty(start)) ++
+         Seq("LAYERS")   ++ layers ++
+         Seq("CHANNELS") ++ channels).mkString("\n\n")
 
-
-  trait someLists extends Optimiser with ShowNode with Debug {
-    lazy val simpleList = DList((1, 2))
-
-    lazy val simpleGroupByKeyList = DList((1, 2)).groupByKey
-
-    lazy val twoIndependentGroupByKeys = {
-      val (l1, l2) = (DList((1, 2)), DList((1, 2)))
-      val (l3, l4) = (l1 ++ l2, l1 ++ l2)
-      val (l5, l6) = (l3.groupByKey, l4.groupByKey)
-      l5 ++ l6
-    }
-
-    lazy val twoGroupByKeys = DList((1, "1")).filter(_ => true).groupByKey.combine(Reduction.first).groupByKey.filter(_ => true)
-
-    lazy val twoLayersList = {
-      lazy val dlist = DList(1, 2, 3, 4).filter(_ % 2 == 0)
-      dlist.size join dlist.map(identity)
+      channels.filter(_.processNodes.contains(n)) aka (print+"\nFOR NODE\n"+n)
     }
   }
 
@@ -281,29 +346,6 @@ class MscrsDefinitionSpec extends UnitSpecification with Groups with ThrownExpec
     }
   }
 
-  "Output channels" - new g3 with definition {
-
-    e1 := {
-      val gbk1 = gbk(load)
-      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1)
-    }
-    e2 := {
-      val gbk1 = gbk(load)
-      val cb1 = cb(gbk1)
-      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1, combiner = Some(cb1))
-    }
-    e3 := {
-      val gbk1 = gbk(load)
-      val pd1 = pd(gbk1)
-      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1, reducer = Some(pd1))
-    }
-    e4 := {
-      val gbk1 = gbk(load)
-      val cb1 = cb(gbk1)
-      val pd1 = pd(cb1)
-      gbkOutputChannel(gbk1) === GbkOutputChannel(gbk1, combiner = Some(cb1), reducer = Some(pd1))
-    }
-  }
 
   "Input channels" - new g4 with definition {
     e1 := {
