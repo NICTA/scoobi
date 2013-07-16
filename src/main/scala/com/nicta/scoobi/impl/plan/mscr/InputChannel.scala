@@ -50,6 +50,7 @@ import CollectFunctions._
  * There are 2 main types of InputChannels:
  *
  *  - GbkInputChannel: this input channel outputs key/values to GroupByKeys
+ *    (or to some other parallelDo nodes if the result needs to be reused, see #282)
  *  - FloatingInputChannel: this input channel simply does some mapping for "floating" paralleldos
  *
  *  They both share some implementation in the MscrInputChannel trait.
@@ -57,7 +58,7 @@ import CollectFunctions._
  *  An input channel can have no mappers at all. In that case the values from the source node are directly emitted with
  *  no transformation.
  *
- * Two InputChannels are equal if they have the same source id.
+ * Two InputChannels are equal if they have the same id.
  */
 trait InputChannel extends Channel {
   def id: Int
@@ -113,7 +114,10 @@ trait MscrInputChannel extends InputChannel {
 
   lazy val id: Int = sourceNode.id
 
-  /** data source for this input channel */
+  /**
+   * data source for this input channel
+   * if the
+   */
   lazy val source = sourceNode match {
     case n: Load        => n.source
     case n: ProcessNode => n.bridgeStore.getOrElse(n.createBridgeStore)
