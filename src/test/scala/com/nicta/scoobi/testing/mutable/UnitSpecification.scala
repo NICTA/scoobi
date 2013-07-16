@@ -22,7 +22,7 @@ import org.specs2.mutable.Specification
 import org.specs2.specification.Fragments
 import application.HadoopLogFactory
 
-abstract class UnitSpecification extends Specification with Tags {
+abstract class UnitSpecification extends Specification {
 
   // to avoid warnings from the Configurations object
   HadoopLogFactory.setLogFactory(quiet = true)

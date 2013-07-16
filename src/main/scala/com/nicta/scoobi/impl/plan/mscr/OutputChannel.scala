@@ -77,7 +77,10 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   override def hashCode = tag.hashCode
 
   /** @return all the sinks defined by the nodes of the input channel */
-  def sinks: Seq[Sink]
+  lazy val sinks: Seq[Sink] = lastNode.sinks
+
+  /** @return last node of the channel to emit values */
+  protected def lastNode: CompNode
 
   protected var emitter: EmitterWriter = _
 
@@ -162,8 +165,6 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
 
   /** the tag identifying a GbkOutputChannel is the groupByKey id */
   lazy val tag = groupByKey.id
-  /** collect the sinks of the last node of this output channel */
-  lazy val sinks = lastNode.sinks
   /** return the reducer environment if there is one */
   lazy val inputNodes = reducer.toSeq.map(_.env)
   /** output nodes for this channel */
@@ -203,7 +204,7 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
   }
 
   /** @return the last node of this channel */
-  private lazy val lastNode = reducer.orElse(combiner).getOrElse(groupByKey)
+  lazy val lastNode = reducer.orElse(combiner).getOrElse(groupByKey)
 
   override def toString =
     Seq(Some(groupByKey),
@@ -221,8 +222,8 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
 case class BypassOutputChannel(input: ParallelDo, nodes: Layering = new Layering {}) extends MscrOutputChannel {
   /** the tag identifying a BypassOutputChannel is the parallelDo id */
   lazy val tag = input.id
-  /** collect sinks on the input node */
-  lazy val sinks = input.sinks
+  /** @return the last node of this channel */
+  lazy val lastNode = input
   /** return the environment of the input node */
   lazy val inputNodes = Seq(input.env)
   lazy val outputNodes = nodes.uses(input).toSeq
