@@ -85,7 +85,7 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
     addMethod(ct, "java.lang.String", "metadataPath", "return \""+metadataPath+"\";")
   }
 
-  private val pool: ClassPool = {
+  private lazy val pool: ClassPool = {
     val pool = new ClassPool
     pool.appendClassPath(new LoaderClassPath(sc.scoobiClassLoader))
     pool

@@ -80,8 +80,8 @@ trait MscrOutputChannel extends OutputChannel { outer =>
 
   /** @return all the sinks defined by the nodes of the input channel */
   lazy val sinks: Seq[Sink] = {
-    if (nodes.uses(lastNode).nonEmpty && nodes.uses(lastNode).forall(isValueNode)) lastNode.sinks.filterNot(_ == lastNode.bridgeStore)
-    else                                                                           lastNode.sinks
+    if (nodes.uses(lastNode).forall(isRoot) && lastNode.sinks.size > 1) lastNode.sinks.filterNot(_ == lastNode.bridgeStore)
+    else lastNode.sinks
   }
 
   /** @return last node of the channel to emit values */

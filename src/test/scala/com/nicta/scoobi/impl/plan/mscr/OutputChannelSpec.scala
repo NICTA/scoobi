@@ -53,7 +53,9 @@ Inputs/Outputs
 
  the sinks of an OutputChannel are
    + the bridgeStore related to the last node
-   + the additional sinks of this last node
+   + the additional sinks of this last node without the bridge store if the last node is not materialised
+   + the additional sinks of this last node with the bridge store if the last node is materialised
+   + the additional sinks of this last node with the bridge store if the last node is used elsewhere
 
 Processing
 ==========
@@ -90,7 +92,15 @@ Processing
     eg := BypassOutputChannel(pd1).lastNode === pd1
 
     eg := GbkOutputChannel(gbk1).sinks === Seq(gbk1.bridgeStore)
-    eg := GbkOutputChannel(gbk2).sinks === Seq(gbk2.bridgeStore, StringSink())
+    eg := GbkOutputChannel(gbk2).sinks === Seq(StringSink())
+    eg := GbkOutputChannel(gbk2, nodes = graph(mt(gbk2))).sinks === Seq(gbk2.bridgeStore, StringSink())
+    eg := GbkOutputChannel(gbk2, nodes = graph(pd(gbk2))).sinks === Seq(gbk2.bridgeStore, StringSink())
+
+    def graph(nodes: CompNode*) = {
+      val g = new Layering{}
+      g.reinit(aRoot(nodes:_*))
+      g
+    }
   }
 
   "processing" - new group with factory {
