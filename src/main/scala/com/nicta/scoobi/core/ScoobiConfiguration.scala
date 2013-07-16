@@ -25,6 +25,7 @@ import impl.ScoobiConfigurationImpl
 import tools.nsc.util.ScalaClassLoader
 import tools.nsc.interpreter.AbstractFileClassLoader
 import org.apache.hadoop.mapreduce.{Counters => HadoopCounters}
+import core.Mode.InMemory
 
 /**
  * This class wraps the Hadoop (mutable) configuration with additional configuration information such as the jars which should be
@@ -52,8 +53,8 @@ trait ScoobiConfiguration {
   def isLocal: Boolean
   def isInMemory: Boolean
   def concurrentJobs: Boolean
-  def modeIs(mode: Mode.Value): ScoobiConfiguration
-  def mode: Mode.Value
+  def modeIs(mode: Mode): ScoobiConfiguration
+  def mode: Mode
   def uploadedLibJars: Boolean
   def setUploadedLibJars(uploaded: Boolean)
   def setMaxReducers(maxReducers: Int)
@@ -95,8 +96,35 @@ trait ScoobiConfiguration {
   def duplicate: ScoobiConfiguration
 }
 
-object Mode extends Enumeration {
-  type Mode = Value
-  val InMemory, Local, Cluster = Value
-}
+sealed trait Mode {
+  import Mode._
 
+  def isInMemory: Boolean =
+    this == InMemory
+
+  def isLocal: Boolean =
+    this == Local
+
+  def isCluster: Boolean =
+    this == Cluster
+}
+object Mode {
+  case object InMemory extends Mode
+  case object Local extends Mode
+  case object Cluster extends Mode
+
+  val modes: Set[Mode] =
+    Set(InMemory, Local, Cluster)
+
+  def withName(s: String): Option[Mode] =
+    s match {
+      case "InMemory" => Some(InMemory)
+      case "Local" => Some(Local)
+      case "Cluster" => Some(Cluster)
+      case _ => None
+    }
+
+  def unsafeWithName(s: String): Mode =
+    withName(s) getOrElse (sys.error("Not a Mode name: " + s))
+
+}

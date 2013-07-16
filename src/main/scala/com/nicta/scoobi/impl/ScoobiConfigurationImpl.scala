@@ -186,14 +186,14 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * set a flag in order to know that this configuration is for a in-memory, local or remote execution,
    */
-  def modeIs(mode: Mode.Value) = {
+  def modeIs(mode: Mode) = {
     logger.debug("setting the scoobi execution mode: "+mode)
 
     set(SCOOBI_MODE, mode.toString)
     this
   }
   /** @return the current mode */
-  def mode = Mode.withName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
+  def mode = Mode.unsafeWithName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
 
   /** @return true if the mscr jobs can be executed concurrently */
   def concurrentJobs = hadoopConfiguration.getOrSetBoolean(CONCURRENT_JOBS, false)
