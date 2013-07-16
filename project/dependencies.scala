@@ -52,7 +52,7 @@ object dependencies {
     "org.scalaz"                        %% "scalaz-typelevel"          % scalazVersion intransitive(),
     "org.scalaz"                        %% "scalaz-xml"                % scalazVersion intransitive())
 
-  def specs2(specs2Version: String = "2.1-SNAPSHOT") = Seq(
+  def specs2(specs2Version: String = "2.1") = Seq(
     "org.specs2"                        %% "specs2"                    % specs2Version      % "optional",
     "org.scalacheck"                    %% "scalacheck"                % "1.10.0"           % "optional",
     "org.mockito"                       %  "mockito-all"               % "1.9.0"            % "optional",
