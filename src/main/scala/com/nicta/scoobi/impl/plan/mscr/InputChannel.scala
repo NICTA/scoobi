@@ -61,7 +61,7 @@ import CollectFunctions._
  * Two InputChannels are equal if they have the same id.
  */
 trait InputChannel extends Channel {
-  def id: Int
+  def id: Int = Channel.rollingInt.get
 
   override def equals(a: Any) = a match {
     case i: InputChannel => i.id == id
@@ -112,17 +112,14 @@ trait MscrInputChannel extends InputChannel {
   def nodes: Layering
   lazy val graphNodes = nodes
 
-  lazy val id: Int = sourceNode.id
-
   /**
    * data source for this input channel
    * if the
    */
   lazy val source = sourceNode match {
     case n: Load        => n.source
-    case n: ProcessNode => n.bridgeStore.getOrElse(n.createBridgeStore)
+    case n: ProcessNode => n.bridgeStore
   }
-
 
   /** sourceNode + environments for the parallelDo nodes */
   lazy val inputNodes = sourceNode +: mappers.map(_.env)
@@ -273,7 +270,7 @@ class GbkInputChannel(val sourceNode: CompNode, val groupByKeys: Seq[GroupByKey]
       if (isMapperEmitter) {
         x match {
           case x1 =>
-            key.set(rollingInt.get)
+            key.set(keyRollingInt.get)
             value.set(x1)
             ioContext.write(key, value)
         }
@@ -322,7 +319,7 @@ class FloatingInputChannel(val sourceNode: CompNode, val terminalNodes: Seq[Comp
     val (key, value) = (tks(tag), tvs(tag))
 
     def write(x: Any) {
-      key.set(rollingInt.get)
+      key.set(keyRollingInt.get)
       value.set(x)
       ioContext.write(key, value)
     }
@@ -345,6 +342,7 @@ object InputChannel {
 }
 
 object Channel {
+  object keyRollingInt extends UniqueInt
   object rollingInt extends UniqueInt
 }
 

@@ -38,22 +38,26 @@ trait ProcessNodeImpl extends ProcessNode {
 
   /** unique identifier for the bridgeStore storing data for this node */
   def bridgeStoreId: String
-  /** ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations */
-  lazy val bridgeStore = if (nodeSinks.isEmpty) Some(createBridgeStore) else oneSinkAsBridge
-  /** create a new bridgeStore if necessary */
-  def createBridgeStore = BridgeStore(bridgeStoreId, wf)
+  /**
+   * ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations
+   */
+  lazy val bridgeStore = if (nodeSinks.isEmpty) createBridgeStore else oneSinkAsBridge
   /** transform one sink into a Bridge if possible */
-  private lazy val oneSinkAsBridge: Option[Bridge] =
-    nodeSinks.collect { case bs: BridgeStore[_] => bs }.headOption.
-      orElse(nodeSinks.collect { case s: Sink with SinkSource => s }.headOption.map(s => Bridge.create(s.toSource, s, bridgeStoreId)))
+  private lazy val oneSinkAsBridge: Bridge =
+    nodeSinks.collect { case bs: BridgeStore[_] => bs }.headOption
+      .orElse(nodeSinks.collect { case s: Sink with SinkSource => s }.headOption.map(s => Bridge.create(s.toSource, s, bridgeStoreId)))
+      .getOrElse(createBridgeStore)
+
+  /** create a new bridgeStore if necessary */
+  private def createBridgeStore = BridgeStore(bridgeStoreId, wf)
 
   /** @return all the additional sinks + the bridgeStore */
-  lazy val sinks = oneSinkAsBridge.cata(bridge => bridge +: nodeSinks.filterNot(_.id == bridge.id), bridgeStore.toSeq ++ nodeSinks)
+  lazy val sinks = (bridgeStore +: nodeSinks).distinct
   /** list of additional sinks for this node */
   def nodeSinks : Seq[Sink]
 
   /** display the bridge id */
-  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.flatMap(_.checkpointPath.map(" "+_)).getOrElse("")+")"
+  def bridgeToString = "(bridge " + bridgeStoreId.takeRight(5).mkString + bridgeStore.checkpointPath.map(" "+_).getOrElse("")+")"
   /** display the sinks if any */
   def nodeSinksString = if (nodeSinks.nonEmpty) nodeSinks.map(s => s.outputPath(ScoobiConfiguration())).mkString("[sinks: ", ",", "]") else ""
 }

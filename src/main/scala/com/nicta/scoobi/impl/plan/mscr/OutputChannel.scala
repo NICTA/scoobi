@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory
 import mapreducer._
 import ChannelOutputFormat._
 import monitor.Loggable._
+import CollectFunctions._
+import control.Functions._
 import org.apache.hadoop.mapreduce.TaskInputOutputContext
 
 /**
@@ -77,10 +79,13 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   override def hashCode = tag.hashCode
 
   /** @return all the sinks defined by the nodes of the input channel */
-  lazy val sinks: Seq[Sink] = lastNode.sinks
+  lazy val sinks: Seq[Sink] = {
+    if (nodes.uses(lastNode).nonEmpty && nodes.uses(lastNode).forall(isValueNode)) lastNode.sinks.filterNot(_ == lastNode.bridgeStore)
+    else                                                                           lastNode.sinks
+  }
 
   /** @return last node of the channel to emit values */
-  protected def lastNode: CompNode
+  protected def lastNode: ProcessNode
 
   protected var emitter: EmitterWriter = _
 

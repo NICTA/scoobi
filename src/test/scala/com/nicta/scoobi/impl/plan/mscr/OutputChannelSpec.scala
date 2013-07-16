@@ -89,8 +89,8 @@ Processing
     }
     eg := BypassOutputChannel(pd1).lastNode === pd1
 
-    eg := GbkOutputChannel(gbk1).sinks === gbk1.bridgeStore.toSeq
-    eg := GbkOutputChannel(gbk2).sinks === gbk2.bridgeStore.toSeq :+ StringSink()
+    eg := GbkOutputChannel(gbk1).sinks === Seq(gbk1.bridgeStore)
+    eg := GbkOutputChannel(gbk2).sinks === Seq(gbk2.bridgeStore, StringSink())
   }
 
   "processing" - new group with factory {

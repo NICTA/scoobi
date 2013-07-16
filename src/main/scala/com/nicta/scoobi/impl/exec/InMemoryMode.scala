@@ -69,15 +69,15 @@ case class InMemoryMode() extends ExecutionMode {
     paramAttr { sc: ScoobiConfiguration => node: CompNode =>
       implicit val c = sc
       val result = node match {
-        case n: Load                                               => computeLoad(n)
-        case n: Root                                               => Vector(n.ins.map(_ -> computeValue(c)):_*)
-        case n: Return                                             => Vector(n.in)
-        case n: Op                                                 => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
-        case n: Materialise                                        => Vector(n.in -> compute(c))
-        case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.map(b => loadSource(b.toSource, n.wf)).getOrElse(Seq())
-        case n: GroupByKey                                         => computeGroupByKey(n)
-        case n: Combine                                            => computeCombine(n)
-        case n: ParallelDo                                         => computeParallelDo(n)
+        case n: Load                                        => computeLoad(n)
+        case n: Root                                        => Vector(n.ins.map(_ -> computeValue(c)):_*)
+        case n: Return                                      => Vector(n.in)
+        case n: Op                                          => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
+        case n: Materialise                                 => Vector(n.in -> compute(c))
+        case n: ProcessNode if hasBeenFilled(n.bridgeStore) => loadSource(n.bridgeStore.toSource, n.wf)
+        case n: GroupByKey                                  => computeGroupByKey(n)
+        case n: Combine                                     => computeCombine(n)
+        case n: ParallelDo                                  => computeParallelDo(n)
       }
 
       if (isExpectedResult(node))

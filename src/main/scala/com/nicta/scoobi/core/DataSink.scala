@@ -182,15 +182,13 @@ trait DataSinks {
  */
 private[scoobi]
 trait Bridge extends Source with Sink with SinkSource {
-  def bridgeStoreId: String
-  def stringId = bridgeStoreId
   def readAsIterable(implicit sc: ScoobiConfiguration): Iterable[_]
   def readAsValue(implicit sc: ScoobiConfiguration) = readAsIterable.iterator.next
 }
 
 object Bridge {
   def create(source: Source, sink: SinkSource, bridgeId: String): Bridge = new Bridge with SinkSource {
-    def bridgeStoreId = bridgeId
+    def stringId = bridgeId
     override def id = sink.id
 
     def checkpoint = sink.checkpoint

@@ -73,7 +73,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     def getValue(node: CompNode): Any = {
       node match {
         case n @ Op1(a, b)        => n.execute(getValue(a), getValue(b))
-        case n @ Materialise1(in) => in.bridgeStore.map(read).getOrElse(Seq())
+        case n @ Materialise1(in) => read(in.bridgeStore)
         case n @ Return1(v)       => v
         case other                => Seq()
       }
@@ -153,7 +153,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
   /** @return the content of a Bridge as an Iterable */
   private def read(bs: Bridge): Any = {
-    ("reading bridge "+bs.bridgeStoreId).debug
+    ("reading bridge "+bs.stringId).debug
     bs.readAsIterable(sc)
   }
 
@@ -162,7 +162,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     node match {
       case rt @ Return1(in)      => pushEnv(rt, in)
       case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)))
-      case mt @ Materialise1(in) => in.bridgeStore.map(bs => pushEnv(mt, read(bs))).getOrElse(Seq())
+      case mt @ Materialise1(in) => pushEnv(mt, read(in.bridgeStore))
       case other                 => ()
     }
   }

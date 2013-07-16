@@ -71,7 +71,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
 
   /** @return true if this parallelDo must be read ==> can't be fused */
   def mustBeRead(pd: ParallelDo): Boolean =
-    pd.bridgeStore.map(bs => hasBeenFilled(bs) || bs.isCheckpoint).getOrElse(false) || !pd.nodeSinks.isEmpty
+    hasBeenFilled(pd.bridgeStore) || pd.bridgeStore.isCheckpoint || pd.nodeSinks.nonEmpty
 
   def traverseOncebu(s: Strategy) = repeatTraversal(oncebu, s)
   def traverseSomebu(s: Strategy) = repeatTraversal(somebu, s)
@@ -99,13 +99,6 @@ trait Optimiser extends CompNodes with MemoRewriter {
   }
 
   /**
-   * add a bridgeStore if it is necessary to materialise a value and no bridge is available
-   */
-  def addBridgeStore = everywhere(rule {
-    case m @ Materialise1(p: ProcessNode) if !p.bridgeStore.isDefined => m.copy(p.addSink(p.createBridgeStore)).debug("add bridgestore to "+p)
-  })
-
-  /**
    * add a map to output values to non-filled sink nodes if there are some
    */
   def addParallelDoForNonFilledSinks = oncebu(rule {
@@ -120,7 +113,6 @@ trait Optimiser extends CompNodes with MemoRewriter {
   def allStrategies =
     combineToParDo                          <*
     parDoFuse                               <*
-    attempt(addBridgeStore)                 <*
     attempt(addParallelDoForNonFilledSinks)
 
   /**
@@ -166,7 +158,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
         case p: ParallelDo if isParentMaterialise(p) => p.copy(ins = Seq(Return.unit))
         case g: GroupByKey if isParentMaterialise(g) => g.copy(in = Return.unit)
         case c: Combine    if isParentMaterialise(c) => c.copy(in = Return.unit)
-        case p: ProcessNode                          => p.bridgeStore.map(b => Load(b, p.wf)).getOrElse(p)
+        case p: ProcessNode                          => Load(p.bridgeStore, p.wf)
         case other                                   => other
       }
 

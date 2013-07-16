@@ -81,12 +81,6 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
     }
   }
 
-  "If the input node of a Materialise node has no bridgeStore we need to create one" >> new optimiser {
-    val materialise = mt(pd(load).addSink(textFileSink("path")))
-    materialise.in.bridgeStore must beNone
-    optimise(addBridgeStore, materialise).collect(isAMaterialise).head.in.bridgeStore must beSome
-  }
-
   "If some of the sinks of a node have not been filled, a new node must be created for it" >> new optimiser {
     val sink = textFileSink("path")
     markSinkAsFilled(sink)

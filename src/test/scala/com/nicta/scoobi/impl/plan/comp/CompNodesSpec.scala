@@ -54,7 +54,7 @@ class CompNodesSpec extends UnitSpecification with AllExpectations with CompNode
     val (gbk1, gbk2) = (gbk(pd1), gbk(pd2))
     val mt1 = mt(pd(gbk1, gbk2).addSink(s3))
 
-    allSinks(mt1).toSet === Set(s1, s2, s3, gbk1.bridgeStore.get ,gbk2.bridgeStore.get)
+    allSinks(mt1).toSet === Set(s1, s2, s3, gbk1.bridgeStore ,gbk2.bridgeStore)
   }
 
   "it is possible to get all the nodes which use a given node as an environment" >> new factory {
