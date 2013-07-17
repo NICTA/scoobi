@@ -202,6 +202,19 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
       check { Prop.forAllNoShrink(genWeights, arbitrary[List[Int]])(prop) }
     }
   }
+
+    "DList#materialise doesn't exceed the client file descriptor limit" >> { implicit sc: SC =>
+      import scala.sys.process._
+      import scala.util.Random
+
+      /* Force the number of part files generated to be equal to the file descriptor limit. */
+      val n = Process("ulimit -n").lines.head.toInt
+      sc.setMinReducers(n)
+
+      val seq = Seq.fill(100000)("a")
+      val out = seq.toDList.groupBy(_ => Random.nextInt()).mapFlatten(_._2).materialise.run
+      out.toSeq must_== seq
+    }
 }
 
 case class PoorHashString(s: String) {
