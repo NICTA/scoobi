@@ -295,7 +295,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
 
   /** set a value on the configuration */
   def set(key: String, value: Any) {
-    configuration.set(key, String.valueOf(value))
+    configuration.set(key, if (value == null) "null" else value.toString)
   }
 
   def setScoobiDir(dir: String)      = { set("scoobi.dir", dirPath(dir)); this }
