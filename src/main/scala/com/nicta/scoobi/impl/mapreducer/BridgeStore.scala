@@ -128,16 +128,14 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
   private var initialised = false
   def init {
     if (!initialised)  {
-      readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
+      remainingReaders = fs.globStatus(new Path(path, "ch*")).toStream map { (stat: FileStatus) =>
         Compatibility.newSequenceFileReader(sc, stat.getPath)
       }
-      remainingReaders = readers.toList
-      empty = readers.isEmpty || !readNext()
+      empty = remainingReaders.isEmpty || !readNext()
       initialised = true
     }
   }
-  private var readers: Seq[SequenceFile.Reader] = Seq()
-  private var remainingReaders: List[SequenceFile.Reader] = List()
+  private var remainingReaders: Stream[SequenceFile.Reader] = Stream()
   private var empty: Boolean = false
   private val key = NullWritable.get
 
@@ -157,10 +155,10 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
    * been read. */
   private def readNext(): Boolean = {
     remainingReaders match {
-      case cur :: rest =>
+      case cur #:: rest =>
         val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => e.printStackTrace; close; false }
         nextValueIsRead || { cur.close(); remainingReaders = rest; readNext() }
-      case Nil         => false
+      case Stream.Empty => false
     }
   }
 
