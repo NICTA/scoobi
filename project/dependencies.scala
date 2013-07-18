@@ -20,7 +20,7 @@ object dependencies {
 
   lazy val settings = dependencies ++ resolversSettings
   lazy val dependencies = libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
-    scoobi(scalaVersion) ++ 
+    scoobi(scalaVersion) ++
     hadoop(version)      ++
     scalaz()             ++
     specs2()
@@ -32,7 +32,7 @@ object dependencies {
     "org.apache.avro"                   %  "avro"                      % "1.7.4",
     "com.thoughtworks.xstream"          %  "xstream"                   % "1.4.4"            intransitive(),
     "javassist"                         %  "javassist"                 % "3.12.1.GA",
-    "com.googlecode.kiama"              %% "kiama"                     % "1.5.0",
+    "com.googlecode.kiama"              %% "kiama"                     % "1.5.1",
     "com.github.mdr"                    %% "ascii-graphs"              % "0.0.3",
     "com.chuusai"                       %% "shapeless"                 % "1.2.4",
     "org.apache.commons"                %  "commons-math"              % "2.2"              % "test",
@@ -68,5 +68,3 @@ object dependencies {
     "sonatype-releases"  at "http://oss.sonatype.org/content/repositories/releases",
     "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
 }
-
-

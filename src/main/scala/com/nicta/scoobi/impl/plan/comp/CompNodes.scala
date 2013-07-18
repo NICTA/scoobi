@@ -61,7 +61,7 @@ trait CompNodes extends GraphNodes {
 
   /** @return true if a process node has been filled */
   protected lazy val nodeHasBeenFilled = (p: CompNode) => p match {
-    case pn: ProcessNode => filledSink.hasBeenComputedAt(pn.bridgeStore.stringId)
+    case pn: ProcessNode => pn.sinks.forall(hasBeenFilled)
     case other           => false
   }
   /** @return true if a given Sink has already received data */

@@ -189,7 +189,12 @@ trait Bridge extends Source with Sink with SinkSource {
 object Bridge {
   def create(source: Source, sink: SinkSource, bridgeId: String): Bridge = new Bridge with SinkSource {
     def stringId = bridgeId
-    override def id = sink.id
+    override lazy val id = sink.id
+    override def equals(a: Any) = a match {
+      case o: Bridge => o.id == id
+      case _         => false
+    }
+    override def hashCode = id.hashCode
 
     def checkpoint = sink.checkpoint
     def inputFormat = source.inputFormat

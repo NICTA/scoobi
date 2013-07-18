@@ -52,7 +52,7 @@ trait ProcessNodeImpl extends ProcessNode {
   private def createBridgeStore = BridgeStore(bridgeStoreId, wf)
 
   /** @return all the additional sinks + the bridgeStore */
-  lazy val sinks = (bridgeStore +: nodeSinks).distinct
+  lazy val sinks = (nodeSinks :+ bridgeStore).groupBy(_.id).map(_._2.headOption).flatten.toSeq
   /** list of additional sinks for this node */
   def nodeSinks : Seq[Sink]
 
