@@ -83,8 +83,8 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
 
   "If some of the sinks of a node have not been filled, a new node must be created for it" >> new optimiser {
     val sink = textFileSink("path")
-    markSinkAsFilled(sink)
     val list = pd(load).addSink(sink)
+    list.sinks.foreach(markSinkAsFilled)
 
     val sinks = optimise(addParallelDoForNonFilledSinks, list.addSink(textFileSink("path"))).collect(isAParallelDo).head.nodeSinks
     sinks must haveSize(1)
