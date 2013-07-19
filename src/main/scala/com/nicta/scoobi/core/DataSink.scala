@@ -25,6 +25,8 @@ import Data._
 import com.nicta.scoobi.impl.io.Helper
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.fs.permission.FsAction
+import java.io.IOException
 
 /**
  * An output store from a MapReduce job
@@ -123,9 +125,14 @@ object Sink {
   /** default check for sink using output files */
   val defaultOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => {
 
+    if(!Helper.getFilePermission(output.getParent())(sc.configuration).getUserAction().implies(FsAction.WRITE)){
+      throw new IOException("You do not have write permission on the path:" + output.getParent())
+    }
+    
     if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
       throw new FileAlreadyExistsException("Output path already exists: " + output)
     } else logger.info("Output path: " + output.toUri.toASCIIString)
+    
   }
 
   val noOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => ()

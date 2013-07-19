@@ -27,6 +27,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
 import impl.control.Exceptions._
 import impl.util.Compatibility
+import org.apache.hadoop.fs.permission.FsAction
 
 /**
  * DataSource for a computation graph.
@@ -104,6 +105,13 @@ object Source {
     inputPaths foreach { p =>
       if (Helper.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc.configuration)) + ")")
       else                                        throw new IOException("Input path " + p + " does not exist.")
+     
+      Helper.getFileStatus(p)(sc.configuration) foreach (s => {
+        val action = s.getPermission().getUserAction()
+        if (!action.implies(FsAction.READ)){
+          throw new IOException("You do not have read permission on input path: "+ p) 
+        }
+      }) 
     }
   }
   val noInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => ()
