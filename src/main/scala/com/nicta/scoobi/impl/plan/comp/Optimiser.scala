@@ -155,7 +155,7 @@ trait Optimiser extends CompNodes with MemoRewriter {
     def isParentMaterialise(n: CompNode) = parent(n).exists(isMaterialise)
     def truncateNode(n: Any): Any =
       n match {
-        case p: ParallelDo if isParentMaterialise(p) => p.copy(ins = Seq(Return.unit))
+        case p: ParallelDo if isParentMaterialise(p) => p.copy(ins = Seq())
         case g: GroupByKey if isParentMaterialise(g) => g.copy(in = Return.unit)
         case c: Combine    if isParentMaterialise(c) => c.copy(in = Return.unit)
         case p: ProcessNode                          => Load(p.bridgeStore, p.wf)

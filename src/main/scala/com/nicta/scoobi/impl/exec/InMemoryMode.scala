@@ -74,7 +74,7 @@ case class InMemoryMode() extends ExecutionMode {
         case n: Return                                      => Vector(n.in)
         case n: Op                                          => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
         case n: Materialise                                 => Vector(n.in -> compute(c))
-        case n: ProcessNode if hasBeenFilled(n.bridgeStore) => loadSource(n.bridgeStore.toSource, n.wf)
+        case n: ProcessNode if nodeHasBeenFilled(n) => loadSource(n.bridgeStore.toSource, n.wf)
         case n: GroupByKey                                  => computeGroupByKey(n)
         case n: Combine                                     => computeCombine(n)
         case n: ParallelDo                                  => computeParallelDo(n)
@@ -112,7 +112,7 @@ case class InMemoryMode() extends ExecutionMode {
     val vb = new VectorBuilder[Any]()
     val emitter = new EmitterWriter with NoScoobiJobContext { def write(v: Any) { vb += v } }
 
-    val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
+    val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
     dofn.setupFunction(env)
     (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
