@@ -25,6 +25,7 @@ import org.specs2.ScalaCheck
 import impl.plan.comp.CompNodeData._
 import org.scalacheck._
 import org.scalacheck.Arbitrary._
+import org.specs2.execute.Skipped
 
 class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck {
 
@@ -201,18 +202,19 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
     }
   }
 
-    "DList#materialise doesn't exceed the client file descriptor limit" >> { implicit sc: SC =>
-      import scala.sys.process._
+  "DList#materialise doesn't exceed the client file descriptor limit" >> { implicit sc: SC =>
+    import scala.sys.process._
       import scala.util.Random
-
+    if (sc.isRemote) {
       /* Force the number of part files generated to be equal to the file descriptor limit. */
-      val n = Process("ulimit -n").lines.head.toInt
+      val n = "ulimit -n".lines_!.headOption.map(_.toInt).getOrElse(0)
       sc.setMinReducers(n)
 
       val seq = Seq.fill(100000)("a")
       val out = seq.toDList.groupBy(_ => Random.nextInt()).mapFlatten(_._2).materialise.run
-      out.toSeq must_== seq
-    }
+      (out.toSeq must_== seq).toResult
+    } else Skipped("only run this test on the cluster")
+  }
 }
 
 case class PoorHashString(s: String) {
