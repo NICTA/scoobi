@@ -28,13 +28,16 @@ import org.apache.commons.logging.LogFactory
 import mapreducer._
 import ChannelOutputFormat._
 import monitor.Loggable._
+import CollectFunctions._
+import control.Functions._
+import org.apache.hadoop.mapreduce.TaskInputOutputContext
 
 /**
  * An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping
  *
  * Two OutputChannels are equal if they have the same tag. This tag is the id of the last processing node of the channel
  */
-trait OutputChannel {
+trait OutputChannel extends Channel {
   /** unique identifier for the Channel */
   def tag: Int
 
@@ -46,6 +49,8 @@ trait OutputChannel {
    * needing its environment
    */
   def inputNodes: Seq[CompNode]
+  /** output nodes for this channel */
+  def outputNodes: Seq[CompNode]
 
   /** setup the nodes of the channel before writing data */
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration)
@@ -64,6 +69,9 @@ trait OutputChannel {
 trait MscrOutputChannel extends OutputChannel { outer =>
   protected implicit lazy val logger = LogFactory.getLog("scoobi.OutputChannel")
 
+  def nodes: Layering
+  lazy val graphNodes = nodes
+
   override def equals(a: Any) = a match {
     case o: OutputChannel => o.tag == tag
     case _                => false
@@ -71,15 +79,25 @@ trait MscrOutputChannel extends OutputChannel { outer =>
   override def hashCode = tag.hashCode
 
   /** @return all the sinks defined by the nodes of the input channel */
-  def sinks: Seq[Sink]
+  lazy val sinks: Seq[Sink] = {
+    if (nodes.uses(lastNode).forall(isRoot) && lastNode.sinks.size > 1) lastNode.sinks.filterNot(_ == lastNode.bridgeStore)
+    else lastNode.sinks
+  }
+
+  /** @return last node of the channel to emit values */
+  protected def lastNode: ProcessNode
 
   protected var emitter: EmitterWriter = _
 
   def setup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     logger.info("Outputs are " + sinks.map(_.outputPath(ScoobiConfiguration(configuration))).mkString("\n"))
 
-    sinks.foreach(_.outputSetup(configuration))
+    sinks.foreach(_.outputSetup(ScoobiConfiguration(configuration)))
     emitter = createEmitter(channelOutput)
+  }
+
+  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+    sinks.foreach(_.outputTeardown(ScoobiConfiguration(configuration)))
   }
 
   /** copy all outputs files to the destinations specified by sink files */
@@ -112,13 +130,14 @@ trait MscrOutputChannel extends OutputChannel { outer =>
    * create an emitter to output values on the current tag for each sink. Values are converted to (key, values) using
    * the sink output converter. This emitter is used by both the GbkOutputChannel and the BypassOutputChannel
    */
-  protected def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter {
+  protected def createEmitter(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) = new EmitterWriter with InputOutputContextScoobiJobContext {
     def write(x: Any)  {
       sinks foreach { sink =>
         sink.configureCompression(configuration)
         channelOutput.write(tag, sink.id, convert(sink, x))
       }
     }
+    def context = new InputOutputContext(channelOutput.context.asInstanceOf[TaskInputOutputContext[Any, Any, Any, Any]])
   }
 
   /** use the output converter of a sink to convert a value to a key/value */
@@ -146,14 +165,15 @@ trait MscrOutputChannel extends OutputChannel { outer =>
  */
 case class GbkOutputChannel(groupByKey: GroupByKey,
                             combiner:   Option[Combine]    = None,
-                            reducer:    Option[ParallelDo] = None) extends MscrOutputChannel {
+                            reducer:    Option[ParallelDo] = None,
+                            nodes: Layering = new Layering {}) extends MscrOutputChannel {
 
   /** the tag identifying a GbkOutputChannel is the groupByKey id */
   lazy val tag = groupByKey.id
-  /** collect the sinks of the last node of this output channel */
-  lazy val sinks = lastNode.sinks
   /** return the reducer environment if there is one */
   lazy val inputNodes = reducer.toSeq.map(_.env)
+  /** output nodes for this channel */
+  lazy val outputNodes: Seq[CompNode] = nodes.uses(lastNode).toSeq
 
   /** store the reducer environment during the setup if there is one */
   protected var environment: Any = _
@@ -177,21 +197,19 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
    */
   def reduce(key: Any, values: Iterable[Any], channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     val combinedValues = combiner.map(c => c.combine(values)).getOrElse(values)
-
     reducer.map(_.reduce(environment, key, combinedValues, emitter)).getOrElse {
-      combiner.map(c => emitter.write((key, combinedValues))).getOrElse {
-        emitter.write((key, combinedValues))
-      }
+      emitter.write((key, combinedValues))
     }
   }
 
   /** invoke the reducer cleanup if there is one */
-  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
+  override def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {
     reducer.foreach(_.cleanup(environment, emitter))
+    super.cleanup(channelOutput)
   }
 
   /** @return the last node of this channel */
-  private lazy val lastNode = reducer.orElse(combiner).getOrElse(groupByKey)
+  lazy val lastNode = reducer.orElse(combiner).getOrElse(groupByKey)
 
   override def toString =
     Seq(Some(groupByKey),
@@ -199,20 +217,21 @@ case class GbkOutputChannel(groupByKey: GroupByKey,
         reducer .map(n => "reducer  = "+n.toString)
     ).flatten.mkString("GbkOutputChannel(", ", ", ")")
 
+  def processNodes: Seq[ProcessNode] = Seq(groupByKey) ++ combiner.toSeq ++ reducer.toSeq
 }
 
 /**
  * This output channel simply copy values coming from a ParallelDo input (a mapper in an Input channel)
  * to this node sinks and bridgeStore
  */
-case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
+case class BypassOutputChannel(input: ParallelDo, nodes: Layering = new Layering {}) extends MscrOutputChannel {
   /** the tag identifying a BypassOutputChannel is the parallelDo id */
   lazy val tag = input.id
-  /** collect sinks on the input node */
-  lazy val sinks = input.sinks
+  /** @return the last node of this channel */
+  lazy val lastNode = input
   /** return the environment of the input node */
   lazy val inputNodes = Seq(input.env)
-
+  lazy val outputNodes = nodes.uses(input).toSeq
   /**
    * Just emit the values to the sink, the key is irrelevant since it is a RollingInt in that case
    */
@@ -220,8 +239,7 @@ case class BypassOutputChannel(input: ParallelDo) extends MscrOutputChannel {
     values foreach emitter.write
   }
 
-  /** no cleanup is required because this node has already been cleaned-up as a mapper */
-  def cleanup(channelOutput: ChannelOutputFormat)(implicit configuration: Configuration) {}
+  def processNodes: Seq[ProcessNode] = Seq()
 }
 
 /**

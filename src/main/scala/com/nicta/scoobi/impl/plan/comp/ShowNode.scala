@@ -47,7 +47,7 @@ trait ShowNode extends CompNodes {
       case GroupByKey1(in)       => showNode(node) <> braces (nest (line <> show(in) <> line))
       case Materialise1(in)      => showNode(node) <> braces (nest (line <> show(in) <> line))
       case Op1(in1, in2)         => showNode(node) <> braces (nest (line <> "1. " <> show(in1) <> line <> "2. " <> show(in2)))
-      case Root(ins)             => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i)), line <> "+")))
+      case Root1(ins)            => showNode(node) <> braces (nest (line <> "+" <> ssep (ins.map(i => show(i)), line <> "+")))
     }
 
   /** show a single node */
@@ -74,7 +74,7 @@ trait ShowNode extends CompNodes {
   }
 
   /** @return a nested text representation of the nodes graph + graph if it's not too big */
-  def prettyGraph = (node : CompNode) => pretty(node) + "\nGraph\n" + showGraph(node)
+  def prettyGraph(showComputationGraph: Boolean = false) = (node : CompNode) => pretty(node) + (if (showComputationGraph) ("\nGraph\n" + showGraph(node)) else "")
 
   /** @return an ASCII representation of the nodes graph */
   def showGraph(node : CompNode) = tryOrElse {

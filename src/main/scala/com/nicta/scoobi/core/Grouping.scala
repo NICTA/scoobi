@@ -196,8 +196,8 @@ trait GroupingImplicits extends GroupingImplicits0 {
     def groupCompare(x: T, y: T) = SOrdering.fromInt(x.compareTo(y))
   }
 
-  /** Instances for Shapeless tagged types. */
-  import shapeless.TypeOperators._
+  /** Instances for tagged types. */
+  import scalaz.@@
 
   implicit def taggedTypeGrouping[T : Grouping, U]: Grouping[T @@ U] =
     implicitly[Grouping[T]].asInstanceOf[Grouping[T @@ U]]

@@ -22,18 +22,31 @@ import java.util.{ Map => JMap }
 import org.apache.avro.Schema
 import org.apache.avro.io.parsing.Symbol
 import org.apache.avro.generic.{ GenericContainer, GenericData }
-import org.apache.avro.specific.{ SpecificRecord, SpecificData }
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 import scala.collection.JavaConversions._
 import core.UniqueInt
+import impl.control.Exceptions._
 
 /** Defines the Avro schema for a given Scala type. */
-trait AvroSchema[A] {
+trait AvroSchema[A] { outer =>
   type AvroType
   def schema: Schema
   def fromAvro(x: AvroType): A
   def toAvro(x: A): AvroType
+
+  /**
+   * Map a pair of functions on this exponential functor to produce a new Avro schema.
+   */
+  def xmap[B](f: A => B, g: B => A): AvroSchema[B] = new AvroSchema[B] {
+    type AvroType = outer.AvroType
+    def schema = outer.schema
+    def fromAvro(x: AvroType): B = f(outer.fromAvro(x))
+    def toAvro(x: B): AvroType = outer.toAvro(g(x))
+  }
+
+  override def toString = schema.toString
+  def getType = schema.getType
 }
 
 /** Provide an implicit of this, if your type is a fixed. Then a FixedSchema can kick-in */
@@ -370,22 +383,26 @@ object AvroSchema {
     }
   }
 
-  /* Actual Avro Generic/SpecificRecord support */
+  /**
+   *  Actual Avro Generic/SpecificRecord support
+   *
+   *  When T is a GenericRecord, we use the NULL schema type.
+   *
+   *  @see AvroInput/AvroOutput how the NULL schema type is used to create the appropriate AvroKeyRecordReader/AvroKeyRecordWriter instance
+   */
   implicit def AvroRecordSchema[T <: GenericContainer](implicit r: Manifest[T]) = new AvroSchema[T] {
-    val sclass = r.erasure.asInstanceOf[Class[T]]
-    def schema: Schema = try { sclass.newInstance().getSchema }
-    catch {
-      case _: Throwable => sys.error("Could not construct a: " + r + " does it have a no-argument constructor?")
-    }
+    val sclass = r.runtimeClass.asInstanceOf[Class[T]]
+    def schema: Schema = tryOrElse(sclass.newInstance().getSchema)(Schema.create(Schema.Type.NULL))
+
     type AvroType = T
     def fromAvro(x: T): T = x
     def toAvro(x: T): T = x
   }
 
   /* Helper methods. */
-  private def mkRecordSchema(ss: List[AvroSchema[_]]): Schema = {
+  private[scoobi] def mkRecordSchema(ss: Seq[AvroSchema[_]]): Schema = {
     val fields: List[Schema.Field] =
-      ss.zipWithIndex map { case (s, ix) => new Schema.Field("v" + ix, s.schema, "", null) }
+      ss.toList.zipWithIndex map { case (s, ix) => new Schema.Field("v" + ix, s.schema, "", null) }
     val record =
       Schema.createRecord("tup" + UUID.randomUUID().toString.replace('-', 'x'), "", "scoobi", false)
     record.setFields(fields)
@@ -394,24 +411,23 @@ object AvroSchema {
 }
 
 trait AvroParsingImplicits {
-  implicit def pimpSymbol(sym: Symbol): EnhancedSymbol = new EnhancedSymbol(sym)
-}
+  implicit class EnhancedSymbol(symbol: Symbol) {
 
-class EnhancedSymbol(sym: Symbol) extends AvroParsingImplicits {
-
-  /**
-   * Pull out any ErrorAction Symbols.
-   *
-   * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
-   *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
-   *       in union branches that may never be followed because the data isn't in that format.
-   */
-  def getErrors: List[Symbol.ErrorAction] = {
-    sym match {
-      case errSym: Symbol.ErrorAction => List(errSym)
-      case otherSym: Symbol => Option(sym.production).map {
-        _.filterNot(_ == sym).toList.flatMap(_.getErrors)
-      }.getOrElse(Nil)
+    /**
+     * Pull out any ErrorAction Symbols.
+     *
+     * Note: Pulling errors out like this is fine because scoobi currently doesn't produce any
+     *       union types in the reader schema. If it did, its possible to have ErrorAction symbols
+     *       in union branches that may never be followed because the data isn't in that format.
+     */
+    def getErrors: List[Symbol.ErrorAction] = {
+      symbol match {
+        case errSym: Symbol.ErrorAction => List(errSym)
+        case otherSym: Symbol => Option(symbol.production).map {
+          _.filterNot(_ == symbol).toList.flatMap(_.getErrors)
+        }.getOrElse(Nil)
+      }
     }
   }
 }
+object AvroParsingImplicits extends AvroParsingImplicits

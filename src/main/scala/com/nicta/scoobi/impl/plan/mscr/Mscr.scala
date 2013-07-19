@@ -51,6 +51,8 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
   lazy val bridges    = sinks.collect { case bs: Bridge => bs }
   /** distinct input nodes  for this Mscr */
   lazy val inputNodes = (inputChannels.flatMap(_.inputNodes) ++ outputChannels.flatMap(_.inputNodes)).distinct
+  /** distinct input nodes for this Mscr */
+  lazy val outputNodes = (inputChannels.flatMap(_.outputNodes) ++ outputChannels.flatMap(_.outputNodes)).distinct
 
   /** map of wireformats and groupings for each key tag of this Mscr */
   lazy val keyTypes   = KeyTypes(Map(inputChannels.flatMap(_.keyTypes.types):_*))
@@ -59,14 +61,23 @@ case class Mscr private (inputChannels: Seq[InputChannel] = Seq(), outputChannel
 
   override def toString =
     Seq(id.toString,
-        if (inputChannels.isEmpty)  "" else inputChannels.mkString("\n  inputs: ", "\n          ", ""),
-        if (outputChannels.isEmpty) "" else outputChannels.mkString("\n  outputs: ",  "\n           ", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")\n")
+        if (inputChannels.isEmpty)  "" else inputChannels.mkString("\n  inputs: + ", "\n\n          + ", ""),
+        if (outputChannels.isEmpty) "" else outputChannels.mkString("\n  outputs: + ",  "\n\n           + ", "")).filterNot(_.isEmpty).mkString("Mscr(", "\n", ")\n")
 
   /** @return all the combiners of this mscr */
-  def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_) => combiner }
+  def combiners   = outputChannels.collect { case GbkOutputChannel(_,Some(combiner),_,_) => combiner }
   /** @return all the combiners of this mscr by tag */
-  def combinersByTag  = Map(outputChannels.collect { case out @ GbkOutputChannel(_,Some(combiner),_) => (out.tag, combiner) }: _*)
-
+  def combinersByTag  = Map(outputChannels.collect { case out @ GbkOutputChannel(_,Some(combiner),_,_) => (out.tag, combiner) }: _*)
+  /** @return only the GbkOutputChannels */
+  def gbkOutputChannels: Seq[GbkOutputChannel] = outputChannels.collect { case g: GbkOutputChannel => g }
+  /** @return only the floating input channels */
+  def floatingInputChannels: Seq[FloatingInputChannel] = inputChannels.collect { case i: FloatingInputChannel => i }
+  /** @return true if the Mscr is empty */
+  def isEmpty = inputChannels.isEmpty || outputChannels.isEmpty
+  /** @return all the channels */
+  def channels = inputChannels ++ outputChannels
+  /** @return all the nodes of this Mscr */
+  def nodes = inputChannels.flatMap(_.processNodes) ++ outputChannels.flatMap(_.processNodes)
 }
 
 /**

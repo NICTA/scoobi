@@ -33,25 +33,30 @@ import rtt._
 import io.Helper
 import ScoobiConfiguration._
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
+import util.Compatibility
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
-case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
-  extends DataSource[NullWritable, ScoobiWritable[A], A]
-  with DataSink[NullWritable, ScoobiWritable[A], A] with Bridge {
+case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoint: Option[Checkpoint] = None, compression: Option[Compression] = None) extends
+   DataSource[NullWritable, ScoobiWritable[A], A] with
+   DataSink[NullWritable, ScoobiWritable[A], A]   with
+   Bridge {
 
-  override lazy val id: Int = Data.ids.get
+  override val id: Int = Data.ids.get
   override lazy val stringId = bridgeStoreId
 
   lazy val logger = LogFactory.getLog("scoobi.Bridge")
 
   /** rtClass will be created at runtime as part of building the MapReduce job. */
-  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass = ScoobiWritable(typeName, wf)
+  def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass =
+    BridgeStore.runtimeClasses.getOrElseUpdate(typeName, ScoobiWritable(typeName, wf))
 
   /** type of the generated class for this Bridge */
-  lazy val typeName = "BS" + bridgeStoreId
+  lazy val typeName = "BS" + checkpoint.map(c => scala.util.hashing.MurmurHash3.stringHash(c.path.toUri.toString)).getOrElse(bridgeStoreId)
 
-  def path(implicit sc: ScoobiConfiguration) = new Path(sc.workingDirectory, "bridges/" + bridgeStoreId)
+  def path(implicit sc: ScoobiConfiguration) = checkpoint.map(_.path).getOrElse(new Path(sc.workingDirectory, "bridges/" + bridgeStoreId))
 
   /* Output (i.e. input to bridge) */
   def outputFormat(implicit sc: ScoobiConfiguration) = classOf[SequenceFileOutputFormat[NullWritable, ScoobiWritable[A]]]
@@ -62,7 +67,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
   def outputPath(implicit sc: ScoobiConfiguration) = Some(path)
 
   lazy val outputConverter = new ScoobiWritableOutputConverter[A](typeName)
-
 
   /* Input (i.e. output of bridge) */
   lazy val inputFormat = classOf[SequenceFileInputFormat[NullWritable, ScoobiWritable[A]]]
@@ -84,7 +88,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
     fs.delete(path, true)
   }
 
-
   /**
    * Read the contents of this bridge store sequence files as an Iterable collection. The
    * underlying Iterator has a lazy implementation and will only bring one element into memory
@@ -98,7 +101,6 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
     def iterator = new BridgeStoreIterator[A](value, path, sc)
   }
 
-
   override def toString = typeName+"("+id+")"
 
   override def equals(other: Any) = {
@@ -110,7 +112,14 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter)
 
   override def hashCode = bridgeStoreId.hashCode
 
-  override def toSource: Option[Source] = Some(this)
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
+
+  def toSource: Source = this
+}
+
+object BridgeStore {
+  /** runtime class for bridgestores, they shouldn't be recreated after it's been created once */
+  val runtimeClasses: scala.collection.mutable.Map[String, RuntimeClass] = new scala.collection.mutable.HashMap()
 }
 
 class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiConfiguration) extends Iterator[A] {
@@ -119,17 +128,15 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
   private var initialised = false
   def init {
     if (!initialised)  {
-      readers = fs.globStatus(new Path(path, "ch*")) map { (stat: FileStatus) =>
-        new SequenceFile.Reader(sc, SequenceFile.Reader.file(stat.getPath))
+      remainingReaders = fs.globStatus(new Path(path, "ch*")).toStream map { (stat: FileStatus) =>
+        Compatibility.newSequenceFileReader(sc, stat.getPath)
       }
-      remainingReaders = readers.toList
-      empty = readers.isEmpty || !readNext()
+      empty = remainingReaders.isEmpty || !readNext()
       initialised = true
     }
   }
-  private var readers: Seq[SequenceFile.Reader] = _
-  private var remainingReaders: List[SequenceFile.Reader] = _
-  private var empty: Boolean = _
+  private var remainingReaders: Stream[SequenceFile.Reader] = Stream()
+  private var empty: Boolean = false
   private val key = NullWritable.get
 
   def next(): A = {
@@ -148,10 +155,10 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
    * been read. */
   private def readNext(): Boolean = {
     remainingReaders match {
-      case cur :: rest =>
+      case cur #:: rest =>
         val nextValueIsRead = try { cur.next(key, value) } catch { case e: Throwable => e.printStackTrace; close; false }
         nextValueIsRead || { cur.close(); remainingReaders = rest; readNext() }
-      case Nil         => false
+      case Stream.Empty => false
     }
   }
 
@@ -163,8 +170,11 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
 /** OutputConverter for a bridges. The expectation is that by the time toKeyValue is called,
   * the Class for 'value' will exist and be known by the ClassLoader. */
 class ScoobiWritableOutputConverter[A](typeName: String) extends OutputConverter[NullWritable, ScoobiWritable[A], A] {
-  lazy val value: ScoobiWritable[A] = Class.forName(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
+  private var value: ScoobiWritable[A] = _
   def toKeyValue(x: A)(implicit configuration: Configuration): (NullWritable, ScoobiWritable[A]) = {
+    if (value == null) {
+      value = configuration.getClassLoader.loadClass(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
+    }
     value.configuration = configuration
     value.set(x)
     (NullWritable.get, value)

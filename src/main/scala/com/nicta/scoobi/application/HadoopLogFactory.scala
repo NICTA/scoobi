@@ -41,7 +41,7 @@ class HadoopLogFactory() extends LogFactory {
   // see the answer to this SOF question to understand this regular expression:
   // http://stackoverflow.com/questions/406230/regular-expression-to-match-string-not-containing-a-word
   private def noWords(words: String*) = "^((?!"+words.mkString("|")+").)*$"
-  private val noNoise = noWords("Client", "ProtobufRpcEngine", "RPC", "RemoteBlockReader2", "LeaseRenewer", "DFSClient", "HadoopMode")
+  private val noNoise = noWords("Client", "ProtobufRpcEngine", "RPC", "RemoteBlockReader2", "LeaseRenewer", "DFSClient")
 
   private val impl   = new LogFactoryImpl
   private val noOps  = new NoOpLog
@@ -65,11 +65,14 @@ class HadoopLogFactory() extends LogFactory {
   def setAttribute(name: String, value: AnyRef) { impl.setAttribute(name, value) }
 
   def getInstance(name: String): Log      = {
-    if (name == SCOOBI_TIMES)                                if (showTimes) simple(name) else noOps
-    else if (quietFor(name))                                 noOps
-    else if (name == "org.apache.hadoop.conf.Configuration") noWarnings(name)
-    else                                                     simple(name)
+    if (name == SCOOBI_TIMES)                                 if (showTimes) simple(name) else noOps
+    else if (quietFor(name))                                  noOps
+    else if (hadoopClassesWithAbusiveWarnings.contains(name)) noWarnings(name)
+    else                                                      simple(name)
   }
+
+  def hadoopClassesWithAbusiveWarnings = Seq("org.apache.hadoop.conf.Configuration", "mapreduce.Counters")
+
   def getInstance(klass: Class[_]): Log = getInstance(klass.getName)
 
   /** @return true if quiet or if the category 'name' doesn't match the regular expression for accepted categories */

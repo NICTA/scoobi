@@ -17,18 +17,35 @@ package com.nicta.scoobi
 package impl
 package plan
 
+import collection.Seqs._
 import core._
 import comp._
 import source.SeqInput
 import WireFormat._
 import core.DList
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
 
 /** A wrapper around an object that is part of the graph of a distributed computation.*/
 private[scoobi]
 class DObjectImpl[A](comp: ValueNode) extends DObject[A] {
   type C = ValueNode
-
   def getComp: C = comp
+
+  import scalaz.Store
+
+  def storeComp: Store[C, DObject[A]] =
+    Store(new DObjectImpl[A](_), comp)
+
+  def addSink(sink: Sink) =
+    storeComp puts (_.addSink(sink))
+
+  def updateSinks(f: Seq[Sink] => Seq[Sink]) =
+    storeComp puts (_.updateSinks(f))
+
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) =
+    storeComp puts ((c: C) => c.updateSinks(sinks => sinks.updateLast(_.compressWith(codec, compressionType))))
+
 
   def map[B : WireFormat](f: A => B): DObject[B] =
     new DObjectImpl(Op(comp, Return.unit, (a: Any, any: Any) => f(a.asInstanceOf[A]), wireFormat[B]))
@@ -39,7 +56,7 @@ class DObjectImpl[A](comp: ValueNode) extends DObject[A] {
       def processFunction(env: Any, input: Any, emitter: EmitterWriter) { emitter.write((env, input)) }
       def cleanupFunction(env: Any, emitter: EmitterWriter) {}
     }
-    new DListImpl(ParallelDo(Seq(list.getComp), comp, dofn, wireFormat[B], wireFormat[(A, B)]))
+    new DListImpl(ParallelDo.create(Seq(list.getComp), comp, dofn, wireFormat[B], wireFormat[(A, B)]))
   }
 
   def toSingleElementDList: DList[A] = (this join SeqInput.fromSeq(Seq(()))).map(_._1)

@@ -18,10 +18,6 @@ package impl
 package exec
 
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.TaskAttemptID
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
 import scala.collection.immutable.VectorBuilder
 import scala.collection.JavaConversions._
 
@@ -29,10 +25,10 @@ import core._
 import monitor.Loggable._
 import impl.plan._
 import comp._
-import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import Configurations._
 import scalaz.Scalaz._
+import CollectFunctions._
 
 /**
  * A fast local mode for execution of Scoobi applications.
@@ -56,44 +52,71 @@ case class InMemoryMode() extends ExecutionMode {
     result
   }
 
+  /** optimisation: we only consider sinks which are related to expected results nodes */
+  override protected lazy val allSinks: CachedAttribute[CompNode, Seq[Sink]] = attr {
+    case n if isExpectedResult(n) => n.sinks ++ children(n).flatMap(allSinks)
+    case n                        => children(n).flatMap(allSinks)
+  }
+
   private
   lazy val computeValue: ScoobiConfiguration => CompNode => Any =
-    paramAttr("computeValue") { sc: ScoobiConfiguration => node: CompNode =>
-      (node -> compute(sc)).head
+    paramAttr { sc: ScoobiConfiguration => node: CompNode =>
+      (node -> compute(sc)).headOption.getOrElse(Seq())
     }
 
   private
   lazy val compute: ScoobiConfiguration => CompNode => Seq[_] =
-    paramAttr("compute") { sc: ScoobiConfiguration => (n: CompNode) =>
+    paramAttr { sc: ScoobiConfiguration => node: CompNode =>
       implicit val c = sc
-      n match {
-        case n: Load                                               => computeLoad(n)
-        case n: Root                                               => Vector(n.ins.map(_ -> computeValue(c)):_*)
-        case n: Return                                             => Vector(n.in)
-        case n: Op                                                 => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
-        case n: Materialise                                        => Vector(n.in -> compute(c))
-        case n: ProcessNode if n.bridgeStore.exists(hasBeenFilled) => n.bridgeStore.flatMap(_.toSource).map(s => loadSource(s, n.wf)).getOrElse(Seq())
-        case n: GroupByKey                                          => saveSinks(computeGroupByKey(n), n.sinks)
-        case n: Combine                                            => saveSinks(computeCombine(n)   , n.sinks)
-        case n: ParallelDo                                         => saveSinks(computeParallelDo(n), n.sinks)
+      val result = node match {
+        case n: Load                                        => computeLoad(n)
+        case n: Root                                        => Vector(n.ins.map(_ -> computeValue(c)):_*)
+        case n: Return                                      => Vector(n.in)
+        case n: Op                                          => Vector(n.execute(n.in1 -> computeValue(c),  n.in2 -> computeValue(c)))
+        case n: Materialise                                 => Vector(n.in -> compute(c))
+        case n: ProcessNode if nodeHasBeenFilled(n) => loadSource(n.bridgeStore.toSource, n.wf)
+        case n: GroupByKey                                  => computeGroupByKey(n)
+        case n: Combine                                     => computeCombine(n)
+        case n: ParallelDo                                  => computeParallelDo(n)
       }
+
+      if (isExpectedResult(node))
+        node match {
+          case Materialise1(_) | Op1(_) | GroupByKey1(_) | ParallelDo1(_) | Combine1(_) => saveSinks(result, node)
+          case _                                                                        => ()
+        }
+      result
     }
 
+  protected def sinksToSave(node: CompNode): Seq[Sink] = {
+    node match {
+      case Materialise1(in) if node.sinks.isEmpty => in.sinks
+      case _                                      => node.sinks
+    }
+  }
+
+  /** @return true if the result must be returned to the client user of this evaluation mode */
+  private def isExpectedResult = (node: CompNode) =>
+    !parent(node).isDefined || parent(node).map(isRoot).getOrElse(false) ||
+    // if there is a checkpoint we must take care that it is not going to be saved twice
+    // once for the current node and twice if its parent is a materialise node with no sinks
+    node.hasCheckpoint && !(parent(node).map(isMaterialise).getOrElse(false) && parent(node).map(_.sinks.isEmpty).getOrElse(false))
+
   private def computeLoad(load: Load)(implicit sc: ScoobiConfiguration): Seq[Any] =
-    loadSource(load.source, load.wf).debug("computeLoad")
+    loadSource(load.source, load.wf).debug(_ => "computeLoad")
 
   private def loadSource(source: Source, wf: WireReaderWriter)(implicit sc: ScoobiConfiguration): Seq[Any] =
-    Source.read(source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(wf)).debug("loadSource")
+    Source.read(source, (a: Any) => WireReaderWriter.wireReaderWriterCopy(a)(wf)).debug(_ => "loadSource")
 
   private def computeParallelDo(pd: ParallelDo)(implicit sc: ScoobiConfiguration): Seq[_] = {
     val vb = new VectorBuilder[Any]()
-    val emitter = new EmitterWriter { def write(v: Any) { vb += v } }
+    val emitter = new EmitterWriter with NoScoobiJobContext { def write(v: Any) { vb += v } }
 
-    val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).head)
+    val (dofn, env) = (pd.dofn, (pd.env -> compute(sc)).headOption.getOrElse(()))
     dofn.setupFunction(env)
     (pd.ins.flatMap(_ -> compute(sc))).foreach { v => dofn.processFunction(env, v, emitter) }
     dofn.cleanupFunction(env, emitter)
-    vb.result.debug("computeParallelDo")
+    vb.result.debug(_ => "computeParallelDo")
   }
 
   private def computeGroupByKey(gbk: GroupByKey)(implicit sc: ScoobiConfiguration): Seq[_] = {
@@ -152,37 +175,6 @@ case class InMemoryMode() extends ExecutionMode {
       (k, combine.combine(vs))
     }.debug("computeCombine")
 
-  private def saveSinks(result: Seq[_], sinks: Seq[Sink])(implicit sc: ScoobiConfiguration): Seq[_] = {
-    sinks.foreach(_.outputSetup(sc.configuration))
-    sinks.foreach { sink =>
-      val job = new Job(new Configuration(sc))
-
-      val outputFormat = sink.outputFormat.newInstance
-
-      sink.outputPath.foreach(FileOutputFormat.setOutputPath(job, _))
-      job.setOutputFormatClass(sink.outputFormat)
-      job.setOutputKeyClass(sink.outputKeyClass)
-      job.setOutputValueClass(sink.outputValueClass)
-      job.getConfiguration.set("mapreduce.output.basename", "ch0out0")  // Attempting to be consistent
-      sink.configureCompression(job.getConfiguration)
-      sink.outputConfigure(job)(sc)
-
-      val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
-      val rw = outputFormat.getRecordWriter(taskContext)
-      val oc = outputFormat.getOutputCommitter(taskContext)
-
-      oc.setupJob(job)
-      oc.setupTask(taskContext)
-
-      sink.write(result, rw)(job.getConfiguration)
-
-      rw.close(taskContext)
-      oc.commitTask(taskContext)
-      oc.commitJob(job)
-    }
-    result
-  }
 
 }
 

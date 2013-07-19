@@ -18,6 +18,7 @@ package acceptance
 
 import Scoobi._
 import testing.mutable.NictaSimpleJobs
+import core.Reduction.{Reduction => R}
 
 class WordCountSpec extends NictaSimpleJobs {
 
@@ -28,7 +29,7 @@ class WordCountSpec extends NictaSimpleJobs {
       mapFlatten(_.split(" ")).map((_, 1)).
       groupByKey.
       filter { case (word, n) => word.length < 6 }.
-      combine(Sum.int)
+      combine(R.Sum.int)
 
     frequencies.run.sorted must_== Seq(("hello", 3), ("world", 4))
 

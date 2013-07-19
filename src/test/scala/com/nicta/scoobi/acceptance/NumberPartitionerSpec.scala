@@ -16,8 +16,6 @@
 package com.nicta.scoobi
 package acceptance
 
-import scalaz.{ DList => _, _ }
-import Scalaz._
 import Scoobi._
 import org.specs2.matcher.Matcher
 

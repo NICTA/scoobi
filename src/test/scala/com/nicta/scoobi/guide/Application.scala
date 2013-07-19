@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package guide
 
 class Application extends ScoobiPage { def is = "Application".title^
-  """
+  s"""
 ### Creation
 
 Scoobi provides several traits to help building applications. `ScoobiApp` brings them all together:
@@ -62,11 +62,11 @@ where `COMMAND-TO-INVOKE-PROGRAM` is the invocation needed to run the program, `
 
 A simple example that runs an application `mypackage.MyApp` using `sbt run-main` with application arguments `input-dir output-dir` and without any configuration-level arguments is:
 
-  `sbt run-main mypackage.MyApp input-dir output-dir`
+  `sbt "run-main mypackage.MyApp input-dir output-dir"`
 
 A more complicated example is as follows:
 
-  `sbt run-main mypackage.MyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 --by-time input-dir output-dir -- scoobi warn.times`
+  `sbt "run-main mypackage.MyApp -Dmapred.max.map.failures.percent=20 -Dmapred.max.reduce.failures.percent=20 --by-time input-dir output-dir -- scoobi warn.times"`
 
 This command contains the following sets of arguments:
 
@@ -86,7 +86,7 @@ The following are the possible configuration arguments for Scoobi:
 
 
  Name           | Default value                    | Description
- ---------------|----------------------------------|--------------------------------------------------------------------
+ -------------- | -------------------------------- | -------------------------------------------------------------------
  verbose        | true                             | if defined, log statements are displayed
  quiet          | false                            | if defined, log statements are not displayed
  times          | false                            | if defined the total execution time is logged
@@ -96,7 +96,7 @@ The following are the possible configuration arguments for Scoobi:
  inmemory       | false                            | if defined, run the Scoobi job in memory backed up by Scala collections instead of Hadoop
  deletelibjars  | false                            | if defined, remove jars from the `libjars` directory before uploading them again
  nolibjars      | false                            | if defined, do not upload dependent jars to the `libjars` directory and include the Scoobi jar in the job jar
- useconfdir     | false                            | if defined, use the configuration files in `$HADOOP_HOME/conf` (useful when running apps from inside sbt)
+ useconfdir     | false                            | if defined, use the configuration files in `$$HADOOP_HOME/conf` or `$$HADOOP_CONF`(useful when running apps from inside sbt)
  keepfiles      | false                            | if defined, temp files and working directory files are not deleted after the job execution (only for testing)
 
 The list of possible log levels is `all`, `fatal`, `info`, `warn`, `trace`, `off`.
@@ -107,7 +107,7 @@ It is also possible to change configuration values by overriding methods in `Sco
 
 Based on how you package your Scoobi application, Scoobi will try to determine what is the best way to find your dependencies and to add them to the classpath:
 
- 1. if you build a "fat" jar containing the application code plus all the dependent jars (see the [Deployment](Deployment.html) page), Scoobi will get all entries in this jar and add them to a "Job" jar that is distributed to all nodes on the cluster. The drawback of this method is that all the dependencies are sent to the cluster each time the application is executed
+ 1. if you build a "fat" jar containing the application code plus all the dependent jars (see the [Deployment](${GUIDE_PAGE}com.nicta.scoobi.guide.Deployment.html) page), Scoobi will get all entries in this jar and add them to a "Job" jar that is distributed to all nodes on the cluster. The drawback of this method is that all the dependencies are sent to the cluster each time the application is executed
 
  2. if you build a "slim" jar with only the application code or execute from inside sbt, Scoobi will find the dependent jars by introspecting the classloader and try to upload them to a directory on the cluster, then to distribute them to each node. This will be done only once to speed-up the development cycle
 
@@ -172,7 +172,7 @@ The `ScoobiApp` trait can be used in 2 different contexts:
 
   2. within sbt
 
-    In that case the cluster location can be either defined by using the `useconfdir` command line argument to get the configuration files found in `$HADOOP_HOME/conf` directory
+    In that case the cluster location can be either defined by using the `useconfdir` command line argument to get the configuration files found in `$$HADOOP_HOME/conf` or the `$$HADOOP_CONF` directory
     You can also override the `fs` and `jobTracker` methods, and get those values from your own properties file.
 
 ### Local execution
@@ -201,13 +201,13 @@ Note that logs can be turned off by using the 'quiet' argument:  `run-main mypac
 
 A special kind of application is the REPL. In order to use the Scoobi REPL you need to create a Java script with the classpath of all the jars you are using invoking the `ScoobiRepl` class:
 
-    java -cp <all your jars here> com.nicta.scoobi.application.ScoobiRepl
+    java -cp [all your jars here] com.nicta.scoobi.application.ScoobiRepl
 
 Once the REPL is initialized, you can start jobs by simply running `DLists`:
 
     scoobi> DList(1, 2, 3).run
 
-The default execution mode is using the Cluster with the configuration found in `$HADOOP_HOME/conf` (if any). It is possible to switch between different execution modes by invoking `inmemory`, `local` at the prompt (and `cluster` to come back to the cluster execution mode). Note also that the `ScoobiConfiguration` is accessible with the `configuration` variable.
+The default execution mode is using the Cluster with the configuration found in `$$HADOOP_HOME/conf` (if any). It is possible to switch between different execution modes by invoking `inmemory`, `local` at the prompt (and `cluster` to come back to the cluster execution mode). Note also that the `ScoobiConfiguration` is accessible with the `configuration` variable.
 
   """
 }

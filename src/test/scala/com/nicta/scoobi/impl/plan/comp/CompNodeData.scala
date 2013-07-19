@@ -21,33 +21,28 @@ package comp
 import data.Data
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2._
-import matcher.ScalaCheckMatchers
+import matcher._
 import specification.Scope
 import main.CommandLineArguments
 
-import core._, Reduction._
+import core._
+import Reduction.{Reduction => R}
 import com.nicta.scoobi.io.ConstantStringDataSource
 import application._
 import WireFormat._
 import org.kiama.rewriting.Rewriter._
 import CompNodeData._
 
-trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArguments with CompNodeFactory { outer =>
+trait CompNodeData extends Data with ScalaCheckMatchers with CompNodeFactory { outer =>
+  override implicit def defaultParameters = Parameters(1000, 1, 5f, 8, 1)
 
   /**
    * Arbitrary instance for a CompNode
    */
   import scalaz.Scalaz._
 
-  override def defaultValues = Map(
-    minTestsOk   -> arguments.commandLine.int("mintestsok").  getOrElse(1000),
-    maxSize      -> arguments.commandLine.int("maxsize").     getOrElse(8),
-    minSize      -> arguments.commandLine.int("minsize").     getOrElse(1),
-    maxDiscarded -> arguments.commandLine.int("maxdiscarded").getOrElse(50),
-    workers      -> arguments.commandLine.int("workers").     getOrElse(1))
-
   import Gen._
-  implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinitAttributable))
+  implicit lazy val arbitraryCompNode: Arbitrary[CompNode]        = Arbitrary(arbitraryDList.arbitrary.map(_.getComp).map(CompNodes.reinit))
 
   implicit lazy val arbitraryDList:    Arbitrary[DList[String]]   = Arbitrary(Gen.sized(depth => genList(depth).map(_.map(normalise))))
   implicit lazy val arbitraryDObject:  Arbitrary[DObject[String]] = Arbitrary(Gen.sized(depth => genObject(depth)))
@@ -77,7 +72,7 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
     if (depth <= 1) genList1(1).map(l => l.map(_.partition(c => c > 'a')))
     else            Gen.oneOf(genList1(depth - 1).map(l => l.map(_.partition(c => c > 'a'))),
                               genList2(depth - 1).map(l => l.map(identity)),
-                              genList3(depth - 1).map(l => l.combine(string)),
+                              genList3(depth - 1).map(l => l.combine(R.string)),
                               ^(genList2(depth / 2), genList2(depth / 2))((_ ++ _)),
                               ^(genObject(depth / 2), genList1(depth / 2))((_ join _))).memo
 
@@ -87,6 +82,16 @@ trait CompNodeData extends Data with ScalaCheckMatchers with CommandLineArgument
     else            Gen.oneOf(genList2(depth - 1).map(l => l.groupByKey),
                               genList3(depth - 1).map(l => l.map(identity))).memo
 
+}
+
+/** this trait allows to set the arguments from the command line */
+trait CompNodeDataWithArgumens extends CompNodeData with CommandLineArguments {
+  override implicit def defaultParameters = Parameters(
+    arguments.commandLine.int("mintestsok").                    getOrElse(1000),
+    arguments.commandLine.int("minsize").                       getOrElse(1),
+    arguments.commandLine.int("maxdiscardratio").map(_.toFloat).getOrElse(5f),
+    arguments.commandLine.int("maxsize").                       getOrElse(8),
+    arguments.commandLine.int("workers").                       getOrElse(1))
 }
 
 object CompNodeData { outer =>
@@ -108,6 +113,7 @@ object CompNodeData { outer =>
   }
 
 }
+
 /**
  * Creation functions
  */
@@ -127,9 +133,9 @@ trait CompNodeFactory extends Scope {
   def parallelDo(in: CompNode)         = pd(in)
 
   def pd(ins: CompNode*): ParallelDo =
-    ParallelDo(ins, rt, EmitterDoFunction, wireFormat[String], wireFormat[String], Seq(), java.util.UUID.randomUUID().toString)
+    ParallelDo.create(ins, rt, EmitterDoFunction, wireFormat[String], wireFormat[String], Seq(), java.util.UUID.randomUUID().toString)
 
   def pdWithEnv(in: CompNode, env: ValueNode): ParallelDo =
-    ParallelDo(Seq(in), env, EmitterDoFunction, wireFormat[String], wireFormat[String], Seq(), java.util.UUID.randomUUID.toString)
+    ParallelDo.create(Seq(in), env, EmitterDoFunction, wireFormat[String], wireFormat[String], Seq(), java.util.UUID.randomUUID.toString)
 
 }

@@ -18,8 +18,9 @@ package impl
 package plan
 package mscr
 
-import comp.ShowNode
-import core.{UniqueInt, CompNode}
+import comp._
+import com.nicta.scoobi.core.{Sink, UniqueInt, CompNode}
+import CollectFunctions._
 
 /**
  * Simple layering algorithm using the Longest path method to assign nodes to layers.
@@ -32,39 +33,48 @@ trait Layering extends ShowNode {
 
   type T <: CompNode
 
-  /** a function to select only some nodes in the graph. They must be of type T */
-  def selectNode(n: CompNode): Boolean
+  def layersOf(nodes: Seq[T], select: T => Boolean = (n: T) => true): Seq[Seq[T]] = {
 
-  lazy val selected: CompNode => Boolean = attr("selected node") { case n => selectNode(n) }
-  lazy val select: PartialFunction[CompNode, T] = { case n if n -> selected => n.asInstanceOf[T] }
-
-  lazy val selectedDescendents: CompNode => Seq[T] = attr("selected descendents") { case n =>
-    (n -> descendents).collect(select)
-  }
-
-  /** @return the layer that a selected node is in. None if this is not a selected node */
-  lazy val layer: CompNode => Option[Layer[T]] = attr("layer") { case n =>
-    layers(root(n)).find(_.nodes.contains(n))
-  }
-
-  lazy val layers: CompNode => Seq[Layer[T]] = attr("layers") { case n =>
-    val (leaves, nonLeaves) = selectedDescendents(n).partition { d =>
-      selectedDescendents(d).isEmpty
+    val selectedNodes = nodes.flatMap { n =>
+      if (select(n)) n +: selectDescendentsOf(select)(n)
+      else                selectDescendentsOf(select)(n)
     }
-    val leaf = if (leaves.isEmpty && selectNode(n)) Seq(select(n)) else Seq()
-    val result = Layer(leaves ++ leaf) +:
-      nonLeaves.groupBy(_ -> longestPathTo(leaves)).toSeq.sortBy(_._1).map { case (k, v) => Layer(v) }
-    result.filterNot(_.isEmpty)
+
+    val (leaves, nonLeaves) = selectedNodes.partition(n => selectDescendentsOf(select)(n).isEmpty)
+    val leafNodes = if (leaves.isEmpty && nodes.exists(select)) nodes.filter(select) else Seq[T]()
+
+    val result = (leaves ++ leafNodes) +:
+                 nonLeaves.groupBy(_ -> longestPathSizeTo(leaves)).toSeq.sortBy(_._1).map(_._2)
+    result.filterNot(_.isEmpty).distinct
   }
 
-  lazy val longestPathTo: Seq[CompNode] => CompNode => Int = paramAttr("longestPathToNodeFromSomeNodes") { (target: Seq[CompNode]) => node: CompNode =>
-    target.map(t => node -> longestPathToNode(t)).max
+  private lazy val selectDescendentsOf =
+    paramAttr((select: (CompNode => Boolean)) => (n: CompNode) => descendents(n).filter(select).distinct)
+
+  lazy val longestPathSizeTo: Seq[CompNode] => CompNode => Int = paramAttr { (target: Seq[CompNode]) => node: CompNode =>
+    target.map(t => node -> longestPathSizeToNode(t)).max
   }
 
-  lazy val longestPathToNode: CompNode => CompNode => Int = paramAttr("longestPathToNodeFromOneNode") { (target: CompNode) => node: CompNode =>
-    if (node.id == target.id)        0  // found
-    else if (children(node).isEmpty) -1 // not found
-    else                             1 + children(node).map(_ -> longestPathToNode(target)).max
+  lazy val longestPathSizeToNode: CompNode => CompNode => Int = paramAttr { (target: CompNode) => node: CompNode =>
+    longestPathToNode(target)(node).size
+  }
+
+  lazy val longestPathToNode: CompNode => CompNode => Seq[CompNode] = paramAttr { (target: CompNode) => node: CompNode =>
+    if (node.id == target.id)        Seq(node)  // found
+    else if (children(node).isEmpty) Seq()      // not found
+    else                             node +: children(node).map(_ -> longestPathToNode(target)).maxBy(_.size)
+  }
+
+  lazy val shortestPathToNode: CompNode => CompNode => Seq[CompNode] = paramAttr { (target: CompNode) => node: CompNode =>
+    if (node.id == target.id)        Seq(node)  // found
+    else if (children(node).isEmpty) Seq()      // not found
+    else                             node +: children(node).map(_ -> longestPathToNode(target)).minBy(_.size)
+  }
+
+  lazy val pathsToNode: CompNode => CompNode => Seq[Seq[CompNode]] = paramAttr { (target: CompNode) => node: CompNode =>
+    if (node.id == target.id)        Seq(Seq(node))  // found
+    else if (children(node).isEmpty) Seq()           // not found
+    else                             children(node).flatMap(ch => (ch -> pathsToNode(target)).filterNot(_.isEmpty).map(p => node +: p))
   }
 
   import Layer._
@@ -73,12 +83,30 @@ trait Layering extends ShowNode {
    *
    * Because of this property they can be executed in parallel
    */
-  case class Layer[T <: CompNode](nodes: Seq[T] = Seq[T]()) {
+  case class Layer(mscrs: Seq[Mscr] = Seq()) {
     val id = rollingInt.get
+    /** @return all process nodes */
+    lazy val nodes = mscrs.flatMap(_.nodes)
+    /** @return all output nodes */
+    lazy val outputNodes: Seq[CompNode] = mscrs.flatMap(_.outputNodes)
+    /** @return all group by keys */
     lazy val gbks = nodes.collect(isAGroupByKey)
+    /** @return all the sinks for this layer */
+    lazy val sinks = mscrs.flatMap(_.sinks).distinct
 
     lazy val isEmpty = nodes.isEmpty
+
     override def toString = nodes.mkString("Layer("+id+"\n  ", ",\n  ", ")\n")
+
+    override def equals(a: Any) = a match {
+      case other: Layer => id == other.id
+      case _            => false
+    }
+
+    /** @return true if the layer contains the node n */
+    def contains(n: CompNode) = nodes.contains(n)
+
+    override def hashCode = id.hashCode()
   }
 
   object Layer {

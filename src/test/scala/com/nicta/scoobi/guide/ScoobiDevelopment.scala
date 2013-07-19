@@ -40,21 +40,7 @@ and are built into `target/spec2-reports/guide-SNAPSHOT/guide`
   
 We welcome pull-requests on github. We rebase commits aggressively (up until the point they land on master) to have a clean and linear history. So don't be suprised if the sha1 changes when it lands. As such, it makes our lives a lot easier if your commit is already based on master and all squashed down into nice logical commits.
   
-  
-After landing on master, the commit will automatically get merged down into the cdh3 and publishing branches. Our build server will then run the full tests, on our internal cluster -- and if everything looks good, a new snapshot will be published.
-  
-  
+Once landing on master, our build server will then run the full tests on our internal cluster -- and if everything looks good, a new snapshot will be published.
 
-### Eclipse
-
-The [sbteclipse plugin](https://github.com/typesafehub/sbteclipse) can be used to generate an eclipse project. However, [issue #115](https://github.com/typesafehub/sbteclipse/issues/115) means you will need to first build scoobi (`sbt compile`) and then copy the auto-generated code to somewhere sbteclipse will find it:
-
-```
-  cp target/scala-2.9.2/src_managed/main/scoobi/codegen/* src/main/scala/
-```
-  
-This however, will break the build from within sbt (as it will see two versions of the code generated stuff). An easy solution is to simply comment out the line in build.sbt `(sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen` just remember not to commit this.
-
-Now after running `sbt eclipse` and importing the project, you will get compile errors related to dependent types. This is [issue #115](https://github.com/typesafehub/sbteclipse/issues/115) and can easily be worked around by right-clicking on the scoobi project, going to properties, then 'scala compiler and adding `-Ydependent-method-types`. 
-  """
+"""
 }

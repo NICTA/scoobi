@@ -29,6 +29,9 @@ import org.apache.hadoop.io.BytesWritable
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
+import java.io._
+import collection.mutable
+import com.nicta.scoobi.core.WireFormat
 
 /** Type class for conversions between basic Scala types and Hadoop Writable types. */
 trait SeqSchema[A] {
@@ -41,6 +44,12 @@ trait SeqSchema[A] {
 
 /* Implicits instances for SeqSchema type class. */
 object SeqSchema {
+  implicit def WritableSeqSchema[T <: Writable : Manifest] = new SeqSchema[T] {
+    type SeqType = T
+    def toWritable(x: T): T = x
+    def fromWritable(x: T): T = x
+    val mf: Manifest[T] = implicitly[Manifest[T]]
+  }
   implicit object BoolSchema extends SeqSchema[Boolean] {
     type SeqType = BooleanWritable
     def toWritable(x: Boolean) = new BooleanWritable(x)
@@ -101,4 +110,29 @@ object SeqSchema {
     }
     val mf: Manifest[SeqType] = implicitly
   }
+
+  /**
+   * Sequence Schema for any type having a WireFormat
+   */
+  implicit def wireformatSchema[A : WireFormat]: SeqSchema[A] = new SeqSchema[A] {
+    type SeqType = BytesWritable
+
+    val b = mutable.ArrayBuffer[Byte]().mapResult(_.toArray)
+
+    def toWritable(a: A) = {
+      val bs = new ByteArrayOutputStream
+      implicitly[WireFormat[A]].toWire(a, new DataOutputStream(bs))
+      new BytesWritable(bs.toByteArray)
+    }
+    def fromWritable(xs: BytesWritable): A = {
+      b.clear()
+      xs.getBytes.take(xs.getLength).foreach { x => b += x }
+      val bArr = b.result()
+
+      val bais = new ByteArrayInputStream(bArr)
+      implicitly[WireFormat[A]].fromWire(new DataInputStream(bais))
+    }
+    val mf: Manifest[SeqType] = implicitly
+  }
+
 }

@@ -25,6 +25,7 @@ import org.specs2.mutable.Tables
 import com.nicta.scoobi.io.text.TextOutput
 import TextOutput._
 import control.Functions._
+import CollectFunctions._
 
 class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
 
@@ -42,14 +43,48 @@ class OptimiserSpec extends UnitSpecification with Tables with CompNodeData {
     collectSuccessiveParDos(optimised) must beEmpty
   }
 
-  "If the input node of a Materialise node has no bridgeStore we need to create one" >> new optimiser {
-    val materialise = mt(pd(load).addSink(textFileSink("path")))
-    materialise.in.bridgeStore must beNone
-    optimise(addBridgeStore, materialise).collect(isAMaterialise).head.in.bridgeStore must beSome
+  "Shared ParallelDos must not duplicated" >> {
+    "when no fusion occurs" >> new optimiser {
+      val pd1 = pd(load)
+      val (gbk1, gbk2) = (gbk(pd1), gbk(pd1))
+      val node = aRoot(gbk1, gbk2)
+      val optimised = optimise(parDoFuse, node)
+      collectParallelDo(optimised.head).distinct must haveSize(1)
+    }
+    "with fusion, the nodes must be fused but only if they are not shared" >> new optimiser {
+      val pd1 = pd(load)
+      val (pd2, pd3) = (pd(pd1), pd(pd1))
+      val (gbk1, gbk2) = (gbk(pd(pd2)), gbk(pd(pd2)))
+      val node = aRoot(gbk1, gbk2)
+      val optimised = optimise(parDoFuse, node)
+
+      collectParallelDo(optimised.head).distinct must haveSize(3)
+    }
+  }
+
+  "Shared Combine nodes must not duplicated" >> {
+    "with cd -> pd transformation" >> new optimiser {
+      val cb1 = cb(load)
+      val (gbk1, gbk2) = (gbk(cb1), gbk(cb1))
+      val node = aRoot(gbk1, gbk2)
+      val optimised = optimise(combineToParDo, node)
+      collectParallelDo(optimised.head).distinct must haveSize(1)
+    }
+    "with cb -> pd and node fusion" >> new optimiser {
+      val pd1 = pd(load)
+      val pd2 = pd(pd1)
+      val cb1 = cb(pd2)
+      val (gbk1, gbk2) = (gbk(cb1), gbk(cb1))
+      val node = aRoot(gbk1, gbk2)
+      val optimised = optimise(combineToParDo <* parDoFuse, node)
+      collectParallelDo(optimised.head).distinct aka pretty(optimised.head) must haveSize(1)
+    }
   }
 
   "If some of the sinks of a node have not been filled, a new node must be created for it" >> new optimiser {
-    val list = pd(load).addSink(markSinkAsFilled(textFileSink("path")))
+    val sink = textFileSink("path")
+    val list = pd(load).addSink(sink)
+    list.sinks.foreach(markSinkAsFilled)
 
     val sinks = optimise(addParallelDoForNonFilledSinks, list.addSink(textFileSink("path"))).collect(isAParallelDo).head.nodeSinks
     sinks must haveSize(1)

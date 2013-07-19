@@ -15,11 +15,9 @@
  */
 package scalazx
 
-import scalaz.{Semigroup, Scalaz, std, Order}
-import Scalaz._
+import scalaz._,Scalaz._
 import std._
 import iterable._
-import map._
 
 /**
  * The methods below provide way to:
@@ -44,6 +42,7 @@ trait Reducer {
     // sort the values by key
     val valuesByKey: Seq[(K, T)] = values.view.map(r => (key(r), r))
     // add them by key, using the Option[T] Monoid
+    implicit def monoid = mapMonoid[K, Option[T]]
     val sumByKey = valuesByKey.foldMap { case (k, v) => Map((k, Option(v))) }
     // keep the values only and transform a Seq[Option[T]] into an Option[Seq[T]] with `sequence`
     sumByKey.map(_._2).toList.sequence.getOrElse(Seq())
@@ -89,6 +88,7 @@ trait Reducer {
   implicit def orderToOrdering[T : Order]: scala.math.Ordering[T] = new scala.math.Ordering[T] {
     def compare(x: T, y: T) = Order[T].order(x, y).toInt
   }
+
 }
 
 object Reducer extends Reducer

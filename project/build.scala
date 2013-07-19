@@ -30,8 +30,6 @@ import sbtrelease._
 import ReleasePlugin._
 import ReleaseKeys._
 import ReleaseStateTransformations._
-import ls.Plugin._
-import LsKeys._
 import Utilities._
 import Defaults._
 
@@ -43,74 +41,30 @@ object build extends Build {
     base = file("."),
     settings = Defaults.defaultSettings ++
                scoobiSettings           ++
-               dependenciesSettings     ++
+               dependencies.settings    ++
                compilationSettings      ++
                testingSettings          ++
                siteSettings             ++
                publicationSettings      ++
-               notificationSettings     ++
                releaseSettings
-  ) 
+  )
 
   lazy val scoobiVersion = SettingKey[String]("scoobi-version", "defines the current Scoobi version")
   lazy val scoobiSettings: Seq[Settings] = Seq(
     name := "scoobi",
     organization := "com.nicta",
     scoobiVersion in GlobalScope <<= version,
-    scalaVersion := "2.9.2")
-
-  lazy val dependenciesSettings: Seq[Settings] = Seq(
-    libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
-      val hadoop =
-        if (version.contains("cdh3")) Seq("org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u1")
-        else                          Seq("org.apache.hadoop" % "hadoop-client" % "2.0.0-mr1-cdh4.0.1",
-          "org.apache.hadoop" % "hadoop-core" % "2.0.0-mr1-cdh4.0.1")
-      hadoop ++ Seq(
-      "javassist" % "javassist" % "3.12.1.GA",
-      "org.apache.avro" % "avro-mapred" % "1.7.3.1",
-      "org.apache.avro" % "avro" % "1.7.3.1",
-      "com.thoughtworks.xstream" % "xstream" % "1.4.4" intransitive(),
-      "com.googlecode.kiama" %% "kiama" % "1.5.0-SNAPSHOT",
-      "com.github.mdr" %% "ascii-graphs" % "0.0.2",
-      "org.scalaz" %% "scalaz-core" % "7.0.0-M9",
-      "org.scalaz" %% "scalaz-concurrent" % "7.0.0-M9",
-      "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M9" intransitive(),
-      "org.scalaz" %% "scalaz-typelevel" % "7.0.0-M9" intransitive(),
-      "org.scalaz" %% "scalaz-xml" % "7.0.0-M9" intransitive(),
-      "org.scala-lang" % "scala-compiler" % scalaVersion,
-      "org.specs2" %% "specs2" % "1.12.4" % "optional",
-      "org.specs2" % "classycle" % "1.4.1"% "test",
-      "com.chuusai" %% "shapeless" % "1.2.2",
-      "org.scalacheck" %% "scalacheck" % "1.9" % "test",
-      "org.scala-tools.testing" % "test-interface" % "0.5" % "test",
-      "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "org.pegdown" % "pegdown" % "1.0.2" % "test",
-      "junit" % "junit" % "4.7" % "test",
-      "org.apache.commons" % "commons-math" % "2.2" % "test",
-      "org.apache.commons" % "commons-compress" % "1.0" % "test"
-    ) },
-    resolvers ++= Seq("nicta's avro" at "http://nicta.github.com/scoobi/releases",
-      "cloudera" at "https://repository.cloudera.com/content/repositories/releases",
-      "sonatype-releases" at "http://oss.sonatype.org/content/repositories/releases",
-      "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots")
-  )
+    scalaVersion := "2.10.2")
 
   lazy val compilationSettings: Seq[Settings] = Seq(
     (sourceGenerators in Compile) <+= (sourceManaged in Compile) map GenWireFormat.gen,
-    scalacOptions ++= Seq("-deprecation", "-Ydependent-method-types", "-unchecked")
+    scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions,reflectiveCalls,postfixOps,higherKinds,existentials"),
+    scalacOptions in Test ++= Seq("-Yrangepos")
   )
 
   lazy val testingSettings: Seq[Settings] = Seq(
-    testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
-    // run each test in its own jvm
-    fork in Test := true,
-    javaOptions ++= Seq("-Djava.security.krb5.realm=OX.AC.UK",
-                        "-Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk",
-                        "-Xms3072m",
-                        "-Xmx3072m",
-                        "-XX:MaxPermSize=768m",
-                        "-XX:ReservedCodeCacheSize=1536m")
+    testOptions := Seq(Tests.Filter(s => s.endsWith("Spec") || s.contains("guide") || Seq("Index", "All", "UserGuide", "ReadMe").exists(s.contains))),
+    javaOptions in Test ++= Seq("-Xmx1g")
   )
 
   lazy val siteSettings: Seq[Settings] = ghpages.settings ++ SbtSite.site.settings ++ Seq(
@@ -128,12 +82,6 @@ object build extends Build {
     gitRemoteRepo := "git@github.com:NICTA/scoobi.git"
   )
 
-  lazy val notificationSettings: Seq[Settings] = lsSettings ++ Seq(
-    (LsKeys.ghBranch in LsKeys.lsync) := Some("master-publish"),
-    (LsKeys.ghUser in LsKeys.lsync) := Some("nicta"),
-    (LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
-  )
-
   lazy val publicationSettings: Seq[Settings] = Seq(
     publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
@@ -144,7 +92,7 @@ object build extends Build {
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
     pomExtra := (
-      <url>http://nicta.github.com/scoobi</url>
+      <url>http://nicta.github.io/scoobi</url>
       <licenses>
         <license>
           <name>Apache 2.0</name>
@@ -181,7 +129,6 @@ object build extends Build {
    * EXAMPLE PROJECTS
    */
   def project(name: String) = Project(id = name, base = file("examples/"+name))
-  lazy val avro      = project("avro")
   lazy val fatjar    = project("fatjar")
   lazy val pageRank  = project("pageRank")
   lazy val scoobding = project("scoobding")
@@ -193,8 +140,6 @@ object build extends Build {
   lazy val releaseSettings =
     ReleasePlugin.releaseSettings ++ Seq(
     tagName <<= (version in ThisBuild) map (v => "SCOOBI-" + v),
-    releaseVersion <<= (releaseVersion) { nv => (s: String) => cdh4Version(nv(s)) },
-    nextVersion <<= (nextVersion) { nv => (s: String) => cdh4Version(nv(s).replace("-SNAPSHOT", ""))+"-SNAPSHOT" },
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
@@ -205,8 +150,6 @@ object build extends Build {
       generateReadMe,
       publishSite,
       publishSignedArtifacts,
-      publishForCDH3,
-      notifyLs,
       notifyHerald,
       tagRelease,
       setNextVersion,
@@ -216,10 +159,10 @@ object build extends Build {
     releaseSnapshotProcess := Seq[ReleaseStep](
       generateUserGuide,
       publishSite,
-      publishSignedArtifacts,
-      publishForCDH3),
+      publishSignedArtifacts),
     commands += releaseSnapshotCommand
   ) ++
+  Seq(publishUserGuideTask <<= pushSite.dependsOn(makeSite).dependsOn(generateUserGuideTask)) ++
   documentationSettings
 
   lazy val releaseSnapshotProcess = SettingKey[Seq[ReleaseStep]]("release-snapshot-process")
@@ -243,13 +186,12 @@ object build extends Build {
     Function.chain(process)(startState)
   }
 
-  lazy val cdh4Version = (s: String) => { if (!(s contains "-cdh4")) (s+"-cdh4") else s }
   /**
    * DOCUMENTATION
    */
   lazy val documentationSettings =
     testTaskDefinition(generateUserGuideTask, Seq(Tests.Filter(_.endsWith("UserGuide")), Tests.Argument("html"))) ++
-    testTaskDefinition(generateReadMeTask, Seq(Tests.Filter(_.endsWith("ReadMe")), Tests.Argument("markup"))) ++
+    testTaskDefinition(generateReadMeTask, Seq(Tests.Filter(_.endsWith("ReadMe")), Tests.Argument("markdown"))) ++
     testTaskDefinition(generateIndexTask, Seq(Tests.Filter(_.endsWith("Index")), Tests.Argument("html", "checkurls")))
 
   lazy val updateLicences = ReleaseStep { st =>
@@ -274,6 +216,8 @@ object build extends Build {
   lazy val generateIndexTask = TaskKey[Tests.Output]("generate-index", "generate the index page, the User Guide and check the User Guide urls")
   lazy val generateIndex     = executeStepTask(generateIndexTask, "Generating the index, the User Guide and checking the urls of the User Guide", Test)
 
+  lazy val publishUserGuideTask = TaskKey[Unit]("publish-user-guide", "publish the user guide")
+
   lazy val publishSite = ReleaseStep { st: State =>
     val st2 = executeStepTask(makeSite, "Making the site")(st)
     executeStepTask(pushSite, "Publishing the site")(st2)
@@ -295,33 +239,12 @@ object build extends Build {
    */
   lazy val publishSignedArtifacts = executeStepTask(publishSigned, "Publishing signed artifacts")
 
-  lazy val publishForCDH3 = ReleaseStep { st: State =>
-    // this specific commit changes the necessary files for working with CDH3
-    "git cherry-pick -n b118110" !! st.log
-
-    try {
-      val extracted = Project.extract(st)
-      val ref: ProjectRef = extracted.get(thisProjectRef)
-      val st2 = extracted.append(List(version in ThisBuild in ref ~= (_.replace("cdh4", "cdh3"))), st)
-      executeTask(publishSigned, "Publishing CDH3 signed artifacts")(st2)
-    } finally {
-      st.log.info("Reverting the CDH3 changes")
-      "git reset --hard HEAD" !! st.log
-    }
-  }
-
   /**
    * NOTIFICATION
    */
-  lazy val notifyLs = ReleaseStep { st: State =>
-    val st2 = executeTask(writeVersion, "Writing ls.implicit.ly dependencies")(st)
-    val st3 = commitCurrent("Added a new ls file")(st2)
-    val st4 = pushCurrent(st3)
-    executeTask(lsync, "Synchronizing with the ls.implict.ly website")(st4)
-  }
   lazy val notifyHerald = ReleaseStep (
     action = (st: State) => {
-      Process("herald &").lines; st.log.info("Starting herald to publish the release notes"); st
+      Process("herald &").lines; st.log.info("Starting herald to publish the release notes")
       commitCurrent("Updated the release notes")(st)
     },
     check  = (st: State) => {

@@ -89,9 +89,14 @@ trait Configurations {
      * @return the modified configuration object
      */
     def overrideWith(map: scala.collection.Map[String, String]): Configuration = {
-      map foreach { case (k, v) => conf.set(k, v) }
+      map foreach { case (k, v) => Option(conf.get(k)).map(existingValue => if (existingValue != v) conf.set(k, v)).getOrElse(conf.set(k, v)) }
       conf
     }
+    /**
+     * add all the keys found in the other Configuration to this configuration
+     * @return the modified configuration object
+     */
+    def overrideWith(other: Configuration): Configuration = updateWith(other) { case (k, v) => (k, v) }
 
     /**
      * update the value of a given key, using a default value if missing

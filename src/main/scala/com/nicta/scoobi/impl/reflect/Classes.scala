@@ -18,7 +18,7 @@ package impl
 package reflect
 
 import java.util.jar.{JarEntry, JarInputStream}
-import java.io.FileInputStream
+import java.io.{File, FileInputStream}
 import java.net.{URL, URLDecoder}
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory
 
 import control.Exceptions._
 import tools.nsc.util.ScalaClassLoader
+import scala.reflect.io.{AbstractFile, VirtualDirectory}
+import tools.nsc.interpreter.AbstractFileClassLoader
 
 /**
  * Utility methods for accessing classes and methods
@@ -76,6 +78,22 @@ trait Classes {
     entries
   }
 
+  /** Find the location of director that contains a particular class file */
+  def findContainingDirectory(clazz: Class[_]): Option[String] =
+    getResource(clazz).map(url => url.toString.replace(classFile(clazz.getName), "").replace("file:", ""))
+
+  /** @return the path of the file containing the class */
+  def getResource(clazz: Class[_]): Option[URL] = {
+    val classLoader = loader(clazz)
+    Option(classLoader.getResource(classFile(clazz.getName)))
+  }
+
+  /** @return the path of the file containing the class */
+  def classFile(className: String) = {
+    val splitted = className.split("\\.")
+    splitted.dropRight(1).mkString("", "/", "/") + splitted.lastOption.getOrElse(className) + ".class"
+  }
+
   /** Find the location of JAR that contains a particular class. */
   def findContainingJar(clazz: Class[_]): Option[String] =
     findContainingJar(loader(clazz), clazz.getName)
@@ -101,11 +119,15 @@ trait Classes {
     className.replaceAll("\\.", "/") + ".class"
 
   /** @return the classes contained in a class loader, by class name */
-  def loadedClasses(classLoader: ScalaClassLoader) = {
-    val classesField = classOf[ClassLoader].getDeclaredField("classes")
-    classesField.setAccessible(true)
-    val classes = asScalaBuffer(classesField.get(classLoader).asInstanceOf[java.util.List[Class[_]]])
-    Map(classes.map(klass => (klass.getName, classLoader.classBytes(klass.getName))):_*)
+  def loadedClasses(classLoader: AbstractFileClassLoader) = {
+    def virtualClasses(file: AbstractFile): Seq[AbstractFile] = {
+      if (file.isDirectory) (file.flatMap(child => virtualClasses(child)).toSeq ++ file.filter(_.name.endsWith(".class")))
+      else Seq(file).filter(_.name.endsWith(".class"))
+    }
+
+    Map { virtualClasses(classLoader.root).map { file =>
+      (file.path.replace("(memory)/", "").replace("/", ".").replace(".class", ""), file.toByteArray)
+    }: _*}
   }
 
   /** @return the file path corresponding to a full URL */

@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011,2012 National ICT Australia Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nicta.scoobi
 package application
 
@@ -8,6 +23,10 @@ import core.ScoobiConfiguration
 import scala.collection.JavaConversions._
 import tools.nsc.reporters.ConsoleReporter
 import tools.nsc.interpreter.IMain.ReplStrippingWriter
+import tools.nsc.util.ScalaClassLoader.URLClassLoader
+import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
+import core.ScoobiConfiguration
+import impl.io.FileSystems
 
 /** A REPL for Scoobi.
   *
@@ -21,19 +40,17 @@ object ScoobiRepl extends ScoobiInterpreter
   */
 trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 
-  /** start the program but don't upload jars by default */
-  override def main(args: Array[String]) {
-    parseHadoopArguments(args)
-    onHadoop {
-      try { run }
-      finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
-    }
+  override def main(arguments: Array[String]) {
+    parseHadoopArguments(arguments)
+    try { run }
+    finally { if (!keepFiles) { configuration.deleteWorkingDirectory } }
   }
 
   def run() {
     val settings = new Settings
     settings.usejavacp.value = true
-    new ScoobiILoop(configuration).process(settings)
+    setConfiguration(configuration.configuration)
+    new ScoobiILoop(this).process(settings)
   }
 
   def help =
@@ -48,20 +65,49 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
        |""".stripMargin
 
   /** set the configuration so that the next job is run in memory */
-  def inmemory { configureForInMemory }
+  def inmemory {
+    setNewArguments("inmemory" +: removeExecutionMode(replArgs))
+  }
   /** set the configuration so that the next job is run locally */
-  def local    { configureForLocal }
+  def local {
+    setNewArguments("local" +: removeExecutionMode(replArgs))
+  }
   /** set the configuration so that the next job is run on the cluster - this is the default */
   def cluster  {
-    setConfiguration(configuration.configuration)
-    configureForCluster
+    setNewArguments("cluster" +: removeExecutionMode(replArgs))
+  }
+
+  def removeExecutionMode(arguments: Seq[String]) =
+    arguments.filterNot(Seq("local", "cluster", "inmemory").contains)
+
+  private[scoobi] def setDefaultArgs {
+    replArgs = Seq("verbose", "all")
+    setNewArguments(replArgs)
   }
 
   def scoobiArgs_=(arguments: String) {
-    scoobiArguments = arguments.split("\\.").map(_.trim)
-    setLogFactory()
+    setNewArguments(arguments.split("\\.").map(_.trim))
   }
 
+  private def setNewArguments(arguments: Seq[String]) {
+    replArgs = arguments
+    scoobiArguments = replArgs
+
+    // reset previous classpath settings and cached files
+    configuration.configuration.set("mapred.job.classpath.files", "")
+    configuration.configuration.set("mapred.classpath", "")
+    configuration.configuration.set("mapred.cache.files", "")
+
+    if (isInMemory)   configureForInMemory
+    else if (isLocal) configureForLocal
+    else              configureForCluster
+    setLogFactory()
+
+    configuration.jobNameIs("REPL")
+  }
+
+  private var replArgs: Seq[String] = Seq()
+  override def argumentsValues = replArgs
   override def useHadoopConfDir = true
 
 }
@@ -69,7 +115,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
 /**
  * definition of the interpreter loop
  */
-class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
+class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
+  val configuration = scoobiInterpreter.configuration
 
   def imports: Seq[String] = Seq(
     "com.nicta.scoobi.Scoobi._",
@@ -98,12 +145,19 @@ class ScoobiILoop(configuration: ScoobiConfiguration) extends ILoop { outer =>
           truncateResult(truncated)
         }
       }
-      override lazy val reporter: ConsoleReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+      override lazy val reporter = new ReplReporter(outer) {
+        val realReporter = new ConsoleReporter(outer.settings, null, strippingWriter)
+        override def printMessage(message: String) { realReporter.printMessage(message) }
+        override def displayPrompt() { realReporter.displayPrompt() }
+        override def flush() { realReporter.flush() }
+      }
     }
     intp.beQuietDuring {
       imports.foreach(i => intp.addImports(i))
       configuration.addClassLoader(intp.classLoader)
-      configuration.jobNameIs("REPL")
+      if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
+      else                                      scoobiInterpreter.local
+      scoobiInterpreter.setDefaultArgs
       woof()
     }
   }
@@ -131,7 +185,7 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
   def ls(path: String) {
     configuration.fileSystem.listStatus(new Path(path)) foreach { fstat =>
       Console.printf("%s%s  %-15s  %-12s  %s\n",
-        if (fstat.isFile) "-" else "d",
+        if (FileSystems.isDirectory(fstat)) "d" else "-",
         fstat.getPermission,
         fstat.getOwner,
         fstat.getBlockSize,

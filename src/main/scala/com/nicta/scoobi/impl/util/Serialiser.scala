@@ -22,20 +22,25 @@ import com.thoughtworks.xstream.io.binary.BinaryStreamDriver
 import org.apache.hadoop.conf.Configuration
 import java.io._
 import core.ScoobiConfiguration
-import com.thoughtworks.xstream.io.xml.StaxDriver
 
 trait Serialiser {
 
   private val xstream = new XStream(new BinaryStreamDriver)
+  initialiseXStream
 
-  xstream.omitField(classOf[Configuration],           "classLoader")
-  xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
-  xstream.omitField(classOf[ScoobiConfiguration],     "sc")
-  xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
-  val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
-  xstream.omitField(bridgeStoreIteratorClass,  "sc")
-  xstream.omitField(bridgeStoreIteratorClass,  "readers")
-  xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
+  private def initialiseXStream {
+    xstream.omitField(classOf[Configuration],           "classLoader")
+    xstream.omitField(classOf[Configuration],           "CACHE_CLASSES")
+    xstream.omitField(classOf[ScoobiConfiguration],     "sc")
+    xstream.omitField(classOf[ScoobiConfigurationImpl], "classLoader")
+    xstream.omitField(classOf[ScoobiConfigurationImpl], "counters")
+    xstream.omitField(classOf[ScoobiConfigurationImpl], "persister")
+    
+    val bridgeStoreIteratorClass = getClass.getClassLoader.loadClass("com.nicta.scoobi.impl.mapreducer.BridgeStoreIterator")
+    xstream.omitField(bridgeStoreIteratorClass,  "sc")
+    xstream.omitField(bridgeStoreIteratorClass,  "readers")
+    xstream.omitField(bridgeStoreIteratorClass,  "remainingReaders")
+  }
 
   def serialise(obj: Any, out: OutputStream) = synchronized {
     try { xstream.toXML(obj, out) }
@@ -54,6 +59,5 @@ trait Serialiser {
 
   def fromByteArray(in: Array[Byte]) =
     deserialise(new ByteArrayInputStream(in))
-
 }
 object Serialiser extends Serialiser

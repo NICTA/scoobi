@@ -26,6 +26,7 @@ import testing.mutable.{UnitSpecification => UnitSpec}
 import application._
 import core._
 import HadoopLogFactory._
+import org.specs2.specification.Context
 
 class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { isolated
 
@@ -56,13 +57,14 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
         runMustBeLocalThenCluster
       }
       "with timing" >> {
+        val executed = context.withTiming.example1.execute.expected
         forall(Seq("Local execution time: ", "Cluster execution time: ")) { s =>
-          context.withTiming.example1.execute.expected.split("\n").toSeq must containMatch(s)
+          executed.split("\n").toSeq must containMatch(s)
         }
       }
     }
     "only locally if there is a failure" >> {
-      "normal execution" >> {
+      "x normal execution" >> {
         context.example2.execute
         there was one(context.mocked).runOnLocal(any[Result])
         there was no(context.mocked).runOnCluster(any[Result])
@@ -76,7 +78,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     step("checking the logs")
     "if verbose logging is enabled then the Log instance must not be NoOpLog" >> {
       context.withVerbose.example1.execute
-      LogFactory.getLog("any").getClass.getSimpleName must not(be_==("NoOpLog"))
+      LogFactory.getLog("any").getClass.getSimpleName must not(be_==("NoOpLog")).orSkip
     }
     step(HadoopLogFactory.setLogFactory())
   }
@@ -118,7 +120,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
   // various Hadoop Examples traits
   def localExamples                                  = new HadoopExamplesForTesting { override def context = local }
   def clusterExamples(command: String = "")          = new HadoopExamplesForTesting { override def context = cluster; override lazy val arguments = Arguments(command) }
-  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = chain(contexts.filterNot(_ == inMemory)); override lazy val arguments = Arguments(command) }
+  def localThenClusterExamples(command: String = "") = new HadoopExamplesForTesting { override def context = chain(Seq(local, cluster)); override lazy val arguments = Arguments(command) }
 
   def examples(includeTag: String) = new HadoopExamplesForTesting {
     override lazy val arguments = include(includeTag)

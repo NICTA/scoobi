@@ -42,7 +42,7 @@ class MultipleMscrSpec extends NictaSimpleJobs {
 
   "An MSCR can read from two intermediate outputs." >> { implicit c: SC =>
 
-    def unique[A : WireFormat : Grouping](x: DList[A]) = x.groupBy(identity).combine(first)
+    def unique[A : WireFormat : Grouping](x: DList[A]) = x.groupBy(identity).combine(Reduction.first)
 
     val words1 = List("hello", "world")
     val words2 = List("foo", "bar", "hello")

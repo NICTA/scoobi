@@ -40,7 +40,7 @@ import impl._
 import Configurations._
 import impl.collection.Seqs._
 import plan.DListImpl
-import util.{DistCache}
+import com.nicta.scoobi.impl.util.{Serialiser, DistCache}
 import SeqInput._
 import WireFormat._
 
@@ -56,36 +56,54 @@ trait SeqInput {
   /** Create a distributed list of a specified length whose elements are coming from a scala collection */
   def fromSeq[A : WireFormat](seq: Seq[A]): DList[A] = {
 
-    val source = new DataSource[NullWritable, Array[Byte], Array[Byte]] {
+    val source = new DataSource[NullWritable, A, A] {
 
-      val inputFormat = classOf[SeqInputFormat[Array[Byte]]]
+      val inputFormat = classOf[SeqInputFormat[A]]
       override def toString = "SeqInput("+id+")"
 
       def inputCheck(implicit sc: ScoobiConfiguration) {}
 
       def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
         job.getConfiguration.setInt(LengthProperty, seq.size)
-        /* Because SeqInputFormat is shared between multiple instances of the Seq
-         * DataSource, each must have a unique id to distinguish their serialised
-         * elements that are pushed out by the distributed cache.
-         * Note that the previous seq Id might have been set on a key such as "scoobi.input0:scoobi.seq.id"
-         * This is why we need to look for keys by regular expression in order to find the maximum value to increment
-         */
-        val id = job.getConfiguration.incrementRegex(IdProperty, ".*"+IdProperty)
-        DistCache.pushObject(job.getConfiguration, seq.map(toByteArray(_, implicitly[WireFormat[A]].toWire(_: A, _: DataOutput))), seqProperty(id))
+        job.getConfiguration.set(IdProperty, id.toString)
+        DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
       }
 
       def inputSize(implicit sc: ScoobiConfiguration): Long = seq.size.toLong
 
-      lazy val inputConverter = new InputConverter[NullWritable, Array[Byte], Array[Byte]] {
-        def fromKeyValue(context: InputContext, k: NullWritable, v: Array[Byte]) = v
+      lazy val inputConverter = new InputConverter[NullWritable, A, A] {
+        def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
       }
     }
-    DListImpl(source).map(a => fromByteArray[A](a))
+    DListImpl(source)
   }
 
-  private def fromByteArray[A](barr: Array[Byte])(implicit wf: WireFormat[A]): A = {
-    wf.fromWire(new ObjectInputStream(new ByteArrayInputStream(barr)))
+  /**
+   * Create a distributed list of a specified length whose elements are coming from a scala collection which will only be evaluated
+   * when the source is read
+   */
+  def fromLazySeq[A : WireFormat](seq: () => Seq[A], seqSize: Int = 1000): DList[A] = {
+
+    val source = new DataSource[NullWritable, A, A] {
+
+      val inputFormat = classOf[LazySeqInputFormat[A]]
+      override def toString = "LazySeqInput("+id+")"
+
+      def inputCheck(implicit sc: ScoobiConfiguration) {}
+
+      def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {
+        job.getConfiguration.set(IdProperty, id.toString)
+        job.getConfiguration.set(SeqSizeProperty, seqSize.toString)
+        DistCache.pushObject(job.getConfiguration, seq, seqProperty(id))
+      }
+
+      def inputSize(implicit sc: ScoobiConfiguration): Long = 1
+
+      lazy val inputConverter = new InputConverter[NullWritable, A, A] {
+        def fromKeyValue(context: InputContext, k: NullWritable, v: A) = v
+      }
+    }
+    DListImpl(source)
   }
 }
 
@@ -167,6 +185,7 @@ object SeqInput extends SeqInput {
   val PropertyPrefix = "scoobi.seq"
   val LengthProperty = PropertyPrefix + ".n"
   val IdProperty = PropertyPrefix + ".id"
+  val SeqSizeProperty = PropertyPrefix + ".size"
   def seqProperty(id: Int) = PropertyPrefix + ".seq" + id
 
   /**
@@ -195,5 +214,31 @@ object SeqInput extends SeqInput {
     in.readFully(barr)
     val bIn = new ObjectInputStream(new ByteArrayInputStream(barr))
     bIn.readObject.asInstanceOf[A]
+  }
+}
+
+/** InputFormat for producing values based on a lazy sequence. */
+class LazySeqInputFormat[A] extends InputFormat[NullWritable, A] {
+  lazy val logger = LogFactory.getLog("scoobi.LazySeqInput")
+
+  def createRecordReader(split: InputSplit, context: TaskAttemptContext): RecordReader[NullWritable, A] =
+    new SeqRecordReader[A](split.asInstanceOf[SeqInputSplit[A]])
+
+  def getSplits(context: JobContext): java.util.List[InputSplit] = {
+    val conf = context.getConfiguration
+    val n = context.getConfiguration.getInt(SeqSizeProperty, 1)
+    val id = context.getConfiguration.getInt(IdProperty, 0)
+
+    val seq = DistCache.pullObject[() => Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); () => Seq()})
+
+    val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
+    val splitSize = n / numSplitsHint
+
+    logger.debug("id=" + id)
+    logger.debug("n=" + n)
+    logger.debug("numSplitsHint=" + numSplitsHint)
+    logger.debug("splitSize=" + splitSize)
+
+    split(seq().toStream, splitSize, (offset: Int, length: Int, ss: Seq[A]) => new SeqInputSplit(offset, length, ss))
   }
 }

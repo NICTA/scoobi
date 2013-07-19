@@ -17,8 +17,7 @@ package com.nicta.scoobi
 package impl
 package mapreducer
 
-import org.apache.hadoop.mapreduce.{JobID, Job}
-import org.apache.hadoop.mapreduce.task.JobContextImpl
+import org.apache.hadoop.mapreduce._
 import ChannelsInputFormat._
 import scala.collection.JavaConversions._
 import org.specs2.mock.Mockito
@@ -32,7 +31,13 @@ import impl.ScoobiConfiguration
 import WireFormat._
 import rtt.RuntimeClass
 import org.apache.hadoop.filecache.DistributedCache
-import testing.TestFiles
+import com.nicta.scoobi.testing.{TempFiles, TestFiles}
+import impl.util.Compatibility
+import com.nicta.scoobi.io.text.TextSource
+import com.nicta.scoobi.testing.TestFiles._
+import com.nicta.scoobi.io.text.TextSource
+import com.nicta.scoobi.impl.rtt.RuntimeClass
+import java.io.File
 
 class ChannelsInputFormatSpec extends UnitSpecification with Mockito {
                                                                         """
@@ -70,26 +75,31 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
   }
 
   "Getting the splits for a ChannelsInputFormat" >> {
-
     "gets the splits for each source" >> {
       getSplits(ConstantStringDataSource("one"), ConstantStringDataSource("two")) must have size(2)
     }
     "return no splits when the data source returns no splits" >> {
       getSplits(FailingDataSource()) must beEmpty
     }
-
-    def getSplits(sources: DataSource[_,_,_]*) = new ChannelsInputFormat[String, Int].getSplits(jobContextFor(sources:_*)).toSeq
-
-    def jobContextFor(sources: DataSource[_,_,_]*) = {
-      implicit val sc = ScoobiConfiguration()
-      val job = new Job(sc.configuration, "id")
-      val jarBuilder = mock[JarBuilder]
-      val configuration = configureSources(job, jarBuilder, Seq(sources:_*))
-      new JobContextImpl(configuration, new JobID)
+    "only return one split if only one data source contain paths (see #283)" >> {
+      val inputDir = TestFiles.createTempDir("path")(ScoobiConfiguration())
+      new File(inputDir+"/test").createNewFile()
+      getSplits(TextSource(Seq(inputDir.getPath)), TextSource(Seq())) must haveSize(1)
     }
   }
 
   lazy val aBridgeStore = BridgeStore[String]("id", wireFormat[String])
+
+
+  def getSplits(sources: DataSource[_,_,_]*) = new ChannelsInputFormat[String, Int].getSplits(jobContextFor(sources:_*)).toSeq
+
+  def jobContextFor(sources: DataSource[_,_,_]*) = {
+    implicit val sc = ScoobiConfiguration()
+    val job = new Job(sc.configuration, "id")
+    val jarBuilder = mock[JarBuilder]
+    val configuration = configureSources(job, jarBuilder, Seq(sources:_*))
+    Compatibility.newJobContext(configuration, new JobID)
+  }
 
   def stringDataSource(string: String) =  new ConstantStringDataSource(string) {
     override def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {

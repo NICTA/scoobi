@@ -60,7 +60,7 @@ object ShortestPath {
   implicit val nodeFormat                  : WireFormat[Node]        = mkCaseWireFormat(Node, Node.unapply _)
   implicit val nodeInfoFormat              : WireFormat[NodeInfo]    = mkCaseWireFormat(NodeInfo, NodeInfo.unapply _)
 
-  implicit val nodeGrouping: Grouping[Node] = OrderingGrouping[Node]
+  implicit val nodeGrouping: Grouping[Node] = OrderingGrouping[Node](NodeComparator)
 
   case class Node(data: String)
 

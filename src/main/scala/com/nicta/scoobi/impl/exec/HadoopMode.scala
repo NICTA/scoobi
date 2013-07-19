@@ -1,4 +1,4 @@
-/**
+  /**
  * Copyright 2011,2012 National ICT Australia Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,10 +23,11 @@ import plan.comp._
 import plan.mscr._
 import monitor.Loggable._
 import collection.Seqs._
-import scalaz.{DList => _, _}
+import scalaz.{DList => _, concurrent, syntax, std}
+import syntax.id._
+import syntax.traverse._
+import std.list._
 import concurrent.Promise
-import Scalaz._
-import org.apache.hadoop.mapreduce.Job
 import control.Exceptions._
 
 /**
@@ -54,50 +55,54 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
    * Prepare the execution of the graph by optimising it
    */
   override protected def prepare(node: CompNode)(implicit sc: ScoobiConfiguration) =
-    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph)
+    optimise(super.prepare(node)).debug("Optimised nodes", prettyGraph(showComputationGraph))
 
   /**
    * execute a computation node
    */
   private
-  lazy val executeNode: CompNode => Any = {
+  def executeNode: CompNode => Any = {
     /** return the result of the last layer */
     def executeLayers(node: CompNode) {
-      layers(node).debug("Executing layers", mkStrings).map(executeLayer)
+      createMapReduceLayers(node).info("Executing layers", showLayers).map(executeLayer)
     }
+
+    def showLayers = (layers: Seq[Layer]) =>
+      mkStrings(layers.flatMap(l => l +: l.mscrs))
 
     def getValue(node: CompNode): Any = {
       node match {
         case n @ Op1(a, b)        => n.execute(getValue(a), getValue(b))
-        case n @ Materialise1(in) => in.bridgeStore.map(read).getOrElse(Seq())
+        case n @ Materialise1(in) => read(in.bridgeStore)
         case n @ Return1(v)       => v
         case other                => Seq()
       }
     }
     // execute value nodes recursively, other nodes start a "layer" execution
-    attr("executeNode") { node =>
+    attr { node =>
       executeLayers(node)
-      getValue(node)
+      val result = getValue(node)
+      saveSinks(Seq(result), node)(sc)
+      result
     }
   }
 
-  private lazy val executeLayer: Layer[T] => Unit =
-    attr("executeLayer") { case layer =>
-      ("executing layer "+layer.id).debug
+  private def executeLayer: Layer => Unit =
+    attr { case layer =>
       Execution(layer).execute
     }
 
   /**
    * Execution of a "layer" of Mscrs
    */
-  private case class Execution(layer: Layer[T]) {
+  private case class Execution(layer: Layer) {
 
     def execute {
-      ("Executing layer\n"+layer).debug
-      runMscrs(mscrs(layer))
+      (s"Executing layer ${layer.id}\n"+layer).info
+      runMscrs(layer.mscrs)
 
-      layerSinks(layer).debug("Layer sinks: ").foreach(markSinkAsFilled)
-      ("===== END OF LAYER "+layer.id+" ======").debug
+      layer.sinks.info("Layer sinks: ").foreach(markSinkAsFilled)
+      ("===== END OF LAYER "+layer.id+" ======\n").info
     }
 
     /**
@@ -107,7 +112,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
      * This is to make sure that there is not undesirable race condition during the setting up of variables
      */
     private def runMscrs(mscrs: Seq[Mscr]) {
-      ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).debug
+      ("executing mscrs"+mscrs.mkString("\n", "\n", "\n")).info
 
       val configured = mscrs.toList.map(configureMscr)
       val executed = if (sc.concurrentJobs) { "executing the Mscrs concurrently".debug; configured.map(executeMscr).sequence.get }
@@ -133,14 +138,22 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
 
     /** report the execution of a Mscr */
     protected def reportMscr = (job: MapReduceJob) => {
+      // update the original configuration with the job counters for each job
+      sc.updateCounters(job.job.getCounters)
       job.report
-      ("===== END OF MSCR "+job.mscr.id+" ======").debug
+      ("===== END OF MSCR "+job.mscr.id+" ======\n").info
     }
   }
 
+  protected def sinksToSave(node: CompNode): Seq[Sink] =
+    node match {
+      case n: ValueNode => node.sinks
+      case _            => Seq[Sink]()
+    }
+
   /** @return the content of a Bridge as an Iterable */
   private def read(bs: Bridge): Any = {
-    ("reading bridge "+bs.bridgeStoreId).debug
+    ("reading bridge "+bs.stringId).debug
     bs.readAsIterable(sc)
   }
 
@@ -149,7 +162,7 @@ case class HadoopMode(sc: ScoobiConfiguration) extends MscrsDefinition with Exec
     node match {
       case rt @ Return1(in)      => pushEnv(rt, in)
       case op @ Op1(in1, in2)    => pushEnv(op, op.execute(load(in1), load(in2)))
-      case mt @ Materialise1(in) => in.bridgeStore.map(bs => pushEnv(mt, read(bs))).getOrElse(Seq())
+      case mt @ Materialise1(in) => pushEnv(mt, read(in.bridgeStore))
       case other                 => ()
     }
   }

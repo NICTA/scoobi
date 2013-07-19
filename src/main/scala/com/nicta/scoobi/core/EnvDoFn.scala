@@ -18,6 +18,7 @@ package core
 
 import collection.immutable.VectorBuilder
 import impl.plan.comp.ParallelDo
+import org.apache.hadoop.mapreduce.TaskInputOutputContext
 
 /**
  * Interface for specifying parallel operation over DLists. The semantics
@@ -32,7 +33,10 @@ import impl.plan.comp.ParallelDo
  * will not be referenced after these steps
  */
 trait EnvDoFn[A, B, E] extends DoFunction { outer =>
-  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] { def emit(x: B) { emitter.write(x) } }
+  private def typedEmitter(emitter: EmitterWriter) = new Emitter[B] with DelegatedScoobiJobContext {
+    def emit(x: B) { emitter.write(x) }
+    def delegate = emitter
+  }
   private[scoobi] def setupFunction(env: Any) { setup(env.asInstanceOf[E]) }
   private[scoobi] def processFunction(env: Any, input: Any, emitter: EmitterWriter) { process(env.asInstanceOf[E], input.asInstanceOf[A], typedEmitter(emitter)) }
   private[scoobi] def cleanupFunction(env: Any, emitter: EmitterWriter) { cleanup(env.asInstanceOf[E], typedEmitter(emitter)) }
@@ -56,6 +60,33 @@ trait DoFn[A, B] extends EnvDoFn[A, B, Unit] {
   final def cleanup(env: Unit, emitter: Emitter[B]) { cleanup(emitter) }
 }
 
+object DoFn {
+  def apply[A, B](proc: (A, Emitter[B]) => Unit) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { proc(input, emitter) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+  def fromFunctionWithCounters[A, B](fn: (A, Counters) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+  def fromFunctionWithHeartbeat[A, B](fn: (A, Heartbeat) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+  def fromFunctionWithScoobiJobContext[A, B](fn: (A, ScoobiJobContext) => B) = new DoFn[A, B] {
+    def setup() {}
+    def process(input: A, emitter: Emitter[B]) { emitter.write(fn(input, emitter)) }
+    def cleanup(emitter: Emitter[B]) {}
+  }
+
+}
+
 /** Interface for writing outputs from a DoFn */
 trait Emitter[A] extends EmitterWriter {
   private[scoobi]
@@ -63,23 +94,8 @@ trait Emitter[A] extends EmitterWriter {
   def emit(value: A)
 }
 
-/**
- * Interface for specifying parallel operation over DLists in the absence of an
- * environment with an do-nothing setup and cleanup phases
- */
-trait BasicDoFn[A, B] extends DoFn[A, B] {
-  def setup() {}
-  def cleanup(emitter: Emitter[B]) {}
-}
-
-object BasicDoFn {
-  def apply[A, B](q: (A, Emitter[B]) => Unit): BasicDoFn[A, B] =
-    new BasicDoFn[A, B] {
-      def process(input: A, emitter: Emitter[B]) {
-        q(input, emitter)
-      }
-    }
-}
+@deprecated(message = "use DoFn instead or use a function (A, Emitter[B]) => Unit", since = "0.7")
+trait BasicDoFn[A, B] extends DoFn[A, B]
 
 /**
  * Internal version of a EnvDoFn functions without type information
@@ -120,8 +136,46 @@ object EmitterDoFunction extends DoFunction {
  * Untyped emitter
  */
 private[scoobi]
-trait EmitterWriter {
+trait EmitterWriter extends ScoobiJobContext {
   private[scoobi]
   def write(value: Any)
+}
+
+trait ScoobiJobContext extends Counters with Heartbeat
+
+trait Counters {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1)
+  def getCounter(groupName: String, name: String): Long
+}
+
+trait Heartbeat {
+  def tick
+}
+trait NoScoobiJobContext extends NoCounters with NoHeartbeat
+trait NoCounters extends Counters {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) {}
+  def getCounter(groupName: String, name: String) = -1
+}
+trait NoHeartbeat extends Heartbeat {
+  def tick {}
+}
+
+trait DelegatedScoobiJobContext extends ScoobiJobContext { outer =>
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) { delegate.incrementCounter(groupName, name, increment) }
+  def getCounter(groupName: String, name: String) = delegate.getCounter(groupName, name)
+  def tick { delegate.tick }
+  def delegate: ScoobiJobContext
+}
+
+trait InputOutputContextScoobiJobContext extends ScoobiJobContext {
+  def incrementCounter(groupName: String, name: String, increment: Long = 1) {
+    context.incrementCounter(groupName, name, increment)
+  }
+  def getCounter(groupName: String, name: String) = {
+    context.getCounter(groupName, name)
+  }
+  def tick { context.tick }
+
+  def context: InputOutputContext
 }
 

@@ -17,6 +17,7 @@ package com.nicta.scoobi
 
 import application._
 import core.Reductions
+import impl.control.ImplicitParameters
 import impl.ScoobiConfigurations
 import lib._
 
@@ -29,7 +30,8 @@ object Scoobi extends core.WireFormatImplicits
    with Library
    with DObjects
    with Reductions
-   with ScoobiConfigurations {
+   with ScoobiConfigurations
+   with ImplicitParameters {
 
   /* Primary types */
   type WireFormat[A] = com.nicta.scoobi.core.WireFormat[A]
@@ -41,6 +43,8 @@ object Scoobi extends core.WireFormatImplicits
   type DObject[A] = com.nicta.scoobi.core.DObject[A]
 
   type DoFn[A, B] = com.nicta.scoobi.core.DoFn[A, B]
+
+  @deprecated(message = "use DoFn instead or use a function (A, Emitter[B]) => Unit", since = "0.7")
   type BasicDoFn[A, B] = com.nicta.scoobi.core.BasicDoFn[A, B]
   type EnvDoFn[A, B, E] = com.nicta.scoobi.core.EnvDoFn[A, B, E]
 
@@ -50,6 +54,12 @@ object Scoobi extends core.WireFormatImplicits
   type Emitter[A] = com.nicta.scoobi.core.Emitter[A]
 
   val ScoobiConfiguration = impl.ScoobiConfiguration
+
+  type Counters = com.nicta.scoobi.core.Counters
+  type Heartbeat = com.nicta.scoobi.core.Heartbeat
+
+  type ExpiryPolicy = com.nicta.scoobi.core.ExpiryPolicy
+
 }
 
 

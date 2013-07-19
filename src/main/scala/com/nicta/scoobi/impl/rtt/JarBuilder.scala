@@ -28,10 +28,12 @@ import org.apache.commons.logging.LogFactory
 import core.ScoobiConfiguration
 import reflect.Classes._
 import ScoobiConfigurationImpl._
+import mapreducer.BridgeStore
+import monitor.Loggable._
 
 /** Class to manage the creation of a new JAR file. */
 class JarBuilder(implicit configuration: ScoobiConfiguration) {
-  private lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
+  private implicit lazy val logger = LogFactory.getLog("scoobi.JarBuilder")
 
   private val jos = new JarOutputStream(new FileOutputStream(configuration.temporaryJarFile.getAbsolutePath))
   private val entries: MSet[String] = MSet.empty
@@ -51,6 +53,7 @@ class JarBuilder(implicit configuration: ScoobiConfiguration) {
   /** Add a class that has been loaded and is contained in some existing JAR. */
   def addClass(clazz: Class[_]) {
     findContainingJar(clazz).foreach(addJarEntries(_, (filePath(clazz) == _.getName)))
+    findContainingDirectory(clazz).foreach(addJarEntries(_, (filePath(clazz) == _.getName)))
   }
 
   /** Add the class files found in a given directory */

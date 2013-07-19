@@ -20,8 +20,13 @@ import org.apache.hadoop.mapreduce._
 import Data._
 import collection.immutable.VectorBuilder
 import org.apache.hadoop.conf.Configuration
-import task.{MapContextImpl, TaskAttemptContextImpl}
 import scala.collection.JavaConversions._
+import com.nicta.scoobi.impl.io.Helper
+import java.io.IOException
+import org.apache.hadoop.fs.Path
+import org.apache.commons.logging.LogFactory
+import impl.control.Exceptions._
+import impl.util.Compatibility
 
 /**
  * DataSource for a computation graph.
@@ -29,7 +34,7 @@ import scala.collection.JavaConversions._
  * It reads key-values (K, V) from the file system and uses an input converter to create a type A of input
  */
 trait DataSource[K, V, A] extends Source {
-  lazy val id = ids.get
+  val id = ids.get
   def inputFormat: Class[_ <: InputFormat[K, V]]
   def inputCheck(implicit sc: ScoobiConfiguration)
   def inputConfigure(job: Job)(implicit sc: ScoobiConfiguration)
@@ -43,14 +48,6 @@ trait DataSource[K, V, A] extends Source {
       read(fromKeyValueConverter.asValue(mapContext, reader.getCurrentKey, reader.getCurrentValue))
     }
   }
-}
-/**
- * Convert an InputFormat's key-value types to the type produced by a source
- */
-trait InputConverter[K, V, A] extends FromKeyValueConverter {
-  type InputContext = MapContext[K, V, _, _]
-  def asValue(context: InputOutputContext, key: Any, value: Any): Any = fromKeyValue(context.context.asInstanceOf[InputContext], key.asInstanceOf[K], value.asInstanceOf[V])
-  def fromKeyValue(context: InputContext, key: K, value: V): A
 }
 
 /**
@@ -75,9 +72,11 @@ trait Source {
   def read(reader: RecordReader[_,_], mapContext: InputOutputContext, read: Any => Unit)
 }
 
-private[scoobi]
 object Source {
-  def read(source: Source, read: Any => Any)(implicit sc: ScoobiConfiguration): Seq[Any] = {
+  private lazy val logger = LogFactory.getLog("scoobi.Source")
+
+  private[scoobi]
+  def read(source: Source, read: Any => Any = identity)(implicit sc: ScoobiConfiguration): Seq[Any] = {
     val vb = new VectorBuilder[Any]()
     val job = new Job(new Configuration(sc.configuration))
     val inputFormat = source.inputFormat.newInstance
@@ -85,11 +84,12 @@ object Source {
     job.setInputFormatClass(source.inputFormat)
     source.inputConfigure(job)
 
-    inputFormat.getSplits(job) foreach { split =>
+    val splits = tryOr(inputFormat.getSplits(job)) { case e: Throwable => logger.warn(e.getMessage); Seq() }
+    splits foreach { split =>
       val tid = new TaskAttemptID()
-      val taskContext = new TaskAttemptContextImpl(job.getConfiguration, tid)
+      val taskContext = Compatibility.newTaskAttemptContext(job.getConfiguration, tid)
       val rr = inputFormat.createRecordReader(split, taskContext).asInstanceOf[RecordReader[Any, Any]]
-      val mapContext = InputOutputContext(new MapContextImpl(job.getConfiguration, tid, rr, null, null, null, split))
+      val mapContext = new InputOutputContext(Compatibility.newMapContext(job.getConfiguration, tid, rr, null, null, null, split))
 
       rr.initialize(split, taskContext)
 
@@ -98,6 +98,17 @@ object Source {
     }
     vb.result
   }
+
+  /** default check for sources using input files */
+  val defaultInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => {
+    inputPaths foreach { p =>
+      if (Helper.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc.configuration)) + ")")
+      else                                        throw new IOException("Input path " + p + " does not exist.")
+    }
+  }
+  val noInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => ()
+
+  type InputCheck =  (Seq[Path], ScoobiConfiguration) => Unit
 }
 
 /**
@@ -108,7 +119,14 @@ trait FromKeyValueConverter {
   def asValue(context: InputOutputContext, key: Any, value: Any): Any
 }
 
-case class InputOutputContext(context: MapContext[Any,Any,Any,Any]) {
+class InputOutputContext(val context: TaskInputOutputContext[Any,Any,Any,Any]) {
   def configuration = context.getConfiguration
   def write(key: Any, value: Any) { context.write(key, value) }
+  def incrementCounter(groupName: String, name: String, increment: Long = 1L) {
+    Option(context.getCounter(groupName, name)).foreach(_.increment(increment))
+  }
+  def getCounter(groupName: String, name: String) = {
+    Option(context.getCounter(groupName, name).getValue).getOrElse(-1L)
+  }
+  def tick { context.progress() }
 }

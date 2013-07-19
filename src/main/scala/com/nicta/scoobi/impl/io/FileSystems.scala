@@ -19,13 +19,14 @@ package io
 
 import java.io.File
 import org.apache.commons.logging.LogFactory
-import org.apache.hadoop.fs.{FileUtil, LocalFileSystem, Path, FileSystem}
+import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache.DistributedCache
 import com.nicta.scoobi.{impl, core}
 import core._
 import impl.ScoobiConfiguration._
 import impl.monitor.Loggable._
 import java.net.URI
+import util.Compatibility
 
 /**
  * Utility methods for copying files in the local / remote filesystem or across file systems
@@ -145,7 +146,7 @@ trait FileSystems {
 
   /** @return a function copying a Path to a given directory */
   def copyTo(dir: Path)(implicit sc: ScoobiConfiguration): Path => Boolean = (f: Path) =>
-    FileUtil.copy(fileSystem, f, fileSystem, dir, false, sc)
+    FileUtil.copy(fileSystem, f, FileSystem.get(dir.toUri, sc.configuration), dir, false, sc)
 
   /** @return the path with a trailing slash */
   def dirPath(s: String) = if (s endsWith "/") s else s+"/"
@@ -162,6 +163,8 @@ trait FileSystems {
     (equalIgnoreCase(from.getHost, to.getHost) && equalIgnoreCase(from.getScheme, to.getScheme))
   }
 
+  /** @return true if the file is a directory */
+  def isDirectory(fileStatus: FileStatus) = Compatibility.isDirectory(fileStatus)
 }
 
 

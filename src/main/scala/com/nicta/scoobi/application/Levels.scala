@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi.application
+package com.nicta.scoobi
+package application
 
-import shapeless.TypeOperators._
+import scalaz.@@
 
 object Levels {
 

@@ -20,52 +20,58 @@ package comp
 
 import core._
 import control.Functions._
+import CollectFunctions._
 
 /**
  * General methods for navigating a graph of CompNodes
  */
-trait CompNodes extends GraphNodes with CollectFunctions {
+trait CompNodes extends GraphNodes {
   type T = CompNode
 
   /**
    * compute the inputs of a given node
    * For a ParallelDo node this does not consider its environment
    */
-  lazy val inputs : CompNode => Seq[CompNode] = attr("inputs") {
+  lazy val inputs : CachedAttribute[CompNode, Seq[CompNode]] = attr {
     // for a parallel do node just consider the input node, not the environment
     case pd: ParallelDo => pd.ins
     case n              => children(n)
   }
 
   /** compute all the nodes which use a given node as an environment */
-  def usesAsEnvironment : CompNode => Seq[ParallelDo] = attr("usesAsEnvironment") { case node =>
+  def usesAsEnvironment : CachedAttribute[CompNode, Seq[ParallelDo]] = attr { case node =>
     uses(node).collect { case pd: ParallelDo if pd.env == node => pd }.toSeq
   }
 
   /** collect all the sinks in the computation graph */
-  lazy val allSinks: CompNode => Seq[Sink] = attr("all sinks") {
-    case process: ProcessNode => process.sinks ++ children(process).flatMap(allSinks)
-    case other                => children(other).flatMap(allSinks)
+  @transient
+  protected lazy val allSinks: CachedAttribute[CompNode, Seq[Sink]] = attr {
+    case n => n.sinks ++ children(n).flatMap(allSinks)
   }
 
   /** mark a sink as filled so it doesn't have to be recomputed */
-  protected def markSinkAsFilled = (s: Sink) => {
-    s.checkpointName.map(filledSink).getOrElse(filledSink(s.stringId))
-    s
+  protected def markSinkAsFilled = (s: Sink) => s match {
+    case ss: SinkSource => ss.checkpoint.map(cp => filledSink(cp.pathAsString)).getOrElse(filledSink(ss.stringId))
+    case _              => filledSink(s.stringId)
   }
+
   /** this attribute stores the fact that a Sink has received data */
-  protected lazy val filledSink: CachedAttribute[String, String] = attr("filled sink")(identity)
+  @transient
+  protected lazy val filledSink: CachedAttribute[String, String] = attr(identity)
 
   /** @return true if a process node has been filled */
-  protected def nodeHasBeenFilled(p: CompNode) = p match {
-    case pn: ProcessNode => pn.bridgeStore.exists(hasBeenFilled)
+  protected lazy val nodeHasBeenFilled = (p: CompNode) => p match {
+    case pn: ProcessNode => pn.sinks.forall(hasBeenFilled)
     case other           => false
   }
   /** @return true if a given Sink has already received data */
   protected lazy val hasBeenFilled = (s: Sink) => {
-    filledSink.hasBeenComputedAt(s.stringId) ||
-    s.checkpointName.map(filledSink.hasBeenComputedAt).getOrElse(false)
+    filledSink.hasBeenComputedAt(s.stringId) || (s match {
+      case ss: SinkSource => ss.checkpoint.map(cp => filledSink.hasBeenComputedAt(cp.pathAsString)).getOrElse(false)
+      case _              => false
+    })
   }
+
 }
 object CompNodes extends CompNodes
 
@@ -81,8 +87,12 @@ trait CollectFunctions {
   lazy val isALoad: PartialFunction[CompNode, Load] = { case l: Load => l }
   /** return true if a CompNode is a Combine */
   lazy val isACombine: PartialFunction[Any, Combine] = { case c: Combine => c }
+  /** return true if a CompNode is a Combine */
+  lazy val isCombine: CompNode => Boolean = { case cb: Combine => true; case other => false }
   /** return true if a CompNode is a ParallelDo */
   lazy val isAParallelDo: PartialFunction[Any, ParallelDo] = { case p: ParallelDo => p }
+  /** return true if a CompNode is a ProcessNode */
+  lazy val isProcessNode: CompNode => Boolean = { case p: ProcessNode => true; case other => false }
   /** return true if a CompNode is a ProcessNode */
   lazy val isAProcessNode: PartialFunction[Any, ProcessNode] = { case p: ProcessNode => p }
   /** return true if a CompNode is a GroupByKey */

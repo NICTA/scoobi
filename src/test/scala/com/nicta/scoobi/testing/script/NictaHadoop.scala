@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nicta.scoobi.examples
+package com.nicta.scoobi.testing.script
 
-import com.nicta.scoobi.Scoobi._
+import org.specs2.specification.Groups
 
-object WordCount extends ScoobiApp {
-  def run() {
-    // Nothing to see here, just a barebones scoobi app.
-    // look at examples/fatjar/README.md for more information
-    val d = DList("This", "is", "uninteresting")
-    persist(d.toTextFile("test", overwrite=true))
-  }
-}
+abstract class NictaHadoop extends com.nicta.scoobi.testing.NictaHadoop with org.specs2.specification.script.SpecificationLike with Groups
 
+abstract class NictaSimpleJobs extends NictaHadoop with com.nicta.scoobi.testing.SimpleJobs

@@ -26,7 +26,7 @@ import scalaz.syntax.all._
 
 import core._
 import plan._
-import mscr.{OutputChannels, InputChannels, Mscr}
+import com.nicta.scoobi.impl.plan.mscr.{GbkOutputChannel, OutputChannels, InputChannels, Mscr}
 import rtt._
 import impl.util._
 import reflect.Classes._
@@ -34,7 +34,7 @@ import io._
 import mapreducer._
 import ScoobiConfigurationImpl._
 import ScoobiConfiguration._
-import MapReduceJob.{configureJar,cleanConfiguration}
+import MapReduceJob.configureJar
 import control.Exceptions._
 import monitor.Loggable
 import Loggable._
@@ -49,7 +49,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
   implicit protected val fileSystems: FileSystems = FileSystems
   private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
 
-  private implicit lazy val job = new Job(configuration, configuration.jobStep(mscr.id))
+  implicit lazy val job = new Job(configuration, configuration.jobStep(mscr.id))
   
   /** Take this MapReduce job and run it on Hadoop. */
   def run = {
@@ -60,7 +60,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
 
   /** execute the Hadoop job and collect results */
   def execute = {
-    ("executing mscr "+mscr.id+" on layer "+layerId).debug
+    ("executing MSCR "+mscr.id+" on layer "+layerId).debug
     executeJob
     collectOutputs
   }
@@ -86,7 +86,6 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     configureCombiners(jar)
     configureReducers(jar)
     configureJar(jar)
-    cleanConfiguration(job)
     jar.close(configuration)
 
     FileOutputFormat.setOutputPath(job, configuration.temporaryOutputDirectory(job))
@@ -147,7 +146,10 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
    *       a BridgeStore and add to JAR
    *     - add a named output for each output channel */
   private def configureReducers(jar: JarBuilder) {
-    mscr.sinks collect { case bs : BridgeStore[_]  => jar.addRuntimeClass(bs.rtClass(ScoobiConfiguration(job.getConfiguration))) }
+    mscr.sinks collect { case bs : BridgeStore[_]  =>
+      val rtClass = bs.rtClass(ScoobiConfiguration(job.getConfiguration)).debug(c => "adding the BridgeStore class "+c.clazz.getName+" from Sink "+bs.id+" to the configuration")
+      jar.addRuntimeClass(rtClass)
+    }
 
     mscr.outputChannels.foreach { out =>
       out.sinks.foreach(sink => ChannelOutputFormat.addOutputChannel(job, out.tag, sink))
@@ -156,21 +158,27 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     DistCache.pushObject(job.getConfiguration, OutputChannels(mscr.outputChannels), "scoobi.reducers")
     job.setReducerClass(classOf[MscrReducer].asInstanceOf[Class[_ <: Reducer[_,_,_,_]]])
 
+    if (mscr.gbkOutputChannels.isEmpty) {
+      job.setNumReduceTasks(0)
+      logger.info("There are no reducers for this job")
+    }
+    else {
+      /**
+       * Calculate the number of reducers to use with a simple heuristic:
+       *
+       * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
+       * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
+       * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
+      val inputBytes: Long = mscr.sources.map(_.inputSize).sum
+      val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
+      val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
+      job.setNumReduceTasks(numReducers)
 
-    /**
-     * Calculate the number of reducers to use with a simple heuristic:
-     *
-     * Base the amount of parallelism required in the reduce phase on the size of the data output. Further,
-     * estimate the size of output data to be the size of the input data to the MapReduce job. Then, set
-     * the number of reduce tasks to the number of 1GB data chunks in the estimated output. */
-    val inputBytes: Long = mscr.sources.map(_.inputSize).sum
-    val inputGigabytes: Int = (inputBytes / (configuration.getBytesPerReducer)).toInt + 1
-    val numReducers: Int = inputGigabytes.max(configuration.getMinReducers).min(configuration.getMaxReducers)
-    job.setNumReduceTasks(numReducers)
+      /* Log stats on this MR job. */
+      logger.info("Total input size: " +  Helper.sizeString(inputBytes))
+      logger.info("Number of reducers: " + numReducers)
+    }
 
-    /* Log stats on this MR job. */
-    logger.info("Total input size: " +  Helper.sizeString(inputBytes))
-    logger.info("Number of reducers: " + numReducers)
   }
 
   private def executeJob = {
@@ -207,12 +215,15 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     /* Move named file-based sinks to their correct output paths. */
     mscr.outputChannels.foreach(_.collectOutputs(fileSystems.listPaths(configuration.temporaryOutputDirectory(job))))
     configuration.deleteTemporaryOutputDirectory(job)
+    configuration.updateCounters(job.getCounters)
     this
   }
 }
 
 private[scoobi]
 object MapReduceJob {
+  private implicit lazy val logger = LogFactory.getLog("scoobi.MapReduceJob")
+
   /**
    * Make temporary JAR file for this job. At a minimum need the Scala runtime
    * JAR, the Scoobi JAR, and the user's application code JAR(s)
@@ -230,11 +241,6 @@ object MapReduceJob {
     configuration.userClasses.map { case (name, bytecode) => jar.addClassFromBytecode(name, bytecode) }
   }
 
-  def cleanConfiguration(job: Job)(implicit configuration: ScoobiConfiguration) {
-    job.getConfiguration.distinctValues("mapred.cache.files",         separator = ",")
-    job.getConfiguration.distinctValues("mapred.classpath",           separator = ":")
-    job.getConfiguration.distinctValues("mapred.job.classpath.files", separator = ":")
-  }
 }
 
 /* Helper class to track progress of Map or Reduce tasks and whether or not

@@ -23,8 +23,10 @@ import org.apache.hadoop.mapreduce._
 import scala.collection.mutable._
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.io.compress.CompressionCodec
+import org.apache.hadoop.io.SequenceFile.CompressionType
 
-case class StringSink() extends DataSink[String, String, String] {
+case class StringSink(compression: Option[Compression] = None) extends DataSink[String, String, String] {
   def outputFormat(implicit sc: ScoobiConfiguration): Class[_ <: OutputFormat[String, String]] = classOf[StringOutputFormat]
   def outputKeyClass(implicit sc: ScoobiConfiguration): Class[String]   = classOf[String]
   def outputValueClass(implicit sc: ScoobiConfiguration): Class[String] = classOf[String]
@@ -32,6 +34,7 @@ case class StringSink() extends DataSink[String, String, String] {
   def outputConfigure(job: Job)(implicit sc: ScoobiConfiguration) {}
   def outputPath(implicit sc: ScoobiConfiguration): Option[Path] = None
   def outputConverter: OutputConverter[String, String, String] = StringOutputConverter()
+  def compressWith(codec: CompressionCodec, compressionType: CompressionType = CompressionType.BLOCK) = copy(compression = Some(Compression(codec, compressionType)))
 }
 
 object StringSink {

@@ -15,7 +15,7 @@
  */
 package com.nicta.scoobi.core
 
-import scalaz._, Scalaz._
+import scalaz.{Lens, Store, @>}
 
 /**
  * A non-empty iterable contains at least one element. Consequences include:

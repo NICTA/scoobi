@@ -18,12 +18,7 @@ package impl
 package mapreducer
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.OutputFormat
-import org.apache.hadoop.mapreduce.TaskInputOutputContext
-import org.apache.hadoop.mapreduce.TaskAttemptContext
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
-import org.apache.hadoop.mapreduce.RecordWriter
+import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.fs.Path
@@ -32,12 +27,13 @@ import scala.collection.mutable.{Map => MMap}
 import core._
 import Configurations._
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
+import impl.util.Compatibility
 
 /**
  * A class that simplifies writing output to different paths and with different types
  * depending on the output channel and required outputs per channel
  */
-class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
+class ChannelOutputFormat(val context: TaskAttemptContext) {
 
   private val taskContexts: MMap[(Int, Int), TaskAttemptContext] = MMap.empty
   private val recordWriters: MMap[(Int, Int), RecordWriter[_,_]] = MMap.empty
@@ -73,7 +69,7 @@ class ChannelOutputFormat(context: TaskInputOutputContext[_, _, _, _]) {
         case (k, v) => job.getConfiguration.set(k, v)
       }
 
-      new TaskAttemptContextImpl(job.getConfiguration, context.getTaskAttemptID)
+      Compatibility.newTaskAttemptContext(job.getConfiguration, context.getTaskAttemptID)
     }
 
     taskContexts.getOrElseUpdate((tag, sinkId), mkTaskContext)
@@ -102,7 +98,7 @@ object ChannelOutputFormat {
   def isResultFile(tag: Int, sinkId: Int) =
     (f: Path) => f.getName match {
       case OutputChannelFileName(t, i) => t.toInt == tag && i.toInt == sinkId
-      case _                    => false
+      case _                           => false
     }
 
   private def propertyPrefix(tag: Int, sinkId: Int) = "scoobi.output." + tag + ":" + sinkId

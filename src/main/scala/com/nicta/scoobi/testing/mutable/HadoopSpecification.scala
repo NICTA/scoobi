@@ -17,16 +17,12 @@ package com.nicta.scoobi
 package testing
 package mutable
 
-import org.specs2.mutable.Specification
+import org.specs2.mutable.{SpecificationLike, Specification}
 import application.{ClusterConfiguration, ScoobiAppConfiguration}
 
 /**
  * Hadoop specification with an acceptance specification
  */
-abstract class HadoopSpecification extends Specification with HadoopSpecificationStructure with ScoobiAppConfiguration with ClusterConfiguration {
-  // this configuration object needs to be explicit (rather than implicit)
-  // otherwise it will clash with the implicit sc: ScoobiConfiguration declaration that's used for each example
-  // this configuration object is used by the ClusterConfiguration trait to determine the settings for fs/jobTracker
-  override lazy val configuration = super[ScoobiAppConfiguration].configuration
-}
+abstract class HadoopSpecification extends HadoopSpecificationLike
+trait HadoopSpecificationLike extends com.nicta.scoobi.testing.HadoopSpecificationLike with SpecificationLike
 

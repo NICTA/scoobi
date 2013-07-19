@@ -1,4 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+ THIS POM FILE IS NOT USED TO BUILD SCOOBI OR USED AS AN EXAMPLE OF POM FILE FOR A SCOOBI PROJECT!
+ IT IS ONLY USED FOR ITS PLUGINS: SONAR AND LICENSE
+
+-->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.nicta</groupId>
@@ -147,7 +153,7 @@
         <repository>
             <id>nictasavro</id>
             <name>nictasavro</name>
-            <url>http://nicta.github.com/scoobi/releases/</url>
+            <url>http://nicta.github.io/scoobi/releases/</url>
             <layout>default</layout>
         </repository>
         <repository>

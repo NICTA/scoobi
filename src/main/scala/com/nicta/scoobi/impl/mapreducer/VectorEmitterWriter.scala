@@ -25,16 +25,28 @@ import plan.comp.ParallelDo
 /**
  * In memory emitter writer saving the values to a Vector
  */
-case class VectorEmitterWriter() extends EmitterWriter {
+case class VectorEmitterWriter(context: InputOutputContext) extends EmitterWriter with InputOutputContextScoobiJobContext {
   private val vb = new VectorBuilder[Any]
   def write(v: Any) { vb += v }
-  def result = vb.result
 
   /** use this emitter to map a list of value with a parallelDo */
   def map(environment: Any, mappedValues: Seq[Any], mapper: ParallelDo)(implicit configuration: ScoobiConfiguration) = {
     vb.clear
     mappedValues.foreach(v => mapper.map(environment, v, this))
-    result
+    try     result
+    finally vb.clear
   }
+
+  // for testing only
+  protected[scoobi] def result = vb.result
 }
 
+// used for testing only
+object VectorEmitterWriter {
+  def create = new VectorEmitterWriter(null) {
+    override def incrementCounter(groupName: String, name: String, increment: Long = 1) {}
+    override def getCounter(groupName: String, name: String) = -1
+    override def tick {}
+
+  }
+}

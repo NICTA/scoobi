@@ -19,8 +19,8 @@ package reflect
 
 import testing.mutable.UnitSpecification
 import java.util.jar.JarEntry
-import core.DList
-import java.util
+import Classes._
+import application.ScoobiApp
 
 class ClassesSpec extends UnitSpecification {
   "the main jar contains all the dependent jars classes if it contains the DList scoobi class" >> {
@@ -33,5 +33,14 @@ class ClassesSpec extends UnitSpecification {
 
     classesWithDependencies.mainJarContainsDependencies must beTrue
     classesWithoutDependencies.mainJarContainsDependencies must beFalse
+  }; p
+
+  "It is possible to find the directory containing a given class" >> {
+    "classFile returns the file resource for a given class" >> {
+      classFile(classOf[ScoobiApp].getName) === "com/nicta/scoobi/application/ScoobiApp.class"
+    }
+    "getResource returns the URL for a given class" >> {
+      getResource(classOf[ScoobiApp]).map(_.toString) must beSome.like { case s => s must endWith("com/nicta/scoobi/application/ScoobiApp.class") }
+    }
   }
 }

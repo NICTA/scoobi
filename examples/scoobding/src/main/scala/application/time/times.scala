@@ -74,7 +74,7 @@ object times {
       val values = s.trim.split("\\:")
       Some(daytime((values(0).trim.toLong*60 + values(1).trim.toLong)*60*1000))
     } catch {
-      case e => None
+      case e: Throwable => None
     }
   }
 

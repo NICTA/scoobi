@@ -25,9 +25,30 @@ import Scoobi._
 import testing.mutable.NictaSimpleJobs
 import testing.{TempFiles, TestFiles}
 import impl.exec.JobExecException
-import impl.ScoobiConfiguration._
+import impl.plan.comp.CompNodeData._
+import org.apache.avro.generic.GenericData.Record
+import TestFiles._
 
-class AvroFileReadWriteSpec extends NictaSimpleJobs {
+class AvroFileSpec extends NictaSimpleJobs {
+
+  "Can read and write a case class as Avro files using 'xmap'" >> { implicit sc: SC =>
+    case class Point(x: Int, y: Int)
+
+    val fromPoint = (p: Point) => (p.x, p.y)
+    val toPoint = (t: (Int, Int)) => Point(t._1, t._2)
+
+    implicit val pointFmt: WireFormat[Point] =
+      implicitly[WireFormat[(Int, Int)]].xmap(toPoint, fromPoint)
+
+    implicit val pointSchema: AvroSchema[Point] =
+      implicitly[AvroSchema[(Int, Int)]].xmap(toPoint, fromPoint)
+
+    val points = Seq((1, 2), (3, 4), (5, 6))
+    val tmpAvroFile = createTempAvroFile(points.toDList.map(toPoint))
+
+    val loadedTestData = fromAvroFile[Point](tmpAvroFile)
+    loadedTestData.map(fromPoint).run.sorted must_== points
+  }
 
   "Reading (Int, Seq[(Float, String)], Map[String, Int], ThousandBytes) Avro file" >> { implicit sc: SC =>
 
@@ -37,13 +58,13 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       def toArray(t: ThousandBytes) = t.data
       def fromArray(arr: Array[Byte]) = ThousandBytes(arr)
     }
-   
+
     def newTb() = {
 	    val b = new Array[Byte](1000)
 	    scala.util.Random.nextBytes(b)
 	    ThousandBytes(b)
 	  }
-    
+
     // create test data
     val testData: Seq[(Int, Seq[(Float, String)], Map[String, Int], ThousandBytes)] = Seq(
       (1, Seq((3.4f, "abc")), Map("a" -> 5, "b" -> 6), newTb()),
@@ -66,7 +87,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).persist
 
     // load the test data back, and check
     val loadedTestData: DList[(String, List[(Double, Boolean, String)], Array[Long])] = fromAvroFile(filePath)
@@ -82,7 +103,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).persist
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(filePath)
@@ -98,7 +119,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
       ("efghi", List((9.15d, true, "dvorak")), Array(9999l, 11111l)))
 
     // write the test data out
-    persist(testData.toDList.toAvroFile(filePath, overwrite = true))
+    testData.toDList.toAvroFile(filePath, overwrite = true).persist
 
     // load the test data back, and check
     val loadedTestData: DList[(List[String], Array[Long])] = fromAvroFile(List(filePath), false)
@@ -146,7 +167,7 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
 
     val writerSchema = new Schema.Parser().parse(jsonSchema)
     val dataFileWriter = new DataFileWriter[GenericRecord](new GenericDatumWriter[GenericRecord](writerSchema))
-    dataFileWriter.create(writerSchema, FileSystem.get(filePath.toUri, sc).create(filePath, true))
+    dataFileWriter.create(writerSchema, FileSystem.get(filePath.toUri, sc.configuration).create(filePath, true))
 
     val record = new GenericData.Record(writerSchema)
     record.put("v0", 50)
@@ -161,10 +182,40 @@ class AvroFileReadWriteSpec extends NictaSimpleJobs {
     loadedTestData.run must_== Seq((50, "some test str", true, 3.7))
   }
 
+  "It must be possible to output a data type using a List" >> { implicit sc: SC =>
+    val filePath = TempFiles.createTempFilePath("test")
+    val list = DList[(String, Seq[Int])](("a", Seq(1, 2)), ("b", Seq(2, 3))).groupByKey.
+      map { case (k, vs) => (k, vs.head) }.filter(_ => true).groupByKey.
+      map { case (k, vs) => (k, vs.head) }
+    list.toAvroFile(TestFiles.path(filePath)).persist
+    ok
+  }
+
+  "Converters must be used for sinks when they are also used as sources" >> { implicit sc: SC =>
+    val list = DList((1L, 2L)).toAvroFile(TempFiles.createTempFilePath("checkpoint"), overwrite = true, checkpoint = true)
+    list.map(_._2).run.normalise === "Vector(2)"
+  }
+
+  "Generic data records can be persisted and loaded again" >> { implicit sc: SC =>
+    // create a list of generic records
+    val list: DList[GenericRecord] = DList(1).map { t =>
+      val record = new Record(AvroSchema.mkRecordSchema(Seq(implicitly[AvroSchema[Int]])))
+      record.put("v0", 1)
+      record
+    }
+
+    // save generic records
+    val avroFile = TempFiles.createTempFilePath("avro")
+    list.toAvroFile(path(avroFile), overwrite = true).run.toString === """Vector({"v0": 1})"""
+
+    // load generic records
+    fromAvroFile[GenericRecord](path(avroFile)).map(record => record.get(0).asInstanceOf[Int]).run === Vector(1)
+  }
+
+
   /**
    * Helper methods and classes
    */
-
   def createTempAvroFile[T](input: DList[T])(implicit sc: SC, as: AvroSchema[T]): String = {
     val dir = TempFiles.createTempDir("test").getPath
     persist(input.toAvroFile(dir, overwrite = true))

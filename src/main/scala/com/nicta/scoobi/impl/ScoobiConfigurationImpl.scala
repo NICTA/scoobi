@@ -20,6 +20,7 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import java.net.URL
 import java.io.File
+import scala.collection.JavaConversions._
 import mapreducer.Env
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.util.GenericOptionsParser
@@ -27,6 +28,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.fs.FileSystem._
 import org.apache.commons.logging.LogFactory._
+import org.apache.hadoop.mapreduce.{Counters => HadoopCounters, Counter, Job}
 
 import core._
 import reflect.Classes
@@ -35,14 +37,14 @@ import io.FileSystems
 import Configurations._
 import FileSystems._
 import monitor.Loggable._
-import org.apache.hadoop.mapreduce.Job
-import scala.Some
-import tools.nsc.util.ScalaClassLoader
+import tools.nsc.interpreter.AbstractFileClassLoader
+import com.nicta.scoobi.impl.util.Compatibility
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
                                    var userDirs: Set[String] = Set(),
-                                   var classLoader: Option[ScalaClassLoader] = None) extends ScoobiConfiguration {
+                                   var classLoader: Option[AbstractFileClassLoader] = None,
+                                   counters: HadoopCounters = new HadoopCounters) extends ScoobiConfiguration {
 
   /**
    * This call is necessary to load the mapred-site.xml properties file containing the address of the default job tracker
@@ -85,6 +87,16 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
     configuration.set(JobConf.MAPRED_LOCAL_DIR_PROPERTY, workingDir+configuration.get(JOB_STEP))
     configuration.get(JOB_STEP).debug("the job step is")
   }
+
+  /** update the current counters from the result of a job that has just been run */
+  def updateCounters(hadoopCounters: HadoopCounters) = {
+    hadoopCounters.getGroupNames.map { groupName: String =>
+      val group = hadoopCounters.getGroup(groupName)
+      group.iterator.foreach((c: Counter) => counters.findCounter(groupName, c.getName).increment(c.getValue))
+    }
+    this
+  }
+
   /**Parse the generic Hadoop command line arguments, and call the user code with the remaining arguments */
   def withHadoopArgs(args: Array[String])(f: Array[String] => Unit): ScoobiConfiguration = callWithHadoopArgs(args, f)
 
@@ -152,8 +164,10 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * attach a classloader which classes must be put on the job classpath
    */
-  def addClassLoader(cl: ScalaClassLoader) = { classLoader = Some(cl); this }
+  def addClassLoader(cl: AbstractFileClassLoader) = { classLoader = Some(cl); configuration.setClassLoader(cl); this }
 
+  /** @return the class loader to use with Scoobi classes, including generated ones */
+  def scoobiClassLoader = classLoader.getOrElse(Thread.currentThread.getContextClassLoader)
   /**
    * @return true if this configuration is used for a remote job execution
    */
@@ -172,14 +186,14 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /**
    * set a flag in order to know that this configuration is for a in-memory, local or remote execution,
    */
-  def modeIs(mode: Mode.Value) = {
+  def modeIs(mode: Mode) = {
     logger.debug("setting the scoobi execution mode: "+mode)
 
     set(SCOOBI_MODE, mode.toString)
     this
   }
   /** @return the current mode */
-  def mode = Mode.withName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
+  def mode = Mode.unsafeWithName(configuration.get(SCOOBI_MODE, Mode.Local.toString))
 
   /** @return true if the mscr jobs can be executed concurrently */
   def concurrentJobs = hadoopConfiguration.getOrSetBoolean(CONCURRENT_JOBS, false)
@@ -255,8 +269,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   }
 
   private def setDefaultForInMemoryAndLocal = {
-    jobNameIs(getClass.getSimpleName)
-    set(FS_DEFAULT_NAME_KEY, DEFAULT_FS)
+    set(Compatibility.defaultFSKeyName, "file:///")
     set("mapred.job.tracker", "local")
     setDirectories
   }
@@ -302,12 +315,11 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   /** @return a new environment object */
   def newEnv(wf: WireReaderWriter): Environment = Env(wf)(this)
 
-  private lazy val persister = new Persister(this)
+  private val persister = new Persister(this)
 
   def persist[A](ps: Seq[Persistent[_]]) = persister.persist(ps)
   def persist[A](list: DList[A])         = persister.persist(list)
   def persist[A](o: DObject[A]): A       = persister.persist(o)
-  private[scoobi] def reset = { persister.reset; this }
 
   def duplicate = {
     val c = new Configuration(configuration)

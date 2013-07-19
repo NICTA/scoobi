@@ -21,11 +21,17 @@ import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache._
 import org.apache.hadoop.conf.Configuration
 import Configurations._
+import ScoobiConfiguration._
+import java.net.URI
+import DistributedCache._
+import java.io.IOException
+import org.apache.commons.logging.LogFactory
 
 /** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
   * XStream to serialise objects to XML strings and then send out via Hadoop's
   * distributed cache. Two APIs are provided for pushing and pulling objects. */
 object DistCache {
+  private lazy val logger = LogFactory.getLog("scoobi.DistCache")
 
   /** Make a local filesystem path based on a 'tag' to temporarily store the
     * serialised object. */
@@ -34,11 +40,21 @@ object DistCache {
     new Path(scratchDir, tag+ Option(configuration.get(JOB_STEP)).map("-"+_).getOrElse(""))
   }
 
-  /** Distribute an object to be available for tasks in the current job. */
-  def pushObject[T](configuration: Configuration, obj: T, tag: String): Path = {
-    serialise[T](configuration, obj, tag) { path =>
+  /**
+   * Distribute an object to be available for tasks in the current job
+   *
+   * By default check right away if the object can be deserialised
+   */
+  def pushObject[T](configuration: Configuration, obj: T, tag: String, check: Boolean = true): Path = {
+    val path = serialise[T](configuration, obj, tag) { path =>
       DistributedCache.addCacheFile(path.toUri, configuration)
     }
+
+    if (check)
+      try Serialiser.deserialise(path.getFileSystem(configuration).open(path))
+      catch { case e: Throwable => throw new IOException(s"The object $obj can not be serialised/deserialised: ${e.getMessage}", e) }
+
+    path
   }
 
   /**
@@ -56,11 +72,19 @@ object DistCache {
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
   def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
-    /* Get distributed cache file. */
     val path = mkPath(configuration, tag)
-    val cacheFiles = DistributedCache.getCacheFiles(configuration)
-    cacheFiles.find(_.toString == path.toString).flatMap { uri =>
-      deserialise(configuration)(new Path(uri.toString))
+
+    lazy val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration))getOrElse(Array[URI]())
+    lazy val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
+
+    // use the local cached files on the cluster when the local files can be found
+    val cacheFiles =
+      if (localCacheFiles.nonEmpty) localCacheFiles
+      else                          { logger.warn("there are no local cache files, using the distributed cache instead")
+                                      remoteCacheFiles }
+
+    cacheFiles.find(uri => uri.toString.endsWith(path.toString)).flatMap { case uri =>
+      deserialise(configuration)(path)
     }
   }
 
@@ -71,7 +95,7 @@ object DistCache {
     val dis = path.getFileSystem(configuration).open(path)
     try {
       Some(Serialiser.deserialise(dis).asInstanceOf[T])
-    } catch { case e => { e.printStackTrace(); None } }
+    } catch { case e: Throwable => { e.printStackTrace(); None } }
     finally { dis.close() }
   }
 }

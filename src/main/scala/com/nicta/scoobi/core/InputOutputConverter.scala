@@ -17,6 +17,16 @@ package com.nicta.scoobi
 package core
 
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.mapreduce.MapContext
+
+/**
+ * Convert an InputFormat's key-value types to the type produced by a source
+ */
+trait InputConverter[K, V, A] extends FromKeyValueConverter {
+  type InputContext = MapContext[K, V, _, _]
+  def asValue(context: InputOutputContext, key: Any, value: Any): Any = fromKeyValue(context.context.asInstanceOf[InputContext], key.asInstanceOf[K], value.asInstanceOf[V])
+  def fromKeyValue(context: InputContext, key: K, value: V): A
+}
 
 /** Convert the type consumed by a DataSink into an OutputFormat's key-value types. */
 trait OutputConverter[K, V, B] extends ToKeyValueConverter {
@@ -34,4 +44,5 @@ trait ToKeyValueConverter {
   def asKeyValue(x: Any)(implicit configuration: Configuration): (Any, Any)
 }
 
-
+/** fusion of both trait when bi-directional conversion is possible */
+trait InputOutputConverter[K, V, B] extends OutputConverter[K, V, B] with InputConverter[K, V, B]

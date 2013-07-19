@@ -18,13 +18,7 @@ package impl
 package mapreducer
 
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.mapreduce.Job
-import org.apache.hadoop.mapreduce.JobContext
-import org.apache.hadoop.mapreduce.InputFormat
-import org.apache.hadoop.mapreduce.InputSplit
-import org.apache.hadoop.mapreduce.RecordReader
-import org.apache.hadoop.mapreduce.TaskAttemptContext
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl
+import org.apache.hadoop.mapreduce._
 import org.apache.hadoop.util.ReflectionUtils
 import org.apache.hadoop.filecache.DistributedCache._
 import org.apache.hadoop.mapreduce.lib.input.InvalidInputException
@@ -36,17 +30,18 @@ import core._
 import rtt.JarBuilder
 import Configurations._
 import ChannelsInputFormat._
+import monitor.Loggable._
+import impl.util.Compatibility
+import java.io.IOException
 
 /** An input format that delegates to multiple input formats, one for each
   * input channel. */
 class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
-  private lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
+  private implicit lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
 
   def getSplits(context: JobContext): java.util.List[InputSplit] = {
 
-    getInputFormats(context).flatMap { case (channel, format) =>
-      val conf = extractChannelConfiguration(context, channel)
-
+    getInputFormats(context).flatMap { case (channel, (format, configuration)) =>
       /**
        * Wrap each of the splits for this InputFormat, tagged with the channel number. InputSplits
        * will be queried in the Mapper to determine the channel being processed.
@@ -55,12 +50,16 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
        * MapReduce job didn't produce any file (@see issue #60)
        */
       try {
-        format.getSplits(new Job(new Configuration(conf))).map { (pathSplit: InputSplit) =>
-          new TaggedInputSplit(conf, channel, pathSplit, format.getClass.asInstanceOf[Class[_ <: InputFormat[_,_]]])
+        format.getSplits(new Job(configuration)).map { (pathSplit: InputSplit) =>
+          new TaggedInputSplit(configuration, channel, pathSplit, format.getClass)
         }
       } catch {
         case e: InvalidInputException => {
-          logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because a previous MapReduce job didn't produce any output. See issue #60", e)
+          logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because a previous MapReduce job didn't produce any output (see issue #60)", e)
+          Nil
+        }
+        case e: IOException => {
+          logger.debug("Could not get the splits for "+format.getClass.getName+". This is possibly because an input path has not been specified (see issue #283)", e)
           Nil
         }
       }
@@ -71,9 +70,8 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
     val taggedInputSplit = split.asInstanceOf[TaggedInputSplit]
     new ChannelRecordReader(
       taggedInputSplit,
-      new TaskAttemptContextImpl(
-        extractChannelConfiguration(context, taggedInputSplit.channel),
-        context.getTaskAttemptID))
+      Compatibility.newTaskAttemptContext(extractChannelConfiguration(context.getConfiguration, taggedInputSplit.channel),
+                                          context.getTaskAttemptID))
   }
 
 }
@@ -84,6 +82,7 @@ class ChannelsInputFormat[K, V] extends InputFormat[K, V] {
  * to be specified. Makes use of ChannelsInputFormat
  */
 object ChannelsInputFormat {
+  private implicit lazy val logger = LogFactory.getLog("scoobi."+getClass.getSimpleName)
 
   private val INPUT_FORMAT_PROPERTY = "scoobi.input.formats"
 
@@ -122,7 +121,10 @@ object ChannelsInputFormat {
 
   private def configureSourceRuntimeClass(jar: JarBuilder, source: Source) = (conf: Configuration) => {
     source match {
-      case bs : BridgeStore[_] => jar.addRuntimeClass(bs.rtClass(ScoobiConfiguration(conf)))
+      case bs : BridgeStore[_] => {
+        val rtClass = bs.rtClass(ScoobiConfiguration(conf)).debug(c => "adding the BridgeStore class "+c.clazz.getName+" from Source "+source.id+" to the configuration")
+        jar.addRuntimeClass(rtClass)
+      }
       case _                   => ()
     }
     conf
@@ -150,7 +152,9 @@ object ChannelsInputFormat {
       conf.set(ChannelPrefix.prefix(source.id, CACHE_FILES), files)
       conf.addValues(CACHE_FILES, files)
     }
-    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  => (ChannelPrefix.prefix(source.id, k), v) }
+    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  =>
+      (ChannelPrefix.prefix(source.id, k), v)
+    }
   }
 
   /**
@@ -158,21 +162,27 @@ object ChannelsInputFormat {
    *
    * @return a new Configuration from an existing context (for the configuration) and a channel id
    */
-  private def extractChannelConfiguration(context: JobContext, channel: Int): Configuration = {
+  private def extractChannelConfiguration(configuration: Configuration, channel: Int): Configuration = {
     val Prefix = ChannelPrefix.regex(channel)
-    context.getConfiguration.updateWith { case (Prefix(k), v) if k != CACHE_FILES => (k, v) }
+
+    new Configuration(configuration).updateWith { case (Prefix(k), v) if k != CACHE_FILES =>
+      (k, v)
+    }
   }
 
   /** Get a map of all the input formats per channel id. */
-  private def getInputFormats(context: JobContext): Map[Int, InputFormat[_,_]] = {
+  private def getInputFormats(context: JobContext): Map[Int, (InputFormat[_,_], Configuration)] = {
     val conf = context.getConfiguration
     val Entry = """(.*);(.*)""".r
 
     conf.get(INPUT_FORMAT_PROPERTY).split(",").toList.map {
-      case Entry(ch, infmt) => (ch.toInt, ReflectionUtils.newInstance(Class.forName(infmt), conf).
-        asInstanceOf[InputFormat[_,_]])
+      case Entry(ch, infmt) => {
+        val configuration = extractChannelConfiguration(context.getConfiguration, ch.toInt)
+        (ch.toInt, (ReflectionUtils.newInstance(conf.getClassLoader.loadClass(infmt), configuration).asInstanceOf[InputFormat[_,_]], configuration))
+      }
     }.toMap
   }
+
 }
 
 object ChannelPrefix {
@@ -188,7 +198,7 @@ class ChannelRecordReader[K, V](split: InputSplit, context: TaskAttemptContext) 
 
   private val originalRR: RecordReader[K, V] = {
     val taggedInputSplit: TaggedInputSplit = split.asInstanceOf[TaggedInputSplit]
-    val inputFormat = taggedInputSplit.inputFormatClass.newInstance.asInstanceOf[InputFormat[K, V]]
+    val inputFormat = ReflectionUtils.newInstance(taggedInputSplit.inputFormatClass, context.getConfiguration).asInstanceOf[InputFormat[K, V]]
     inputFormat.createRecordReader(taggedInputSplit.inputSplit, context)
   }
 

@@ -21,9 +21,14 @@ package comp
 import org.apache.commons.logging.LogFactory
 import core._
 import monitor.Loggable._
-import org.kiama.rewriting.Rewriter
+import org.kiama.rewriting._
 import collection.+:
 import control.Functions._
+import scala.collection.mutable
+import org.kiama.util.Emitter
+import core.Emitter
+import org.kiama.attribution.Attributable
+import CollectFunctions._
 
 /**
  * Optimiser for the CompNode graph
@@ -31,19 +36,21 @@ import control.Functions._
  * It uses the [Kiama](http://code.google.com/p/kiama) rewriting library by defining Strategies for traversing the graph and rules to rewrite it.
  * Usually the rules are applied in a top-down fashion at every node where they can be applied (using the `everywhere` strategy).
  */
-trait Optimiser extends CompNodes with Rewriter {
+trait Optimiser extends CompNodes with MemoRewriter {
   implicit private lazy val logger = LogFactory.getLog("scoobi.Optimiser")
 
   /**
    * Combine nodes which are not the output of a GroupByKey must be transformed to a ParallelDo
    */
-  def combineToParDo = everywhere(rule {
-    case c @ Combine(GroupByKey1(_),_,_,_,_,_) => c
-    case c: Combine                            => c.debug("combineToParDo").toParallelDo
+  lazy val combineToParDo = traverseSomebu(strategy {
+    case c @ Combine(GroupByKey1(_),_,_,_,_,_) => None
+    case c: Combine                            => Some(c.toParallelDo.debug(p => "combineToParDo "+c.id+" to "+p.id))
   })
 
   /**
-   * Nested ParallelDos must be fused but only if pd1 is not used anywhere else
+   * Nested ParallelDos must be fused but only if pd1 is not used anywhere else.
+   *
+   * We use somebu to fuse the nodes "bottom-up" starting from all leaves of the tree at the same time
    *
    *    pd1 @ ParallelDo
    *          |
@@ -53,21 +60,43 @@ trait Optimiser extends CompNodes with Rewriter {
    *
    * This rule is repeated until nothing can be fused anymore
    */
-  def parDoFuse = repeat(oncebu(rule {
-    case p2 @ ParallelDo((p1 @ ParallelDo1(_)) +: rest,_,_,_,_,_,_) if
-      uses(p1).filterNot(_ == p2).isEmpty                  &&
-      rest.isEmpty                                         &&
-      !p1.bridgeStore.map(hasBeenFilled).getOrElse(false)  &&
-      !p1.bridgeStore.map(_.isCheckpoint).getOrElse(false) &&
-      p1.nodeSinks.isEmpty                                 => ParallelDo.fuse(p1.debug("parDoFuse with "+p2), p2)
-  }))
+  def parDoFuse = traverseSomebu(parDoFuseRule)
+
+  def parDoFuseRule = rule {
+    case p2 @ ParallelDo((p1: ParallelDo) +: rest,_,_,_,_,_,_) if
+      rest.isEmpty                          &&
+      uses(p1).filterNot(_ == p2).isEmpty   &&
+      !mustBeRead(p1)                       => ParallelDo.fuse(p1, p2).debug(p => "Fused "+p2.id+" with "+p1.id+". Result is "+p.id)
+  }
+
+  /** @return true if this parallelDo must be read ==> can't be fused */
+  def mustBeRead(pd: ParallelDo): Boolean =
+    hasBeenFilled(pd.bridgeStore) || pd.bridgeStore.isCheckpoint || pd.nodeSinks.nonEmpty
+
+  def traverseOncebu(s: Strategy) = repeatTraversal(oncebu, s)
+  def traverseSomebu(s: Strategy) = repeatTraversal(somebu, s)
+  def traverseSometd(s: Strategy) = repeatTraversal(sometd, s)
 
   /**
-   * add a bridgeStore if it is necessary to materialise a value and no bridge is available
+   * apply a traversal strategy but make sure that:
+   *
+   * - after each pass the tree is reset in terms of attributable relationships and uses
+   * - the strategy to execute is memoised, i.e. if a node has already been processed its result must be reused
+   *   this ensures that rewritten shared nodes are not duplicated
    */
-  def addBridgeStore = everywhere(rule {
-    case m @ Materialise1(p: ProcessNode) if !p.bridgeStore.isDefined => m.copy(p.addSink(p.createBridgeStore)).debug("add bridgestore to "+p)
-  })
+  def repeatTraversal(traversal: (String, Strategy) => Strategy, s: Strategy) = {
+    repeat(resetTree(traversal(s.name, s)))
+  }
+
+  private def resetTree(s: =>Strategy): Strategy =  new Strategy("resetTree") {
+    val body = (t1 : Any) => {
+      t1 match {
+        case c: CompNode => reinit(c)
+        case _           => ()
+      }
+      s(t1)
+    }
+  }
 
   /**
    * add a map to output values to non-filled sink nodes if there are some
@@ -81,17 +110,18 @@ trait Optimiser extends CompNodes with Rewriter {
   /**
    * all the strategies to apply, in sequence
    */
-  def allStrategies(outputs: Seq[CompNode]) =
-    attempt(combineToParDo)                 <*
-    attempt(parDoFuse     )                 <*
-    attempt(addBridgeStore)                 <*
+  def allStrategies =
+    combineToParDo                          <*
+    parDoFuse                               <*
     attempt(addParallelDoForNonFilledSinks)
 
   /**
    * Optimise a set of CompNodes, starting from the set of outputs
    */
   def optimise(outputs: Seq[CompNode]): Seq[CompNode] =
-    rewrite(allStrategies(outputs))(outputs)
+    rewrite(allStrategies)(Root(outputs)) match {
+      case Root1(ins) => ins
+    }
 
   /** duplicate the whole graph by copying all nodes */
   lazy val duplicate = (node: CompNode) => rewrite(everywhere(rule {
@@ -107,7 +137,9 @@ trait Optimiser extends CompNodes with Rewriter {
   /** apply one strategy to a list of Nodes. Used for testing */
   private[scoobi]
   def optimise(strategy: Strategy, nodes: CompNode*): List[CompNode] = {
-    rewrite(strategy)(nodes).toList
+    rewrite(strategy)(Root(nodes)) match {
+      case Root1(ins) => ins.toList
+    }
   }
 
   /**
@@ -115,39 +147,35 @@ trait Optimiser extends CompNodes with Rewriter {
    */
   private[scoobi]
   def optimise(node: CompNode): CompNode = {
-    reinitUses
-    val result = reinitAttributable(optimise(Seq(reinitAttributable(node))).headOption.getOrElse(node))
-    reinitUses
-    result
+    reinit(optimise(Seq(reinit(node))).headOption.getOrElse(node))
   }
 
   /** remove nodes from the tree based on a predicate */
-  def truncate(node: CompNode)(condition: Term => Boolean) = {
+  def truncate(node: CompNode)(condition: Any => Boolean) = {
     def isParentMaterialise(n: CompNode) = parent(n).exists(isMaterialise)
-    def truncateNode(n: Term): Term =
+    def truncateNode(n: Any): Any =
       n match {
-        case p: ParallelDo if isParentMaterialise(p) => p.copy(ins = Seq(Return.unit))
+        case p: ParallelDo if isParentMaterialise(p) => p.copy(ins = Seq())
         case g: GroupByKey if isParentMaterialise(g) => g.copy(in = Return.unit)
         case c: Combine    if isParentMaterialise(c) => c.copy(in = Return.unit)
-        case p: ProcessNode                          => p.bridgeStore.map(b => Load(b, p.wf)).getOrElse(p)
+        case p: ProcessNode                          => Load(p.bridgeStore, p.wf)
         case other                                   => other
       }
 
-    val truncateRule = rule { case n: Term =>
+    val truncateRule = rule { case n: Any =>
       if (condition(n)) truncateNode(n)
       else              n
     }
-    val result = reinitAttributable(rewrite(topdown(truncateRule))(node))
-    reinitUses
-    result
+    reinit(rewrite(topdown(truncateRule))(node))
   }
 
   def truncateAlreadyExecutedNodes(node: CompNode)(implicit sc: ScoobiConfiguration) = {
-    allSinks(node).filter(_.checkpointExists).foreach(markSinkAsFilled)
+    allSinks(node).collect { case ss: SinkSource if ss.checkpointExists(sc) => ss }.foreach(markSinkAsFilled)
     truncate(node) {
       case process: ProcessNode => nodeHasBeenFilled(process)
       case other                => false
     }
   }
+
 }
 object Optimiser extends Optimiser

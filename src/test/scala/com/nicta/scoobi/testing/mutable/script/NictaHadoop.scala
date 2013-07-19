@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.specs2._
-import runner.SpecificationsFinder._
-import specification.Tags
+package com.nicta.scoobi.testing.mutable.script
 
-class AllSpecificationsIndex extends Specification with Tags { def is =
+abstract class NictaHadoop extends com.nicta.scoobi.testing.script.NictaHadoop with org.specs2.mutable.script.SpecificationLike
 
-  "index".title.urlIs("index.html")    ^
-  scoobiLinks("Scoobi specifications") ^ section("index")
-
-  def scoobiLinks(t: String) = specifications().foldLeft(t.title) { (res, cur) => res ^ see(cur) }
-}
+abstract class NictaSimpleJobs extends NictaHadoop with com.nicta.scoobi.testing.SimpleJobs
 
