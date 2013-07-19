@@ -78,7 +78,7 @@ class HadoopExamplesSpec extends UnitSpec with Mockito with ResultMatchers { iso
     step("checking the logs")
     "if verbose logging is enabled then the Log instance must not be NoOpLog" >> {
       context.withVerbose.example1.execute
-      (LogFactory.getLog("any").getClass.getSimpleName must not(be_==("NoOpLog"))).orSkip
+      LogFactory.getLog("any").getClass.getSimpleName must not(be_==("NoOpLog")).orSkip
     }
     step(HadoopLogFactory.setLogFactory())
   }
