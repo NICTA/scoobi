@@ -67,11 +67,25 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a><span class="params">(<span name="input">input: <a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a></span>)</span><span class="result"> extends <a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="BypassOutputChannel.html"><span class="name">BypassOutputChannel</span></a><span class="params">(<span name="input">input: <a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a></span>, <span name="nodes">nodes: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a> = <span class="defval" name="{<br/>&amp;nbsp;&amp;nbsp;  final class $anon extends AnyRef with com.nicta.scoobi.impl.plan.mscr.Layering {<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;    def &lt;init&gt;(): anonymous class $anon = {<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;      $anon.super.&lt;init&gt;();<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;      ()<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;    }<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;  };<br/>&amp;nbsp;&amp;nbsp;  new $anon()<br/>&amp;nbsp;&amp;nbsp;}">...</span></span>)</span><span class="result"> extends <a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">This output channel simply copy values coming from a ParallelDo input (a mapper in an Input channel)
 to this node sinks and bridgeStore
+</p>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Channel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ChannelextendsAnyRef"></a>
+      <a id="Channel:Channel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Channel.html"><span class="name">Channel</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Abstract trait for both input and output channels
 </p>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="FloatingInputChannelextendsMscrInputChannel"></a>
@@ -110,12 +124,12 @@ to this node sinks and bridgeStore
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="GbkOutputChannel.html"><span class="name">GbkOutputChannel</span></a><span class="params">(<span name="groupByKey">groupByKey: <a href="../comp/GroupByKey.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a></span>, <span name="combiner">combiner: <span class="extype" name="scala.Option">Option</span>[<a href="../comp/Combine.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Combine">Combine</a>] = <span class="symbol">scala.None</span></span>, <span name="reducer">reducer: <span class="extype" name="scala.Option">Option</span>[<a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="GbkOutputChannel.html"><span class="name">GbkOutputChannel</span></a><span class="params">(<span name="groupByKey">groupByKey: <a href="../comp/GroupByKey.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a></span>, <span name="combiner">combiner: <span class="extype" name="scala.Option">Option</span>[<a href="../comp/Combine.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Combine">Combine</a>] = <span class="symbol">scala.None</span></span>, <span name="reducer">reducer: <span class="extype" name="scala.Option">Option</span>[<a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>] = <span class="symbol">scala.None</span></span>, <span name="nodes">nodes: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a> = <span class="defval" name="{<br/>&amp;nbsp;&amp;nbsp;  final class $anon extends AnyRef with com.nicta.scoobi.impl.plan.mscr.Layering {<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;    def &lt;init&gt;(): anonymous class $anon = {<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;      $anon.super.&lt;init&gt;();<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;      ()<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;    }<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;  };<br/>&amp;nbsp;&amp;nbsp;  new $anon()<br/>&amp;nbsp;&amp;nbsp;}">...</span></span>)</span><span class="result"> extends <a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">Output channel for a GroupByKey.</p>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="InputChannelextendsAnyRef"></a>
+      <a id="InputChannelextendsChannel"></a>
       <a id="InputChannel:InputChannel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -123,7 +137,7 @@ to this node sinks and bridgeStore
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="InputChannel.html"><span class="name">InputChannel</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <a href="InputChannel.html"><span class="name">InputChannel</span></a><span class="result"> extends <a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></span>
       </span>
       </h4>
       <p class="comment cmt">An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
@@ -209,7 +223,7 @@ node from a previous Mscr for example).</p>
       <p class="comment cmt">Implementation of an OutputChannel for a Mscr
 </p>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrsDefinition" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="MscrsDefinitionextendsLayering"></a>
+      <a id="MscrsDefinitionextendsLayeringwithOptimiserwithShowNode"></a>
       <a id="MscrsDefinition:MscrsDefinition"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -217,12 +231,12 @@ node from a previous Mscr for example).</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="MscrsDefinition.html"><span class="name">MscrsDefinition</span></a><span class="result"> extends <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
+        <a href="MscrsDefinition.html"><span class="name">MscrsDefinition</span></a><span class="result"> extends <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a> with <a href="../comp/Optimiser.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.Optimiser">Optimiser</a> with <a href="../comp/ShowNode.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ShowNode">ShowNode</a></span>
       </span>
       </h4>
-      
+      <p class="comment cmt">This trait processes the computation graph created out of DLists and creates map-reduce jobs from it.</p>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="OutputChannelextendsAnyRef"></a>
+      <a id="OutputChannelextendsChannel"></a>
       <a id="OutputChannel:OutputChannel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -230,7 +244,7 @@ node from a previous Mscr for example).</p>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="OutputChannel.html"><span class="name">OutputChannel</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <a href="OutputChannel.html"><span class="name">OutputChannel</span></a><span class="result"> extends <a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></span>
       </span>
       </h4>
       <p class="comment cmt">An OutputChannel is responsible for emitting key/values grouped by one Gbk or passed through from an InputChannel with no grouping</p>

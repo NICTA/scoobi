@@ -42,7 +42,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Implementation of an OutputChannel for a Mscr
 </p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a>, <a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="BypassOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.BypassOutputChannel">BypassOutputChannel</a>, <a href="GbkOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel">GbkOutputChannel</a></div>
@@ -63,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel"><span>MscrOutputChannel</span></li><li class="in" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel"><span>OutputChannel</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel"><span>MscrOutputChannel</span></li><li class="in" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel"><span>OutputChannel</span></li><li class="in" name="com.nicta.scoobi.impl.plan.mscr.Channel"><span>Channel</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -104,6 +104,58 @@ needing its environment
 </p><div class="fullcomment"><div class="comment cmt"><p>sequence of all the nodes which may require some input data to be loaded, like a ParallelDo used as a reducer and
 needing its environment
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#lastNode" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="lastNode:com.nicta.scoobi.core.ProcessNode"></a>
+      <a id="lastNode:ProcessNode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lastNode</span><span class="result">: <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>last node of the channel to emit values</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#nodes" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="nodes:com.nicta.scoobi.impl.plan.mscr.Layering"></a>
+      <a id="nodes:Layering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nodes</span><span class="result">: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#outputNodes" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="outputNodes:Seq[com.nicta.scoobi.core.CompNode]"></a>
+      <a id="outputNodes:Seq[CompNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">output nodes for this channel</p><div class="fullcomment"><div class="comment cmt"><p>output nodes for this channel</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Channel#processNodes" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="processNodes:Seq[com.nicta.scoobi.core.ProcessNode]"></a>
+      <a id="processNodes:Seq[ProcessNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">processNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the ProcessNodes for this channel</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#reduce" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="reduce(key:Any,values:Iterable[Any],channelOutput:com.nicta.scoobi.impl.mapreducer.ChannelOutputFormat)(implicitconfiguration:org.apache.hadoop.conf.Configuration):Unit"></a>
       <a id="reduce(Any,Iterable[Any],ChannelOutputFormat)(Configuration):Unit"></a>
@@ -117,19 +169,6 @@ needing its environment
       </span>
       </h4>
       <p class="shortcomment cmt">reduce key/values, given the current output format</p><div class="fullcomment"><div class="comment cmt"><p>reduce key/values, given the current output format</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#sinks" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
-      <a id="sinks:Seq[Sink]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sinks</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the sinks defined by the nodes of the input channel</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> → <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.OutputChannel#tag" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="tag:Int"></a>
       <a id="tag:Int"></a>
@@ -370,6 +409,19 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#graphNodes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="graphNodes:com.nicta.scoobi.impl.plan.mscr.Layering"></a>
+      <a id="graphNodes:Layering"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">graphNodes</span><span class="result">: <a href="Layering.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering">Layering</a></span>
+      </span>
+      </h4>
+      
     </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -474,6 +526,19 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
       </span>
       </h4>
       <p class="shortcomment cmt">setup the nodes of the channel before writing data</p><div class="fullcomment"><div class="comment cmt"><p>setup the nodes of the channel before writing data</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> → <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel#sinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
+      <a id="sinks:Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sinks</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the sinks defined by the nodes of the input channel</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a> → <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -568,6 +633,8 @@ the sink output converter. This emitter is used by both the GbkOutputChannel and
         <div id="inheritedMembers">
         <div class="parent" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">
               <h3>Inherited from <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></h3>
+            </div><div class="parent" name="com.nicta.scoobi.impl.plan.mscr.Channel">
+              <h3>Inherited from <a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

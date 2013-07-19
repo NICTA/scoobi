@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Layer</span><span class="tparams">[<span name="T">T &lt;: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>]</span><span class="params">(<span name="nodes">nodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer.T">T</span>] = <span class="symbol">collection.this.Seq.apply[T]()</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Layer</span><span class="params">(<span name="mscrs">mscrs: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -81,15 +81,15 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(nodes:Seq[T]):Layering.this.Layer[T]"></a>
-      <a id="&lt;init&gt;:Layer[T]"></a>
+      <a id="&lt;init&gt;(mscrs:Seq[com.nicta.scoobi.impl.plan.mscr.Mscr]):Layering.this.Layer"></a>
+      <a id="&lt;init&gt;:Layer"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Layer</span><span class="params">(<span name="nodes">nodes: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer.T">T</span>] = <span class="symbol">collection.this.Seq.apply[T]()</span></span>)</span>
+        <span class="name">Layer</span><span class="params">(<span name="mscrs">mscrs: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span>
       </span>
       </h4>
       
@@ -199,6 +199,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#contains" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="contains(n:com.nicta.scoobi.core.CompNode):Boolean"></a>
+      <a id="contains(CompNode):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contains</span><span class="params">(<span name="n">n: <a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>true if the layer contains the node n</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -212,6 +225,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(a:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer">Layer</a> → Equals → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -231,7 +257,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#gbks" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#gbks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="gbks:Seq[com.nicta.scoobi.impl.plan.comp.GroupByKey]"></a>
       <a id="gbks:Seq[GroupByKey]"></a>
       <h4 class="signature">
@@ -243,7 +269,7 @@
         <span class="name">gbks</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="../comp/GroupByKey.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all group by keys</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -257,6 +283,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer">Layer</a> → AnyRef → Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#id" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="id:Int"></a>
       <a id="id:Int"></a>
@@ -296,6 +335,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#mscrs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mscrs:Seq[com.nicta.scoobi.impl.plan.mscr.Mscr]"></a>
+      <a id="mscrs:Seq[Mscr]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mscrs</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Mscr.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Mscr">Mscr</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -309,19 +361,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#nodes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="nodes:Seq[T]"></a>
-      <a id="nodes:Seq[T]"></a>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#nodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nodes:Seq[com.nicta.scoobi.core.ProcessNode]"></a>
+      <a id="nodes:Seq[ProcessNode]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">nodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer.T">T</span>]</span>
+        <span class="name">nodes</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all process nodes</p></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -348,6 +400,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#outputNodes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outputNodes:Seq[com.nicta.scoobi.core.CompNode]"></a>
+      <a id="outputNodes:Seq[CompNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all output nodes</p></dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Layering.Layer#sinks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sinks:Seq[com.nicta.scoobi.core.Sink]"></a>
+      <a id="sinks:Seq[Sink]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sinks</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="com.nicta.scoobi.core.Sink">Sink</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the sinks for this layer</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

@@ -243,18 +243,20 @@ key-value CompNode by key
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl#bridgeStore" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bridgeStore:Option[com.nicta.scoobi.core.Bridge]"></a>
-      <a id="bridgeStore:Option[Bridge]"></a>
+      <a id="bridgeStore:com.nicta.scoobi.core.Bridge"></a>
+      <a id="bridgeStore:Bridge"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">bridgeStore</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span>]</span>
+        <span class="name">bridgeStore</span><span class="result">: <span class="extype" name="com.nicta.scoobi.core.Bridge">Bridge</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations</p><div class="fullcomment"><div class="comment cmt"><p>ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> → <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></dd></dl></div>
+      <p class="shortcomment cmt">ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations
+</p><div class="fullcomment"><div class="comment cmt"><p>ParallelDo, Combine, GroupByKey have a Bridge = sink for previous computations + source for other computations
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> → <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.GroupByKey#bridgeStoreId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bridgeStoreId:String"></a>
       <a id="bridgeStoreId:String"></a>
@@ -267,7 +269,7 @@ key-value CompNode by key
         <span class="name">bridgeStoreId</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">unique identifier for the bridgeStore storing data for this node</p><div class="fullcomment"><div class="comment cmt"><p>unique identifier for the bridgeStore storing data for this node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a> → <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a></dd></dl></div>
+      <p class="shortcomment cmt">unique identifier for the bridgeStore storing data for this node</p><div class="fullcomment"><div class="comment cmt"><p>unique identifier for the bridgeStore storing data for this node</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.comp.GroupByKey">GroupByKey</a> → <a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> → <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl#bridgeToString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bridgeToString:String"></a>
       <a id="bridgeToString:String"></a>
@@ -307,19 +309,6 @@ key-value CompNode by key
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Attributable → AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl#createBridgeStore" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="createBridgeStore:com.nicta.scoobi.impl.mapreducer.BridgeStore[Nothing]"></a>
-      <a id="createBridgeStore:BridgeStore[Nothing]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">createBridgeStore</span><span class="result">: <a href="../../mapreducer/BridgeStore.html" class="extype" name="com.nicta.scoobi.impl.mapreducer.BridgeStore">BridgeStore</a>[<span class="extype" name="scala.Nothing">Nothing</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">create a new bridgeStore if necessary</p><div class="fullcomment"><div class="comment cmt"><p>create a new bridgeStore if necessary</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ProcessNodeImpl.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ProcessNodeImpl">ProcessNodeImpl</a> → <a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>

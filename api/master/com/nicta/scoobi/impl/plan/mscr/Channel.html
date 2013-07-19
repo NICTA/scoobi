@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
-            var hash = 'com.nicta.scoobi.impl.plan.mscr.Channel$';
+            var hash = 'com.nicta.scoobi.impl.plan.mscr.Channel';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,30 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="Channel.html" title="Go to companion"><img src="../../../../../../lib/object_to_trait_big.png" /></a>
+        <a href="Channel$.html" title="Go to companion"><img src="../../../../../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.nicta">nicta</a>.<a href="../../../package.html" class="extype" name="com.nicta.scoobi">scoobi</a>.<a href="../../package.html" class="extype" name="com.nicta.scoobi.impl">impl</a>.<a href="../package.html" class="extype" name="com.nicta.scoobi.impl.plan">plan</a>.<a href="package.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr">mscr</a></p>
-        <h1><a href="Channel.html" title="Go to companion">Channel</a></h1>
+        <h1><a href="Channel$.html" title="Go to companion">Channel</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Channel</span>
+        <span class="name">Channel</span><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Abstract trait for both input and output channels
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="BypassOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.BypassOutputChannel">BypassOutputChannel</a>, <a href="FloatingInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a>, <a href="GbkInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel">GbkInputChannel</a>, <a href="GbkOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkOutputChannel">GbkOutputChannel</a>, <a href="InputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.InputChannel">InputChannel</a>, <a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a>, <a href="MscrOutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrOutputChannel">MscrOutputChannel</a>, <a href="OutputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.OutputChannel">OutputChannel</a></div>
         </div></div>
         
 
@@ -81,10 +85,26 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.nicta.scoobi.impl.plan.mscr.Channel#processNodes" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="processNodes:Seq[com.nicta.scoobi.core.ProcessNode]"></a>
+      <a id="processNodes:Seq[ProcessNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">processNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the ProcessNodes for this channel</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -266,19 +286,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.Channel.keyRollingInt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="keyRollingInt"></a>
-      <a id="keyRollingInt:keyRollingInt"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Channel$$keyRollingInt$.html"><span class="name">keyRollingInt</span></a><span class="result"> extends <a href="../../../core/UniqueInt.html" class="extype" name="com.nicta.scoobi.core.UniqueInt">UniqueInt</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -318,19 +325,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.Channel.rollingInt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="rollingInt"></a>
-      <a id="rollingInt:rollingInt"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Channel$$rollingInt$.html"><span class="name">rollingInt</span></a><span class="result"> extends <a href="../../../core/UniqueInt.html" class="extype" name="com.nicta.scoobi.core.UniqueInt">UniqueInt</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

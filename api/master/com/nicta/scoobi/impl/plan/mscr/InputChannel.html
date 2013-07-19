@@ -35,17 +35,18 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">InputChannel</span><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">InputChannel</span><span class="result"> extends <a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
 node from a previous Mscr for example).</p><p>There are however more data inputs for an InputChannel since the environments of ParallelDos are inputs as well</p><p>An InputChannel emits (key, values) of different types classified by an Integer tag, either:</p><ul><li>the GroupByKey node id that will consume the key/values</li><li>the ParallelDo node id that will consume the key/values</li></ul><p>The main functionality of an InputChannel is to map an input key/value to another key/value to be grouped or reduced
-using the functions of ParallelDos.</p><p>There are 2 main types of InputChannels:</p><ul><li>GbkInputChannel: this input channel outputs key/values to GroupByKeys</li><li>FloatingInputChannel: this input channel simply does some mapping for &quot;floating&quot; paralleldos</li></ul><p> They both share some implementation in the MscrInputChannel trait.</p><p> An input channel can have no mappers at all. In that case the values from the source node are directly emitted with
- no transformation.</p><p>Two InputChannels are equal if they have the same source id.
+using the functions of ParallelDos.</p><p>There are 2 main types of InputChannels:</p><ul><li>GbkInputChannel: this input channel outputs key/values to GroupByKeys
+   (or to some other parallelDo nodes if the result needs to be reused, see #282)</li><li>FloatingInputChannel: this input channel simply does some mapping for &quot;floating&quot; paralleldos</li></ul><p> They both share some implementation in the MscrInputChannel trait.</p><p> An input channel can have no mappers at all. In that case the values from the source node are directly emitted with
+ no transformation.</p><p>Two InputChannels are equal if they have the same id.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="FloatingInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.FloatingInputChannel">FloatingInputChannel</a>, <a href="GbkInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.GbkInputChannel">GbkInputChannel</a>, <a href="MscrInputChannel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.MscrInputChannel">MscrInputChannel</a></div>
@@ -66,7 +67,7 @@ using the functions of ParallelDos.</p><p>There are 2 main types of InputChannel
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.nicta.scoobi.impl.plan.mscr.InputChannel"><span>InputChannel</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.nicta.scoobi.impl.plan.mscr.InputChannel"><span>InputChannel</span></li><li class="in" name="com.nicta.scoobi.impl.plan.mscr.Channel"><span>Channel</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -90,7 +91,20 @@ using the functions of ParallelDos.</p><p>There are 2 main types of InputChannel
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#cleanup" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#bypassOutputNodes" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="bypassOutputNodes:Seq[com.nicta.scoobi.impl.plan.comp.ParallelDo]"></a>
+      <a id="bypassOutputNodes:Seq[ParallelDo]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bypassOutputNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../comp/ParallelDo.html" class="extype" name="com.nicta.scoobi.impl.plan.comp.ParallelDo">ParallelDo</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">output nodes (parallelDos) which are not going in a reducer</p>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#cleanup" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="cleanup(context:com.nicta.scoobi.core.InputOutputContext):Unit"></a>
       <a id="cleanup(InputOutputContext):Unit"></a>
       <h4 class="signature">
@@ -103,19 +117,6 @@ using the functions of ParallelDos.</p><p>There are 2 main types of InputChannel
       </span>
       </h4>
       <p class="shortcomment cmt">setup the parallelDos of this input channel</p>
-    </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#id" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="id:Int"></a>
-      <a id="id:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      
     </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#inputNodes" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="inputNodes:Seq[com.nicta.scoobi.core.CompNode]"></a>
       <a id="inputNodes:Seq[CompNode]"></a>
@@ -155,6 +156,32 @@ using the functions of ParallelDos.</p><p>There are 2 main types of InputChannel
       </span>
       </h4>
       <p class="shortcomment cmt">emit a new key/value using the parallelDos functions</p>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#outputNodes" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="outputNodes:Seq[com.nicta.scoobi.core.CompNode]"></a>
+      <a id="outputNodes:Seq[CompNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outputNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/CompNode.html" class="extype" name="com.nicta.scoobi.core.CompNode">CompNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">nodes where this input channel writes to</p>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.Channel#processNodes" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="processNodes:Seq[com.nicta.scoobi.core.ProcessNode]"></a>
+      <a id="processNodes:Seq[ProcessNode]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">processNodes</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../../../core/ProcessNode.html" class="extype" name="com.nicta.scoobi.core.ProcessNode">ProcessNode</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all the ProcessNodes for this channel</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></dd></dl></div>
     </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#setup" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="setup(context:com.nicta.scoobi.core.InputOutputContext):Unit"></a>
       <a id="setup(InputOutputContext):Unit"></a>
@@ -393,6 +420,19 @@ using the functions of ParallelDos.</p><p>There are 2 main types of InputChannel
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.nicta.scoobi.impl.plan.mscr.InputChannel">InputChannel</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="com.nicta.scoobi.impl.plan.mscr.InputChannel#id" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="id:Int"></a>
+      <a id="id:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -537,7 +577,9 @@ using the functions of ParallelDos.</p><p>There are 2 main types of InputChannel
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="com.nicta.scoobi.impl.plan.mscr.Channel">
+              <h3>Inherited from <a href="Channel.html" class="extype" name="com.nicta.scoobi.impl.plan.mscr.Channel">Channel</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
