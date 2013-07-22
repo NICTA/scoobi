@@ -88,15 +88,16 @@ trait FileSystems {
   /**
    * create a directory if it doesn't exist already
    */
-  def mkdir(dest: Path)(implicit sc: ScoobiConfiguration) {
+  def mkdir(dest: Path)(implicit sc: ScoobiConfiguration) = {
     if (!exists(dest))
       FileSystem.get(dest.toUri, sc.configuration).mkdirs(dest)
+    else true
   }
 
   /**
    * create a directory if it doesn't exist already
    */
-  def mkdir(dest: String)(implicit sc: ScoobiConfiguration) {
+  def mkdir(dest: String)(implicit sc: ScoobiConfiguration): Boolean = {
     mkdir(new Path(dest))
   }
 
