@@ -2,10 +2,10 @@ name := "PageRank"
 
 version := "1.0"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.10.2"
 
 libraryDependencies ++= 
-  Seq("com.nicta" %% "scoobi" % "0.7.0-cdh4") 
+  Seq("com.nicta" %% "scoobi" % "0.7.2") 
 
 scalacOptions ++= Seq("-deprecation")
 
