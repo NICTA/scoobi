@@ -127,15 +127,6 @@ object build extends Build {
   )
 
   /**
-   * EXAMPLE PROJECTS
-   */
-  def project(name: String) = Project(id = name, base = file("examples/"+name))
-  lazy val fatjar    = project("fatjar")
-  lazy val pageRank  = project("pageRank")
-  lazy val scoobding = project("scoobding")
-  lazy val wordCount = project("wordCount")
-
-  /**
    * RELEASE PROCESS
    */
   lazy val releaseSettings =
