@@ -67,7 +67,7 @@
     </head><body><div id="breadcrumbs"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html">Testing</a></div><div class="colmask threecol">
                    <div class="colmid">
                      <div class="colleft">
-                       <div class="col1"><div id="central"><html><title>Testing guide</title><a name="Testing+guide"><h2 specId="218997208">Testing guide</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Running+locally"><h3>Running locally</h3></a><p>The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine. The way to do that is simply to run your application normally under the JVM. You can do that directly using <code class="prettyprint">java</code>, but specifying the right class path is tricky; as a result, it's often easier to run using <code class="prettyprint">sbt run-main</code>. For example, if your main class is called <code class="prettyprint">mypackage.myapp.RunMyApp</code>, run something like the following command from the top-level directory of your SBT project:</p>
+                       <div class="col1"><div id="central"><html><title>Testing guide</title><a name="Testing+guide"><h2 specId="751294816">Testing guide</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Running+locally"><h3>Running locally</h3></a><p>The first thing to do is to run your code locally (in non-distributed mode). This does not require you to be running on a Hadoop cluster or even to have Hadoop installed on your local machine. The way to do that is simply to run your application normally under the JVM. You can do that directly using <code class="prettyprint">java</code>, but specifying the right class path is tricky; as a result, it's often easier to run using <code class="prettyprint">sbt run-main</code>. For example, if your main class is called <code class="prettyprint">mypackage.myapp.RunMyApp</code>, run something like the following command from the top-level directory of your SBT project:</p>
 <pre><code class="prettyprint">sbt &quot;run-main mypackage.myapp.RunMyApp input-files output&quot;
 </code></pre><a name="Running+on+the+cluster"><h3>Running on the cluster</h3></a><p>Only when your application runs and works locally should you try running on a Hadoop cluster. In order to do so you will probably need to build an assembly, i.e. a self-contained JAR file containing all of the libraries needed. This can be done using the <code class="prettyprint">sbt-assembly</code> plugin to SBT. See the <a href="http://nicta.github.io/scoobi/guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html">Quick Start</a> page in this User Guide for more information.</p><p>Once you have built the assembly, you can run it by logging into the job tracker and running it using <code class="prettyprint">hadoop</code>, e.g. as follows:</p>
 <pre><code class="prettyprint">hadoop jar ./target/MyApp-assembly-0.1.jar mypackage.myapp.RunMyApp input-files output
@@ -177,8 +177,8 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
 </code></pre></li>
 </ul></div></status></html></div></div>
                        <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1923482001"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="1433743869"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+      <ul><li id="2028795400"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="627248822"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -188,7 +188,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="627248822"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="1420102144"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -212,7 +212,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="173728231"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="523481450"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -228,7 +228,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="1420102144"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="2059712038"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -242,7 +242,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="523481450"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="143833026"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -292,7 +292,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="2059712038"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1482565107"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -304,7 +304,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
             
           </li></ul>
           </li></ul>
-          </li><li id="143833026"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="218997208"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -312,7 +312,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1482565107"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="2046587545"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -328,7 +328,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="218997208"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="751294816"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -358,7 +358,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="2046587545"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1955611799"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -374,7 +374,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="751294816"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="730288458"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -382,7 +382,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="1955611799"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="1089071001"><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../../guide-SNAPSHOT/guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -394,7 +394,7 @@ sbt&gt; test-only *WordCountSpec* -- -include amazon EC2 -- scoobi !inmemory.!lo
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1923482001','218997208'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['2028795400','751294816'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
                        <div class="col3"><div id="rightcolumn"></div></div>
                      </div>
