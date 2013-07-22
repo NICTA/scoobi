@@ -1,43 +1,18 @@
-This is a greatly [refactored and enhanced version](https://github.com/NICTA/scoobi/wiki/0.7.0-RC1)!
-
-### New Features
-
- * new API for persisting `DLists` and `DObjects`
- * "Checkpoints" to save intermediary results (with customisable expiry policy)
- * Scoobi REPL to run experiments with your cluster
- * `Reduction` datatype and combinators to create combiner functions
- * Hadoop `Counters` can be used in `parallelDo` operations
- * works on Scala 2.10 
- * refactored the ScoobiApp trait with several [command-line options](http://nicta.github.com/scoobi/guide/Application.html#Application)
- * "map-only" jobs don't use a reducer
-
-### Improvements
-
- * new `DList` methods: `shuffle`, `isEqualTo`, `stratify`, `zipWithIndex`, `diff`, `distinctDiff`
- * `DObjects` can be saved and loaded
- * `joinFullOuter` operation in the relational library
- * a Scoobi job fails when an intermediate Hadoop job fails
- * added more logging and a url to the job on the job tracker when there is a failure
- * added type/schema checking in Sequence and Avro datasources
- * a `DList` can now be created with `Text` elements (or any `Writable`)
- * input checks can be customised when reading files
- * [#85](https://github.com/NICTA/scoobi/issues/85) set the minimum and maximum number of reducers
- * [#129](https://github.com/NICTA/scoobi/issues/129): added the ability to set the input size threshold per reducer
- * [#193](https://github.com/NICTA/scoobi/issues/193): a `DList` can be used in a `for` comprehension
- * [#235](https://github.com/NICTA/scoobi/issues/235): new `WireFormat` for Generic Avro records
-
-### Changes
-
- * `Grouping` definitions must now return `scalaz.Ordering` values instead of just `ints`
- * `combine` operations now take in a `Reduction` object instead of a function. See the `Reduction` object for a list of combinators to create `Reductions`
+This release contains several important fixes
 
 ### Fixes
 
- * fixed the computation of splits when creating a ChannelInputFormat
- * [#183](https://github.com/NICTA/scoobi/issues/183): fixed `DList.distinct`
- * [#200](https://github.com/NICTA/scoobi/issues/200): Enable use '\001' for separator of TextDelimitedFile
- * [#211](https://github.com/NICTA/scoobi/issues/211): better display of file sizes
- * [#239](https://github.com/NICTA/scoobi/issues/211): FileUtil.copy in mixed S3/HDFS
+ * [#279, #280](https://github.com/NICTA/scoobi/issues/279): StackOverflow when printing a large job
+ * [#281, #282](https://github.com/NICTA/scoobi/issues/282): some operations are executed more than once
+ * [#283](https://github.com/NICTA/scoobi/issues/283): fromTextFile with empty list can cause incorrect input to be processed
+ * [#285, #286](https://github.com/NICTA/scoobi/issues/285): DList#materialise creates file handles eagerly, not lazily
+ * [#287](https://github.com/NICTA/scoobi/issues/287): #HADOOP-9746 issue workaround
+
+And the release process has been simplified
+
+### Packaging
+
+ * there is now only one jar `scoobi-0.7.2.jar` whether using CDH3 or CDH4
  
  
 ------ 
