@@ -149,10 +149,9 @@ object ChannelsInputFormat {
     source.inputConfigure(job)
 
     Option(job.getConfiguration.get(CACHE_FILES)).foreach { files =>
-      conf.set(ChannelPrefix.prefix(source.id, CACHE_FILES), files)
-      conf.addValues(CACHE_FILES, files)
+      conf.addValues(CACHE_FILES, files.split(",").toSeq:_*)
     }
-    conf.updateWith(job.getConfiguration) { case (k, v)  if k != CACHE_FILES  =>
+    conf.updateWith(job.getConfiguration) { case (k, v) if k != CACHE_FILES =>
       (ChannelPrefix.prefix(source.id, k), v)
     }
   }
@@ -165,7 +164,7 @@ object ChannelsInputFormat {
   private def extractChannelConfiguration(configuration: Configuration, channel: Int): Configuration = {
     val Prefix = ChannelPrefix.regex(channel)
 
-    new Configuration(configuration).updateWith { case (Prefix(k), v) if k != CACHE_FILES =>
+    new Configuration(configuration).updateWith { case (Prefix(k), v) =>
       (k, v)
     }
   }

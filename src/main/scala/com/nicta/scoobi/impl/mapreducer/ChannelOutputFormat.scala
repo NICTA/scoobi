@@ -117,7 +117,7 @@ object ChannelOutputFormat {
     val jobCopy = new Job(new Configuration(conf))
     sink.outputConfigure(jobCopy)
     Option(jobCopy.getConfiguration.get(CACHE_FILES)).foreach { files =>
-      conf.set(otherProperty(tag, sink.id) + CACHE_FILES, files)
+      conf.addValues(CACHE_FILES, files.split(",").toSeq:_*)
     }
     conf.updateWith(jobCopy.getConfiguration) { case (k, v) if k != CACHE_FILES =>
       (otherProperty(tag, sink.id) + k, v)

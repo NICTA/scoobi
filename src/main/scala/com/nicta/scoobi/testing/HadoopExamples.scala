@@ -97,7 +97,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for showing that an execution is skipped
    */
   class SkippedHadoopContext(name: String) extends HadoopContext {
-    val configuration = configureForInMemory(ScoobiConfiguration())
+    lazy val configuration = configureForInMemory(ScoobiConfiguration())
     def apply[R : AsResult](r: ScoobiConfiguration => R) =
       Skipped("excluded", "No "+name+" execution"+time_?)
   }
@@ -105,7 +105,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for running examples in memory
    */
   class InMemoryHadoopContext extends HadoopContext {
-    val configuration = configureForInMemory(ScoobiConfiguration())
+    lazy val configuration = configureForInMemory(ScoobiConfiguration())
     def apply[R : AsResult](r: ScoobiConfiguration => R) = AsResult {
       try     inMemory(r(configuration))
       finally cleanup(configuration)
@@ -115,7 +115,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for running examples locally
    */
   class LocalHadoopContext extends HadoopContext {
-    val configuration = configureForLocal(ScoobiConfiguration())
+    lazy val configuration = configureForLocal(ScoobiConfiguration())
     def apply[R : AsResult](r: ScoobiConfiguration => R) = AsResult {
       try     locally(r(configuration))
       finally cleanup(configuration)
@@ -126,7 +126,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
    * Context for running examples on the cluster
    */
   class ClusterHadoopContext extends HadoopContext {
-    val configuration = configureForCluster(ScoobiConfiguration())
+    lazy val configuration = configureForCluster(ScoobiConfiguration())
     def apply[R : AsResult](r: ScoobiConfiguration => R) = AsResult {
       try     remotely(r(configuration))
       finally cleanup(configuration)

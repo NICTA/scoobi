@@ -19,6 +19,7 @@ package application
 import java.net.{URLClassLoader, URL}
 import java.io.File
 import org.apache.hadoop.filecache.DistributedCache
+import DistributedCache._
 import org.apache.hadoop.fs.Path
 import core._
 import impl.io.FileSystems
@@ -120,7 +121,10 @@ trait LibJars {
    */
   def configureJars(implicit configuration: ScoobiConfiguration) = {
     logger.debug("adding the jars paths to the distributed cache")
-    uploadedJars.foreach(path => DistributedCache.addFileToClassPath(new Path(path.toUri.getPath), configuration))
+    uploadedJars.foreach { path =>
+      if (Option(configuration.get(CACHE_FILES)).map(paths => !paths.contains(path.toUri.getPath)).getOrElse(true))
+        DistributedCache.addFileToClassPath(new Path(path.toUri.getPath), configuration)
+    }
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
     // add new jars to the classpath and make sure that values are still unique for cache files and classpath entries
