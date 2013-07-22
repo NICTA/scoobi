@@ -82,7 +82,7 @@ class LibJarsSpec extends UnitSpecification {
       }
 
       // don't create any directory for the tests
-      override def mkdir(dir: String)(implicit configuration: core.ScoobiConfiguration) {}
+      override def mkdir(dir: String)(implicit configuration: core.ScoobiConfiguration) = true
       // don't upload anything really
       override def uploadNewJars(sourceFiles: Seq[File], dest: String)(implicit configuration: core.ScoobiConfiguration): Seq[File] = sourceFiles
     }
