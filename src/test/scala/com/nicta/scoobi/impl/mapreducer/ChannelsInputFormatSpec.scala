@@ -49,10 +49,13 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
     val jarBuilder = mock[JarBuilder]
 
     val (source1, source2) = (stringDataSource("one"), aBridgeStore)
-    val configuration = configureSources(job, jarBuilder, Seq(source1, source2)).toMap.
-                          showAs(_.toList.sorted.filter(_._1.startsWith("scoobi")).mkString("\n")).evaluate
+    val configured = configureSources(job, jarBuilder, Seq(source1, source2)).toMap
+    val configuration = configured.showAs(_.toList.sorted.filter(_._1.startsWith("scoobi")).mkString("\n")).evaluate
 
-    "the input format class must be set as 'ChannelsInputFormat' " >> {
+    val mapredConfiguration = configured.showAs(_.toList.sorted.filter(_._1.startsWith("mapred")).mkString("\n")).evaluate
+
+
+      "the input format class must be set as 'ChannelsInputFormat' " >> {
       job.getInputFormatClass.getSimpleName must_== "ChannelsInputFormat"
     }
     "there must be a new runtime class per BridgeStore DataSource, added to the JarBuilder" >> {
@@ -67,9 +70,11 @@ Several input formats can be grouped as one `ChannelsInputFormat` class.""".endp
       configuration must haveKeys("scoobi.input"+source1.id+":mapred.constant.string",
                                   "scoobi.input"+source2.id+":mapred.input.dir")
     }
-    "sources can configure distributed cache files. They must be prefixed by channel id in the configuration" >> {
-      configuration must haveKeys("scoobi.input"+source1.id+":mapred.cache.files",
-                                  "scoobi.input"+source2.id+":mapred.cache.files")
+    "sources can configure distributed cache files but they are not prefixed by channel id in the configuration" >> {
+      mapredConfiguration must haveKey("mapred.cache.files")
+      "there must be 2 cached files" ==> {
+        mapredConfiguration.map((_:Map[String,String])("mapred.cache.files").split(",")) must haveSize(2)
+      }
     }
 
   }
