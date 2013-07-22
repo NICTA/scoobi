@@ -15,6 +15,8 @@
       <script type="text/javascript" src="./../css/jquery.hotkeys.js"></script>
       <script type="text/javascript" src="./../css/jquery.jstree.js"></script>
       <script type="text/javascript" src="./../css/tooltip.js"></script>
+      <script type="text/javascript" src="./../js/specs2-user.js"></script>
+      <script language="javascript">$.getScript("./../js/specs2-user.js", initUserScript(document));</script>
       <script language="javascript">
       function init() {  prettyPrint(); };
       /* found on : http://www.tek-tips.com/faqs.cfm?fid=6620 */
@@ -32,9 +34,9 @@
         element.style.display = (element.style.display == 'block')? 'none' : 'block';
       };
       function showHideByClass(name) {
-		    var elements = document.getElementsByClassName(name);
+        var elements = document.getElementsByClassName(name);
         for (i = 0; i < elements.length; i++) {
-		      elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
+          elements[i].style.display = (elements[i].style.display == 'none') ? elements[i].style.display = '': 'none';
         }
       };
       function showByClass(name) {
@@ -62,10 +64,10 @@
       <script type="text/javascript" src="./../css/tabber.js"></script>
       <link rel="stylesheet" href="./../css/tabber.css" type="text/css" media="screen" />
       <title>Deployment</title>
-    </head><body><div id="breadcrumbs"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Deployment.html">Deployment</a></div><div class="colmask threecol">
-                   <div class="colmid">
-                     <div class="colleft">
-                       <div class="col1"><div id="central"><title>Deployment</title><a name="Deployment"><h2 specId="1627558547">Deployment</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
+    </head><body><div id="breadcrumbs"><a href="../index.html">Index</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.UserGuide.html">UserGuide</a><t> / </t><a href="../guide/com.nicta.scoobi.guide.Deployment.html">Deployment</a></div><div class="colmask threecol">
+            <div class="colmid">
+              <div class="colleft">
+                <div class="col1"><div id="central"><html><title>Deployment</title><a name="Deployment"><h2 specId="1633955317">Deployment</h2></a><status class="ok"><div style="display: show; text-indent:0px;"><a name="Introduction"><h3>Introduction</h3></a><p>If using <code class="prettyprint">sbt run</code> to launch the job is not acceptable, it's possible to make self-contained fat-jars for deployment with:</p>
 <ul>
   <li><a href="https://github.com/sbt/sbt-assembly">Sbt assembly</a></li>
   <li><a href="http://maven.apache.org/plugins/maven-assembly-plugin/usage.html">Maven assembly</a></li>
@@ -85,8 +87,8 @@ assemblySettings
   }
 }
 </code></pre><p>The downside is, that this brings in dependencies that are not strictly required (avro, hadoop, xmlpull etc.).</p><p>The big advantage to this approach, is that <code class="prettyprint">sbt run</code> still works</p><a name="Ugly+Hack"><h4>Ugly Hack</h4></a><p>We can also fake the <code class="prettyprint">libraryDependencies</code> to build a proper jar. Please note, the way we change this, will make it incompatible with a normal <code class="prettyprint">sbt run</code>. So you might want to have two versions of your <code class="prettyprint">build.sbt</code></p><p>First of all, we want to only get some of scoobi's dependencies (namely we don't want Hadoop itself, likely don't need avro, and anything else that would trick up sbt-assembly). So what can use is a little trick:</p>
-<pre><code class="prettyprint">&quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.1-cdh4&quot; intransitive()
-</code></pre><p>However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's <a href="https://github.com/NICTA/scoobi/blob/SCOOBI-0.7.1-cdh4/build.sbt">build.sbt</a> (and the correct branch/revision) for the canonical list, but for example it might be:</p>
+<pre><code class="prettyprint">&quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.2&quot; intransitive()
+</code></pre><p>However, we do need some of Scoobi's dependencies -- so we have to add them in manually. Check out Scoobi's <a href="https://github.com/NICTA/scoobi/blob/SCOOBI-0.7.2/build.sbt">build.sbt</a> (and the correct branch/revision) for the canonical list, but for example it might be:</p>
 <pre><code class="prettyprint">&quot;javassist&quot; % &quot;javassist&quot; % &quot;3.12.1.GA&quot;
 &quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.3-SNAPSHOT&quot; // Note: you only need this if you use it
 &quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.3-SNAPSHOT&quot;        // Note: you only need this if you use it
@@ -104,7 +106,7 @@ version := &quot;1.0&quot;
 scalaVersion := &quot;2.10.1&quot;
 
 libraryDependencies ++= Seq(
-   &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.1-cdh4&quot; intransitive(),
+   &quot;com.nicta&quot; %% &quot;scoobi&quot; % &quot;0.7.2&quot; intransitive(),
    &quot;javassist&quot; % &quot;javassist&quot; % &quot;3.12.1.GA&quot;,
    &quot;org.apache.avro&quot; % &quot;avro-mapred&quot; % &quot;1.7.4&quot; classifier &quot;hadoop2&quot;, // Note: add ' % &quot;provided&quot;'  if you don't need it
    &quot;org.apache.avro&quot; % &quot;avro&quot; % &quot;1.7.4&quot;,                             // Note: add ' % &quot;provided&quot;'  if you don't need it
@@ -121,10 +123,10 @@ resolvers ++= Seq(&quot;sonatype snapshots&quot; at &quot;http://oss.sonatype.or
 </code></pre><p>Note that there appears to be an OSX and Java 6 specific <a href="https://github.com/NICTA/scoobi/issues/1">issue</a> associated with calling <code class="prettyprint">hadoop</code> in this manner requiring the jar to be added to <code class="prettyprint">HADOOP_CLASSPATH</code> and then <code class="prettyprint">hadoop</code> being given the correct object to run. e.g.:</p>
 <pre><code class="prettyprint">$ export HADOOP_CLASSPATH=$PWD/target/appname-assembly-version.jar
 $ hadoop WordCount &lt;args&gt;
-</code></pre><a name="Troubleshooting"><h3>Troubleshooting</h3></a><p>You might get some <code class="prettyprint">ClassNotFoundException</code> on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi &quot;job jar&quot; that is distributed to the cluster node by turning off the dependency uploading mechanism (see the <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.Application.html">Application</a> page):</p><p><code class="prettyprint">$ hadoop WordCount &lt;args&gt; scoobi nolibjars</code></p></div></status></div></div>
-                       <div class="col2"><div id="leftcolumn"><div id="tree">
-      <ul><li id="1314648233"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
-            <ul><li id="726835127"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
+</code></pre><a name="Troubleshooting"><h3>Troubleshooting</h3></a><p>You might get some <code class="prettyprint">ClassNotFoundException</code> on the cluster if Scoobi fails to recognise that your jar contains all your dependencies (as opposed to running from sbt for example). In that case you can force the dependencies to be included in the Scoobi &quot;job jar&quot; that is distributed to the cluster node by turning off the dependency uploading mechanism (see the <a href="http://nicta.github.io/scoobi/guide/com.nicta.scoobi.guide.Application.html">Application</a> page):</p><p><code class="prettyprint">$ hadoop WordCount &lt;args&gt; scoobi nolibjars</code></p></div></status></html></div></div>
+                <div class="col2"><div id="leftcolumn"><div id="tree">
+      <ul><li id="1521159967"><a href="../guide/com.nicta.scoobi.guide.UserGuide.html#User+Guide">User Guide</a>
+            <ul><li id="328735190"><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Quick+Start">Quick Start</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Prerequisites">Prerequisites</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Directory+Structure">Directory Structure</a>
@@ -134,7 +136,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.QuickStart.html#Running">Running</a>
             
           </li></ul>
-          </li><li id="1900838744"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
+          </li><li id="561309634"><a href="../guide/com.nicta.scoobi.guide.Application.html#Application">Application</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Creation">Creation</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#Arguments">Arguments</a>
@@ -158,7 +160,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Application.html#REPL">REPL</a>
             
           </li></ul>
-          </li><li id="1430037636"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
+          </li><li id="35357367"><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Distributed+Lists">Distributed Lists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Word+count+decomposed">Word count decomposed</a>
@@ -174,7 +176,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedLists.html#Creating+and+persisting+DLists">Creating and persisting DLists</a>
             
           </li></ul>
-          </li><li id="5571028"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
+          </li><li id="1545780597"><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Distributed+Objects">Distributed Objects</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Materialising">Materialising</a>
@@ -188,7 +190,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DistributedObjects.html#Persisting+Distributed+Objects">Persisting Distributed Objects</a>
             
           </li></ul>
-          </li><li id="1290470775"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
+          </li><li id="1824816020"><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Load+and+persist+data">Load and persist data</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Loading">Loading</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#DLists">DLists</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.LoadAndPersist.html#Text+files">Text files</a>
@@ -238,7 +240,7 @@ $ hadoop WordCount &lt;args&gt;
           </li></ul>
           </li></ul>
           </li></ul>
-          </li><li id="1504964372"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
+          </li><li id="1468885333"><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Data+Types">Data Types</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Standard+types">Standard types</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.DataTypes.html#Custom+types">Custom types</a>
@@ -250,7 +252,7 @@ $ hadoop WordCount &lt;args&gt;
             
           </li></ul>
           </li></ul>
-          </li><li id="873805838"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
+          </li><li id="83785819"><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Grouping">Grouping</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#The+Grouping+trait">The Grouping trait</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Basic+grouping">Basic grouping</a>
@@ -258,7 +260,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Grouping.html#Secondary+sort">Secondary sort</a>
             
           </li></ul>
-          </li><li id="1561541080"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
+          </li><li id="1586471148"><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Extensions">Extensions</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#Grouping">Grouping</a>
@@ -274,7 +276,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Extensions.html#In+Memory+Vector">In Memory Vector</a>
             
           </li></ul>
-          </li><li id="423281573"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
+          </li><li id="663623284"><a href="../guide/com.nicta.scoobi.guide.Testing.html#Testing+guide">Testing guide</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+locally">Running locally</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Running+on+the+cluster">Running on the cluster</a>
@@ -304,7 +306,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Testing.html#Debugging+tips">Debugging tips</a>
             
           </li></ul>
-          </li><li id="1627558547"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
+          </li><li id="1633955317"><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Deployment">Deployment</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Introduction">Introduction</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Sbt-assembly">Sbt-assembly</a>
@@ -320,7 +322,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Deployment.html#Troubleshooting">Troubleshooting</a>
             
           </li></ul>
-          </li><li id="1877287590"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
+          </li><li id="2013618630"><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Advanced+Notes">Advanced Notes</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Configuration+Options">Configuration Options</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#Static+References">Static References</a>
@@ -328,7 +330,7 @@ $ hadoop WordCount &lt;args&gt;
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.Advanced.html#DList+Covariance">DList Covariance</a>
             
           </li></ul>
-          </li><li id="742783406"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
+          </li><li id="693521337"><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Scoobi+Development">Scoobi Development</a>
             <ul><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Building">Building</a>
             
           </li><li id=""><a href="../guide/com.nicta.scoobi.guide.ScoobiDevelopment.html#Run+the+tests">Run the tests</a>
@@ -340,9 +342,9 @@ $ hadoop WordCount &lt;args&gt;
           </li></ul>
           </li></ul>
           </li></ul>
-      <script>$(function () {	$('#tree').jstree({'core':{'initially_open':['1314648233','1627558547'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
+      <script>$(function () {  $('#tree').jstree({'core':{'initially_open':['1521159967','1633955317'], 'animation':200}, 'plugins':['themes', 'html_data']}); });</script>
     </div></div></div>
-                       <div class="col3"><div id="rightcolumn"></div></div>
-                     </div>
-                   </div>
-                 </div></body></html>
+                <div class="col3"><div id="rightcolumn"></div></div>
+              </div>
+            </div>
+          </div></body></html>
