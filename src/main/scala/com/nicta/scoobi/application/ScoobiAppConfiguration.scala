@@ -63,15 +63,25 @@ trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with S
   /** @return true if there are some configuration directories for hadoop */
   def isHadoopConfigured = hadoopConfDirs.nonEmpty
 
+  lazy val configurationFilesDiagnostic = {
+    if (!isHadoopConfigured) logger.error(s"No configuration directory could be found. $$HADOOP_HOME is $HADOOP_HOME, $$HADOOP_CONF_DIR is $HADOOP_CONF_DIR")
+    hadoopConfDirs.foreach { dir =>
+      val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml")
+      logger.info(s"looking for configuration files in $dir. Found ${configurationFiles.map(name => s"$name: ${new File(name).exists}").mkString(", ")}")
+    }
+  }
+
   /** @return a configuration object set with the properties found in the hadoop directories */
   def configurationFromConfigurationDirectory(conf: Configuration) = {
     conf.clear
-    if (!isHadoopConfigured) logger.error(s"No configuration directory could be found. $$HADOOP_HOME is $HADOOP_HOME, $$HADOOP_CONF_DIR is $HADOOP_CONF_DIR")
+    configurationFilesDiagnostic
 
     hadoopConfDirs.foreach { dir =>
-      Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml").foreach { r =>
-        if (new File(dir+r).exists) {
-          conf.addResource(new Path(dir+r).debug("adding the properties file:"))
+      val configurationFiles = Seq("core-site.xml", "mapred-site.xml", "hdfs-site.xml")
+      configurationFiles.foreach { r =>
+        val path = dir+r
+        if (new File(path).exists) {
+          conf.addResource(new Path(path).debug("adding the properties file:"))
         }
       }
     }
