@@ -196,7 +196,9 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
   /** Get the contents of a text file. */
   def cat(path: String): Iterable[String] = {
     import scala.io._
-    Source.fromInputStream(configuration.fileSystem.open(new Path(path))).getLines().toIterable
+    configuration.fileSystem.globStatus(new Path(path)).flatMap { p =>
+      Source.fromInputStream(configuration.fileSystem.open(p.getPath)).getLines().toIterable
+    }
   }
 
 }
