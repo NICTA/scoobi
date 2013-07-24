@@ -39,11 +39,11 @@ import core.ScoobiConfiguration
 trait ScoobiAppConfiguration extends ClusterConfiguration with ScoobiArgs with SystemProperties {
   private implicit lazy val logger = LogFactory.getLog("scoobi.ScoobiAppConfiguration")
 
-  protected lazy val HADOOP_HOME     = getEnv("HADOOP_HOME").orElse(get("HADOOP_HOME"))
-  protected lazy val HADOOP_CONF_DIR = getEnv("HADOOP_CONF_DIR").orElse(get("HADOOP_CONF_DIR"))
+  lazy val HADOOP_HOME     = getEnv("HADOOP_HOME").orElse(get("HADOOP_HOME"))
+  lazy val HADOOP_CONF_DIR = getEnv("HADOOP_CONF_DIR").orElse(get("HADOOP_CONF_DIR"))
 
-  protected lazy val HADOOP_COMMAND = "which hadoop".lines_!.headOption
-  protected lazy val hadoopHomeDir =
+  lazy val HADOOP_COMMAND = "which hadoop".lines_!.headOption
+  lazy val hadoopHomeDir =
     HADOOP_HOME.map(_.debug("got the hadoop directory from the $HADOOP_HOME variable")).
       orElse(HADOOP_COMMAND.map(_.replaceAll("/bin/hadoop$", "").debug("got the hadoop directory from the hadoop executable")))
 
