@@ -19,12 +19,11 @@ import Keys._
 object dependencies {
 
   lazy val settings = dependencies ++ resolversSettings
-  lazy val dependencies = libraryDependencies <<= (version, scalaVersion) { (version, scalaVersion) =>
-    scoobi(scalaVersion) ++
-    hadoop(version)      ++
+  lazy val dependencies = libraryDependencies ++= 
+    scoobi(scalaVersion.value) ++
+    hadoop(version.value)      ++
     scalaz()             ++
     specs2()
-  }
 
   // Libraries
   def scoobi(scalaVersion: String) = Seq(
