@@ -1,7 +1,7 @@
 target
 project/boot/
 *.jar
-
+*.iml
 examples/*.iml
 src/main/*.iml
 .idea/
