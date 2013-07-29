@@ -236,7 +236,7 @@ object build extends Build {
   lazy val publishForCDH3 = ReleaseStep { st: State =>
     val extracted = Project.extract(st)
     val ref: ProjectRef = extracted.get(thisProjectRef)
-    val st2 = extracted.append(List(version in ThisBuild in ref ~= (_.replace("cdh4", "cdh3"))), st)
+    val st2 = extracted.append(List(version in ThisBuild in ref ~= { (v: String) => if (v.contains("SNAPSHOT")) v.replace("SNAPSHOT", "")+"-cdh3-SNAPSHOT" else v+"-cdh3" }), st)
     executeTask(publishSigned, "Publishing CDH3 signed artifacts")(st2)
   }
 
