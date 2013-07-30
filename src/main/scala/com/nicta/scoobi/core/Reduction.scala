@@ -132,6 +132,29 @@ trait Reduction[A] {
     }
 
   /**
+   * Takes six reductions to a reduction on tuple-6.
+   */
+  def zip6[B, C, D, E, F](b: Reduction[B], c: Reduction[C], d: Reduction[D], e: Reduction[E], f: Reduction[F]): Reduction[(A, B, C, D, E, F)] =
+    Reduction {
+      case ((a1, b1, c1, d1, e1, f1), (a2, b2, c2, d2, e2, f2)) => (reduce(a1, a2), b reduce (b1, b2), c reduce (c1, c2), d reduce (d1, d2), e reduce (e1, e2), f reduce (f1, f2))
+    }
+
+  /**
+   * Takes seven reductions to a reduction on tuple-7.
+   */
+  def zip7[B, C, D, E, F, G](b: Reduction[B], c: Reduction[C], d: Reduction[D], e: Reduction[E], f: Reduction[F], g: Reduction[G]): Reduction[(A, B, C, D, E, F, G)] =
+    Reduction {
+      case ((a1, b1, c1, d1, e1, f1, g1), (a2, b2, c2, d2, e2, f2, g2)) => (reduce(a1, a2), b reduce (b1, b2), c reduce (c1, c2), d reduce (d1, d2), e reduce (e1, e2), f reduce (f1, f2), g reduce (g1, g2))
+    }
+
+  /**
+   * Takes eight reductions to a reduction on tuple-8.
+   */
+  def zip8[B, C, D, E, F, G, H](b: Reduction[B], c: Reduction[C], d: Reduction[D], e: Reduction[E], f: Reduction[F], g: Reduction[G], h: Reduction[H]): Reduction[(A, B, C, D, E, F, G, H)] =
+    Reduction {
+      case ((a1, b1, c1, d1, e1, f1, g1, h1), (a2, b2, c2, d2, e2, f2, g2, h2)) => (reduce(a1, a2), b reduce (b1, b2), c reduce (c1, c2), d reduce (d1, d2), e reduce (e1, e2), f reduce (f1, f2), g reduce (g1, g2), h reduce (h1, h2))
+    }
+  /**
    * Takes a reduction and a semigroup to a reduction on pairs.
    */
   def wzip[W](implicit S: Semigroup[W]): Reduction[(W, A)] =
