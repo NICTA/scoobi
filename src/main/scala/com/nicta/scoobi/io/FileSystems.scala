@@ -85,6 +85,15 @@ trait FileSystems {
     else                          fileSystem.listStatus(dest).map(_.getPath)
   }
 
+  /** @return the recursive list of files in a given directory on the file system */
+  def listPathsRecursively(dest: Path)(implicit configuration: ScoobiConfiguration): Seq[Path] = {
+    if (!fileSystem.exists(dest)) Seq()
+    else                          {
+      val (directories, files) = fileSystem.listStatus(dest).partition(_.isDirectory)
+      files.map(_.getPath) ++ directories.flatMap(p => listPathsRecursively(p.getPath))
+    }
+  }
+
   /**
    * create a directory if it doesn't exist already
    */

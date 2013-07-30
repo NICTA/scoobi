@@ -1,14 +1,9 @@
-import com.jsuereth.sbtsite.SiteKeys._
-import com.jsuereth.git.{GitKeys,GitRunner}
-import GitKeys.{gitBranch, gitRemoteRepo}
-import com.jsuereth.ghpages.GhPages.ghpages._
-
 /** Definition */
 name := "scoobi"
 
 organization := "com.nicta"
 
-version := "0.6.2-cdh4"
+version := "0.6.3-cdh4-SNAPSHOT"
 
 scalaVersion := "2.9.2"
 
@@ -96,35 +91,3 @@ pomExtra := (
   </developers>
 )
 
-/** Site building */
-site.settings
-
-seq(site.settings:_*)
-
-siteSourceDirectory <<= target (_ / "specs2-reports")
-
-// depending on the version, copy the api files to a different directory
-siteMappings <++= (mappings in packageDoc in Compile, version) map { (m, v) =>
-  for((f, d) <- m) yield (f, if (v.trim.endsWith("SNAPSHOT")) ("api/master/" + d) else ("api/SCOOBI-"+v+"/"+d))
-}
-
-/** Site publication */
-seq(ghpages.settings:_*)
-
-// override the synchLocal task to avoid removing the existing files
-synchLocal <<= (privateMappings, updatedRepository, GitKeys.gitRunner, streams) map { (mappings, repo, git, s) =>
-  val betterMappings = mappings map { case (file, target) => (file, repo / target) }
-  IO.copy(betterMappings)
-  repo
-}
-
-git.remoteRepo := "git@github.com:NICTA/scoobi.git"
-
-/** Notification */
-seq(lsSettings :_*)
-
-(LsKeys.ghBranch in LsKeys.lsync) := Some("master-publish") 
-
-(LsKeys.ghUser in LsKeys.lsync) := Some("nicta")
-
-(LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")

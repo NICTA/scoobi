@@ -265,7 +265,7 @@ class MapReduceJob(stepId: Int) {
     val fs = configuration.fileSystem
 
     /* Move named file-based sinks to their correct output paths. */
-    val outputFiles = listPaths(configuration.temporaryOutputDirectory)
+    val outputFiles = listPathsRecursively(configuration.temporaryOutputDirectory)
 
     reducers.foreach { case (sinks, (_, reducer)) =>
       sinks.zipWithIndex.foreach { case (sink, ix) =>
