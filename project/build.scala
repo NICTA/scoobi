@@ -30,6 +30,8 @@ import sbtrelease._
 import ReleasePlugin._
 import ReleaseKeys._
 import ReleaseStateTransformations._
+import ls.Plugin._
+import LsKeys._
 import Utilities._
 import Defaults._
 
@@ -46,6 +48,7 @@ object build extends Build {
                testingSettings          ++
                siteSettings             ++
                publicationSettings      ++
+               notificationSettings     ++
                releaseSettings
   )
 
@@ -81,6 +84,12 @@ object build extends Build {
       repo
     },
     gitRemoteRepo := "git@github.com:NICTA/scoobi.git"
+  )
+
+  lazy val notificationSettings: Seq[Settings] = lsSettings ++ Seq(
+    (LsKeys.ghBranch in LsKeys.lsync) := Some("master-publish"),
+    (LsKeys.ghUser in LsKeys.lsync) := Some("nicta"),
+    (LsKeys.ghRepo in LsKeys.lsync) := Some("scoobi")
   )
 
   lazy val publicationSettings: Seq[Settings] = Seq(
@@ -143,6 +152,7 @@ object build extends Build {
       publishSite,
       publishSignedArtifacts,
       publishForCDH3,
+      notifyLs,
       notifyHerald,
       tagRelease,
       setNextVersion,
@@ -243,6 +253,12 @@ object build extends Build {
   /**
    * NOTIFICATION
    */
+  lazy val notifyLs = ReleaseStep { st: State =>
+    val st2 = executeTask(writeVersion, "Writing ls.implicit.ly dependencies")(st)
+    val st3 = commitCurrent("Added a new ls file")(st2)
+    val st4 = pushCurrent(st3)
+    executeTask(lsync, "Synchronizing with the ls.implict.ly website")(st4)
+  }
   lazy val notifyHerald = ReleaseStep (
     action = (st: State) => {
       Process("herald &").lines; st.log.info("Starting herald to publish the release notes")
