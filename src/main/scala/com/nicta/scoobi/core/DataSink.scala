@@ -25,6 +25,9 @@ import Data._
 import com.nicta.scoobi.impl.io.Helper
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.commons.logging.LogFactory
+import java.io.IOException
+import org.apache.hadoop.fs.permission.FsAction
+import org.apache.hadoop.security.UserGroupInformation
 
 /**
  * An output store from a MapReduce job
@@ -123,6 +126,25 @@ object Sink {
   /** default check for sink using output files */
   val defaultOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => {
 
+    val existingParent = Helper.getExistingParent(output)(sc.configuration)
+    val permission = Helper.getFilePermission(existingParent)(sc.configuration)
+    val owner = existingParent.getFileSystem(sc.configuration).getFileStatus(existingParent).getOwner()
+    val group = existingParent.getFileSystem(sc.configuration).getFileStatus(existingParent).getGroup()
+    val curUser = UserGroupInformation.getCurrentUser
+    if(owner == curUser.getShortUserName() || owner == curUser.getUserName()){
+      if(!permission.getUserAction().implies(FsAction.WRITE)){
+        throw new IOException("You do not have write permission on the path:" + output)
+      }
+    }else if (curUser.getGroupNames().contains(group)){
+      if(!permission.getGroupAction().implies(FsAction.WRITE)){
+        throw new IOException("You do not have write permission on the path:" + output)
+      }
+    }else{
+      if(!permission.getOtherAction().implies(FsAction.WRITE)){
+        throw new IOException("You do not have write permission on the path:" + output)
+      }
+    }
+    
     if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
       throw new FileAlreadyExistsException("Output path already exists: " + output)
     } else logger.info("Output path: " + output.toUri.toASCIIString)
