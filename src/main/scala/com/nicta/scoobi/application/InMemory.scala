@@ -48,7 +48,6 @@ trait InMemoryHadoop extends ScoobiUserArgs {
    */
   def configureForInMemory(implicit configuration: ScoobiConfiguration): ScoobiConfiguration = {
     configureArguments
-    configuration.modeIs(InMemory)
     if (!configuration.jobName.isDefined) configuration.jobNameIs(getClass.getSimpleName)
     configuration.setAsInMemory    
   }

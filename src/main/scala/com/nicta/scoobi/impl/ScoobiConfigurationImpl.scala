@@ -39,6 +39,7 @@ import FileSystems._
 import monitor.Loggable._
 import tools.nsc.interpreter.AbstractFileClassLoader
 import com.nicta.scoobi.impl.util.Compatibility
+import com.nicta.scoobi.core.Mode.{Local, InMemory}
 
 case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuration = new Configuration,
                                    var userJars: Set[String] = Set(),
@@ -258,6 +259,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def setAsInMemory: ScoobiConfiguration = {
     logger.debug("setting the ScoobiConfiguration as InMemory")
     setDefaultForInMemoryAndLocal
+    modeIs(InMemory)
   }
 
   /**
@@ -266,6 +268,7 @@ case class ScoobiConfigurationImpl(private val hadoopConfiguration: Configuratio
   def setAsLocal: ScoobiConfiguration = {
     logger.debug("setting the ScoobiConfiguration as Local")
     setDefaultForInMemoryAndLocal
+    modeIs(Local)
   }
 
   private def setDefaultForInMemoryAndLocal = {
