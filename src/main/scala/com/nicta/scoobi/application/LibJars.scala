@@ -122,13 +122,14 @@ trait LibJars {
   def configureJars(implicit configuration: ScoobiConfiguration) = {
     logger.debug("adding the jars paths to the distributed cache")
     uploadedJars.foreach { path =>
-      if (Option(configuration.get(CACHE_FILES)).map(paths => !paths.contains(path.toUri.getPath)).getOrElse(true))
+      val paths = Option(configuration.get("mapred.job.classpath.files"))
+      if (!paths.isDefined || !paths.get.contains(path.toUri.getPath))
         DistributedCache.addFileToClassPath(new Path(path.toUri.getPath), configuration)
     }
 
     logger.debug("adding the jars classpaths to the mapred.classpath variable")
     // add new jars to the classpath and make sure that values are still unique for cache files and classpath entries
-    configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
+    //configuration.addValues("mapred.classpath", jars.map(j => libjarsDirectory + (new File(j.getFile).getName)), ":")
   }
 }
 object LibJars extends LibJars
