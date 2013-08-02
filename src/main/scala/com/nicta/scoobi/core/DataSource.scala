@@ -28,7 +28,10 @@ import org.apache.commons.logging.LogFactory
 import impl.control.Exceptions._
 import impl.util.Compatibility
 import org.apache.hadoop.fs.permission.FsAction
+<<<<<<< HEAD
 import org.apache.hadoop.security.UserGroupInformation
+=======
+>>>>>>> 30e3e5ffe3ed86cd6c3597aa44630f95c593d63c
 
 /**
  * DataSource for a computation graph.
@@ -105,7 +108,7 @@ object Source {
   val defaultInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => {
     inputPaths foreach { p =>
       if (Helper.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc.configuration)) + ")")
-      else                                        throw new IOException("Input path " + p + " does not exist or you do not have permission on this path")
+      else  throw new IOException("Input path " + p + " does not exist or you do not have permission on this path")
       
       Helper.getFileStatus(p)(sc.configuration) foreach (s => {
         val curUser = UserGroupInformation.getCurrentUser

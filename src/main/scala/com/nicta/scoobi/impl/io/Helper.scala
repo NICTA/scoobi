@@ -39,6 +39,9 @@ object Helper {
       Option(FileSystem.get(path.toUri, conf).globStatus(new Path(path, "*"), pathFilter)).map(_.toSeq).getOrElse(Seq())
     }(Seq())
 
+  def getFilePermission(path:Path)(implicit conf: Configuration): FsPermission = 
+    FileSystem.get(path.toUri, conf).getFileStatus(path).getPermission()
+    
   private val hiddenFilePathFilter = new PathFilter {
     def accept(p: Path): Boolean = !p.getName.startsWith("_") && !p.getName.startsWith(".")
   }

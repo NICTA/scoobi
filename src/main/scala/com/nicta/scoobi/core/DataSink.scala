@@ -148,6 +148,7 @@ object Sink {
     if (Helper.pathExists(output)(sc.configuration) && !overwrite) {
       throw new FileAlreadyExistsException("Output path already exists: " + output)
     } else logger.info("Output path: " + output.toUri.toASCIIString)
+    
   }
 
   val noOutputCheck = (output: Path, overwrite: Boolean, sc: ScoobiConfiguration) => ()
