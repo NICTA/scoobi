@@ -80,9 +80,8 @@ trait ScoobiInterpreter extends ScoobiApp with ReplFunctions {
   def removeExecutionMode(arguments: Seq[String]) =
     arguments.filterNot(Seq("local", "cluster", "inmemory").contains)
 
-  private[scoobi] def setDefaultArgs {
-    replArgs = Seq("verbose", "all")
-    setNewArguments(replArgs)
+  private[scoobi] def initialise {
+    cluster
   }
 
   def scoobiArgs_=(arguments: String) {
@@ -157,7 +156,7 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
       configuration.addClassLoader(intp.classLoader)
       if (scoobiInterpreter.isHadoopConfigured) scoobiInterpreter.cluster
       else                                      scoobiInterpreter.local
-      scoobiInterpreter.setDefaultArgs
+      scoobiInterpreter.initialise
       woof()
     }
   }
