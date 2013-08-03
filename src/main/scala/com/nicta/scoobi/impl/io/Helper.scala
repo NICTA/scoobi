@@ -23,6 +23,7 @@ import org.apache.hadoop.fs.{Path, PathFilter, FileSystem, FileStatus}
 
 import Option.{apply => ?}
 import impl.control.Exceptions._
+import org.apache.hadoop.fs.permission.FsPermission
 
 /** A set of helper functions for implementing DataSources and DataSinks. */
 object Helper {
@@ -71,5 +72,14 @@ object Helper {
     Seq("bytes", "KiB", "MiB", "GiB", "TiB", "PiB").lift(idx).map { unit =>
       ("%.2f " format (bytes / math.pow(1024, idx))) + unit
     }.getOrElse(bytes + " bytes?!")
+  }
+
+  def getFilePermission(path:Path)(implicit conf: Configuration): FsPermission =
+    FileSystem.get(path.toUri, conf).getFileStatus(path).getPermission
+
+  def getExistingParent(path:Path)(implicit conf: Configuration): Path = {
+    val fs = FileSystem.get(path.toUri, conf)
+    if (fs.exists(path.getParent)) path.getParent
+    else                           getExistingParent(path.getParent)
   }
 }

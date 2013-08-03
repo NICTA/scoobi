@@ -17,7 +17,7 @@ package com.nicta.scoobi
 package impl
 package io
 
-import java.io.File
+import java.io.{IOException, File}
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.fs._
 import org.apache.hadoop.filecache.DistributedCache
@@ -27,6 +27,8 @@ import impl.ScoobiConfiguration._
 import impl.monitor.Loggable._
 import java.net.URI
 import util.Compatibility
+import org.apache.hadoop.fs.permission.FsAction
+import org.apache.hadoop.security.UserGroupInformation
 
 /**
  * Utility methods for copying files in the local / remote filesystem or across file systems
@@ -166,6 +168,22 @@ trait FileSystems {
 
   /** @return true if the file is a directory */
   def isDirectory(fileStatus: FileStatus) = Compatibility.isDirectory(fileStatus)
+
+  /** check if a READ or WRITE action can be done on a given file based on the current user and on the file permissions */
+  def checkFilePermissions(path: Path, action: FsAction)(implicit sc: ScoobiConfiguration) = {
+    val existingParent = Helper.getExistingParent(path)(sc.configuration)
+    val existingParentFileStatus = existingParent.getFileSystem(sc.configuration).getFileStatus(existingParent)
+    val permission = Helper.getFilePermission(existingParent)(sc.configuration)
+
+    val (group, owner, user) = (existingParentFileStatus.getGroup, existingParentFileStatus.getOwner, UserGroupInformation.getCurrentUser)
+    val ownerIsUser = owner == user.getShortUserName || owner == user.getUserName
+
+    if (ownerIsUser && !permission.getUserAction.implies(action) ||
+      user.getGroupNames.contains(group) && !permission.getGroupAction.implies(action) ||
+      !permission.getOtherAction.implies(action))
+      throw new IOException(s"You do not have $action permission on the path:" + path)
+  }
+
 }
 
 

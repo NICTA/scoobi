@@ -21,12 +21,13 @@ import Data._
 import collection.immutable.VectorBuilder
 import org.apache.hadoop.conf.Configuration
 import scala.collection.JavaConversions._
-import com.nicta.scoobi.impl.io.Helper
+import com.nicta.scoobi.impl.io.{FileSystems, Helper}
 import java.io.IOException
 import org.apache.hadoop.fs.Path
 import org.apache.commons.logging.LogFactory
 import impl.control.Exceptions._
 import impl.util.Compatibility
+import org.apache.hadoop.fs.permission.FsAction._
 
 /**
  * DataSource for a computation graph.
@@ -104,6 +105,7 @@ object Source {
     inputPaths foreach { p =>
       if (Helper.pathExists(p)(sc.configuration)) logger.info("Input path: " + p.toUri.toASCIIString + " (" + Helper.sizeString(Helper.pathSize(p)(sc.configuration)) + ")")
       else                                        throw new IOException("Input path " + p + " does not exist.")
+      FileSystems.checkFilePermissions(p, READ)(sc)
     }
   }
   val noInputCheck = (inputPaths: Seq[Path], sc: ScoobiConfiguration) => ()
