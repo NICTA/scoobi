@@ -178,10 +178,10 @@ trait FileSystems {
     val (group, owner, user) = (existingParentFileStatus.getGroup, existingParentFileStatus.getOwner, UserGroupInformation.getCurrentUser)
     val ownerIsUser = owner == user.getShortUserName || owner == user.getUserName
 
-    if (ownerIsUser && !permission.getUserAction.implies(action) ||
-      user.getGroupNames.contains(group) && !permission.getGroupAction.implies(action) ||
-      !permission.getOtherAction.implies(action))
-      throw new IOException(s"You do not have $action permission on the path:" + path)
+    if (ownerIsUser && !permission.getUserAction.implies(action) &&
+        user.getGroupNames.contains(group) && !permission.getGroupAction.implies(action) &&
+        !permission.getOtherAction.implies(action))
+      throw new IOException(s"You do not have $action permission on the path: $permission $path")
   }
 
 }
