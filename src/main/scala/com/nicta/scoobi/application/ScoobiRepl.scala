@@ -27,6 +27,7 @@ import tools.nsc.util.ScalaClassLoader.URLClassLoader
 import impl.{ScoobiConfigurationImpl, ScoobiConfiguration}
 import core.ScoobiConfiguration
 import impl.io.FileSystems
+import org.apache.avro.generic.GenericRecord
 
 /** A REPL for Scoobi.
   *
@@ -202,5 +203,20 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
       Source.fromInputStream(fs.open(fstat.getPath)).getLines().toIterable
     }
   }
-}
 
+  /** Get the contents of an Avro file. */
+  def avrocat(path: String): Iterable[GenericRecord] = {
+    import org.apache.avro.mapred.FsInput
+    import org.apache.avro.file.DataFileReader
+    import org.apache.avro.generic.GenericDatumReader
+    new Iterable[GenericRecord] {
+      def iterator = new Iterator[GenericRecord] {
+        val in = new FsInput(new Path(path), configuration.configuration)
+        val reader = new GenericDatumReader[GenericRecord]()
+        val it = DataFileReader.openReader(in, reader)
+        def hasNext: Boolean = it.hasNext
+        def next(): GenericRecord = it.next()
+      }
+    }
+  }
+}
