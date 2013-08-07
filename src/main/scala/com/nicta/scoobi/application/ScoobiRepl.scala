@@ -182,7 +182,8 @@ class ScoobiILoop(scoobiInterpreter: ScoobiInterpreter) extends ILoop { outer =>
 trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
   /** List a path . */
   def ls(path: String) {
-    configuration.fileSystem.listStatus(new Path(path)) foreach { fstat =>
+    val p = new Path(path)
+    p.getFileSystem(configuration.configuration).listStatus(p) foreach { fstat =>
       Console.printf("%s%s  %-15s  %-12s  %s\n",
         if (FileSystems.isDirectory(fstat)) "d" else "-",
         fstat.getPermission,
@@ -195,10 +196,11 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
   /** Get the contents of a text file. */
   def cat(path: String): Iterable[String] = {
     import scala.io._
-    configuration.fileSystem.globStatus(new Path(path)).flatMap { p =>
-      Source.fromInputStream(configuration.fileSystem.open(p.getPath)).getLines().toIterable
+    val p = new Path(path)
+    val fs = p.getFileSystem(configuration.configuration)
+    fs.globStatus(p).flatMap { fstat =>
+      Source.fromInputStream(fs.open(fstat.getPath)).getLines().toIterable
     }
   }
-
 }
 
