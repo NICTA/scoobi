@@ -188,7 +188,7 @@ trait ReplFunctions { this: { def configuration: ScoobiConfiguration } =>
         if (FileSystems.isDirectory(fstat)) "d" else "-",
         fstat.getPermission,
         fstat.getOwner,
-        fstat.getBlockSize,
+        fstat.getLen,
         fstat.getPath.toUri.getPath)
     }
   }
