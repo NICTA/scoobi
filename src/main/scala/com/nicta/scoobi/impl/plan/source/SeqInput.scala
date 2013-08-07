@@ -122,7 +122,10 @@ class SeqInputFormat[A] extends InputFormat[NullWritable, A] {
     val seq = DistCache.pullObject[Seq[A]](context.getConfiguration, seqProperty(id)).getOrElse({sys.error("no seq found in the distributed cache for: "+seqProperty(id)); Seq()})
 
     val numSplitsHint = conf.getInt("mapred.map.tasks", 1)
-    val splitSize = n / numSplitsHint
+    val splitSize = {
+      val ss = n / numSplitsHint
+      if (ss == 0) 1 else ss
+    }
 
     logger.debug("id=" + id)
     logger.debug("n=" + n)

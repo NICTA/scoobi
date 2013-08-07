@@ -215,6 +215,12 @@ class DListSpec extends NictaSimpleJobs with TerminationMatchers with ScalaCheck
       (out.toSeq must_== seq).toResult
     } else Skipped("only run this test on the cluster")
   }.pendingUntilFixed("Find how to execute ulimit on the cluster")
+
+  "A DList can be shorter than the number of 'hinted at' map tasks" >> { implicit sc: SC =>
+    sc.set("mapred.map.tasks", 10)
+    val in = DList(1, 1, 1)
+    in.run.toSeq must_== Seq(1, 1, 1)
+  }
 }
 
 case class PoorHashString(s: String) {
