@@ -66,8 +66,12 @@ do
   esac
 done
 
+# basedir
+base=`readlink -f ${BASH_SOURCE[0]}`
+base=`dirname $base`
+
 # classpath
-classpath=scoobi-repl-assembly-0.7.2.jar:`hadoop classpath`
+classpath=$base/scoobi-repl-assembly-0.7.2.jar:`hadoop classpath`
 if [ $user_classpath ]; then
   classpath=$classpath:$user_classpath
 fi
