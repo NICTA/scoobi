@@ -20,7 +20,7 @@ package mapreducer
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.filecache.DistributedCache
-
+import impl.util.DistCache
 import core._
 
 /** A reference to the storage location of a value that represents the "environment"
@@ -39,16 +39,8 @@ class Env(path: Path)(wf: WireReaderWriter) extends Environment {
 
   /** Get an environment value from the distributed cache. */
   def pull(implicit configuration: Configuration): Any = {
-    val cacheFiles = DistributedCache.getCacheFiles(configuration)
-    val cacheFilePaths = cacheFiles.filter(_.toString == path.toString)
-    val cacheFilePath  = cacheFilePaths.headOption.
-                         getOrElse(throw new Exception("\nno cache files contain the path: "+path+cacheFiles.mkString(" (\n  ", ",\n  ", ")")))
-
-    val cacheFile = new Path(cacheFilePath.toString)
-    val dis = cacheFile.getFileSystem(configuration).open(cacheFile)
-    val obj = wf.read(dis)
-    dis.close()
-    obj
+    DistCache.pullPath(configuration, path)(wf.read).
+      getOrElse(throw new Exception("\nno cache files contain the path: "+path))
   }
 
   override def toString = "Env(" + path.toUri + ")"

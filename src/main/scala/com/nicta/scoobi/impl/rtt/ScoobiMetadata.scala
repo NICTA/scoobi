@@ -18,7 +18,7 @@ package impl
 package rtt
 
 import scalaz.Memo
-import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.conf.{Configurable, Configuration}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import util.DistCache
@@ -34,26 +34,29 @@ object ScoobiMetadata {
 
   private implicit val logger = LogFactory.getLog("scoobi.metadata")
 
-  def saveMetadata(metadataTag: String, metadata: Any)(implicit sc: ScoobiConfiguration): Path = {
-    DistCache.pushObject(sc.configuration, metadata, metadataTag).debug("saving metadata for path ")
+  def saveMetadata(metadataTag: String, metadata: Any, configuration: Configuration): String = {
+    DistCache.pushObject(configuration, metadata, metadataTag).debug("saving metadata for tag ")
+    metadataTag
   }
 
   /** we retrieve metadata from the distributed cache and memoise each retrieved piece of metadata */
-  def metadata(implicit configuration: Configuration) = (path: String) => Memo.mutableHashMapMemo[String, Any]{ path: String =>
-    logger.debug("retrieving metadata for path "+path)
-    DistCache.deserialise(configuration)(new Path(path)).get: Any
-  }.apply(path)
+  def metadata(implicit configuration: Configuration) = (metadataTag: String) => Memo.mutableHashMapMemo[String, Any]{ metadataTag: String =>
+    logger.debug("retrieving metadata for tag "+metadataTag)
+    DistCache.pullObject(configuration, metadataTag).get: Any
+  }.apply(metadataTag)
 }
 
 /**
  * Set of metadata, which can be a different tuple for each tag (and all tuples don't have to have the same size)
  */
 trait TaggedMetadata extends Configured {
-  def metadataPath: String
-  lazy val metaDatas = ScoobiMetadata.metadata(configuration)(metadataPath).asInstanceOf[Map[Int, Product]]
+  def metadataTag: String
+  lazy val metaDatas = ScoobiMetadata.metadata(configuration)(metadataTag).asInstanceOf[Map[Int, Product]]
   lazy val tags = metaDatas.keySet.toSeq
 }
 
-trait Configured {
+trait Configured extends Configurable {
   protected[scoobi] implicit var configuration = new Configuration
+  def setConf(conf: Configuration) { configuration = conf }
+  def getConf = configuration
 }

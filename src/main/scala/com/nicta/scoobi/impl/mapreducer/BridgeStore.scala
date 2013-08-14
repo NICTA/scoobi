@@ -36,6 +36,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.compress.CompressionCodec
 import org.apache.hadoop.io.SequenceFile.CompressionType
 import util.Compatibility
+import org.apache.hadoop.util.ReflectionUtils
 
 /** A bridge store is any data that moves between MSCRs. It must first be computed, but
   * may be removed once all successor MSCRs have consumed it. */
@@ -51,7 +52,7 @@ case class BridgeStore[A](bridgeStoreId: String, wf: WireReaderWriter, checkpoin
 
   /** rtClass will be created at runtime as part of building the MapReduce job. */
   def rtClass(implicit sc: ScoobiConfiguration): RuntimeClass =
-    BridgeStore.runtimeClasses.getOrElseUpdate(typeName, ScoobiWritable(typeName, wf))
+    BridgeStore.runtimeClasses.getOrElseUpdate(typeName, ScoobiWritable(typeName, wf)(sc))
 
   /** type of the generated class for this Bridge */
   lazy val typeName = "BS" + checkpoint.map(c => scala.util.hashing.MurmurHash3.stringHash(c.path.toUri.toString)).getOrElse(bridgeStoreId)
@@ -131,6 +132,7 @@ class BridgeStoreIterator[A](value: ScoobiWritable[A], path: Path, sc: ScoobiCon
       remainingReaders = fs.globStatus(new Path(path, "ch*")).toStream map { (stat: FileStatus) =>
         Compatibility.newSequenceFileReader(sc, stat.getPath)
       }
+      value.configuration = sc.configuration
       empty = remainingReaders.isEmpty || !readNext()
       initialised = true
     }
@@ -173,9 +175,8 @@ class ScoobiWritableOutputConverter[A](typeName: String) extends OutputConverter
   private var value: ScoobiWritable[A] = _
   def toKeyValue(x: A)(implicit configuration: Configuration): (NullWritable, ScoobiWritable[A]) = {
     if (value == null) {
-      value = configuration.getClassLoader.loadClass(typeName).newInstance.asInstanceOf[ScoobiWritable[A]]
+      value = ReflectionUtils.newInstance(configuration.getClassLoader.loadClass(typeName), configuration).asInstanceOf[ScoobiWritable[A]]
     }
-    value.configuration = configuration
     value.set(x)
     (NullWritable.get, value)
   }

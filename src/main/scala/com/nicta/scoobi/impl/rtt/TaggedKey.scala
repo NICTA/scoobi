@@ -20,6 +20,7 @@ package rtt
 import org.apache.hadoop.io.WritableComparable
 import core._
 import impl.ScoobiConfigurationImpl._
+import org.apache.hadoop.conf.Configuration
 
 /**
  * A tagged value for Hadoop keys. Specifically this will be a K2 type so must
@@ -29,8 +30,8 @@ trait TaggedKey extends Tagged with WritableComparable[TaggedKey]
 
 /** Companion object for dynamically constructing a subclass of TaggedKey. */
 object TaggedKey {
-  def apply(name: String, tags: Map[Int, (WireReaderWriter, KeyGrouping)])(implicit sc: ScoobiConfiguration): RuntimeClass =
-    MetadataClassBuilder[MetadataTaggedKey](name, tags).toRuntimeClass
+  def apply(name: String, tags: Map[Int, (WireReaderWriter, KeyGrouping)], classLoader: ClassLoader, configuration: Configuration): RuntimeClass =
+    MetadataClassBuilder[MetadataTaggedKey](name, tags, classLoader, configuration).toRuntimeClass
 }
 
 /**

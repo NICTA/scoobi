@@ -20,6 +20,7 @@ package rtt
 import org.apache.hadoop.io._
 import core._
 import java.io.{DataInput, DataOutput}
+import org.apache.hadoop.conf.Configuration
 
 /** The super-class of all "value" types used in Hadoop jobs. */
 abstract class ScoobiWritable[A](private var x: A) extends Writable with Configured { self =>
@@ -32,17 +33,17 @@ abstract class ScoobiWritable[A](private var x: A) extends Writable with Configu
 /** Constructs a ScoobiWritable, with some metadata (a WireFormat) retrieved from the distributed cache */
 object ScoobiWritable {
   def apply(name: String, wf: WireReaderWriter)(implicit sc: ScoobiConfiguration): RuntimeClass =
-    MetadataClassBuilder[MetadataScoobiWritable](name, wf)(sc, implicitly[Manifest[MetadataScoobiWritable]]).toRuntimeClass
+    MetadataClassBuilder[MetadataScoobiWritable](name, wf, sc.scoobiClassLoader, sc.configuration)(implicitly[Manifest[MetadataScoobiWritable]]).toRuntimeClass
 
   def apply[A](name: String, witness: A)(implicit sc: ScoobiConfiguration, wf: WireReaderWriter): RuntimeClass =
-    apply(name, wf)
+    apply(name, wf)(sc)
 }
 
 abstract class MetadataScoobiWritable extends ScoobiWritable[Any] {
 
-  def metadataPath: String
+  def metadataTag: String
 
-  lazy val wireFormat = ScoobiMetadata.metadata(configuration)(metadataPath).asInstanceOf[WireReaderWriter]
+  lazy val wireFormat = ScoobiMetadata.metadata(configuration)(metadataTag).asInstanceOf[WireReaderWriter]
 
   def write(out: DataOutput) {
     wireFormat.write(get, out)

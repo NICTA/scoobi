@@ -40,6 +40,7 @@ import monitor.Loggable
 import Loggable._
 import mapreducer.BridgeStore
 import Configurations._
+import org.apache.hadoop.conf.Configuration
 
 /**
  * A class that defines a single Hadoop MapReduce job and configures Hadoop based on the Mscr to execute
@@ -81,7 +82,7 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
     val jar = new JarBuilder
     job.getConfiguration.set("mapred.jar", configuration.temporaryJarFile.getAbsolutePath)
 
-    configureKeysAndValues(jar)
+    configureKeysAndValues(jar, job.getConfiguration)
     configureMappers(jar)
     configureCombiners(jar)
     configureReducers(jar)
@@ -99,22 +100,22 @@ case class MapReduceJob(mscr: Mscr, layerId: Int)(implicit val configuration: Sc
    *   - Partitioner is generated and of type TaggedPartitioner
    *   - GroupingComparator is generated and of type TaggedGroupingComparator
    *   - SortComparator is handled by TaggedKey which is WritableComparable */
-  private def configureKeysAndValues(jar: JarBuilder) {
+  private def configureKeysAndValues(jar: JarBuilder, jobConfiguration: Configuration) {
     val id = UniqueId.get
 
-    val tkRtClass = TaggedKey("TK" + id, mscr.keyTypes.types)
+    val tkRtClass = TaggedKey("TK" + id, mscr.keyTypes.types, configuration.scoobiClassLoader, jobConfiguration)
     jar.addRuntimeClass(tkRtClass)
     job.setMapOutputKeyClass(tkRtClass.clazz)
 
-    val tvRtClass = TaggedValue("TV" + id, mscr.valueTypes.types)
+    val tvRtClass = TaggedValue("TV" + id, mscr.valueTypes.types, configuration.scoobiClassLoader, jobConfiguration)
     jar.addRuntimeClass(tvRtClass)
     job.setMapOutputValueClass(tvRtClass.clazz)
 
-    val tpRtClass = TaggedPartitioner("TP" + id, mscr.keyTypes.types)
+    val tpRtClass = TaggedPartitioner("TP" + id, mscr.keyTypes.types, configuration.scoobiClassLoader, jobConfiguration)
     jar.addRuntimeClass(tpRtClass)
     job.setPartitionerClass(tpRtClass.clazz.asInstanceOf[Class[_ <: Partitioner[_,_]]])
 
-    val tgRtClass = TaggedGroupingComparator("TG" + id, mscr.keyTypes.types)
+    val tgRtClass = TaggedGroupingComparator("TG" + id, mscr.keyTypes.types, configuration.scoobiClassLoader, jobConfiguration)
     jar.addRuntimeClass(tgRtClass)
     job.setGroupingComparatorClass(tgRtClass.clazz.asInstanceOf[Class[_ <: RawComparator[_]]])
   }

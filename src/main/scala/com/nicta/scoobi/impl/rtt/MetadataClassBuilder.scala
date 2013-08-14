@@ -21,6 +21,7 @@ import java.io._
 import javassist._
 import core._
 import org.apache.commons.logging.LogFactory
+import org.apache.hadoop.conf.Configuration
 
 /**
  * A class for building a class extending T at run-time.
@@ -34,7 +35,7 @@ import org.apache.commons.logging.LogFactory
  *  - the className (which must be unique for the class to build)
  *  - some metadata for the class (like a Map from tags to WireFormats, if it's a TaggedValue)
  *
- *  The metadata is distributed to the cache and a "metadataPath" method is added to the built class so that it can be retrieved.
+ *  The metadata is distributed to the cache and a "metadataTag" method is added to the built class so that it can be retrieved.
  *
  *  For example, a TaggedValue is a class, defined for several tags, which is able to read/write values of different types (described by their WireFormats),
  *  with one type per tag. A concrete instance of that class will have a unique name, TV92, and will provide a method returning the
@@ -44,7 +45,7 @@ import org.apache.commons.logging.LogFactory
  *  serialise/deserialise values
  *
  */
-case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc: ScoobiConfiguration, mf: Manifest[T]) {
+case class MetadataClassBuilder[T](className: String, metaData: Any, scoobiClassLoader: ClassLoader, configuration: Configuration)(implicit mf: Manifest[T]) {
   private lazy val logger = LogFactory.getLog("scoobi.MetadataClassBuilder")
 
   /** string value showing the generated class source code */
@@ -60,11 +61,10 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
 
   /** @return the java class */
   def toClass: Class[_] = {
-    val classLoader = sc.scoobiClassLoader
-    try { classLoader.loadClass(className) } catch { case e: Throwable =>
-      logger.debug(s"$className can't be loaded from the current class loader ($classLoader): (${e.getMessage}), try creating the runtime class instead if not previously created")
+    try { scoobiClassLoader.loadClass(className) } catch { case e: Throwable =>
+      logger.debug(s"$className can't be loaded from the current class loader ($scoobiClassLoader): (${e.getMessage}), try creating the runtime class instead if not previously created")
       val r = ctClass.toClass
-      classLoader.loadClass(className)
+      scoobiClassLoader.loadClass(className)
       r
     }
   }
@@ -81,13 +81,13 @@ case class MetadataClassBuilder[T](className: String, metaData: Any)(implicit sc
   }
 
   private def build(ct: CtClass) = {
-    val metadataPath = ScoobiMetadata.saveMetadata("scoobi.metadata."+className, metaData)(sc)
-    addMethod(ct, "java.lang.String", "metadataPath", "return \""+metadataPath+"\";")
+    val metadataTag = ScoobiMetadata.saveMetadata("scoobi.metadata."+className, metaData, configuration)
+    addMethod(ct, "java.lang.String", "metadataTag", "return \""+metadataTag+"\";")
   }
 
   private lazy val pool: ClassPool = {
     val pool = new ClassPool
-    pool.appendClassPath(new LoaderClassPath(sc.scoobiClassLoader))
+    pool.appendClassPath(new LoaderClassPath(scoobiClassLoader))
     pool.appendClassPath(new LoaderClassPath(getClass.getClassLoader))
     pool
   }

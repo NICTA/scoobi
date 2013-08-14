@@ -19,14 +19,15 @@ package rtt
 
 import org.apache.hadoop.io.{DataInputBuffer, RawComparator}
 import core._
+import org.apache.hadoop.conf.Configuration
 
 /** Custom GroupingComparator for tagged keys. */
 trait TaggedGroupingComparator extends RawComparator[TaggedKey]
 
 /** Companion object for dynamically constructing a subclass of TaggedGroupingComparator. */
 object TaggedGroupingComparator {
-  def apply(name: String, tags: Map[Int, (WireReaderWriter, KeyGrouping)])(implicit sc: ScoobiConfiguration) : RuntimeClass =
-    MetadataClassBuilder[MetadataTaggedGroupingComparator](name, tags).toRuntimeClass
+  def apply(name: String, tags: Map[Int, (WireReaderWriter, KeyGrouping)], classLoader: ClassLoader, configuration: Configuration) : RuntimeClass =
+    MetadataClassBuilder[MetadataTaggedGroupingComparator](name, tags, classLoader, configuration).toRuntimeClass
 }
 
 abstract class MetadataTaggedGroupingComparator extends TaggedGroupingComparator with MetadataWireFormats with MetadataGroupings {

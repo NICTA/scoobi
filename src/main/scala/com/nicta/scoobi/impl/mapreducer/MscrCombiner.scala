@@ -25,6 +25,7 @@ import util.DistCache
 import plan.mscr.{OutputChannel, OutputChannels}
 import plan.comp.Combine
 import core.InputOutputContext
+import org.apache.hadoop.util.ReflectionUtils
 
 /** Hadoop Combiner class for an MSCR. */
 class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue] {
@@ -35,8 +36,7 @@ class MscrCombiner extends HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedVal
 
   override def setup(context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {
     combiners = DistCache.pullObject[Combiners](context.getConfiguration, "scoobi.combiners").getOrElse(Map())
-    tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
-    tv.configuration = context.getConfiguration
+    tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
   }
 
   override def reduce(key: TaggedKey, values: java.lang.Iterable[TaggedValue], context: HReducer[TaggedKey, TaggedValue, TaggedKey, TaggedValue]#Context) {

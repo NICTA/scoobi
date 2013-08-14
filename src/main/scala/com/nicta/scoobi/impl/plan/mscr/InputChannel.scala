@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory
 import monitor.Loggable
 import Loggable._
 import CollectFunctions._
+import org.apache.hadoop.util.ReflectionUtils
 
 /**
  * An input channel groups mapping operations from a single DataSource, attached to a source node (a Load node, or a GroupByKey
@@ -168,10 +169,8 @@ trait MscrInputChannel extends InputChannel {
   def setup(context: InputOutputContext) {
     configuration = context.configuration
     scoobiConfiguration = scoobiConfiguration(configuration)
-    tks = Map(tags.map(t => { val key = context.context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
-    tvs = Map(tags.map(t => { val value = context.context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
-    tks.map { case (t, k) => k.configuration = configuration }
-    tvs.map { case (t, v) => v.configuration = configuration }
+    tks = Map(tags.map(t => { val key = ReflectionUtils.newInstance(context.context.getMapOutputKeyClass, configuration).asInstanceOf[TaggedKey]; key.setTag(t); (t, key) }):_*)
+    tvs = Map(tags.map(t => { val value = ReflectionUtils.newInstance(context.context.getMapOutputValueClass, configuration).asInstanceOf[TaggedValue]; value.setTag(t); (t, value) }):_*)
 
     emitters = Map(tags.map(t => (t, createEmitter(t, context))):_*)
     vectorEmitter = VectorEmitterWriter(context)

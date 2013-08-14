@@ -26,18 +26,23 @@ import java.net.URI
 import DistributedCache._
 import java.io.IOException
 import org.apache.commons.logging.LogFactory
+import control.Exceptions._
 
-/** Faciliate making an object available to all tasks (mappers, reducers, etc). Use
-  * XStream to serialise objects to XML strings and then send out via Hadoop's
-  * distributed cache. Two APIs are provided for pushing and pulling objects. */
+/**
+ * Facilitate making an object available to all tasks (mappers, reducers, etc). Use
+ * XStream to serialise objects to XML strings and then send out via Hadoop's
+ * distributed cache. Two APIs are provided for pushing and pulling objects.
+ */
 object DistCache {
   private lazy val logger = LogFactory.getLog("scoobi.DistCache")
 
-  /** Make a local filesystem path based on a 'tag' to temporarily store the
-    * serialised object. */
-  def mkPath(configuration: Configuration, tag: String): Path = {
-    val scratchDir = new Path(ScoobiConfigurationImpl(configuration).workingDirectory, "dist-objs")
-    new Path(scratchDir, tag+ Option(configuration.get(JOB_STEP)).map("-"+_).getOrElse(""))
+  /**
+   * Make a local filesystem path based on a 'tag' to temporarily store the
+   * serialised object.
+   */
+  def tagToPath(configuration: Configuration, tag: String): Path = {
+    val sc = ScoobiConfigurationImpl(configuration)
+    new Path(s"${sc.workingDirectory}/dist-objs/$tag")
   }
 
   /**
@@ -60,43 +65,53 @@ object DistCache {
   /**
    * serialise an object to a path
    */
-  def serialise[T](configuration: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
+  private def serialise[T](configuration: Configuration, obj: T, tag: String)(action: Path => Unit): Path = {
     /* Serialise */
-    val path = mkPath(configuration, tag)
+    val path = tagToPath(configuration, tag)
     val dos = path.getFileSystem(configuration).create(path)
     Serialiser.serialise(obj, dos)
     action(path)
-    new Path(new Path(path.getFileSystem(configuration).getUri), path)
+    path
   }
 
   /** Get an object that has been distributed so as to be available for tasks in
     * the current job. */
-  def pullObject[T](configuration: Configuration, tag: String): Option[T] = {
-    val path = mkPath(configuration, tag)
+  def pullObject[T](configuration: Configuration, tag: String): Option[T] =
+    pullPath(configuration, tagToPath(configuration, tag)) { dis =>
+      Serialiser.deserialise(dis).asInstanceOf[T]
+    }
 
-    lazy val remoteCacheFiles = Option(DistributedCache.getCacheFiles(configuration))getOrElse(Array[URI]())
-    lazy val localCacheFiles = Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(_.toUri)
+  /**
+   * Pulling an object from a given path.
+   *
+   * We first try paths from:
+   *
+   *  - the local cache then
+   *  - the distributed cache then
+   *  - the passed path itself (this is useful if we are on the client)
+   *
+   * Once a FSDataInputStream is successfully opened, the function f can do its job to recreate the object:
+   *
+   *  - use the Serialiser to deserialise the object
+   *  - use a WireFormat to deserialise the object
+   */
+  def pullPath[T](configuration: Configuration, path: Path)(f: FSDataInputStream => T): Option[T] = {
+    lazy val cacheFiles = (Option(DistributedCache.getLocalCacheFiles(configuration)).getOrElse(Array[Path]()).map(p => new Path("file://"+p.toString)) ++
+                           Option(DistributedCache.getCacheFiles(configuration)).getOrElse(Array[URI]()).map(new Path(_))).toStream :+ path
 
-    // use the local cached files on the cluster when the local files can be found
-    val cacheFiles =
-      if (localCacheFiles.nonEmpty) localCacheFiles
-      else                          { logger.warn("there are no local cache files, using the distributed cache instead")
-                                      remoteCacheFiles }
-
-    cacheFiles.find(uri => uri.toString.endsWith(path.toString)).flatMap { case uri =>
-      deserialise(configuration)(path)
+    logger.info("trying to pull an object from the cache at path: "+path)
+    cacheFiles.filter(p => p.toString.endsWith(path.getName)).map { case p =>
+      logger.info("trying to open: "+p)
+      tryo(p.getFileSystem(configuration).open(p)).map { dis =>
+        logger.info("successfully opened: "+p)
+        try f(dis)
+        finally dis.close
+      }
+    }.dropWhile(!_.isDefined).flatten.headOption match {
+      case Some(o) => Some(o)
+      case None    => logger.error(cacheFiles.mkString("No successfully opened path. The cache files which were used are\n", "\n", "\n")); None
     }
   }
 
-  /**
-   * deserialise an object from a path file
-   */
-  def deserialise[T](configuration: Configuration) = (path: Path) => {
-    val dis = path.getFileSystem(configuration).open(path)
-    try {
-      Some(Serialiser.deserialise(dis).asInstanceOf[T])
-    } catch { case e: Throwable => { e.printStackTrace(); None } }
-    finally { dis.close() }
-  }
 }
 

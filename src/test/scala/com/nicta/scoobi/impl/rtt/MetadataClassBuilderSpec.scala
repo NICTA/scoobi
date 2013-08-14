@@ -24,6 +24,7 @@ import java.io.{DataInputStream, ByteArrayInputStream, ByteArrayOutputStream, Da
 import org.specs2.mutable.Tables
 import java.util.UUID
 import core.{KeyGrouping, WireReaderWriter}
+import org.apache.hadoop.util.ReflectionUtils
 
 class MetadataClassBuilderSpec extends UnitSpecification with Tables {
 
@@ -31,12 +32,12 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
      When a builder class is created, it has a specific name, given at runtime, and some metadata that is stored through the
      Distributed file cache with a specific path using the class name
   """ >> {
-    val builder = new MetadataClassBuilder[MetadataScoobiWritable]("specificName", wf[String])
+    val builder = new MetadataClassBuilder[MetadataScoobiWritable]("specificName", wf[String], sc.scoobiClassLoader, sc.configuration)
 
     normalise(builder.show) ===
       """|class specificName extends com.nicta.scoobi.impl.rtt.MetadataScoobiWritable {
-         |  java.lang.String metadataPath () {
-         |    return "...scoobi.metadata.specificName";
+         |  java.lang.String metadataTag () {
+         |    return "scoobi.metadata.specificName";
          |  }
          |}
       """.stripMargin.trim
@@ -73,24 +74,24 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   }
 
   def checkScoobiWritable = (wf: WireReaderWriter, value: Any) => {
-    val builder = new MetadataClassBuilder[MetadataScoobiWritable](UUID.randomUUID.toString, wf)
-    val writable = builder.toClass.newInstance.asInstanceOf[ScoobiWritable[Any]]
+    val builder = new MetadataClassBuilder[MetadataScoobiWritable](UUID.randomUUID.toString, wf, sc.scoobiClassLoader, sc.configuration)
+    val writable = ReflectionUtils.newInstance(builder.toClass, sc.configuration).asInstanceOf[ScoobiWritable[Any]]
     writable.set(value)
     serialiseAndDeserialise(writable)
     writable.get === value
   }
 
   def checkTaggedValue = (wf: WireReaderWriter, value: Any) => {
-    val builder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(0 -> Tuple1(wf)))
-    val writable = builder.toClass.newInstance.asInstanceOf[TaggedValue]
+    val builder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(0 -> Tuple1(wf)), sc.scoobiClassLoader, sc.configuration)
+    val writable = ReflectionUtils.newInstance(builder.toClass, sc.configuration).asInstanceOf[TaggedValue]
     writable.set(value)
     serialiseAndDeserialise(writable)
     writable.get(0) === value
   }
 
   def checkTaggedKey = (wf: WireReaderWriter, gp: KeyGrouping, value: Any) => {
-    val builder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(0 -> (wf, gp)))
-    val key = builder.toClass.newInstance.asInstanceOf[TaggedKey]
+    val builder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(0 -> (wf, gp)), sc.scoobiClassLoader, sc.configuration)
+    val key = ReflectionUtils.newInstance(builder.toClass, sc.configuration).asInstanceOf[TaggedKey]
     key.set(value)
     serialiseAndDeserialise(key)
 
@@ -99,11 +100,11 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   }
 
   def checkTaggedGroupingComparator = (wf: WireReaderWriter, gp: KeyGrouping, v: Any) => {
-    val builder = new MetadataClassBuilder[MetadataTaggedGroupingComparator](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
-    val grouping = builder.toClass.newInstance.asInstanceOf[TaggedGroupingComparator]
+    val builder = new MetadataClassBuilder[MetadataTaggedGroupingComparator](UUID.randomUUID.toString, Map(3 -> (wf, gp)), sc.scoobiClassLoader, sc.configuration)
+    val grouping = ReflectionUtils.newInstance(builder.toClass, sc.configuration).asInstanceOf[TaggedGroupingComparator]
 
-    val keyBuilder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
-    val key = keyBuilder.toClass.newInstance.asInstanceOf[TaggedKey]
+    val keyBuilder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(3 -> (wf, gp)), sc.scoobiClassLoader, sc.configuration)
+    val key = ReflectionUtils.newInstance(keyBuilder.toClass, sc.configuration).asInstanceOf[TaggedKey]
     key.setTag(3)
     key.set(v)
 
@@ -111,16 +112,16 @@ class MetadataClassBuilderSpec extends UnitSpecification with Tables {
   }
 
   def checkTaggedPartition = (wf: WireReaderWriter, gp: KeyGrouping, v: Any) => {
-    val builder = new MetadataClassBuilder[MetadataTaggedPartitioner](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
-    val partitioner = builder.toClass.newInstance.asInstanceOf[TaggedPartitioner]
+    val builder = new MetadataClassBuilder[MetadataTaggedPartitioner](UUID.randomUUID.toString, Map(3 -> (wf, gp)), sc.scoobiClassLoader, sc.configuration)
+    val partitioner = ReflectionUtils.newInstance(builder.toClass, sc.configuration).asInstanceOf[TaggedPartitioner]
 
-    val keyBuilder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(3 -> (wf, gp)))
-    val key = keyBuilder.toClass.newInstance.asInstanceOf[TaggedKey]
+    val keyBuilder = new MetadataClassBuilder[MetadataTaggedKey](UUID.randomUUID.toString, Map(3 -> (wf, gp)), sc.scoobiClassLoader, sc.configuration)
+    val key = ReflectionUtils.newInstance(keyBuilder.toClass, sc.configuration).asInstanceOf[TaggedKey]
     key.setTag(3)
     key.set(v)
 
-    val valueBuilder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(3 -> Tuple1(wf)))
-    val value        = valueBuilder.toClass.newInstance.asInstanceOf[TaggedValue]
+    val valueBuilder = new MetadataClassBuilder[MetadataTaggedValue](UUID.randomUUID.toString, Map(3 -> Tuple1(wf)), sc.scoobiClassLoader, sc.configuration)
+    val value        = ReflectionUtils.newInstance(valueBuilder.toClass, sc.configuration).asInstanceOf[TaggedValue]
     value.setTag(3)
     value.set(v)
 

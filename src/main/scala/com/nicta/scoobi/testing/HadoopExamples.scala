@@ -136,7 +136,7 @@ trait HadoopExamples extends Hadoop with CommandLineScoobiUserArgs with Cluster 
   /** cleanup temporary files after job execution */
   def cleanup(c: ScoobiConfiguration) {
     // the 2 actions are isolated. In case the first one fails, the second one has a chance to succeed.
-    try     c.deleteWorkingDirectory
+    try     if (!keepFiles) c.deleteWorkingDirectory
     finally TestFiles.deleteFiles(c)
   }
 

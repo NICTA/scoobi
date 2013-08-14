@@ -255,12 +255,12 @@ Processing
 
   trait MockInputChannel extends MscrInputChannel {
     tks = Map[Int, TaggedKey]().withDefault { (i: Int) =>
-      val key = new MetadataTaggedKey { def metadataPath = "" }: TaggedKey
+      val key = new MetadataTaggedKey { def metadataTag = "" }: TaggedKey
       key.setTag(i)
       key
     }
     tvs = Map[Int, TaggedValue]().withDefault { (i: Int) =>
-      val value = new MetadataTaggedValue { def metadataPath = ""  }: TaggedValue
+      val value = new MetadataTaggedValue { def metadataTag = ""  }: TaggedValue
       value.setTag(i)
       value
     }

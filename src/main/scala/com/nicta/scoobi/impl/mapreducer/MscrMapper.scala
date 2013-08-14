@@ -28,6 +28,7 @@ import com.nicta.scoobi.impl.plan.mscr.{OutputChannels, InputChannels, InputChan
 import reflect.ClasspathDiagnostics
 import org.apache.hadoop.io.NullWritable
 import scala.collection.mutable
+import org.apache.hadoop.util.ReflectionUtils
 
 /**
  * Hadoop Mapper class for an MSCR
@@ -50,10 +51,8 @@ class MscrMapper extends HMapper[Any, Any, TaggedKey, TaggedValue] {
     ClasspathDiagnostics.logInfo
 
     allInputChannels = DistCache.pullObject[InputChannels](context.getConfiguration, "scoobi.mappers").getOrElse(InputChannels(Seq()))
-    tk = context.getMapOutputKeyClass.newInstance.asInstanceOf[TaggedKey]
-    tv = context.getMapOutputValueClass.newInstance.asInstanceOf[TaggedValue]
-    tk.configuration = context.getConfiguration
-    tv.configuration = context.getConfiguration
+    tk = ReflectionUtils.newInstance(context.getMapOutputKeyClass  , context.getConfiguration).asInstanceOf[TaggedKey]
+    tv = ReflectionUtils.newInstance(context.getMapOutputValueClass, context.getConfiguration).asInstanceOf[TaggedValue]
 
     val inputSplit = context.getInputSplit.asInstanceOf[TaggedInputSplit]
     val mapContext = context.asInstanceOf[MapContext[Any,Any,Any,Any]]
