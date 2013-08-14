@@ -39,8 +39,7 @@ import CollectFunctions._
  * - aggregating input and output channels as Mscr representing a full map reduce job
  * - iterating on any processing node that is not part of a Mscr
  */
-trait MscrsDefinition extends Layering with Optimiser with ShowNode {
-
+trait MscrsDefinition extends Layering with Optimiser {
   /**
    * create layers of MapReduce jobs from the computation graph defined by the start node
    * where each layer contains independent map reduce jobs
